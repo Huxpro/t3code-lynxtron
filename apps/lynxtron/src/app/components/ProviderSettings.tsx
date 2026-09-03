@@ -5,6 +5,7 @@ import {
   type ModelPickerModel,
 } from "@t3tools/client-runtime/presentation/model-picker";
 import { redactSourceControlAccount } from "@t3tools/client-runtime/presentation/source-control";
+import { getRelativeTimeState } from "@t3tools/client-runtime/presentation/time";
 import {
   getProviderSummary,
   getProviderVersionLabel,
@@ -73,6 +74,26 @@ import {
   SmallIconButton,
   Toggle,
 } from "./SettingsControls";
+
+function ProviderLastChecked({ lastCheckedAt }: { readonly lastCheckedAt: string | null }) {
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => setNowMs(Date.now()), 1_000);
+    return () => clearInterval(interval);
+  }, []);
+  const relative = getRelativeTimeState(lastCheckedAt, nowMs);
+  if (relative.status === "missing") return null;
+  if (relative.status === "invalid") {
+    return <text className="provider-settings-last-checked">Checked unavailable</text>;
+  }
+  return (
+    <text className="provider-settings-last-checked">
+      {relative.suffix
+        ? `Checked ${relative.value} ${relative.suffix}`
+        : `Checked ${relative.value}`}
+    </text>
+  );
+}
 
 interface ProviderCardProps {
   entry: ProviderInstanceEntry;
@@ -1006,6 +1027,17 @@ export function ProviderSettings() {
       ),
     [providerEntries, settings?.providerInstances],
   );
+  const lastCheckedAt = useMemo(
+    () =>
+      providerEntries.length === 0
+        ? null
+        : providerEntries.reduce(
+            (latest, provider) =>
+              provider.snapshot.checkedAt > latest ? provider.snapshot.checkedAt : latest,
+            providerEntries[0]!.snapshot.checkedAt,
+          ),
+    [providerEntries],
+  );
 
   const handleSelectModel = useCallback(
     (model: ModelInfo) => {
@@ -1021,6 +1053,7 @@ export function ProviderSettings() {
         title="Providers"
         headerAction={
           <view className="provider-settings-header-actions">
+            <ProviderLastChecked lastCheckedAt={lastCheckedAt} />
             <SmallIconButton
               label="Add provider instance"
               icon={<Icon name="plus" size={14} color="#a1a1aa" />}

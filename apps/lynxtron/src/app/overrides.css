@@ -7122,6 +7122,12 @@
   align-items: center;
   gap: 6px;
 }
+.provider-settings-last-checked {
+  color: rgba(var(--muted-foreground-rgb), 0.6);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+}
 .provider-settings-header-actions > .ui-button--icon-xs {
   width: 24px;
   min-width: 24px;
