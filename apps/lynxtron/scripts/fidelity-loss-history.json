@@ -20420,6 +20420,41 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-native-split-reconciliation-current",
+      "observedAt": "2026-09-03T03:35:00-04:00",
+      "commit": "8b1c5d3d4",
+      "codeCommit": "8b1c5d3d4ba1cc246b561c2764e2059db1fb0e91",
+      "codeState": "commit",
+      "label": "Right Panel Terminal Native split residual reconciliation",
+      "narrative": "The base Native Terminal interaction residual still listed split terminals as unverified after dedicated horizontal and vertical states were admitted. Current exact-owned evidence now proves both directions, close-to-single-pane recovery, tab switching, and distinct active-pane command routing on the staged production bundle. The base residual is reduced only for that newly measured split and multi-session scope. Key-by-key VT input and selection remain explicit product residual, while typography and material remain unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This removes an obsolete unverified-splits assumption from the base state without duplicating visual credit from the dedicated states."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/right-panel-terminal-native-splits.json",
+          "classification": "tracked-current",
+          "sha256": "4d8e11baaf774d46ef31388c063f875cf04aa0ce87335b87c9eee983e9c67e89"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["native"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "physical-terminal-command-return-split-reconciled",
+              "source": "Physical focus, characters, Return, Run, horizontal and vertical split, active session routing, and close fallback pass; key-by-key VT input and selection remain residual"
+            }
+          }
+        }
+      ]
     }
   ]
 }

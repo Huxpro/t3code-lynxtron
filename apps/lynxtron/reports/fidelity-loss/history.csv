@@ -322,3 +322,4 @@ review-diff-current-typography,2026-08-30T00:02:00-07:00,6525ba22e,working-tree,
 right-panel-terminal-native-splits-current,2026-09-03T01:45:48-04:00,db0ac3cc6,commit,Right Panel Terminal Native split lifecycle,0.185418,0.185418,0.039205,0.152179,0.847821,0.806472
 settings-provider-dialog-light-native-current,2026-09-03T02:14:29-04:00,4094b40e6,commit,Light Add Provider dialog Native correlation,0.181747,0.181747,0.039542,0.148059,0.851941,0.810143
 settings-beta-mutation-native-current,2026-09-03T03:22:14-04:00,77a51f5ef,commit,Settings Beta mutation current Native correlation,0.181747,0.181747,0.039542,0.148059,0.851941,0.810143
+right-panel-terminal-native-split-reconciliation-current,2026-09-03T03:35:00-04:00,8b1c5d3d4,commit,Right Panel Terminal Native split residual reconciliation,0.181593,0.181593,0.039362,0.148059,0.851941,0.810297
