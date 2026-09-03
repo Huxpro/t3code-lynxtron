@@ -189,6 +189,7 @@ const isGitPublishDialogState = stateId === "git-publish-dialog";
 const isProjectActionDialogState = stateId === "project-action-dialog";
 const isProjectSettingsState = stateId === "sidebar-project-settings";
 const isBetaMutationState = stateId === "settings-beta-mutation";
+const isBetaSettingsState = stateId === "settings-beta" || stateId === "settings-beta-light";
 const isBackgroundActivityMutationState = stateId === "settings-background-activity-mutation";
 const isSettingsModelMutationState = stateId === "settings-model-picker-mutation";
 const isModelPickerInteractionState = stateId === "model-picker-interaction";
@@ -6922,11 +6923,7 @@ async function captureCell({
       await delay(100);
       continue;
     }
-    if (
-      stateId === "settings-beta" &&
-      state?.web?.settingsMetrics &&
-      state?.lynx?.settingsMetrics
-    ) {
+    if (isBetaSettingsState && state?.web?.settingsMetrics && state?.lynx?.settingsMetrics) {
       if (state.web.settingsMetrics.legacySidebar?.expanded === true) {
         webLegacySettingsExpanded = true;
       }
@@ -10329,7 +10326,7 @@ async function captureCell({
           ? finalSettingsModelMutationReady
           : isConnectionsMutationState
             ? finalConnectionsMutationReady
-            : stateId === "settings-beta"
+            : isBetaSettingsState
               ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
               : stateId === "settings-general" || stateId === "settings-model-picker"
                 ? generalSettingsContentMatches(

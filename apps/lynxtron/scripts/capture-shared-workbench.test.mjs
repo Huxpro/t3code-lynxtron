@@ -856,6 +856,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "settingsContentMatch !== false");
   });
 
+  it("uses the Beta content flow for dark and light Beta captures", () => {
+    assert.include(
+      source,
+      'const isBetaSettingsState = stateId === "settings-beta" || stateId === "settings-beta-light"',
+    );
+    assert.include(source, "isBetaSettingsState &&");
+    assert.include(source, ": isBetaSettingsState");
+  });
+
   it("runs the Browser Connections create and revoke lifecycle on both renderers", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
