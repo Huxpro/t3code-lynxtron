@@ -114,6 +114,7 @@ export type IconName =
   | "file-diff"
   | "clipboard-list"
   | "files"
+  | "folder-tree"
   | "terminal-square"
   | "chevrons-down-up"
   | "chevrons-up-down"

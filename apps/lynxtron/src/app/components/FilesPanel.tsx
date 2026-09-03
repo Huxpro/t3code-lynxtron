@@ -568,7 +568,7 @@ export function FilePanel({ path }: { readonly path: string }) {
           aria-pressed={explorerVisible ? "true" : "false"}
           bindtap={() => setExplorerOpen((current) => !current)}
         >
-          <Icon name="files" size={14} color="#71717a" />
+          <Icon name="folder-tree" size={14} color="#71717a" />
         </view>
       </view>
       <view className="file-panel__content">
