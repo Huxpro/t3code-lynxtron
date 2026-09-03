@@ -1196,13 +1196,17 @@ function settingsDesktopTopbarMatches(state) {
   if (!semanticRoute.startsWith("settings-")) return true;
   const web = state?.web?.settingsMetrics?.topbar;
   const lynx = state?.lynx?.settingsMetrics?.topbar;
+  const restoreMatches =
+    web?.restore === null && lynx?.restore === null
+      ? true
+      : rectDeltaWithin(web?.restore, lynx?.restore, 2);
   return (
     web?.desktopVisualHost === true &&
     web.titleText === "Settings" &&
     lynx?.titleText === "Settings" &&
     rectDeltaWithin(web.box, lynx.box, 0) &&
     rectDeltaWithin(web.title, lynx.title, 2) &&
-    rectDeltaWithin(web.restore, lynx.restore, 2)
+    restoreMatches
   );
 }
 
