@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T15:12:00-04:00",
+  "commit": "26b1559f5172ef7f2f0c84111dbde48b9b839481",
+  "stateId": "workspace-menu-open",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "e3c929abf3d98fce8b7fa11b0f4baf96a4359d20dfebb6d0b6eabd575cdc7d82",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "47782fb55c6db741540537ca925a7d54fd70d9369f04955c2f275f99a8e841b1",
+    "webImageSha256": "8cc41a3f46f58a246e15aead1215daf367e6dda4312a04274ab20e0f4291c556",
+    "lynxImageSha256": "d025c5a29b4582e2297c6e7d8bb12c4bdc3941b6260baa5fc0654d239ad76e9c",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webMenu": { "x": 410, "y": 672, "width": 354, "height": 96 },
+    "lynxMenu": { "x": 410, "y": 672, "width": 354, "height": 96 },
+    "trigger": { "x": 410, "y": 772, "width": 354, "height": 24 },
+    "before": "The Lynx menu node occupied the correct rectangle but its checkout wrapper clipped all content above the 24px strip.",
+    "after": "The open checkout wrapper allows overflow and raises the menu above the composer."
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baseline": { "fullFrame": 3.96649, "menu": 16.8616 },
+    "current": { "fullFrame": 3.67645, "menu": 7.7021 }
+  },
+  "boundary": "The shared ComposerContextStrip gains an optional checkout class so only the Lynx open state relaxes clipping; Web rendering is unchanged. Historical material accounting remains unchanged because it uses a different pixel metric. Screenshots remain temporary because the tracked screenshot budget is full."
+}

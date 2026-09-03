@@ -21337,6 +21337,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "workspace-menu-overflow-current",
+      "observedAt": "2026-09-03T15:12:00-04:00",
+      "commit": "26b1559f5",
+      "codeCommit": "26b1559f5172ef7f2f0c84111dbde48b9b839481",
+      "codeState": "commit",
+      "label": "Workspace menu overflow parity",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture fixes the Lynx workspace menu being fully clipped by the shared checkout wrapper. ComposerContextStrip now accepts a renderer-supplied checkout class, and Lynx relaxes overflow only while the real menu is open. Both clients retain an exact 354 by 96 menu at x 410, y 672 above the same 354 by 24 trigger, with Current checkout and New worktree visible, matching state identity, and zero renderer errors. Diagnostic ffmpeg difference YAVG improves from 3.96649 to 3.67645 full-frame and from 16.8616 to 7.7021 in the menu crop.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, thread, route, dark theme, viewport, workspace mode, and exact overlay geometry isolate the ancestor overflow correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/workspace-menu-overflow.json",
+          "classification": "tracked-current",
+          "sha256": "4e638412aede6a4bd63b723fea4decfe15396751b57656213cb3fe001ff5d8cc"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["workspace-menu-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "workspace-menu-visible-content",
+              "source": "Both clients visibly render Workspace, Current checkout, and New worktree in the open menu"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 354,
+              "confidence": 0.99,
+              "method": "workspace-menu-overlay-geometry",
+              "source": "Both menus occupy the same 354 by 96 rectangle above the same trigger"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "workspace-menu-open-state",
+              "source": "The real Lynx workspace menu is visible and pointer-addressable instead of being clipped by its checkout wrapper"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "workspace-menu-current-shared-runtime",
+              "source": "Same snapshot and thread, matching overlay state, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
