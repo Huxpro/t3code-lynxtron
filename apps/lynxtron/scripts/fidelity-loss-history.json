@@ -21792,6 +21792,41 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-table-material-current",
+      "observedAt": "2026-09-03T19:30:00-04:00",
+      "commit": "4a5a4fe9c",
+      "codeCommit": "4a5a4fe9ccfb178d1e32faba6b4cbc1ca5028866",
+      "codeState": "commit",
+      "label": "Settings Keybindings table material parity",
+      "narrative": "A post-commit Electron-visual dark capture restores the Web table alpha composition that was lost in the Lynx CSS fallback: header background changes from full muted 4% to white 1%, header divider from 6% to about 4.2%, and row dividers from 6% to about 3.6%. The light mapping independently resolves to zinc-50 at 25%, zinc-200 at 70%, and zinc-200 at 60%. Both themes pass the desktop topbar, content, table geometry, identity, and zero-error gates. Diagnostic dark full-frame YAVG improves from 4.71387 to 4.56938.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same Electron-visual authority, immutable snapshot, Keybindings route, viewport, canonical rows, and Web pixels isolate the table alpha correction; light independently validates the theme-specific mapping."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-keybindings-table-material.json",
+          "classification": "tracked-current",
+          "sha256": "ee34f4495e090ba86804db417d6cc3d91e3d17b22e7129ffc7c21871cad262c3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-keybindings-desktop-runtime",
+              "source": "Dark and light Electron-visual captures pass matching topbar, route, state, content, table geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
