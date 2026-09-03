@@ -1020,6 +1020,10 @@ describe("desktop shell interaction contract", () => {
     );
     expect(overrides).toContain("padding: 40px 32px 40px 32px;");
     expect(overrides).toContain("line-height: var(--settings-row-description-line-height);");
+    expect(overrides).toContain(
+      ".select-box {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  height: var(--settings-control-height);\n  box-sizing: border-box;",
+    );
+    expect(overrides).toContain(".select-box--interactive {\n  border-color: var(--input);");
     expect(overrides).not.toContain(
       ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n  transform: translateY(-0.5px);",
     );

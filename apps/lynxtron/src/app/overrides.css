@@ -6196,9 +6196,10 @@
   align-items: center;
   justify-content: space-between;
   height: var(--settings-control-height);
+  box-sizing: border-box;
   padding: 0 var(--settings-control-padding-inline);
-  border-radius: var(--settings-control-radius);
-  background-color: var(--btn-surface);
+  border-radius: 8px;
+  background-color: var(--background);
   border-width: 1px;
   border-style: solid;
   border-color: var(--input);
@@ -6215,7 +6216,7 @@
   margin-right: 8px;
 }
 .select-box--interactive {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--input);
 }
 .select-box__chevron {
   color: #818181;
