@@ -21248,6 +21248,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-hover-hit-area-current",
+      "observedAt": "2026-09-03T14:10:00-04:00",
+      "commit": "39f6acd9e",
+      "codeCommit": "39f6acd9ef447576b90c251eb1f8db7ed2ff0fb3",
+      "codeState": "commit",
+      "label": "Sidebar thread hover hit-area convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture removes the Lynx thread-details popup's fixed 262px host width and lets it size to content. The visible four-row content is unchanged, while the popup contracts to 134.015625 by 109 near Web's 139.6991 by 105.9851 and removes 127.984375px of transparent pointer-obstruction width. Pixel diagnostics remain unchanged because the removed area was transparent; the measured gain is geometry and interaction safety.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, thread, route, dark theme, viewport, hover anchor, and popup content isolate the host-width correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/sidebar-hover-hit-area.json",
+          "classification": "tracked-current",
+          "sha256": "0824b59f751fcf82b23ca5a4ce76421f2ca1f21944e4c7a81a54687317b0623b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-thread-hover-preview"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.000565, 0.005493, -5.683476, 3.014924],
+              "anchorScale": 320,
+              "confidence": 0.99,
+              "method": "sidebar-thread-hover-content-sized-popup",
+              "source": "The Lynx popup contracts from a fixed 262px host to 134.015625px content width near Web's 139.6991px width"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "hover-popup-hit-area",
+              "source": "The transparent popup hit area no longer extends 127.984375px beyond its rendered content"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-hover-current-shared-runtime",
+              "source": "Same snapshot and thread, matched four-row content, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
