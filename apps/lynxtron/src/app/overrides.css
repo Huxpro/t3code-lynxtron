@@ -3955,10 +3955,17 @@
   width: 16px;
   height: 16px;
 }
+.thread-error-title {
+  color: var(--destructive-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
 .thread-error-description {
-  color: rgba(254, 226, 226, 0.8);
+  color: rgba(var(--destructive-foreground-rgb), 0.8);
   font-size: 14px;
   line-height: 20px;
+  white-space: pre-wrap;
 }
 .provider-status-banner__actions {
   display: flex;

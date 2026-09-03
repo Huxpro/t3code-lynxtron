@@ -633,7 +633,8 @@ export function ChatView({ threadId }: ChatViewProps) {
             {visibleProviderStatusNotice ? (
               <view className="provider-status-banner-overlay">
                 <ThreadErrorBannerSurface
-                  description={`${visibleProviderStatusNotice.title}. ${visibleProviderStatusNotice.message}`}
+                  title={visibleProviderStatusNotice.title}
+                  description={visibleProviderStatusNotice.message}
                   icon={
                     <Icon
                       name="circle-alert"
