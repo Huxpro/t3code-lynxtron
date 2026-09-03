@@ -21296,6 +21296,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-status-info-icon-current",
+      "observedAt": "2026-09-03T14:43:00-04:00",
+      "commit": "40f6fd2e1",
+      "codeCommit": "40f6fd2e1e7c3f2a77a27fb5133922a6eadbb07d",
+      "codeState": "commit",
+      "label": "Provider status banner icon parity",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture replaces the Lynx provider-status Circle Alert with Web's 16px Info icon and adds the exact #ef4444 raster variant instead of falling back to white. The same Claude unauthenticated notice, hero state, composer state, matching identity, and zero renderer errors remain intact. Diagnostic ffmpeg difference YAVG improves from 4.86476 to 4.85849 full-frame and from 7.18149 to 7.00564 in the banner crop.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, provider error, route, dark theme, viewport, and banner copy isolate the icon shape and color correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/provider-status-info-icon.json",
+          "classification": "tracked-current",
+          "sha256": "e8806b36c82cad7bb7fac571e43cfe6dd9c2de372cc0aa67e4934518d6d06f74"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-status-banner-icon",
+              "source": "Both provider-status banners use a 16px Info icon in the destructive tone while thread errors retain Circle Alert"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "composer-hero-current-shared-runtime",
+              "source": "Same snapshot and provider error, matched hero and composer state, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

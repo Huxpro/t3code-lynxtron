@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T14:43:00-04:00",
+  "commit": "40f6fd2e1e7c3f2a77a27fb5133922a6eadbb07d",
+  "stateId": "composer-hero",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "ff8b4a6f0e92b2966954dd0c23ffb62990e52ad0ad0515696bef13a1ed63f5a2",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "1346a4cd0de380f470a4324a5b348967159219271803f417c3436ebfef0e9883",
+    "webImageSha256": "3d00523ac21de0d7633f5be084f4f85243d2c8446cd764276f52149f7d9e10a2",
+    "lynxImageSha256": "c5d5d7cc2ccdda572afecbad67d47291309403224e3e4cf9250a15f34221e0ef",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "bannerTitle": "Claude is unauthenticated",
+    "webIcon": "info",
+    "lynxIconBefore": "circle-alert with unsupported color fallback",
+    "lynxIconAfter": "info at 16px in #ef4444"
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baseline": { "fullFrame": 4.86476, "banner": 7.18149 },
+    "current": { "fullFrame": 4.85849, "banner": 7.00564 }
+  },
+  "boundary": "The thread-error banner keeps its Circle Alert icon; only the shared provider-status notice uses Web's Info icon and exact destructive red. Historical material accounting remains unchanged because it uses a different pixel metric. Screenshots remain temporary because the tracked screenshot budget is full."
+}

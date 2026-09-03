@@ -342,3 +342,4 @@ provider-dialog-light-body-current,2026-09-03T12:38:00-04:00,f2ea24175,commit,Ad
 appearance-theme-reset-current,2026-09-03T13:15:00-04:00,90189e4cd,commit,Appearance theme reset parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
 source-control-availability-current,2026-09-03T13:36:00-04:00,15723207a,commit,Source Control availability indicator parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
 sidebar-hover-hit-area-current,2026-09-03T14:10:00-04:00,39f6acd9e,commit,Sidebar thread hover hit-area convergence,0.18,0.18,0.038706,0.146983,0.853017,0.81189
+provider-status-info-icon-current,2026-09-03T14:43:00-04:00,40f6fd2e1,commit,Provider status banner icon parity,0.18,0.18,0.038706,0.146983,0.853017,0.81189
