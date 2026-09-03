@@ -5799,6 +5799,85 @@ WHERE project_id = '${escapedProjectId}';`,
       backupRemoved: true,
     };
   }
+  if (stateId === "composer-sendable") {
+    const project = seed?.dataset?.projects?.find(
+      (candidate) => candidate.title === "background-only",
+    );
+    if (!project?.id) {
+      throw new Error("Composer sendable fixture requires the background-only project");
+    }
+    const databasePath = path.join(baseDir, "userdata", "state.sqlite");
+    const escapedProjectId = project.id.replaceAll("'", "''");
+    const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
+    const mutation = spawnSync(
+      process.env.T3_NODE_BIN?.trim() || "node",
+      [
+        sqliteStateScript,
+        "exec",
+        "--base-dir",
+        baseDir,
+        "--sql",
+        `UPDATE projection_projects
+SET default_model_selection_json = json_object(
+  'instanceId', '${selectedModelFixture.instanceId}',
+  'model', '${selectedModelFixture.model}'
+)
+WHERE project_id = '${escapedProjectId}';`,
+      ],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    if (mutation.status !== 0) {
+      throw new Error(
+        `Composer sendable fixture preparation failed: ${
+          mutation.stderr || mutation.stdout || "unknown"
+        }`,
+      );
+    }
+    const mutationReport = JSON.parse(mutation.stdout);
+    try {
+      const query = spawnSync(
+        process.env.T3_NODE_BIN?.trim() || "node",
+        [
+          sqliteStateScript,
+          "query",
+          "--base-dir",
+          baseDir,
+          "--sql",
+          `SELECT default_model_selection_json
+FROM projection_projects
+WHERE project_id = '${escapedProjectId}'`,
+        ],
+        { encoding: "utf8", cwd: repoRoot },
+      );
+      if (query.status !== 0) {
+        throw new Error(
+          `Composer sendable fixture verification failed: ${
+            query.stderr || query.stdout || "unknown"
+          }`,
+        );
+      }
+      const queryReport = JSON.parse(query.stdout);
+      if (
+        queryReport.rows?.length !== 1 ||
+        queryReport.rows[0]?.default_model_selection_json !== JSON.stringify(selectedModelFixture)
+      ) {
+        throw new Error(
+          `Composer sendable fixture verification mismatch: ${JSON.stringify(queryReport.rows ?? [])}`,
+        );
+      }
+      const prepared = await hashFile(databasePath);
+      return {
+        kind: "project-model-selection",
+        sourceSha256: seed?.snapshotSha256 ?? null,
+        preparedSha256: prepared.sha256,
+        projectId: project.id,
+        modelSelection: selectedModelFixture,
+        backupRemoved: true,
+      };
+    } finally {
+      await rm(mutationReport.backup, { force: true });
+    }
+  }
   if (stateId !== "model-picker-selected" && !requiresRunningRuntime && !isComposerPlanModeState) {
     return {
       kind: "pristine-seed",
@@ -6154,10 +6233,12 @@ async function main() {
     : (expectedThreadFixture?.projectTitle ?? seed?.dataset?.projects?.[0]?.title ?? "");
   const expectThread = expectedThreadFixture?.id ?? null;
   const expectedNewThreadModelSelection =
-    semanticRoute === "new-thread" && expectThread === null
-      ? (seed?.dataset?.projects?.find((project) => project.title === expectProject)
-          ?.defaultModelSelection ?? null)
-      : null;
+    stateId === "composer-sendable"
+      ? selectedModelFixture
+      : semanticRoute === "new-thread" && expectThread === null
+        ? (seed?.dataset?.projects?.find((project) => project.title === expectProject)
+            ?.defaultModelSelection ?? null)
+        : null;
   let captureWebRoute = requestedWebRoute;
   const webBundle = await hashFile(await webEntryBundlePath());
   const lynxBundle = await hashFile(path.join(LYNX_BUILD_DIR, "lynx/main.web.bundle"));
@@ -10643,6 +10724,44 @@ async function captureCell({
     ).catch(() => false);
     if (!paintCommitted) {
       throw new Error("Web pane did not commit notification dismissal before capture.");
+    }
+  }
+  if (stateId === "composer-sendable") {
+    const blurPoints = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const pointFor = (frameId, shadow) => {
+          const frame = document.getElementById(frameId);
+          const doc = frame?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const target = root?.querySelector('[data-chat-header]');
+          if (!frame || !target) return null;
+          const frameRect = frame.getBoundingClientRect();
+          const rect = target.getBoundingClientRect();
+          return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+        };
+        return { web: pointFor('web-pane', false), lynx: pointFor('lynx-pane', true) };
+      })()`,
+    );
+    if (!blurPoints?.web || !blurPoints?.lynx) {
+      throw new Error(`Composer sendable blur targets are missing: ${JSON.stringify(blurPoints)}`);
+    }
+    await dispatchPointerClickWithMove(cdp, sessionId, blurPoints.web);
+    await dispatchPointerClickWithMove(cdp, sessionId, blurPoints.lynx);
+    state = await readWorkbenchState(cdp, sessionId);
+    if (
+      state?.web?.composerMetrics?.editor?.value !== composerInput ||
+      state?.lynx?.composerMetrics?.editor?.value !== composerInput ||
+      state?.web?.composerMetrics?.primaryState !== "send" ||
+      state?.lynx?.composerMetrics?.primaryState !== "send"
+    ) {
+      throw new Error(
+        `Composer sendable state changed after blur: ${JSON.stringify({
+          web: state?.web?.composerMetrics,
+          lynx: state?.lynx?.composerMetrics,
+        })}`,
+      );
     }
   }
   if (isSidebarThreadHoverPreviewState) {

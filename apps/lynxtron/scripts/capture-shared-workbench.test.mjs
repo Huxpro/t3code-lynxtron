@@ -1600,6 +1600,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "fixturePreparation.preparedSha256");
   });
 
+  it("uses an available model for the sendable new-thread fixture", () => {
+    assert.include(source, 'stateId === "composer-sendable"');
+    assert.include(source, "? selectedModelFixture");
+    assert.include(source, "SET default_model_selection_json = json_object");
+    assert.include(source, 'kind: "project-model-selection"');
+    assert.include(source, "Composer sendable blur targets are missing");
+    assert.include(source, "Composer sendable state changed after blur");
+  });
+
   it("compares clipped pending-question work rows by their visible outer box", () => {
     const capture = readFileSync(
       path.join(import.meta.dirname, "capture-shared-workbench.mjs"),
