@@ -21391,6 +21391,50 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-navigation-row-geometry-current",
+      "observedAt": "2026-09-03T15:54:00-04:00",
+      "commit": "8d9e959b0",
+      "codeCommit": "8d9e959b095a35d6920c6d44e4597df7b778c8c9",
+      "codeState": "commit",
+      "label": "Settings navigation row geometry parity",
+      "narrative": "A post-commit light 1280 by 820 shared-server capture fixes the Lynx Settings navigation rows being content-box 255 by 44 touch rows instead of Web's border-box 239 by 32 rows. General through Archive now match Web at x 8 with identical y positions, widths, heights, horizontal padding, and four-pixel spacing. The light Beta alias also runs the real Legacy-section expansion flow instead of failing the dark-only capture predicate. Matching state identity and zero renderer errors remain intact. Diagnostic ffmpeg difference YAVG improves from 4.82526 to 4.51615 full-frame and from 4.10007 to 2.55852 in the 256px navigation rail.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, General route with expanded Legacy section, light theme, viewport, content, and Web pixels isolate the Settings row box-model correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-navigation-row-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "fd16c5e550f9be46769ac33b0440b4166d8304d2610d143c4bbc099c9ed18e05"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "settings-navigation-row-geometry",
+              "source": "All seven Web and Lynx navigation rows have identical x, y, width, and height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-light-current-shared-runtime",
+              "source": "Same snapshot and semantic route, real Legacy-section flow, matching identity, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
