@@ -5758,8 +5758,12 @@
   align-items: center;
   border-bottom-width: 1px;
   border-bottom-style: solid;
-  border-bottom-color: var(--border);
-  background-color: var(--muted);
+  border-bottom-color: rgba(255, 255, 255, 0.042);
+  background-color: rgba(255, 255, 255, 0.01);
+}
+.theme-light .keybindings-table__header {
+  border-bottom-color: rgba(228, 228, 231, 0.7);
+  background-color: rgba(250, 250, 250, 0.25);
 }
 .keybindings-table__header-command,
 .keybindings-table__header-key,
@@ -5804,7 +5808,10 @@
   align-items: center;
   border-bottom-width: 1px;
   border-bottom-style: solid;
-  border-bottom-color: var(--border);
+  border-bottom-color: rgba(255, 255, 255, 0.036);
+}
+.theme-light .keybindings-table__row {
+  border-bottom-color: rgba(228, 228, 231, 0.6);
 }
 .keybindings-table__row--last {
   height: 40px;
