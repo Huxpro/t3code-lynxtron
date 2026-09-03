@@ -885,6 +885,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.equal(workbench.match(/readSettingsRowGeometry,/g)?.length, 2);
   });
 
+  it("serves the Web authority with desktop visual chrome only", () => {
+    assert.include(source, "window.__T3_WORKBENCH_DESKTOP_VISUAL__=true");
+    assert.include(source, 'html.replace("<head>", `<head>${desktopVisualMarker}`)');
+    assert.include(source, "function settingsDesktopTopbarMatches(state)");
+    assert.include(source, "web?.desktopVisualHost === true");
+    assert.include(source, "finalSettingsDesktopTopbarReady");
+  });
+
   it("runs the Browser Connections create and revoke lifecycle on both renderers", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),

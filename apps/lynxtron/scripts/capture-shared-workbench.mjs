@@ -1192,6 +1192,20 @@ function settingsNavigationStateMatches(state) {
   });
 }
 
+function settingsDesktopTopbarMatches(state) {
+  if (!semanticRoute.startsWith("settings-")) return true;
+  const web = state?.web?.settingsMetrics?.topbar;
+  const lynx = state?.lynx?.settingsMetrics?.topbar;
+  return (
+    web?.desktopVisualHost === true &&
+    web.titleText === "Settings" &&
+    lynx?.titleText === "Settings" &&
+    rectDeltaWithin(web.box, lynx.box, 0) &&
+    rectDeltaWithin(web.title, lynx.title, 2) &&
+    rectDeltaWithin(web.restore, lynx.restore, 2)
+  );
+}
+
 function generalSettingsContentMatches(webMetrics, lynxMetrics) {
   if (stateId !== "settings-general" && stateId !== "settings-model-picker") return true;
   const webRowIds = webMetrics?.rowIds ?? [];
@@ -3159,6 +3173,16 @@ function startFrontServer(serverPort) {
         info = await stat(filePath).catch(() => null);
       }
       if (!info || !info.isFile()) return void res.writeHead(404).end("not found");
+      if (filePath === path.join(WEB_DIST, "index.html")) {
+        const html = await readFile(filePath, "utf8");
+        const desktopVisualMarker = "<script>window.__T3_WORKBENCH_DESKTOP_VISUAL__=true;</script>";
+        res.writeHead(200, {
+          "content-type": MIME[".html"],
+          "cache-control": "no-store",
+        });
+        res.end(html.replace("<head>", `<head>${desktopVisualMarker}`));
+        return;
+      }
       res.writeHead(200, {
         "content-type": MIME[path.extname(filePath)] ?? "application/octet-stream",
         "cache-control": "no-store",
@@ -8981,9 +9005,14 @@ async function captureCell({
           state?.lynx?.settingsMetrics,
         ));
     const settingsNavigationReady = settingsNavigationStateMatches(state);
+    const settingsDesktopTopbarReady = settingsDesktopTopbarMatches(state);
     const legacySettingsReady = legacySidebarSettingsReady(state);
     settingsAsyncReadyPolls =
-      settingsAsyncReady && settingsGeometryReady && settingsNavigationReady && legacySettingsReady
+      settingsAsyncReady &&
+      settingsGeometryReady &&
+      settingsNavigationReady &&
+      settingsDesktopTopbarReady &&
+      legacySettingsReady
         ? settingsAsyncReadyPolls + 1
         : 0;
     const webTimelineRows = state?.web?.timelineMetrics?.rows ?? [];
@@ -10142,6 +10171,7 @@ async function captureCell({
         state?.lynx?.settingsMetrics,
       ));
   const finalSettingsNavigationReady = settingsNavigationStateMatches(state);
+  const finalSettingsDesktopTopbarReady = settingsDesktopTopbarMatches(state);
   const finalAddProviderDialogReady =
     !isAddProviderDialogState ||
     (providerDialogStopAt === "driver"
@@ -12042,6 +12072,7 @@ async function captureCell({
     finalSettingsAsyncReady &&
     finalSettingsGeometryReady &&
     finalSettingsNavigationReady &&
+    finalSettingsDesktopTopbarReady &&
     finalAddProviderDialogReady &&
     finalBetaMutationReady &&
     finalBackgroundActivityMutationReady &&
@@ -12083,6 +12114,11 @@ async function captureCell({
         stablePolls: lifecycleFaultPreflightStablePolls,
         timeline: lifecycleFaultPreflightTimeline,
       },
+      settingsDesktopTopbar: {
+        match: finalSettingsDesktopTopbarReady,
+        web: state?.web?.settingsMetrics?.topbar ?? null,
+        lynx: state?.lynx?.settingsMetrics?.topbar ?? null,
+      },
       finalPlanModeReady,
       finalSessionProjectionReady,
       finalStageIdentityReady,
@@ -12118,6 +12154,7 @@ async function captureCell({
       finalSettingsAsyncReady,
       finalSettingsGeometryReady,
       finalSettingsNavigationReady,
+      finalSettingsDesktopTopbarReady,
       finalAddProviderDialogReady,
       finalBetaMutationReady,
       finalBackgroundActivityMutationReady,

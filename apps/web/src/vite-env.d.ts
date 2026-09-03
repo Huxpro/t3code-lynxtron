@@ -23,5 +23,6 @@ interface ImportMeta {
 declare global {
   interface Window {
     desktopBridge?: DesktopBridge;
+    __T3_WORKBENCH_DESKTOP_VISUAL__?: boolean;
   }
 }

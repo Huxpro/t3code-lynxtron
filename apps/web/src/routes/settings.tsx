@@ -10,7 +10,7 @@ import { useCallback, useEffect } from "react";
 
 import { SettingsRouteSurface } from "../components/settings/SettingsRouteSurface";
 import type { SettingsSectionPath } from "../components/settings/SettingsNavigationContent";
-import { isElectron } from "../env";
+import { isDesktopVisualHost } from "../env";
 
 function SettingsContentLayout() {
   const location = useLocation();
@@ -46,7 +46,7 @@ function SettingsContentLayout() {
 
   return (
     <SettingsRouteSurface
-      electron={isElectron}
+      electron={isDesktopVisualHost}
       pathname={location.pathname}
       onBack={navigateBackWithinApp}
       onNavigate={navigateToSection}
