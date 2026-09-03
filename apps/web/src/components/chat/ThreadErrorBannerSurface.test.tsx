@@ -10,13 +10,17 @@ describe("ThreadErrorBannerSurface", () => {
         description="Model not found"
         icon={<span data-icon />}
         action={<button type="button">Dismiss</button>}
+        title="Provider unavailable"
       />,
     );
 
     expect(markup).toContain("thread-error-banner");
     expect(markup).toContain("thread-error-alert");
+    expect(markup).toContain("thread-error-copy");
+    expect(markup).toContain("thread-error-title");
     expect(markup).toContain("thread-error-description");
     expect(markup).toContain("Model not found");
+    expect(markup).toContain("Provider unavailable");
     expect(markup).toContain("Dismiss");
   });
 });

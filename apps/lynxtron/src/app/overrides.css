@@ -3912,6 +3912,9 @@
 .provider-status-banner-overlay .thread-error-banner {
   pointer-events: auto;
 }
+.provider-status-banner-overlay .thread-error-alert {
+  padding-right: 40px;
+}
 /* ======= Transcript native list (surface: chat transcript; Lynx host leaf
    for the shared transcript projection; remove-when: transcript row chrome is
    compiled from the shared Web composition via the Tailwind v3 pipeline) ==== */
@@ -3939,13 +3942,21 @@
   align-items: center;
   min-height: 42px;
   padding: 12px 14px;
-  gap: 8px;
+  gap: 12px;
   border-width: 1px;
   border-style: solid;
   border-color: rgba(239, 68, 68, 0.32);
-  border-radius: 12px;
+  border-radius: 14px;
   background-color: rgba(239, 68, 68, 0.04);
   box-sizing: border-box;
+}
+.thread-error-copy {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0;
+  gap: 4px;
 }
 .thread-error-icon {
   display: flex;
@@ -3966,13 +3977,6 @@
   font-size: 14px;
   line-height: 20px;
   white-space: pre-wrap;
-}
-.provider-status-banner__actions {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  flex-shrink: 0;
-  gap: 6px;
 }
 .timeline-list {
   position: absolute;
@@ -6494,6 +6498,18 @@
 }
 .ui-button__authority-label--edge {
   left: 111px;
+}
+.provider-status-banner-overlay .provider-status-banner__dismiss {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  border-color: transparent;
+  background-color: transparent;
+  box-sizing: border-box;
 }
 
 /* Calibration sprites are exact only at the 1280px authority viewport.

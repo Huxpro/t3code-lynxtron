@@ -258,9 +258,11 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).not.toContain(") : visibleProviderStatusNotice ? (");
     expect(chatView).not.toContain("visibleProviderStatusNotice && !hero");
     expect(chatView).toContain("hasTopBanner={Boolean(visibleThreadError)}");
-    expect(chatView).toContain(".refreshProviders(activeProviderStatus?.instanceId)");
-    expect(chatView).toContain('label={providersRefreshPending ? "Refreshing…" : "Refresh"}');
+    expect(chatView).toContain('className="provider-status-banner__dismiss"');
+    expect(chatView).toContain('icon={<Icon name="x" size={14} color="#818181" />}');
+    expect(chatView).not.toContain('label={providersRefreshPending ? "Refreshing…" : "Refresh"}');
     expect(overrides).toContain(".chat-body-reference > .provider-status-banner-overlay {");
+    expect(overrides).toContain(".provider-status-banner__dismiss {");
     expect(overrides).toContain("white-space: pre-wrap;");
     expect(chatView).toContain("resolveThreadLockedConnectionValue({");
     expect(chatView).toContain("hasActiveThread: activeThread !== undefined");

@@ -190,6 +190,29 @@ function readHeroMetrics(root) {
   };
 }
 
+function readProviderStatusBannerMetrics(root) {
+  const overlay = root?.querySelector(".provider-status-banner-overlay");
+  const alert =
+    overlay?.querySelector(".thread-error-alert") ??
+    root?.querySelector(".thread-error-alert") ??
+    root?.querySelector('[role="alert"]');
+  if (!alert) return null;
+  const action = alert.querySelector(".thread-error-action");
+  const dismiss = alert.querySelector('[aria-label^="Dismiss "], button[aria-label^="Dismiss "]');
+  return {
+    overlay: readElementBox(overlay ?? alert.parentElement),
+    alert: readElementBox(alert),
+    icon: readElementBox(alert.querySelector(".thread-error-icon, svg")),
+    description: readElementBox(alert.querySelector(".thread-error-copy") ?? alert.children[1]),
+    action: readElementBox(action),
+    dismiss: readElementBox(dismiss),
+    text: alert.textContent?.trim() ?? "",
+    actionLabels: [...alert.querySelectorAll("button[aria-label], [aria-label]")]
+      .map((element) => element.getAttribute("aria-label"))
+      .filter(Boolean),
+  };
+}
+
 function readSidebarThreadMetrics(item) {
   const rect = item.getBoundingClientRect();
   const child = item.querySelector('[role="button"]');
@@ -1803,6 +1826,7 @@ function readLynxPane() {
       stageBackdropPresent: d.stageBackdropPresent === true,
       heroPresent,
       heroMetrics: readHeroMetrics(root),
+      providerStatusBannerMetrics: readProviderStatusBannerMetrics(root),
       activeThreadTitle: d.activeThreadTitle ?? null,
       productState: {
         route: settingsRoute ? (d.connector?.route ?? "/settings/general") : "/",
@@ -2837,6 +2861,7 @@ function readWebPane() {
       semanticReady: connected && !connecting,
       heroPresent,
       heroMetrics: readHeroMetrics(doc),
+      providerStatusBannerMetrics: readProviderStatusBannerMetrics(doc),
       literalRoute,
       productState: {
         route: settingsRoute ? literalRoute : "/",

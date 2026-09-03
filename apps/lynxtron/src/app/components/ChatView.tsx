@@ -104,7 +104,6 @@ export function ChatView({ threadId }: ChatViewProps) {
     models,
     providers,
     providerEntries,
-    providersRefreshPending,
     modelSelection,
     modelSelectionError,
     serverConfig,
@@ -643,26 +642,14 @@ export function ChatView({ threadId }: ChatViewProps) {
                     />
                   }
                   action={
-                    <view className="provider-status-banner__actions">
-                      <SmallButton
-                        label={providersRefreshPending ? "Refreshing…" : "Refresh"}
-                        onTap={
-                          providersRefreshPending
-                            ? undefined
-                            : () => {
-                                void t3ClientActions
-                                  .refreshProviders(activeProviderStatus?.instanceId)
-                                  .catch(() => undefined);
-                              }
-                        }
-                      />
-                      <SmallButton
-                        label="Dismiss"
-                        onTap={() =>
-                          setDismissedProviderStatusNoticeKey(visibleProviderStatusNotice.key)
-                        }
-                      />
-                    </view>
+                    <SmallIconButton
+                      className="provider-status-banner__dismiss"
+                      label={`Dismiss ${activeProviderStatus?.displayName ?? activeProviderStatus?.driver ?? "provider"} provider ${activeProviderStatus?.status ?? "error"}`}
+                      icon={<Icon name="x" size={14} color="#818181" />}
+                      onTap={() =>
+                        setDismissedProviderStatusNoticeKey(visibleProviderStatusNotice.key)
+                      }
+                    />
                   }
                 />
               </view>

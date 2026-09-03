@@ -27,6 +27,19 @@ describe("shared workbench lifecycle fault capture", () => {
     );
   });
 
+  it("gates the provider status banner anatomy and single dismiss action", () => {
+    assert.include(source, "function providerStatusBannerMatches(state)");
+    assert.include(source, "web.actionLabels.length === 1");
+    assert.include(source, "lynx.actionLabels.length === 1");
+    assert.include(source, "finalProviderStatusBannerReady");
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, "function readProviderStatusBannerMetrics(root)");
+    assert.include(workbench, "providerStatusBannerMetrics: readProviderStatusBannerMetrics");
+  });
+
   it("filters only expected transport errors during the injected disconnect", () => {
     assert.include(source, "isLifecycleFaultState");
     assert.include(source, "/WebSocket connection .* failed:/");

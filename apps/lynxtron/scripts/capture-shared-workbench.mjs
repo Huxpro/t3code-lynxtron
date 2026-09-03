@@ -434,6 +434,41 @@ function heroGeometryMatches(state) {
   );
 }
 
+function providerStatusBannerMatches(state) {
+  const web = state?.web?.providerStatusBannerMetrics;
+  const lynx = state?.lynx?.providerStatusBannerMetrics;
+  if (!web && !lynx) return true;
+  return (
+    Boolean(web && lynx) &&
+    web.text === lynx.text &&
+    web.actionLabels.length === 1 &&
+    lynx.actionLabels.length === 1 &&
+    web.actionLabels[0]?.startsWith("Dismiss ") &&
+    lynx.actionLabels[0]?.startsWith("Dismiss ") &&
+    Math.abs(web.alert.rect.width - lynx.alert.rect.width) <= 24 &&
+    Math.abs(web.alert.rect.height - lynx.alert.rect.height) <= 2 &&
+    Math.abs(web.icon.rect.x - web.alert.rect.x - (lynx.icon.rect.x - lynx.alert.rect.x)) <= 2 &&
+    Math.abs(web.icon.rect.y - web.alert.rect.y - (lynx.icon.rect.y - lynx.alert.rect.y)) <= 2 &&
+    Math.abs(
+      web.description.rect.x - web.alert.rect.x - (lynx.description.rect.x - lynx.alert.rect.x),
+    ) <= 2 &&
+    Math.abs(
+      web.description.rect.y - web.alert.rect.y - (lynx.description.rect.y - lynx.alert.rect.y),
+    ) <= 2 &&
+    Math.abs(web.description.rect.height - lynx.description.rect.height) <= 2 &&
+    Math.abs(
+      web.alert.rect.x +
+        web.alert.rect.width -
+        web.dismiss.rect.x -
+        (lynx.alert.rect.x + lynx.alert.rect.width - lynx.dismiss.rect.x),
+    ) <= 2 &&
+    Math.abs(web.dismiss.rect.y - web.alert.rect.y - (lynx.dismiss.rect.y - lynx.alert.rect.y)) <=
+      2 &&
+    Math.abs(web.dismiss.rect.width - lynx.dismiss.rect.width) <= 2 &&
+    Math.abs(web.dismiss.rect.height - lynx.dismiss.rect.height) <= 2
+  );
+}
+
 function quickSwitchAnatomyMatches(webMetrics, lynxMetrics) {
   if (!webMetrics?.anatomy || !lynxMetrics?.anatomy) return false;
   const webEmpty = webMetrics.emptyText !== null;
@@ -10171,6 +10206,7 @@ async function captureCell({
   const finalTranscriptReady =
     (!stateId.startsWith("existing-thread-") && !isNarrowChatThreadState && !isChatOutlineState) ||
     (isEmptyTranscriptState ? finalEmptyTranscriptReady : finalPopulatedTranscriptReady);
+  const finalProviderStatusBannerReady = providerStatusBannerMatches(state);
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" &&
     stateId !== "existing-thread-question" &&
@@ -11978,6 +12014,7 @@ async function captureCell({
     finalSettingsModelMutationReady &&
     finalConnectionsMutationReady &&
     finalTranscriptReady &&
+    finalProviderStatusBannerReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&

@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { HostInlineText, HostText, HostView } from "../ui/hostElements";
+import { HostText, HostView } from "../ui/hostElements";
 
 export function ThreadErrorBannerSurface({
   action,
@@ -19,17 +19,16 @@ export function ThreadErrorBannerSurface({
         <HostView className="thread-error-icon flex size-4 shrink-0 items-center justify-center">
           {icon}
         </HostView>
-        <HostText className="thread-error-description min-w-0 flex-1 text-destructive-foreground/80">
+        <HostView className="thread-error-copy min-w-0 flex flex-1 flex-col gap-1">
           {title ? (
-            <>
-              <HostInlineText className="thread-error-title font-medium text-destructive-foreground">
-                {title}
-              </HostInlineText>
-              {"\n"}
-            </>
+            <HostText className="thread-error-title font-medium text-destructive-foreground">
+              {title}
+            </HostText>
           ) : null}
-          <HostInlineText>{description}</HostInlineText>
-        </HostText>
+          <HostText className="thread-error-description text-destructive-foreground/80">
+            {description}
+          </HostText>
+        </HostView>
         {action ? (
           <HostView className="thread-error-action flex shrink-0 items-center self-center">
             {action}
