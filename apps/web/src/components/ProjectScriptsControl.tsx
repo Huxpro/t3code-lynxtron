@@ -29,6 +29,7 @@ import {
 } from "~/lib/projectScriptKeybindings";
 import { keybindingFromKeyboardEvent } from "~/components/settings/KeybindingsSettings.logic";
 import {
+  PROJECT_SCRIPT_KEYBINDING_HELPER,
   commandForProjectScript,
   nextProjectScriptId,
   primaryProjectScript,
@@ -551,7 +552,9 @@ export default function ProjectScriptsControl({
                   onKeyDown={captureKeybinding}
                 />
                 <p className="text-xs text-muted-foreground">
-                  Press a shortcut. Use <code>Backspace</code> to clear.
+                  {PROJECT_SCRIPT_KEYBINDING_HELPER.prefix}
+                  <code>{PROJECT_SCRIPT_KEYBINDING_HELPER.key}</code>
+                  {PROJECT_SCRIPT_KEYBINDING_HELPER.suffix}
                 </p>
               </div>
               <div className="space-y-1.5">

@@ -973,7 +973,7 @@ describe("desktop shell interaction contract", () => {
     expect(dialog).toContain("commandForProjectScript(id)");
     expect(dialog).toContain("keybindingRule ? t3ClientActions.upsertKeybinding");
     expect(dialog).toContain('data-keybinding-input-mode="canonical-text"');
-    expect(dialog).toContain("Enter a shortcut such as mod+shift+y.");
+    expect(dialog).toContain("PROJECT_SCRIPT_KEYBINDING_HELPER.prefix");
     expect(dialog.indexOf(".updateProjectScripts(")).toBeLessThan(
       dialog.indexOf("t3ClientActions.upsertKeybinding"),
     );

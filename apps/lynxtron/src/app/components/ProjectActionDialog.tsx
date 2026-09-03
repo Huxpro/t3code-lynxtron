@@ -5,6 +5,7 @@ import type { ProjectSummary } from "../bridge";
 import { uiActions } from "../state/uiState";
 import { t3ClientActions } from "../state/t3Client";
 import {
+  PROJECT_SCRIPT_KEYBINDING_HELPER,
   buildProjectScript,
   commandForProjectScript,
   nextProjectScriptId,
@@ -170,7 +171,7 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
               bindinput={handleInput(setKeybinding)}
             />
             <text className="project-action-field__hint">
-              Enter a shortcut such as mod+shift+y. Use Backspace to clear.
+              {`${PROJECT_SCRIPT_KEYBINDING_HELPER.prefix}${PROJECT_SCRIPT_KEYBINDING_HELPER.key}${PROJECT_SCRIPT_KEYBINDING_HELPER.suffix}`}
             </text>
           </view>
           <view className="project-action-field">

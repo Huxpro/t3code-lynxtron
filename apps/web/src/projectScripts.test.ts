@@ -6,6 +6,7 @@ import {
 } from "@t3tools/shared/projectScripts";
 
 import {
+  PROJECT_SCRIPT_KEYBINDING_HELPER,
   buildProjectScript,
   commandForProjectScript,
   nextProjectScriptId,
@@ -14,6 +15,12 @@ import {
 } from "./projectScripts";
 
 describe("projectScripts helpers", () => {
+  it("owns the shared keybinding helper copy", () => {
+    expect(
+      `${PROJECT_SCRIPT_KEYBINDING_HELPER.prefix}${PROJECT_SCRIPT_KEYBINDING_HELPER.key}${PROJECT_SCRIPT_KEYBINDING_HELPER.suffix}`,
+    ).toBe("Press a shortcut. Use Backspace to clear.");
+  });
+
   it("builds scripts with preview settings", () => {
     expect(
       buildProjectScript("dev", {
