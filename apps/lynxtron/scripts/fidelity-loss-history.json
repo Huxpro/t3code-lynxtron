@@ -20716,6 +20716,42 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-general-nested-row-current",
+      "observedAt": "2026-09-03T08:39:46-04:00",
+      "commit": "dd1dd06fb",
+      "codeCommit": "dd1dd06fb988125ac77e9db897a9edd65f55599c",
+      "codeState": "commit",
+      "label": "Settings General nested row convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture removes a Lynx-only card treatment from the conditional Days of inactivity row. The shared row already renders as a transparent 16px-inset settings row on Web; Lynx previously overrode it with a tinted surface and 36px indent. Lynx now uses the same transparent 16px treatment while preserving the conditional row, value 3, and auto-settle control. Full-frame MAE falls from 9.199513 to 8.979583, settings-main MAE from 6.727402 to 6.436903, and the nested-row crop from 12.243899 to 8.808810 with zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The before and post-commit runs use the same snapshot, General route, dark theme, viewport, and setting values, isolating the nested-row styling change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-general-nested-row.json",
+          "classification": "tracked-current",
+          "sha256": "a5e48770993e3c81d17773424bcc286e99b5e0044ab0d3873b9bfab2e25330fa"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-general-nested-row-layout",
+              "source": "The conditional nested row now uses the same 16px left inset and transparent surface as the Web authority"
+            }
+          }
+        }
+      ]
     }
   ]
 }
