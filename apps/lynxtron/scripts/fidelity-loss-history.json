@@ -20373,6 +20373,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-beta-mutation-native-current",
+      "observedAt": "2026-09-03T03:22:14-04:00",
+      "commit": "77a51f5ef",
+      "codeCommit": "77a51f5efd2e508728b2560bfa7f0f785e9e49e9",
+      "codeState": "commit",
+      "label": "Settings Beta mutation current Native correlation",
+      "narrative": "A fresh exact-owned Native run uses a copied 14-event snapshot, Sidebar v2 enabled, auto-settle set to 3 days, the General route, and the staged production bundle. The initial switch is checked and the nested Days row shows 3. A real pointer switches auto-settle off and removes the row; a second click restores the switch, row, and disk value 3. Main transport advances from sequence 15 to 20. This current-head evidence refreshes the prior stale Native certification without claiming new product credit or unmeasured pixels.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "Exact PID/window Computer Use and persisted bytes refresh only current Native content, interaction, and runtime confidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-beta-mutation-native.json",
+          "classification": "tracked-current",
+          "sha256": "f9cf6d281cab4a486922f33f072bc15f11443c446d82fb1c2b929b436554adfe"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-mutation"],
+          "clients": ["native"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-native-beta-mutation-content",
+              "source": "Auto-settle checked state, nested Days row, and value 3 are visible before mutation and after restore"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-native-beta-toggle-reverse-state",
+              "source": "Real pointer clicks drive on to off to on and remove then restore the nested Days row"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-native-beta-persistence-runtime",
+              "source": "Owned PID 80125 uses copied state and main transport, advances lastSeq 15 to 20, and persists Sidebar v2 true with auto-settle days 3"
+            }
+          }
+        }
+      ]
     }
   ]
 }
