@@ -328,3 +328,4 @@ file-editor-detail-gutter-current,2026-09-03T06:14:04-04:00,f21bad3a8,commit,Fil
 file-picker-shared-icons-current,2026-09-03T06:57:31-04:00,ce4135019,commit,File Picker shared icon convergence,0.180531,0.180531,0.03927,0.147035,0.852965,0.811359
 file-picker-footer-actions-current,2026-09-03T07:14:41-04:00,42bdc9217,commit,File Picker footer action convergence,0.180529,0.180529,0.039269,0.147035,0.852965,0.811361
 model-picker-empty-radius-current,2026-09-03T07:31:53-04:00,aeb3544f6,commit,Model Picker empty radius convergence,0.180529,0.180529,0.039269,0.147035,0.852965,0.811361
+project-action-dialog-helper-copy-current,2026-09-03T07:59:50-04:00,af3fc0d52,commit,Project Action dialog helper copy convergence,0.180237,0.180237,0.038926,0.147035,0.852965,0.811653

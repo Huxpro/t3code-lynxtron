@@ -20672,6 +20672,50 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-dialog-helper-copy-current",
+      "observedAt": "2026-09-03T07:59:50-04:00",
+      "commit": "af3fc0d52",
+      "codeCommit": "af3fc0d52d948c789e2b845b9a71e04420089d7b",
+      "codeState": "commit",
+      "label": "Project Action dialog helper copy convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture removes stale renderer-specific Keybinding guidance from Project Action. Web and Lynx now consume one helper-copy constant and both show Press a shortcut. Use Backspace to clear. The dialog remains an exact 512 by 671 match with the same title, description, fields, options, footer actions, and zero renderer errors. Full-frame MAE falls from 5.226755 to 5.174941 and dialog MAE from 9.757384 to 9.598849. The default play icon remains separate residual because the current Lynx icon asset set lacks a play glyph.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, route, dark theme, viewport, form values, and exact dialog geometry isolate the shared helper-copy change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/project-action-dialog-helper-copy.json",
+          "classification": "tracked-current",
+          "sha256": "a673ae215ee09542e0f434c4b91f8471186a1cae48e1a70b7a398528d13f7ed0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-project-action-helper-copy",
+              "source": "Both renderers consume one project-script helper and show Press a shortcut. Use Backspace to clear."
+            },
+            "material": {
+              "pixel": {
+                "mae": 9.598849,
+                "significantShare": 0.079384
+              },
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-crop",
+              "source": "Same-snapshot 512 by 670 dialog crop after shared helper copy; icon and platform raster differences remain explicit"
+            }
+          }
+        }
+      ]
     }
   ]
 }
