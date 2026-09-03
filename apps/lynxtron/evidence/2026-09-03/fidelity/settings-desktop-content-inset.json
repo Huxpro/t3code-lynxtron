@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T18:51:00-04:00",
+  "commit": "1c3ef4109745af61fe027e83f06ac2539f3006c9",
+  "stateId": "settings-beta",
+  "scope": {
+    "authority": "electron-visual-web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-beta",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "2eadd3efeea22dd7cff40baaf36a989fc04c654998bf40c5cbb7cbef8a707b34",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "2eba82a1b888321c689bd23d023dc8ec302cb8023c11ddf5d33a003ca4fe6304",
+    "webImageSha256": "8960539820682a0e33c078304b692dedbe3c745db89a91f86c13cfff96446db0",
+    "lynxImageSha256": "11a30cf4ea17e8678bf11fec77bfa0a764cb6a16fee1ec09318cf64db8d5eb28",
+    "passed": true,
+    "desktopTopbarMatch": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webPanel": [320, 100, 896, 1495.71875],
+    "lynxPanelBefore": [320, 92, 896, 1575],
+    "lynxPanelAfter": [320, 100, 896, 1575],
+    "webFirstRow": [320, 144, 896, 66.84375],
+    "lynxFirstRowBefore": [320, 136, 896, 67],
+    "lynxFirstRowAfter": [320, 144, 896, 67],
+    "webTextGenerationRowY": 1102.65625,
+    "lynxTextGenerationRowY": 1105
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baselineFullFrame": 4.95304,
+    "currentFullFrame": 2.89808
+  },
+  "boundary": "The former 40px top padding was calibrated against the invalid 44px browser Settings topbar. With the hard-gated 52px Electron visual authority, 48px is the correct content inset. Remaining late-row drift is fractional font layout and is not compensated per row."
+}

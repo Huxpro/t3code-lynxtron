@@ -21702,6 +21702,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-desktop-content-inset-current",
+      "observedAt": "2026-09-03T18:51:00-04:00",
+      "commit": "1c3ef4109",
+      "codeCommit": "1c3ef4109745af61fe027e83f06ac2539f3006c9",
+      "codeState": "commit",
+      "label": "Settings desktop content inset parity",
+      "narrative": "Once the Web authority is hard-gated to the 52px Electron visual topbar, the previous 40px Lynx content inset is exposed as an eight-pixel calibration against the wrong 44px browser branch. Restoring the 48px desktop inset aligns both panels at x 320 y 100 and both first rows at x 320 y 144. By Text generation model, only 2.34375px of fractional row-rhythm drift remains. Matching snapshot, expanded Legacy content, zero scroll offsets, desktop-topbar identity, and zero renderer errors are retained. Diagnostic full-frame YAVG improves from 4.95304 to 2.89808.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same Electron-visual authority harness, immutable snapshot, expanded General route, zero scroll offsets, dark theme, viewport, and Web pixels isolate the eight-pixel content inset correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-desktop-content-inset.json",
+          "classification": "tracked-current",
+          "sha256": "a97e03316ee905d28a9719241782d3ba6153f9d97946d7f0c670b7881b67eb2b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0.15625, 0, 2.34375],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "settings-desktop-content-inset-geometry",
+              "source": "Electron-visual Web and Lynx share panel and first-row origins; remaining late-row delta is fractional layout"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-desktop-authority-runtime",
+              "source": "Hard-gated desktop topbar, same snapshot and expanded route, zero scroll offsets, exact product commit, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
