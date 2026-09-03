@@ -338,3 +338,4 @@ quick-switch-new-thread-icon-current,2026-09-03T11:15:00-04:00,30e8cb34e,commit,
 quick-switch-action-shortcuts-current,2026-09-03T11:38:00-04:00,a9396b666,commit,Quick Switch available action shortcuts,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
 providers-last-checked-current,2026-09-03T11:54:00-04:00,734edd898,commit,Providers last-checked status parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
 file-editor-explorer-icon-current,2026-09-03T12:18:00-04:00,5d6b770d7,commit,File Editor explorer control icon parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803
+provider-dialog-light-body-current,2026-09-03T12:38:00-04:00,f2ea24175,commit,Add Provider light body material convergence,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803

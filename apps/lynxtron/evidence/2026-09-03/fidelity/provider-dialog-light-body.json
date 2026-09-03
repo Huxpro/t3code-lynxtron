@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T12:38:00-04:00",
+  "commit": "f2ea241755b4f2c3558e089f84fb98cc448e0aa7",
+  "stateId": "settings-providers-add-dialog-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers",
+    "dialogStage": "driver",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "5654676bf63aea39706bcc939e0e727244cd2b8708af1619dcb3ef69a665a08c",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "18e1ab61d82ae4464c3199e9cbf5ea4d91a7f8af8283b0efd45e8d2b940d7de8",
+    "webImageSha256": "66081be578c93e51b3f84de49f740c722b9aff7be684f08af8a31bebfc645bde",
+    "lynxImageSha256": "a801f0b25e9921980de37a3f12582126a5cb242e256585dffc0a10904bb5e062",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "material": {
+    "webBody": "oklab(0.992 0 0 / 0.8)",
+    "lynxBodyBefore": "rgba(39, 39, 42, 0.02)",
+    "lynxBodyAfter": "rgba(250, 250, 250, 0.8)"
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baseline": { "fullFrame": 2.56394, "dialogBody": 7.77659 },
+    "current": { "fullFrame": 2.29822, "dialogBody": 6.25818 }
+  },
+  "boundary": "The light body now uses the same near-white 80 percent material as Web while the dark-theme body remains unchanged. Historical material accounting remains unchanged because it uses a different pixel metric. Screenshots remain temporary because the tracked screenshot budget is full."
+}

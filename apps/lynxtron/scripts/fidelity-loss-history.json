@@ -21119,6 +21119,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-light-body-current",
+      "observedAt": "2026-09-03T12:38:00-04:00",
+      "commit": "f2ea24175",
+      "codeCommit": "f2ea241755b4f2c3558e089f84fb98cc448e0aa7",
+      "codeState": "commit",
+      "label": "Add Provider light body material convergence",
+      "narrative": "A post-commit light 1280 by 820 shared-server capture replaces the Lynx Add Provider body tint with the same near-white 80 percent material used by Web. The change prevents the underlying Providers page from bleeding through the wizard body while preserving the exact 576 by 538 dialog, the Driver-step layout, the selected Codex indicator, matching state identity, and zero renderer errors. Diagnostic ffmpeg difference YAVG improves from 2.56394 to 2.29822 full-frame and from 7.77659 to 6.25818 in the dialog-body crop.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, Providers route, light theme, viewport, selected driver, and exact dialog geometry isolate the body-material correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/provider-dialog-light-body.json",
+          "classification": "tracked-current",
+          "sha256": "c5988c72472af55b75df9b12468045d02933bf042a5d14f1ef75556a47db7c11"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-driver-content",
+              "source": "Both clients retain the same Driver-step title, copy, selected provider, nine driver cards, and footer actions"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-shared-runtime",
+              "source": "Same snapshot and route, exact dialog geometry, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
