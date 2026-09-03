@@ -873,6 +873,7 @@ describe("shared workbench lifecycle fault capture", () => {
 
     assert.include(workbench, "function readSettingsRowGeometry(item)");
     assert.include(workbench, "controlBox: readElementBox(control)");
+    assert.include(workbench, "controlLeafBox: readElementBox(controlLeaf)");
     assert.equal(workbench.match(/readSettingsRowGeometry,/g)?.length, 2);
   });
 

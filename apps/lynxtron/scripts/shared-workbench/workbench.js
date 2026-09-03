@@ -392,12 +392,20 @@ function readSettingsRowGeometry(item) {
   const control =
     item.querySelector(".settings-row__control") ??
     (webGrid && webGrid.children.length > 1 ? webGrid.children[1] : null);
+  const controlLeaf = control?.matches(
+    "select, input, button, [data-settings-select], [data-setting-control]",
+  )
+    ? control
+    : control?.querySelector(
+        "select, input, button, [data-settings-select], [data-setting-control]",
+      );
   return {
     title: item.querySelector(".settings-row__title, h3")?.textContent?.trim() ?? "",
     titleBox: readElementBox(item.querySelector(".settings-row__title, h3")),
     descriptionBox: readElementBox(item.querySelector(".settings-row__desc, p")),
     controlText: control?.textContent?.trim().replace(/\s+/g, " ") ?? "",
     controlBox: readElementBox(control),
+    controlLeafBox: readElementBox(controlLeaf),
     box: readElementBox(item),
     children: [...item.children].map((child) => ({
       className: child.getAttribute("class") ?? "",
