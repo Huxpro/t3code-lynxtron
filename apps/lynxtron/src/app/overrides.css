@@ -3689,6 +3689,10 @@
   min-width: 0;
   overflow: hidden;
 }
+.composer-context-item--overlay-open {
+  overflow: visible;
+  z-index: 60;
+}
 .composer-workspace-control-wrap {
   position: relative;
   display: flex;

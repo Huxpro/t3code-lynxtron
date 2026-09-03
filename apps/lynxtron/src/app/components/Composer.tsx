@@ -1464,6 +1464,7 @@ export function Composer({
       </view>
       {showContextStrip ? (
         <ComposerContextStrip
+          checkoutClassName={workspaceMenuOpen ? "composer-context-item--overlay-open" : undefined}
           backdrop={
             <view className="composer-context-backdrop">
               <view className="composer-context-backdrop-band composer-context-backdrop-band--seam" />

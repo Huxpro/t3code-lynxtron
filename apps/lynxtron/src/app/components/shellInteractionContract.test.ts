@@ -1337,6 +1337,7 @@ describe("desktop shell interaction contract", () => {
     expect(detailsPopoverBlock).not.toContain("left:");
     expect(detailsPopoverBlock).toContain("width: max-content;");
     expect(overrides).not.toContain(".sidebar-v2-details-dismiss {");
+    expect(componentSource("Composer.tsx")).toContain("composer-context-item--overlay-open");
     expect(tooltipSource).toContain("const hoverInsideRef = useRef(false);");
     expect(tooltipSource).toContain("if (hoverInsideRef.current === inside) return;");
     expect(tooltipSource).toContain("hoverInsideRef.current = inside;");
