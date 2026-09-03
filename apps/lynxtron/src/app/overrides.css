@@ -7752,6 +7752,7 @@
   row-gap: 8px;
 }
 .provider-instance-dialog__driver {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -7774,11 +7775,17 @@
   background-color: rgba(59, 130, 246, 0.12);
 }
 .provider-instance-dialog__driver-check {
-  color: var(--primary);
-  font-family: var(--font-sans);
-  font-size: 13px;
-  font-weight: 700;
-  margin-left: auto;
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background-color: var(--primary);
 }
 .provider-instance-dialog__early-access,
 .provider-instance-dialog__coming-soon {

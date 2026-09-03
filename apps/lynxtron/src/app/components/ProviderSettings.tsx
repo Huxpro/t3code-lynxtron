@@ -824,11 +824,13 @@ export function AddProviderInstanceDialog({
                       <text className="provider-instance-dialog__driver-label">
                         {providerLabel(option)}
                       </text>
+                      {option === driver ? (
+                        <view className="provider-instance-dialog__driver-check">
+                          <Icon name="check" size={14} color="#ffffff" />
+                        </view>
+                      ) : null}
                       {option === "cursor" || option === "grok" ? (
                         <text className="provider-instance-dialog__early-access">Early Access</text>
-                      ) : null}
-                      {option === driver ? (
-                        <text className="provider-instance-dialog__driver-check">✓</text>
                       ) : null}
                     </view>
                   ))}
