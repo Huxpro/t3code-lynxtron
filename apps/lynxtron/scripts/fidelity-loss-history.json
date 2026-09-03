@@ -20548,6 +20548,50 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-shared-icons-current",
+      "observedAt": "2026-09-03T06:57:31-04:00",
+      "commit": "ce4135019",
+      "codeCommit": "ce4135019d3d972e6a868ab3b9f148cdb7301b22",
+      "codeState": "commit",
+      "label": "File Picker shared icon convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture closes a semantic icon mismatch in File Picker. Web used extension-specific React, TypeScript, Markdown, and npm icons while Lynx hard-coded file-json for every result. Lynx now reuses ProjectFileIcon and the shared projectFileIconPresentation classifier already used by Files. The overlay remains an exact 576 by 420 match with identical source rows and zero renderer errors. Full-frame MAE falls from 3.211113 to 3.176572, panel MAE from 7.236644 to 7.086982, and visible-row MAE from 8.720217 to 8.518708. Exact Pierre icon rasterization remains explicit residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, route, dark theme, viewport, row set, and exact overlay geometry isolate the shared icon mapping change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/file-picker-shared-icons.json",
+          "classification": "tracked-current",
+          "sha256": "9ebeadf1db9cdc1d2c8c04dcf67780aeb7b1921a296051f82cad22e57bccc5a9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-file-icon-presentation",
+              "source": "Lynx uses the shared extension classifier for TypeScript, Markdown, npm, and default file identities instead of one generic file-json icon"
+            },
+            "material": {
+              "pixel": {
+                "mae": 3.176572,
+                "significantShare": 0.021875
+              },
+              "confidence": 0.99,
+              "method": "file-picker-full-frame-shared-icons-pixel",
+              "source": "Same-snapshot 1280 by 820 full-frame comparison after shared file-type icon mapping; exact Pierre icon rasterization remains residual"
+            }
+          }
+        }
+      ]
     }
   ]
 }
