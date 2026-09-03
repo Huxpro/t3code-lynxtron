@@ -20793,6 +20793,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-connections-authorized-actions-current",
+      "observedAt": "2026-09-03T09:49:00-04:00",
+      "commit": "44eabe63e",
+      "codeCommit": "44eabe63e4219dc33756ef2cfb6a32b17ca7e49f",
+      "codeState": "commit",
+      "label": "Settings Connections authorized actions convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture moves Lynx Authorized clients actions into the section header to match Web. Both clients now expose Revoke others and Create link together, while Lynx removes the idle-only New pairing link and Other clients rows. The real dual-client mutation flow still creates and revokes one-time links from Lynx and Web, returns both projections to zero links, preserves matching state identity, and reports zero renderer errors. Client ordering and This device placement remain renderer-session-specific and truthful. Full-frame material accounting is intentionally unchanged because the section reflow moves downstream content and is not comparable to the historical pixel cell.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, Connections route, dark theme, viewport, and zero-link final state isolate the Authorized clients anatomy change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-connections-authorized-actions.json",
+          "classification": "tracked-current",
+          "sha256": "6396fc75b55f10fa0d29510a442becc9f841814b8a6aeaac0d04dc1c3056dc15"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections-mutation-browser"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "authorized-clients-header-actions",
+              "source": "Both clients expose Revoke others and Create link in the Authorized clients section header without idle-only helper rows"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "authorized-clients-section-anatomy",
+              "source": "The Lynx section height contracts from 350px to 214px after removing two renderer-only rows and lifting both actions into the header"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-cdp-pairing-mutation",
+              "source": "Lynx create and revoke followed by Web create and revoke all project to both clients and finish at zero links"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connections-current-shared-runtime",
+              "source": "Same snapshot and route, matching state identity, completed mutation flow, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

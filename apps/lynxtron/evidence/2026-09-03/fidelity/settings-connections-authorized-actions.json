@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T09:49:00-04:00",
+  "commit": "44eabe63e4219dc33756ef2cfb6a32b17ca7e49f",
+  "stateId": "settings-connections-mutation-browser",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-connections",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "d9074d2aab3b4f0d293a890ac9cde80ab981c5a157a5160eb3913dc8f361062d",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "ef04bfe675606f484954d25f7b002b013a83c5460d7b9bff9337a9e330f7e6d6",
+    "webImageSha256": "ebe23b26d5bd19e13ac25ce71e825e0067b126c6b757f68bd260669dbe78da35",
+    "lynxImageSha256": "b4b02bc021cfbfe1aad38cde9bf50502fe6a06eee7e3f8c17c7c4828d5708994",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "headerActions": ["Revoke others", "Create link"],
+    "removedIdleRows": ["New pairing link", "Other clients"],
+    "createLabelsMatch": true
+  },
+  "interaction": {
+    "channel": "dual-cdp-pointer",
+    "steps": ["lynx-created", "lynx-revoked", "web-created", "web-revoked"],
+    "finalPairingLinkCount": 0,
+    "finalRevokeCount": 0
+  },
+  "geometry": {
+    "lynxAuthorizedSectionHeightBefore": 350,
+    "lynxAuthorizedSectionHeightAfter": 214,
+    "webAuthorizedSectionHeight": 173
+  },
+  "boundary": "The renderer sessions identify different current clients, so client ordering and This device placement remain truthful instead of being forced into screenshot parity. Full-frame pixel metrics are not promoted because the section reflow moves downstream content and the historical ledger cell uses a different comparison basis. Screenshots remain temporary because the tracked screenshot budget is full."
+}
