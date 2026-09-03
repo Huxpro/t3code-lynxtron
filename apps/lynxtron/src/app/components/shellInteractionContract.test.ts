@@ -1441,6 +1441,9 @@ describe("desktop shell interaction contract", () => {
     expect(projectSettings).toContain(".deleteProject(member.id, true)");
     expect(quickSwitch).toContain('data-quick-switch-mode="add-project-sources"');
     expect(quickSwitch).toContain('id: "new-thread-in",\n        icon: "square-pen"');
+    expect(quickSwitch).toContain('shortcutCommand: "chat.new"');
+    expect(quickSwitch).toContain('shortcutCommand: "filePicker.toggle"');
+    expect(quickSwitch).toContain("shortcutLabelForCommand(");
     expect(quickSwitch).not.toContain('setView(\n      openIntent?.kind === "add-project"');
     expect(quickSwitch).not.toContain("clearQuickSwitchOpenIntent");
     expect(appIndex).toContain("if (appliedInitialRoute.current) return;");

@@ -37,6 +37,7 @@ import {
   PaletteSectionSurface,
 } from "../../../../web/src/components/CommandPaletteSurface";
 import { sortProjectsForSidebar } from "../../../../web/src/components/Sidebar.logic";
+import { shortcutLabelForCommand } from "../../../../web/src/keybindings";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { Kbd, KbdGroup } from "../../../../web/src/components/ui/kbd";
 import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
@@ -87,6 +88,7 @@ interface ActionItem {
   icon: IconName;
   label: string;
   searchTerms: ReadonlyArray<string>;
+  shortcutCommand?: "chat.new" | "filePicker.toggle";
   run: () => void;
 }
 
@@ -135,7 +137,7 @@ export function QuickSwitch({
   const [remoteProjectPending, setRemoteProjectPending] = useState(false);
   const [remoteProjectError, setRemoteProjectError] = useState<string | null>(null);
   const { createThread, selectThread } = t3ClientActions;
-  const { draftThread } = useT3ClientState();
+  const { draftThread, serverConfig } = useT3ClientState();
 
   const close = uiActions.closeQuickSwitch;
 
@@ -403,6 +405,7 @@ export function QuickSwitch({
         id: "new-thread",
         icon: "square-pen",
         label: `New thread in ${projectName}`,
+        shortcutCommand: "chat.new",
         searchTerms: ["new thread", "chat", "create", projectName],
         run: () => {
           if (activeProject) createThread(activeProject.id);
@@ -420,6 +423,7 @@ export function QuickSwitch({
         id: "go-to-file",
         icon: "file-json",
         label: "Go to file",
+        shortcutCommand: "filePicker.toggle",
         searchTerms: ["go to file", "files", "open file"],
         run: () => {
           uiActions.openRightPanelSurface("files");
@@ -942,6 +946,17 @@ export function QuickSwitch({
                           />
                         }
                         title={a.label}
+                        shortcut={
+                          a.shortcutCommand && serverConfig ? (
+                            <Kbd className="h-4 min-w-0 rounded-sm px-1.5 text-[10px]">
+                              {shortcutLabelForCommand(
+                                serverConfig.keybindings,
+                                a.shortcutCommand,
+                                "MacIntel",
+                              )}
+                            </Kbd>
+                          ) : null
+                        }
                         onHoverStart={() => setActiveIndex(index)}
                         onSelect={a.run}
                       />
