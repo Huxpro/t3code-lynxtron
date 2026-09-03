@@ -880,6 +880,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, '[role="switch"]');
     assert.include(workbench, "function readSettingsScroll(root)");
     assert.equal(workbench.split("scroll: readSettingsScroll(").length - 1, 2);
+    assert.include(workbench, "function readSettingsTopbar(root)");
+    assert.equal(workbench.split("topbar: readSettingsTopbar(").length - 1, 2);
     assert.equal(workbench.match(/readSettingsRowGeometry,/g)?.length, 2);
   });
 

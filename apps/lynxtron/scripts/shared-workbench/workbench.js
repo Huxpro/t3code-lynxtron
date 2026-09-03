@@ -423,6 +423,21 @@ function readSettingsScroll(root) {
   };
 }
 
+function readSettingsTopbar(root) {
+  const topbar = root?.querySelector(".settings-topbar");
+  const title = topbar?.querySelector(".settings-topbar__title") ?? topbar?.querySelector("span");
+  const restore =
+    topbar?.querySelector(".settings-topbar__restore") ?? topbar?.querySelector("button");
+  return {
+    box: readElementBox(topbar),
+    title: readElementBox(title),
+    titleText: title?.textContent?.trim() ?? "",
+    restore: readElementBox(restore),
+    restoreText: restore?.textContent?.trim().replace(/\s+/g, " ") ?? "",
+    restoreChildren: [...(restore?.children ?? [])].map(readElementBox),
+  };
+}
+
 function readLegacySidebarSettings(root) {
   const trigger = root?.querySelector(".settings-legacy-section__trigger");
   const control = root?.querySelector('[data-setting-control="legacy-sidebar"]');
@@ -2549,6 +2564,7 @@ function readLynxPane() {
               ].map((item) => item.textContent?.trim()),
               navigationItems: readSettingsNavigationItems(root),
               scroll: readSettingsScroll(root),
+              topbar: readSettingsTopbar(root),
               rowIds: settingsRowIds.filter((id) => root?.getElementById(id)),
               rows: readSettingsRows(root, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(root),
@@ -3614,6 +3630,7 @@ function readWebPane() {
                 .filter((label) => SETTINGS_NAV_LABELS.includes(label)),
               navigationItems: readSettingsNavigationItems(doc),
               scroll: readSettingsScroll(doc),
+              topbar: readSettingsTopbar(doc),
               rowIds: settingsRowIds.filter((id) => doc.getElementById(id)),
               rows: readSettingsRows(doc, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(doc),
