@@ -240,6 +240,9 @@ describe("Lynx Settings route projection", () => {
     const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
     expect(settings).toContain('searchableSetting("auto-settle-inactive-threads")');
     expect(settings).toContain('settingControl="auto-settle"');
+    expect(overrides).toContain(
+      ".general-settings-row--nested {\n  background-color: transparent;\n  padding-left: 16px;",
+    );
     expect(settings).toContain('searchableSetting("legacy-sidebar")');
     expect(settings).toContain('settingControl="legacy-sidebar"');
     expect(settings).toContain('aria-label="Sidebar (legacy)"');

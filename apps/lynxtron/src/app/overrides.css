@@ -6241,8 +6241,8 @@
   color: var(--muted-foreground);
 }
 .general-settings-row--nested {
-  background-color: rgba(255, 255, 255, 0.02);
-  padding-left: 36px;
+  background-color: transparent;
+  padding-left: 16px;
 }
 .settings-legacy-section {
   display: flex;
