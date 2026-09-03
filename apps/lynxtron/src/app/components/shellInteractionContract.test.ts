@@ -1012,6 +1012,15 @@ describe("desktop shell interaction contract", () => {
     expect(settingsNavigationSource).toContain(
       '<text className="settings-nav__back-label" bindtap={navigateBack}>',
     );
+    expect(overrides).toContain(
+      ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;",
+    );
+    expect(overrides).toContain(
+      ".settings-nav__item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  box-sizing: border-box;\n  height: 32px;",
+    );
+    expect(overrides).not.toContain(
+      ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n  transform: translateY(-0.5px);",
+    );
     expect(overrides).not.toContain(".settings-nav__item--providers {");
   });
 

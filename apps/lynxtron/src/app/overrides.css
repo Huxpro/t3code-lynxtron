@@ -5486,17 +5486,18 @@
 .settings-nav__items {
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
   padding: 8px;
-  transform: translateY(-0.5px);
   flex-grow: 1;
 }
 .settings-nav__item {
   display: flex;
   flex-direction: row;
   align-items: center;
+  box-sizing: border-box;
   height: 32px;
   padding-top: 6px;
-  padding-right: 8px;
+  padding-right: 10px;
   padding-bottom: 6px;
   padding-left: 10px;
   border-radius: 8px;
@@ -5509,6 +5510,7 @@
   color: var(--sidebar-muted-80);
   font-size: 14px;
   font-weight: 500;
+  line-height: 20px;
   font-family: var(--font-sans);
   margin-left: 8px;
 }
@@ -5524,9 +5526,10 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  box-sizing: border-box;
   height: 32px;
   padding-top: 6px;
-  padding-right: 8px;
+  padding-right: 10px;
   padding-bottom: 6px;
   padding-left: 10px;
   border-radius: 8px;
@@ -5535,6 +5538,7 @@
   color: var(--sidebar-muted-80);
   font-size: 14px;
   font-weight: 500;
+  line-height: 20px;
   font-family: var(--font-sans);
   margin-left: 8px;
 }
