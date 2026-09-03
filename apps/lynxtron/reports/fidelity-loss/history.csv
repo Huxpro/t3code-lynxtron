@@ -333,3 +333,4 @@ settings-general-nested-row-current,2026-09-03T08:39:46-04:00,dd1dd06fb,commit,S
 settings-keybindings-notice-icon-current,2026-09-03T09:05:38-04:00,249f94c0c,commit,Settings Keybindings warning anatomy,0.180233,0.180233,0.038921,0.147035,0.852965,0.811657
 settings-connections-authorized-actions-current,2026-09-03T09:49:00-04:00,44eabe63e,commit,Settings Connections authorized actions convergence,0.180107,0.180107,0.038796,0.147014,0.852986,0.811783
 provider-driver-selection-indicator-current,2026-09-03T10:20:00-04:00,085d1c755,commit,Add Provider driver selection indicator convergence,0.180107,0.180107,0.038796,0.147014,0.852986,0.811783
+model-picker-jump-shortcuts-current,2026-09-03T10:55:00-04:00,a569261d5,commit,Model Picker jump shortcut parity,0.180087,0.180087,0.038774,0.147014,0.852986,0.811803

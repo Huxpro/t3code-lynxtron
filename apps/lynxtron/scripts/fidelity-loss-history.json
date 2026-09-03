@@ -20895,6 +20895,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-jump-shortcuts-current",
+      "observedAt": "2026-09-03T10:55:00-04:00",
+      "commit": "a569261d5",
+      "codeCommit": "a569261d532e8b1d17133c1e667475bc2eabb697",
+      "codeState": "commit",
+      "label": "Model Picker jump shortcut parity",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture adds the missing model jump hints to Lynx and wires them to the native keyboard packet path. For query gpt, both clients retain the same eight rows at identical y coordinates while Lynx now renders the canonical Command-1 through Command-8 labels beside the favorite controls. Focused tests prove that the same Command-number packet resolves to modelPicker.jump while the picker is open and falls back to thread.jump when it is closed. Diagnostic ffmpeg difference YAVG improves from 3.85035 to 3.81525 full-frame and from 2.46955 to 2.28302 in the picker crop, with matching state identity and zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, query, route, dark theme, viewport, row order, and selected model isolate the model-jump shortcut addition."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/model-picker-jump-shortcuts.json",
+          "classification": "tracked-current",
+          "sha256": "62409573210fae785cfece5b104f3e6428daf9ed19b2f6b998873c0950833872"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-picker-jump-labels",
+              "source": "The eight visible rows expose the canonical Command-1 through Command-8 jump labels"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 346,
+              "confidence": 0.99,
+              "method": "model-picker-query-row-layout",
+              "source": "All eight Web and Lynx model rows retain identical y coordinates after adding trailing shortcut badges"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "native-model-jump-command-routing",
+              "source": "The native keyboard resolver selects modelPicker.jump while the picker is open and thread.jump otherwise, then dispatches through a mounted picker bus"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-picker-query-current-shared-runtime",
+              "source": "Same snapshot and route, matched query and selected model, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
