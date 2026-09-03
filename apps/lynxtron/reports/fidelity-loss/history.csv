@@ -346,3 +346,4 @@ provider-status-info-icon-current,2026-09-03T14:43:00-04:00,40f6fd2e1,commit,Pro
 workspace-menu-overflow-current,2026-09-03T15:12:00-04:00,26b1559f5,commit,Workspace menu overflow parity,0.179752,0.179752,0.038695,0.146735,0.853265,0.812138
 settings-navigation-row-geometry-current,2026-09-03T15:54:00-04:00,8d9e959b0,commit,Settings navigation row geometry parity,0.179751,0.179751,0.038695,0.146735,0.853265,0.812139
 settings-row-rhythm-current,2026-09-03T16:20:00-04:00,dd5495081,commit,Settings row rhythm parity,0.179747,0.179747,0.03869,0.146735,0.853265,0.812143
+settings-select-controls-current,2026-09-03T16:39:00-04:00,5581d484d,commit,Settings select control parity,0.179748,0.179747,0.038691,0.146735,0.853265,0.812142

@@ -21504,6 +21504,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-select-controls-current",
+      "observedAt": "2026-09-03T16:39:00-04:00",
+      "commit": "5581d484d",
+      "codeCommit": "5581d484dcc18854c6ef058d5b12211d0f9f85f4",
+      "codeState": "commit",
+      "label": "Settings select control parity",
+      "narrative": "A shared geometry reader now distinguishes Settings layout slots from actionable control leaves. The resulting post-commit light 1280 by 820 capture fixes Lynx selects expanding beyond their declared size through content-box sizing and using a dark-only interactive border. Time format converges from 184 by 34 at x 1016 to Web's 160 by 32 at x 1040. New threads converges from 200 by 34 at x 1000 to Web's 176 by 32 at x 1024. Light select material resolves through the shared background and input tokens with an eight-pixel radius. Matching state identity and zero renderer errors remain intact. Diagnostic full-frame ffmpeg difference YAVG improves from 3.03703 to 2.99972.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, expanded General route, light theme, viewport, content, and byte-identical Web pixels isolate the shared select primitive correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-select-controls.json",
+          "classification": "tracked-current",
+          "sha256": "9837f17f009f008df06ffb92a1b0c79fae0b63363e17db917396d4836b743efd"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0.703125, 0, 0, 0, 1.796875, 0, 0],
+              "anchorScale": 176,
+              "confidence": 0.99,
+              "method": "settings-select-control-leaf-geometry",
+              "source": "Time format and New threads match Web select x, width, and height; remaining y deltas reflect the measured fractional row rhythm"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-light-current-shared-runtime",
+              "source": "Same snapshot and expanded General route, matching identity, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
