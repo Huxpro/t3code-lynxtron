@@ -469,18 +469,23 @@ export function ConnectionsSettings() {
         )}
       </SettingsSection>
       {showAuthorizedClients ? (
-        <SettingsSection title="Authorized clients">
-          <SettingsRow
-            title="New pairing link"
-            description={
-              accessError ??
-              (pairingCredential
-                ? `One-time code: ${pairingCredential.credential} · ${formatRelativeTimeUntilLabel(pairingCredential.expiresAt, Date.now())}`
-                : "Create a one-time code with standard client permissions.")
-            }
-            control={
+        <SettingsSection
+          title="Authorized clients"
+          headerAction={
+            <view className="settings-connections-authorized-actions">
+              <SmallButton
+                disabled={
+                  accessMutation === "clients:others" ||
+                  !authAccess.clientSessions.some((clientSession) => !clientSession.current)
+                }
+                label={accessMutation === "clients:others" ? "Revoking…" : "Revoke others"}
+                onTap={revokeOtherClientSessions}
+                variant="destructive-outline"
+              />
               <SmallButton
                 className="settings-connections-create-pairing"
+                disabled={accessMutation !== null}
+                icon={<Icon name="plus" size={12} color="#ffffff" />}
                 label={
                   accessMutation === "create"
                     ? "Creating…"
@@ -488,12 +493,23 @@ export function ConnectionsSettings() {
                       ? "Copying…"
                       : pairingCredential
                         ? "Copy code"
-                        : "Create"
+                        : "Create link"
                 }
                 onTap={pairingCredential ? copyPairingCode : createPairingLink}
+                variant="default"
               />
-            }
-          />
+            </view>
+          }
+        >
+          {accessError || pairingCredential ? (
+            <SettingsRow
+              title="New pairing link"
+              description={
+                accessError ??
+                `One-time code: ${pairingCredential?.credential ?? ""} · ${formatRelativeTimeUntilLabel(pairingCredential?.expiresAt ?? Date.now(), Date.now())}`
+              }
+            />
+          ) : null}
           {authAccess.pairingLinks.map((pairingLink) => (
             <AccessListRowSurface
               key={pairingLink.id}
@@ -534,18 +550,6 @@ export function ConnectionsSettings() {
               }
             />
           ))}
-          {authAccess.clientSessions.some((clientSession) => !clientSession.current) ? (
-            <SettingsRow
-              title="Other clients"
-              description="Revoke every authorized client except this device."
-              control={
-                <SmallButton
-                  label={accessMutation === "clients:others" ? "Revoking…" : "Revoke all"}
-                  onTap={revokeOtherClientSessions}
-                />
-              }
-            />
-          ) : null}
           {!authAccess.hasEntries ? (
             <view className="settings-empty-card">
               <text className="settings-empty__text">No pairing links or authorized clients.</text>

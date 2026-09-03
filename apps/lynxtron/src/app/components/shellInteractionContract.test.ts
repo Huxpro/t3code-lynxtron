@@ -172,6 +172,12 @@ describe("desktop shell interaction contract", () => {
     expect(otherSettingsSource).toContain("showArchivedThreadContextMenu");
     expect(otherSettingsSource).toContain('{ id: "unarchive", label: "Unarchive" }');
     expect(otherSettingsSource).toContain('{ id: "delete", label: "Delete", destructive: true }');
+    expect(otherSettingsSource).toContain('title="Authorized clients"');
+    expect(otherSettingsSource).toContain(
+      'label={accessMutation === "clients:others" ? "Revoking…" : "Revoke others"}',
+    );
+    expect(otherSettingsSource).toContain(': "Create link"');
+    expect(otherSettingsSource).not.toContain('title="Other clients"');
     expect(otherSettingsSource).toContain("Confirm delete");
     expect(otherSettingsSource).toContain("deleteThread(thread.id)");
   });

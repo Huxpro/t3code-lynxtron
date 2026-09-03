@@ -69,15 +69,17 @@ export function SmallButton({
   label,
   icon,
   onTap,
+  variant = "outline",
 }: {
   className?: string;
   disabled?: boolean;
   label: string;
   icon?: ReactNode;
   onTap?: () => void;
+  variant?: "default" | "destructive-outline" | "outline";
 }) {
   return (
-    <Button className={className} disabled={disabled} onClick={onTap} size="xs" variant="outline">
+    <Button className={className} disabled={disabled} onClick={onTap} size="xs" variant={variant}>
       {icon}
       {label}
     </Button>

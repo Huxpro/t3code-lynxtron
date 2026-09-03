@@ -1036,7 +1036,7 @@ async function runConnectionsMutationFlow(cdp, sessionId) {
   );
   timeline.push({ step: "initial", pairingLinkCount: 0 });
 
-  if (!(await clickExactButtonText(cdp, sessionId, "lynx", "Create"))) {
+  if (!(await clickExactButtonText(cdp, sessionId, "lynx", "Create link"))) {
     throw new Error("Missing Lynx Create pairing link action");
   }
   timeline.push({
