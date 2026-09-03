@@ -27,12 +27,14 @@ describe("Provider instance dialog material", () => {
   it("matches light dialog glass without changing the wizard width", () => {
     const dialog = rule(".provider-instance-dialog");
     const lightDialog = rule(".theme-light .provider-instance-dialog");
+    const lightBody = rule(".theme-light .provider-instance-dialog__body");
 
     expect(dialog).toContain("width: 576px;");
     expect(dialog).toContain("border-radius: 18px;");
     expect(lightDialog).toContain("border-color: rgba(39, 39, 42, 0.1);");
     expect(lightDialog).toContain("background-color: rgba(252, 252, 252, 0.8);");
     expect(lightDialog).toContain("0 24px 64px -24px rgba(0, 0, 0, 0.65);");
+    expect(lightBody).toContain("background-color: rgba(250, 250, 250, 0.8);");
   });
 
   it("reserves both description lines before the wizard steps", () => {

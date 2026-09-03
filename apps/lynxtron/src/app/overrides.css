@@ -7697,6 +7697,9 @@
   background-color: rgba(var(--foreground-rgb), 0.02);
   box-sizing: border-box;
 }
+.theme-light .provider-instance-dialog__body {
+  background-color: rgba(250, 250, 250, 0.8);
+}
 .provider-instance-dialog__step-content {
   --flex-direction: column;
   display: block;
