@@ -21564,7 +21564,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-switch-controls.json",
           "classification": "tracked-current",
-          "sha256": "3ab38bc9bf31d818d57d1939ff470124cda4ebba89206856ad52916a908dd8f1"
+          "sha256": "5d93bca209e3edd8ebcb047b0f697b8e5a2075d633bbe8fd3b169fd4c338749c"
         }
       ],
       "updates": [
@@ -21586,6 +21586,41 @@
               "confidence": 0.99,
               "method": "settings-beta-light-current-shared-runtime",
               "source": "Same snapshot and expanded General route, matching identity, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-dark-flat-sidebar-current",
+      "observedAt": "2026-09-03T17:29:00-04:00",
+      "commit": "13f3fb49a",
+      "codeCommit": "13f3fb49a0576267e8b6695eb5caeca867c1493c",
+      "codeState": "commit",
+      "label": "Settings dark flat-sidebar surface",
+      "narrative": "A corrected dark 1280 by 820 shared-server capture first rejects different Settings scroll offsets, expands Legacy on both renderers, restores both scroll positions to zero, and gates that viewport identity. The product then projects the existing flat-sidebar state into an explicit Lynx class and restores Web's dark card layer for that scope while leaving the legacy sidebar pure black. Lynx computed background changes from rgb 0 0 0 to rgb 17 17 17 against Web's approximately rgb 17 17 17. Diagnostic ffmpeg difference YAVG improves from 5.66341 to 5.65795 full-frame and from 16.1726 to 16.1453 in the sidebar. Grain, icons, and typography remain explicit residuals.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use the same immutable snapshot, expanded General route, zero scroll offsets, dark theme, viewport, content, and Web authority. The explicit flat class changes only the scoped Lynx sidebar surface."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-dark-flat-sidebar.json",
+          "classification": "tracked-current",
+          "sha256": "4db02b0be19e8496875c78e6c62579ffb2ef784779d62456b0febc92242627a2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-dark-current-shared-runtime",
+              "source": "Same snapshot and expanded General route, zero scroll offsets, matching identity, zero renderer errors, and clean Browser process disposal"
             }
           }
         }

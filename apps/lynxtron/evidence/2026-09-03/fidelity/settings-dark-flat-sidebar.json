@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T17:29:00-04:00",
+  "commit": "13f3fb49a0576267e8b6695eb5caeca867c1493c",
+  "stateId": "settings-beta",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-beta",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "b79676bb55ea5cb9d205f7fc5e6057d7dc9380cb2de169ceb5d88e51027a28a5",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "424d5024c1a2d011fd2aaa87f49a1dd343b3c855f90b11939d249f4e40fee5a5",
+    "webImageSha256": "58fe9dfe661ddc9b5a473f1a616cb462e744085c156efd4ef2b7029da92be817",
+    "lynxImageSha256": "f9589394ee61327ff45c060c39fada9028ead547cffc602cb1bdfb114c0d9150",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "webScrollTop": 0,
+    "lynxScrollTop": 0
+  },
+  "material": {
+    "webSidebarComputed": "color(srgb 0.0681953 0.0682112 0.0682127)",
+    "lynxBeforeComputed": "rgb(0, 0, 0)",
+    "lynxAfterComputed": "rgb(17, 17, 17)",
+    "scope": "dark flat sidebar only; legacy sidebar remains pure black"
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baseline": { "fullFrame": 5.66341, "sidebar": 16.1726 },
+    "current": { "fullFrame": 5.65795, "sidebar": 16.1453 }
+  },
+  "boundary": "The source-driven flat class restores the Web card layer only for dark flat sidebars. Grain, icon, and typography residuals remain visible. Light theme passed separately with rgb(250, 250, 250), zero scroll offset, expanded Legacy content, and no renderer errors."
+}
