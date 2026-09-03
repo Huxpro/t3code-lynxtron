@@ -21546,6 +21546,50 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-switch-controls-current",
+      "observedAt": "2026-09-03T16:53:00-04:00",
+      "commit": "ebbc1ac95",
+      "codeCommit": "ebbc1ac959203bb2066d984ff6f2688c4555e04b",
+      "codeState": "commit",
+      "label": "Settings switch control parity",
+      "narrative": "A post-commit light 1280 by 820 shared-server capture fixes the shared Lynx Settings switch primitive using content-box sizing, which expanded declared 30 by 18 controls to 32 by 20. All eight comparable General switches now share Web's x 1170, width 30, and height 18. Checked states match on Project grouping, Auto-settle inactive threads, Hide whitespace changes, Provider update checks, and Delete confirmation. Unchecked Lynx Browser Preview controls still export null aria-checked while retaining the explicit unchecked class, so semantic and interaction credit remain unchanged. Matching state identity and zero renderer errors remain intact. Diagnostic full-frame ffmpeg difference YAVG improves from 2.99972 to 2.95196.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, expanded General route, light theme, viewport, content, and byte-identical Web pixels isolate the switch box-model correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-switch-controls.json",
+          "classification": "tracked-current",
+          "sha256": "3ab38bc9bf31d818d57d1939ff470124cda4ebba89206856ad52916a908dd8f1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 30,
+              "confidence": 0.99,
+              "method": "settings-switch-control-leaf-geometry",
+              "source": "Eight Web and Lynx switch leaves match x, width, and height; y remains owned by the preceding row-rhythm measurement"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-light-current-shared-runtime",
+              "source": "Same snapshot and expanded General route, matching identity, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

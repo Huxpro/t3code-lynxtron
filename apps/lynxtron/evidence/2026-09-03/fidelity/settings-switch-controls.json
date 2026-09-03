@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T16:53:00-04:00",
+  "commit": "ebbc1ac959203bb2066d984ff6f2688c4555e04b",
+  "stateId": "settings-beta-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-beta",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "9730709c0a92695df02a63f1f40a0c3f1650c772839ad218d083785b87b7c196",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "849b8ea15bd3f8facb555c9d3f933eeafe97f1eab15c024e9931e73551158723",
+    "webImageSha256": "3e2daffbfe01117de295efdda076d1f70a399768322fdc982ebff0cc19d909b2",
+    "lynxImageSha256": "747495b03b635f1d5b0a28c9bf6ff48ec000f4f64c1006015769f1b6899930c2",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "controls": {
+    "labels": [
+      "Project grouping",
+      "Auto-settle inactive threads",
+      "Hide whitespace changes",
+      "Assistant output",
+      "Provider update checks",
+      "Auto-open task panel",
+      "Archive confirmation",
+      "Delete confirmation"
+    ],
+    "webSize": [30, 18],
+    "lynxBeforeSize": [32, 20],
+    "lynxAfterSize": [30, 18],
+    "webX": 1170,
+    "lynxAfterX": 1170,
+    "checkedStatesMatch": [
+      "Project grouping",
+      "Auto-settle inactive threads",
+      "Hide whitespace changes",
+      "Provider update checks",
+      "Delete confirmation"
+    ],
+    "uncheckedSemanticsBoundary": "The Lynx Browser Preview exports null aria-checked for unchecked controls while retaining ui-switch--unchecked; this evidence does not claim semantic or interaction parity for those rows."
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baselineFullFrame": 2.99972,
+    "currentFullFrame": 2.95196
+  },
+  "boundary": "Geometry credit is limited to the eight visible switch leaves. Material remains on its historical metric, and interaction/unchecked semantics are unchanged."
+}
