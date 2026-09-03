@@ -180,6 +180,7 @@ describe("desktop shell interaction contract", () => {
     expect(otherSettingsSource).not.toContain('title="Other clients"');
     expect(otherSettingsSource).toContain("Confirm delete");
     expect(otherSettingsSource).toContain("deleteThread(thread.id)");
+    expect(otherSettingsSource).toContain("ariaLabel={`${item.label} availability`}");
     expect(componentSource("ProviderSettings.tsx")).toContain(
       '<view className="provider-instance-dialog__driver-check">',
     );

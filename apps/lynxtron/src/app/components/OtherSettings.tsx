@@ -336,6 +336,11 @@ export function SourceControlSettings() {
               }
               summary={sourceControlSummaryForLynx(item.summaryParts)}
               muted={!item.enabled}
+              control={
+                item.statusTone !== "muted" ? (
+                  <Toggle ariaLabel={`${item.label} availability`} value={item.enabled} disabled />
+                ) : undefined
+              }
             />
           ))}
         </SettingsSection>
@@ -362,6 +367,11 @@ export function SourceControlSettings() {
               }
               summary={sourceControlSummaryForLynx(item.summaryParts)}
               muted={!item.enabled}
+              control={
+                item.statusTone !== "muted" ? (
+                  <Toggle ariaLabel={`${item.label} availability`} value={item.enabled} disabled />
+                ) : undefined
+              }
             />
           ))}
         </SettingsSection>
