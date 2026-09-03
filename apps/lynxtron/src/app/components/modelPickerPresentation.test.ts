@@ -131,9 +131,11 @@ describe("Lynx model picker presentation", () => {
 
   it("matches the authority row typography and vertical rhythm", () => {
     const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
+    const rowBlock = overrides.match(/\.model-picker-row \{[^}]+\}/)?.[0];
 
     expect(overrides).toContain(".picker-list {\n  display: flex;\n  flex-direction: column;");
     expect(overrides).toContain("gap: 2px;");
+    expect(rowBlock).toContain("border-radius: 8px;");
     expect(overrides).toContain(".model-picker-row-copy {");
     expect(overrides).toContain(".model-picker-row-name {\n  color: var(--foreground);");
     expect(overrides).toContain("font-size: 12px;\n  font-weight: 500;\n  line-height: 17px;");
