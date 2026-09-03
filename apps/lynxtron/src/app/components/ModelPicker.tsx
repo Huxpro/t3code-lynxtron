@@ -30,6 +30,12 @@ import type { ModelInfo } from "../bridge";
 import { useClientSettingsState } from "../state/prefsStore";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { readModelPickerNavigation } from "../state/uiState";
+import { onModelPickerJump } from "../state/modelPickerJump";
+import { useT3ClientState } from "../state/t3Client";
+import {
+  modelPickerJumpCommandForIndex,
+  shortcutLabelForCommand,
+} from "../../../../web/src/keybindings";
 import { Icon } from "./Icon";
 import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
@@ -75,6 +81,7 @@ export function ModelPicker({
   onClose,
 }: ModelPickerProps) {
   const viewport = useViewportSnapshot();
+  const { serverConfig } = useT3ClientState();
   const searchInputRef = useRef<NodesRef>(null);
   const listScrollRef = useMainThreadRef<MainThread.Element>(null);
   const listWheelRef = useMainThreadRef({ offset: 0 });
@@ -175,6 +182,22 @@ export function ModelPicker({
     [activeProvider, context, favoriteModelKeys, models, providers, search],
   );
   const selectedModelKey = resolveModelPickerSelectedKey(currentModelSelection, selectedModel);
+  const jumpLabelByKey = useMemo(() => {
+    const mapping = new Map<string, string>();
+    let selectableIndex = 0;
+    for (const row of rows) {
+      if (row.disabledReason) continue;
+      const command = modelPickerJumpCommandForIndex(selectableIndex);
+      if (!command) break;
+      const label = shortcutLabelForCommand(serverConfig?.keybindings ?? [], command, {
+        platform: "MacIntel",
+        context: { modelPickerOpen: true },
+      });
+      if (label) mapping.set(modelKey(row.model), label);
+      selectableIndex += 1;
+    }
+    return mapping;
+  }, [rows, serverConfig?.keybindings]);
 
   const handleSelect = useCallback(
     (m: ModelInfo) => {
@@ -182,6 +205,16 @@ export function ModelPicker({
       onClose();
     },
     [onSelect, onClose],
+  );
+  useEffect(
+    () =>
+      onModelPickerJump((index) => {
+        const row = rows.filter((candidate) => candidate.disabledReason === null)[index];
+        if (!row) return false;
+        handleSelect(row.model);
+        return true;
+      }),
+    [handleSelect, rows],
   );
   const showNotice = useCallback((title: string, message: string) => {
     setNotice({ title, message });
@@ -414,34 +447,41 @@ export function ModelPicker({
                             : model.providerDisplayName
                         }
                         trailing={
-                          <view
-                            aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-                            className={
-                              disabledReason
-                                ? "picker-row__star-btn picker-row__star-btn--disabled"
-                                : "picker-row__star-btn"
-                            }
-                            data-model-picker-favorite-key={modelKey(model)}
-                            data-model-picker-favorite={favorite ? "true" : "false"}
-                            catchtap={
-                              disabledReason
-                                ? undefined
-                                : (e: any) => {
-                                    e?.stopPropagation?.();
-                                    toggleFavorite(model);
-                                  }
-                            }
-                          >
-                            <text
+                          <>
+                            {jumpLabelByKey.has(modelKey(model)) ? (
+                              <text className="picker-row__jump-label">
+                                {jumpLabelByKey.get(modelKey(model))}
+                              </text>
+                            ) : null}
+                            <view
+                              aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
                               className={
-                                favorite
-                                  ? "picker-row__star picker-row__star--active"
-                                  : "picker-row__star"
+                                disabledReason
+                                  ? "picker-row__star-btn picker-row__star-btn--disabled"
+                                  : "picker-row__star-btn"
+                              }
+                              data-model-picker-favorite-key={modelKey(model)}
+                              data-model-picker-favorite={favorite ? "true" : "false"}
+                              catchtap={
+                                disabledReason
+                                  ? undefined
+                                  : (e: any) => {
+                                      e?.stopPropagation?.();
+                                      toggleFavorite(model);
+                                    }
                               }
                             >
-                              {favorite ? "★" : "☆"}
-                            </text>
-                          </view>
+                              <text
+                                className={
+                                  favorite
+                                    ? "picker-row__star picker-row__star--active"
+                                    : "picker-row__star"
+                                }
+                              >
+                                {favorite ? "★" : "☆"}
+                              </text>
+                            </view>
+                          </>
                         }
                       />
                     );

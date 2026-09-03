@@ -2,10 +2,14 @@ import { isRendererNeutralKeyboardPacket } from "@t3tools/shared/keyboard";
 
 import { navigate } from "../router";
 import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";
-import { dismissOpenSearchOverlay, uiActions } from "./uiState";
+import { dismissOpenSearchOverlay, isModelPickerOpen, uiActions } from "./uiState";
 import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
-import { threadJumpIndexFromCommand } from "../../../../web/src/keybindings";
+import {
+  modelPickerJumpIndexFromCommand,
+  threadJumpIndexFromCommand,
+} from "../../../../web/src/keybindings";
+import { requestModelPickerJump } from "./modelPickerJump";
 import { terminalReturnController } from "./terminalKeyboard";
 import { requestSidebarThreadJump } from "./sidebarThreadNavigation";
 import { updateLynxShortcutModifierState } from "./shortcutModifierState";
@@ -45,7 +49,12 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     return dismissOpenSearchOverlay();
   }
   const state = getT3ClientSnapshot();
-  const command = resolveKeyboardPacketCommand(input, state.serverConfig?.keybindings ?? []);
+  const modelPickerOpen = isModelPickerOpen();
+  const command = resolveKeyboardPacketCommand(input, state.serverConfig?.keybindings ?? [], {
+    modelPickerOpen,
+  });
+  const modelJumpIndex = modelPickerJumpIndexFromCommand(command ?? "");
+  if (modelPickerOpen && modelJumpIndex !== null) return requestModelPickerJump(modelJumpIndex);
   const jumpIndex = threadJumpIndexFromCommand(command ?? "");
   if (jumpIndex !== null) return requestSidebarThreadJump(jumpIndex);
 

@@ -67,4 +67,29 @@ describe("Lynxtron keyboard command resolution", () => {
       ),
     );
   });
+
+  it("prefers model jumps while the model picker is open", () => {
+    const accelerator = DISCRETE_KEYBOARD_ACCELERATORS.find(
+      (entry) => entry.id === "thread-jump-2",
+    );
+    assert.isDefined(accelerator);
+    const packet = createDiscreteKeyboardPacket({
+      accelerator: accelerator!,
+      platform: "darwin",
+      sequence: 100,
+    });
+
+    assert.equal(
+      resolveKeyboardPacketCommand(packet, DEFAULT_RESOLVED_KEYBINDINGS, {
+        modelPickerOpen: true,
+      }),
+      "modelPicker.jump.2",
+    );
+    assert.equal(
+      resolveKeyboardPacketCommand(packet, DEFAULT_RESOLVED_KEYBINDINGS, {
+        modelPickerOpen: false,
+      }),
+      "thread.jump.2",
+    );
+  });
 });

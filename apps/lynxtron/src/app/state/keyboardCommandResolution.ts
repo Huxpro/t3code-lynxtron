@@ -9,6 +9,7 @@ import {
 export function resolveKeyboardPacketCommand(
   input: unknown,
   keybindings: ResolvedKeybindingsConfig,
+  context: Readonly<Record<string, boolean>> = {},
 ): KeybindingCommand | null {
   if (!isRendererNeutralKeyboardPacket(input) || input.type !== "keydown") return null;
   return resolveRendererNeutralShortcutCommand(keyboardPacketToEvent(input), keybindings, {
@@ -18,6 +19,7 @@ export function resolveKeyboardPacketCommand(
       terminalOpen: false,
       previewFocus: false,
       previewOpen: false,
+      ...context,
     },
   });
 }
