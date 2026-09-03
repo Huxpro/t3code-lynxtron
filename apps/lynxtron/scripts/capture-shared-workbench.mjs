@@ -81,7 +81,8 @@ const requestedWebRoute = argValue(
           .replace(/-(loading|error|mutation)$/, "")}`)
     : "/",
 );
-const theme = argValue("--theme", "dark") === "light" ? "light" : "dark";
+const theme =
+  argValue("--theme", stateId.endsWith("-light") ? "light" : "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
   "composer-compact-controls-open": "compact-controls",
   "composer-compact-controls-inline-files-narrow": "compact-controls",
@@ -143,7 +144,10 @@ const expandThinking = hasFlag("--expand-thinking");
 const keepServer = hasFlag("--keep-server");
 const terminalOnlyImages = hasFlag("--terminal-only-images");
 const paneImagesOnly = hasFlag("--pane-images-only");
-const providerDialogStopAt = argValue("--provider-dialog-stop-at", "complete");
+const providerDialogStopAt = argValue(
+  "--provider-dialog-stop-at",
+  stateId === "settings-providers-add-dialog-light" ? "driver" : "complete",
+);
 const timeoutMs = Number(argValue("--timeout-ms", "35000"));
 const selectedModelFixture = {
   instanceId: "codex",
@@ -10193,6 +10197,8 @@ async function captureCell({
       Boolean(webState && lynxState) &&
       webState.semanticRoute === semanticRoute &&
       lynxState.semanticRoute === semanticRoute &&
+      webState.theme === theme &&
+      lynxState.theme === theme &&
       JSON.stringify({
         route: webState.route,
         semanticRoute: webState.semanticRoute,

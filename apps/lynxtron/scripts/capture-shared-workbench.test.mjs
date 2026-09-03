@@ -17,6 +17,16 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "lynxState.semanticRoute === semanticRoute");
   });
 
+  it("infers light evidence and retains the light provider dialog", () => {
+    assert.include(source, 'stateId.endsWith("-light") ? "light" : "dark"');
+    assert.include(source, "webState.theme === theme");
+    assert.include(source, "lynxState.theme === theme");
+    assert.include(
+      source,
+      'stateId === "settings-providers-add-dialog-light" ? "driver" : "complete"',
+    );
+  });
+
   it("filters only expected transport errors during the injected disconnect", () => {
     assert.include(source, "isLifecycleFaultState");
     assert.include(source, "/WebSocket connection .* failed:/");
@@ -1537,9 +1547,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"settings-providers-add-dialog-light": "settings-general"');
     assert.include(source, "function addProviderDialogPairMatches");
     assert.include(source, "async function runAddProviderDialogFlow");
+    assert.include(source, "const providerDialogStopAt = argValue(");
     assert.include(
       source,
-      'const providerDialogStopAt = argValue("--provider-dialog-stop-at", "complete")',
+      'stateId === "settings-providers-add-dialog-light" ? "driver" : "complete"',
     );
     assert.include(source, 'if (providerDialogStopAt === "driver") return { state, timeline }');
     assert.include(source, "addProviderDialogPairMatches(state, width, height, 0)");
