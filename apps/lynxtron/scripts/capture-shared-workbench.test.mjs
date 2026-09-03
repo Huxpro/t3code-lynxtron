@@ -863,6 +863,9 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(source, "isBetaSettingsState &&");
     assert.include(source, ": isBetaSettingsState");
+    assert.include(source, "let webLegacySettingsExpanded = !isBetaSettingsState");
+    assert.include(source, 'step: "restore-scroll"');
+    assert.include(source, "Math.abs(webScrollTop) <= 1");
   });
 
   it("measures Settings controls through one shared row geometry reader", () => {
@@ -875,6 +878,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "controlBox: readElementBox(control)");
     assert.include(workbench, "controlLeafBox: readElementBox(controlLeaf)");
     assert.include(workbench, '[role="switch"]');
+    assert.include(workbench, "function readSettingsScroll(root)");
+    assert.equal(workbench.split("scroll: readSettingsScroll(").length - 1, 2);
     assert.equal(workbench.match(/readSettingsRowGeometry,/g)?.length, 2);
   });
 

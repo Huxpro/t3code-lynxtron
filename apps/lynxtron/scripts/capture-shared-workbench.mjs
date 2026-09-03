@@ -827,9 +827,11 @@ function betaSettingsGeometryMatches(webMetrics, lynxMetrics) {
 }
 
 function legacySidebarSettingsReady(state) {
-  if (stateId !== "settings-beta") return true;
+  if (!isBetaSettingsState) return true;
   const web = state?.web?.settingsMetrics?.legacySidebar;
   const lynx = state?.lynx?.settingsMetrics?.legacySidebar;
+  const webScrollTop = state?.web?.settingsMetrics?.scroll?.scrollTop;
+  const lynxScrollTop = state?.lynx?.settingsMetrics?.scroll?.scrollTop;
   return (
     web?.expanded === true &&
     lynx?.expanded === true &&
@@ -838,7 +840,11 @@ function legacySidebarSettingsReady(state) {
     web.control?.rect?.width > 0 &&
     lynx.control?.rect?.width > 0 &&
     web.checked === "false" &&
-    (lynx.checked === "false" || lynx.controlClass?.includes("ui-switch--unchecked"))
+    (lynx.checked === "false" || lynx.controlClass?.includes("ui-switch--unchecked")) &&
+    typeof webScrollTop === "number" &&
+    typeof lynxScrollTop === "number" &&
+    Math.abs(webScrollTop) <= 1 &&
+    Math.abs(lynxScrollTop) <= 1
   );
 }
 
@@ -6786,8 +6792,8 @@ async function captureCell({
     stateId === "settings-source-control-error"
       ? 0
       : 10;
-  let webLegacySettingsExpanded = stateId !== "settings-beta";
-  let lynxLegacySettingsExpanded = stateId !== "settings-beta";
+  let webLegacySettingsExpanded = !isBetaSettingsState;
+  let lynxLegacySettingsExpanded = !isBetaSettingsState;
   const legacySettingsTimeline = [];
   let transcriptReadyPolls = stateId.startsWith("existing-thread-") ? 0 : 3;
   let pendingRequestReadyPolls =
@@ -6981,6 +6987,37 @@ async function captureCell({
           }
           await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
           legacySettingsTimeline.push({ client: "lynx", step: "expand", point: points.lynx });
+          await delay(100);
+          continue;
+        }
+      }
+      if (webLegacySettingsExpanded && lynxLegacySettingsExpanded) {
+        const scrollState = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const read = (frameId, shadow) => {
+              const frame = document.getElementById(frameId);
+              const doc = frame?.contentWindow?.document;
+              const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+              const scroller = root?.querySelector('.settings-scroll, .settings-page-scroll-fade');
+              if (!frame || !scroller) return null;
+              const before = scroller.scrollTop;
+              if (scroller.scrollTop > 1) scroller.scrollTop = 0;
+              return {
+                before,
+                scrollTop: scroller.scrollTop,
+              };
+            };
+            return { web: read('web-pane', false), lynx: read('lynx-pane', true) };
+          })()`,
+        ).catch(() => null);
+        if ((scrollState?.web?.before ?? 0) > 1 || (scrollState?.lynx?.before ?? 0) > 1) {
+          legacySettingsTimeline.push({
+            client: "both",
+            step: "restore-scroll",
+            scrollState,
+          });
           await delay(100);
           continue;
         }

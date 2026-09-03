@@ -415,6 +415,14 @@ function readSettingsRowGeometry(item) {
   };
 }
 
+function readSettingsScroll(root) {
+  const scroller = root?.querySelector(".settings-scroll, .settings-page-scroll-fade");
+  return {
+    box: readElementBox(scroller),
+    scrollTop: typeof scroller?.scrollTop === "number" ? scroller.scrollTop : null,
+  };
+}
+
 function readLegacySidebarSettings(root) {
   const trigger = root?.querySelector(".settings-legacy-section__trigger");
   const control = root?.querySelector('[data-setting-control="legacy-sidebar"]');
@@ -2540,6 +2548,7 @@ function readLynxPane() {
                 ...(root?.querySelectorAll(".settings-nav__item-label") ?? []),
               ].map((item) => item.textContent?.trim()),
               navigationItems: readSettingsNavigationItems(root),
+              scroll: readSettingsScroll(root),
               rowIds: settingsRowIds.filter((id) => root?.getElementById(id)),
               rows: readSettingsRows(root, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(root),
@@ -3604,6 +3613,7 @@ function readWebPane() {
                 .map((item) => item.textContent?.trim())
                 .filter((label) => SETTINGS_NAV_LABELS.includes(label)),
               navigationItems: readSettingsNavigationItems(doc),
+              scroll: readSettingsScroll(doc),
               rowIds: settingsRowIds.filter((id) => doc.getElementById(id)),
               rows: readSettingsRows(doc, settingsRowIds),
               legacySidebar: readLegacySidebarSettings(doc),
