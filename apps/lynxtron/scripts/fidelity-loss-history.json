@@ -21660,6 +21660,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-desktop-topbar-current",
+      "observedAt": "2026-09-03T18:38:00-04:00",
+      "commit": "329517682",
+      "codeCommit": "17d1b93bfbc1951161fa6b3628a8ff1f18311bff",
+      "codeState": "commit",
+      "label": "Settings desktop topbar parity",
+      "narrative": "The paired Browser authority now explicitly selects the Electron visual branch without defining desktopBridge or changing authentication and capability routing. A hard gate requires the Web marker, matching 1024 by 52 topbars, Settings title anchors, and Restore controls within two pixels. The pre-fix frame is rejected because Lynx used a 24px Restore control. After restoring Web's 28px height, eight-pixel padding, and 16px text line height, both title anchors start at x 276 y 18, both Restore controls start at y 12 and are 28px high, and the remaining 1.47px width delta is font rasterization. Topbar diagnostic YAVG improves from 1.61039 to 1.42988.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same desktop-visual authority harness, snapshot, expanded General route, zero scroll offsets, dark theme, viewport, and Web pixels isolate the Lynx topbar sizing correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-desktop-topbar.json",
+          "classification": "tracked-current",
+          "sha256": "ea6edf8c7659b562a35fd6fac12bde7b1edd882deef9d6787d6274220a3500ef"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 1.546875, 0, 1.46875, 0, 1.46875, 0],
+              "anchorScale": 1024,
+              "confidence": 0.99,
+              "method": "settings-desktop-topbar-geometry",
+              "source": "Electron-visual Web and Lynx share the 52px topbar, title origin and height, and Restore y and height"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-desktop-authority-runtime",
+              "source": "Hard-gated desktop visual marker, matching snapshot and route, zero scroll offsets, exact capture commit, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
