@@ -69,6 +69,10 @@ describe("shared workbench lifecycle fault capture", () => {
       source,
       /const shouldClearWebNotification =[\s\S]*isSidebarThreadHoverPreviewState/,
     );
+    assert.match(
+      source,
+      /const shouldClearWebNotification =[\s\S]*stateId === "existing-thread-idle"/,
+    );
     assert.include(source, "if (isSidebarThreadHoverPreviewState) {");
     assert.include(source, "async function dismissWebProviderNotification");
     assert.include(source, "let clickAttempts = 0");

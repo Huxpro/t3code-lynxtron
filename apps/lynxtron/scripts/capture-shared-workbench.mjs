@@ -280,6 +280,7 @@ const shouldClearWebNotification =
   Boolean(overlay) ||
   Boolean(composerExpectation) ||
   isNewThreadHeroState ||
+  stateId === "existing-thread-idle" ||
   isAddProviderDialogState ||
   isComposerPlanModeState ||
   isProjectSettingsState ||
