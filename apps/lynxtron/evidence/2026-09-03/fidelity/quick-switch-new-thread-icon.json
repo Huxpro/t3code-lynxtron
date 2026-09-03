@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T11:15:00-04:00",
+  "commit": "30e8cb34e4829fe24d4df3a5e2c5ccd865fec529",
+  "stateId": "quick-switch-actions-only",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "query": ">",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "2ee6b809f77df7d67694efbf900f0103dee92b586418db04312e346cab8fa860",
+    "webBundleSha256": "39fb066cbb6e3a87cf52bfc378cbab97bfe44684e3144193e63a3d3b71492738",
+    "lynxBundleSha256": "ebdd8cd0d2feacfdec00f8aeaaafb254674c514d374f1bb03fc121665bd67922",
+    "webImageSha256": "f0825eb4f244a4b31b9652eee63cc16b5c18b2b3240d695bcf3abd3ac0338d12",
+    "lynxImageSha256": "3e3fe4f8462d5f61744e52793400cd6a4f1e28b0a17882b381b02a6f127007d7",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "action": "New thread in...",
+    "webIcon": "square-pen",
+    "lynxIconBefore": "message-square-plus",
+    "lynxIconAfter": "square-pen"
+  },
+  "pixelDiagnostic": {
+    "definition": "ffmpeg blend difference signalstats YAVG; diagnostic only",
+    "baseline": { "fullFrame": 1.82933, "overlay": 2.74069 },
+    "current": { "fullFrame": 1.82461, "overlay": 2.70763 }
+  },
+  "boundary": "The change aligns one renderer-local icon mapping with the Web command definition. Historical material accounting remains unchanged because it uses a different pixel metric. Screenshots remain temporary because the tracked screenshot budget is full."
+}
