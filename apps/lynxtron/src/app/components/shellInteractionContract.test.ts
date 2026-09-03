@@ -793,7 +793,7 @@ describe("desktop shell interaction contract", () => {
     expect(fileBackBlock).toContain("display: flex;");
     expect(overrides).not.toContain(".right-panel--sheet .file-panel__back {");
     expect(overrides).toContain(".file-editor-line__number {");
-    expect(overrides).toContain("width: 49px;");
+    expect(overrides).toContain("width: 48.8px;");
     expect(overrides).toContain("font-size: 13px;");
     expect(overrides).toContain("line-height: 20px;");
     expect(overrides).toContain(

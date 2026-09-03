@@ -9340,7 +9340,7 @@
 }
 .file-editor-line__number {
   flex-shrink: 0;
-  width: 49px;
+  width: 48.8px;
   padding-right: 10px;
   color: rgba(var(--foreground-rgb), 0.4);
   font-family:
