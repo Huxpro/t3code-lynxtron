@@ -1592,8 +1592,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"apps/server/scripts/t3-sqlite-state.ts"');
     assert.include(source, "UPDATE projection_threads");
     assert.include(source, "model_selection_json = json_object");
-    assert.include(source, '"claudeAgent"');
-    assert.include(source, '"claude-fable-5"');
+    assert.include(source, '"codex"');
+    assert.include(source, '"gpt-5.4-mini"');
     assert.include(source, "} finally {");
     assert.include(source, "await rm(mutationReport.backup, { force: true })");
     assert.include(source, "sourceSeedHash: seed?.snapshotSha256 ?? null");

@@ -141,8 +141,8 @@ const paneImagesOnly = hasFlag("--pane-images-only");
 const providerDialogStopAt = argValue("--provider-dialog-stop-at", "complete");
 const timeoutMs = Number(argValue("--timeout-ms", "35000"));
 const selectedModelFixture = {
-  instanceId: "claudeAgent",
-  model: "claude-fable-5",
+  instanceId: "codex",
+  model: "gpt-5.4-mini",
 };
 
 function webCredentialForState({ desktopBootstrapToken, startupToken, stateId: targetStateId }) {
