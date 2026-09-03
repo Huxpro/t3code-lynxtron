@@ -21399,7 +21399,7 @@
       "codeCommit": "8d9e959b095a35d6920c6d44e4597df7b778c8c9",
       "codeState": "commit",
       "label": "Settings navigation row geometry parity",
-      "narrative": "A post-commit light 1280 by 820 shared-server capture fixes the Lynx Settings navigation rows being content-box 255 by 44 touch rows instead of Web's border-box 239 by 32 rows. General through Archive now match Web at x 8 with identical y positions, widths, heights, horizontal padding, and four-pixel spacing. The light Beta alias also runs the real Legacy-section expansion flow instead of failing the dark-only capture predicate. Matching state identity and zero renderer errors remain intact. Diagnostic ffmpeg difference YAVG improves from 4.82526 to 4.51615 full-frame and from 4.10007 to 2.55852 in the 256px navigation rail.",
+      "narrative": "A post-commit light 1280 by 820 shared-server capture fixes the Lynx Settings navigation rows being content-box 255 by 44 touch rows instead of Web's border-box 239 by 32 rows. General through Archive now match Web at x 8 with identical y positions, widths, heights, horizontal padding, and four-pixel spacing. The light Beta alias also runs the real Legacy-section expansion flow instead of failing the dark-only capture predicate. An independent light Archive capture on the evidence commit repeats the exact seven row rectangles with matching state identity and zero renderer errors, proving the shared rail correction is not Beta-fixture-specific. Diagnostic Beta ffmpeg difference YAVG improves from 4.82526 to 4.51615 full-frame and from 4.10007 to 2.55852 in the 256px navigation rail; Archive measures 0.843055 full-frame and 2.50643 in the rail.",
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
@@ -21409,7 +21409,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-navigation-row-geometry.json",
           "classification": "tracked-current",
-          "sha256": "fd16c5e550f9be46769ac33b0440b4166d8304d2610d143c4bbc099c9ed18e05"
+          "sha256": "f24b9c9efcfcad1dc11307224529127559d71b79699cf056cbbe355e2a4771d4"
         }
       ],
       "updates": [
@@ -21431,6 +21431,27 @@
               "confidence": 0.99,
               "method": "settings-beta-light-current-shared-runtime",
               "source": "Same snapshot and semantic route, real Legacy-section flow, matching identity, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        },
+        {
+          "states": ["settings-archive-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "settings-navigation-row-geometry",
+              "source": "Independent Archive capture repeats identical Web and Lynx x, y, width, and height for all seven navigation rows"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-archive-light-current-shared-runtime",
+              "source": "Same snapshot and Archive route, matching identity, zero renderer errors, and clean Browser process disposal"
             }
           }
         }

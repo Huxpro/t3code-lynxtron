@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "observedAt": "2026-09-03T15:54:00-04:00",
   "commit": "8d9e959b095a35d6920c6d44e4597df7b778c8c9",
-  "stateId": "settings-beta-light",
+  "stateIds": ["settings-beta-light", "settings-archive-light"],
   "scope": {
     "authority": "web",
     "candidate": "lynx",
@@ -21,6 +21,18 @@
     "identityMatch": true,
     "stateIdentityMatch": true,
     "rendererErrors": 0
+  },
+  "archiveCorrelation": {
+    "commit": "670e4af39ed6b77e832deace91725042492a89e0",
+    "reportSha256": "95fccf128ed21dfe2089e4df3b64aa9854e70aa1735e41720c10a1f726eb9ccc",
+    "webImageSha256": "a912ce02172dd51f78f301a982f279117c2a3eba6c82c37efb425e0071d063f7",
+    "lynxImageSha256": "0605dcb565c6434d63b709bcbe5bbdfccabbc448435a98efb9c4b3b331f57e33",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "fullFrameYavg": 0.843055,
+    "navigationRailYavg": 2.50643
   },
   "geometry": {
     "rowLabels": [
