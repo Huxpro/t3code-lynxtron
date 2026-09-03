@@ -20503,6 +20503,51 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-detail-gutter-current",
+      "observedAt": "2026-09-03T06:14:04-04:00",
+      "commit": "f21bad3a8",
+      "codeCommit": "f21bad3a8e332e5a55f5ea08a251cf9b41517fda",
+      "codeState": "commit",
+      "label": "File Editor fractional gutter convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture isolates the remaining repeated text-origin drift in File detail. Web resolves its gutter and source origin at 48.796875px and x 789.796875, while Lynx previously quantized them to 49px and x 790. The Lynx gutter now uses the same fractional width in Native CSS and Browser Preview compatibility. On the unchanged snapshot and route, editor MAE falls from 15.249024 to 15.078132 and significant pixels from 15.1487% to 14.9351%; right-panel MAE falls from 13.591210 to 13.506109. Full TextMate grammar, selection, bracket matching, and font-raster differences remain explicit residual.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, route, dark theme, viewport, and source content isolate the fractional gutter correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/file-editor-detail-gutter.json",
+          "classification": "tracked-current",
+          "sha256": "8d6a0a4ee7d98e38ce9f9c9904ac0575e0636050e004286b955bf0da90ddece5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-detail-fractional-gutter-geometry",
+              "source": "Web and Lynx source content both begin at x 789.796875 with 48.796875px gutters; the one-pixel explorer allocation remains the only structural delta"
+            },
+            "material": {
+              "pixel": {
+                "mae": 15.078132,
+                "significantShare": 0.149351
+              },
+              "confidence": 0.99,
+              "method": "file-detail-fractional-gutter-editor-crop",
+              "source": "Same-snapshot 283 by 736 editor crop after aligning the repeated source-text origin; richer Web editor features remain residual"
+            }
+          }
+        }
+      ]
     }
   ]
 }

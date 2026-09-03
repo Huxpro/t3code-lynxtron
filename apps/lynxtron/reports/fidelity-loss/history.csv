@@ -324,3 +324,4 @@ settings-provider-dialog-light-native-current,2026-09-03T02:14:29-04:00,4094b40e
 settings-beta-mutation-native-current,2026-09-03T03:22:14-04:00,77a51f5ef,commit,Settings Beta mutation current Native correlation,0.181747,0.181747,0.039542,0.148059,0.851941,0.810143
 right-panel-terminal-native-split-reconciliation-current,2026-09-03T03:35:00-04:00,8b1c5d3d4,commit,Right Panel Terminal Native split residual reconciliation,0.181593,0.181593,0.039362,0.148059,0.851941,0.810297
 new-thread-light-provider-banner-current,2026-09-03T04:57:42-04:00,df6c74341,commit,New Thread light provider banner convergence,0.180573,0.180573,0.03932,0.147035,0.852965,0.811317
+file-editor-detail-gutter-current,2026-09-03T06:14:04-04:00,f21bad3a8,commit,File Editor fractional gutter convergence,0.180549,0.180549,0.039291,0.147035,0.852965,0.811341
