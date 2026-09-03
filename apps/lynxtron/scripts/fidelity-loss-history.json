@@ -21625,6 +21625,41 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-dark-flat-sidebar-grain-current",
+      "observedAt": "2026-09-03T17:51:00-04:00",
+      "commit": "83744bb3b",
+      "codeCommit": "83744bb3b8c309fe97b399356da98fb792b4378a",
+      "codeState": "commit",
+      "label": "Settings dark flat-sidebar grain parity",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture replaces the flat sidebar's legacy black-backed grain with a 64px precomposed grain on the Web card layer. Full-frame diagnostic YAVG improves from 5.65795 to 2.99694 and the 256px sidebar crop improves from 16.1453 to 2.84026. A transparent 256px prototype was rejected after adding about 310 KiB; the retained variant adds about 11 KiB. A matching light capture remains exactly 2.94507 YAVG before and after because light hides grain, while both themes retain expanded Legacy content, zero scroll offsets, matching state identity, and zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after dark captures share one immutable snapshot, expanded General route, zero scroll offsets, theme, viewport, content, and Web authority. The light control capture proves the source-driven grain choice does not affect light rendering."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-dark-flat-sidebar-grain.json",
+          "classification": "tracked-current",
+          "sha256": "4ce8f9ad919d8b0502bf8c0ca8e9ec09cf72d8cbda2d348247304503ea54e35b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-beta-dark-current-shared-runtime",
+              "source": "Same snapshot and expanded General route, zero scroll offsets, exact bundle, matching identity, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

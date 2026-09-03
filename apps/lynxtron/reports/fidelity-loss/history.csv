@@ -349,3 +349,4 @@ settings-row-rhythm-current,2026-09-03T16:20:00-04:00,dd5495081,commit,Settings 
 settings-select-controls-current,2026-09-03T16:39:00-04:00,5581d484d,commit,Settings select control parity,0.179748,0.179747,0.038691,0.146735,0.853265,0.812142
 settings-switch-controls-current,2026-09-03T16:53:00-04:00,ebbc1ac95,commit,Settings switch control parity,0.179747,0.179747,0.038689,0.146735,0.853265,0.812143
 settings-dark-flat-sidebar-current,2026-09-03T17:29:00-04:00,13f3fb49a,commit,Settings dark flat-sidebar surface,0.179747,0.179747,0.038689,0.146735,0.853265,0.812143
+settings-dark-flat-sidebar-grain-current,2026-09-03T17:51:00-04:00,83744bb3b,commit,Settings dark flat-sidebar grain parity,0.179747,0.179747,0.038689,0.146735,0.853265,0.812143
