@@ -1334,6 +1334,7 @@ describe("desktop shell interaction contract", () => {
     );
     expect(detailsPopoverBlock).not.toContain("top:");
     expect(detailsPopoverBlock).not.toContain("left:");
+    expect(detailsPopoverBlock).toContain("width: max-content;");
     expect(overrides).not.toContain(".sidebar-v2-details-dismiss {");
     expect(tooltipSource).toContain("const hoverInsideRef = useRef(false);");
     expect(tooltipSource).toContain("if (hoverInsideRef.current === inside) return;");
