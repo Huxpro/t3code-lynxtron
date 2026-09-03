@@ -33,6 +33,7 @@ export function KeybindingsSettings() {
         }
       >
         <view className="keybindings-settings__notice">
+          <Icon name="info" size={14} color="#f59e0b" />
           <text className="keybindings-settings__notice-text">
             Keybindings are read-only on Lynxtron until renderer keyboard capture is verified.
           </text>

@@ -50,4 +50,11 @@ describe("Lynx icon raster contracts", () => {
     assert.include(iconSource, '"#60a5fa"');
     assert.include(generatedSource, '"pencil-ruler@16@#60a5fa"');
   });
+
+  it("generates the amber Keybindings information icon", () => {
+    assert.include(scriptSource, "info:");
+    assert.include(scriptSource, '["info", 14, "#f59e0b"]');
+    assert.include(iconSource, '| "info"');
+    assert.include(generatedSource, '"info@14@#f59e0b"');
+  });
 });

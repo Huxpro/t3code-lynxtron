@@ -33,6 +33,7 @@ const COLORS = [
   "#3b82f6",
   "#60a5fa",
   "#f87171",
+  "#f59e0b",
 ];
 
 function nearest(list: number[], v: number): number {
@@ -127,6 +128,7 @@ export type IconName =
   | "check"
   | "copy"
   | "circle-alert"
+  | "info"
   | "eye"
   | "globe"
   | "hammer"

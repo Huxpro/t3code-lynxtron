@@ -204,6 +204,7 @@ describe("Lynx Settings route projection", () => {
     expect(keybindings).toContain("data-keybinding-conflicts={JSON.stringify(row.conflicts)}");
     expect(keybindings).toContain('name="triangle-alert"');
     expect(keybindings).toContain("Keybindings are read-only on Lynxtron");
+    expect(keybindings).toContain('<Icon name="info" size={14} color="#f59e0b" />');
     expect(keybindings).not.toContain("Keyboard support is limited on Lynxtron.");
     expect(overrides).toContain(".settings-panel--keybindings {");
     expect(overrides).toContain("max-width: 948px;");
