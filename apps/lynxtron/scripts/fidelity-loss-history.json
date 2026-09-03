@@ -20847,6 +20847,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-driver-selection-indicator-current",
+      "observedAt": "2026-09-03T10:20:00-04:00",
+      "commit": "085d1c755",
+      "codeCommit": "085d1c755e8e46aa39d4e16c3125fd2652ad2d51",
+      "codeState": "commit",
+      "label": "Add Provider driver selection indicator convergence",
+      "narrative": "A post-commit dark 1280 by 820 shared-server capture stops the Add Provider wizard on the Driver step and replaces Lynx's inline blue check glyph with the same trailing 20px blue circular check anatomy used by Web. Both dialogs remain an exact 576 by 538 match, all nine 259 by 44 driver cards retain identical geometry and labels, the dual-CDP interaction gate passes, and renderer errors remain zero. Diagnostic ffmpeg difference YAVG improves from 3.86434 to 3.84625 full-frame and from 6.41124 to 6.34994 for the dialog crop; historical material accounting remains unchanged because it uses a different pixel metric.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, Providers route, dark theme, viewport, selected Codex driver, and exact dialog geometry isolate the selected-driver indicator change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/provider-driver-selection-indicator.json",
+          "classification": "tracked-current",
+          "sha256": "1e8c24b443d7aede2b5d58e9f5c3b217df0a611a187da1a3ddcd750f8782f05f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-driver-selection-anatomy",
+              "source": "Both selected Codex cards expose a trailing 20px blue circular check indicator"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 259,
+              "confidence": 0.99,
+              "method": "provider-driver-card-layout",
+              "source": "All nine driver cards match at 259 by 44 inside an exact 576 by 538 dialog"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-driver-current-shared-runtime",
+              "source": "Same snapshot and route, matched Driver-stage semantics, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
