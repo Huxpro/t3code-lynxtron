@@ -281,6 +281,7 @@ const shouldClearWebNotification =
   Boolean(composerExpectation) ||
   isNewThreadHeroState ||
   stateId === "existing-thread-idle" ||
+  semanticRoute.startsWith("settings-") ||
   isAddProviderDialogState ||
   isComposerPlanModeState ||
   isProjectSettingsState ||
