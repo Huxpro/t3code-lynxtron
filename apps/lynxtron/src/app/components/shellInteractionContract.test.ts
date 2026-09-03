@@ -672,6 +672,10 @@ describe("desktop shell interaction contract", () => {
     expect(componentSource("QuickSwitch.tsx")).toContain(
       "icon={<ProjectFileIcon path={entry.path} />}",
     );
+    expect(componentSource("QuickSwitch.tsx")).toContain('? "Open file"');
+    expect(componentSource("QuickSwitch.tsx")).toContain(
+      '<text>{fileMode ? "Back" : "Close"}</text>',
+    );
     expect(overrides).toContain(".project-file-icon--typescript");
     expect(overrides).toContain(".project-file-icon--image");
     expect(files).toContain("uiActions.openFileSurface(path)");

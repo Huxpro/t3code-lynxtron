@@ -1011,7 +1011,9 @@ export function QuickSwitch({
                 ? "Add"
                 : view === "add-project-destination"
                   ? "Clone"
-                  : "Select"}
+                  : fileMode
+                    ? "Open file"
+                    : "Select"}
             </text>
           </KbdGroup>
           {view !== "root" ? (
@@ -1022,7 +1024,7 @@ export function QuickSwitch({
           ) : null}
           <KbdGroup className="quick-switch-footer-group">
             <Kbd>Esc</Kbd>
-            <text>Close</text>
+            <text>{fileMode ? "Back" : "Close"}</text>
           </KbdGroup>
         </PaletteFooterSurface>
       </HostView>
