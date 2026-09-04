@@ -323,7 +323,7 @@ function readComposerInteractionSeparator(root, interactionControl) {
   const controlRect = interactionControl.getBoundingClientRect();
   const separators = [
     ...root.querySelectorAll(
-      ".composer-toolbar-row [data-slot='separator'], .composer-interaction-mode-separator",
+      ".composer-toolbar-row [data-slot='separator'], .composer-toolbar-sep, .composer-interaction-mode-separator",
     ),
   ]
     .map((element) => ({ element, box: readElementBox(element) }))

@@ -845,12 +845,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'queryReport.rows[0]?.interaction_mode === "plan"');
     assert.include(source, 'kind: "thread-interaction-mode"');
     assert.include(source, "const planModeReady = composerPlanModeMatches(state)");
+    assert.include(source, "settled_override = 'active'");
+    assert.include(source, 'queryReport.rows[0]?.settled_override === "active"');
     assert.include(source, "const finalPlanModeReady = composerPlanModeMatches(state)");
     assert.include(source, "finalPlanModeReady,");
     assert.include(source, "planMode:");
     assert.include(source, "interactionMode: webState.interactionMode");
     assert.include(source, "interactionMode: lynxState.interactionMode");
     assert.include(workbench, "function readComposerInteractionSeparator");
+    assert.include(workbench, ".composer-toolbar-sep");
     assert.include(workbench, 'item.getAttribute("data-composer-control") === "interaction"');
     assert.include(workbench, 'composerInteractionControl?.textContent?.trim() === "Plan"');
     assert.include(workbench, "interactionSeparator: readComposerInteractionSeparator");

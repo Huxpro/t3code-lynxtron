@@ -5980,7 +5980,9 @@ WHERE project_id = '${escapedProjectId}'`,
   const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
   const sql = isComposerPlanModeState
     ? `UPDATE projection_threads
-SET interaction_mode = 'plan'
+SET interaction_mode = 'plan',
+    settled_override = 'active',
+    settled_at = NULL
 WHERE thread_id = '${escapedThreadId}';`
     : requiresRunningRuntime
       ? (() => {
@@ -6023,7 +6025,9 @@ WHERE thread_id = '${escapedThreadId}';`;
   const mutationReport = JSON.parse(mutation.stdout);
   try {
     const verificationSql = isComposerPlanModeState
-      ? `SELECT interaction_mode FROM projection_threads WHERE thread_id = '${escapedThreadId}'`
+      ? `SELECT interaction_mode, settled_override, settled_at
+FROM projection_threads
+WHERE thread_id = '${escapedThreadId}'`
       : requiresRunningRuntime
         ? `SELECT status, json_extract(runtime_payload_json, '$.activeTurnId') AS active_turn_id
 FROM provider_session_runtime
@@ -6041,7 +6045,10 @@ WHERE thread_id = '${escapedThreadId}'`
     }
     const queryReport = JSON.parse(query.stdout);
     const fixtureMatches = isComposerPlanModeState
-      ? queryReport.rows?.length === 1 && queryReport.rows[0]?.interaction_mode === "plan"
+      ? queryReport.rows?.length === 1 &&
+        queryReport.rows[0]?.interaction_mode === "plan" &&
+        queryReport.rows[0]?.settled_override === "active" &&
+        queryReport.rows[0]?.settled_at === null
       : requiresRunningRuntime
         ? queryReport.rows?.length === 1 &&
           queryReport.rows[0]?.status === "running" &&
@@ -6062,6 +6069,8 @@ WHERE thread_id = '${escapedThreadId}'`
           preparedSha256: prepared.sha256,
           threadId,
           interactionMode: "plan",
+          settledOverride: "active",
+          settledAt: null,
           backupRemoved: true,
         }
       : requiresRunningRuntime
@@ -12185,8 +12194,10 @@ async function captureCell({
       finalAddProviderDialogReady,
       finalBetaMutationReady,
       finalBackgroundActivityMutationReady,
+      finalSettingsModelMutationReady,
       finalConnectionsMutationReady,
       finalTranscriptReady,
+      finalProviderStatusBannerReady,
       finalPendingRequestReady,
       multiStepQuestionStage,
       commandPaletteNavigationStage,
