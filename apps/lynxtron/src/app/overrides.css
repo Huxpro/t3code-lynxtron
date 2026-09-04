@@ -4203,8 +4203,8 @@
   align-items: center;
   height: 24px;
   gap: 8px;
-  opacity: 1;
-  visibility: visible;
+  opacity: 0;
+  visibility: hidden;
 }
 .transcript-message-meta--visible {
   opacity: 1;

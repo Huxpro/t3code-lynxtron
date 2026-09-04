@@ -877,6 +877,13 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".file-editor-line__number {");
     expect(overrides).toContain("width: 48.8px;");
     expect(overrides).toContain("font-size: 13px;");
+    expect(overrides).toMatch(
+      /\.transcript-message-meta \{[\s\S]*opacity: 0;[\s\S]*visibility: hidden;/,
+    );
+    expect(overrides).toMatch(
+      /\.transcript-message-meta--visible \{[\s\S]*opacity: 1;[\s\S]*visibility: visible;/,
+    );
+    expect(overrides).toContain(".transcript-user-row:hover > .transcript-message-meta");
     expect(overrides).toContain(".archived-threads-empty-row .settings-row__text {\n  gap: 6px;");
     expect(overrides).toContain(
       ".archived-threads-empty-row .settings-row__desc {\n  margin-top: 0;",
