@@ -21923,6 +21923,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-radius-current",
+      "observedAt": "2026-09-03T20:33:38-04:00",
+      "commit": "ad9d60b078ebe556f7c31302d90413b51a02b5ff",
+      "codeCommit": "ad9d60b078ebe556f7c31302d90413b51a02b5ff",
+      "codeState": "commit",
+      "label": "File Picker radius parity",
+      "narrative": "A current-head run without an explicit overlay first produced an invalid no-overlay pass, so the File Picker state now defaults to its required shipping overlay and can no longer certify an empty surface. With the state hard-gated, Web and Lynx share the same snapshot, thread, GPT-5.6-Sol model, 65 unselected rows, exact 576 by 420 panel, and zero renderer errors. File Picker now overrides the generic dark Quick Switch 12px radius with Web's 18px dialog authority. Top-corner SSIM improves from 0.912491 to 0.917985, panel SSIM from 0.876358 to 0.877244, and full-frame SSIM from 0.944667 to 0.945031.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, route, thread, model, dark theme, viewport, Web pixels, rows, exact overlay geometry, and zero-error runtime. The separate harness commit only prevents no-overlay false passes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/file-picker-radius.json",
+          "classification": "tracked-current",
+          "sha256": "244f369f4f33fa4927e1b63d729c73d80bfb6342216bcd6a9d91084402c63847"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "file-picker-panel-radius-and-geometry",
+              "source": "Panel x, y, width, and height are exact and both panels now resolve to an 18px radius"
+            },
+            "material": {
+              "residual": 0.122756,
+              "confidence": 0.99,
+              "method": "file-picker-panel-ssim",
+              "source": "1 - panel SSIM 0.877244 after matching the File Picker radius; focused top-corner SSIM is 0.917985"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-file-picker-runtime",
+              "source": "Same snapshot, thread, model, route, explicit File Picker overlay, 65 rows, exact geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
