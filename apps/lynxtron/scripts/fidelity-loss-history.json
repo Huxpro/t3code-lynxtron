@@ -23002,6 +23002,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-light-material-current",
+      "observedAt": "2026-09-04T10:00:00-04:00",
+      "commit": "53e85257752ff29b0453eb379a081d9399500ff3",
+      "codeState": "commit",
+      "label": "Provider dialog light material correction",
+      "narrative": "A current same-snapshot light Driver-stage capture supersedes the old visual-review estimate. Web and Lynx use the same 576x538 dialog geometry, Driver-step semantics, four Coming Soon brand marks, route, viewport, and zero-error runtime. The exact dialog crop measures SSIM 0.772390, MAE 7.122234, and 8.1852% significant pixels. This raises the recorded material residual from the older ungrounded 0.08 estimate to the measured 0.227610; it is evidence correction rather than a product regression.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The previous material value came from visual review without a retained pixel metric. The current pair has exact dialog geometry, one snapshot, explicit light theme, and matching state identity."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/provider-dialog-light-current.json",
+          "classification": "tracked-current",
+          "sha256": "01849acb9b57078fa3b6b5daa622352279343b65cda7aed0a4a05ed53dcea6b9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-geometry",
+              "source": "Both light Driver dialogs match exactly at 352,141,576,538"
+            },
+            "material": {
+              "residual": 0.22761,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-ssim",
+              "source": "1 - exact dialog SSIM 0.772390; MAE 7.122234 and 8.1852% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-runtime",
+              "source": "Same snapshot, explicit light theme, exact Driver semantics and geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

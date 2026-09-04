@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T10:00:00-04:00",
+  "captureCommit": "53e85257752ff29b0453eb379a081d9399500ff3",
+  "stateId": "settings-providers-add-dialog-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers",
+    "dialogStage": "driver",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "6916dda3572c9a0a11889dc6ff9a444a3c8caf07f535c726d9428435688b8672",
+    "webBundleSha256": "00de13657e8ca111cff76bfdaf383bc17258711e7f357d740303e59dda2444cc",
+    "lynxBundleSha256": "f228b10723b0a6032df1cd3c9d9bafa7bcd8bfdfcd2c4d0c9cd273c9320a3324",
+    "webImageSha256": "13c840c42fa3e7bd718376945706ec53886a206ee94757675640c9d3169ef204",
+    "lynxImageSha256": "743377e94989e5527b1f22a9057655b33bf390fab7b69151cc237c3191e13206",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "dialogMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webDialog": [352, 141, 576, 538],
+    "lynxDialog": [352, 141, 576, 538]
+  },
+  "pixelMetric": {
+    "definition": "SSIM and mean absolute RGB error over the exact 576x538 light Driver dialog",
+    "ssim": 0.77239,
+    "mae": 7.122234,
+    "significantShare": 0.081852
+  },
+  "boundary": "This is a current material measurement, not a before/after product claim. The older 0.08 visual-review residual is superseded because it was not pixel-grounded. Native light interaction remains independently bounded by its existing exact-owned evidence. Screenshots remain temporary because the tracked screenshot budget is full."
+}
