@@ -10237,6 +10237,7 @@
   box-shadow: 0 24px 64px -24px rgba(0, 0, 0, 0.65);
 }
 .palette-panel--files {
+  border-radius: 18px;
   max-height: 420px;
 }
 .lynx-web-preview .palette-panel--files {

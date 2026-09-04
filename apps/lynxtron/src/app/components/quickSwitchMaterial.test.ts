@@ -54,6 +54,7 @@ describe("Quick Switch material", () => {
     const filesResults = rule(".qs-results--files");
 
     expect(filesPanel).toContain("max-height: 420px;");
+    expect(filesPanel).toContain("border-radius: 18px;");
     expect(filesPanel).not.toContain("box-sizing: border-box;");
     expect(browserFilesPanel).toContain("max-height: 418px;");
     expect(filesResults).toContain("height: 330px;");
