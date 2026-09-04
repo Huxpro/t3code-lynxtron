@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T15:53:17-04:00",
+  "productCommit": "7b5853932674abf055da0e448d76e1282ea57733",
+  "stateId": "settings-source-control",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-source-control",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "57226db2db6ac9044febd03f3d33af69b6ecac3b1778eac987beba18f0185e0c",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "0bb553c0bc4fa29e04b88e8bae275bf41b1237aedd0fcc3ba3c0559844e52e75",
+    "webImageSha256": "7d98e024fc5bbe3fb9e91c91ff20ce90484cece15b043d3359e52a1cd7a52fef",
+    "lynxImageSha256": "e471fdfd5c5207bfa9bc10724d82482466d2f29f716df2a41524ba407f8eeb70",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webBadgeRects": [
+      [419.71875, 228.84375, 70.65625, 16],
+      [434.84375, 637.90625, 94.375, 16]
+    ],
+    "lynxBadgeRects": [
+      [412.40625, 228.84375, 73.46875, 16],
+      [428.84375, 637.90625, 96.84375, 16]
+    ],
+    "matchedHeight": 16
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg full-frame SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": { "ssim": 0.884862, "mae": 5.63102, "significantShare": 0.048178 },
+    "current": { "ssim": 0.88684, "mae": 5.495788, "significantShare": 0.046509 }
+  },
+  "boundary": "Coming Soon and Not authenticated now render as measured 16px warning pills with Web's padding, radius, type, and material. Remaining horizontal offsets come from preceding label shaping. Provider icons, switches, and broader text shaping remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}

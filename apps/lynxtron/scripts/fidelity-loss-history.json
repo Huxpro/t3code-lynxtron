@@ -23781,6 +23781,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-badge-material-current",
+      "observedAt": "2026-09-04T15:53:17-04:00",
+      "commit": "7b5853932674abf055da0e448d76e1282ea57733",
+      "codeCommit": "7b5853932674abf055da0e448d76e1282ea57733",
+      "codeState": "commit",
+      "label": "Settings Source Control badge material parity",
+      "narrative": "The shared warning Badge semantics were present, but Lynx did not retain a stable style target and rendered Coming Soon and Not authenticated as nearly plain inline text. A source-control badge class restores Web's 16px height, 3px horizontal padding, 4px radius, 10px/500 typography, and warning material. Full-frame SSIM improves from 0.884862 to 0.886840, MAE from 5.631020 to 5.495788, and significant pixels from 4.8178% to 4.6509%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, six provider rows, exact outer geometry, and zero renderer errors. Product changes are limited to stable badge targeting and measured warning-pill tokens."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/source-control-badge-material.json",
+          "classification": "tracked-current",
+          "sha256": "fd943f5bcc4bccde6a5bf8ab9594563128d94307e8af43ec3fd2be8cb1552b5d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [7.3125, 0, 2.8125, 0, 6, 0, 2.46875, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "source-control-badge-geometry",
+              "source": "Both badges match Web's 16px height; remaining width and x offsets follow preceding cross-renderer label shaping"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "source-control-badge-typography",
+              "source": "Both badges match 10px size, 500 weight, 13.3333px line height, and bundled DM Sans"
+            },
+            "material": {
+              "residual": 0.11316,
+              "confidence": 0.99,
+              "method": "settings-source-control-full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.886840; MAE 5.495788 and 4.6509% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-source-control-shared-runtime",
+              "source": "Same snapshot, route, theme, six provider rows, exact outer geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
