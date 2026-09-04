@@ -111,6 +111,7 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "saveRetry: readElementBox(saveRetry)");
     assert.include(source, "contentEditable?.innerText ??");
     assert.include(source, "readComposedText(editor)");
+    assert.include(source, 'node.tagName === "STYLE" || node.tagName === "SCRIPT"');
     assert.include(source, 'querySelectorAll(".file-editor-line__content")');
     assert.include(source, 'projectedLines.map((line) => readComposedText(line)).join("\\n")');
     assert.include(source, "composedElements.find((element)");

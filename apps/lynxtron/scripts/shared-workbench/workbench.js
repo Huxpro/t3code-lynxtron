@@ -1204,6 +1204,7 @@ function readComposedText(element) {
       return;
     }
     if (node.nodeType !== 1) return;
+    if (node.tagName === "STYLE" || node.tagName === "SCRIPT") return;
     for (const child of node.childNodes) visit(child);
     if (node.shadowRoot) {
       for (const child of node.shadowRoot.childNodes) visit(child);
