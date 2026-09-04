@@ -7661,7 +7661,7 @@
   min-width: 0;
   padding: 0 10px;
   column-gap: 8px;
-  border-radius: 8px;
+  border-radius: 10px;
   box-sizing: border-box;
 }
 .provider-instance-dialog__step--active {
@@ -7791,6 +7791,17 @@
 .provider-instance-dialog__driver--selected {
   border-color: var(--primary);
   background-color: rgba(59, 130, 246, 0.12);
+}
+.theme-dark .provider-instance-dialog__driver {
+  border-color: rgba(var(--foreground-rgb), 0.06);
+  background-color: rgba(var(--foreground-rgb), 0.03);
+}
+.theme-dark .provider-instance-dialog__driver--disabled {
+  background-color: rgba(var(--foreground-rgb), 0.02);
+}
+.theme-dark .provider-instance-dialog__driver--selected {
+  border-color: var(--primary);
+  background-color: rgba(var(--primary-rgb), 0.15);
 }
 .provider-instance-dialog__driver-check {
   position: absolute;

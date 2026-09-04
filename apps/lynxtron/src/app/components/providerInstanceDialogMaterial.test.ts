@@ -48,4 +48,17 @@ describe("Provider instance dialog material", () => {
     expect(description).toContain("flex-shrink: 0;");
     expect(steps).toContain("flex-shrink: 0;");
   });
+
+  it("matches the dark wizard step and driver-card material", () => {
+    const step = rule(".provider-instance-dialog__step");
+    const driver = rule(".theme-dark .provider-instance-dialog__driver");
+    const disabledDriver = rule(".theme-dark .provider-instance-dialog__driver--disabled");
+    const selectedDriver = rule(".theme-dark .provider-instance-dialog__driver--selected");
+
+    expect(step).toContain("border-radius: 10px;");
+    expect(driver).toContain("border-color: rgba(var(--foreground-rgb), 0.06);");
+    expect(driver).toContain("background-color: rgba(var(--foreground-rgb), 0.03);");
+    expect(disabledDriver).toContain("background-color: rgba(var(--foreground-rgb), 0.02);");
+    expect(selectedDriver).toContain("background-color: rgba(var(--primary-rgb), 0.15);");
+  });
 });
