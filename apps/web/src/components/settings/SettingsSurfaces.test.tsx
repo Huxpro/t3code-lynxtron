@@ -80,7 +80,7 @@ describe("AppearanceSettingsSurface", () => {
 
     expect(markup.match(/aria-disabled="true"/g)).toHaveLength(3);
     expect(markup.match(/data-settings-unavailable="true"/g)).toHaveLength(3);
-    expect(markup).toContain('id="theme" tabindex="-1"');
+    expect(markup).toMatch(/id="theme"[^>]+tabindex="-1"/);
     expect(markup).not.toMatch(/id="theme"[^>]+aria-disabled/);
   });
 });

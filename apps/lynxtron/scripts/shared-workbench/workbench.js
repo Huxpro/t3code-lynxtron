@@ -2636,7 +2636,7 @@ function readLynxPane() {
                     })),
                   }),
                 ),
-                settingsRows: [...(root?.querySelectorAll(".settings-row") ?? [])].map(
+                settingsRows: [...(root?.querySelectorAll('[data-settings-row="true"]') ?? [])].map(
                   readSettingsRowGeometry,
                 ),
                 loadingRows: [
@@ -3703,7 +3703,7 @@ function readWebPane() {
                     })),
                   }),
                 ),
-                settingsRows: [...doc.querySelectorAll(".settings-row")].map(
+                settingsRows: [...doc.querySelectorAll('[data-settings-row="true"]')].map(
                   readSettingsRowGeometry,
                 ),
                 loadingRows: [...doc.querySelectorAll('[data-slot="skeleton"]')].map((item) => ({

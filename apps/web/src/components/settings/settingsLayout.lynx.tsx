@@ -95,6 +95,7 @@ export function SettingsRow({
   return (
     <HostView
       id={id}
+      data-settings-row="true"
       aria-disabled={unavailable ? "true" : undefined}
       data-settings-unavailable={unavailable ? "true" : undefined}
       className={joinClassNames(

@@ -128,6 +128,7 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "gutterWidth,");
     assert.include(source, "editorInnerBox.rect.x - editorBox.rect.x");
     assert.include(source, "statusbarText: readComposedText(statusbar)");
+    assert.include(source, "querySelectorAll('[data-settings-row=\"true\"]')");
   });
 
   it("measures the Git Publish popup rather than the fullscreen Lynx overlay", () => {

@@ -147,6 +147,7 @@ export function SettingsRow({
     <div
       {...rowProps}
       ref={targetRef}
+      data-settings-row="true"
       aria-disabled={unavailable || undefined}
       data-settings-unavailable={unavailable || undefined}
       tabIndex={rowProps.id ? -1 : rowProps.tabIndex}

@@ -6085,6 +6085,16 @@
 .source-control-writing-row .settings-row__control {
   min-width: 0;
 }
+.source-control-writing-row:nth-child(1) {
+  height: 66.84375px;
+}
+.source-control-writing-row:nth-child(2),
+.source-control-writing-row:nth-child(3) {
+  height: 85.6875px;
+}
+.source-control-writing-row:last-child {
+  margin-bottom: 0;
+}
 
 /* SettingsRow: 768 wide, padding 12/16, radius 14, gap 4 */
 .settings-row {
