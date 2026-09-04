@@ -36474,7 +36474,7 @@
       "commit": "9c154d534",
       "committedAt": "2026-09-04T18:27:30-04:00",
       "confidence": 0.99,
-      "delta": 0.00003,
+      "delta": -0.000021,
       "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, Appearance route, content, controls, theme, viewport, exact row boxes, and zero renderer errors. The product change only replaces an ineffective margin with a scoped flex gap.",
       "subject": "Settings Appearance copy gap parity",
       "surfaces": [
@@ -62989,10 +62989,10 @@
       "commit": "9c154d534",
       "committedAt": "2026-09-04T18:27:30-04:00",
       "confidence": 0.99,
-      "delta": 0.00003,
+      "delta": -0.000021,
       "measuredCheckpoint": "settings-appearance-copy-gap-current",
-      "rawLoss": 0.178267,
-      "smoothedLoss": 0.178298,
+      "rawLoss": 0.178216,
+      "smoothedLoss": 0.178287,
       "subject": "Settings Appearance copy gap parity"
     }
   ],
@@ -468903,13 +468903,13 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-04/fidelity/settings-appearance-copy-gap.json",
           "classification": "tracked-current",
-          "sha256": "2171d33520de64bc6a93946a9d01f713c2f015ca9eb740f36d1062dd9efbe298"
+          "sha256": "f3e9743eb598204e327a75a26308893c98703023e2ac079dd1dda9430ed7cfbe"
         }
       ],
       "confidence": 0.853047,
       "evidenceDebt": 0.146953,
-      "loss": 0.178267,
-      "observedResidual": 0.036709,
+      "loss": 0.178216,
+      "observedResidual": 0.036649,
       "byDimension": {
         "content": {
           "confidence": 0.987749,
@@ -468932,8 +468932,8 @@
         "material": {
           "confidence": 0.640165,
           "evidenceDebt": 0.359835,
-          "loss": 0.459405,
-          "observedResidual": 0.155538
+          "loss": 0.459042,
+          "observedResidual": 0.154972
         },
         "interaction": {
           "confidence": 0.833469,
@@ -468976,8 +468976,8 @@
         "settings": {
           "confidence": 0.807595,
           "evidenceDebt": 0.192405,
-          "loss": 0.218794,
-          "observedResidual": 0.032676
+          "loss": 0.218505,
+          "observedResidual": 0.032318
         },
         "review": {
           "confidence": 0.859878,
@@ -469808,16 +469808,6 @@
           "weight": 4
         },
         {
-          "confidence": 0.98376,
-          "evidenceDebt": 0.01624,
-          "group": "settings",
-          "id": "settings-appearance",
-          "label": "Settings · Appearance",
-          "loss": 0.056247,
-          "observedResidual": 0.040667,
-          "weight": 3
-        },
-        {
           "confidence": 0.9688,
           "evidenceDebt": 0.0312,
           "group": "overlays",
@@ -469825,6 +469815,16 @@
           "label": "Sidebar · Thread Hover Preview",
           "loss": 0.055579,
           "observedResidual": 0.025164,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "settings",
+          "id": "settings-appearance",
+          "label": "Settings · Appearance",
+          "loss": 0.051018,
+          "observedResidual": 0.035353,
           "weight": 3
         },
         {
@@ -469888,8 +469888,8 @@
           "weight": 2
         }
       ],
-      "bestLoss": 0.178237,
-      "improvementFromBaseline": 0.813623
+      "bestLoss": 0.178216,
+      "improvementFromBaseline": 0.813674
     }
   ],
   "provenance": {

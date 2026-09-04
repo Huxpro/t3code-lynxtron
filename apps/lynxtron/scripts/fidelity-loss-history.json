@@ -24050,7 +24050,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-04/fidelity/settings-appearance-copy-gap.json",
           "classification": "tracked-current",
-          "sha256": "2171d33520de64bc6a93946a9d01f713c2f015ca9eb740f36d1062dd9efbe298"
+          "sha256": "f3e9743eb598204e327a75a26308893c98703023e2ac079dd1dda9430ed7cfbe"
         }
       ],
       "updates": [
@@ -24069,10 +24069,10 @@
               "source": "Three row boxes remain exact and title and description origins converge within 0.15625px"
             },
             "material": {
-              "residual": 0.128498,
+              "residual": 0.034188,
               "confidence": 0.99,
-              "method": "appearance-rows-crop-ssim",
-              "source": "1 - rows-crop SSIM 0.871502; MAE 3.882878 and 5.5232% significant pixels; full-frame SSIM 0.954803"
+              "method": "appearance-settings-content-ssim",
+              "source": "1 - settings-content SSIM 0.965812; focused rows SSIM 0.871502, MAE 3.882878, 5.5232% significant pixels, and full-frame SSIM 0.954803"
             },
             "runtime": {
               "residual": 0,

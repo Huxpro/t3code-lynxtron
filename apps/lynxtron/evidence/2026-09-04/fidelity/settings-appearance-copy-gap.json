@@ -35,6 +35,7 @@
     "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the exact 896x228 Appearance rows crop",
     "baseline": { "ssim": 0.866464, "mae": 4.1244, "significantShare": 0.057807 },
     "current": { "ssim": 0.871502, "mae": 3.882878, "significantShare": 0.055232 },
+    "settingsContent": { "baseline": 0.963298, "current": 0.965812 },
     "fullFrame": { "baseline": 0.952921, "current": 0.954803 }
   },
   "boundary": "The fix replaces the ineffective text margin with a four-pixel flex gap only for the three Appearance rows. The truthful unavailable-control capability difference and Native evidence remain unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
