@@ -1053,6 +1053,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".project-action-field__icon {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 36px;\n  height: 32px;",
     );
+    expect(overrides).toContain("background-color: var(--background);\n  box-sizing: border-box;");
     expect(overrides).toContain(".project-action-field:first-child {\n  margin-top: 0;");
   });
 

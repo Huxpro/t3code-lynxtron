@@ -10945,7 +10945,7 @@
   flex-direction: column;
   margin-top: 16px;
   padding-top: 4px;
-  gap: 6px;
+  gap: 7px;
 }
 .project-action-field:first-child {
   margin-top: 0;
@@ -10969,6 +10969,7 @@
   border-color: var(--input);
   border-radius: 8px;
   background-color: var(--background);
+  box-sizing: border-box;
 }
 .project-action-field__input--name {
   flex-grow: 1;
