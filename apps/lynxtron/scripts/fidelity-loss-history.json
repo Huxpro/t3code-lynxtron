@@ -22024,6 +22024,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-dark-radius-current",
+      "observedAt": "2026-09-03T22:03:52-04:00",
+      "commit": "85b199c98ef7e2532b80da4474a265686e5e84e4",
+      "codeCommit": "85b199c98ef7e2532b80da4474a265686e5e84e4",
+      "codeState": "commit",
+      "label": "Quick Switch dark radius parity",
+      "narrative": "A current-head actions-only capture verifies six identical action rows, exact 576 by 326 panel geometry, query >, dark theme, matching state identity, and zero renderer errors. The generic Lynx Quick Switch shell still used a 12px corner while Web's rounded-2xl dialog authority resolved to 18px. Matching that radius improves top-edge SSIM from 0.964350 to 0.969233, panel SSIM from 0.938345 to 0.939316, and full-frame SSIM from 0.961457 to 0.961818. File Picker and light Quick Switch already used 18px through scoped rules; backdrop blur remains an explicit platform rendering boundary.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share one immutable snapshot, route, query, dark theme, viewport, Web pixels, six-row content, exact overlay geometry, and zero-error runtime. Only the generic Lynx palette radius changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/quick-switch-dark-radius.json",
+          "classification": "tracked-current",
+          "sha256": "deb9d860e03c97919ae2eae04d3c063df18371dd3e009dc3b99c11f07c0c5dbf"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-panel-radius-and-geometry",
+              "source": "Panel x, y, width, and height are exact and both panels now resolve to an 18px radius"
+            },
+            "material": {
+              "residual": 0.060684,
+              "confidence": 0.99,
+              "method": "quick-switch-panel-ssim",
+              "source": "1 - panel SSIM 0.939316 after matching the dark Quick Switch radius; focused top-edge SSIM is 0.969233"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-actions-current-shared-runtime",
+              "source": "Same snapshot, route, query, six action rows, exact overlay geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
