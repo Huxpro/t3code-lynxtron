@@ -22768,6 +22768,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-inline-search-favicon-current",
+      "observedAt": "2026-09-04T07:40:00-04:00",
+      "commit": "015c739f2",
+      "codeCommit": "d0702397a",
+      "codeState": "commit",
+      "label": "Sidebar inline-search favicon geometry parity",
+      "narrative": "A repaired same-state Browser capture now reaches the exact thread query in both renderers with the same two New thread results and matching 239x36 row boxes. Renderer-neutral favicon diagnostics localized the remaining two-pixel title offset: Web rendered each explicitly size-4 favicon at 16x16, while the Lynx ProjectFavicon wrapper hard-coded 14x14. The wrapper now accepts an optional size while retaining its 14px default, and the search row requests 16px. Favicon and title anchors now match exactly. The fixed search crop improves from 9.973582 to 8.227395 RGB MAE and from 36.0221% to 35.3455% significant pixels. Because this crop differs from the older result-region definition, the historical material residual remains unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures use the same fixture contract, query, result identities, route, dark theme, viewport, and Web authority geometry. The product change only honors the search result's explicit 16px favicon size."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/sidebar-inline-search-favicon.json",
+          "classification": "tracked-current",
+          "sha256": "c3debf4812f1cd7d4f88f13fcc44ffc8ccd080644eb0b33b7cbdf6d7d229b54c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-inline-search"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "sidebar-search-row-favicon-title-geometry",
+              "source": "Both row rectangles, favicon rectangles, and title x/y anchors now match Web exactly"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-search-current-runtime",
+              "source": "Exact query, two matching result titles, same state identity, zero renderer errors, and clean owned-process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
