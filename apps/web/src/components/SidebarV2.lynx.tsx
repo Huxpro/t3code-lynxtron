@@ -814,6 +814,7 @@ export default function SidebarV2() {
                   environmentId={thread.environmentId}
                   cwd={project?.workspaceRoot ?? ""}
                   className="sidebar-v2-search-result__favicon size-4 shrink-0"
+                  size={16}
                 />
                 <HostText className="sidebar-v2-search-result__title min-w-0 flex-1 truncate">
                   {thread.title}

@@ -1198,6 +1198,12 @@ describe("desktop shell interaction contract", () => {
     );
 
     expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
+    expect(faviconSource).toContain("size = 14");
+    expect(faviconSource).toContain("size={size}");
+    expect(sidebarSource).toContain(
+      'className="sidebar-v2-search-result__favicon size-4 shrink-0"',
+    );
+    expect(sidebarSource).toContain("size={16}");
     expect(sidebarSource).toContain("topStatus={statusPresentation(status, thread)}");
     expect(sidebarSource).toContain('case "working":');
     expect(sidebarSource).toContain('label: "Working"');
