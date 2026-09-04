@@ -11074,12 +11074,13 @@
   align-items: center;
   justify-content: center;
   height: 32px;
-  padding: 0 12px;
+  padding: 0 11px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--input);
   border-radius: 8px;
   background-color: transparent;
+  box-sizing: border-box;
 }
 .project-action-dialog__button--primary {
   border-color: var(--primary);
@@ -11090,9 +11091,10 @@
 }
 .project-action-dialog__button-label {
   color: var(--foreground);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
-  font-family: var(--font-sans);
+  font-family: "T3 DM Sans", var(--font-sans);
+  line-height: 20px;
 }
 .project-action-dialog__button--primary .project-action-dialog__button-label {
   color: var(--primary-foreground);

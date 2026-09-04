@@ -1057,6 +1057,12 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".project-action-field:first-child {\n  margin-top: 0;");
     expect(overrides).toContain(".project-action-option {");
     expect(overrides).toContain("min-height: 38px;\n  margin-top: 16px;");
+    expect(overrides).toMatch(
+      /\.project-action-dialog__button \{[\s\S]*height: 32px;[\s\S]*padding: 0 11px;[\s\S]*box-sizing: border-box;/,
+    );
+    expect(overrides).toMatch(
+      /\.project-action-dialog__button-label \{[\s\S]*font-size: 14px;[\s\S]*font-weight: 500;[\s\S]*font-family: "T3 DM Sans", var\(--font-sans\);[\s\S]*line-height: 20px;/,
+    );
   });
 
   it("restores the Settings rail allocation in Lynx-for-Web", () => {
