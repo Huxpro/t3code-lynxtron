@@ -516,7 +516,12 @@ function ProviderCard({
       onToggleExpanded={toggleExpand}
       toggleAriaLabel={`Toggle ${entry.displayName} details`}
       expandChevron={
-        <Icon name={expanded ? "chevron-down" : "chevron-right"} size={16} color="#a1a1aa" />
+        <Icon
+          name="chevron-down"
+          size={16}
+          color="#a1a1aa"
+          className={expanded ? "provider-instance-card__chevron-icon--expanded" : undefined}
+        />
       }
       toggle={
         <Toggle

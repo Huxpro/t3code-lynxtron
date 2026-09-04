@@ -7344,6 +7344,9 @@
   border-radius: 8px;
   box-sizing: border-box;
 }
+.provider-instance-card__chevron-icon--expanded {
+  transform: rotate(180deg);
+}
 .provider-card__badge {
   display: flex;
   align-items: center;

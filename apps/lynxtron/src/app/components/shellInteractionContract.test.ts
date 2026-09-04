@@ -384,6 +384,11 @@ describe("desktop shell interaction contract", () => {
     expect(providers).toContain("updateProvider(instanceId)");
     expect(providers).toContain('label="Add provider instance"');
     expect(providers).toContain('label="Refresh provider status"');
+    expect(providers).toContain('name="chevron-down"');
+    expect(providers).not.toContain('expanded ? "chevron-down" : "chevron-right"');
+    expect(overrides).toContain(
+      ".provider-instance-card__chevron-icon--expanded {\n  transform: rotate(180deg);",
+    );
     expect(providers).toContain("export function AddProviderInstanceDialog");
     expect(providers).toContain("data-provider-instance-dialog");
     expect(overrides).toContain(
