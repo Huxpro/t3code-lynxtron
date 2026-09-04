@@ -6411,6 +6411,12 @@
   flex-direction: row;
   align-items: center;
 }
+.archived-threads-empty-title {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
 .settings-section__title-wrap {
   flex-grow: 1;
 }

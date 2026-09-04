@@ -696,6 +696,7 @@ export function ArchiveSettings() {
               ),
           })),
         }))}
+        emptyIcon={<Icon name="archive" size={14} color="#818181" />}
         emptyTitle="No archived threads"
         emptyDescription="Archived threads will appear here."
       />

@@ -126,12 +126,14 @@ export interface ArchivedThreadGroupItem {
 export function ArchivedThreadsSurface({
   anchorId,
   groups,
+  emptyIcon,
   emptyTitle,
   emptyDescription,
 }: {
   /** Settings-search target on the empty section or first populated group. */
   readonly anchorId?: string | undefined;
   readonly groups: ReadonlyArray<ArchivedThreadGroupItem>;
+  readonly emptyIcon?: ReactNode;
   /** Loading/error/empty content for the zero-group state. */
   readonly emptyTitle: ReactNode;
   readonly emptyDescription: ReactNode;
@@ -139,7 +141,15 @@ export function ArchivedThreadsSurface({
   if (groups.length === 0) {
     return (
       <SettingsSection id={anchorId} title="Archived threads">
-        <SettingsRow title={emptyTitle} description={emptyDescription} />
+        <SettingsRow
+          title={
+            <HostView className="archived-threads-empty-title inline-flex items-center gap-2">
+              {emptyIcon}
+              <HostText>{emptyTitle}</HostText>
+            </HostView>
+          }
+          description={emptyDescription}
+        />
       </SettingsSection>
     );
   }

@@ -1067,18 +1067,18 @@ export function ArchivedThreadsPanel() {
           })),
         }))}
         emptyTitle={
-          <span className="inline-flex items-center gap-2">
-            {isLoadingArchive ? (
-              <LoaderIcon className="size-3.5 animate-spin text-muted-foreground" />
-            ) : (
-              <ArchiveIcon className="size-3.5 text-muted-foreground" />
-            )}
-            {isLoadingArchive
-              ? "Loading archived threads"
-              : archiveError
-                ? "Could not load archived threads"
-                : "No archived threads"}
-          </span>
+          isLoadingArchive
+            ? "Loading archived threads"
+            : archiveError
+              ? "Could not load archived threads"
+              : "No archived threads"
+        }
+        emptyIcon={
+          isLoadingArchive ? (
+            <LoaderIcon className="size-3.5 animate-spin text-muted-foreground" />
+          ) : (
+            <ArchiveIcon className="size-3.5 text-muted-foreground" />
+          )
         }
         emptyDescription={
           isLoadingArchive

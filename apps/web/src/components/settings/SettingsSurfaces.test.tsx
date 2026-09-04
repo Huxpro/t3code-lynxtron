@@ -90,6 +90,7 @@ describe("ArchivedThreadsSurface", () => {
     const markup = renderToStaticMarkup(
       <ArchivedThreadsSurface
         groups={[]}
+        emptyIcon={<span data-empty-icon />}
         emptyTitle="No archived threads"
         emptyDescription="Archived threads will appear here."
       />,
@@ -97,6 +98,8 @@ describe("ArchivedThreadsSurface", () => {
     expect(markup).toContain("Archived threads");
     expect(markup).toContain("No archived threads");
     expect(markup).toContain("Archived threads will appear here.");
+    expect(markup).toContain("data-empty-icon");
+    expect(markup).toContain("archived-threads-empty-title");
   });
 
   it("renders project groups with thread rows and actions", () => {
