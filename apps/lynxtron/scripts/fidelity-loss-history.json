@@ -23883,6 +23883,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-default-search-chrome-current",
+      "observedAt": "2026-09-04T16:38:10-04:00",
+      "commit": "f9ef91c516f1a4e9b7d7a596cbcc749c196529df",
+      "codeCommit": "f9ef91c516f1a4e9b7d7a596cbcc749c196529df",
+      "codeState": "commit",
+      "label": "Model Picker search chrome parity",
+      "narrative": "Lynx added an internal close button and reserved 40px at the search row's right edge, while Web exposes no such control and uses 8px padding. Removing the non-authority button preserves the exact 360x346 overlay, selected GPT-5.6-Sol model, five-provider rail, seven-row order, outside-pointer dismissal, and selection dismissal. Panel SSIM improves from 0.907582 to 0.909213, MAE from 4.565326 to 4.525434, and full-frame SSIM from 0.953603 to 0.953840.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, snapshot, thread, model, provider order, row order, route, theme, viewport, exact overlay geometry, and zero renderer errors. Product changes remove only the extra close affordance and its reserved search padding."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/model-picker-search-chrome.json",
+          "classification": "tracked-current",
+          "sha256": "ad208a30855951e13b68df0896bac67de465ee9a0e7710cb2dd01f89e202ef57"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-picker-default-semantic-content",
+              "source": "Selected model, provider rail, seven filtered rows, and search copy match; non-authority close chrome is removed"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "model-picker-overlay-and-search-geometry",
+              "source": "Overlay and search-row rectangles match exactly"
+            },
+            "material": {
+              "residual": 0.090787,
+              "confidence": 0.99,
+              "method": "model-picker-panel-ssim",
+              "source": "1 - panel SSIM 0.909213; full-frame SSIM 0.953840 and panel MAE 4.525434"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-picker-default-shared-runtime",
+              "source": "Same snapshot, thread, selected model, provider order, seven rows, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

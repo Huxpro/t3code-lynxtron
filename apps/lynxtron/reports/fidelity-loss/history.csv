@@ -398,3 +398,4 @@ settings-keybindings-row-striping-current,2026-09-04T15:22:40-04:00,27924300767f
 settings-source-control-copy-gap-current,2026-09-04T15:37:24-04:00,d0c087946b628727657e9cadeef19aa035916845,commit,Settings Source Control copy rhythm parity,0.178768,0.1786,0.037289,0.146959,0.853041,0.813122
 settings-source-control-badge-material-current,2026-09-04T15:53:17-04:00,7b5853932674abf055da0e448d76e1282ea57733,commit,Settings Source Control badge material parity,0.178763,0.1786,0.03729,0.146953,0.853047,0.813127
 settings-archive-light-empty-rhythm-current,2026-09-04T16:07:39-04:00,9da9361696ad5a3ce4d523444f04053b3d8b993b,commit,Settings Archive light empty rhythm parity,0.178741,0.1786,0.037264,0.146953,0.853047,0.813149
+model-picker-default-search-chrome-current,2026-09-04T16:38:10-04:00,f9ef91c516f1a4e9b7d7a596cbcc749c196529df,commit,Model Picker search chrome parity,0.178714,0.1786,0.037232,0.146953,0.853047,0.813176
