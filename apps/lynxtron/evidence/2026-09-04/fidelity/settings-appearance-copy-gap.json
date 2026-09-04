@@ -38,5 +38,11 @@
     "settingsContent": { "baseline": 0.963298, "current": 0.965812 },
     "fullFrame": { "baseline": 0.952921, "current": 0.954803 }
   },
+  "lightRegression": {
+    "definition": "The same direct copy-gap ablation repeated in the matched 1280x820 light Appearance state",
+    "rows": { "baselineSsim": 0.867454, "currentSsim": 0.877371 },
+    "fullFrame": { "baselineSsim": 0.964206, "currentSsim": 0.966109 },
+    "geometryStable": true
+  },
   "boundary": "The fix replaces the ineffective text margin with a four-pixel flex gap only for the three Appearance rows. The truthful unavailable-control capability difference and Native evidence remain unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
 }
