@@ -40,6 +40,7 @@ describe("shared workbench lifecycle fault capture", () => {
       assert.include(source, `"${stateId}": "model-picker"`);
     }
     assert.include(source, '"model-picker-query": "pickle"');
+    assert.include(source, '"model-picker-provider-rail": "opencode"');
   });
 
   it("gates the provider status banner anatomy and single dismiss action", () => {

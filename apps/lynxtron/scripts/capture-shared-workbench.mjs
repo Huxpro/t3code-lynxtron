@@ -120,7 +120,10 @@ const requiresShortcutInput =
   stateId !== "add-project-sources" &&
   stateId !== "sidebar-v2-new-thread-projects";
 const query = argValue("--query", defaultQueryByStateId[stateId] ?? "");
-const providerId = argValue("--provider-id", "");
+const defaultProviderIdByStateId = {
+  "model-picker-provider-rail": "opencode",
+};
+const providerId = argValue("--provider-id", defaultProviderIdByStateId[stateId] ?? "");
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
