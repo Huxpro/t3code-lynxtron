@@ -10403,6 +10403,17 @@
   font-size: 12px;
   line-height: 16px;
 }
+.quick-switch-action-row > .lynx-kbd {
+  height: 16px;
+  padding-left: 0;
+  padding-right: 0;
+  background-color: transparent;
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 1.2px;
+  box-sizing: border-box;
+}
 .quick-switch-file-row--detailed {
   height: 48px;
   min-height: 48px;
