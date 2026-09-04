@@ -23692,6 +23692,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-row-striping-current",
+      "observedAt": "2026-09-04T15:22:40-04:00",
+      "commit": "27924300767fe372fdf7f9b4d7e9493c6d7e21a3",
+      "codeCommit": "27924300767fe372fdf7f9b4d7e9493c6d7e21a3",
+      "codeState": "commit",
+      "label": "Settings Keybindings row striping parity",
+      "narrative": "The shared 45-row Keybindings projection preserved Web's alternating-row semantic order, but Lynx rendered every row transparent. Explicit alternate-row state restores Web's subtle material in both themes. Dark full-frame SSIM improves from 0.871799 to 0.874894 and MAE from 5.438651 to 5.262568. A direct light ablation improves SSIM from 0.869891 to 0.870124 and MAE from 4.426589 to 4.254492. A nominal 14px/400 command-label experiment worsened pixels and was fully reverted, preserving the calibrated Lynx shaping compensation.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Dark and light before/after comparisons use byte-identical Web authority pixels, the same snapshot, route, viewport, 45 canonical bindings, and zero renderer errors. Product changes are limited to deterministic alternate-row classes and theme materials."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/keybindings-row-striping.json",
+          "classification": "tracked-current",
+          "sha256": "455c5fefcb94f28e81b552d83f186959efedb121a1fc71169e775f5a3284f98f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.125106,
+              "confidence": 0.99,
+              "method": "settings-keybindings-dark-full-frame-ssim",
+              "source": "1 - dark SSIM 0.874894; light corroborates at SSIM 0.870124"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-keybindings-shared-runtime",
+              "source": "Same snapshot, route, theme-specific state, 45 canonical bindings, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
