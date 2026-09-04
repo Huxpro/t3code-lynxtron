@@ -921,17 +921,18 @@ function readSidebarSearchRows(elements) {
 function readPaletteRows(elements) {
   return [...elements].slice(0, 6).map((row) => {
     const copy = row.querySelector(".palette-row__copy");
+    const titleLine = row.querySelector(".palette-row__title-line");
+    const trailing = (copy ?? titleLine)?.nextElementSibling;
     return {
       box: readElementBox(row),
       icon: readElementBox(row.querySelector("[data-file-icon-tone], svg, img, x-image")),
       copy: readElementBox(copy),
-      titleLine: readElementBox(row.querySelector(".palette-row__title-line")),
+      titleLine: readElementBox(titleLine),
       title: readElementBox(row.querySelector(".palette-row__title")),
       description: readElementBox(row.querySelector(".palette-row__description")),
-      trailing: readElementBox(copy?.nextElementSibling),
+      trailing: readElementBox(trailing),
       trailingLeaf: readElementBox(
-        copy?.nextElementSibling?.querySelector("button, x-view, x-text, text") ??
-          copy?.nextElementSibling,
+        trailing?.querySelector("button, kbd, x-view, x-text, text") ?? trailing,
       ),
     };
   });

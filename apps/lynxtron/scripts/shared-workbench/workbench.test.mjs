@@ -90,7 +90,7 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, '".palette-row__copy"');
     assert.include(source, '".palette-row__title"');
     assert.include(source, '".palette-row__description"');
-    assert.include(source, "copy?.nextElementSibling");
+    assert.include(source, "const trailing = (copy ?? titleLine)?.nextElementSibling");
     assert.include(source, "trailingLeaf: readElementBox");
   });
 
