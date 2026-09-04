@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T08:28:00-04:00",
+  "captureCommit": "06c9ae5091bd100e371490d729280a5cc646d335",
+  "stateId": "composer-plan-mode",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "themes": ["dark", "light"],
+    "semanticRoute": "existing-thread",
+    "sourceSnapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "preparedSnapshotSha256": "91a14e3aae415ea37278dbfc0e7313216fe26d0da875106ecb0f5aa2f4f4c76f",
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "interactionMode": "plan",
+    "settledOverride": "active"
+  },
+  "bundles": {
+    "webSha256": "00de13657e8ca111cff76bfdaf383bc17258711e7f357d740303e59dda2444cc",
+    "lynxSha256": "86ca1def72f7394a1685d7033874234bc9d89367e2000cbee1cc9ff6a0b7ef63"
+  },
+  "dark": {
+    "reportSha256": "6e369e421a8b6516d14e34b7230b934b5342b6ea6816024a308926ed881b4884",
+    "webImageSha256": "8be6fab0a01d142cb9844fb219e2735637f215b5b909db6e567e9d7ae2ffeb0f",
+    "lynxImageSha256": "00a2bee61449e30247151b8f175b13d5968563574442ce8a6c0ae6de9d0a1130",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "light": {
+    "reportSha256": "a54fdb4c9212262e407dfac80c22fc79c2b6238943638981727d682ce9a5af40",
+    "webImageSha256": "ae98a5aa681de5933b3ae1c649d8d822b1dee61483a1646c754c631d3a203dfe",
+    "lynxImageSha256": "1498deedd004e222ad6ec23415e02751031cc4c6a0978728e853850c6339bef7",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "web": {
+      "separator": [767.5, 731, 1, 16],
+      "control": [774.5, 725, 71.625, 28],
+      "icon": [785.5, 731, 16, 16],
+      "label": [807.5, 729, 27.625, 20]
+    },
+    "lynx": {
+      "separator": [768.53125, 731, 1, 16],
+      "control": [775.53125, 725, 72.5, 28],
+      "icon": [786.53125, 731, 16, 16],
+      "label": [808.53125, 729, 28.5, 20]
+    },
+    "separatorToControlGapDelta": 0
+  },
+  "boundary": "The remaining 1.03125px absolute offset accumulates from subpixel text shaping across the preceding dynamic model, option, and runtime controls. Their shared toolbar origin and total allocation match exactly, so no fixed-width product override is applied. Existing Native and material evidence remains unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
+}

@@ -22861,6 +22861,50 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-plan-mode-current-geometry",
+      "observedAt": "2026-09-04T08:28:00-04:00",
+      "commit": "06c9ae5091bd100e371490d729280a5cc646d335",
+      "codeState": "commit",
+      "label": "Composer Plan mode current geometry",
+      "narrative": "Current dark and light paired captures now use an explicitly active, non-settled canonical thread with persisted Plan mode, and the renderer-neutral separator diagnostic recognizes the shared ComposerToolbarRow separator. Both themes pass with the same state identity and zero renderer errors. The old 10.03125px separator and 19.03125px control offsets are stale: current separator, control, icon, and label anchors differ by 1.03125px, the Plan label width differs by 0.875px, and the separator-to-control gap matches exactly. The shared toolbar origin and total allocation already match, so the remaining subpixel accumulation from dynamic text shaping is retained instead of hidden by fixed widths. Native and material evidence are unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The previous geometry evidence used an older footer allocation. Current dark and light captures use one explicit active Plan fixture and recognize the shared separator element."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/composer-plan-mode-current-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "4d61efd1f7d5c3e83ee34f93b3448c500ad9fb588d33bc7b7358330e2ee7ac80"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-plan-mode"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                1.03125, 0, 0, 0, 1.03125, 0, 0.875, 0, 1.03125, 0, 0, 0, 1.03125, 0, 0.875, 0
+              ],
+              "relationResiduals": [0],
+              "anchorScale": 72,
+              "confidence": 0.99,
+              "method": "current-plan-control-geometry",
+              "source": "Dark and light separator, control, icon, and label geometry with exact separator-to-control spacing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "active-plan-mode-browser-readiness",
+              "source": "Both themes use the same active non-settled thread and persisted Plan mode, pass all capture gates, report zero errors, and dispose owned processes"
+            }
+          }
+        }
+      ]
     }
   ]
 }
