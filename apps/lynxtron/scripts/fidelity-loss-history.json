@@ -22519,6 +22519,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "connections-section-rhythm-current",
+      "observedAt": "2026-09-04T04:04:00-04:00",
+      "commit": "742190d94fce28434ae8c7db996f9cb366f3c51a",
+      "codeCommit": "e1e903099",
+      "codeState": "commit",
+      "label": "Connections section rhythm parity",
+      "narrative": "A current same-snapshot Connections capture failed its dedicated geometry gate because Lynx rendered the This environment row at 67px while Web's row plus four-pixel section gap occupied 85.6875px. That shifted the complete Remote environments section upward by 18.6875px even though the 232px empty-state card and its internal offsets already matched. A dedicated 81.6875px row height preserves the shared four-pixel gap and makes both section and rows rectangles exact. The strict gate passes and the fixed Connections-region MAE improves from 4.673724 to 3.055977 with zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one immutable snapshot, route, dark theme, viewport, empty remote-environment state, and Web authority frame. The product change is limited to the current-environment row height."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/connections-section-rhythm.json",
+          "classification": "tracked-current",
+          "sha256": "4f9a7b0f0de5600157612ddd08191c9542a7f6c6e57825e51fee0111996e90da"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-connections"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "connections-sections-and-rows",
+              "source": "This environment and Remote environments section and rows x, y, width, and height now match Web exactly"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connections-current-shared-runtime",
+              "source": "Same snapshot and route, empty remote-environment state, strict Connections geometry gate, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
