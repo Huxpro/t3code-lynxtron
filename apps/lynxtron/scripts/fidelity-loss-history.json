@@ -23733,6 +23733,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-copy-gap-current",
+      "observedAt": "2026-09-04T15:37:24-04:00",
+      "commit": "d0c087946b628727657e9cadeef19aa035916845",
+      "codeCommit": "d0c087946b628727657e9cadeef19aa035916845",
+      "codeState": "commit",
+      "label": "Settings Source Control copy rhythm parity",
+      "narrative": "The shared source-control copy stack already supplies Web's four-pixel headline-to-summary gap, but Lynx added another four-pixel summary margin. Removing the duplicate aligns all three compact inner layouts at 43px versus Web's 42.84375px and all three wrapped layouts at 62px versus 61.6875px. Full-frame SSIM improves from 0.873727 to 0.884862, MAE from 6.028717 to 5.631020, and significant pixels from 5.1840% to 4.8178%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, six provider rows, exact outer geometry, and zero renderer errors. The product change removes one measured duplicate spacing rule."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/source-control-copy-gap.json",
+          "classification": "tracked-current",
+          "sha256": "1da48d5ac14d5e9ebc261fb4ca9179b4d450a19c2f53f5ac2ecbca153c5c5506"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.15625, 0.15625, 0.15625, 0.3125, 0.3125, 0.3125],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "source-control-copy-layout-height",
+              "source": "All six copy-stack heights align within 0.3125px after removing the duplicate gap"
+            },
+            "material": {
+              "residual": 0.115138,
+              "confidence": 0.99,
+              "method": "settings-source-control-full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.884862; MAE 5.631020 and 4.8178% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-source-control-shared-runtime",
+              "source": "Same snapshot, route, theme, six provider rows, exact outer geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
