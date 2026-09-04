@@ -1035,6 +1035,9 @@ describe("desktop shell interaction contract", () => {
       ".settings-topbar__restore {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  height: 28px;\n  padding: 0 8px;\n  box-sizing: border-box;",
     );
     expect(componentSource("KeybindingsSettings.tsx")).toContain("Read-only · {rows.length}");
+    expect(keybindingsSettingsSource).toContain(
+      '<Icon name="triangle-alert" size={14} color="#f59e0b" />',
+    );
     expect(componentSource("KeybindingsSettings.tsx")).not.toContain(
       "Keybindings are read-only on Lynxtron until renderer keyboard capture is verified.",
     );

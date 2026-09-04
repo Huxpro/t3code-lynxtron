@@ -264,6 +264,7 @@ for (const [name, size] of [
 for (const [name, size, color] of [
   ["search", 16, "#818181"],
   ["info", 14, "#f59e0b"],
+  ["triangle-alert", 14, "#f59e0b"],
   ["panel-left-close", 18, "#818181"],
   ["settings", 18, "#818181"],
 ]) {

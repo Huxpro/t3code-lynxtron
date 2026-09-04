@@ -77,7 +77,7 @@ export function KeybindingsSettings() {
               }
             >
               {row.conflicts.length > 0 ? (
-                <Icon name="triangle-alert" size={14} color="#a1a1aa" />
+                <Icon name="triangle-alert" size={14} color="#f59e0b" />
               ) : null}
             </view>
           </view>
