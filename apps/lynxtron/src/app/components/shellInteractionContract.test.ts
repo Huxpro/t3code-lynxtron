@@ -414,6 +414,7 @@ describe("desktop shell interaction contract", () => {
     expect(providers).toContain("COMING_SOON_PROVIDER_DRIVERS");
     expect(providers).toContain("<ProviderBrandIcon driverKind={option.driver} size={16} />");
     expect(componentSource("ProviderBrandIcon.tsx")).toContain('case "githubCopilot":');
+    expect(componentSource("ProviderBrandIcon.tsx")).toContain('case "gemini":');
     expect(componentSource("ProviderBrandIcon.tsx")).toContain('case "acpRegistry":');
     expect(componentSource("ProviderBrandIcon.tsx")).toContain('case "piAgent":');
     expect(providers).toContain("useProviderPresence");

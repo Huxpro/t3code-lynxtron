@@ -866,9 +866,7 @@ export function AddProviderInstanceDialog({
                       className="provider-instance-dialog__driver provider-instance-dialog__driver--disabled"
                       aria-disabled="true"
                     >
-                      {option.driver === "gemini" ? null : (
-                        <ProviderBrandIcon driverKind={option.driver} size={16} />
-                      )}
+                      <ProviderBrandIcon driverKind={option.driver} size={16} />
                       <text className="provider-instance-dialog__driver-label">{option.label}</text>
                       <text className="provider-instance-dialog__coming-soon">Coming Soon</text>
                     </view>

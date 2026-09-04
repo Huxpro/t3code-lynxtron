@@ -15,6 +15,8 @@ function providerBrandIconName(driverKind: string | null): IconName {
       return "opencode";
     case "githubCopilot":
       return "github-copilot";
+    case "gemini":
+      return "gemini";
     case "acpRegistry":
       return "acp-registry";
     case "piAgent":

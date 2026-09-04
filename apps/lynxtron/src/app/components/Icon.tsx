@@ -98,6 +98,7 @@ export type IconName =
   | "grok"
   | "opencode"
   | "github-copilot"
+  | "gemini"
   | "acp-registry"
   | "pi-agent"
   | "t3-wordmark"
@@ -163,6 +164,7 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverr
       name === "grok" ||
       name === "opencode" ||
       name === "github-copilot" ||
+      name === "gemini" ||
       name === "acp-registry" ||
       name === "pi-agent" ||
       name === "t3-wordmark"
