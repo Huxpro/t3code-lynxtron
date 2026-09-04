@@ -363,3 +363,4 @@ settings-appearance-row-rhythm-current,2026-09-03T22:28:27-04:00,d2d828698f90937
 quick-switch-empty-radius-current,2026-09-03T22:51:08-04:00,b0fed36564a21eff5da09063616b40a1905a2829,commit,Quick Switch empty-state radius parity,0.178934,0.178934,0.038544,0.146017,0.853983,0.812956
 quick-switch-query-radius-current,2026-09-03T23:06:06-04:00,e4cc88a175f499d028b324663e0b0ccd28e1bb0d,commit,Quick Switch query radius parity,0.178921,0.178921,0.03853,0.146017,0.853983,0.812969
 quick-switch-default-radius-current,2026-09-03T23:16:00-04:00,cc5919727891a4c8cfaf753e3a05a22306ea1325,commit,Quick Switch default radius parity,0.178888,0.178888,0.038491,0.146017,0.853983,0.813002
+provider-dialog-secondary-action-current,2026-09-04T00:05:24-04:00,b005243aa427d693313bb9ce742e4b304ad1ae82,commit,Add Provider secondary action material parity,0.178888,0.178888,0.03849,0.146017,0.853983,0.813002

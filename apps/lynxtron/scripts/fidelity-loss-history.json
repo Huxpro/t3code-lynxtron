@@ -22264,6 +22264,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-secondary-action-current",
+      "observedAt": "2026-09-04T00:05:24-04:00",
+      "commit": "b005243aa427d693313bb9ce742e4b304ad1ae82",
+      "codeCommit": "b005243aa427d693313bb9ce742e4b304ad1ae82",
+      "codeState": "commit",
+      "label": "Add Provider secondary action material parity",
+      "narrative": "A current-head Driver-stage capture isolates the remaining dark Cancel-button mismatch after the driver-card material repair. Web uses a foreground 2.56% translucent fill with a uniform 8% foreground border; Lynx used an opaque #191919 fill and asymmetric opaque borders. The scoped dark secondary-action rule now matches Web without changing button geometry, the primary action, dialog glass, cards, or light theme. Cancel-crop SSIM improves from 0.575479 to 0.583995, footer SSIM from 0.933425 to 0.935157, and dialog SSIM from 0.827321 to 0.827622.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use the same immutable snapshot, Providers route, Driver stage, dark theme, viewport, Web pixels, exact dialog geometry, selected Codex driver, and zero-error runtime. Only the scoped Lynx secondary action material changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/provider-dialog-secondary-action.json",
+          "classification": "tracked-current",
+          "sha256": "d90b8cbd1a3ee2d9b09afec849fcd669404e6b92bdb5837c4e2b79f87beecf61"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.172378,
+              "confidence": 0.99,
+              "method": "provider-dialog-ssim",
+              "source": "1 - dialog SSIM 0.827622 after matching the dark secondary action; focused footer SSIM is 0.935157"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-driver-current-shared-runtime",
+              "source": "Same snapshot and Providers route, exact Driver-stage semantics and geometry, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
