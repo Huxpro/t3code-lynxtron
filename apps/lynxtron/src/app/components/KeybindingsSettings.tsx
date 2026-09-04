@@ -46,8 +46,12 @@ export function KeybindingsSettings() {
             key={row.id}
             className={
               index === rows.length - 1
-                ? "keybindings-table__row keybindings-table__row--last"
-                : "keybindings-table__row"
+                ? `keybindings-table__row${
+                    index % 2 === 1 ? " keybindings-table__row--alternate" : ""
+                  } keybindings-table__row--last`
+                : `keybindings-table__row${
+                    index % 2 === 1 ? " keybindings-table__row--alternate" : ""
+                  }`
             }
             data-keybinding-command={row.command}
             data-keybinding-shortcut={formatKeybindingShortcutLabel(row.binding.shortcut, platform)}

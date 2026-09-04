@@ -873,6 +873,12 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".file-editor-line__number {");
     expect(overrides).toContain("width: 48.8px;");
     expect(overrides).toContain("font-size: 13px;");
+    expect(componentSource("KeybindingsSettings.tsx")).toContain(
+      "keybindings-table__row--alternate",
+    );
+    expect(overrides).toContain(
+      ".keybindings-table__row--alternate {\n  background-color: rgba(255, 255, 255, 0.006);",
+    );
     expect(overrides).toContain("line-height: 20px;");
     expect(overrides).toContain(
       ".diff-code-line {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  min-height: 20px;",
