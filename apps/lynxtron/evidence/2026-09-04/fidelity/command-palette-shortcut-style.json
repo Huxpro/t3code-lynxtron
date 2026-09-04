@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T12:21:13-04:00",
+  "productCommit": "32ef82b99ffb8546ab4bec449c3f6780b545ce7b",
+  "diagnosticCommit": "ed9e7ca666d77cd4259aa1f25ce12ca0014bd202",
+  "stateId": "command-palette-navigation",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "8ee1d8c44b215457845ac5ec91e44a9e108812533d26fe49de84478008555c98",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "506c63d981d635133a5e96b52fb4c9f05916bef4ae2cf383e0184f39415bcf6f",
+    "webImageSha256": "f6359080bd435cdf6e178512b0e972227a4eff4d434771963901b128187fe496",
+    "lynxImageSha256": "7a9c1721a89b2323814b9f5b2834db0ad780c29719804458b7a575b74c47ab39",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "interactionTimelineMatch": true,
+    "rendererErrors": 0
+  },
+  "shortcutStyle": {
+    "height": 16,
+    "fontSize": 12,
+    "lineHeight": 16,
+    "fontWeight": 500,
+    "letterSpacing": 1.2,
+    "horizontalPadding": 0,
+    "background": "transparent",
+    "firstShortcutWidthDelta": 0.015625
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the exact 576x326 final-hover Command Palette crop",
+    "baseline": { "ssim": 0.899683, "mae": 5.220055, "significantShare": 0.044116 },
+    "current": { "ssim": 0.905699, "mae": 5.082002, "significantShare": 0.042434 }
+  },
+  "boundary": "The scoped rule changes only action-row shortcut rendering; footer keycaps remain unchanged. Subpixel shortcut widths and the dark panel backdrop-blur boundary remain explicit. Screenshots remain temporary because the tracked screenshot budget is full."
+}

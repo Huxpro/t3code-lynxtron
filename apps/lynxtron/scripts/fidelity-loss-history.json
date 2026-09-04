@@ -23251,6 +23251,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-shortcut-style-current",
+      "observedAt": "2026-09-04T12:21:13-04:00",
+      "commit": "32ef82b99ffb8546ab4bec449c3f6780b545ce7b",
+      "codeCommit": "32ef82b99ffb8546ab4bec449c3f6780b545ce7b",
+      "codeState": "commit",
+      "label": "Command Palette shortcut style parity",
+      "narrative": "The current interaction-state anatomy showed Web action shortcuts as transparent 12px/16px labels with 1.2px tracking, while Lynx inherited the generic 10px/14px padded keycap material. A selector scoped to action rows now matches the authority without changing footer keycaps. The first shortcut box differs by only 0.015625px in width, and all measured shortcut y/height/style anchors match. Panel SSIM improves from 0.899683 to 0.905699, MAE from 5.220055 to 5.082002, and significant pixels from 4.4116% to 4.2434%, while the complete interaction timeline remains green.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one snapshot, route, theme, viewport, Web authority, exact panel geometry, and complete interaction timeline. Product styling changes only action-row shortcut leaves."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/command-palette-shortcut-style.json",
+          "classification": "tracked-current",
+          "sha256": "4d6f380fe5dbdfb1b71cca59d1ad0e35ddac1b3bd244f8023ff91cbe9a63feba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "command-palette-shortcut-style",
+              "source": "Visible action shortcuts match Web at 12px/16px, weight 500, 1.2px tracking, transparent background, and zero horizontal padding"
+            },
+            "material": {
+              "residual": 0.094301,
+              "confidence": 0.99,
+              "method": "command-palette-panel-ssim",
+              "source": "1 - exact final-hover panel SSIM 0.905699; MAE 5.082002 and 4.2434% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-navigation-current-runtime",
+              "source": "Same snapshot and six-row command palette, complete interaction timeline, exact geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

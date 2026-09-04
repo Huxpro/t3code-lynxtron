@@ -385,3 +385,4 @@ file-picker-description-geometry-current,2026-09-04T10:28:00-04:00,f838b427e,com
 add-project-sources-description-geometry-current,2026-09-04T10:53:07-04:00,7ef9c76875158ef4391f48b953e90c29374566db,commit,Add Project source description typography parity,0.179471,0.1786,0.038024,0.147038,0.852962,0.812419
 add-project-source-provider-icons-current,2026-09-04T11:20:17-04:00,62a903047acaf3b484774d7782defbf1c56e5f97,commit,Add Project source provider icon parity,0.179467,0.1786,0.03802,0.147038,0.852962,0.812423
 command-palette-project-search-action-current,2026-09-04T12:06:00-04:00,ed9e7ca666d77cd4259aa1f25ce12ca0014bd202,commit,Command Palette project-search action parity,0.179466,0.1786,0.038018,0.147038,0.852962,0.812424
+command-palette-shortcut-style-current,2026-09-04T12:21:13-04:00,32ef82b99ffb8546ab4bec449c3f6780b545ce7b,commit,Command Palette shortcut style parity,0.179402,0.1786,0.037971,0.147013,0.852987,0.812488
