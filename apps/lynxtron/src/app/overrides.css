@@ -10399,6 +10399,10 @@
 .quick-switch-source-row.opacity-64 {
   opacity: 0.64;
 }
+.quick-switch-source-row .palette-row__description {
+  font-size: 12px;
+  line-height: 16px;
+}
 .quick-switch-file-row--detailed {
   height: 48px;
   min-height: 48px;
