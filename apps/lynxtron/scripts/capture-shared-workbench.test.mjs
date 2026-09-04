@@ -1566,6 +1566,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"settings-providers": "Providers"');
     assert.include(source, "function providerSettingsContentMatches");
     assert.include(source, "function providerSettingsGeometryMatches");
+    assert.include(
+      source,
+      "if (!isProvidersSettingsState || isAddProviderDialogState) return true;",
+    );
     assert.include(source, "healthControlDoesNotOverlap");
     assert.include(source, "unit.x >= group.x + group.width");
     assert.include(source, "webProviders?.inlineCreate === null");

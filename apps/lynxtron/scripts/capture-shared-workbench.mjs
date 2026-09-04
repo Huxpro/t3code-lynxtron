@@ -1354,7 +1354,7 @@ function providerSettingsContentMatches(webMetrics, lynxMetrics) {
 }
 
 function providerSettingsGeometryMatches(webMetrics, lynxMetrics) {
-  if (!isProvidersSettingsState) return true;
+  if (!isProvidersSettingsState || isAddProviderDialogState) return true;
   const webSection = webMetrics?.geometry?.sections?.[0]?.box?.rect;
   const lynxSection = lynxMetrics?.geometry?.sections?.[0]?.box?.rect;
   const webCards = webMetrics?.providers?.cards ?? [];
