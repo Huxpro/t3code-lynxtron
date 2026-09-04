@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T14:55:47-04:00",
+  "productCommit": "76f138170fea3a51be50aeb30f47645a7948fa4a",
+  "stateId": "project-action-dialog",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "project-action-dialog",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "64137bad8fd98d884b691fd08068d4b4579c08d45275daa2dcb492dc9efe48a0",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "af93d9e5321366750db9699dc74f51bf269e5fe3ddbdff7f703c11873e795d3f",
+    "webImageSha256": "67b9a3997c1de23a3b5b422a3b99ee5025f8bb6ee0443fcf37355f214cf41dfa",
+    "lynxImageSha256": "14666cc2f3002f6f95635d139111b537bd0b6513887e3aa1aafccf4a6e4d7242",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "material": {
+    "webFooterBorderTopColor": "rgba(0, 0, 0, 0)",
+    "lynxFooterBorderTopColor": "rgba(0, 0, 0, 0)",
+    "webCancelBackgroundColor": "oklab(0.999994 0.0000455678 0.0000200868 / 0.0256)",
+    "lynxCancelBackgroundColor": "rgba(245, 245, 245, 0.027)"
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the 512x671 dialog crop",
+    "baseline": { "ssim": 0.832238, "mae": 6.238395, "significantShare": 0.056294 },
+    "current": { "ssim": 0.834166, "mae": 6.188525, "significantShare": 0.056251 }
+  },
+  "boundary": "The dark footer divider is transparent in both renderers and the secondary action uses Web's 2.56% foreground fill, resolving to 2.7% after Lynx color quantization. Primary button shadow and broader dialog material remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}

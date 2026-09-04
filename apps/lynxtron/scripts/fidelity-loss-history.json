@@ -23603,6 +23603,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-footer-material-current",
+      "observedAt": "2026-09-04T14:55:47-04:00",
+      "commit": "76f138170fea3a51be50aeb30f47645a7948fa4a",
+      "codeCommit": "76f138170fea3a51be50aeb30f47645a7948fa4a",
+      "codeState": "commit",
+      "label": "Project Action footer material parity",
+      "narrative": "After footer control geometry converged, the remaining local authority mismatch was a visible Lynx divider and a fully transparent secondary action where Web uses no dark divider and a 2.56% foreground fill. Aligning those two dark-theme material tokens improves the exact 512x671 dialog from 0.832238 to 0.834166 SSIM, from 6.238395 to 6.188525 MAE, and from 5.6294% to 5.6251% significant pixels.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, exact dialog envelope, content, and zero-error runtime. Product changes are limited to the measured footer divider and secondary action fill."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-footer-material.json",
+          "classification": "tracked-current",
+          "sha256": "b388c5e9848be8aa2de099656b88cec9ec575232cc0d05650642687d455a15d5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.165834,
+              "confidence": 0.99,
+              "method": "project-action-dialog-ssim",
+              "source": "1 - exact dialog SSIM 0.834166; MAE 6.188525 and 5.6251% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-current-shared-runtime",
+              "source": "Same snapshot, dialog content, exact dialog envelope, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
