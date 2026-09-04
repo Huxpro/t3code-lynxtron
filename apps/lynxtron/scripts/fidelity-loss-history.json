@@ -21875,6 +21875,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-dark-cards-current",
+      "observedAt": "2026-09-03T20:18:56-04:00",
+      "commit": "6103dd3a35c0d36b7d4d4d3eb382df38d1cf8110",
+      "codeCommit": "6103dd3a35c0d36b7d4d4d3eb382df38d1cf8110",
+      "codeState": "commit",
+      "label": "Add Provider dark card material parity",
+      "narrative": "A current-head Driver-stage capture first exposed a harness regression: the Providers page geometry gate was evaluating the modal-covered settings body. The scoped harness repair keeps that page gate for ordinary Providers captures while the modal uses its dedicated exact dialog gate. The valid pair then showed three source-backed dark material mismatches. Lynx now uses Web's 10px wizard-step radius, foreground 3% unselected and 2% disabled driver surfaces with 6% borders, and primary 15% selected fill. Driver-crop SSIM improves from 0.728780 to 0.760907, body SSIM from 0.787956 to 0.812646, and full-frame SSIM from 0.923166 to 0.926348 with exact dialog geometry and state identity.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use the same immutable snapshot, Providers route, Driver stage, dark theme, viewport, Web bundle and pixels, dialog geometry, selected Codex driver, and zero-error runtime. The product selectors are dark-theme scoped so the independently calibrated light dialog is unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/provider-dialog-dark-cards.json",
+          "classification": "tracked-current",
+          "sha256": "6b4ba7c1077c166e5b14f50ba78724102a10149d9f2894d161a1d86950450aec"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "provider-driver-card-layout",
+              "source": "The 576 by 538 dialog, 574 by 320 body, three step boxes, and all nine 259 by 44 driver cards retain exact paired geometry"
+            },
+            "material": {
+              "residual": 0.172679,
+              "confidence": 0.99,
+              "method": "provider-dialog-ssim",
+              "source": "1 - dialog SSIM 0.827321 after matching step radius and dark driver-card surfaces; focused driver-crop SSIM is 0.760907"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-driver-current-shared-runtime",
+              "source": "Same snapshot and Providers route, exact Driver-stage semantics and geometry, zero renderer errors, and clean Browser process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -355,3 +355,4 @@ settings-desktop-content-inset-current,2026-09-03T18:51:00-04:00,1c3ef4109,commi
 settings-keybindings-desktop-authority-current,2026-09-03T19:16:00-04:00,7d7188181,commit,Settings Keybindings desktop authority parity,0.179747,0.179747,0.038689,0.146735,0.853265,0.812143
 settings-keybindings-table-material-current,2026-09-03T19:30:00-04:00,4a5a4fe9c,commit,Settings Keybindings table material parity,0.179747,0.179747,0.038689,0.146735,0.853265,0.812143
 model-picker-selected-row-radius-current,2026-09-03T19:53:32-04:00,3b10e0d6a353f90a96ba04464ff84c58053ce5d9,commit,Model Picker selected-row radius parity,0.179653,0.179653,0.03858,0.146735,0.853265,0.812237
+provider-dialog-dark-cards-current,2026-09-03T20:18:56-04:00,6103dd3a35c0d36b7d4d4d3eb382df38d1cf8110,commit,Add Provider dark card material parity,0.17906,0.17906,0.038692,0.146017,0.853983,0.81283

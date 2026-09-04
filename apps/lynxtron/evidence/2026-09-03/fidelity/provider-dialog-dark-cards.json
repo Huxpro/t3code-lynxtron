@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T20:18:56-04:00",
+  "commit": "6103dd3a35c0d36b7d4d4d3eb382df38d1cf8110",
+  "stateId": "settings-providers-add-dialog",
+  "scope": {
+    "authority": "electron-visual-web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-providers",
+    "dialogStage": "driver",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "5c506b8ec10e2684a3fcf045fdc0018044f08fc895739e29897ceacc0276bc2a",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "c0bb3995b4001f12be180b0a256dcc8c7cc7d000b90e3990fe0682d23c82f40a",
+    "webImageSha256": "eedf9bb30f060038b44b74486838da53df91ab8a1a92ebde60cb31412ffc8ad3",
+    "lynxImageSha256": "4e8c9aa03f7a8622aa3072fc2aeb6df3fb2c8a75049ce863b6d0c74bac9cfd85",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "dialogMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "panel": [352, 141, 576, 538],
+    "body": [353, 298, 574, 320],
+    "steps": {
+      "count": 3,
+      "webRadius": 10,
+      "lynxRadiusBefore": 8,
+      "lynxRadiusAfter": 10
+    },
+    "drivers": {
+      "count": 9,
+      "cardSize": [259, 44]
+    }
+  },
+  "material": {
+    "unselectedDriver": {
+      "web": "foreground at 3%",
+      "lynxBefore": "opaque card",
+      "lynxAfter": "foreground at 3%"
+    },
+    "disabledDriver": {
+      "web": "foreground at 2%",
+      "lynxBefore": "opaque card",
+      "lynxAfter": "foreground at 2%"
+    },
+    "selectedDriver": {
+      "web": "primary at 15%",
+      "lynxBefore": "primary at 12%",
+      "lynxAfter": "primary at 15%"
+    },
+    "driverBorder": {
+      "web": "foreground at 6%",
+      "lynxBefore": "input token",
+      "lynxAfter": "foreground at 6%"
+    }
+  },
+  "pixelMetric": {
+    "definition": "SSIM over matching 1280x820 Browser captures and fixed geometry crops",
+    "baseline": {
+      "fullFrame": 0.923166,
+      "dialog": 0.816686,
+      "body": 0.787956,
+      "steps": 0.818183,
+      "drivers": 0.72878
+    },
+    "current": {
+      "fullFrame": 0.926348,
+      "dialog": 0.827321,
+      "body": 0.812646,
+      "steps": 0.818776,
+      "drivers": 0.760907
+    }
+  },
+  "boundary": "The change is dark-theme scoped and does not alter the independently calibrated light dialog. The remaining dialog residual includes icon and text rasterization plus surfaces outside the step and driver cards. Screenshots remain temporary because the tracked screenshot budget is full."
+}
