@@ -22436,6 +22436,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "archive-empty-icon-current",
+      "observedAt": "2026-09-04T02:16:00-04:00",
+      "commit": "84f2e9b1cdf2a9927b86b79b291b2612276116aa",
+      "codeCommit": "236273a01",
+      "codeState": "commit",
+      "label": "Archive empty-state icon parity",
+      "narrative": "The shared ArchivedThreadsSurface now owns an optional leading-icon slot instead of requiring renderer-specific title markup. Web keeps its loading spinner and Archive icon behavior, while Lynx supplies the same 14px Archive semantic leaf without invalid text nesting. In a same-snapshot light capture, the fixed 250 by 65 empty-row crop improves from 13.036533 to 8.630031 mean absolute RGB error; changed pixels are limited to the new icon and the title's expected eight-pixel shift. A dark cross-check also passes with matching content, route, and zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one snapshot, route, light theme, viewport, and empty Archive state. The shared surface owns the composition and both renderer hosts provide only their native icon leaf."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/archive-empty-icon.json",
+          "classification": "tracked-current",
+          "sha256": "7d9c196fa3a5fa36ed71753c3845088f87533e914d3e7dd3f97452b0f78d7754"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-archive-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "archive-empty-shared-composition",
+              "source": "Archive icon, title, and description now share one renderer-neutral composition contract"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "archive-empty-current-shared-runtime",
+              "source": "Same snapshot and route, zero archived groups, light and dark captures passed, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
