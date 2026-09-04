@@ -22728,6 +22728,46 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-paired-geometry-correction",
+      "observedAt": "2026-09-04T06:26:00-04:00",
+      "commit": "a70f77eb3",
+      "codeState": "commit",
+      "label": "Right Panel Terminal paired-geometry correction",
+      "narrative": "The terminal harness previously retained its Browser pair after a Lynx-only resize diagnostic. The older material and typography milestone recorded equal exported image dimensions but not equal terminal panel widths, so those two pixel-review cells were dimension-ambiguous. The corrected harness captures before resize and records Web 540px versus Lynx 541px at the retained frame, then separately proves the Lynx diagnostic resize from 541px to 617px and PTY grid growth. Material and typography return to conservative unknown; command, resize, split, and Native interaction evidence remain valid.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The prior evidence omitted capture-time panel dimensions and used a workflow that captured after a one-sided resize. The current report records both widths before capture and keeps resize evidence separate."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/terminal-paired-geometry-correction.json",
+          "classification": "tracked-current",
+          "sha256": "cbcea1b9ded68826e9fe07b4a510152ebee0d7468bfb8ef5ff1a50fbfebef37c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 1,
+              "confidence": 0,
+              "method": "terminal-paired-geometry-correction",
+              "source": "Prior terminal typography review is superseded because capture-time panel widths were not recorded"
+            },
+            "material": {
+              "residual": 1,
+              "confidence": 0,
+              "method": "terminal-paired-geometry-correction",
+              "source": "Prior terminal material review is superseded because capture-time panel widths were not recorded"
+            }
+          }
+        }
+      ]
     }
   ]
 }
