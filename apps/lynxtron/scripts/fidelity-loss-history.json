@@ -23204,6 +23204,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-project-search-action-current",
+      "observedAt": "2026-09-04T12:06:00-04:00",
+      "commit": "ed9e7ca666d77cd4259aa1f25ce12ca0014bd202",
+      "codeCommit": "354cea920",
+      "codeState": "commit",
+      "label": "Command Palette project-search action parity",
+      "narrative": "A current complete Command Palette interaction run exposed one source-backed content omission: Web renders Search project contents with TextSearchIcon and the configured projectSearch.toggle shortcut, while Lynx used the generic Search icon and no shortcut. Lynx now uses the same Lucide TextSearch path and shared shortcut resolver, rendering ⇧⌘F. The exact 576x326 interaction-state panel improves from 0.897596 to 0.899683 SSIM, from 5.231576 to 5.220055 MAE, and from 4.4132% to 4.4116% significant pixels while the full hover, keyboard, submenu, back, and dismiss timeline remains green.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one snapshot, route, theme, viewport, Web authority, exact panel geometry, and complete interaction timeline. Product changes only restore the missing action icon and shortcut."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/command-palette-project-search-action.json",
+          "classification": "tracked-current",
+          "sha256": "50c691920735b6ed2cef74e17b0953de53781ca3e84a0e77e73730689b59edf0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-action-icon-and-shortcut",
+              "source": "Search project contents uses the Web authority TextSearch icon and shared projectSearch.toggle shortcut label ⇧⌘F"
+            },
+            "material": {
+              "residual": 0.100317,
+              "confidence": 0.99,
+              "method": "command-palette-panel-ssim",
+              "source": "1 - exact interaction-state panel SSIM 0.899683; MAE 5.220055 and 4.4116% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-navigation-current-runtime",
+              "source": "Same snapshot and six-row command palette, complete interaction timeline, exact geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
