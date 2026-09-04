@@ -23103,6 +23103,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "add-project-sources-description-geometry-current",
+      "observedAt": "2026-09-04T10:53:07-04:00",
+      "commit": "7ef9c76875158ef4391f48b953e90c29374566db",
+      "codeCommit": "7ef9c76875158ef4391f48b953e90c29374566db",
+      "codeState": "commit",
+      "label": "Add Project source description typography parity",
+      "narrative": "Renderer-neutral palette diagnostics showed that Add Project source rows had exact 558x48 row and 16x16 icon geometry, but Lynx inherited a 20px description line and centered a 40px copy stack two pixels above Web. The scoped source-row rule restores Web's 12px/16px description contract. All six rows now match Web's copy, title, and description y/height anchors while panel, section, footer, row, and icon geometry remain exact. The 576x420 panel improves from 0.821660 to 0.873331 SSIM, from 7.712313 to 5.675470 MAE, and from 7.8373% to 6.4856% significant pixels with the same snapshot, state identity, and zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one snapshot, Add Project state, dark theme, viewport, exact panel envelope, and Web authority. Product styling is limited to Add Project source-row descriptions."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/add-project-sources-description-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "4dd41ac477018ccc31d988507396d4e9ff6f1dba3d943e9c354cd431f1b53ac9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["add-project-sources"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "add-project-source-row-vertical-geometry",
+              "source": "Panel, section, footer, six rows, icons, and all copy/title/description vertical anchors match Web exactly"
+            },
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.99,
+              "method": "add-project-source-row-typography",
+              "source": "Both render 14px/20px titles and 12px/16px descriptions; residual preserves badge and subpixel glyph shaping"
+            },
+            "material": {
+              "residual": 0.126669,
+              "confidence": 0.99,
+              "method": "add-project-panel-ssim",
+              "source": "1 - exact panel SSIM 0.873331; MAE 5.675470 and 6.4856% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "add-project-current-shared-runtime",
+              "source": "Same snapshot, Add Project state, six source rows, exact panel geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
