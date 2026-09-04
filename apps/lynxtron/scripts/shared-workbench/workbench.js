@@ -919,14 +919,22 @@ function readSidebarSearchRows(elements) {
 }
 
 function readPaletteRows(elements) {
-  return [...elements].slice(0, 6).map((row) => ({
-    box: readElementBox(row),
-    icon: readElementBox(row.querySelector("[data-file-icon-tone], svg, img, x-image")),
-    copy: readElementBox(row.querySelector(".palette-row__copy")),
-    titleLine: readElementBox(row.querySelector(".palette-row__title-line")),
-    title: readElementBox(row.querySelector(".palette-row__title")),
-    description: readElementBox(row.querySelector(".palette-row__description")),
-  }));
+  return [...elements].slice(0, 6).map((row) => {
+    const copy = row.querySelector(".palette-row__copy");
+    return {
+      box: readElementBox(row),
+      icon: readElementBox(row.querySelector("[data-file-icon-tone], svg, img, x-image")),
+      copy: readElementBox(copy),
+      titleLine: readElementBox(row.querySelector(".palette-row__title-line")),
+      title: readElementBox(row.querySelector(".palette-row__title")),
+      description: readElementBox(row.querySelector(".palette-row__description")),
+      trailing: readElementBox(copy?.nextElementSibling),
+      trailingLeaf: readElementBox(
+        copy?.nextElementSibling?.querySelector("button, x-view, x-text, text") ??
+          copy?.nextElementSibling,
+      ),
+    };
+  });
 }
 
 function readSidebarProjectGroups(root) {
