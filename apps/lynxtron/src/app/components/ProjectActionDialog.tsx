@@ -151,7 +151,6 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
                   size={16}
                   color="#818181"
                 />
-                <Icon name="chevron-down" size={12} color="#818181" />
               </view>
               <input
                 className="project-action-field__input project-action-field__input--name"

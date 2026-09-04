@@ -10922,9 +10922,8 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 58px;
+  width: 36px;
   height: 36px;
-  gap: 6px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--input);
