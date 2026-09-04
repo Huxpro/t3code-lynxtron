@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T05:43:00-04:00",
+  "captureCommit": "020a0f02457e17e8dd0c8c3be766024322496a09",
+  "productCommit": "202950f93",
+  "stateId": "settings-providers",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-providers",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "aa4a37e22ff887ad0f6d242b9fa1320e0f91753a0a307618bf659777c1e102dd",
+    "webBundleSha256": "00de13657e8ca111cff76bfdaf383bc17258711e7f357d740303e59dda2444cc",
+    "lynxBundleSha256": "2531dcb60a47b87102567497b7876006a0c31797612b87ef50334ea1bc84595e",
+    "webImageSha256": "2ae73d2d531a062498df25e7ec612f0337f78ded11fcf8d37b90992eed0df7e0",
+    "lynxImageSha256": "9c466d14ea1277c8bb0aba634ec158cd96958110c13a2bed713c7f082a357950",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "providerGeometryGatePassed": true,
+    "rendererErrors": 0
+  },
+  "pixelMetric": {
+    "definition": "Mean absolute RGB error over the fixed provider action-column crop x=1125..1170, y=190..590",
+    "baseline": 1.083704,
+    "current": 0.897241,
+    "changedPixelBoundsWithinCrop": [17, 74, 27, 376]
+  },
+  "boundary": "Collapsed cards now use Web's down-chevron state; expanded cards rotate that same glyph by 180 degrees. Expansion behavior, provider content, and broader material remain unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
+}

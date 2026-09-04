@@ -22687,6 +22687,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-expansion-chevrons-current",
+      "observedAt": "2026-09-04T05:43:00-04:00",
+      "commit": "020a0f02457e17e8dd0c8c3be766024322496a09",
+      "codeCommit": "202950f93",
+      "codeState": "commit",
+      "label": "Provider expansion chevron parity",
+      "narrative": "A valid Providers capture showed a stale interaction-state mapping: Web renders a down chevron for collapsed cards and rotates it upward when expanded, while Lynx rendered right when collapsed and down when expanded. Lynx now uses the same down-chevron state model with a 180-degree expanded transform. The strict Providers gate remains green, changed pixels are confined to the five chevron glyphs, and the fixed action-column MAE improves from 1.083704 to 0.897241.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one immutable snapshot, route, provider inventory, dark theme, viewport, and Web authority frame. Changed pixels are confined to the chevron column."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/provider-expansion-chevrons.json",
+          "classification": "tracked-current",
+          "sha256": "9812a45aed7ba9742085e5652035fe2516b4f261b3367116b401ad80be3645cb"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-expansion-chevron-state",
+              "source": "Collapsed and expanded chevron orientations now use the same state mapping as Web"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "providers-chevron-current-runtime",
+              "source": "Same snapshot and route, five provider cards, strict Providers gate, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
