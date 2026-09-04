@@ -88,6 +88,7 @@ const requestedWebRoute = argValue(
 const theme =
   argValue("--theme", stateId.endsWith("-light") ? "light" : "dark") === "light" ? "light" : "dark";
 const defaultOverlayByStateId = {
+  "composer-compact-controls-light": "compact-controls",
   "composer-compact-controls-open": "compact-controls",
   "composer-compact-controls-inline-files-narrow": "compact-controls",
   "composer-compact-controls-inline-files-short": "compact-controls",
@@ -222,6 +223,7 @@ const isFileEditorState =
   isOpenInMenuState ||
   isFileEditingSaveState;
 const isCompactControlsState =
+  stateId === "composer-compact-controls-light" ||
   stateId === "composer-compact-controls-open" ||
   stateId === "composer-compact-controls-inline-files-narrow" ||
   stateId === "composer-compact-controls-inline-files-short";

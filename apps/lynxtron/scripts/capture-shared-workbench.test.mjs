@@ -43,6 +43,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"model-picker-provider-rail": "opencode"');
   });
 
+  it("opens the modeled light compact-controls state by default", () => {
+    assert.include(source, '"composer-compact-controls-light": "compact-controls"');
+    assert.include(source, 'stateId === "composer-compact-controls-light" ||');
+  });
+
   it("fails fast for modeled states that require Native-only verification", () => {
     assert.include(source, "const nativeOnlyStateIds = new Set([");
     assert.include(source, '"settings-archive-mutation"');
