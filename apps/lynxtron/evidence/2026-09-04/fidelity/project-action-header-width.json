@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T15:06:52-04:00",
+  "productCommit": "54dfb114217f90fb97cd3c72ec8de3941e2be62d",
+  "stateId": "project-action-dialog",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "project-action-dialog",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "43accabd8a63ca1fbfd2d9e9417363820cdd9f133f250ea434fa72b1f421dfd8",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "d7edd6c785e889af4ae53c6cd67dfcb831871b54ad1175619cf14ffd7efce9be",
+    "webImageSha256": "67b9a3997c1de23a3b5b422a3b99ee5025f8bb6ee0443fcf37355f214cf41dfa",
+    "lynxImageSha256": "5273d9c65ee17e39124f693f079e284bc4c1ddb8fdb15b661e4cfc5177903577",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webTitleRect": [409, 99.5, 462, 20],
+    "lynxTitleRect": [409, 99.5, 462, 20],
+    "webDescriptionRect": [409, 127.5, 462, 40],
+    "lynxDescriptionRect": [409, 127.5, 462, 40],
+    "maximumHeaderRectDelta": 0
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the 512x671 dialog crop",
+    "baseline": { "ssim": 0.834166, "mae": 6.188525, "significantShare": 0.056251 },
+    "current": { "ssim": 0.834709, "mae": 6.176291, "significantShare": 0.056131 }
+  },
+  "boundary": "Removing Lynx's extra 28px right header inset gives the title and description the same 462px content width as Web while retaining the identical close-control position. Field-wrapper quantization and broader dialog material remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}

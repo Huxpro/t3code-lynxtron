@@ -23644,6 +23644,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-header-width-current",
+      "observedAt": "2026-09-04T15:06:52-04:00",
+      "commit": "54dfb114217f90fb97cd3c72ec8de3941e2be62d",
+      "codeCommit": "54dfb114217f90fb97cd3c72ec8de3941e2be62d",
+      "codeState": "commit",
+      "label": "Project Action header width parity",
+      "narrative": "Lynx reserved an extra 28px of right padding for the absolute close control, reducing the title and description width to 434px while Web exposes the full 462px content column. Using the authority 24px horizontal header padding makes both header text rectangles exact. The exact 512x671 dialog improves from 0.834166 to 0.834709 SSIM, from 6.188525 to 6.176291 MAE, and from 5.6251% to 5.6131% significant pixels.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, exact dialog envelope, content, and zero-error runtime. The product change is limited to the measured header right padding."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-header-width.json",
+          "classification": "tracked-current",
+          "sha256": "0f6a149864dedeb231d160c2f4a7970e37849a57c2f5043d5237d432fedab264"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 671,
+              "confidence": 0.99,
+              "method": "project-action-header-width",
+              "source": "Title and description rectangles match Web exactly"
+            },
+            "material": {
+              "residual": 0.165291,
+              "confidence": 0.99,
+              "method": "project-action-dialog-ssim",
+              "source": "1 - exact dialog SSIM 0.834709; MAE 6.176291 and 5.6131% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-current-shared-runtime",
+              "source": "Same snapshot, dialog content, exact dialog envelope, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
