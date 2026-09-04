@@ -7374,8 +7374,9 @@
 .provider-instance-card__actions {
   --flex-direction: row;
   position: absolute;
-  top: 21px;
+  top: 50%;
   right: 16px;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: row;
   align-items: center;

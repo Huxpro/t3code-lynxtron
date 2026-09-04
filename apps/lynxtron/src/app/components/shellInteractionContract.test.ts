@@ -189,6 +189,9 @@ describe("desktop shell interaction contract", () => {
     expect(componentSource("ProviderSettings.tsx")).toContain(
       '<view className="provider-instance-dialog__driver-check">',
     );
+    expect(overrides).toContain(
+      ".provider-instance-card__actions {\n  --flex-direction: row;\n  position: absolute;\n  top: 50%;\n  right: 16px;\n  transform: translateY(-50%);",
+    );
     expect(componentSource("ProviderSettings.tsx")).toContain("<ProviderLastChecked");
     expect(componentSource("AppearanceSettings.tsx")).toContain("themeResetAction=");
     expect(overrides).toContain(
