@@ -7817,52 +7817,36 @@ async function captureCell({
         (state?.web?.productState?.selectedThread === expectThread &&
           state?.lynx?.productState?.selectedThread === expectThread))
     ) {
-      let typed = true;
-      for (let index = 0; index < sidebarQuery.length; index += 1) {
-        const character = sidebarQuery[index];
-        const expectedPrefix = sidebarQuery.slice(0, index + 1);
-        const focused = await focusRemoteElement(
-          cdp,
-          sessionId,
-          `(() => {
-            const frame = document.getElementById('lynx-pane');
-            const doc = frame?.contentWindow?.document;
-            const root = doc?.getElementById('t3-lynx-preview')?.shadowRoot;
-            const host = root?.querySelector('[aria-label="Search threads"]');
-            return host?.shadowRoot?.querySelector('input') ?? host ?? null;
-          })()`,
-        ).catch(() => false);
-        if (!focused) {
-          typed = false;
-          break;
-        }
-        await cdp.send(
-          "Input.dispatchKeyEvent",
-          { type: "char", text: character, unmodifiedText: character },
-          sessionId,
-        );
-        const prefixDeadline = Date.now() + 1000;
-        let prefixApplied = false;
-        while (Date.now() < prefixDeadline) {
-          const currentQuery = await evaluate(
-            cdp,
-            sessionId,
-            `window.__T3_WORKBENCH__?.read()?.lynx?.sidebarDiagnostics?.search?.value ?? ""`,
-          ).catch(() => "");
-          if (currentQuery === expectedPrefix) {
-            prefixApplied = true;
-            break;
+      const typed = await focusRemoteElement(
+        cdp,
+        sessionId,
+        `(() => {
+          const frame = document.getElementById('lynx-pane');
+          const doc = frame?.contentWindow?.document;
+          const root = doc?.getElementById('t3-lynx-preview')?.shadowRoot;
+          const host = root?.querySelector('[aria-label="Search threads"]');
+          return host?.shadowRoot?.querySelector('input') ?? host ?? null;
+        })()`,
+      )
+        .then(async (focused) => {
+          if (!focused) return false;
+          await cdp.send("Input.insertText", { text: sidebarQuery }, sessionId);
+          const queryDeadline = Date.now() + 1000;
+          while (Date.now() < queryDeadline) {
+            const currentQuery = await evaluate(
+              cdp,
+              sessionId,
+              `window.__T3_WORKBENCH__?.read()?.lynx?.sidebarDiagnostics?.search?.value ?? ""`,
+            ).catch(() => "");
+            if (currentQuery === sidebarQuery) return true;
+            await delay(20);
           }
-          await delay(20);
-        }
-        if (!prefixApplied) {
-          typed = false;
-          break;
-        }
-      }
+          return false;
+        })
+        .catch(() => false);
       if (typed) {
         lynxSidebarSearchInputSent = true;
-        sidebarSearchInputChannel = "web-dom-focus+key-char|lynx-dom-focus+key-char";
+        sidebarSearchInputChannel = "web-dom-focus+key-char|lynx-dom-focus+insert-text";
         await delay(100);
         continue;
       }

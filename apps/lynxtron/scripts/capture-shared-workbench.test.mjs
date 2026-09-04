@@ -1377,6 +1377,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "newThread:");
   });
 
+  it("inserts the complete controlled Lynx Sidebar search query after one focus", () => {
+    assert.include(source, 'await cdp.send("Input.insertText", { text: sidebarQuery }, sessionId)');
+    assert.include(source, "if (currentQuery === sidebarQuery) return true");
+    assert.include(source, "lynx-dom-focus+insert-text");
+  });
+
   it("records the Sidebar thread-details pointer lifecycle in both Browser renderers", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
