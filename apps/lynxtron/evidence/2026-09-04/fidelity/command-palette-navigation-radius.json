@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T01:01:16-04:00",
+  "captureCommit": "66cf96ecc34425063e3be172ca3a78043248f07a",
+  "productCommit": "85b199c98ef7e2532b80da4474a265686e5e84e4",
+  "stateId": "command-palette-navigation",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "a84f984a93edd2d76b4cc139ad0fca2ed15bbf45d9fb0480fdd9925a4fb6e009",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "0fbf67bb7ef08c7d0fab55487b3c4ec256e3176c02056405193c1adb35ffab3e",
+    "webImageSha256": "f6359080bd435cdf6e178512b0e972227a4eff4d434771963901b128187fe496",
+    "lynxImageSha256": "c9874e4bcecf56fbb6c500c57b6f0966fb0617a435888a1918df7ac0ba79050f",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "navigationMatch": true,
+    "rendererErrors": 0,
+    "overlayGeometryDelta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  "interactionBoundary": {
+    "browser": "Web CDP ArrowDown, ArrowUp, Enter, Backspace, and Escape; dual Browser pointer hover; Lynx pointer dismissal.",
+    "lynxForWebKeyboard": "blocked-browser-proxy-no-main-thread-key-bridge",
+    "nativePhysicalKeyboard": "pending-user-session"
+  },
+  "geometry": {
+    "panel": [352, 82, 576, 326],
+    "webRadius": 18,
+    "lynxRadiusBefore": 12,
+    "lynxRadiusAfter": 18
+  },
+  "pixelMetric": {
+    "definition": "SSIM over matching 1280x820 final-hover Browser captures and fixed panel and top-edge crops",
+    "baseline": {
+      "fullFrame": 0.957584,
+      "panel": 0.896871,
+      "topEdge": 0.819104
+    },
+    "current": {
+      "fullFrame": 0.957939,
+      "panel": 0.897828,
+      "topEdge": 0.823928
+    }
+  },
+  "boundary": "This cross-state evidence attributes the already-landed generic Quick Switch radius change to the interactive command-palette state. It does not change or claim Lynx-for-Web keyboard bridging or Native physical keyboard evidence. Screenshots remain temporary because the tracked screenshot budget is full."
+}

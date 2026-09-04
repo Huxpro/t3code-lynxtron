@@ -22347,6 +22347,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-navigation-radius-current",
+      "observedAt": "2026-09-04T01:01:16-04:00",
+      "commit": "66cf96ecc34425063e3be172ca3a78043248f07a",
+      "codeCommit": "85b199c98ef7e2532b80da4474a265686e5e84e4",
+      "codeState": "commit",
+      "label": "Command Palette interaction radius parity",
+      "narrative": "A same-snapshot command-palette interaction capture measures the already-landed generic Quick Switch radius correction after the full Browser causal chain. Both captures pass Web ArrowDown, ArrowUp, Enter, Backspace, and Escape, dual Browser pointer hover, Lynx pointer dismissal, matching state identity, exact 576 by 326 panel geometry, and zero renderer errors. Changing only the Lynx shell from 12px to Web's 18px authority improves top-edge SSIM from 0.819104 to 0.823928, panel SSIM from 0.896871 to 0.897828, and full-frame SSIM from 0.957584 to 0.957939.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A temporary 12px baseline and restored 18px current capture share one immutable snapshot, Web pixels, route, full interaction timeline, dark theme, viewport, and zero-error runtime. Product attribution remains the existing 85b199c98 radius commit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/command-palette-navigation-radius.json",
+          "classification": "tracked-current",
+          "sha256": "cc761d505b41f84b26287273f24196267840b7c16f0ba82de39f8cfe9152e3f7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "command-palette-radius-and-geometry",
+              "source": "The interactive command-palette panel geometry is exact and both shells now resolve to an 18px radius"
+            },
+            "material": {
+              "residual": 0.102172,
+              "confidence": 0.99,
+              "method": "command-palette-panel-ssim",
+              "source": "1 - final-hover panel SSIM 0.897828 after matching the generic dark palette radius; focused top-edge SSIM is 0.823928"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-navigation-current-runtime",
+              "source": "Same snapshot, full Browser interaction timeline, exact overlay geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
