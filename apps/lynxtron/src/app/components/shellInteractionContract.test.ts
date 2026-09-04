@@ -1559,6 +1559,9 @@ describe("desktop shell interaction contract", () => {
     expect(quickSwitch).not.toContain("clearQuickSwitchOpenIntent");
     expect(appIndex).toContain("if (appliedInitialRoute.current) return;");
     expect(appIndex).toContain('overlay === "file-picker"');
+    expect(overrides).toContain(
+      ".quick-switch-file-row--detailed .palette-row__description {\n  font-size: 12px;\n  line-height: 16px;",
+    );
     expect(appIndex).toContain('uiActions.openQuickSwitch("files")');
     expect(appIndex).toContain('overlay === "right-panel-tabs"');
     expect(keyboardCommandsSource).toContain("return dismissOpenSearchOverlay();");

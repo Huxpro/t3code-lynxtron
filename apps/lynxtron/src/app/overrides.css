@@ -10403,6 +10403,10 @@
   height: 48px;
   min-height: 48px;
 }
+.quick-switch-file-row--detailed .palette-row__description {
+  font-size: 12px;
+  line-height: 16px;
+}
 .palette-empty {
   display: flex;
   flex-direction: row;
