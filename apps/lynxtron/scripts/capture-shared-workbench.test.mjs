@@ -93,21 +93,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "className.includes('-atlas__image')");
   });
 
-  it("only requires provider notification dismissal for states that clear it", () => {
-    assert.match(source, /const shouldClearWebNotification =[\s\S]*Boolean\(composerExpectation\)/);
+  it("requires provider notification dismissal before every fidelity capture", () => {
+    assert.include(source, "const shouldClearWebNotification = true;");
     assert.include(
       source,
       'throw new Error("Web provider-update notification did not dismiss before Sidebar hover.")',
     );
-    assert.match(
-      source,
-      /const shouldClearWebNotification =[\s\S]*isSidebarThreadHoverPreviewState/,
-    );
-    assert.match(
-      source,
-      /const shouldClearWebNotification =[\s\S]*stateId === "existing-thread-idle"/,
-    );
-    assert.include(source, 'semanticRoute.startsWith("settings-")');
     assert.include(source, "if (isSidebarThreadHoverPreviewState) {");
     assert.include(source, "async function dismissWebProviderNotification");
     assert.include(source, "let clickAttempts = 0");
@@ -442,9 +433,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"diff-scope-menu": "existing-thread"');
     assert.include(source, 'stateId === "diff-scope-menu"');
     assert.include(source, 'stateId.startsWith("review-") || isDiffScopeMenuState');
-    assert.include(source, "Boolean(overlay) ||");
-    assert.include(source, "isFilesSurfaceState ||");
-    assert.include(source, "isReviewState;");
+    assert.include(source, "const shouldClearWebNotification = true;");
     assert.isBelow(
       source.indexOf(
         'const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;',
@@ -794,7 +783,7 @@ describe("shared workbench lifecycle fault capture", () => {
     );
 
     assert.include(source, 'const isComposerPlanModeState = stateId === "composer-plan-mode"');
-    assert.include(source, "isComposerPlanModeState ||");
+    assert.include(source, "const shouldClearWebNotification = true;");
     assert.include(source, '"composer-plan-mode": {');
     assert.include(source, '"composer-plan-mode",');
     assert.include(source, '"composer-plan-mode": "existing-thread"');

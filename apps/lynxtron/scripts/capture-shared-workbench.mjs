@@ -287,20 +287,7 @@ const composerExpectationByStateId = {
 };
 const composerExpectation = composerExpectationByStateId[stateId] ?? null;
 const isReviewState = stateId.startsWith("review-") || isDiffScopeMenuState;
-const shouldClearWebNotification =
-  Boolean(overlay) ||
-  Boolean(composerExpectation) ||
-  isNewThreadHeroState ||
-  stateId === "existing-thread-idle" ||
-  semanticRoute.startsWith("settings-") ||
-  isAddProviderDialogState ||
-  isComposerPlanModeState ||
-  isProjectSettingsState ||
-  isFilesSurfaceState ||
-  isNarrowChatThreadState ||
-  isSidebarThreadHoverPreviewState ||
-  isRightPanelTerminalState ||
-  isReviewState;
+const shouldClearWebNotification = true;
 const reviewExpectation =
   stateId === "review-empty"
     ? "panel-empty"
