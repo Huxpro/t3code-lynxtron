@@ -6102,6 +6102,21 @@
 .settings-row--unavailable {
   opacity: 0.48;
 }
+.appearance-unavailable-control {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: right;
+}
+#theme,
+#word-wrap {
+  height: 66.84375px;
+}
+#setting-glass-opacity {
+  height: 85.6875px;
+}
 .settings-row__text {
   --lynx-linear-weight: 1;
   display: flex;

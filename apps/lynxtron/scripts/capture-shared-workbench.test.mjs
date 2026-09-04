@@ -890,6 +890,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "window.__T3_WORKBENCH_DESKTOP_VISUAL__=true");
     assert.include(source, 'html.replace("<head>", `<head>${desktopVisualMarker}`)');
     assert.include(source, "function settingsDesktopTopbarMatches(state)");
+    assert.include(source, 'lynxRow.controlText === "Not yet available in Lynxtron."');
     assert.include(source, "web?.desktopVisualHost === true");
     assert.include(source, "web?.restore === null && lynx?.restore === null");
     assert.include(source, "finalSettingsDesktopTopbarReady");

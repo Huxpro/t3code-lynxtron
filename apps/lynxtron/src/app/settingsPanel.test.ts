@@ -166,6 +166,11 @@ describe("Lynx Settings route projection", () => {
     ]) {
       expect(appearance).toContain(unavailableProp);
     }
+    expect(appearance).toContain("glassOpacityControl={<UnavailableControl width={208} />}");
+    expect(appearance).toContain("wordWrapControl={<UnavailableControl width={160} />}");
+    expect(appearance).toContain("width={160}");
+    expect(overrides).toContain("#theme,\n#word-wrap {\n  height: 66.84375px;");
+    expect(overrides).toContain("#setting-glass-opacity {\n  height: 85.6875px;");
     expect(generalHost).toContain("GENERAL_SETTINGS_TEXT_GENERATION_MODEL_UNAVAILABLE = false");
     expect(generalHost).toContain("<ModelPicker");
     expect(generalHost).toContain("setTextGenerationModelSelection");

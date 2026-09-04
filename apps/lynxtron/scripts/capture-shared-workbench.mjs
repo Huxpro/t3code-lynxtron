@@ -1255,7 +1255,8 @@ function appearanceSettingsContentMatches(webMetrics, lynxMetrics) {
     }
     return (
       lynxRow.ariaDisabled === "true" &&
-      lynxRow.status === "Not yet available in Lynxtron." &&
+      (lynxRow.status === "Not yet available in Lynxtron." ||
+        lynxRow.controlText === "Not yet available in Lynxtron.") &&
       lynxRow.box?.style?.opacity === "0.48"
     );
   });

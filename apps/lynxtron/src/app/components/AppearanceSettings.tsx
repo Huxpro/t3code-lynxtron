@@ -11,6 +11,14 @@ import { LYNX_THEME_LABELS, NEXT_LYNX_THEME } from "../state/themePreference.log
 
 const UNAVAILABLE_STATUS = "Not yet available in Lynxtron.";
 
+function UnavailableControl({ width }: { readonly width: number }) {
+  return (
+    <text className="appearance-unavailable-control" style={{ width: `${width}px` }}>
+      {UNAVAILABLE_STATUS}
+    </text>
+  );
+}
+
 /**
  * Lynx keeps the complete Appearance information architecture visible without
  * presenting storage-only toggles as working product behavior. PF7 owns the
@@ -37,19 +45,19 @@ export function AppearanceSettings() {
         themeControl={
           <SelectBox
             label={LYNX_THEME_LABELS[themePreference]}
-            width={144}
+            width={160}
             onTap={() => setThemePreference(NEXT_LYNX_THEME[themePreference])}
           />
         }
         themeStatus={
           themePreference === "system" ? "Follows the operating system appearance." : undefined
         }
-        glassOpacityStatus={UNAVAILABLE_STATUS}
+        glassOpacityControl={<UnavailableControl width={208} />}
         glassOpacityUnavailable
         environmentIdentificationStatus={UNAVAILABLE_STATUS}
         environmentIdentificationUnavailable
         showEnvironmentIdentification={showEnvironmentIdentification}
-        wordWrapStatus={UNAVAILABLE_STATUS}
+        wordWrapControl={<UnavailableControl width={160} />}
         wordWrapUnavailable
       />
     </view>
