@@ -191,6 +191,12 @@ describe("desktop shell interaction contract", () => {
     );
     expect(componentSource("ProviderSettings.tsx")).toContain("<ProviderLastChecked");
     expect(componentSource("AppearanceSettings.tsx")).toContain("themeResetAction=");
+    expect(overrides).toContain(
+      "#theme .settings-row__text,\n#setting-glass-opacity .settings-row__text,\n#word-wrap .settings-row__text {\n  gap: 4px;",
+    );
+    expect(overrides).toContain(
+      "#theme .settings-row__desc,\n#setting-glass-opacity .settings-row__desc,\n#word-wrap .settings-row__desc {\n  margin-top: 0;",
+    );
   });
 
   it("keeps the anchored model picker selectable while outside taps dismiss", () => {

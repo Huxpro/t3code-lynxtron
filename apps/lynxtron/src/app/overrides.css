@@ -6165,6 +6165,16 @@
 #setting-glass-opacity {
   height: 85.6875px;
 }
+#theme .settings-row__text,
+#setting-glass-opacity .settings-row__text,
+#word-wrap .settings-row__text {
+  gap: 4px;
+}
+#theme .settings-row__desc,
+#setting-glass-opacity .settings-row__desc,
+#word-wrap .settings-row__desc {
+  margin-top: 0;
+}
 .settings-row__text {
   --lynx-linear-weight: 1;
   display: flex;
