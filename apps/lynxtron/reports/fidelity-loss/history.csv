@@ -402,3 +402,4 @@ model-picker-default-search-chrome-current,2026-09-04T16:38:10-04:00,f9ef91c516f
 composer-plan-mode-default-meta-visibility-current,2026-09-04T17:06:22-04:00,43608c9898f74ac949ad03e8ad72767d2aeb3a54,commit,Plan mode default transcript meta visibility,0.178237,0.178237,0.036673,0.146953,0.853047,0.813653
 quick-switch-query-icon-alpha-current,2026-09-04T17:39:09-04:00,f6adb466fc74da91d81e64050a13ace70bad19dd,commit,Quick Switch query muted icon alpha,0.178237,0.178237,0.036673,0.146953,0.853047,0.813653
 settings-appearance-copy-gap-current,2026-09-04T18:27:30-04:00,9c154d534,commit,Settings Appearance copy gap parity,0.178216,0.178216,0.036649,0.146953,0.853047,0.813674
+settings-providers-card-action-centering-current,2026-09-04T19:21:30-04:00,16f7d5766,commit,Settings Providers card action centering,0.178217,0.178216,0.036649,0.146953,0.853047,0.813673

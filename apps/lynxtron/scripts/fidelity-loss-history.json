@@ -24083,6 +24083,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-providers-card-action-centering-current",
+      "observedAt": "2026-09-04T19:21:30-04:00",
+      "commit": "16f7d5766",
+      "codeCommit": "16f7d5766",
+      "codeState": "commit",
+      "label": "Settings Providers card action centering",
+      "narrative": "Provider-card actions used a fixed 21px top offset even though the five collapsed cards have two measured heights. Web centers each 68x28 action group in its card. Replacing the fixed offset with 50% plus translateY(-50%) reduces the maximum action-origin delta from 2.046875px to 0.703125px without changing provider state or card content. The provider-card crop improves from 0.873093 to 0.876782 SSIM and from 4.067341 to 3.989239 MAE; full-frame SSIM improves from 0.922903 to 0.924063.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, Providers route, five provider cards, provider state, theme, viewport, and zero renderer errors. The product change only centers the repeated card action group."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/providers-card-action-centering.json",
+          "classification": "tracked-current",
+          "sha256": "8b0617f65551b7961b505aae2b74a10bbc4cf02d546438669e5e305f6ccd34b0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.078125, 0.234375, 0.390625, 0.546875, 0.703125],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "provider-card-action-center-geometry",
+              "source": "All five 68x28 action groups are card-centered and remain within 0.703125px of Web y origins"
+            },
+            "material": {
+              "residual": 0.123218,
+              "confidence": 0.99,
+              "method": "provider-cards-crop-ssim",
+              "source": "1 - provider-card crop SSIM 0.876782; MAE 3.989239 and 5.1327% significant pixels; full-frame SSIM 0.924063"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-providers-current-shared-runtime",
+              "source": "Same snapshot, Providers route, five provider cards, provider state, theme, viewport, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
