@@ -22477,6 +22477,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-health-row-current",
+      "observedAt": "2026-09-04T03:40:00-04:00",
+      "commit": "0871604173e25ffe757136ad25e4b43034b6da12",
+      "codeCommit": "1f7a82914",
+      "codeState": "commit",
+      "label": "Provider health row geometry parity",
+      "narrative": "A fresh same-snapshot Providers capture exposed a strict geometry failure before pixel comparison: Lynx rendered the health interval row at 82px and its 128px NumberField at 32px, while Web rendered 85.6875px and 28px. The four-pixel shortfall shifted every provider card upward. Lynx now uses the authority 34/58/34 stepper-input-stepper widths, 26px inner controls, 28px group height, and 85.6875px row height. The strict Providers gate passes, card positions converge to subpixel height quantization, and the fixed Providers-region MAE improves from 5.713534 to 5.171361 with zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one immutable snapshot, route, dark theme, viewport, provider inventory, and Web authority frame. The product change is limited to the dedicated health row and NumberField box model."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/provider-health-row.json",
+          "classification": "tracked-current",
+          "sha256": "fc896e07591760569b916abc4d70ee198c8e55a2f5aa87eef8b51c1d46f0f132"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "provider-health-row-and-number-field",
+              "source": "Health row width and height plus NumberField width and height now match Web; provider card offsets converge to subpixel quantization"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "providers-current-shared-runtime",
+              "source": "Same snapshot and route, five canonical provider cards, strict Providers geometry gate, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

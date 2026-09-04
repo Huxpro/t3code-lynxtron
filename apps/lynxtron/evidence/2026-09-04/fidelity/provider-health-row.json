@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T03:40:00-04:00",
+  "captureCommit": "0871604173e25ffe757136ad25e4b43034b6da12",
+  "productCommit": "1f7a82914",
+  "stateId": "settings-providers",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-providers",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "9a622c216e506264f331a20bcec0b05308f7c71e27ec886bd8f7b4363cc7eb0d",
+    "webBundleSha256": "cdab003825e63514f948bf77b2fb160b6b6de2b4599fca54b2cdfe4f4e70da07",
+    "lynxBundleSha256": "ae2c3214304f47687fed461ecdcbbe348fe77de6e66e602bde3aab404c105dfe",
+    "webImageSha256": "af95c10c608082594c136decf3928646c43f0966895b99528c3be2b9ae825082",
+    "lynxImageSha256": "5c3cce22f34ffd6c8ae948f1172317f189e63225ec7f1bd3f9a4f967673c6857",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "providerGeometryGatePassed": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "healthRow": [320, 144, 896, 85.6875],
+    "numberField": [1008.390625, 172.84375, 128, 28],
+    "webNumberField": [1016.734375, 172.84375, 128, 28],
+    "lynxHealthRowBefore": [320, 144, 896, 82],
+    "lynxNumberFieldBefore": [1008.390625, 169, 128, 32]
+  },
+  "pixelMetric": {
+    "definition": "Mean absolute RGB error over the fixed Providers content crop x=250..970, y=115..605",
+    "baseline": 5.713534,
+    "current": 5.171361
+  },
+  "boundary": "The change aligns only the health interval row and NumberField box model. Provider status content, authentication copy, toggles, and card semantics are unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
+}
