@@ -12,6 +12,7 @@ import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentat
 import {
   modelPickerRowDisabledReason,
   projectModelPickerProviders,
+  projectModelPickerJumpRows,
   projectModelPickerRows,
   resolveModelPickerSelectedKey,
   type ModelPickerContext,
@@ -295,5 +296,22 @@ describe("Lynx model picker presentation", () => {
         context: context(),
       }).map((row) => row.model.slug),
     ).toEqual(["gpt-5.5", "gpt-5.6"]);
+  });
+
+  it("keeps jump shortcuts in canonical catalog order while search rows are ranked", () => {
+    const rankedRows = projectModelPickerRows({
+      models,
+      selectedProviderId: ProviderInstanceId.make("codex"),
+      search: "gpt",
+      favoriteModelKeys: new Set([providerModelKey("codex", "gpt-5.6")]),
+      instanceOrder: entries.map((entry) => entry.instanceId),
+      context: context(),
+    });
+
+    expect(projectModelPickerJumpRows(models, rankedRows).map((row) => row.model.slug)).toEqual(
+      models
+        .filter((model) => rankedRows.some((row) => row.model.slug === model.slug))
+        .map((model) => model.slug),
+    );
   });
 });

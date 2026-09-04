@@ -41,6 +41,7 @@ import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import {
   projectModelPickerProviders,
+  projectModelPickerJumpRows,
   projectModelPickerRows,
   resolveModelPickerSelectedKey,
 } from "./modelPickerPresentation";
@@ -185,7 +186,7 @@ export function ModelPicker({
   const jumpLabelByKey = useMemo(() => {
     const mapping = new Map<string, string>();
     let selectableIndex = 0;
-    for (const row of rows) {
+    for (const row of projectModelPickerJumpRows(models, rows)) {
       if (row.disabledReason) continue;
       const command = modelPickerJumpCommandForIndex(selectableIndex);
       if (!command) break;
@@ -197,7 +198,7 @@ export function ModelPicker({
       selectableIndex += 1;
     }
     return mapping;
-  }, [rows, serverConfig?.keybindings]);
+  }, [models, rows, serverConfig?.keybindings]);
 
   const handleSelect = useCallback(
     (m: ModelInfo) => {

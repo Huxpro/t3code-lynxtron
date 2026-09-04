@@ -36,6 +36,19 @@ export interface ModelPickerContext {
   readonly lockedContinuationGroupKey: string | null;
 }
 
+export function projectModelPickerJumpRows(
+  models: ReadonlyArray<ModelPickerModel>,
+  rows: ReadonlyArray<ModelPickerRowPresentation>,
+): ReadonlyArray<ModelPickerRowPresentation> {
+  const rowByKey = new Map(
+    rows.map((row) => [providerModelKey(row.model.instanceId, row.model.slug), row]),
+  );
+  return models.flatMap((model) => {
+    const row = rowByKey.get(providerModelKey(model.instanceId, model.slug));
+    return row ? [row] : [];
+  });
+}
+
 export function resolveModelPickerSelectedKey(
   currentSelection: ModelSelection | undefined,
   selectedModel: Pick<ModelPickerModel, "instanceId" | "slug"> | undefined,
