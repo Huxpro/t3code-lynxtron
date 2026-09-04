@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T16:07:39-04:00",
+  "productCommit": "9da9361696ad5a3ce4d523444f04053b3d8b993b",
+  "stateId": "settings-archive-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-archive",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "bb8260e0c6b76ce19a286e32e1895ef82071317a39e7d514258701c2d1afd74f",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "c7fb664f0924cc8116c9246c83d2c7991b432c46a25db02e2c955356c3a466bf",
+    "webImageSha256": "c02dd519c7a7adaf263b75cc943e2b00cd1502bdff8cc5c05ab1e612ce376985",
+    "lynxImageSha256": "0b4ad46ee1c374e2a0f45aff2d8a374e65fb52bc256a5d5657f104cf1dcf41f7",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webRowRect": [320, 144, 896, 68.84375],
+    "lynxRowRect": [320, 144, 896, 69],
+    "webDescriptionY": 182,
+    "lynxDescriptionY": 182,
+    "maximumPrimaryDelta": 0.15625
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg full-frame SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": { "ssim": 0.984608, "mae": 0.817836, "significantShare": 0.007855 },
+    "current": { "ssim": 0.986999, "mae": 0.769607, "significantShare": 0.007346 }
+  },
+  "boundary": "The empty title and description now use an explicit six-pixel flex gap because Lynx text margins do not participate in flow like Web block margins. The empty state is pixel-near at 0.986999 SSIM. Populated archive rows, unarchive/delete interaction, and Native evidence remain separate cells. Screenshots remain temporary because the tracked screenshot budget is full."
+}

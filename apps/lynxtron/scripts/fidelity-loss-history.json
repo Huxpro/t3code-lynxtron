@@ -23799,7 +23799,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-04/fidelity/source-control-badge-material.json",
           "classification": "tracked-current",
-          "sha256": "fd943f5bcc4bccde6a5bf8ab9594563128d94307e8af43ec3fd2be8cb1552b5d"
+          "sha256": "034d0130b05448bad4d28630e11cd5d59f63a939330eb2175c3ca96d553d113b"
         }
       ],
       "updates": [
@@ -23831,6 +23831,54 @@
               "confidence": 0.99,
               "method": "settings-source-control-shared-runtime",
               "source": "Same snapshot, route, theme, six provider rows, exact outer geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-archive-light-empty-rhythm-current",
+      "observedAt": "2026-09-04T16:07:39-04:00",
+      "commit": "9da9361696ad5a3ce4d523444f04053b3d8b993b",
+      "codeCommit": "9da9361696ad5a3ce4d523444f04053b3d8b993b",
+      "codeState": "commit",
+      "label": "Settings Archive light empty rhythm parity",
+      "narrative": "The current strict light Archive frame supersedes the older high residual. Web places the empty description six pixels below the 20px title flow, while Lynx text margins collapsed it against the title. A shared semantic empty-row class and Lynx flex gap align both description origins at y=182 and row height within 0.15625px. Full-frame SSIM improves from 0.984608 to 0.986999, MAE from 0.817836 to 0.769607, and significant pixels from 0.7855% to 0.7346%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, light theme, viewport, empty-state content, and zero renderer errors. Product changes are limited to a semantic row class and measured title-to-description gap."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/archive-light-empty-rhythm.json",
+          "classification": "tracked-current",
+          "sha256": "a79b938a010c608701cbb39879eedd524b2ad8124d53f578761e1140f91c1e2d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-archive-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.15625, 0, 0, 0.515625, 2, 0, 0, 256, 0.15625],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "archive-light-empty-row-geometry",
+              "source": "Row origin and description origin match; row height differs by 0.15625px, title shaping and non-rendering text width remain explicit"
+            },
+            "material": {
+              "residual": 0.013001,
+              "confidence": 0.99,
+              "method": "archive-light-full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.986999; MAE 0.769607 and 0.7346% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-archive-current-shared-runtime",
+              "source": "Same snapshot, empty archive route, light theme, viewport, zero renderer errors, and clean Browser disposal"
             }
           }
         }
