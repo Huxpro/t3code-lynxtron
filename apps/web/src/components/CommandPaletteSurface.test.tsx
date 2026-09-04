@@ -49,6 +49,10 @@ describe("CommandPaletteSurface", () => {
     ].map((needle) => markup.indexOf(needle));
     expect(order.every((index) => index >= 0)).toBe(true);
     expect([...order]).toEqual([...order].sort((a, b) => a - b));
+    expect(markup).toContain("palette-row__copy");
+    expect(markup).toContain("palette-row__title-line");
+    expect(markup).toContain("palette-row__title");
+    expect(markup).toContain("palette-row__description");
   });
 
   it("marks the active row and disables interaction for disabled rows", () => {

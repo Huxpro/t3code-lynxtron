@@ -918,6 +918,17 @@ function readSidebarSearchRows(elements) {
   });
 }
 
+function readPaletteRows(elements) {
+  return [...elements].slice(0, 6).map((row) => ({
+    box: readElementBox(row),
+    icon: readElementBox(row.querySelector("[data-file-icon-tone], svg, img, x-image")),
+    copy: readElementBox(row.querySelector(".palette-row__copy")),
+    titleLine: readElementBox(row.querySelector(".palette-row__title-line")),
+    title: readElementBox(row.querySelector(".palette-row__title")),
+    description: readElementBox(row.querySelector(".palette-row__description")),
+  }));
+}
+
 function readSidebarProjectGroups(root) {
   const list = root?.querySelector(".lynx-sidebar-project-list");
   const group = root?.querySelector(".lynx-sidebar-projects-group");
@@ -1935,6 +1946,7 @@ function readLynxPane() {
                 section: readElementBox(root?.querySelector(".qs-section")),
                 sectionLabel: readElementBox(root?.querySelector(".palette-section-label")),
                 row: readElementBox(root?.querySelector(".palette-row")),
+                rows: readPaletteRows(root?.querySelectorAll("[data-palette-row='true']") ?? []),
                 empty: readElementBox(root?.querySelector(".palette-empty")),
                 emptyText: readElementBox(root?.querySelector(".palette-empty-text")),
                 footer: readElementBox(root?.querySelector(".palette-footer")),
@@ -3073,6 +3085,9 @@ function readWebPane() {
                   ),
                   row: readElementBox(
                     doc.querySelector('[data-command-palette="true"] [role="option"]'),
+                  ),
+                  rows: readPaletteRows(
+                    doc.querySelectorAll('[data-command-palette="true"] [data-palette-row="true"]'),
                   ),
                   empty: readElementBox(
                     doc.querySelector('[data-command-palette="true"] .palette-empty'),

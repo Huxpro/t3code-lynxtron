@@ -138,17 +138,19 @@ export function PaletteRowContent({
     <>
       {icon}
       {description ? (
-        <HostView className="flex min-w-0 flex-1 flex-col">
-          <HostView className="flex min-w-0 items-center gap-1.5 text-sm text-foreground">
+        <HostView className="palette-row__copy flex min-w-0 flex-1 flex-col">
+          <HostView className="palette-row__title-line flex min-w-0 items-center gap-1.5 text-sm text-foreground">
             {titleLeading}
-            <HostText className="truncate">{title}</HostText>
+            <HostText className="palette-row__title truncate">{title}</HostText>
           </HostView>
-          <HostText className="truncate text-xs text-muted-foreground/70">{description}</HostText>
+          <HostText className="palette-row__description truncate text-xs text-muted-foreground/70">
+            {description}
+          </HostText>
         </HostView>
       ) : (
-        <HostView className="flex min-w-0 flex-1 items-center gap-1.5 text-sm text-foreground">
+        <HostView className="palette-row__title-line flex min-w-0 flex-1 items-center gap-1.5 text-sm text-foreground">
           {titleLeading}
-          <HostText className="truncate">{title}</HostText>
+          <HostText className="palette-row__title truncate">{title}</HostText>
         </HostView>
       )}
       {titleTrailing}

@@ -84,6 +84,14 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "fieldColumns:");
   });
 
+  it("records palette row icon and text allocation for both renderers", () => {
+    assert.include(source, "function readPaletteRows(elements)");
+    assert.include(source, "[data-file-icon-tone], svg, img, x-image");
+    assert.include(source, '".palette-row__copy"');
+    assert.include(source, '".palette-row__title"');
+    assert.include(source, '".palette-row__description"');
+  });
+
   it("records matching Sidebar status geometry for both renderers", () => {
     assert.include(source, "function readSidebarThreadMetrics(item)");
     assert.include(source, "statusSlot: readElementBox");
