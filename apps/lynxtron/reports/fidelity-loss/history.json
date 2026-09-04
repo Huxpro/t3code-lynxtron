@@ -35287,13 +35287,44 @@
       "toPoint": "provider-dialog-coming-soon-icons-current"
     },
     {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 26437,
+      "commit": "773d76d5eba5b787a39b1b7f088f9c703c077218",
+      "committedAt": "2026-09-04T09:00:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record provider wizard icons",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "composer-plan-mode-current-geometry",
+      "toPoint": "provider-dialog-coming-soon-icons-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 17,
+      "commit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
+      "committedAt": "2026-09-04T09:09:59-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): add Gemini provider icon",
+      "surfaces": [
+        "shell",
+        "settings"
+      ],
+      "fromPoint": "composer-plan-mode-current-geometry",
+      "toPoint": "provider-dialog-coming-soon-icons-current"
+    },
+    {
       "allocation": "measured-product-change",
       "changedLines": 0,
-      "commit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
-      "committedAt": "2026-09-04T08:54:00-04:00",
+      "commit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
+      "committedAt": "2026-09-04T09:10:00-04:00",
       "confidence": 0.99,
-      "delta": -0.000005,
-      "reason": "Before and after captures share the same snapshot, route, Driver stage, theme, viewport, Web authority image, exact dialog geometry, and zero-error runtime. Changed content is limited to three authority-sourced 16px glyphs.",
+      "delta": -0.000006,
+      "reason": "Before and after captures share the same snapshot, route, Driver stage, theme, viewport, Web authority image, exact dialog geometry, and zero-error runtime. Changed content is limited to four authority-sourced 16px glyphs.",
       "subject": "Provider dialog Coming Soon brand icons",
       "surfaces": [
         "settings"
@@ -60945,14 +60976,36 @@
       "subject": "fix(lynxtron): add provider wizard brand icons"
     },
     {
+      "allocation": "unmeasured-product-commit",
+      "commit": "773d76d5eba5b787a39b1b7f088f9c703c077218",
+      "committedAt": "2026-09-04T09:00:55-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.179815,
+      "smoothedLoss": 0.179783,
+      "subject": "test(lynxtron): record provider wizard icons"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
+      "committedAt": "2026-09-04T09:09:59-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.179815,
+      "smoothedLoss": 0.17979,
+      "subject": "fix(lynxtron): add Gemini provider icon"
+    },
+    {
       "allocation": "measured-product-change",
-      "commit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
-      "committedAt": "2026-09-04T08:54:00-04:00",
+      "commit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
+      "committedAt": "2026-09-04T09:10:00-04:00",
       "confidence": 0.99,
-      "delta": -0.000005,
+      "delta": -0.000006,
       "measuredCheckpoint": "provider-dialog-coming-soon-icons-current",
-      "rawLoss": 0.17981,
-      "smoothedLoss": 0.179782,
+      "rawLoss": 0.179809,
+      "smoothedLoss": 0.179794,
       "subject": "Provider dialog Coming Soon brand icons"
     }
   ],
@@ -443711,27 +443764,27 @@
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
-        "reason": "Before and after captures share the same snapshot, route, Driver stage, theme, viewport, Web authority image, exact dialog geometry, and zero-error runtime. Changed content is limited to three authority-sourced 16px glyphs."
+        "reason": "Before and after captures share the same snapshot, route, Driver stage, theme, viewport, Web authority image, exact dialog geometry, and zero-error runtime. Changed content is limited to four authority-sourced 16px glyphs."
       },
-      "commit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
-      "codeCommit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
+      "commit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
+      "codeCommit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
       "codeState": "commit",
       "id": "provider-dialog-coming-soon-icons-current",
       "label": "Provider dialog Coming Soon brand icons",
-      "narrative": "The Web authority renders brand marks for all four Coming Soon drivers, while Lynx omitted every icon. Three marks with directly reusable authority paths—Github Copilot, ACP Registry, and Pi Agent—now flow through the existing generated raster pipeline and render in the same 16px slots without changing any card geometry or interaction. Dialog SSIM improves from 0.827622 to 0.833541 and MAE from 6.564842 to 6.373407; the driver-grid crop also improves from 0.780484 to 0.782127 SSIM. Gemini remains explicit debt because its authority mark is a multi-layer masked gradient. A separate 80% dark surface experiment worsened pixels without Web's backdrop blur and was fully reverted.",
-      "observedAt": "2026-09-04T08:54:00-04:00",
+      "narrative": "The Web authority renders brand marks for all four Coming Soon drivers, while Lynx omitted every icon. Github Copilot, ACP Registry, and Pi Agent reuse their authority paths, and Gemini preserves its complete masked blue, yellow, red, and green composition; all four now flow through the existing generated raster pipeline and render in the same 16px slots without changing card geometry or interaction. Dialog SSIM improves from 0.827622 to 0.834942 and MAE from 6.564842 to 6.341043. A separate 80% dark surface experiment worsened pixels without Web's backdrop blur and was fully reverted.",
+      "observedAt": "2026-09-04T09:10:00-04:00",
       "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-09-04/fidelity/provider-dialog-coming-soon-icons.json",
           "classification": "tracked-current",
-          "sha256": "598b68504767e5a004f93c930a1a47180c438b3e82d453d23aeef8592866cfad"
+          "sha256": "eef864b1b3efe238564bd79e0781778a8330b56b94b9fa28386e7d4f8bba074b"
         }
       ],
       "confidence": 0.85268,
       "evidenceDebt": 0.14732,
-      "loss": 0.17981,
-      "observedResidual": 0.038103,
+      "loss": 0.179809,
+      "observedResidual": 0.038102,
       "byDimension": {
         "content": {
           "confidence": 0.987749,
@@ -443754,8 +443807,8 @@
         "material": {
           "confidence": 0.639078,
           "evidenceDebt": 0.360922,
-          "loss": 0.466791,
-          "observedResidual": 0.16566
+          "loss": 0.466784,
+          "observedResidual": 0.165648
         },
         "interaction": {
           "confidence": 0.833262,
@@ -443798,8 +443851,8 @@
         "settings": {
           "confidence": 0.807087,
           "evidenceDebt": 0.192913,
-          "loss": 0.22035,
-          "observedResidual": 0.033995
+          "loss": 0.220345,
+          "observedResidual": 0.033988
         },
         "review": {
           "confidence": 0.859878,
@@ -444305,8 +444358,8 @@
           "group": "settings",
           "id": "settings-providers-add-dialog",
           "label": "Settings · Add Provider Wizard",
-          "loss": 0.130404,
-          "observedResidual": 0.094962,
+          "loss": 0.130326,
+          "observedResidual": 0.094882,
           "weight": 4
         },
         {
@@ -444711,7 +444764,7 @@
         }
       ],
       "bestLoss": 0.1786,
-      "improvementFromBaseline": 0.81208
+      "improvementFromBaseline": 0.812081
     }
   ],
   "provenance": {

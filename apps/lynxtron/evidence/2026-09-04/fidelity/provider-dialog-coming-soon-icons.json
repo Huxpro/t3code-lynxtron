@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "observedAt": "2026-09-04T08:54:00-04:00",
-  "captureCommit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
-  "productCommit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
+  "observedAt": "2026-09-04T09:10:00-04:00",
+  "captureCommit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
+  "productCommit": "c1e4be1e19c6d74f432945f87ff2d3a7eda87602",
   "stateId": "settings-providers-add-dialog",
   "scope": {
     "authority": "web",
@@ -14,19 +14,18 @@
     "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
   },
   "capture": {
-    "reportSha256": "79b25e032bcf302c7001edb5210fb5bca0e1583386d549e8f015252f23adb667",
+    "reportSha256": "ccbf0329fa0cc7a262773272df2bfc0b7b413ae322246c0421affe748a860c5a",
     "webBundleSha256": "00de13657e8ca111cff76bfdaf383bc17258711e7f357d740303e59dda2444cc",
-    "lynxBundleSha256": "bd278d74501a1435fd19c8cc6cfd46966a522d9934d8d5e10d464c7f738c3a26",
-    "webImageSha256": "9394cefc54a6d8d88e480de513d4e1994c1738c95eab1632a9b421499c268032",
-    "lynxImageSha256": "d600ea52665a63285da1cdb68e1e478667775968d525a9753470a90a58f5f22d",
+    "lynxBundleSha256": "bc728b585b906b6f4337fdc6065b4a6900d8b51da72f4174e076607f00577142",
+    "webImageSha256": "ae7e64013528d42bf8438e6687fe5593e648334df5901dc7f2529c74acad0fca",
+    "lynxImageSha256": "443b483258df831389548f270a86ae80152b5dda125960f600b8a443ad0d5fa3",
     "passed": true,
     "stateIdentityMatch": true,
     "dialogMatch": true,
     "rendererErrors": 0
   },
   "icons": {
-    "addedFromWebAuthority": ["Github Copilot", "ACP Registry", "Pi Agent"],
-    "remainingComplexAsset": "Gemini"
+    "addedFromWebAuthority": ["Github Copilot", "Gemini", "ACP Registry", "Pi Agent"]
   },
   "pixelMetric": {
     "definition": "SSIM and mean absolute RGB error over fixed 576x538 dialog and 528x220 driver-grid crops",
@@ -38,13 +37,13 @@
       "driverGridSignificantShare": 0.080019
     },
     "current": {
-      "dialogSsim": 0.833541,
-      "dialogMae": 6.373407,
+      "dialogSsim": 0.834942,
+      "dialogMae": 6.341043,
       "driverGridSsim": 0.782127,
-      "driverGridMae": 7.751133,
+      "driverGridMae": 7.751168,
       "driverGridSignificantShare": 0.079847
     }
   },
   "rejectedExperiment": "Matching Web's 80% dark dialog alpha without Web's backdrop blur worsened dialog SSIM to 0.816099 and MAE to 6.699741, so that change was reverted.",
-  "boundary": "Three simple authority SVG marks are rasterized through the existing Lynx icon pipeline. Gemini remains absent because its Web mark depends on a multi-layer masked gradient and must not be replaced with a false monochrome approximation. Screenshots remain temporary because the tracked screenshot budget is full."
+  "boundary": "All four authority SVG marks are rasterized through the existing Lynx icon pipeline; Gemini preserves its masked blue, yellow, red, and green layers. Web backdrop blur remains an explicit platform material residual. Screenshots remain temporary because the tracked screenshot budget is full."
 }
