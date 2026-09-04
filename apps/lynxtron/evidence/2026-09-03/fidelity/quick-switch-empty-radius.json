@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T22:51:08-04:00",
+  "captureCommit": "b0fed36564a21eff5da09063616b40a1905a2829",
+  "productCommit": "85b199c98ef7e2532b80da4474a265686e5e84e4",
+  "stateId": "quick-switch-empty",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch",
+    "query": "zzzz-no-result",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "326fce1b07125d6f6b2e99f2e247eba715fb0a8711aa79b0df0a35b6db5edea4",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "e902755572e4d5b65e98b638734001d34710bb15d880705508b34c24da211080",
+    "webImageSha256": "cb58de8e84f3b42d4088ff623807acd1a01c60b79dfafe0626973be18c842348",
+    "lynxImageSha256": "6b6f9ede0021d12dae618bf33ab89e9e8d6c963b19936023a0f7659fc19bed9d",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "overlayGeometryDelta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  "content": {
+    "rowCount": 0,
+    "emptyText": "No matching commands, projects, or threads.",
+    "panel": [352, 82, 576, 190],
+    "webRadius": 18,
+    "lynxRadiusBefore": 12,
+    "lynxRadiusAfter": 18
+  },
+  "pixelMetric": {
+    "definition": "SSIM over matching 1280x820 Browser captures and fixed panel and top-edge crops",
+    "baseline": {
+      "fullFrame": 0.965406,
+      "panel": 0.938026,
+      "topEdge": 0.907233
+    },
+    "current": {
+      "fullFrame": 0.965766,
+      "panel": 0.939705,
+      "topEdge": 0.912071
+    }
+  },
+  "boundary": "This cross-state evidence attributes the already-landed generic Quick Switch radius change to the empty-query state. No new product change, state weight, or Native credit is claimed. Screenshots remain temporary because the tracked screenshot budget is full."
+}
