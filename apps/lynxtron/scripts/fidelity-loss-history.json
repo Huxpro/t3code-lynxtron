@@ -23157,6 +23157,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "add-project-source-provider-icons-current",
+      "observedAt": "2026-09-04T11:20:17-04:00",
+      "commit": "62a903047acaf3b484774d7782defbf1c56e5f97",
+      "codeCommit": "62a903047acaf3b484774d7782defbf1c56e5f97",
+      "codeState": "commit",
+      "label": "Add Project source provider icon parity",
+      "narrative": "The Web authority uses distinct GitHub, Azure DevOps, Bitbucket, and GitLab marks in Add Project while Lynx reused one gray git-branch-plus glyph for all four sources. The existing theme-aware icon generator now rasterizes the authority SVG definitions and maps each provider source to its matching mark. The exact 576x420 panel improves from 0.873331 to 0.878443 SSIM, from 5.675470 to 5.524822 MAE, and from 6.4856% to 6.2479% significant pixels without geometry, behavior, state, or runtime changes.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one snapshot, Web authority pixels, Add Project state, dark theme, viewport, and exact geometry. Changed product content is limited to four provider icon leaves."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/add-project-source-provider-icons.json",
+          "classification": "tracked-current",
+          "sha256": "23578f08ef49191cc8c9835530347b182b5b49a6059f6cb5abb4abf32fdb1065"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["add-project-sources"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "authority-provider-icon-mapping",
+              "source": "GitHub, Azure DevOps, Bitbucket, and GitLab rows use rasterized copies of their Web authority SVG definitions"
+            },
+            "material": {
+              "residual": 0.121557,
+              "confidence": 0.99,
+              "method": "add-project-panel-ssim",
+              "source": "1 - exact panel SSIM 0.878443; MAE 5.524822 and 6.2479% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "add-project-provider-icons-current-runtime",
+              "source": "Same snapshot and six-row Add Project state, exact geometry, four visible provider marks, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
