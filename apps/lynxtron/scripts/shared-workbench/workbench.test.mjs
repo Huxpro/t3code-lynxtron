@@ -70,6 +70,7 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'ariaSelected: row.getAttribute("aria-selected")');
     assert.include(source, 'ariaCurrent: row.getAttribute("aria-current")');
     assert.include(source, "box: readElementBox(row)");
+    assert.include(source, "faviconBox: readElementBox(favicon)");
     assert.include(source, "titleBox: readElementBox(title)");
     assert.include(source, "rows,");
   });

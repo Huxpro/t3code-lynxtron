@@ -897,6 +897,7 @@ function readModelPickerRows(elements) {
 
 function readSidebarSearchRows(elements) {
   return [...elements].map((row) => {
+    const favicon = row.querySelector(".sidebar-v2-search-result__favicon, img, svg, x-image");
     const title =
       row.querySelector(".sidebar-v2-search-result__title") ??
       row.querySelector(".sidebar-v2-row-title") ??
@@ -911,6 +912,7 @@ function readSidebarSearchRows(elements) {
       ariaSelected: row.getAttribute("aria-selected"),
       ariaCurrent: row.getAttribute("aria-current"),
       box: readElementBox(row),
+      faviconBox: readElementBox(favicon),
       titleBox: readElementBox(title),
     };
   });
