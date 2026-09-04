@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T22:28:27-04:00",
+  "commit": "d2d828698f909373e17159dddebc0b3fda50bbf3",
+  "stateId": "settings-appearance",
+  "scope": {
+    "authority": "electron-visual-web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-appearance",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "fc68c8968cf3bd2855428edfd8351bc2dc36905ecce4b7c3b7f9a02356dbc0d0",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "e902755572e4d5b65e98b638734001d34710bb15d880705508b34c24da211080",
+    "webImageSha256": "6b6912ecfad59c2ddef41c9a2ffc0d4cd7722ea7fc66b39dba1816e6f15ff488",
+    "lynxImageSha256": "853b4a19e5183019e84c39528473853fa4c4447cb1be9578e81c47c6f19ae009",
+    "passed": true,
+    "desktopTopbarMatch": true,
+    "settingsContentMatch": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "themeRow": [320, 144, 896, 66.84375],
+    "glassOpacityRow": [320, 214.84375, 896, 85.6875],
+    "wordWrapRow": [320, 304.53125, 896, 66.84375],
+    "themeControlWidth": 160,
+    "glassOpacityControlWidth": 208,
+    "wordWrapControlWidth": 160
+  },
+  "pixelMetric": {
+    "definition": "SSIM over matching 1280x820 Browser captures and fixed settings-content and row crops",
+    "baseline": {
+      "fullFrame": 0.937785,
+      "content": 0.888455,
+      "rows": 0.790308
+    },
+    "current": {
+      "fullFrame": 0.952921,
+      "content": 0.928083,
+      "rows": 0.866464
+    }
+  },
+  "boundary": "Glass opacity and Word wrap remain explicitly unavailable in Lynxtron. Their limitation copy moves from a third status line into the authority-sized control slot; no capability or interaction credit is claimed. Screenshots remain temporary because the tracked screenshot budget is full."
+}

@@ -359,3 +359,4 @@ provider-dialog-dark-cards-current,2026-09-03T20:18:56-04:00,6103dd3a35c0d36b7d4
 file-picker-radius-current,2026-09-03T20:33:38-04:00,ad9d60b078ebe556f7c31302d90413b51a02b5ff,commit,File Picker radius parity,0.179024,0.179024,0.038651,0.146017,0.853983,0.812866
 model-picker-jump-order-current,2026-09-03T21:47:31-04:00,0a77119dd7ce3fbc933ed47af44aea723261a2aa,commit,Model Picker jump shortcut order parity,0.179019,0.179019,0.038644,0.146017,0.853983,0.812871
 quick-switch-dark-radius-current,2026-09-03T22:03:52-04:00,85b199c98ef7e2532b80da4474a265686e5e84e4,commit,Quick Switch dark radius parity,0.179009,0.179009,0.038633,0.146017,0.853983,0.812881
+settings-appearance-row-rhythm-current,2026-09-03T22:28:27-04:00,d2d828698f909373e17159dddebc0b3fda50bbf3,commit,Settings Appearance row rhythm parity,0.178944,0.178944,0.038557,0.146017,0.853983,0.812946

@@ -22072,6 +22072,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-appearance-row-rhythm-current",
+      "observedAt": "2026-09-03T22:28:27-04:00",
+      "commit": "d2d828698f909373e17159dddebc0b3fda50bbf3",
+      "codeCommit": "d2d828698f909373e17159dddebc0b3fda50bbf3",
+      "codeState": "commit",
+      "label": "Settings Appearance row rhythm parity",
+      "narrative": "The Electron-visual Appearance authority reserves right-side control columns for Theme, Glass opacity, and Word wrap. Lynx previously inserted its truthful Not yet available copy as a third text line, inflating the latter two rows and shifting their vertical rhythm. The limitation remains explicit and disabled, but now occupies the authority-sized 208px and 160px control slots. Theme also adopts the 160px authority width. All three row boxes now match exactly at 66.84375, 85.6875, and 66.84375px. Rows-crop SSIM improves from 0.790308 to 0.866464, content SSIM from 0.888455 to 0.928083, and full-frame SSIM from 0.937785 to 0.952921.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share the same Electron-visual authority, immutable snapshot, Appearance route, dark theme, viewport, settings descriptions, unsupported capability state, and zero-error runtime. Only limitation-copy placement and source-measured row/control dimensions change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/settings-appearance-row-rhythm.json",
+          "classification": "tracked-current",
+          "sha256": "cd10bb46ea202b2db8ab9cebfeca9020f8c7052721a88bbe176fff775f5dffe6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-appearance"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "appearance-row-and-control-geometry",
+              "source": "All three rows share exact x, y, width, and height; control columns match 160, 208, and 160px authority widths"
+            },
+            "material": {
+              "residual": 0.071917,
+              "confidence": 0.99,
+              "method": "appearance-content-ssim",
+              "source": "1 - settings-content SSIM 0.928083 after restoring row rhythm; focused rows-crop SSIM is 0.866464"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-appearance-desktop-runtime",
+              "source": "Desktop visual authority, same snapshot and route, matching content and topbar, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
