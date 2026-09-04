@@ -88,6 +88,7 @@ const defaultOverlayByStateId = {
   "composer-compact-controls-inline-files-narrow": "compact-controls",
   "composer-compact-controls-inline-files-short": "compact-controls",
   "diff-scope-menu": "diff-scope-menu",
+  "file-picker-default": "file-picker",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
   "model-picker-interaction": "model-picker",
