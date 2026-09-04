@@ -444,11 +444,21 @@ function ProviderCard({
       ? (entry.snapshot.auth.label ?? entry.snapshot.auth.type ?? null)
       : null;
   const summaryHeadline =
-    entry.snapshot.auth.status === "authenticated" && authEmail
-      ? `Authenticated as ${
-          authEmailRevealed ? authEmail : redactSourceControlAccount(authEmail)
-        }${authenticatedDetail ? ` · ${authenticatedDetail}` : ""}`
-      : `${summary.headline}${summary.detail ? ` - ${summary.detail}` : ""}`;
+    entry.snapshot.auth.status === "authenticated" && authEmail ? (
+      <>
+        <text className="provider-instance-card__summary-part">Authenticated as</text>
+        <text
+          className={`provider-card__auth-email${authEmailRevealed ? " provider-card__auth-email--revealed" : ""}`}
+        >
+          {authEmailRevealed ? authEmail : redactSourceControlAccount(authEmail)}
+        </text>
+        {authenticatedDetail ? (
+          <text className="provider-instance-card__summary-part">· {authenticatedDetail}</text>
+        ) : null}
+      </>
+    ) : (
+      `${summary.headline}${summary.detail ? ` - ${summary.detail}` : ""}`
+    );
   const versionLabel = getProviderVersionLabel(entry.snapshot.version);
   const unavailableReason = describeUnavailableProviderInstance(entry);
   const canUpdate =

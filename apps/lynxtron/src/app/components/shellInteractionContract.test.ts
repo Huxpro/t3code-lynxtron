@@ -357,6 +357,8 @@ describe("desktop shell interaction contract", () => {
     expect(settingsSurfaces).toContain("provider-instance-card__copy");
     expect(settingsSurfaces).toContain("provider-instance-card__title-row");
     expect(settingsSurfaces).toContain("provider-instance-card__summary");
+    expect(providers).toContain("provider-card__auth-email");
+    expect(providers).toContain("provider-card__auth-email--revealed");
     expect(settingsSurfaces).toContain("provider-instance-card__actions");
     expect(providers).toContain('id="provider-health-check-interval"');
     expect(providers).toContain('className="provider-health-number-field__stepper"');
