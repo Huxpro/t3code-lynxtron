@@ -22395,6 +22395,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "keybindings-conflict-warning-current",
+      "observedAt": "2026-09-04T01:46:00-04:00",
+      "commit": "9f90ddebb7f27add16a06f4996c7a87e43e3672f",
+      "codeCommit": "4bb721388",
+      "codeState": "commit",
+      "label": "Keybindings conflict warning parity",
+      "narrative": "A same-snapshot dark Keybindings capture preserves Lynxtron's truthful read-only capability boundary while aligning the conflict warning semantics with Web. The component now requests the Web authority's amber warning color and the generated icon catalog includes the exact 14px amber raster instead of falling back to neutral gray. In the fixed 80 by 420 conflict-status crop, mean absolute RGB error drops from 3.538542 to 2.383740; the only changed pixels occupy the 14px warning-icon strip. Both captures pass state, route, theme, geometry, and zero-error gates.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share identical Web pixels, immutable snapshot, route, dark theme, viewport, and table geometry. The changed-pixel bounds contain only the warning icons."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/keybindings-conflict-warning.json",
+          "classification": "tracked-current",
+          "sha256": "aeefeb9d87cf5b62c547d90d9e2477bcced74c35fbab9d2eee4cac4cc57247d5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.029415,
+              "confidence": 0.99,
+              "method": "keybindings-conflict-warning-crop",
+              "source": "Conflict status crop MAE improves from 3.538542 to 2.383740 after matching the 14px amber warning raster; the broader read-only control difference is retained separately"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybindings-current-shared-runtime",
+              "source": "Same snapshot, route, dark theme, 45 binding rows, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

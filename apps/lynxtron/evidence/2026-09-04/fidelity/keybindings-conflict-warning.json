@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T01:46:00-04:00",
+  "captureCommit": "9f90ddebb7f27add16a06f4996c7a87e43e3672f",
+  "productCommit": "4bb721388",
+  "stateId": "settings-keybindings",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-keybindings",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "40e85fe152780c700337aff21656225c0041f547edf8a60d445e85b9ec065a95",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "f1fec4714d68f8392f3730b56030132118ef93dd22f375b364b45a1b9ed6d1d5",
+    "webImageSha256": "10eef48a7ec8346e44a8179db4f2bc0d05ab0c248bcc569f5573a91bb02ab99b",
+    "lynxImageSha256": "92fb2bf07b7570bc1636c0dab1c33982ca0e416add781822abf7e13f695bcc6e",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "pixelMetric": {
+    "definition": "Mean absolute RGB error over the fixed 80x420 conflict-status column crop x=1190..1270, y=400..820",
+    "baseline": 3.538542,
+    "current": 2.38374,
+    "changedPixelBounds": [1212, 519, 1226, 820]
+  },
+  "boundary": "Only conflict warning color is attributed. Web's editable When controls and Lynxtron's truthful read-only presentation remain an explicit capability difference. Screenshots remain temporary because the tracked screenshot budget is full."
+}
