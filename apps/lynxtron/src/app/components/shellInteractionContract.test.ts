@@ -445,6 +445,24 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("animation: provider-card-body-enter 200ms ease-in-out both;");
     expect(overrides).toContain("animation: provider-card-body-exit 200ms ease-in-out both;");
     expect(overrides).toContain(".provider-instance-dialog__body {\n  display: flex;");
+    expect(overrides).toContain(
+      ".project-settings-dialog__description {\n  position: absolute;\n  width: 1px;\n  height: 1px;",
+    );
+    expect(overrides).toContain(".project-settings-dialog__body {\n  flex-grow: 1;");
+    expect(overrides).toContain(
+      ".project-settings-dialog__body--single {\n  height: 94px;\n  padding: 8px 24px 16px;",
+    );
+    expect(overrides).toContain(".project-settings-field {");
+    expect(overrides).toContain("  width: 258px;");
+    expect(overrides).toContain(
+      ".project-settings-fields {\n  display: flex;\n  flex-direction: row;\n  gap: 12px;\n  margin-top: 11px;",
+    );
+    expect(componentSource("ProjectSettingsDialog.tsx")).toContain(
+      '<view className="project-settings-field flex flex-col">',
+    );
+    expect(componentSource("ProjectSettingsDialog.tsx")).toContain(
+      '"project-settings-dialog__body project-settings-dialog__body--single"',
+    );
     expect(providers).toContain('scroll-orientation="vertical"');
   });
 

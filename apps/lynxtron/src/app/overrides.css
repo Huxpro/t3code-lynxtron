@@ -11136,10 +11136,17 @@
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
-  gap: 6px;
+  gap: 12px;
   width: 100%;
   padding: 20px 52px 8px 24px;
   box-sizing: border-box;
+}
+.project-settings-dialog__description {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
 }
 .project-settings-dialog__title {
   color: var(--foreground);
@@ -11182,11 +11189,15 @@
   padding: 4px 24px 0;
   box-sizing: border-box;
 }
+.project-settings-dialog__body--single {
+  height: 94px;
+  padding: 8px 24px 16px;
+}
 .project-settings-member {
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 8px 0 12px;
+  padding: 0;
   border-bottom-width: 1px;
   border-bottom-style: solid;
   border-bottom-color: var(--border);
@@ -11196,11 +11207,14 @@
   display: flex;
   flex-direction: row;
   gap: 12px;
+  margin-top: 11px;
 }
 .project-settings-field {
   position: relative;
   display: flex;
-  flex: 1;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 258px;
   flex-direction: column;
   min-width: 0;
   gap: 6px;
@@ -11215,7 +11229,7 @@
 .project-settings-name-input,
 .project-settings-grouping-trigger {
   width: 100%;
-  height: 32px;
+  height: 30px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--input);
@@ -11347,6 +11361,7 @@
   flex-direction: row;
   justify-content: flex-end;
   width: 100%;
+  height: 64px;
   padding: 16px 24px;
   gap: 8px;
   box-sizing: border-box;

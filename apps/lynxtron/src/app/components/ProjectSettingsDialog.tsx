@@ -142,7 +142,14 @@ export function ProjectSettingsDialog({
             </view>
           ))}
         </view>
-        <scroll-view className="project-settings-dialog__body" scroll-orientation="vertical">
+        <scroll-view
+          className={
+            singleMember
+              ? "project-settings-dialog__body project-settings-dialog__body--single"
+              : "project-settings-dialog__body"
+          }
+          scroll-orientation="vertical"
+        >
           {members.map((member) => {
             const overrideKey = deriveProjectGroupingOverrideKey(member);
             const selection =
@@ -169,7 +176,7 @@ export function ProjectSettingsDialog({
                       bindconfirm={() => commitName(member)}
                     />
                   </view>
-                  <view className="project-settings-field">
+                  <view className="project-settings-field flex flex-col">
                     <text className="project-settings-field__label">Grouping rule</text>
                     <view
                       className="project-settings-grouping-trigger flex flex-row"
