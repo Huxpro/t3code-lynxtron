@@ -23399,6 +23399,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-control-rhythm-current",
+      "observedAt": "2026-09-04T13:53:31-04:00",
+      "commit": "a5583857d842b9187979aba13db784b5eb27b740",
+      "codeCommit": "a5583857d842b9187979aba13db784b5eb27b740",
+      "codeState": "commit",
+      "label": "Project Action control rhythm parity",
+      "narrative": "After aligning the first form origin, field-level diagnostics showed that Lynx still used 18px labels, 36px inputs, 72px textareas, 20px hints, and 40px options where Web resolves to 16px, 30px, 70px, 16px, and 38px respectively. Aligning those measured tokens reduces the remaining y offsets to an alternating 1-2px host quantization range. The 512x671 dialog improves from 0.742481 to 0.769009 SSIM, from 8.577799 to 8.149250 MAE, and from 7.3104% to 6.7524% significant pixels.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, exact dialog envelope, field content, options, and zero-error runtime. Product changes are limited to measured form-control rhythm tokens."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-control-rhythm.json",
+          "classification": "tracked-current",
+          "sha256": "db3e131f62b7b447f0e020f50c0f7091058996ae0a5f3db3f34e822dd78f4cc3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 1, 0, 2, 0],
+              "anchorScale": 671,
+              "confidence": 0.99,
+              "method": "project-action-control-rhythm-geometry",
+              "source": "Dialog envelope and measured control heights match; remaining field y differences are at most 2px"
+            },
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.99,
+              "method": "project-action-control-typography",
+              "source": "Labels and hints now match Web's 16px line boxes; host font rasterization remains explicit"
+            },
+            "material": {
+              "residual": 0.230991,
+              "confidence": 0.99,
+              "method": "project-action-dialog-ssim",
+              "source": "1 - exact dialog SSIM 0.769009; MAE 8.149250 and 6.7524% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-current-shared-runtime",
+              "source": "Same snapshot, dialog fields and options, exact dialog envelope, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
