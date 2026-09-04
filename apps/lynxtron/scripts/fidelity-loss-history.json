@@ -24032,6 +24032,57 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-appearance-copy-gap-current",
+      "observedAt": "2026-09-04T18:27:30-04:00",
+      "commit": "9c154d534",
+      "codeCommit": "9c154d534",
+      "codeState": "commit",
+      "label": "Settings Appearance copy gap parity",
+      "narrative": "Web separates each Appearance title and description with a four-pixel margin. Lynx retained that declaration but its text margin did not participate in the flex flow, so all three pairs touched and were centered two pixels away from authority. A scoped four-pixel flex gap with the ineffective margin removed aligns all title and description origins within 0.15625px while preserving exact row boxes and truthful unavailable controls. Rows-crop SSIM improves from 0.866464 to 0.871502, MAE from 4.124400 to 3.882878, and full-frame SSIM from 0.952921 to 0.954803.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, Appearance route, content, controls, theme, viewport, exact row boxes, and zero renderer errors. The product change only replaces an ineffective margin with a scoped flex gap."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/settings-appearance-copy-gap.json",
+          "classification": "tracked-current",
+          "sha256": "2171d33520de64bc6a93946a9d01f713c2f015ca9eb740f36d1062dd9efbe298"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-appearance"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, -0.078125, -0.078125, 0, 0, 0, 0, -0.15625, -0.15625, 0, 0, 0, 0,
+                -0.078125, -0.078125
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "appearance-copy-gap-geometry",
+              "source": "Three row boxes remain exact and title and description origins converge within 0.15625px"
+            },
+            "material": {
+              "residual": 0.128498,
+              "confidence": 0.99,
+              "method": "appearance-rows-crop-ssim",
+              "source": "1 - rows-crop SSIM 0.871502; MAE 3.882878 and 5.5232% significant pixels; full-frame SSIM 0.954803"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-appearance-current-shared-runtime",
+              "source": "Same snapshot, Appearance route, content, controls, theme, viewport, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
