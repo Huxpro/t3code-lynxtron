@@ -873,6 +873,10 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".file-editor-line__number {");
     expect(overrides).toContain("width: 48.8px;");
     expect(overrides).toContain("font-size: 13px;");
+    expect(overrides).toContain(".archived-threads-empty-row .settings-row__text {\n  gap: 6px;");
+    expect(overrides).toContain(
+      ".archived-threads-empty-row .settings-row__desc {\n  margin-top: 0;",
+    );
     expect(overrides).toContain(".source-control-item__summary {\n  line-height: 19px;");
     expect(overrides).not.toContain(".source-control-item__summary {\n  margin-top: 4px;");
     expect(componentSource("OtherSettings.tsx")).toContain(

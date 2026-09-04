@@ -100,6 +100,7 @@ describe("ArchivedThreadsSurface", () => {
     expect(markup).toContain("Archived threads will appear here.");
     expect(markup).toContain("data-empty-icon");
     expect(markup).toContain("archived-threads-empty-title");
+    expect(markup).toContain("archived-threads-empty-row");
   });
 
   it("renders project groups with thread rows and actions", () => {

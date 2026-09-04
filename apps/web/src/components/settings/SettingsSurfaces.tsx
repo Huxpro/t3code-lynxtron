@@ -142,6 +142,7 @@ export function ArchivedThreadsSurface({
     return (
       <SettingsSection id={anchorId} title="Archived threads">
         <SettingsRow
+          className="archived-threads-empty-row"
           title={
             <HostView className="archived-threads-empty-title inline-flex items-center gap-2">
               {emptyIcon}
