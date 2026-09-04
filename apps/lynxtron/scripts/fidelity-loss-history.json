@@ -22905,6 +22905,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-coming-soon-icons-current",
+      "observedAt": "2026-09-04T08:54:00-04:00",
+      "commit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
+      "codeCommit": "0e3b4f489f3922807fd81c68131295fc5b5cb85d",
+      "codeState": "commit",
+      "label": "Provider dialog Coming Soon brand icons",
+      "narrative": "The Web authority renders brand marks for all four Coming Soon drivers, while Lynx omitted every icon. Three marks with directly reusable authority paths—Github Copilot, ACP Registry, and Pi Agent—now flow through the existing generated raster pipeline and render in the same 16px slots without changing any card geometry or interaction. Dialog SSIM improves from 0.827622 to 0.833541 and MAE from 6.564842 to 6.373407; the driver-grid crop also improves from 0.780484 to 0.782127 SSIM. Gemini remains explicit debt because its authority mark is a multi-layer masked gradient. A separate 80% dark surface experiment worsened pixels without Web's backdrop blur and was fully reverted.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same snapshot, route, Driver stage, theme, viewport, Web authority image, exact dialog geometry, and zero-error runtime. Changed content is limited to three authority-sourced 16px glyphs."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/provider-dialog-coming-soon-icons.json",
+          "classification": "tracked-current",
+          "sha256": "598b68504767e5a004f93c930a1a47180c438b3e82d453d23aeef8592866cfad"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.166459,
+              "confidence": 0.99,
+              "method": "provider-dialog-ssim",
+              "source": "1 - dialog SSIM 0.833541 after adding three authority-sourced Coming Soon brand marks; Gemini and backdrop blur remain explicit"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-driver-current-shared-runtime",
+              "source": "Same snapshot and Providers route, exact Driver-stage semantics and geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
