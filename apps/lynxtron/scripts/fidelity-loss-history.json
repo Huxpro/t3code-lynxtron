@@ -22645,6 +22645,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-icon-control-current",
+      "observedAt": "2026-09-04T05:24:00-04:00",
+      "commit": "709fc849fc2aebda083362689bfac03edd39f2d8",
+      "codeCommit": "c4c0f5d08",
+      "codeState": "commit",
+      "label": "Project Action icon-control parity",
+      "narrative": "A valid same-snapshot Add Action dialog exposed a visible anatomy mismatch: Web uses a compact 36px icon-only trigger, while Lynx used a 58px trigger with a redundant chevron despite already supporting tap-to-cycle selection. Removing the chevron and matching the 36px box confines changed pixels to the icon-control and Name-input strip and improves that fixed crop from 19.872000 to 19.690154 mean absolute RGB error. A separate generated Play-glyph experiment worsened the same crop and was fully reverted, so the better-matching existing arrow raster remains.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable project-action snapshot, populated form values, route, theme, viewport, Web authority frame, and zero-error runtime. Changed pixels are confined to the icon-control and adjacent input strip."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-icon-control.json",
+          "classification": "tracked-current",
+          "sha256": "627006136933ff26f052b589ab51def250ec32a93f4ea6c643534853797cbc2d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0],
+              "anchorScale": 36,
+              "confidence": 0.99,
+              "method": "project-action-icon-trigger-geometry",
+              "source": "Lynx icon trigger now matches Web's 36px square and omits the redundant chevron"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-runtime",
+              "source": "Same snapshot, populated dialog, preserved tap-to-cycle behavior, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

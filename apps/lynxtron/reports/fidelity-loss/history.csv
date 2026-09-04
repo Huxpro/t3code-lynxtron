@@ -372,3 +372,4 @@ provider-health-row-current,2026-09-04T03:40:00-04:00,0871604173e25ffe757136ad25
 connections-section-rhythm-current,2026-09-04T04:04:00-04:00,742190d94fce28434ae8c7db996f9cb366f3c51a,commit,Connections section rhythm parity,0.178611,0.178611,0.0382,0.145988,0.854012,0.813279
 source-control-retry-spacing-current,2026-09-04T04:24:00-04:00,80097f974d97bc1c02673db7acfa562edbc58160,commit,Source Control retry spacing parity,0.178612,0.178611,0.038201,0.145988,0.854012,0.813278
 source-control-writing-rows-current,2026-09-04T04:53:00-04:00,70647ca92e375b0d9bde539793b84c85d543caa1,commit,Source Control writing-row geometry parity,0.178612,0.178611,0.0382,0.145988,0.854012,0.813278
+project-action-icon-control-current,2026-09-04T05:24:00-04:00,709fc849fc2aebda083362689bfac03edd39f2d8,commit,Project Action icon-control parity,0.1786,0.1786,0.038187,0.145988,0.854012,0.81329
