@@ -410,6 +410,13 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "method === 'writeTerminal'");
     assert.include(source, 'closed: "not-claimed"');
     assert.include(source, "terminalCommand: rightPanelTerminalCommand");
+    assert.include(source, 'if (stateId === "right-panel-terminal") {');
+    assert.include(source, "Terminal paired capture panel widths diverged");
+    assert.include(source, "geometry: terminalCaptureGeometry");
+    assert.isBelow(
+      source.indexOf('if (stateId === "right-panel-terminal") {'),
+      source.indexOf("const beforeResize = await evaluate("),
+    );
     assert.include(source, "rightPanelTerminalCommand === null");
     assert.include(source, 'path.join(baseDir, "userdata", "logs", "terminals")');
     assert.include(source, "invokeResizeForHarness?.('right-panel', 740, 640)");

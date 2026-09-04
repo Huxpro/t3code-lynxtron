@@ -11361,6 +11361,40 @@ async function captureCell({
             `Lynx terminal command did not return the shared cwd: ${JSON.stringify(rightPanelTerminalCommand)}`,
           );
         }
+        if (stateId === "right-panel-terminal") {
+          const terminalCaptureGeometry = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const state = window.__T3_WORKBENCH__?.read();
+              return {
+                webPanelWidth: state?.web?.reviewMetrics?.panelRect?.rect?.width ?? null,
+                lynxPanelWidth: state?.lynx?.reviewMetrics?.panelRect?.rect?.width ?? null,
+              };
+            })()`,
+          );
+          if (
+            typeof terminalCaptureGeometry?.webPanelWidth !== "number" ||
+            typeof terminalCaptureGeometry?.lynxPanelWidth !== "number" ||
+            Math.abs(
+              terminalCaptureGeometry.webPanelWidth - terminalCaptureGeometry.lynxPanelWidth,
+            ) > 1
+          ) {
+            throw new Error(
+              `Terminal paired capture panel widths diverged: ${JSON.stringify(terminalCaptureGeometry)}`,
+            );
+          }
+          rightPanelTerminalScreenshot = {
+            ...(await capturePanePair({
+              cdp,
+              sessionId,
+              layout,
+              cellDir,
+              prefix: "terminal",
+            })),
+            geometry: terminalCaptureGeometry,
+          };
+        }
         if (
           isRightPanelTerminalMultiSessionState ||
           isRightPanelTerminalSplitState ||
