@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T17:06:22-04:00",
+  "productCommit": "43608c9898f74ac949ad03e8ad72767d2aeb3a54",
+  "stateId": "composer-plan-mode",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "interactionMode": "plan",
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "snapshotSha256": "91a14e3aae415ea37278dbfc0e7313216fe26d0da875106ecb0f5aa2f4f4c76f"
+  },
+  "capture": {
+    "reportSha256": "1636ac80fbb90f25f2ddbd2d7959c740c1c2ebcd18b9c8956b7660c6736eca80",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "5466358d579e13797c21711565f9ddf87bec3fdcbc1dd2617ee15a089e87604e",
+    "webImageSha256": "8be6fab0a01d142cb9844fb219e2735637f215b5b909db6e567e9d7ae2ffeb0f",
+    "lynxImageSha256": "0dd35d842d157e749233e8e283be76f52389529ce7379b1804e3c3234c1ecb69",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "planModeMatch": true,
+    "rendererErrors": 0
+  },
+  "visibility": {
+    "webDefaultUserMetaOpacity": 0,
+    "lynxDefaultUserMetaPainted": false,
+    "hoverRuleRetained": true,
+    "explicitVisibleRuleRetained": true
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg full-frame SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": { "ssim": 0.963072, "mae": 1.537438, "significantShare": 0.021486 },
+    "current": { "ssim": 0.96418, "mae": 1.508331, "significantShare": 0.021194 }
+  },
+  "boundary": "Default user-message metadata is hidden in both renderers while hover and explicit-visible states remain available. This Browser frame does not claim Native hover, pointer, copy, or revert interaction evidence. Screenshots remain temporary because the tracked screenshot budget is full."
+}

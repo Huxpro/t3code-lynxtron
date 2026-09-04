@@ -23901,7 +23901,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-04/fidelity/model-picker-search-chrome.json",
           "classification": "tracked-current",
-          "sha256": "ad208a30855951e13b68df0896bac67de465ee9a0e7710cb2dd01f89e202ef57"
+          "sha256": "ce0567d2c10d7f122c14f6ba594a64050dec11e3db91a821719a9a8e94e75fdf"
         }
       ],
       "updates": [
@@ -23933,6 +23933,53 @@
               "confidence": 0.99,
               "method": "model-picker-default-shared-runtime",
               "source": "Same snapshot, thread, selected model, provider order, seven rows, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-plan-mode-default-meta-visibility-current",
+      "observedAt": "2026-09-04T17:06:22-04:00",
+      "commit": "43608c9898f74ac949ad03e8ad72767d2aeb3a54",
+      "codeCommit": "43608c9898f74ac949ad03e8ad72767d2aeb3a54",
+      "codeState": "commit",
+      "label": "Plan mode default transcript meta visibility",
+      "narrative": "In the matched Plan-mode thread, Web keeps user-message timestamp and actions hidden until hover or explicit reveal, while Lynx painted them by default despite already defining the same hover rule. Restoring the hidden default removes non-authority timestamp and copy pixels without removing the hover or explicit-visible paths. Full-frame SSIM improves from 0.963072 to 0.964180, MAE from 1.537438 to 1.508331, and significant pixels from 2.1486% to 2.1194%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one prepared snapshot, exact thread, Plan mode, route, theme, viewport, message content, and zero renderer errors. The product change only restores default meta visibility semantics."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/plan-mode-default-meta-visibility.json",
+          "classification": "tracked-current",
+          "sha256": "0b4bafedf92852f3e2ba9f2d8c2e87f0f81964964ab1dacbc986c31e9b8aacd2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-plan-mode"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "plan-mode-default-meta-visibility",
+              "source": "Default frame omits user metadata in both renderers while hover and explicit reveal remain implemented"
+            },
+            "material": {
+              "residual": 0.03582,
+              "confidence": 0.99,
+              "method": "plan-mode-full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.964180; MAE 1.508331 and 2.1194% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "plan-mode-shared-runtime",
+              "source": "Same prepared snapshot, thread, Plan mode, route, theme, viewport, zero renderer errors, and clean Browser disposal"
             }
           }
         }
