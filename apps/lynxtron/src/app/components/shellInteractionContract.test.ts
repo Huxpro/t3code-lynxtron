@@ -199,13 +199,17 @@ describe("desktop shell interaction contract", () => {
 
     expect(source).not.toContain('className="model-picker-dismiss-layer"');
     expect(source).not.toContain("catchtap={handlePanelTap}");
-    expect(source).toContain('className="model-picker-close"');
-    expect(source.match(/bindtap={onClose}/g)).toHaveLength(1);
+    expect(source).not.toContain('className="model-picker-close"');
+    expect(source).not.toContain('className="model-picker-search-actions"');
+    expect(source).not.toContain("bindtap={onClose}");
     expect(chatView).toContain("modelPickerOpen || gitMenuOpen");
     expect(chatView).toContain("if (modelPickerOpen) uiActions.closeModelPicker()");
     expect(chatView).toContain("if (modelPickerOpen) return;");
     expect(chatView).toContain("onActiveProviderChange={uiActions.selectModelPickerProvider}");
     expect(overrides).not.toContain(".model-picker-dismiss-layer {");
+    expect(overrides).toContain(
+      ".model-picker-search {\n  height: 45px;\n  padding-top: 8px;\n  padding-right: 8px;",
+    );
     expect(overrides).toContain(
       ".theme-dark .model-picker-panel {\n  background-color: var(--popover);",
     );

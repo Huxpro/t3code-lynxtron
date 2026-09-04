@@ -375,15 +375,6 @@ export function ModelPicker({
                 />
               }
             />
-            <view className="model-picker-search-actions">
-              <view
-                className="model-picker-close"
-                aria-label="Close model picker"
-                bindtap={onClose}
-              >
-                <Icon name="x" size={14} color="#818181" />
-              </view>
-            </view>
 
             {rows.length === 0 ? (
               <>
