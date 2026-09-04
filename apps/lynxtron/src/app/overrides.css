@@ -5953,6 +5953,15 @@
   box-sizing: border-box;
   padding-left: 16px;
   padding-right: 16px;
+  height: 66.84375px;
+}
+.source-control-panel
+  > .source-control-section:nth-child(2)
+  .source-control-item:not(:first-child) {
+  height: 85.6875px;
+}
+.source-control-item:not(:last-child) {
+  margin-bottom: 4px;
 }
 .source-control-loading-row {
   --align-self-column: stretch;

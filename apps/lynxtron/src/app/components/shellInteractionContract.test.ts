@@ -370,6 +370,13 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".settings-connections-network-access {\n  height: 81.6875px;");
     expect(overrides).toContain(".source-control-retry-icon {\n  margin-right: 2px;");
     expect(overrides).toContain(
+      ".source-control-item {\n  box-sizing: border-box;\n  padding-left: 16px;\n  padding-right: 16px;\n  height: 66.84375px;",
+    );
+    expect(overrides).toContain(
+      ".source-control-panel > .source-control-section:nth-child(2)\n  .source-control-item:not(:first-child) {\n  height: 85.6875px;",
+    );
+    expect(overrides).toContain(".source-control-item:not(:last-child) {\n  margin-bottom: 4px;");
+    expect(overrides).toContain(
       ".source-control-writing-row:nth-child(1) {\n  height: 66.84375px;",
     );
     expect(overrides).toContain(
