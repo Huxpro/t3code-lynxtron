@@ -22603,6 +22603,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "source-control-writing-rows-current",
+      "observedAt": "2026-09-04T04:53:00-04:00",
+      "commit": "70647ca92e375b0d9bde539793b84c85d543caa1",
+      "codeCommit": "63952f357",
+      "codeState": "commit",
+      "label": "Source Control writing-row geometry parity",
+      "narrative": "Renderer-neutral data-settings-row markers exposed the exact loading-state loss: Web's three Text generation rows measured 66.84375px, 85.6875px, and 85.6875px with no trailing gap, while Lynx measured 63px, 63px, and 82px plus a final four-pixel margin. Dedicated Source Control writing-row contracts now reproduce the authority heights and remove only the trailing gap. All three row rectangles and all three section rectangles match Web exactly, the strict loading-state gate passes, and the fixed lower-panel MAE improves from 6.344994 to 5.415193 with zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one immutable snapshot, route, loading fixture, dark theme, viewport, and Web authority frame. Instrumentation is renderer-neutral; product styling is limited to the three Source Control writing rows."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/source-control-writing-rows.json",
+          "classification": "tracked-current",
+          "sha256": "9b122a303a6d4fecac70fe1cfaefc38fd1f8d6e5a90b57693a386db63b1b3b55"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control-loading"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "source-control-writing-row-geometry",
+              "source": "Three writing rows plus Text generation section x, y, width, and height now match Web exactly"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "source-control-loading-current-runtime",
+              "source": "Same snapshot and route, four loading skeletons, strict loading geometry gate, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
