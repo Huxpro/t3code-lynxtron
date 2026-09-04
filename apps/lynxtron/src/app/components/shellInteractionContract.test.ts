@@ -1055,6 +1055,8 @@ describe("desktop shell interaction contract", () => {
     );
     expect(overrides).toContain("background-color: var(--background);\n  box-sizing: border-box;");
     expect(overrides).toContain(".project-action-field:first-child {\n  margin-top: 0;");
+    expect(overrides).toContain(".project-action-option {");
+    expect(overrides).toContain("min-height: 38px;\n  margin-top: 16px;");
   });
 
   it("restores the Settings rail allocation in Lynx-for-Web", () => {
