@@ -368,6 +368,8 @@ describe("desktop shell interaction contract", () => {
     );
     expect(overrides).toContain("#provider-health-check-interval {\n  height: 85.6875px;");
     expect(overrides).toContain(".settings-connections-network-access {\n  height: 81.6875px;");
+    expect(overrides).toContain(".source-control-retry-icon {\n  margin-right: 2px;");
+    expect(componentSource("OtherSettings.tsx")).toContain('className="source-control-retry-icon"');
     expect(providers).toContain("backgroundActivityOverrideSettings");
     expect(providers).toContain("t3ClientActions");
     expect(providers).toContain(".updateServerSettings(");

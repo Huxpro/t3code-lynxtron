@@ -300,7 +300,14 @@ export function SourceControlSettings() {
             <view className="source-control-empty__content" data-source-control-retry>
               <SmallButton
                 label={discovery.pending ? "Scanning…" : "Scan"}
-                icon={<Icon name="refresh-cw" size={14} color="#a1a1aa" />}
+                icon={
+                  <Icon
+                    name="refresh-cw"
+                    size={14}
+                    color="#a1a1aa"
+                    className="source-control-retry-icon"
+                  />
+                }
                 onTap={() => setRefreshVersion((version) => version + 1)}
               />
             </view>

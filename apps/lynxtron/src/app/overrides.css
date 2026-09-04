@@ -7134,6 +7134,9 @@
   font-weight: 500;
   line-height: 20px;
 }
+.source-control-retry-icon {
+  margin-right: 2px;
+}
 .settings-empty__text {
   color: var(--muted-foreground-80);
   font-size: 13px;
