@@ -367,6 +367,7 @@ describe("desktop shell interaction contract", () => {
       ".provider-health-number-field__stepper {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 34px;\n  height: 26px;",
     );
     expect(overrides).toContain("#provider-health-check-interval {\n  height: 85.6875px;");
+    expect(overrides).toContain(".settings-connections-network-access {\n  height: 81.6875px;");
     expect(providers).toContain("backgroundActivityOverrideSettings");
     expect(providers).toContain("t3ClientActions");
     expect(providers).toContain(".updateServerSettings(");

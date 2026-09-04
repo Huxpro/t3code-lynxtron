@@ -6104,6 +6104,9 @@
 .settings-row--unavailable {
   opacity: 0.48;
 }
+.settings-connections-network-access {
+  height: 81.6875px;
+}
 .appearance-unavailable-control {
   flex-shrink: 0;
   color: var(--muted-foreground);
