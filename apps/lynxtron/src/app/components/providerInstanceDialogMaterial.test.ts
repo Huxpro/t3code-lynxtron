@@ -61,4 +61,11 @@ describe("Provider instance dialog material", () => {
     expect(disabledDriver).toContain("background-color: rgba(var(--foreground-rgb), 0.02);");
     expect(selectedDriver).toContain("background-color: rgba(var(--primary-rgb), 0.15);");
   });
+
+  it("matches the dark secondary footer action material", () => {
+    const secondary = rule(".theme-dark .provider-instance-dialog__secondary.ui-button--outline");
+
+    expect(secondary).toContain("border-color: rgba(var(--foreground-rgb), 0.08);");
+    expect(secondary).toContain("background-color: rgba(var(--foreground-rgb), 0.0256);");
+  });
 });

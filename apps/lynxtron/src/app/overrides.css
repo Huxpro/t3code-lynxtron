@@ -7939,6 +7939,10 @@
   padding: 0 12px;
   box-sizing: border-box;
 }
+.theme-dark .provider-instance-dialog__secondary.ui-button--outline {
+  border-color: rgba(var(--foreground-rgb), 0.08);
+  background-color: rgba(var(--foreground-rgb), 0.0256);
+}
 .provider-instance-dialog__secondary .ui-button__label,
 .provider-instance-dialog__save-label {
   font-size: 14px;
