@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T13:38:13-04:00",
+  "productCommit": "a247b8635c7e9a49244644ef0fb7e5e7a3949c4c",
+  "stateId": "project-action-dialog",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "project-action-dialog",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "4f557b8a0c5e46cbc3a06108540577f3a5e3e81f63ea7f56bc9aab768f2052ab",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "4e91b57570f29d00969712ec36e70f48374ae247d2332ffca84384105e0cb811",
+    "webImageSha256": "67b9a3997c1de23a3b5b422a3b99ee5025f8bb6ee0443fcf37355f214cf41dfa",
+    "lynxImageSha256": "cec9ed5421610af4808c84475daad77325d3e9aa56a72f3b80ba262b411f11e2",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "dialog": [384, 74.5, 512, 671],
+    "header": [385, 75.5, 510, 104],
+    "body": [385, 179.5, 510, 500],
+    "footer": [385, 679.5, 510, 65],
+    "webFirstField": [409, 183.5, 462, 58],
+    "lynxFirstField": [409, 183.5, 462, 62]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the 512x671 dialog crop",
+    "baseline": { "ssim": 0.709798, "mae": 9.601129, "significantShare": 0.079228 },
+    "current": { "ssim": 0.742481, "mae": 8.577799, "significantShare": 0.073104 }
+  },
+  "boundary": "The product change removes only the erroneous 16px margin above the first Lynx field. Later controls retain measured height and spacing residuals for subsequent slices. A Play-icon experiment was rejected because it worsened all-dialog pixels. Screenshots remain temporary because the tracked screenshot budget is full."
+}

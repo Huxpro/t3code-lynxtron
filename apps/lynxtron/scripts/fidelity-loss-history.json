@@ -23351,6 +23351,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-form-start-current",
+      "observedAt": "2026-09-04T13:38:13-04:00",
+      "commit": "a247b8635c7e9a49244644ef0fb7e5e7a3949c4c",
+      "codeCommit": "a247b8635c7e9a49244644ef0fb7e5e7a3949c4c",
+      "codeState": "commit",
+      "label": "Project Action form-start parity",
+      "narrative": "Field-level diagnostics showed that Web's first form group starts four pixels below the body top, while Lynx applied the inter-field 16px margin to the first field as well and began it 20px below the body. Removing only that first-child margin aligns the first wrapper at y=183.5 and reduces every later field offset. The exact 512x671 dialog improves from 0.709798 to 0.742481 SSIM, from 9.601129 to 8.577799 MAE, and from 7.9228% to 7.3104% significant pixels. A separate default Play-icon experiment was rejected because it worsened the dialog metrics.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, dark theme, viewport, exact dialog envelope, fields, options, and zero-error runtime. Product styling changes only the first field's inherited top margin."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-form-start.json",
+          "classification": "tracked-current",
+          "sha256": "440b195b0c6769c14d53ac1236d359228c9bc408e5ad596c1a9b7aabcbaf7654"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
+              "anchorScale": 671,
+              "confidence": 0.99,
+              "method": "project-action-field-wrapper-geometry",
+              "source": "Dialog, header, body, footer, and first field origin match exactly; first wrapper height retains a 4px control-height residual"
+            },
+            "material": {
+              "residual": 0.257519,
+              "confidence": 0.99,
+              "method": "project-action-dialog-ssim",
+              "source": "1 - exact dialog SSIM 0.742481; MAE 8.577799 and 7.3104% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-current-shared-runtime",
+              "source": "Same snapshot, dialog content and fields, exact dialog envelope, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
