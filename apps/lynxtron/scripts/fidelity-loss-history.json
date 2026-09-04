@@ -22561,6 +22561,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "source-control-retry-spacing-current",
+      "observedAt": "2026-09-04T04:24:00-04:00",
+      "commit": "80097f974d97bc1c02673db7acfa562edbc58160",
+      "codeCommit": "355d1073c",
+      "codeState": "commit",
+      "label": "Source Control retry spacing parity",
+      "narrative": "A strict same-snapshot Source Control error capture showed matching error content and empty-state geometry but a cramped Lynx Scan action: its 14px refresh icon and label lacked Web's effective separation, yielding a 72.75px button versus 74.421875px. A scoped two-pixel icon margin produces a 74.75px Lynx button without hard-coding the outer width. The fixed button-crop MAE improves from 5.462593 to 4.764074, while route, error copy, retry semantics, and zero-error runtime remain unchanged.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one immutable snapshot, route, error fixture, dark theme, viewport, and Web authority frame. The product change is limited to the retry icon margin."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/source-control-retry-spacing.json",
+          "classification": "tracked-current",
+          "sha256": "f598e1b220421e22b54e3b5720ca07b8c08361246dd08001e5a2ee98ab080b20"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.15625, 0, 0.328125, 0],
+              "anchorScale": 74.421875,
+              "confidence": 0.99,
+              "method": "source-control-retry-button-geometry",
+              "source": "Lynx retry button becomes 74.75 by 28 versus Web 74.421875 by 28 after restoring icon-label spacing"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "source-control-error-current-runtime",
+              "source": "Same snapshot, error fixture and route, matching retry semantics, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
