@@ -1061,6 +1061,12 @@ describe("desktop shell interaction contract", () => {
       /\.project-action-dialog__button \{[\s\S]*height: 32px;[\s\S]*padding: 0 11px;[\s\S]*box-sizing: border-box;/,
     );
     expect(overrides).toMatch(
+      /\.project-action-dialog__footer \{[\s\S]*border-top-color: transparent;/,
+    );
+    expect(overrides).toMatch(
+      /\.project-action-dialog__button \{[\s\S]*background-color: rgba\(var\(--foreground-rgb\), 0\.0256\);/,
+    );
+    expect(overrides).toMatch(
       /\.project-action-dialog__button-label \{[\s\S]*font-size: 14px;[\s\S]*font-weight: 500;[\s\S]*font-family: "T3 DM Sans", var\(--font-sans\);[\s\S]*line-height: 20px;/,
     );
   });

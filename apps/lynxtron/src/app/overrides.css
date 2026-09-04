@@ -11064,7 +11064,7 @@
   padding: 16px 24px;
   border-top-width: 1px;
   border-top-style: solid;
-  border-top-color: var(--border);
+  border-top-color: transparent;
   gap: 8px;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -11079,7 +11079,7 @@
   border-style: solid;
   border-color: var(--input);
   border-radius: 8px;
-  background-color: transparent;
+  background-color: rgba(var(--foreground-rgb), 0.0256);
   box-sizing: border-box;
 }
 .project-action-dialog__button--primary {
