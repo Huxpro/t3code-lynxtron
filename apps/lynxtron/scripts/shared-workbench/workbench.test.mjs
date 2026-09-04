@@ -203,7 +203,7 @@ describe("shared workbench Composer metrics", () => {
   });
 
   it("records source-control badge anatomy for both renderers", () => {
-    assert.include(source, "badge: readElementBox(item.querySelector(\"[data-slot='badge']\"))");
-    assert.equal(source.match(/badge: readElementBox\(item\.querySelector/g)?.length, 2);
+    assert.include(source, "[data-slot='badge'], .source-control-item__badge");
+    assert.equal(source.match(/\.source-control-item__badge/g)?.length, 2);
   });
 });

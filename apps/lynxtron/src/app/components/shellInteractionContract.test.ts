@@ -875,6 +875,12 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("font-size: 13px;");
     expect(overrides).toContain(".source-control-item__summary {\n  line-height: 19px;");
     expect(overrides).not.toContain(".source-control-item__summary {\n  margin-top: 4px;");
+    expect(componentSource("OtherSettings.tsx")).toContain(
+      'className="source-control-item__badge"',
+    );
+    expect(overrides).toMatch(
+      /\.source-control-item__badge \{[\s\S]*height: 16px;[\s\S]*padding: 0 3px;[\s\S]*border-radius: 4px;[\s\S]*font-size: 10px;[\s\S]*line-height: 13\.3333px;/,
+    );
     expect(componentSource("KeybindingsSettings.tsx")).toContain(
       "keybindings-table__row--alternate",
     );

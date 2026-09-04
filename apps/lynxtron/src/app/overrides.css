@@ -6085,6 +6085,25 @@
 .source-control-item__summary {
   line-height: 19px;
 }
+.source-control-item__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  min-width: 16px;
+  padding: 0 3px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 4px;
+  color: rgb(245, 184, 61);
+  background-color: rgba(245, 184, 61, 0.16);
+  font-family: "T3 DM Sans", var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 13.3333px;
+  box-sizing: border-box;
+}
 .source-control-writing-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

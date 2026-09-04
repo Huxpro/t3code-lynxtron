@@ -2675,7 +2675,9 @@ function readLynxPane() {
                   (item) => ({
                     text: item.textContent?.trim() ?? "",
                     box: readElementBox(item),
-                    badge: readElementBox(item.querySelector("[data-slot='badge']")),
+                    badge: readElementBox(
+                      item.querySelector("[data-slot='badge'], .source-control-item__badge"),
+                    ),
                     children: [...item.children].map((child) => ({
                       className: child.getAttribute("class") ?? "",
                       text: child.textContent?.trim() ?? "",
@@ -3746,7 +3748,9 @@ function readWebPane() {
                   (item) => ({
                     text: item.textContent?.trim() ?? "",
                     box: readElementBox(item),
-                    badge: readElementBox(item.querySelector("[data-slot='badge']")),
+                    badge: readElementBox(
+                      item.querySelector("[data-slot='badge'], .source-control-item__badge"),
+                    ),
                     children: [...item.children].map((child) => ({
                       className: child.getAttribute("class") ?? "",
                       text: child.textContent?.trim() ?? "",

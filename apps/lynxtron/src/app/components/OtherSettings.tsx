@@ -336,7 +336,7 @@ export function SourceControlSettings() {
               version={item.version ?? undefined}
               badge={
                 item.badgeLabel ? (
-                  <Badge variant="warning" size="sm">
+                  <Badge className="source-control-item__badge" variant="warning" size="sm">
                     {item.badgeLabel}
                   </Badge>
                 ) : undefined
@@ -367,7 +367,7 @@ export function SourceControlSettings() {
               version={item.version ?? undefined}
               badge={
                 item.badgeLabel ? (
-                  <Badge variant="warning" size="sm">
+                  <Badge className="source-control-item__badge" variant="warning" size="sm">
                     {item.badgeLabel}
                   </Badge>
                 ) : undefined
