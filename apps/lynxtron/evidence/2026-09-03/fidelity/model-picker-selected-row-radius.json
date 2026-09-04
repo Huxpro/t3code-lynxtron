@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T19:53:32-04:00",
+  "commit": "3b10e0d6a353f90a96ba04464ff84c58053ce5d9",
+  "stateId": "model-picker-selected",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "snapshotSha256": "2aa404d1d8f575a2b1d135b26af7eb562c3f26ef0ae6760c352fc77dd200fc24"
+  },
+  "capture": {
+    "reportSha256": "e1a1194051536e55b1e8f96c495494f12f7467be0a988ac690daea84d26285f2",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "4f72fe3e98219c23f81fd42c7d3db83aeb19813c8db5da3c2fcea4d19fcba32d",
+    "webImageSha256": "1e6f216452cb69bc284d1782d81b6bf7598a3ef2dc5e41a717cc02c171474b1f",
+    "lynxImageSha256": "882ce4ada1006f1f99f6d10c046ff2af0cbe9572f0d739debeecb350ee128136",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "modelPickerSemanticMatch": true,
+    "rendererErrors": 0,
+    "overlayGeometryDelta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  "selection": {
+    "modelKey": "codex:gpt-5.4-mini",
+    "providerId": "codex",
+    "rowCount": 7,
+    "webRow": [451, 702, 303, 53],
+    "lynxRow": [451, 702, 304, 53],
+    "webRadius": 8,
+    "lynxRadiusBefore": 6,
+    "lynxRadiusAfter": 8
+  },
+  "pixelMetric": {
+    "definition": "Mean absolute RGB-channel difference and share of pixels whose maximum RGB-channel delta is at least 16",
+    "baseline": {
+      "fullFrame": {
+        "mae": 2.048656,
+        "significantShare": 0.025432,
+        "ssim": 0.954385
+      },
+      "panel": {
+        "mae": 4.647672,
+        "significantShare": 0.048418,
+        "ssim": 0.90733
+      },
+      "selectedRow": {
+        "mae": 6.221309,
+        "significantShare": 0.061585,
+        "ssim": 0.858507
+      }
+    },
+    "current": {
+      "fullFrame": {
+        "mae": 2.048563,
+        "significantShare": 0.025432,
+        "ssim": 0.954394
+      },
+      "panel": {
+        "mae": 4.646893,
+        "significantShare": 0.048418,
+        "ssim": 0.907398
+      },
+      "selectedRow": {
+        "mae": 6.216078,
+        "significantShare": 0.061585,
+        "ssim": 0.858623
+      }
+    }
+  },
+  "boundary": "This point aligns only the selected model row corner radius. Overlay placement, selected model and provider identity, seven-row content, row geometry, and runtime state remain unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
+}
