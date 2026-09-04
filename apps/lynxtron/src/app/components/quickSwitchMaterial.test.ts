@@ -17,6 +17,7 @@ describe("Quick Switch material", () => {
     );
     expect(rule(".palette-panel")).toContain("background-color: var(--background);");
     expect(rule(".palette-panel")).toContain("border-color: rgba(var(--foreground-rgb), 0.08);");
+    expect(rule(".palette-panel")).toContain("border-radius: 18px;");
   });
 
   it("matches the light glass authority without changing dark material", () => {
