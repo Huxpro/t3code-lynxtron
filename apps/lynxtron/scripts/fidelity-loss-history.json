@@ -23453,6 +23453,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-field-rhythm-refinement-current",
+      "observedAt": "2026-09-04T14:09:08-04:00",
+      "commit": "890451e7840b107f065e2c9afc785269fd914a44",
+      "codeCommit": "890451e7840b107f065e2c9afc785269fd914a44",
+      "codeState": "commit",
+      "label": "Project Action field rhythm refinement",
+      "narrative": "After control heights matched, field anatomy isolated the remaining repeated drift to the Name icon's content-box border and a one-pixel label-to-control gap difference. Making the 32px icon border-box and using the measured 7px gap reduces all field-wrapper origin differences to at most one pixel. The exact 512x671 dialog improves from 0.769009 to 0.790266 SSIM, from 8.149250 to 7.674597 MAE, and from 6.7524% to 6.4220% significant pixels.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, exact dialog envelope, fields, options, and zero-error runtime. Product changes are limited to the measured icon box model and field gap."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-field-rhythm-refinement.json",
+          "classification": "tracked-current",
+          "sha256": "d14df8800d51eb007b2f7a60d11e1d697915fd57e93eb7bada43ae900b361837"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 1, 1, 0, 0],
+              "anchorScale": 671,
+              "confidence": 0.99,
+              "method": "project-action-field-rhythm-refinement",
+              "source": "Name and Preview wrapper origins match exactly; Keybinding and Command differ by 1px"
+            },
+            "material": {
+              "residual": 0.209734,
+              "confidence": 0.99,
+              "method": "project-action-dialog-ssim",
+              "source": "1 - exact dialog SSIM 0.790266; MAE 7.674597 and 6.4220% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-current-shared-runtime",
+              "source": "Same snapshot, dialog fields and options, exact dialog envelope, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

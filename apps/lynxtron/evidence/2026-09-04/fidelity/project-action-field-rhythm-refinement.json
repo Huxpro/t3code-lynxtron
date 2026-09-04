@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T14:09:08-04:00",
+  "productCommit": "890451e7840b107f065e2c9afc785269fd914a44",
+  "stateId": "project-action-dialog",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "project-action-dialog",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "ddfc7fb12e6258b794aa1d96c3784ac418e486e4ce3c10b15b20204a617bc831",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "7902cc56d47dc9b63afff6df32a13a421ec3c8f4893e7c03efef6a4367282aab",
+    "webImageSha256": "67b9a3997c1de23a3b5b422a3b99ee5025f8bb6ee0443fcf37355f214cf41dfa",
+    "lynxImageSha256": "3d8b61d76efa8c0be8bce5a137bb10108ed6f76b63170862ec89e21e40e221bc",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "nameIconHeight": 32,
+    "fieldGap": 7,
+    "webWrapperY": [183.5, 257.5, 353.5, 467.5],
+    "lynxWrapperY": [183.5, 258.5, 354.5, 467.5],
+    "maximumRemainingYDelta": 1
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the 512x671 dialog crop",
+    "baseline": { "ssim": 0.769009, "mae": 8.14925, "significantShare": 0.067524 },
+    "current": { "ssim": 0.790266, "mae": 7.674597, "significantShare": 0.06422 }
+  },
+  "boundary": "The refinement makes the Name icon border-box 32px and uses Web's effective 7px label-to-control gap. All field wrapper origins now differ by at most 1px. Footer button widths and dialog material remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}
