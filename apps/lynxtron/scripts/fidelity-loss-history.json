@@ -22946,6 +22946,62 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-settings-dialog-geometry-current",
+      "observedAt": "2026-09-04T09:46:00-04:00",
+      "commit": "f03f78d30f62969ebb116f3c17b2e32166260341",
+      "codeCommit": "f03f78d30f62969ebb116f3c17b2e32166260341",
+      "codeState": "commit",
+      "label": "Project Settings single-member geometry parity",
+      "narrative": "A current same-snapshot Project Settings capture exposed the exact 7px dialog-height residual: Lynx rendered a visible description that Web keeps screen-reader-only, the two field columns did not share one vertical flex contract, and the single-member body/footer allocation differed. The shared description remains in the accessibility tree but no longer consumes visual space; both field columns now use the same 257px vertical layout; and the 94px body contract is scoped to single-member dialogs so grouped projects retain flexible scrolling. Dialog, header, body, and footer rectangles now match Web exactly at 576x244, 574x84, 574x94, and 574x64. Both controls align at y=416 with only one-pixel host border quantization. The fixed dialog envelope improves from 0.597592 to 0.751621 SSIM and from 14.196152 to 9.450194 MAE. The harness now advances each renderer's mutually exclusive project-scope menu sequentially and retains the first valid scope identity instead of overwriting it after the menu closes.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures use the same snapshot, project, thread, route, dark theme, viewport, and Web authority. Product changes are confined to single-member Project Settings anatomy; harness changes only stabilize and measure the real dual-pointer flow."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-settings-dialog-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "22d552db9fa27219bc079848b0b5ba07f64c03a2279e0f299bc19b1a77ab2d78"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0, 0, 0, 0, 1
+              ],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "project-settings-current-section-control-geometry",
+              "source": "Dialog, header, body, and footer match exactly; name and grouping controls retain only host border quantization"
+            },
+            "material": {
+              "residual": 0.248379,
+              "confidence": 0.99,
+              "method": "project-settings-dialog-ssim",
+              "source": "1 - fixed dialog-envelope SSIM 0.751621 after geometry alignment; Web blur and font raster remain explicit"
+            },
+            "interaction": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "sequential-dual-browser-project-settings-flow",
+              "source": "Both real Browser pointer paths expose one matching project option and action and open both dialogs; physical text rename remains separate Native debt"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-current-runtime",
+              "source": "Same snapshot, project, thread, route, matching scope identity, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
