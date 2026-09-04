@@ -10910,7 +10910,7 @@
 .project-action-dialog__header {
   display: flex;
   flex-direction: column;
-  padding: 24px 52px 12px 24px;
+  padding: 24px 24px 12px;
   gap: 8px;
   flex-shrink: 0;
 }
