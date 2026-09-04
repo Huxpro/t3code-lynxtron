@@ -23298,6 +23298,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "providers-email-privacy-style-current",
+      "observedAt": "2026-09-04T12:45:59-04:00",
+      "commit": "93bfc04ef54c826f67fcd73545836c51bcb94755",
+      "codeCommit": "93bfc04ef54c826f67fcd73545836c51bcb94755",
+      "codeState": "commit",
+      "label": "Providers authenticated-email privacy style parity",
+      "narrative": "The Providers state already redacted authenticated email text, but Lynx flattened it into the ordinary 13px summary while Web renders a distinct 11px mono leaf with a 2px privacy blur and reveal interaction. Lynx now projects the authenticated summary as separate shared nodes and activates its existing auth-email hidden/revealed styles. The 896x548 Providers crop improves from 0.873218 to 0.876584 SSIM, from 4.085740 to 4.001487 MAE, and from 5.3920% to 5.1969% significant pixels with the same snapshot, provider inventory, route, geometry, and zero errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one snapshot, Providers route, dark theme, viewport, provider inventory, and Web authority. Product changes only restore the separate email privacy leaf and existing reveal-state class."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/providers-email-privacy-style.json",
+          "classification": "tracked-current",
+          "sha256": "08dd62e7fa852709c63031dcef20000bd8c32b41803d4479abee2f48a9489f0c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-auth-email-private-node",
+              "source": "Authenticated summary retains the same redacted value and now separates prefix, private email leaf, and subscription detail like Web"
+            },
+            "typography": {
+              "residual": 0.03,
+              "confidence": 0.99,
+              "method": "provider-auth-email-private-style",
+              "source": "The private email leaf uses mono 11px text and 2px blur by default; remaining residual preserves host font rasterization"
+            },
+            "material": {
+              "residual": 0.123416,
+              "confidence": 0.99,
+              "method": "providers-content-ssim",
+              "source": "1 - exact Providers content SSIM 0.876584; MAE 4.001487 and 5.1969% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "providers-current-shared-runtime",
+              "source": "Same snapshot, five-provider inventory and status, exact route, matching content, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
