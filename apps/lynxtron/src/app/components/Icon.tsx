@@ -97,6 +97,9 @@ export type IconName =
   | "cursor"
   | "grok"
   | "opencode"
+  | "github-copilot"
+  | "acp-registry"
+  | "pi-agent"
   | "t3-wordmark"
   | "settings-2"
   | "palette"
@@ -159,6 +162,9 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverr
       name === "cursor" ||
       name === "grok" ||
       name === "opencode" ||
+      name === "github-copilot" ||
+      name === "acp-registry" ||
+      name === "pi-agent" ||
       name === "t3-wordmark"
     ) {
       const source = ICON_PNGS[`${name}@fill`] ?? "";

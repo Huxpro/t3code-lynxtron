@@ -13,6 +13,12 @@ function providerBrandIconName(driverKind: string | null): IconName {
       return "grok";
     case "opencode":
       return "opencode";
+    case "githubCopilot":
+      return "github-copilot";
+    case "acpRegistry":
+      return "acp-registry";
+    case "piAgent":
+      return "pi-agent";
     default:
       return "bot";
   }
@@ -27,11 +33,5 @@ export function ProviderBrandIcon({
   readonly size: number;
   readonly className?: string;
 }) {
-  return (
-    <Icon
-      name={providerBrandIconName(driverKind)}
-      size={size}
-      className={className}
-    />
-  );
+  return <Icon name={providerBrandIconName(driverKind)} size={size} className={className} />;
 }
