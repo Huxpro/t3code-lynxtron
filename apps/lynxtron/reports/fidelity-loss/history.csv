@@ -381,3 +381,4 @@ composer-plan-mode-current-geometry,2026-09-04T08:28:00-04:00,06c9ae5091bd100e37
 provider-dialog-coming-soon-icons-current,2026-09-04T09:10:00-04:00,c1e4be1e19c6d74f432945f87ff2d3a7eda87602,commit,Provider dialog Coming Soon brand icons,0.179809,0.1786,0.038102,0.14732,0.85268,0.812081
 project-settings-dialog-geometry-current,2026-09-04T09:46:00-04:00,f03f78d30f62969ebb116f3c17b2e32166260341,commit,Project Settings single-member geometry parity,0.179674,0.1786,0.038023,0.14725,0.85275,0.812216
 provider-dialog-light-material-current,2026-09-04T10:00:00-04:00,53e85257752ff29b0453eb379a081d9399500ff3,commit,Provider dialog light material correction,0.179753,0.1786,0.038148,0.147221,0.852779,0.812137
+file-picker-description-geometry-current,2026-09-04T10:28:00-04:00,f838b427e,commit,File Picker description typography parity,0.179737,0.1786,0.03813,0.147221,0.852779,0.812153

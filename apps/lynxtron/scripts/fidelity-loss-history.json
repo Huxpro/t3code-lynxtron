@@ -23049,6 +23049,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-description-geometry-current",
+      "observedAt": "2026-09-04T10:28:00-04:00",
+      "commit": "f838b427e",
+      "codeCommit": "bcc931f42bd8ba962a370f5db3ae0a5f45c80ecf",
+      "codeState": "commit",
+      "label": "File Picker description typography parity",
+      "narrative": "Renderer-neutral row diagnostics localized the remaining visible File Picker shift: row, icon, copy, and title x geometry already matched exactly, but Lynx inherited a 20px description line while Web uses 12px text with 16px line height. The scoped detailed-file-row rule restores that contract, making the first six row, icon, copy, title, and description boxes match Web exactly apart from subpixel glyph widths. The exact 576x420 panel improves from 0.873907 to 0.915816 SSIM and from 6.926718 to 4.949366 MAE, with the same 65 unselected rows, shipping Meta-P path, state identity, and zero renderer errors.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one prepared snapshot, selected thread/model, File Picker route, dark theme, viewport, exact panel geometry, and Web authority. Product styling is limited to detailed file-row descriptions."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/file-picker-description-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "e91d30e0ebd700c3ec4020c7a46f454118d2feceaf973aa431896021e2403a1e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "file-picker-row-internal-geometry",
+              "source": "Panel and first six row, icon, copy, title, and description anchors match Web exactly"
+            },
+            "typography": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "file-picker-detailed-row-typography",
+              "source": "Both render 14px/20px titles and 12px/16px descriptions; residual preserves subpixel glyph shaping"
+            },
+            "material": {
+              "residual": 0.084184,
+              "confidence": 0.99,
+              "method": "file-picker-panel-ssim",
+              "source": "1 - exact panel SSIM 0.915816; MAE 4.949366 and 4.6660% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-current-shared-runtime",
+              "source": "Same snapshot, selected thread/model, 65 unselected rows, exact panel geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

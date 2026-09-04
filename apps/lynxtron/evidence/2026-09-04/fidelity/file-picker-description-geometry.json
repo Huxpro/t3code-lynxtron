@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T10:28:00-04:00",
+  "diagnosticCommit": "f838b427e",
+  "productCommit": "bcc931f42bd8ba962a370f5db3ae0a5f45c80ecf",
+  "stateId": "file-picker-default",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "61a5cadfe0ec90eeba9a450a2337afe0f38bb7f76ccada986e27f72ea8a1bb68",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "194e67a90fb2b346847aac162915890568f360435b8bd25c6bdc2048c724595d",
+    "webImageSha256": "b922076bc3cb6329a9ba370df15ab42a9136c70a86279587fc74d7fe6a4d53f5",
+    "lynxImageSha256": "749e463c15ea2e1fa38688cc9155f50633c9fb204b61655c411698851abc47d4",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "panel": [352, 82, 576, 420],
+    "row": [361, 167, 558, 48],
+    "icon": [369, 183, 16, 16],
+    "copy": [393, 173, 518, 36],
+    "title": [393, 173, 20],
+    "description": [393, 193, 518, 16],
+    "firstSixRowsMatch": true
+  },
+  "pixelMetric": {
+    "definition": "SSIM and mean absolute RGB error over the exact 576x420 File Picker panel",
+    "baseline": { "ssim": 0.873907, "mae": 6.926718 },
+    "current": { "ssim": 0.915816, "mae": 4.949366, "significantShare": 0.04666 }
+  },
+  "boundary": "The shared PaletteRowContent classes are renderer-neutral diagnostic anchors. Product styling changes only detailed File Picker description typography from inherited 20px to Web's 12px/16px contract. Exact Pierre SVG versus Lynx raster icons and subpixel DM Sans glyph widths remain explicit. Screenshots remain temporary because the tracked screenshot budget is full."
+}
