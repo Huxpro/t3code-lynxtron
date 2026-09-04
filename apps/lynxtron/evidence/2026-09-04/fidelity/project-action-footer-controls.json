@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T14:46:19-04:00",
+  "productCommit": "d8aabe7124c81a6952b60f6d52ae0a376b401bb7",
+  "stateId": "project-action-dialog",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "project-action-dialog",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "7472dea39eb47f08a356128f4bd5cf171ae2ef270c833603fd29e5d967527150",
+    "webBundleSha256": "4f4b619a79f331005f3fe69daea03abebd04c75fec1cb169a33b1802e02f3468",
+    "lynxBundleSha256": "69cf34f79883f0b8399867f95dccd11925b0e2f8960ef40e7ad422e42c1f82bc",
+    "webImageSha256": "67b9a3997c1de23a3b5b422a3b99ee5025f8bb6ee0443fcf37355f214cf41dfa",
+    "lynxImageSha256": "77f6e26f2d183b8fcddb514cbb3733921f93ab6707910d80374aeaa60c22502a",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "dialogRect": [384, 74.5, 512, 671],
+    "webButtonRects": [
+      [693, 696.5, 69.734375, 32],
+      [770.734375, 696.5, 100.265625, 32]
+    ],
+    "lynxButtonRects": [
+      [693.390625, 696.5, 69.359375, 32],
+      [770.75, 696.5, 100.25, 32]
+    ],
+    "maximumButtonRectDelta": 0.390625
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the 512x671 dialog crop",
+    "baseline": { "ssim": 0.827028, "mae": 6.434068, "significantShare": 0.057537 },
+    "current": { "ssim": 0.832238, "mae": 6.238395, "significantShare": 0.056294 }
+  },
+  "boundary": "The footer controls now share Web's 32px border-box, 11px horizontal padding, and 14px/20px medium label rhythm. Width deltas are below 0.4px. Button material, one-pixel field-wrapper quantization, and dialog material remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}

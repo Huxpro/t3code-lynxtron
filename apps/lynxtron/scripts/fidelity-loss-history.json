@@ -23549,6 +23549,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-footer-controls-current",
+      "observedAt": "2026-09-04T14:46:19-04:00",
+      "commit": "d8aabe7124c81a6952b60f6d52ae0a376b401bb7",
+      "codeCommit": "d8aabe7124c81a6952b60f6d52ae0a376b401bb7",
+      "codeState": "commit",
+      "label": "Project Action footer control parity",
+      "narrative": "The dialog footer envelope already matched, but Lynx rendered both actions as 34px content-box controls with 16px system text while Web uses 32px border-box controls, 11px horizontal padding, and 14px/20px medium DM Sans labels. Aligning those measured tokens reduces every button rectangle delta below 0.4px. The exact 512x671 dialog improves from 0.827028 to 0.832238 SSIM, from 6.434068 to 6.238395 MAE, and from 5.7537% to 5.6294% significant pixels.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, exact dialog envelope, content, and zero-error runtime. Product changes are limited to measured footer control box and label tokens."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-footer-controls.json",
+          "classification": "tracked-current",
+          "sha256": "1d8622039b015778b463e7bb091fa95bc6f4c9e8697cdc056c1dacaf7c41752a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.390625, 0, 0.375, 0, 0.015625, 0, 0.015625, 0],
+              "anchorScale": 671,
+              "confidence": 0.99,
+              "method": "project-action-footer-controls",
+              "source": "Both footer controls match Web's 32px height and differ by less than 0.4px in horizontal geometry"
+            },
+            "typography": {
+              "residual": 0.015,
+              "confidence": 0.99,
+              "method": "project-action-footer-label-typography",
+              "source": "Footer labels use Web's 14px size, 500 weight, 20px line height, and bundled DM Sans face"
+            },
+            "material": {
+              "residual": 0.167762,
+              "confidence": 0.99,
+              "method": "project-action-dialog-ssim",
+              "source": "1 - exact dialog SSIM 0.832238; MAE 6.238395 and 5.6294% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-current-shared-runtime",
+              "source": "Same snapshot, dialog content, exact dialog envelope, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
