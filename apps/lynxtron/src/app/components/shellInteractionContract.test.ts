@@ -1462,6 +1462,13 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarProjectListHost).toContain(
       'className="sidebar-project-row-reference lynx-sidebar-project-row flex flex-row"',
     );
+    expect(overrides).toContain(
+      ".lynx-sidebar-projects-group {\n  width: 255px;\n  margin-top: -1px;",
+    );
+    expect(overrides).toContain("padding-bottom: 4px;");
+    expect(overrides).toContain(
+      ".lynx-sidebar-thread-empty {\n  display: flex;\n  align-items: center;\n  height: 36px;",
+    );
     expect(sidebarProjectListHost).toContain("bindcontextmenu:");
     expect(sidebarProjectListHost).toContain("bindlongpress:");
     expect(sidebarProjectListHost).toContain("<ProjectSettingsDialog");
