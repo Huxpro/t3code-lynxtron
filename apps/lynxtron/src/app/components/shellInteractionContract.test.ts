@@ -1053,6 +1053,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".project-action-field__icon {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 36px;\n  height: 36px;",
     );
+    expect(overrides).toContain(".project-action-field:first-child {\n  margin-top: 0;");
+    expect(overrides).toContain(".project-action-field:first-child {\n  margin-top: 0;");
   });
 
   it("restores the Settings rail allocation in Lynx-for-Web", () => {

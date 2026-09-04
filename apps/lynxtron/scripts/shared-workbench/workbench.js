@@ -1095,6 +1095,11 @@ function readProjectActionDialog(root) {
   const footer =
     dialog.querySelector("[data-slot='dialog-footer']") ??
     dialog.querySelector(".project-action-dialog__footer");
+  const fieldLabels = [...dialog.querySelectorAll("label, .project-action-field__label")].filter(
+    (label) =>
+      ["Name", "Keybinding", "Command", "Preview URL (optional)"].includes(readComposedText(label)),
+  );
+  const webNameInput = dialog.querySelector("#script-name");
   return {
     rect: readElementBox(dialog),
     title: readComposedText(
@@ -1124,11 +1129,25 @@ function readProjectActionDialog(root) {
       footer: readElementBox(footer),
       close: readElementBox(dialog.querySelector("[aria-label='Close']")),
     },
-    fieldLabels: [...dialog.querySelectorAll("label, .project-action-field__label")]
-      .map((label) => readComposedText(label))
-      .filter((label) =>
-        ["Name", "Keybinding", "Command", "Preview URL (optional)"].includes(label),
-      ),
+    fieldLabels: fieldLabels.map((label) => readComposedText(label)),
+    fieldAnatomy: fieldLabels.map((label) => {
+      const wrapper = label.closest(".project-action-field") ?? label.parentElement;
+      return {
+        label: readComposedText(label),
+        wrapper: readElementBox(wrapper),
+        labelBox: readElementBox(label),
+        nameRow: readElementBox(
+          wrapper?.querySelector(".project-action-field__name-row") ??
+            (readComposedText(label) === "Name" ? webNameInput?.parentElement : null),
+        ),
+        icon: readElementBox(
+          wrapper?.querySelector(".project-action-field__icon, [aria-label='Choose icon']"),
+        ),
+        hint: readElementBox(
+          wrapper?.querySelector(".project-action-field__hint, p.text-muted-foreground"),
+        ),
+      };
+    }),
     fields: {
       name: field("script-name", 0, ".project-action-field__input--name"),
       keybinding: field("script-keybinding", 1, ".project-action-field__input"),

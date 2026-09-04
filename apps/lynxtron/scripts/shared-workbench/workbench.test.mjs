@@ -94,6 +94,14 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "trailingLeaf: readElementBox");
   });
 
+  it("records Project Action field rhythm for both renderers", () => {
+    assert.include(source, "fieldAnatomy: fieldLabels.map");
+    assert.include(source, '".project-action-field__name-row"');
+    assert.include(source, "webNameInput?.parentElement");
+    assert.include(source, "[aria-label='Choose icon']");
+    assert.include(source, '".project-action-field__hint, p.text-muted-foreground"');
+  });
+
   it("records matching Sidebar status geometry for both renderers", () => {
     assert.include(source, "function readSidebarThreadMetrics(item)");
     assert.include(source, "statusSlot: readElementBox");
