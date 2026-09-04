@@ -22305,6 +22305,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-project-group-rhythm-current",
+      "observedAt": "2026-09-04T00:42:31-04:00",
+      "commit": "73d5d5715334ea9707fc78fc0a23e45dd87a8637",
+      "codeCommit": "73d5d5715334ea9707fc78fc0a23e45dd87a8637",
+      "codeState": "commit",
+      "label": "Sidebar project-group rhythm parity",
+      "narrative": "The paired legacy Sidebar capture first removed a Web-only provider-update toast through a universal pre-capture harness invariant; no modeled fidelity state targets that notification. The resulting clean pair exposed two source-backed spacing deltas: Lynx's project group began one pixel low and each empty-thread placeholder was four pixels short. Moving the group up one pixel, using 36px empty placeholders, and restoring four-pixel bottom padding aligns the group at 0,96,255,176 and both project rows at y=132 and y=200 exactly. Project-group SSIM improves from 0.296297 to 0.323363, Sidebar-top SSIM from 0.295354 to 0.314959, and full Sidebar SSIM from 0.306572 to 0.312277.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use the same immutable snapshot, legacy Sidebar, two expanded empty project groups, route, theme, viewport, Web pixels, and zero-error runtime. The separate harness commit removes only unrelated notification pixels."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/sidebar-project-group-rhythm.json",
+          "classification": "tracked-current",
+          "sha256": "b8177199fd3625cd191fbab1e16da09aa2061402e5fc1db8b85f7d6c0efe9f9e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-groups"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 255,
+              "confidence": 0.99,
+              "method": "sidebar-project-group-row-geometry",
+              "source": "Group and both project row x, y, width, and height now match the Web authority exactly"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-project-groups-current-shared-runtime",
+              "source": "Same snapshot, route, two expanded empty groups, universal notification cleanup, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

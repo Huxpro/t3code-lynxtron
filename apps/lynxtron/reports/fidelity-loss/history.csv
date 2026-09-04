@@ -364,3 +364,4 @@ quick-switch-empty-radius-current,2026-09-03T22:51:08-04:00,b0fed36564a21eff5da0
 quick-switch-query-radius-current,2026-09-03T23:06:06-04:00,e4cc88a175f499d028b324663e0b0ccd28e1bb0d,commit,Quick Switch query radius parity,0.178921,0.178921,0.03853,0.146017,0.853983,0.812969
 quick-switch-default-radius-current,2026-09-03T23:16:00-04:00,cc5919727891a4c8cfaf753e3a05a22306ea1325,commit,Quick Switch default radius parity,0.178888,0.178888,0.038491,0.146017,0.853983,0.813002
 provider-dialog-secondary-action-current,2026-09-04T00:05:24-04:00,b005243aa427d693313bb9ce742e4b304ad1ae82,commit,Add Provider secondary action material parity,0.178888,0.178888,0.03849,0.146017,0.853983,0.813002
+sidebar-project-group-rhythm-current,2026-09-04T00:42:31-04:00,73d5d5715334ea9707fc78fc0a23e45dd87a8637,commit,Sidebar project-group rhythm parity,0.178885,0.178885,0.038488,0.146017,0.853983,0.813005
