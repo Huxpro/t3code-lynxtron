@@ -63,6 +63,10 @@ const manifestPath = process.argv.includes("--manifest")
   ? path.resolve(argValue("--manifest", ""))
   : null;
 const stateId = argValue("--state-id", "new-thread-hero");
+const nativeOnlyStateIds = new Set(["settings-archive-mutation"]);
+if (nativeOnlyStateIds.has(stateId)) {
+  throw new Error(`${stateId} is not implemented by the Browser paired-capture harness.`);
+}
 const inferredSemanticRoute = inferSemanticRoute(stateId);
 if (!inferredSemanticRoute && !hasFlag("--semantic-route")) {
   throw new Error(`Cannot infer semantic route for ${stateId}; pass --semantic-route explicitly.`);

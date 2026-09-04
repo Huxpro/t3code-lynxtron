@@ -43,6 +43,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"model-picker-provider-rail": "opencode"');
   });
 
+  it("fails fast for modeled states that require Native-only verification", () => {
+    assert.include(source, "const nativeOnlyStateIds = new Set([");
+    assert.include(source, '"settings-archive-mutation"');
+    assert.include(source, "is not implemented by the Browser paired-capture harness.");
+  });
+
   it("gates the provider status banner anatomy and single dismiss action", () => {
     assert.include(source, "function providerStatusBannerMatches(state)");
     assert.include(source, "web.actionLabels.length === 1");
@@ -976,7 +982,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'row.getAttribute("data-model-picker-key")');
     assert.include(workbench, "textLeaves:");
     assert.include(workbench, "icons:");
-    assert.include(workbench, 'root?.querySelectorAll(".settings-row")');
+    assert.include(workbench, "root?.querySelectorAll('[data-settings-row=\"true\"]')");
     assert.include(workbench, "children: [...item.children].map");
     assert.include(workbench, 'root?.querySelectorAll(".source-control-item")');
     assert.include(source, '"settings-archive": "/settings/archived"');
