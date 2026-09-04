@@ -23984,6 +23984,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-icon-alpha-current",
+      "observedAt": "2026-09-04T17:39:09-04:00",
+      "commit": "f6adb466fc74da91d81e64050a13ace70bad19dd",
+      "codeCommit": "f6adb466fc74da91d81e64050a13ace70bad19dd",
+      "codeState": "commit",
+      "label": "Quick Switch query muted icon alpha",
+      "narrative": "Web composites the search and action-row icons through muted-foreground/80, while Lynx painted the same #a1a1aa raster assets fully opaque. Applying the authority's 0.8 alpha to those two scoped icon classes preserves the exact 576x166 panel, settings query, one Open settings result, and unselected interaction state. Panel SSIM improves from 0.945568 to 0.946267, MAE from 2.731387 to 2.693179, and significant pixels from 2.9085% to 2.8921%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, thread, route, query, row content, theme, viewport, exact panel geometry, and zero renderer errors. The product change only applies measured alpha to two scoped Lynx icon classes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/quick-switch-query-icon-alpha.json",
+          "classification": "tracked-current",
+          "sha256": "6b2be575a063aeb0c0ee8b3e656ca2014b4820e388d3505c08b26fbc65a55b77"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-query-overlay-geometry",
+              "source": "Panel remains exactly 576x166 at x=352 y=82 in both renderers"
+            },
+            "material": {
+              "residual": 0.053733,
+              "confidence": 0.99,
+              "method": "quick-switch-query-panel-ssim",
+              "source": "1 - panel SSIM 0.946267; panel MAE 2.693179 and 2.8921% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-query-current-shared-runtime",
+              "source": "Same snapshot, thread, settings query, one Open settings result, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

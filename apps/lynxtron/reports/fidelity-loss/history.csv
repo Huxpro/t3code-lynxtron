@@ -400,3 +400,4 @@ settings-source-control-badge-material-current,2026-09-04T15:53:17-04:00,7b58539
 settings-archive-light-empty-rhythm-current,2026-09-04T16:07:39-04:00,9da9361696ad5a3ce4d523444f04053b3d8b993b,commit,Settings Archive light empty rhythm parity,0.178741,0.1786,0.037264,0.146953,0.853047,0.813149
 model-picker-default-search-chrome-current,2026-09-04T16:38:10-04:00,f9ef91c516f1a4e9b7d7a596cbcc749c196529df,commit,Model Picker search chrome parity,0.178714,0.1786,0.037232,0.146953,0.853047,0.813176
 composer-plan-mode-default-meta-visibility-current,2026-09-04T17:06:22-04:00,43608c9898f74ac949ad03e8ad72767d2aeb3a54,commit,Plan mode default transcript meta visibility,0.178237,0.178237,0.036673,0.146953,0.853047,0.813653
+quick-switch-query-icon-alpha-current,2026-09-04T17:39:09-04:00,f6adb466fc74da91d81e64050a13ace70bad19dd,commit,Quick Switch query muted icon alpha,0.178237,0.178237,0.036673,0.146953,0.853047,0.813653
