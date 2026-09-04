@@ -89,6 +89,9 @@ const defaultOverlayByStateId = {
   "composer-compact-controls-inline-files-short": "compact-controls",
   "diff-scope-menu": "diff-scope-menu",
   "file-picker-default": "file-picker",
+  "model-picker-default": "model-picker",
+  "model-picker-provider-rail": "model-picker",
+  "model-picker-query": "model-picker",
   "model-picker-empty": "model-picker",
   "model-picker-selected": "model-picker",
   "model-picker-interaction": "model-picker",
@@ -104,6 +107,7 @@ const defaultOverlayByStateId = {
   "command-palette-navigation": "quick-switch",
 };
 const defaultQueryByStateId = {
+  "model-picker-query": "pickle",
   "model-picker-empty": "__t3_no_models__",
   "quick-switch-query": "settings",
   "quick-switch-query-light": "settings",

@@ -27,6 +27,21 @@ describe("shared workbench lifecycle fault capture", () => {
     );
   });
 
+  it("opens every modeled model-picker state by default", () => {
+    for (const stateId of [
+      "model-picker-default",
+      "model-picker-provider-rail",
+      "model-picker-query",
+      "model-picker-empty",
+      "model-picker-selected",
+      "model-picker-interaction",
+      "settings-model-picker",
+    ]) {
+      assert.include(source, `"${stateId}": "model-picker"`);
+    }
+    assert.include(source, '"model-picker-query": "pickle"');
+  });
+
   it("gates the provider status banner anatomy and single dismiss action", () => {
     assert.include(source, "function providerStatusBannerMatches(state)");
     assert.include(source, "web.actionLabels.length === 1");
