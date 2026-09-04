@@ -22786,7 +22786,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-04/fidelity/sidebar-inline-search-favicon.json",
           "classification": "tracked-current",
-          "sha256": "c3debf4812f1cd7d4f88f13fcc44ffc8ccd080644eb0b33b7cbdf6d7d229b54c"
+          "sha256": "84161e8c233fb78f46d7620b3467f5eeb35dfa759c62896c6984e5eafac761ab"
         }
       ],
       "updates": [
@@ -22806,6 +22806,57 @@
               "confidence": 0.99,
               "method": "sidebar-search-current-runtime",
               "source": "Exact query, two matching result titles, same state identity, zero renderer errors, and clean owned-process disposal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "source-control-row-geometry-current",
+      "observedAt": "2026-09-04T07:56:00-04:00",
+      "commit": "f3452b3e21dc86dd66591f9f521ae667ae958f1a",
+      "codeCommit": "5eb7eb5d7",
+      "codeState": "commit",
+      "label": "Source Control discovery-row geometry parity",
+      "narrative": "A fresh same-snapshot Source Control capture confirmed the old cumulative section drift remained current: Lynx rendered normal discovery rows at 71px and 90px while Web rendered 66.84375px and 85.6875px. Matching those two measured row heights and restoring Web's four-pixel sibling rhythm makes all six row rectangles and all three section rectangles match exactly. The fixed lower-panel RGB MAE improves from 12.331115 to 10.276293 and significant pixels fall from 10.7872% to 9.4526%. Provider-brand and typography residuals remain explicit.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one immutable snapshot, Source Control route, discovered tools, dark theme, viewport, and Web authority frame. Product styling is limited to normal discovery-row heights and sibling spacing."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/source-control-row-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "ba8d037e93ee6a270ab5313770b16d15768e66c3b83040a55fb0fc9f5bb2a110"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "source-control-discovery-row-section-geometry",
+              "source": "Six discovery rows and three section rectangles now match Web exactly"
+            },
+            "material": {
+              "pixel": {
+                "mae": 10.276293,
+                "significantShare": 0.094526
+              },
+              "confidence": 0.99,
+              "method": "source-control-lower-panel-pixel",
+              "source": "Fixed lower-panel crop improves from 12.331115 MAE and 10.7872% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "source-control-current-shared-runtime",
+              "source": "Same snapshot and discovery inventory, exact section geometry, zero renderer errors, and clean Browser disposal"
             }
           }
         }
