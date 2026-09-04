@@ -75,6 +75,7 @@ export type IconName =
   | "maximize-2"
   | "minimize-2"
   | "search"
+  | "text-search"
   | "arrow-up-down"
   | "pencil-line"
   | "pencil-ruler"

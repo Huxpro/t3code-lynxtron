@@ -19,6 +19,8 @@ const outFile = path.join(repoRoot, "src/app/components/iconData.ts");
 
 // Inner SVG markup per icon, verbatim from lucide-react.
 const ICON_BODIES = {
+  "text-search":
+    '<path d="M21 5H3"/><path d="M10 12H3"/><path d="M10 19H3"/><circle cx="17" cy="15" r="3"/><path d="m21 19-1.9-1.9"/>',
   plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
   "arrow-up": '<path d="m5 12 7-7 7 7"/><path d="M12 19V5"/>',
   square: '<rect width="18" height="18" x="3" y="3" rx="2"/>',

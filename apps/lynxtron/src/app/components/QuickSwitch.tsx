@@ -88,7 +88,7 @@ interface ActionItem {
   icon: IconName;
   label: string;
   searchTerms: ReadonlyArray<string>;
-  shortcutCommand?: "chat.new" | "filePicker.toggle";
+  shortcutCommand?: "chat.new" | "filePicker.toggle" | "projectSearch.toggle";
   run: () => void;
 }
 
@@ -432,8 +432,9 @@ export function QuickSwitch({
       },
       {
         id: "search-project-contents",
-        icon: "search",
+        icon: "text-search",
         label: "Search project contents",
+        shortcutCommand: "projectSearch.toggle",
         searchTerms: ["search project contents", "content search"],
         run: () => {
           uiActions.openRightPanelSurface("files");

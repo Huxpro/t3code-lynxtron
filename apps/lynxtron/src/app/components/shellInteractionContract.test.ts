@@ -1576,6 +1576,8 @@ describe("desktop shell interaction contract", () => {
     );
     expect(quickSwitch).toContain('"Local folder"');
     expect(quickSwitch).toContain('"Git URL"');
+    expect(quickSwitch).toContain('icon: "text-search"');
+    expect(quickSwitch).toContain('shortcutCommand: "projectSearch.toggle"');
     expect(quickSwitch).toContain("icon: source,");
     expect(iconSource).toContain('| "github"');
     expect(iconSource).toContain('| "gitlab"');
