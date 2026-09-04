@@ -360,6 +360,13 @@ describe("desktop shell interaction contract", () => {
     expect(providers).toContain('id="provider-health-check-interval"');
     expect(providers).toContain('className="provider-health-number-field__stepper"');
     expect(providers).toContain('className="provider-health-number-field__input"');
+    expect(overrides).toContain(
+      ".provider-health-number-field {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: 128px;\n  height: 28px;",
+    );
+    expect(overrides).toContain(
+      ".provider-health-number-field__stepper {\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 34px;\n  height: 26px;",
+    );
+    expect(overrides).toContain("#provider-health-check-interval {\n  height: 85.6875px;");
     expect(providers).toContain("backgroundActivityOverrideSettings");
     expect(providers).toContain("t3ClientActions");
     expect(providers).toContain(".updateServerSettings(");

@@ -7179,7 +7179,7 @@
   flex-direction: row;
   align-items: center;
   width: 128px;
-  height: 32px;
+  height: 28px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--input);
@@ -7192,16 +7192,16 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  width: 30px;
-  height: 30px;
+  width: 34px;
+  height: 26px;
   color: var(--muted-foreground);
 }
 .provider-health-number-field__input {
   flex-grow: 1;
   flex-shrink: 1;
-  width: 66px;
+  width: 58px;
   min-width: 0;
-  height: 30px;
+  height: 26px;
   color: var(--foreground);
   font-family: var(--font-mono);
   font-size: 12px;
@@ -7212,6 +7212,9 @@
   color: var(--muted-foreground);
   font-family: var(--font-sans);
   font-size: 12px;
+}
+#provider-health-check-interval {
+  height: 85.6875px;
 }
 .provider-instance-card {
   --align-self-column: stretch;
