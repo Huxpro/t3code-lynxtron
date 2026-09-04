@@ -98,6 +98,10 @@ export type IconName =
   | "grok"
   | "opencode"
   | "github-copilot"
+  | "github"
+  | "gitlab"
+  | "azure-devops"
+  | "bitbucket"
   | "gemini"
   | "acp-registry"
   | "pi-agent"
@@ -164,6 +168,10 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverr
       name === "grok" ||
       name === "opencode" ||
       name === "github-copilot" ||
+      name === "github" ||
+      name === "gitlab" ||
+      name === "azure-devops" ||
+      name === "bitbucket" ||
       name === "gemini" ||
       name === "acp-registry" ||
       name === "pi-agent" ||

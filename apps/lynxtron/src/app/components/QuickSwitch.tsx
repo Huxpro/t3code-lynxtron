@@ -550,7 +550,7 @@ export function QuickSwitch({
       const label = addProjectRemoteSourceLabel(source);
       items.push({
         id: `source:${source}`,
-        icon: "git-branch-plus",
+        icon: source,
         title: `${label} repository`,
         description: `Clone ${label} ${addProjectRemoteSourcePathHint(source)}`,
         setupRequired: !readiness.ready,

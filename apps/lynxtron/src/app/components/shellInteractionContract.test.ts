@@ -7,6 +7,7 @@ const componentSource = (name: string) =>
   readFileSync(path.resolve(import.meta.dirname, name), "utf8");
 const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
 const diffPanelSource = componentSource("DiffPanel.tsx");
+const iconSource = componentSource("Icon.tsx");
 const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
@@ -1575,6 +1576,11 @@ describe("desktop shell interaction contract", () => {
     );
     expect(quickSwitch).toContain('"Local folder"');
     expect(quickSwitch).toContain('"Git URL"');
+    expect(quickSwitch).toContain("icon: source,");
+    expect(iconSource).toContain('| "github"');
+    expect(iconSource).toContain('| "gitlab"');
+    expect(iconSource).toContain('| "azure-devops"');
+    expect(iconSource).toContain('| "bitbucket"');
     expect(quickSwitch).toContain("Setup Required");
     expect(quickSwitch).toContain("browseFilesystem");
     expect(quickSwitch).toContain("createProject");
