@@ -75,6 +75,15 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "rows,");
   });
 
+  it("records Project Settings field allocation for both renderers", () => {
+    assert.include(
+      source,
+      'fields: readElementBox(dialog.querySelector(".project-settings-fields"))',
+    );
+    assert.include(source, 'dialog.querySelectorAll(".project-settings-field")');
+    assert.include(source, "fieldColumns:");
+  });
+
   it("records matching Sidebar status geometry for both renderers", () => {
     assert.include(source, "function readSidebarThreadMetrics(item)");
     assert.include(source, "statusSlot: readElementBox");

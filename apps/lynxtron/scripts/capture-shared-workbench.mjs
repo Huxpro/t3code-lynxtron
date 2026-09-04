@@ -8118,10 +8118,13 @@ async function captureCell({
       if (state?.lynx?.productState?.overlay === "project-scope") {
         projectSettingsInteraction.lynxScopeOpened = true;
       }
-      if (
-        !projectSettingsInteraction.webScopeOpened ||
-        !projectSettingsInteraction.lynxScopeOpened
-      ) {
+      const webNeedsProjectScope =
+        !projectSettingsInteraction.webActionClicked &&
+        state?.web?.productState?.overlay !== "project-scope";
+      const lynxNeedsProjectScope =
+        !projectSettingsInteraction.lynxActionClicked &&
+        state?.lynx?.productState?.overlay !== "project-scope";
+      if (webNeedsProjectScope || lynxNeedsProjectScope) {
         const scopePoints = await evaluate(
           cdp,
           sessionId,
@@ -8145,10 +8148,9 @@ async function captureCell({
             };
           })()`,
         ).catch(() => null);
-        if (!projectSettingsInteraction.webScopeOpened && scopePoints?.web) {
+        if (webNeedsProjectScope && scopePoints?.web) {
           await dispatchPointerClickWithMove(cdp, sessionId, scopePoints.web);
-        }
-        if (!projectSettingsInteraction.lynxScopeOpened && scopePoints?.lynx) {
+        } else if (lynxNeedsProjectScope && scopePoints?.lynx) {
           await dispatchPointerClickWithMove(cdp, sessionId, scopePoints.lynx);
         }
         projectSettingsTimeline.push({
@@ -8212,19 +8214,22 @@ async function captureCell({
             };
           })()`,
         ).catch(() => null);
-        projectSettingsInteraction.webScopeOptionCount = actionState?.web?.optionCount ?? 0;
-        projectSettingsInteraction.lynxScopeOptionCount = actionState?.lynx?.optionCount ?? 0;
-        projectSettingsInteraction.webScopeActionCount = actionState?.web?.actionCount ?? 0;
-        projectSettingsInteraction.lynxScopeActionCount = actionState?.lynx?.actionCount ?? 0;
-        projectSettingsInteraction.webScopeKeys = actionState?.web?.optionKeys ?? [];
-        projectSettingsInteraction.lynxScopeKeys = actionState?.lynx?.optionKeys ?? [];
-        projectSettingsInteraction.webScopeLabels = actionState?.web?.optionLabels ?? [];
-        projectSettingsInteraction.lynxScopeLabels = actionState?.lynx?.optionLabels ?? [];
+        if ((actionState?.web?.optionCount ?? 0) > 0) {
+          projectSettingsInteraction.webScopeOptionCount = actionState.web.optionCount;
+          projectSettingsInteraction.webScopeActionCount = actionState.web.actionCount;
+          projectSettingsInteraction.webScopeKeys = actionState.web.optionKeys;
+          projectSettingsInteraction.webScopeLabels = actionState.web.optionLabels;
+        }
+        if ((actionState?.lynx?.optionCount ?? 0) > 0) {
+          projectSettingsInteraction.lynxScopeOptionCount = actionState.lynx.optionCount;
+          projectSettingsInteraction.lynxScopeActionCount = actionState.lynx.actionCount;
+          projectSettingsInteraction.lynxScopeKeys = actionState.lynx.optionKeys;
+          projectSettingsInteraction.lynxScopeLabels = actionState.lynx.optionLabels;
+        }
         if (!projectSettingsInteraction.webActionClicked && actionState?.web?.point) {
           await dispatchPointerClickWithMove(cdp, sessionId, actionState.web.point);
           projectSettingsInteraction.webActionClicked = true;
-        }
-        if (!projectSettingsInteraction.lynxActionClicked && actionState?.lynx?.point) {
+        } else if (!projectSettingsInteraction.lynxActionClicked && actionState?.lynx?.point) {
           await dispatchPointerClickWithMove(cdp, sessionId, actionState.lynx.point);
           projectSettingsInteraction.lynxActionClicked = true;
         }

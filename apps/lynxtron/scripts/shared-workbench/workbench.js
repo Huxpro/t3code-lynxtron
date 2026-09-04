@@ -1166,6 +1166,10 @@ function readProjectSettingsDialog(root) {
         dialog.querySelector("[data-slot='dialog-panel'], .project-settings-dialog__body"),
       ),
       footer: readElementBox(footer),
+      fields: readElementBox(dialog.querySelector(".project-settings-fields")),
+      fieldColumns: [...dialog.querySelectorAll(".project-settings-field")].map((field) =>
+        readElementBox(field),
+      ),
     },
     paths: [...dialog.querySelectorAll(".project-settings-path, .font-mono")]
       .map((element) => readComposedText(element))

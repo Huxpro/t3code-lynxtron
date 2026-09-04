@@ -1433,6 +1433,18 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'placement: "right-start-4"');
   });
 
+  it("advances Project Settings scope and action pointers one renderer at a time", () => {
+    assert.include(source, "const webNeedsProjectScope =");
+    assert.include(source, "const lynxNeedsProjectScope =");
+    assert.include(source, "} else if (lynxNeedsProjectScope && scopePoints?.lynx) {");
+    assert.include(
+      source,
+      "} else if (!projectSettingsInteraction.lynxActionClicked && actionState?.lynx?.point) {",
+    );
+    assert.include(source, "if ((actionState?.web?.optionCount ?? 0) > 0) {");
+    assert.include(source, "if ((actionState?.lynx?.optionCount ?? 0) > 0) {");
+  });
+
   it("drives both Browser renderers through a multi-step question", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
