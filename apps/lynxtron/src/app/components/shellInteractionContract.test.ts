@@ -1051,9 +1051,8 @@ describe("desktop shell interaction contract", () => {
       'setError(cause instanceof Error ? cause.message : "Invalid keybinding.")',
     );
     expect(overrides).toContain(
-      ".project-action-field__icon {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 36px;\n  height: 36px;",
+      ".project-action-field__icon {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 36px;\n  height: 32px;",
     );
-    expect(overrides).toContain(".project-action-field:first-child {\n  margin-top: 0;");
     expect(overrides).toContain(".project-action-field:first-child {\n  margin-top: 0;");
   });
 
