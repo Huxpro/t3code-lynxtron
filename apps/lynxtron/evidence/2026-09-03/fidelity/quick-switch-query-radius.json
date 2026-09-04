@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T23:06:06-04:00",
+  "captureCommit": "e4cc88a175f499d028b324663e0b0ccd28e1bb0d",
+  "productCommit": "85b199c98ef7e2532b80da4474a265686e5e84e4",
+  "stateId": "quick-switch-query",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "overlay": "quick-switch",
+    "query": "settings",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "d657518c651b9741f08ee7aa12b7a0109fe0b922649ab9df2ee41aff1e3436ce",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "e902755572e4d5b65e98b638734001d34710bb15d880705508b34c24da211080",
+    "webImageSha256": "5056b47645adfbdcfac005c187c7bac9dd30fd78300f0abda05a6c7e885c8c1e",
+    "lynxImageSha256": "1153428d8a8fa71313522c3082854715ea13de304bae11a3ec9872dd0850addc",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "overlayGeometryDelta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  "content": {
+    "rowCount": 1,
+    "rowLabel": "Open settings",
+    "panel": [352, 82, 576, 166],
+    "webRadius": 18,
+    "lynxRadiusBefore": 12,
+    "lynxRadiusAfter": 18
+  },
+  "pixelMetric": {
+    "definition": "SSIM over matching 1280x820 Browser captures and fixed panel and top-edge crops",
+    "baseline": {
+      "fullFrame": 0.966818,
+      "panel": 0.943637,
+      "topEdge": 0.935666
+    },
+    "current": {
+      "fullFrame": 0.967178,
+      "panel": 0.945568,
+      "topEdge": 0.940504
+    }
+  },
+  "boundary": "This cross-state evidence attributes the already-landed generic Quick Switch radius change to the dark query state. No new product change or Native credit is claimed. Screenshots remain temporary because the tracked screenshot budget is full."
+}

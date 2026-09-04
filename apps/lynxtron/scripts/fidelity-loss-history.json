@@ -22168,6 +22168,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-radius-current",
+      "observedAt": "2026-09-03T23:06:06-04:00",
+      "commit": "e4cc88a175f499d028b324663e0b0ccd28e1bb0d",
+      "codeCommit": "85b199c98ef7e2532b80da4474a265686e5e84e4",
+      "codeState": "commit",
+      "label": "Quick Switch query radius parity",
+      "narrative": "A same-snapshot settings-query capture measures the already-landed generic Quick Switch radius correction in a third deterministic state. Both clients retain the exact 576 by 166 panel, query settings, one Open settings row, matching route and state identity, and zero renderer errors. Changing only the Lynx shell from 12px to Web's 18px authority improves top-edge SSIM from 0.935666 to 0.940504, panel SSIM from 0.943637 to 0.945568, and full-frame SSIM from 0.966818 to 0.967178.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A temporary 12px baseline and restored 18px current capture share one immutable snapshot, Web pixels, route, query, one-row content, dark theme, viewport, and zero-error runtime. The product attribution remains the existing 85b199c98 radius commit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/quick-switch-query-radius.json",
+          "classification": "tracked-current",
+          "sha256": "c7a44830f8c81336d1573c3bfb2b1738827bbcfb80636f565959081f43f62b38"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "quick-switch-query-radius-and-geometry",
+              "source": "The one-result query panel geometry is exact and both shells now resolve to an 18px radius"
+            },
+            "material": {
+              "residual": 0.054432,
+              "confidence": 0.99,
+              "method": "quick-switch-query-panel-ssim",
+              "source": "1 - panel SSIM 0.945568 after matching the generic dark palette radius; focused top-edge SSIM is 0.940504"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "quick-switch-query-current-shared-runtime",
+              "source": "Same snapshot, route, settings query, Open settings result, exact overlay geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
