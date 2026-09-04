@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-03T21:47:31-04:00",
+  "commit": "0a77119dd7ce3fbc933ed47af44aea723261a2aa",
+  "stateId": "model-picker-query",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "overlay": "model-picker",
+    "query": "gpt",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "1c6cc43d477123a46e0c41ecb99836fdbe7155ed4e9c6080999250f1d4ff67fe",
+    "webBundleSha256": "241587ce7d7eeafcec7a8a58e37e937cfe1717466b4bad1e7365686b6f57cd1d",
+    "lynxBundleSha256": "56389eba5b3761c8def2499ed051f3018e68ea2e5519c8173404926fbd9694ba",
+    "webImageSha256": "2820cf0f134dfd788ad609a1ac18e6e0ad38cb434f0755fcf08af6c4540a29d5",
+    "lynxImageSha256": "cb5d4c1b84b0b86b2d2a3c3c0f4c36be4f49324abd3d9779db06a9cc487e6559",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "overlayGeometryDelta": {
+      "x": 0,
+      "y": 0,
+      "width": 0,
+      "height": 0
+    }
+  },
+  "selection": {
+    "selectedModelKey": "codex:gpt-5.6-sol",
+    "rowCount": 7,
+    "visibleOrder": [
+      "codex:gpt-5.4",
+      "codex:gpt-5.5",
+      "codex:gpt-5.6-sol",
+      "codex:gpt-5.4-mini",
+      "codex:gpt-5.6-luna",
+      "codex:gpt-5.6-terra",
+      "codex:gpt-5.3-codex-spark"
+    ],
+    "shortcutOrderBefore": ["1", "2", "3", "4", "5", "6", "7"],
+    "shortcutOrderAfter": ["5", "4", "1", "6", "3", "2", "7"]
+  },
+  "pixelMetric": {
+    "definition": "SSIM over matching 1280x820 Browser captures and fixed model-picker crops",
+    "baseline": {
+      "fullFrame": 0.956031,
+      "panel": 0.928734,
+      "rows": 0.932956
+    },
+    "current": {
+      "fullFrame": 0.956091,
+      "panel": 0.929559,
+      "rows": 0.933892
+    }
+  },
+  "boundary": "The search result order and selection are unchanged. The fix changes only which canonical model jump command label is displayed and dispatched for each visible model key. Screenshots remain temporary because the tracked screenshot budget is full."
+}

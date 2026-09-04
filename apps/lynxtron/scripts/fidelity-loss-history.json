@@ -21971,6 +21971,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-jump-order-current",
+      "observedAt": "2026-09-03T21:47:31-04:00",
+      "commit": "0a77119dd7ce3fbc933ed47af44aea723261a2aa",
+      "codeCommit": "0a77119dd7ce3fbc933ed47af44aea723261a2aa",
+      "codeState": "commit",
+      "label": "Model Picker jump shortcut order parity",
+      "narrative": "A current-head gpt query showed that Web and Lynx rendered the same seven model keys and selected codex:gpt-5.6-sol, but Lynx assigned jump shortcuts from search-ranked display order while Web retained canonical catalog order. A small presentation helper now intersects canonical catalog order with visible rows before assigning modelPicker.jump commands. The visible search order and selection remain unchanged, while the displayed and dispatched labels now match Web: GPT-5.4 maps to Command-5, GPT-5.5 to Command-4, GPT-5.6-Sol to Command-1, GPT-5.4-Mini to Command-6, GPT-5.6-Luna to Command-3, GPT-5.6-Terra to Command-2, and GPT-5.3-Codex-Spark to Command-7. Rows-crop SSIM improves from 0.932956 to 0.933892.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share one immutable snapshot, route, query, theme, viewport, Web pixels, row set, selected model, exact overlay geometry, and zero-error runtime. Only the Lynx shortcut-command mapping changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-03/fidelity/model-picker-jump-order.json",
+          "classification": "tracked-current",
+          "sha256": "8a53883bf9b7a1fb1468b8f3af61a11eb30eecbc4610ab61b939523851c95c72"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "canonical-model-jump-order",
+              "source": "All seven visible model keys retain their search-ranked rows while each shortcut label now follows the canonical catalog command mapping used by Web"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-jump-command-by-key",
+              "source": "The displayed label map and mounted jump bus resolve the same modelPicker.jump command to the same model key as Web"
+            },
+            "material": {
+              "residual": 0.070441,
+              "confidence": 0.99,
+              "method": "model-picker-panel-ssim",
+              "source": "1 - panel SSIM 0.929559 after aligning the visible shortcut identities; rows-crop SSIM is 0.933892"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-picker-query-current-shared-runtime",
+              "source": "Same snapshot, thread, query, selected model, seven rows, exact overlay geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
