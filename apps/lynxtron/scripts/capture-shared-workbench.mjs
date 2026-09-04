@@ -206,6 +206,7 @@ const isNarrowFileEditorState =
   stateId === "file-editor-detail-narrow-inline" || isFileEditingSaveState;
 const isFileEditorState =
   stateId === "file-editor-detail" ||
+  stateId === "file-editor-detail-light" ||
   stateId === "file-editor-detail-narrow-inline" ||
   isOpenInMenuState ||
   isFileEditingSaveState;
@@ -6162,6 +6163,7 @@ async function main() {
     "files-browser",
     "settled-banner-inline-files-narrow",
     "file-editor-detail",
+    "file-editor-detail-light",
     "file-editor-detail-narrow-inline",
     "file-editor-open-in-menu",
     "file-editor-editing-save",
@@ -6701,6 +6703,7 @@ async function captureCell({
     "review-empty": "existing-thread",
     "files-browser": "existing-thread",
     "file-editor-detail": "existing-thread",
+    "file-editor-detail-light": "existing-thread",
     "file-editor-detail-narrow-inline": "existing-thread",
     "file-editor-open-in-menu": "existing-thread",
     "file-editor-editing-save": "existing-thread",

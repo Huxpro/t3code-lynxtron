@@ -514,8 +514,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "file-editor-detail-narrow-inline"');
     assert.include(source, 'const filePath = argValue("--file-path", "docs/PORT_WORKFLOW.md")');
     assert.include(source, '"file-editor-detail",');
+    assert.include(source, '"file-editor-detail-light",');
     assert.include(source, '"file-editor-detail-narrow-inline",');
     assert.include(source, '"file-editor-detail": "existing-thread"');
+    assert.include(source, '"file-editor-detail-light": "existing-thread"');
     assert.include(source, '"file-editor-detail-narrow-inline": "existing-thread"');
     assert.include(source, 'argValue("--right-panel-width", "")');
     assert.include(source, "rightPanelWidth: String(expectedRightPanelWidth)");

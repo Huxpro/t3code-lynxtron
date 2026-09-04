@@ -12,6 +12,7 @@ const existingThreadStateIds = new Set([
   "files-browser",
   "settled-banner-inline-files-narrow",
   "file-editor-detail",
+  "file-editor-detail-light",
   "file-editor-detail-narrow-inline",
   "file-editor-open-in-menu",
   "file-editor-editing-save",

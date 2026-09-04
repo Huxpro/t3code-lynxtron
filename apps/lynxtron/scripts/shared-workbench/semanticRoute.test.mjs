@@ -5,6 +5,7 @@ import { inferSemanticRoute } from "./semanticRoute.mjs";
 describe("shared workbench semantic route inference", () => {
   it.each([
     ["new-thread-hero", "new-thread"],
+    ["file-editor-detail-light", "existing-thread"],
     ["composer-sendable", "new-thread"],
     ["model-picker-empty", "new-thread"],
     ["existing-thread-completed", "existing-thread"],
