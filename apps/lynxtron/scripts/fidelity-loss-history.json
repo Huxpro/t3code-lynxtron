@@ -23501,6 +23501,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-option-rhythm-current",
+      "observedAt": "2026-09-04T14:29:21-04:00",
+      "commit": "69d08bb668758e3ed7c01d3f44bb15346336b6b6",
+      "codeCommit": "69d08bb668758e3ed7c01d3f44bb15346336b6b6",
+      "codeState": "commit",
+      "label": "Project Action option rhythm parity",
+      "narrative": "After the field rhythm refinement, both Lynx option rows still began ten pixels too early because their vertical separation used 6px instead of Web's measured 16px. Aligning that one token makes both 462x38 option rectangles exact at y=563.5 and y=617.5. The exact 512x671 dialog improves from 0.790266 to 0.827028 SSIM, from 7.674597 to 6.434068 MAE, and from 6.4220% to 5.7537% significant pixels.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, route, theme, viewport, exact dialog envelope, fields, options, and zero-error runtime. The product change is limited to the measured option-row separation token."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/project-action-option-rhythm.json",
+          "classification": "tracked-current",
+          "sha256": "ddb3dc435cb392d9f9e232f6bed80b7fdaf22ac3dfeadd2760b8152603ad0325"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 671,
+              "confidence": 0.99,
+              "method": "project-action-option-rhythm",
+              "source": "Both 462x38 option rows match Web exactly in x, y, width, and height"
+            },
+            "material": {
+              "residual": 0.172972,
+              "confidence": 0.99,
+              "method": "project-action-dialog-ssim",
+              "source": "1 - exact dialog SSIM 0.827028; MAE 6.434068 and 5.7537% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-current-shared-runtime",
+              "source": "Same snapshot, dialog fields and options, exact dialog envelope, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
