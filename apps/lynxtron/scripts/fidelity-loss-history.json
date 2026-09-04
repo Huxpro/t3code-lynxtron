@@ -4505,7 +4505,7 @@
       ],
       "updates": [
         {
-          "states": ["quick-switch-query"],
+          "states": ["quick-switch-query", "quick-switch-query-light", "quick-switch-actions-only"],
           "clients": ["lynx"],
           "dimensions": {
             "content": {
@@ -24002,7 +24002,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-04/fidelity/quick-switch-query-icon-alpha.json",
           "classification": "tracked-current",
-          "sha256": "30cc4dcd96c45af78adb289a8d51a78d6a79b4a7ffc2db814a594c6cfc88f715"
+          "sha256": "9cd23f5029f38549dbe6ceaf58d9d08b72ace4f4d757c8f8f5f5fcffa544900c"
         }
       ],
       "updates": [

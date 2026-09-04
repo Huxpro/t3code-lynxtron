@@ -45,6 +45,12 @@
     "webImageStable": true,
     "webImageSha256": "dd3a84d84a3785db68ba673fe01eac3fce7bee420a3f2053b3a32fd81d4414ac"
   },
+  "actionsOnlyRegression": {
+    "definition": "The same direct opacity ablation repeated over the exact 576x326 dark actions-only panel with six action rows",
+    "baseline": { "ssim": 0.947019, "mae": 3.296816, "significantShare": 0.034154 },
+    "current": { "ssim": 0.94845, "mae": 3.216522, "significantShare": 0.033597 },
+    "webImageStable": true
+  },
   "rejectedExperiment": "Replacing the raster assets with opaque #818181 variants reduced panel SSIM to 0.944626, so that experiment was reverted.",
   "boundary": "The product change applies the Web authority's 80% muted-foreground alpha to the root search icon and action-row icons while preserving the existing #a1a1aa raster assets. Geometry, content, interaction, and Native evidence remain unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
 }
