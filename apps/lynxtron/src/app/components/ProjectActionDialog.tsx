@@ -15,7 +15,7 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { Icon, type IconName } from "./Icon";
 
 const SCRIPT_ICONS: ReadonlyArray<{ readonly id: ProjectScriptIcon; readonly icon: IconName }> = [
-  { id: "play", icon: "arrow-up" },
+  { id: "play", icon: "play" },
   { id: "test", icon: "flask-conical" },
   { id: "lint", icon: "check" },
   { id: "configure", icon: "wrench" },
@@ -147,7 +147,7 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
                 }}
               >
                 <Icon
-                  name={SCRIPT_ICONS.find((option) => option.id === icon)?.icon ?? "arrow-up"}
+                  name={SCRIPT_ICONS.find((option) => option.id === icon)?.icon ?? "play"}
                   size={16}
                   color="#818181"
                 />

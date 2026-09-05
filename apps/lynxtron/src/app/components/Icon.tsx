@@ -63,6 +63,7 @@ function lightColor(color: string): string {
 
 export type IconName =
   | "plus"
+  | "play"
   | "arrow-up"
   | "send-arrow"
   | "square"
