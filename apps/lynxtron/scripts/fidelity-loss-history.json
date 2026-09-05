@@ -24153,6 +24153,54 @@
         }
       ],
       "updates": []
+    },
+    {
+      "id": "model-picker-provider-rail-selection-current",
+      "observedAt": "2026-09-04T21:30:30-04:00",
+      "commit": "c71c5811f",
+      "codeCommit": "c71c5811f",
+      "codeState": "commit",
+      "label": "Model Picker provider rail selection parity",
+      "narrative": "Web marks the active OpenCode provider with the shared right-edge primary indicator while keeping the 36x36 rail button transparent. Lynx rendered the same indicator plus an extra foreground/8 square fill. Removing only that redundant active fill preserves exact panel, rail, provider-button, and seven-model geometry. Rail SSIM improves from 0.943055 to 0.972415, MAE from 5.944811 to 4.929616, significant pixels from 9.1746% to 3.1757%, and panel SSIM from 0.861986 to 0.865298.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, thread, selected OpenCode provider, seven model rows, route, theme, viewport, and zero renderer errors. The product change removes only the extra selected-button fill."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/model-picker-provider-rail-selection.json",
+          "classification": "tracked-current",
+          "sha256": "91e8a08042e5e04ae3b2e2905ced33e40bff3eb77dba992e790d0e76674c66f2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-provider-rail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "model-picker-provider-rail-geometry",
+              "source": "Panel, rail, and all five 36x36 provider buttons match exactly"
+            },
+            "material": {
+              "residual": 0.027585,
+              "confidence": 0.99,
+              "method": "model-picker-provider-rail-ssim",
+              "source": "1 - rail SSIM 0.972415; rail MAE 4.929616 and 3.1757% significant pixels; full panel SSIM 0.865298"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-picker-provider-rail-current-runtime",
+              "source": "Same snapshot, thread, selected OpenCode provider, provider order, seven rows, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

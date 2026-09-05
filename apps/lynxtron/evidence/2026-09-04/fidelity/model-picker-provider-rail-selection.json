@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T21:30:30-04:00",
+  "captureCommit": "c71c5811f",
+  "productCommit": "c71c5811f",
+  "stateId": "model-picker-provider-rail",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "selectedProvider": "opencode",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "fe58f5aae6f2947a27629628d72452928e300c8b5a1ffa780b624e448a3986cd",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "63c1fc50e982f9b0003540d416fd5baf39e2bd4297382673fd32d06f2c442012",
+    "webImageSha256": "33900f3cd456e9380967b7b5fe5e72509236988171992381274b214847ebf870",
+    "lynxImageSha256": "3705315ebd6c40c287aa3cb22343718ec9ec6430391e66eb51a30f1bf62ff478",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "panel": [397, 375, 360, 346],
+    "rail": [398, 376, 44, 344],
+    "providerButtonsExact": true,
+    "providerOrder": ["favorites", "claudeAgent", "codex", "grok", "opencode"]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the exact 44x344 provider rail; panel SSIM over 360x346",
+    "baseline": {
+      "railSsim": 0.943055,
+      "railMae": 5.944811,
+      "significantShare": 0.091746,
+      "panelSsim": 0.861986
+    },
+    "current": {
+      "railSsim": 0.972415,
+      "railMae": 4.929616,
+      "significantShare": 0.031757,
+      "panelSsim": 0.865298
+    }
+  },
+  "boundary": "The selected OpenCode provider remains identified by the shared right-edge primary indicator. The fix removes only the extra Lynx active-button fill; provider order, disabled states, model rows, interaction, and Native evidence remain unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
+}
