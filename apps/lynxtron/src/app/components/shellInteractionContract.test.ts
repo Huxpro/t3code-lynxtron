@@ -1246,6 +1246,7 @@ describe("desktop shell interaction contract", () => {
       "Keybindings are read-only on Lynxtron until renderer keyboard capture is verified.",
     );
     expect(overrides).toContain("background-color: rgba(255, 255, 255, 0.01);");
+    expect(overrides).toContain(".archived-threads-empty-row {\n  margin-bottom: 0;");
     expect(overrides).toContain("border-bottom-color: rgba(255, 255, 255, 0.036);");
     expect(overrides).not.toContain(
       ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  padding: 8px;\n  transform: translateY(-0.5px);",

@@ -6500,6 +6500,9 @@
 .archived-threads-empty-row .settings-row__text {
   gap: 6px;
 }
+.archived-threads-empty-row {
+  margin-bottom: 0;
+}
 .archived-threads-empty-row .settings-row__desc {
   margin-top: 0;
 }
