@@ -1966,6 +1966,10 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("font-size: 30px;");
     expect(overrides).toContain("line-height: 36px;");
     expect(overrides).toContain("text-align: center;");
+    expect(overrides).toMatch(/\.hero \{[\s\S]*?padding: 0 20px;/);
+    expect(overrides).toMatch(
+      /\.chat-body-reference > \.provider-status-banner-overlay \{[\s\S]*?right: 16px;[\s\S]*?left: 16px;/,
+    );
     expect(overrides).toMatch(
       /\.composer-context-item--checkout,[\s\S]*?\.composer-context-item--branch \{[\s\S]*?flex-grow: 0;[\s\S]*?flex-shrink: 0;[\s\S]*?width: calc\(50% - 4px\);/,
     );
