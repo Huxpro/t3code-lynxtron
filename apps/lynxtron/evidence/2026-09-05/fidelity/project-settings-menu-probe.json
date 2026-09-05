@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T15:05:00-04:00",
+  "stateId": "sidebar-project-settings",
+  "captureCommit": "987f4f0e3a35efe0356d78bbab2985d8bdb64acb",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "sourceSeedSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "d75f5546d3bc39b59c266a90e7c4359d89c15d8a7c4d00922b6ce3fdde4c3980",
+    "webImageSha256": "293f955bac084a853351f5efadf661831f0042b306b4584e27653ec2a4eee0e3",
+    "lynxImageSha256": "f67769a637e2f5dab4efd62527d3cc765713eb74a16d32c8ef66db80884bc80a",
+    "webBundleSha256Prefix": "e485b395b0c7",
+    "lynxBundleSha256Prefix": "0f514a5f2633",
+    "pass": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "fullFrameSsim": 0.912523
+  },
+  "interaction": {
+    "channel": "web-scope-pointer|lynx-menu-main-thread-probe|dual-project-action-pointer",
+    "webScopeOpened": true,
+    "lynxScopeOpened": true,
+    "webScopeOptionCount": 1,
+    "lynxScopeOptionCount": 1,
+    "webScopeActionCount": 1,
+    "lynxScopeActionCount": 1,
+    "webActionClicked": true,
+    "lynxActionClicked": true
+  },
+  "geometry": {
+    "webDialog": [352, 288, 576, 244],
+    "lynxDialog": [352, 288, 576, 244]
+  },
+  "fix": "Route the Browser Preview harness through the same measured main-thread MenuTrigger path used by Lynx, then require Project Settings parity by default.",
+  "boundary": "This corrects interaction evidence and the default strict gate. It does not claim a shipping UI change because the Project Settings dialog and action already existed."
+}

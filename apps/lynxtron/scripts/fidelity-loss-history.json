@@ -25540,6 +25540,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-settings-menu-probe-current",
+      "observedAt": "2026-09-05T15:05:00-04:00",
+      "commit": "987f4f0e3a35efe0356d78bbab2985d8bdb64acb",
+      "codeCommit": "987f4f0e3a35efe0356d78bbab2985d8bdb64acb",
+      "codeState": "commit",
+      "label": "Project Settings menu harness parity",
+      "narrative": "The current Browser harness could open Web Project Settings but attempted to drive Lynx's main-thread-only MenuTrigger with a CDP shadow-DOM click, leaving the scope menu closed and incorrectly suggesting missing product capability. A viewport-test-only menu probe now invokes the same measured main-thread trigger path. The default capture contract requires parity: both scope menus expose one canonical project and one action, both actions are invoked, and both render the same 576 by 244 Project Settings dialog with zero errors.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The shipping Project Settings action and dialog already existed. This checkpoint changes only Browser Preview interaction reachability and upgrades the default strict gate from expected missing capability to required parity."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/project-settings-menu-probe.json",
+          "classification": "tracked-current",
+          "sha256": "520c46d46cc1e0955aa241315625eeed57289f5a23406da518f249d8ccda4ec1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "interaction": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "menu-main-thread-probe-and-dual-project-action-pointer",
+              "source": "Web opens scope through CDP pointer; Lynx invokes the measured main-thread MenuTrigger path; both then expose and invoke one project action. Physical text rename remains separate Native debt."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-default-parity-gate",
+              "source": "Default strict capture requires matching project labels, option and action counts, dialog state and exact 576 by 244 geometry with zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
