@@ -153,6 +153,7 @@ function readElementBox(element) {
       backgroundColor: style.backgroundColor,
       boxShadow: style.boxShadow,
       color: style.color,
+      webkitTextFillColor: style.webkitTextFillColor,
       fontFamily: style.fontFamily,
       rowGap: style.rowGap,
       columnGap: style.columnGap,
@@ -2355,6 +2356,7 @@ function readLynxPane() {
         },
         search: (() => {
           const host = root?.querySelector('[aria-label="Search threads"]');
+          const input = host?.shadowRoot?.querySelector("input") ?? null;
           const dedicatedResults = [
             ...(root?.querySelectorAll(
               '[aria-label="Thread search results"] [data-sidebar-search-result]',
@@ -2367,11 +2369,8 @@ function readLynxPane() {
           const results = dedicatedResults.length > 0 ? dedicatedResults : legacyResults;
           const rows = readSidebarSearchRows(results);
           return {
-            value:
-              host?.shadowRoot?.querySelector("input")?.value ??
-              host?.value ??
-              host?.getAttribute("value") ??
-              "",
+            value: input?.value ?? host?.value ?? host?.getAttribute("value") ?? "",
+            inputBox: readElementBox(input ?? host),
             resultIds: rows.map((row) => row.id),
             resultTitles: rows.map((row) => row.title),
             rows,
@@ -3699,6 +3698,7 @@ function readWebPane() {
           );
           return {
             value: input?.value ?? input?.getAttribute("value") ?? "",
+            inputBox: readElementBox(input),
             resultIds: rows.map((row) => row.id),
             resultTitles: rows.map((row) => row.title),
             rows,

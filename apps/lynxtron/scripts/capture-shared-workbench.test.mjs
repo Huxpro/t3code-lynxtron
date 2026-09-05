@@ -1446,8 +1446,16 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("inserts the complete controlled Lynx Sidebar search query after one focus", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
     assert.include(source, 'await cdp.send("Input.insertText", { text: sidebarQuery }, sessionId)');
     assert.include(source, "if (currentQuery === sidebarQuery) return true");
+    assert.include(source, "sidebarDiagnostics?.search?.inputBox?.rect?.width > 0");
+    assert.include(source, "inputBox?.style?.webkitTextFillColor");
+    assert.include(workbench, "inputBox: readElementBox(input ?? host)");
+    assert.include(workbench, "webkitTextFillColor: style.webkitTextFillColor");
     assert.include(source, "lynx-dom-focus+insert-text");
   });
 

@@ -814,6 +814,7 @@ describe("desktop shell interaction contract", () => {
       '".files-panel .file-tree-children{row-gap:0!important;column-gap:0!important;}"',
     );
     expect(browserPreviewSource).toContain("x-input.files-panel__search-input::part(input)");
+    expect(browserPreviewSource).toContain("x-input.sidebar-inline-search__input::part(input)");
     expect(browserPreviewSource).toContain("x-textarea.files-panel__editor::part(textarea)");
     expect(browserPreviewSource).toContain('target.matches(".files-panel__editor")');
     expect(browserPreviewSource).toContain('host.matches("x-textarea.files-panel__editor")');

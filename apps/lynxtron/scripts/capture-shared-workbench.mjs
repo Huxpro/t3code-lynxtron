@@ -10111,6 +10111,10 @@ async function captureCell({
     (sidebarSearchInputChannel !== "pending" &&
       state?.web?.sidebarDiagnostics?.search?.value === sidebarQuery &&
       state?.lynx?.sidebarDiagnostics?.search?.value === sidebarQuery &&
+      state?.web?.sidebarDiagnostics?.search?.inputBox?.rect?.width > 0 &&
+      state?.lynx?.sidebarDiagnostics?.search?.inputBox?.rect?.width > 0 &&
+      state?.lynx?.sidebarDiagnostics?.search?.inputBox?.style?.webkitTextFillColor !==
+        "rgba(0, 0, 0, 0)" &&
       (state?.web?.sidebarDiagnostics?.search?.resultTitles?.length ?? 0) > 0 &&
       JSON.stringify(state?.web?.sidebarDiagnostics?.search?.resultTitles ?? []) ===
         JSON.stringify(state?.lynx?.sidebarDiagnostics?.search?.resultTitles ?? []));
