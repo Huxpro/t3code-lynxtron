@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T17:39:38-04:00",
+  "stateId": "existing-thread-working",
+  "productCommit": "79fb73826",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "f62bf6f2ef6f299fbfdce54b8de80acd778194a12f7d3661eaef99c597078807",
+    "webBundleSha256": "e485b395b0c7577c8de228e95ac6e6811d9621ad1e4fc274353a4e6720580724",
+    "lynxBundleSha256": "ba62467962c7ac2eee18ee81054e2dc599700f2c9cd21a9b6f996052d76256b0",
+    "webImageSha256": "a06c69798d62a8cf36f3c7ce271365903de2800e451e27091e58f3888e747501",
+    "lynxImageSha256": "4ecec22cddfecf76c22875b066ace35a4be74102616f26abad2bcf99a8e6fa98",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webStopButton": [1107, 723, 32, 32],
+    "lynxStopButton": [1107, 723, 32, 32]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM",
+    "fullFrameBefore": 0.965588,
+    "fullFrameCurrent": 0.966124,
+    "stopButtonRoiBefore": 0.557425,
+    "stopButtonRoiCurrent": 0.960846,
+    "stopButtonRoi": [1107, 723, 32, 32]
+  },
+  "fix": "Render the Web authority's filled 8 by 8 rounded stop square in a 12 by 12 viewBox instead of reusing the outlined Lucide Square icon.",
+  "boundary": "The change is limited to the busy Composer action on desktop and mobile Lynx layouts. Existing outlined square semantics remain unchanged, and screenshots stay temporary because the tracked budget is full."
+}
