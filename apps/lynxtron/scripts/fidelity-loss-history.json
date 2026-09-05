@@ -25581,6 +25581,56 @@
           }
         }
       ]
+    },
+    {
+      "id": "compact-controls-menu-height-current",
+      "observedAt": "2026-09-05T15:35:00-04:00",
+      "commit": "a8c236df012f9ae623565019533daaf09619cccc",
+      "codeCommit": "a8c236df012f9ae623565019533daaf09619cccc",
+      "codeState": "commit",
+      "label": "Compact Composer controls menu height parity",
+      "narrative": "Lynx's bottom-anchored compact Composer menu was 570px tall while Web was 537px. The unwrapped Mode text became a 60px inline box and separator wrappers consumed roughly 18px instead of the intended nine. Wrapping Mode as a section, constraining labels, making separators explicit flex items, and preserving the authority top padding aligns both popup envelopes at y=184 and height 537. Full-frame SSIM improves from 0.900791 to 0.908872.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use one immutable snapshot and thread, byte-identical Web authority pixels, the same Files panel and compact-controls state, matching row semantics, and zero renderer errors. Product changes are confined to Lynx compact-menu grouping and sizing."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/compact-controls-menu-height.json",
+          "classification": "tracked-current",
+          "sha256": "27d13f8465c09bc842005e938f88a85dc756f1080450cfea0760d8cbdca485b7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-compact-controls-open"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0.109375, 0, 1.78125, 0, 0.109375, 4, 1.78125, 0, 0.109375, 0, 1.78125, 0
+              ],
+              "anchorScale": 537,
+              "confidence": 0.99,
+              "method": "compact-controls-panel-and-row-geometry",
+              "source": "Popup y and height plus final-row y and height match exactly; width differs by 1.78px and the first row retains a four-pixel internal offset"
+            },
+            "material": {
+              "residual": 0.091128,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - strict post-commit SSIM 0.908872, improved from 0.900791 with byte-identical Web authority pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "compact-controls-current-runtime",
+              "source": "Strict same-server capture passes with matching 14 rows, contained panel, strengthened two-pixel envelope gate, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
