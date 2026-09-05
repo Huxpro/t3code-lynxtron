@@ -1026,28 +1026,32 @@ export function Composer({
                                   ) : null}
                                   {showInteractionModeToggle ? (
                                     <>
-                                      <text className="composer-compact-controls-menu__section-label">
-                                        Mode
-                                      </text>
-                                      {(["default", "plan"] as const).map((mode) => (
-                                        <view
-                                          key={mode}
-                                          className={`composer-compact-controls-menu__item${
-                                            interactionMode === mode
-                                              ? " composer-compact-controls-menu__item--active"
-                                              : ""
-                                          }`}
-                                          aria-checked={interactionMode === mode ? "true" : "false"}
-                                          bindtap={() => {
-                                            if (interactionMode !== mode) onInteractionModeTap();
-                                            setOpenComposerMenu(null);
-                                          }}
-                                        >
-                                          <text className="composer-compact-controls-menu__label">
-                                            {mode === "default" ? "Chat" : "Plan"}
-                                          </text>
-                                        </view>
-                                      ))}
+                                      <view className="composer-compact-controls-menu__section">
+                                        <text className="composer-compact-controls-menu__section-label">
+                                          Mode
+                                        </text>
+                                        {(["default", "plan"] as const).map((mode) => (
+                                          <view
+                                            key={mode}
+                                            className={`composer-compact-controls-menu__item${
+                                              interactionMode === mode
+                                                ? " composer-compact-controls-menu__item--active"
+                                                : ""
+                                            }`}
+                                            aria-checked={
+                                              interactionMode === mode ? "true" : "false"
+                                            }
+                                            bindtap={() => {
+                                              if (interactionMode !== mode) onInteractionModeTap();
+                                              setOpenComposerMenu(null);
+                                            }}
+                                          >
+                                            <text className="composer-compact-controls-menu__label">
+                                              {mode === "default" ? "Chat" : "Plan"}
+                                            </text>
+                                          </view>
+                                        ))}
+                                      </view>
                                       <view className="composer-compact-controls-menu__separator" />
                                     </>
                                   ) : null}

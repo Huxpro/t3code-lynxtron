@@ -602,11 +602,21 @@ describe("desktop shell interaction contract", () => {
 
   it("renders compact Composer section headers through the proven text label style", () => {
     const composer = componentSource("Composer.tsx");
-    expect(composer).toContain(
-      '<text className="composer-compact-controls-menu__section-label">\n                                        Mode',
+    expect(composer).toMatch(
+      /<text className="composer-compact-controls-menu__section-label">\s+Mode/u,
     );
-    expect(composer).toContain(
-      '<text className="composer-compact-controls-menu__section-label">\n                                    Access',
+    expect(composer).toMatch(
+      /<text className="composer-compact-controls-menu__section-label">\s+Access/u,
+    );
+    expect(overrides).toContain(
+      ".composer-compact-controls-menu__section-label {\n  flex-shrink: 0;\n  height: 26px;",
+    );
+    expect(overrides).toContain("line-height: 16px;\n  box-sizing: border-box;");
+    expect(overrides).toContain(
+      ".composer-compact-controls-menu__separator {\n  display: flex;\n  flex-shrink: 0;\n  height: 9px;",
+    );
+    expect(overrides).toContain(
+      ".composer-compact-controls-menu__content {\n  display: flex;\n  flex-direction: column;\n  width: 100%;\n  padding: 8px 4px 4px;",
     );
   });
 

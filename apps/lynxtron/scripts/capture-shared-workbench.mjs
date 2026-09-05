@@ -2162,8 +2162,18 @@ function compactControlsEvidenceReady(state) {
     );
   });
   const containment = compactControlsContainment(state);
+  const webPanel = state?.web?.overlayMetrics?.anatomy?.panel?.rect;
+  const lynxPanel = state?.lynx?.overlayMetrics?.anatomy?.panel?.rect;
+  const panelGeometryMatches =
+    isShortCompactControlsState ||
+    (webPanel &&
+      lynxPanel &&
+      ["x", "y", "width", "height"].every((key) => Math.abs(webPanel[key] - lynxPanel[key]) <= 2));
   return (
-    clientsReady && containment.web?.contained === true && containment.lynx?.contained === true
+    clientsReady &&
+    panelGeometryMatches &&
+    containment.web?.contained === true &&
+    containment.lynx?.contained === true
   );
 }
 

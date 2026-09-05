@@ -330,6 +330,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "composer-compact-controls-inline-files-narrow"');
     assert.include(source, 'stateId === "composer-compact-controls-inline-files-short"');
     assert.include(source, "function compactControlsEvidenceReady(state)");
+    assert.include(source, "const panelGeometryMatches =");
+    assert.include(source, "Math.abs(webPanel[key] - lynxPanel[key]) <= 2");
     assert.include(source, "function compactControlsContainment(state)");
     assert.include(source, '"workspace-menu",');
     assert.include(source, '"compact-controls",');

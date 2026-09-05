@@ -2108,6 +2108,19 @@ function readLynxPane() {
                         content: readElementBox(
                           root?.querySelector(".composer-compact-controls-menu__content"),
                         ),
+                        contentChildren: [
+                          ...(root?.querySelector(".composer-compact-controls-menu__content")
+                            ?.children ?? []),
+                        ].map((child) => readElementBox(child)),
+                        wrappers: [
+                          ...(root?.querySelectorAll(
+                            ".composer-compact-controls-menu__content lynx-wrapper",
+                          ) ?? []),
+                        ].map((wrapper) => readElementBox(wrapper)),
+                        sections: [
+                          ...(root?.querySelectorAll(".composer-compact-controls-menu__section") ??
+                            []),
+                        ].map((section) => readElementBox(section)),
                         sectionLabel: readElementBox(
                           root?.querySelector(".composer-compact-controls-menu__section-label"),
                         ),
@@ -2116,6 +2129,17 @@ function readLynxPane() {
                         ),
                         firstRow: readElementBox(rows[0]),
                         lastRow: readElementBox(rows.at(-1)),
+                        rows: rows.map((row) => readElementBox(row)),
+                        sectionLabels: [
+                          ...(root?.querySelectorAll(
+                            ".composer-compact-controls-menu__section-label",
+                          ) ?? []),
+                        ].map((label) => readElementBox(label)),
+                        separators: [
+                          ...(root?.querySelectorAll(
+                            ".composer-compact-controls-menu__separator",
+                          ) ?? []),
+                        ].map((separator) => readElementBox(separator)),
                         dismiss: readElementBox(
                           root?.querySelector(".composer-compact-controls-dismiss"),
                         ),
@@ -3276,6 +3300,19 @@ function readWebPane() {
                         panel: readElementBox(overlayElement),
                         scroll: readElementBox(overlayElement?.firstElementChild),
                         content: readElementBox(overlayElement?.firstElementChild),
+                        contentChildren: [
+                          ...(overlayElement?.firstElementChild?.children ?? []),
+                        ].map((child) => readElementBox(child)),
+                        wrappers: [],
+                        sections: [],
+                        rows: rows.map((row) => readElementBox(row)),
+                        sectionLabels: [
+                          ...(overlayElement?.querySelectorAll('[data-slot="menu-label"]') ?? []),
+                        ].map((label) => readElementBox(label)),
+                        separators: [
+                          ...(overlayElement?.querySelectorAll('[data-slot="menu-separator"]') ??
+                            []),
+                        ].map((separator) => readElementBox(separator)),
                         sectionLabel: readElementBox(
                           overlayElement?.querySelector('[data-slot="menu-label"]'),
                         ),
