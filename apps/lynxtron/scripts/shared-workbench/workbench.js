@@ -1591,6 +1591,16 @@ function readFileEditorMetrics(root) {
   const projectedLineNumbers = [
     ...(lynxSurface?.querySelectorAll(".file-editor-line__number") ?? []),
   ];
+  const webFirstLineContent =
+    composedElements.find(
+      (element) =>
+        contentEditable?.contains(element) &&
+        element.matches?.('[data-line="1"][data-line-index="0"]'),
+    ) ?? null;
+  const webFirstLineNumber =
+    composedElements.find((element) =>
+      element.matches?.('[data-column-number="1"][data-line-index="0"]'),
+    ) ?? null;
   const editorValue =
     typeof editor?.value === "string"
       ? editor.value
@@ -1634,8 +1644,8 @@ function readFileEditorMetrics(root) {
     null;
   const editorBox = readElementBox(editor);
   const editorInnerBox = readElementBox(editorInner);
-  const firstLineNumberBox = readElementBox(projectedLineNumbers[0]);
-  const firstLineContentBox = readElementBox(projectedLines[0]);
+  const firstLineNumberBox = readElementBox(projectedLineNumbers[0] ?? webFirstLineNumber);
+  const firstLineContentBox = readElementBox(projectedLines[0] ?? webFirstLineContent);
   const gutterWidth =
     firstLineNumberBox?.rect?.width ??
     (editorBox?.rect && editorInnerBox?.rect ? editorInnerBox.rect.x - editorBox.rect.x : null);

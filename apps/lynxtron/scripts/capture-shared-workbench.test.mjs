@@ -630,6 +630,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'root?.querySelector(".file-preview-virtualizer")');
     assert.include(workbench, 'lynxSurface?.querySelector(".file-panel__explorer")');
     assert.include(workbench, 'lynxSurface?.querySelector(".file-editor-preview")');
+    assert.include(workbench, 'element.matches?.(\'[data-line="1"][data-line-index="0"]\')');
+    assert.include(workbench, "contentEditable?.contains(element)");
+    assert.include(
+      workbench,
+      'element.matches?.(\'[data-column-number="1"][data-line-index="0"]\')',
+    );
     assert.include(workbench, "root?.querySelector('[aria-label=\"Back to workspace files\"]')");
     assert.include(workbench, "rect.width <= 0");
     assert.include(workbench, "editorValueLength:");
