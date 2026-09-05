@@ -24857,6 +24857,57 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-error-current-refresh",
+      "observedAt": "2026-09-05T06:01:00-04:00",
+      "commit": "59a28a7e6",
+      "codeCommit": "b7579c69ca4d61ad05ed168e543da56407ffba95",
+      "codeState": "commit",
+      "label": "Source Control error current-head refresh",
+      "narrative": "A fresh current-head dark Source Control error capture confirms that the empty surface, media, header, description, and 28px Scan control remain aligned under one shared injected discovery failure. Full-frame SSIM is 0.916096 and the fixed 896 by 352 error section has MAE 2.425320. The remaining title-width and focused-core pixel differences are DM Sans and icon rasterization, so no product CSS change is claimed.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This refresh changes only evidence confidence. The strict pair shares one snapshot, injected error, route, theme, viewport, exact visible copy, and zero renderer errors."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-source-control-error-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "adf4feb2ca616aa9fcbd80d4af4c575eb584b5e9d54adf73f618350f5acb6784"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-source-control-error-content",
+              "source": "Title, typed discovery error, Scan label, section titles, and navigation labels match exactly"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4.28125, 0, 8.5625, 0, 0, 0, 0, 0,
+                -0.15625, 0, 0.328125, 0
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "current-source-control-error-geometry",
+              "source": "Empty surface, media, header, and description match exactly; centered title and Scan widths retain only glyph-shaping deltas"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-source-control-error-runtime",
+              "source": "Strict paired capture passes with one injected server fault, matching route and state identity, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

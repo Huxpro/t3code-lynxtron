@@ -418,3 +418,4 @@ settings-source-control-summary-typography-current,2026-09-05T03:53:00-04:00,5ea
 file-editor-save-error-rendering-regression-repair,2026-09-05T04:24:00-04:00,869e91e16,commit,File editor save-error rendering regression repair,0.177733,0.177733,0.036159,0.146886,0.853114,0.814157
 file-editor-breadcrumb-overflow-current,2026-09-05T04:53:00-04:00,a858d4f31,commit,File editor breadcrumb overflow parity,0.177341,0.177341,0.03567,0.146912,0.853088,0.814549
 provider-dialog-dark-material-current,2026-09-05T05:12:00-04:00,da8c81bd3,commit,Provider dialog dark material parity,0.177294,0.177294,0.035615,0.146912,0.853088,0.814596
+settings-source-control-error-current-refresh,2026-09-05T06:01:00-04:00,59a28a7e6,commit,Source Control error current-head refresh,0.177294,0.177294,0.035614,0.146912,0.853088,0.814596
