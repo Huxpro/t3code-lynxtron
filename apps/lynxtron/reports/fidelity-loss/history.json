@@ -37671,13 +37671,58 @@
       "toPoint": "provider-dialog-dark-material-current"
     },
     {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 61,
+      "commit": "8e3e875925ed6dc57b6309ed44d1b8dbd880ddfc",
+      "committedAt": "2026-09-05T05:13:25-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "test(lynxtron): record dark provider wizard material",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "file-editor-breadcrumb-overflow-current",
+      "toPoint": "provider-dialog-dark-material-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 28361,
+      "commit": "162fd692698318684359410a2a15774edfff48c8",
+      "committedAt": "2026-09-05T05:20:25-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record dark provider material parity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "file-editor-breadcrumb-overflow-current",
+      "toPoint": "provider-dialog-dark-material-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 3,
+      "commit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
+      "committedAt": "2026-09-05T05:26:37-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align provider card content",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "file-editor-breadcrumb-overflow-current",
+      "toPoint": "provider-dialog-dark-material-current"
+    },
+    {
       "allocation": "measured-product-change",
       "changedLines": 0,
-      "commit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
+      "commit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
       "committedAt": "2026-09-05T05:12:00-04:00",
       "confidence": 0.99,
-      "delta": -0.000038,
-      "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product change only restores dark material.",
+      "delta": -0.000044,
+      "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product changes restore dark material and align all nine label origins.",
       "subject": "Provider dialog dark material parity",
       "surfaces": [
         "settings"
@@ -65067,14 +65112,47 @@
       "subject": "fix(lynxtron): align dark provider wizard material"
     },
     {
+      "allocation": "unmeasured-product-commit",
+      "commit": "8e3e875925ed6dc57b6309ed44d1b8dbd880ddfc",
+      "committedAt": "2026-09-05T05:13:25-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.177341,
+      "smoothedLoss": 0.177441,
+      "subject": "test(lynxtron): record dark provider wizard material"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "162fd692698318684359410a2a15774edfff48c8",
+      "committedAt": "2026-09-05T05:20:25-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.177341,
+      "smoothedLoss": 0.177419,
+      "subject": "docs(lynxtron): record dark provider material parity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
+      "committedAt": "2026-09-05T05:26:37-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.177341,
+      "smoothedLoss": 0.177402,
+      "subject": "fix(lynxtron): align provider card content"
+    },
+    {
       "allocation": "measured-product-change",
-      "commit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
+      "commit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
       "committedAt": "2026-09-05T05:12:00-04:00",
       "confidence": 0.99,
-      "delta": -0.000038,
+      "delta": -0.000044,
       "measuredCheckpoint": "provider-dialog-dark-material-current",
-      "rawLoss": 0.177303,
-      "smoothedLoss": 0.177433,
+      "rawLoss": 0.177297,
+      "smoothedLoss": 0.177379,
       "subject": "Provider dialog dark material parity"
     }
   ],
@@ -487087,27 +487165,27 @@
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
-        "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product change only restores dark material."
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product changes restore dark material and align all nine label origins."
       },
-      "commit": "8e3e87592",
-      "codeCommit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
+      "commit": "da8c81bd3",
+      "codeCommit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
       "codeState": "commit",
       "id": "provider-dialog-dark-material-current",
       "label": "Provider dialog dark material parity",
-      "narrative": "The dark Add Provider Driver stage had exact dialog, step, and card geometry but omitted Web's subtle rings and retained a 12px step-rail radius. Restoring the 14px rail, rail and active-step rings, active and inactive number rings, ordinary card rings, and selected 2px primary ring raises full-frame SSIM from 0.932600 to 0.944155, dialog SSIM from 0.845966 to 0.888192, rail SSIM from 0.899475 to 0.949086, and driver-grid SSIM from 0.801036 to 0.847194.",
+      "narrative": "The dark Add Provider Driver stage had exact dialog, step, and card geometry but omitted Web's subtle rings, retained a 12px step-rail radius, and placed every driver label one pixel left because its bordered card used a 10px gap. Restoring the rail, step, number, and card rings plus a border-aware 11px card gap raises full-frame SSIM from 0.932600 to 0.946674, dialog SSIM from 0.845966 to 0.896526, rail SSIM from 0.899475 to 0.949086, and driver-grid SSIM from 0.801036 to 0.865237.",
       "observedAt": "2026-09-05T05:12:00-04:00",
       "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-dark-material.json",
           "classification": "tracked-current",
-          "sha256": "c8e52e3d87988a8ab97ae58cd3cd554429aad9702fac3249e705e3d930368e61"
+          "sha256": "462930cd31f5e78c2f68aa49ea1a8ddd0f2d87e4e3184920f1a7faba46f07692"
         }
       ],
       "confidence": 0.853088,
       "evidenceDebt": 0.146912,
-      "loss": 0.177303,
-      "observedResidual": 0.035625,
+      "loss": 0.177297,
+      "observedResidual": 0.035618,
       "byDimension": {
         "content": {
           "confidence": 0.987749,
@@ -487130,8 +487208,8 @@
         "material": {
           "confidence": 0.640372,
           "evidenceDebt": 0.359628,
-          "loss": 0.45315,
-          "observedResidual": 0.146042
+          "loss": 0.453107,
+          "observedResidual": 0.145976
         },
         "interaction": {
           "confidence": 0.833469,
@@ -487174,8 +487252,8 @@
         "settings": {
           "confidence": 0.807595,
           "evidenceDebt": 0.192405,
-          "loss": 0.217947,
-          "observedResidual": 0.031626
+          "loss": 0.217912,
+          "observedResidual": 0.031584
         },
         "review": {
           "confidence": 0.860134,
@@ -487691,8 +487769,8 @@
           "group": "settings",
           "id": "settings-providers-add-dialog",
           "label": "Settings · Add Provider Wizard",
-          "loss": 0.127374,
-          "observedResidual": 0.091809,
+          "loss": 0.126912,
+          "observedResidual": 0.091328,
           "weight": 4
         },
         {
@@ -488086,8 +488164,8 @@
           "weight": 2
         }
       ],
-      "bestLoss": 0.177303,
-      "improvementFromBaseline": 0.814587
+      "bestLoss": 0.177297,
+      "improvementFromBaseline": 0.814593
     }
   ],
   "provenance": {

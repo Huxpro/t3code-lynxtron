@@ -24813,21 +24813,21 @@
     {
       "id": "provider-dialog-dark-material-current",
       "observedAt": "2026-09-05T05:12:00-04:00",
-      "commit": "8e3e87592",
-      "codeCommit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
+      "commit": "da8c81bd3",
+      "codeCommit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
       "codeState": "commit",
       "label": "Provider dialog dark material parity",
-      "narrative": "The dark Add Provider Driver stage had exact dialog, step, and card geometry but omitted Web's subtle rings and retained a 12px step-rail radius. Restoring the 14px rail, rail and active-step rings, active and inactive number rings, ordinary card rings, and selected 2px primary ring raises full-frame SSIM from 0.932600 to 0.944155, dialog SSIM from 0.845966 to 0.888192, rail SSIM from 0.899475 to 0.949086, and driver-grid SSIM from 0.801036 to 0.847194.",
+      "narrative": "The dark Add Provider Driver stage had exact dialog, step, and card geometry but omitted Web's subtle rings, retained a 12px step-rail radius, and placed every driver label one pixel left because its bordered card used a 10px gap. Restoring the rail, step, number, and card rings plus a border-aware 11px card gap raises full-frame SSIM from 0.932600 to 0.946674, dialog SSIM from 0.845966 to 0.896526, rail SSIM from 0.899475 to 0.949086, and driver-grid SSIM from 0.801036 to 0.865237.",
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
-        "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product change only restores dark material."
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product changes restore dark material and align all nine label origins."
       },
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-dark-material.json",
           "classification": "tracked-current",
-          "sha256": "c8e52e3d87988a8ab97ae58cd3cd554429aad9702fac3249e705e3d930368e61"
+          "sha256": "462930cd31f5e78c2f68aa49ea1a8ddd0f2d87e4e3184920f1a7faba46f07692"
         }
       ],
       "updates": [
@@ -24835,11 +24835,18 @@
           "states": ["settings-providers-add-dialog"],
           "clients": ["lynx"],
           "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 259,
+              "confidence": 0.99,
+              "method": "provider-dialog-driver-label-origins",
+              "source": "All nine driver label x origins match Web after accounting for the Lynx card border"
+            },
             "material": {
-              "residual": 0.111808,
+              "residual": 0.103474,
               "confidence": 0.99,
               "method": "provider-dialog-dark-ssim",
-              "source": "1 - exact dialog SSIM 0.888192; MAE 5.257477 and 6.3110 percent significant pixels after dark ring and radius alignment"
+              "source": "1 - exact dialog SSIM 0.896526; MAE 4.812361 and 6.0428 percent significant pixels after dark ring, radius, and card-content alignment"
             },
             "runtime": {
               "residual": 0,

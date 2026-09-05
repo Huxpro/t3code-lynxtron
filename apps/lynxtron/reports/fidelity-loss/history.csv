@@ -417,4 +417,4 @@ settings-keybindings-header-height-current,2026-09-05T02:26:00-04:00,d60e1f93f,c
 settings-source-control-summary-typography-current,2026-09-05T03:53:00-04:00,5ea336d44,commit,Source Control summary typography parity,0.177912,0.177912,0.036292,0.146953,0.853047,0.813978
 file-editor-save-error-rendering-regression-repair,2026-09-05T04:24:00-04:00,869e91e16,commit,File editor save-error rendering regression repair,0.177733,0.177733,0.036159,0.146886,0.853114,0.814157
 file-editor-breadcrumb-overflow-current,2026-09-05T04:53:00-04:00,a858d4f31,commit,File editor breadcrumb overflow parity,0.177341,0.177341,0.03567,0.146912,0.853088,0.814549
-provider-dialog-dark-material-current,2026-09-05T05:12:00-04:00,8e3e87592,commit,Provider dialog dark material parity,0.177303,0.177303,0.035625,0.146912,0.853088,0.814587
+provider-dialog-dark-material-current,2026-09-05T05:12:00-04:00,da8c81bd3,commit,Provider dialog dark material parity,0.177297,0.177297,0.035618,0.146912,0.853088,0.814593
