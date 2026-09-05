@@ -405,3 +405,4 @@ settings-appearance-copy-gap-current,2026-09-04T18:27:30-04:00,9c154d534,commit,
 settings-providers-card-action-centering-current,2026-09-04T19:21:30-04:00,16f7d5766,commit,Settings Providers card action centering,0.178217,0.178216,0.036649,0.146953,0.853047,0.813673
 provider-status-banner-flow-current,2026-09-04T20:15:30-04:00,2ba0bd1d8,commit,Provider status banner flow and contrast,0.178217,0.178216,0.036649,0.146953,0.853047,0.813673
 model-picker-provider-rail-selection-current,2026-09-04T21:30:30-04:00,c71c5811f,commit,Model Picker provider rail selection parity,0.178162,0.178162,0.036585,0.146953,0.853047,0.813728
+file-picker-description-color-current,2026-09-04T21:47:00-04:00,4382a1145,commit,File Picker description color parity,0.178155,0.178155,0.036577,0.146953,0.853047,0.813735

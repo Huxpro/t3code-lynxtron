@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T21:47:00-04:00",
+  "captureCommit": "4382a1145",
+  "productCommit": "4382a1145",
+  "stateId": "file-picker-default",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "44ba509333e50bb2e16ba26d063de8213c43c08d0ae843d8e1d18d15fc1e7c1c",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "2f0ec008c3b38cc92ab6862d0636ad344bd832487f3c974a4c869df4abb4f512",
+    "webImageSha256": "de5b25d4a9943af5e6c13f14b8dfac157419eeb296869e611db93559b026e650",
+    "lynxImageSha256": "269c22c2df98787d4049988cca9aac1a54d1be0eb4c78c51d580dd058de944f9",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "rowCount": 65,
+    "rowOrderMatch": true,
+    "panel": [352, 82, 576, 420],
+    "descriptionColorBefore": "inherited foreground",
+    "descriptionColorAfter": "rgba(129, 129, 129, 0.7)"
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the exact 576x420 File Picker panel",
+    "baseline": { "ssim": 0.91319, "mae": 4.98734, "significantShare": 0.046138 },
+    "current": { "ssim": 0.925973, "mae": 3.627849, "significantShare": 0.04112 }
+  },
+  "boundary": "The existing description geometry remains exact. The fix restores the shared text-muted-foreground/70 color only for detailed File Picker rows; titles, icons, row ordering, interaction, and Native evidence remain unchanged. Screenshots remain temporary because the tracked screenshot budget is full."
+}

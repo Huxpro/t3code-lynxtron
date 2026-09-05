@@ -24201,6 +24201,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-description-color-current",
+      "observedAt": "2026-09-04T21:47:00-04:00",
+      "commit": "4382a1145",
+      "codeCommit": "4382a1145",
+      "codeState": "commit",
+      "label": "File Picker description color parity",
+      "narrative": "The prior File Picker typography fix aligned all 65 description boxes, but Lynx still inherited foreground white because the shared text-muted-foreground/70 utility did not compile into the native stylesheet. A scoped detailed-row color restores the Web authority's 70% muted foreground without changing layout or content. The exact 576x420 panel improves from 0.913190 to 0.925973 SSIM, MAE from 4.987340 to 3.627849, and significant pixels from 4.6138% to 4.1120%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, selected thread/model, 65 ordered file rows, route, theme, viewport, exact panel and row geometry, and zero renderer errors. The product change only restores the scoped description color."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/file-picker-description-color.json",
+          "classification": "tracked-current",
+          "sha256": "c35424a36908260da0603e10f0af1c475239a2c9f69c9b17835ced8bbea3bf23"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-current-content",
+              "source": "Both renderers expose the same 65 ordered file rows and detailed paths"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "file-picker-current-row-geometry",
+              "source": "Panel and sampled row, icon, copy, title, and description anchors remain exact"
+            },
+            "material": {
+              "residual": 0.074027,
+              "confidence": 0.99,
+              "method": "file-picker-panel-ssim",
+              "source": "1 - exact panel SSIM 0.925973; MAE 3.627849 and 4.1120% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-current-shared-runtime",
+              "source": "Same snapshot, selected thread/model, 65 unselected rows, exact panel geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
