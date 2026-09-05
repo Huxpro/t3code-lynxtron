@@ -48,6 +48,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "composer-compact-controls-light" ||');
   });
 
+  it("records right-panel add-menu icon and label leaves", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, "right-panel__add-item-icon, image, img, svg");
+    assert.include(workbench, "labelBox: readElementBox");
+  });
+
   it("fails fast for modeled states that require Native-only verification", () => {
     assert.include(source, "const nativeOnlyStateIds = new Set([");
     assert.include(source, '"settings-archive-mutation"');

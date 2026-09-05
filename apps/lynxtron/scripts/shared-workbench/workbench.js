@@ -2054,6 +2054,12 @@ function readLynxPane() {
                                 ?.textContent?.trim() ?? "",
                             disabled: row.classList.contains("right-panel__add-item--disabled"),
                             rect: readElementBox(row),
+                            icon: readElementBox(
+                              row.querySelector(".right-panel__add-item-icon, image, img, svg"),
+                            ),
+                            labelBox: readElementBox(
+                              row.querySelector(".right-panel__add-item-label, text, x-text"),
+                            ),
                           }),
                         ),
                       }
@@ -3184,6 +3190,12 @@ function readWebPane() {
                             row.getAttribute("aria-disabled") === "true" ||
                             row.querySelector("[data-disabled], [aria-disabled='true']") !== null,
                           rect: readElementBox(row),
+                          icon: readElementBox(row.querySelector("image, img, svg")),
+                          labelBox: readElementBox(
+                            [...row.querySelectorAll("span, text, x-text")].find(
+                              (leaf) => readComposedText(leaf) === row.textContent?.trim(),
+                            ),
+                          ),
                         })),
                       }
                     : overlay === "diff-scope-menu"
