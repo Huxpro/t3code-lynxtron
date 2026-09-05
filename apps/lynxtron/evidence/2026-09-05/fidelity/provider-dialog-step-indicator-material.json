@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T01:20:00-04:00",
+  "captureCommit": "5bed001666b84a19c3577cf33c4941ccc1d17d8d",
+  "productCommit": "5bed001666b84a19c3577cf33c4941ccc1d17d8d",
+  "stateId": "settings-providers-add-dialog-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "398407a5d7ccb9654344c920a764a3a7f49c4bd08805b2301838648f65cf9f6f",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "32461982781409586501504a520f151461c9733f8c8988bec53c434c055ee7ad",
+    "webImageSha256": "07cc6cb8cd43e47e57b299548279e444850b6f2a2940711f83114b4f2426d574",
+    "lynxImageSha256": "bad586ab136e877774cb70ed95cde54e198a356c28d0541faddef4cf05fb2abf",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "dialogMatch": true,
+    "stage": "complete",
+    "inputChannel": "dual-cdp-pointer",
+    "rendererErrors": 0
+  },
+  "indicatorMaterial": {
+    "numberRectsMatch": true,
+    "activeRing": "1px primary at 30 percent alpha",
+    "inactiveRing": "1px black at 10 percent alpha"
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over fixed same-viewport regions",
+    "baseline": {
+      "fullFrame": { "ssim": 0.925562, "mae": 2.216504, "significantShare": 0.031833 },
+      "dialog": { "ssim": 0.821092, "mae": 5.935954, "significantShare": 0.077951 },
+      "stepRail": { "ssim": 0.918137, "mae": 2.481968, "significantShare": 0.045325 },
+      "activeStep": { "ssim": 0.888965, "mae": 3.890142, "significantShare": 0.065196 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.92606, "mae": 2.212643, "significantShare": 0.031692 },
+      "dialog": { "ssim": 0.822885, "mae": 5.922874, "significantShare": 0.077473 },
+      "stepRail": { "ssim": 0.946155, "mae": 2.306833, "significantShare": 0.03893 },
+      "activeStep": { "ssim": 0.927774, "mae": 3.583279, "significantShare": 0.053105 },
+      "inactiveStep": { "ssim": 0.922777, "mae": 2.781427, "significantShare": 0.051307 }
+    }
+  },
+  "boundary": "The light-only step-number circles now reproduce the Web authority's active primary 30 percent and inactive black 10 percent one-pixel rings without changing their exact 20 by 20 geometry. The complete wizard lifecycle and zero-error capture remain intact. Remaining dialog differences are primarily backdrop blur, provider-brand rasterization, and variable-font shaping; Native acceptance remains separate. Screenshots remain temporary because the tracked screenshot budget is full."
+}
