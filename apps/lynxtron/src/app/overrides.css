@@ -10650,7 +10650,7 @@
   background-color: rgba(var(--foreground-rgb), 0.07);
 }
 .model-picker-rail-item--active {
-  background-color: rgba(var(--foreground-rgb), 0.08);
+  background-color: transparent;
 }
 .model-picker-rail-item--disabled {
   opacity: 0.5;

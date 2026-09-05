@@ -222,6 +222,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".theme-dark .model-picker-panel {\n  background-color: var(--popover);",
     );
+    expect(overrides).toContain(
+      ".model-picker-rail-item--active {\n  background-color: transparent;",
+    );
     const panelStart = overrides.lastIndexOf("\n.model-picker-panel {");
     const panelBlock = overrides.slice(panelStart, overrides.indexOf("}", panelStart));
     expect(panelBlock).toContain("z-index: 51;");
