@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T01:07:00-04:00",
+  "captureCommit": "02776f1ce78034868758db8b79549525e2f66ccf",
+  "productCommit": "02776f1ce78034868758db8b79549525e2f66ccf",
+  "stateId": "settings-providers-add-dialog-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "f263d009cd88a0ca9d1db20fd74d89854a92f9874f1e2ab3b32fb2033ec0ee51",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "32062607b42d6ba0813bc579522bd364aef9f785aca7688a9c4250acc3f8e2cd",
+    "webImageSha256": "13c840c42fa3e7bd718376945706ec53886a206ee94757675640c9d3169ef204",
+    "lynxImageSha256": "90eb71615d3e1adaacf36404e34064764702a77830746ee79fbd8f92b74175f2",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "dialogMatch": true,
+    "stage": "complete",
+    "inputChannel": "dual-cdp-pointer",
+    "rendererErrors": 0
+  },
+  "material": {
+    "railRect": [377, 242, 526, 44],
+    "railBackground": "background",
+    "railRadius": "14px",
+    "railRing": "1px black at 5 percent alpha",
+    "activeStepRect": [381, 246, 170, 36],
+    "activeStepBackground": "card",
+    "activeStepRing": "1px black at 5 percent alpha",
+    "activeStepShadow": "0 1px 2px black at 5 percent alpha"
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over fixed same-viewport regions",
+    "baseline": {
+      "fullFrame": { "ssim": 0.922893, "mae": 2.261906, "significantShare": 0.031969 },
+      "dialog": { "ssim": 0.811916, "mae": 6.089731, "significantShare": 0.078412 },
+      "stepRail": { "ssim": 0.895495, "mae": 4.03206, "significantShare": 0.051504 },
+      "activeStep": { "ssim": 0.88443, "mae": 4.019063, "significantShare": 0.066176 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.925562, "mae": 2.216504, "significantShare": 0.031833 },
+      "dialog": { "ssim": 0.821092, "mae": 5.935954, "significantShare": 0.077951 },
+      "stepRail": { "ssim": 0.918137, "mae": 2.481968, "significantShare": 0.045325 },
+      "activeStep": { "ssim": 0.888965, "mae": 3.890142, "significantShare": 0.065196 }
+    }
+  },
+  "boundary": "The light-only step rail now uses the Web authority's 14px radius, background surface, one-pixel black ring, and active-step ring plus shadow. Exact rail and step geometry, complete wizard lifecycle, and zero-error capture remain intact. Backdrop blur and variable-font rasterization remain explicit Browser residuals; Native acceptance remains separate. Screenshots remain temporary because the tracked screenshot budget is full."
+}
