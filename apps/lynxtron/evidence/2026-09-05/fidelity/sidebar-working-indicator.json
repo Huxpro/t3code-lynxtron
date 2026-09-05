@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T18:54:06-04:00",
+  "stateId": "existing-thread-working",
+  "productCommit": "568af704e60d162013b5e219a7a61d01e5295107",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "0f76d89c33a38b64357858c229662b9cd98b344f1b8616d7970c9d92491562f3",
+    "webBundleSha256": "e485b395b0c7577c8de228e95ac6e6811d9621ad1e4fc274353a4e6720580724",
+    "lynxBundleSha256": "7d6772d6b148ac1299ed5f4cc94eb31da5c975085416b11badad041c08691dea",
+    "webImageSha256": "19de003b032c5f1bd7129caea62135656fc5b523b0f5e27872221c9334ef7daa",
+    "lynxImageSha256": "1ae9b0ea9d22e0c31387439403783e80c12f4dd57b1aa8308a3f95af5361ec24",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "sidebarWorkingGeometryMatch": true,
+    "rendererErrors": 0
+  },
+  "fix": "Replace the unrelated RefreshCw glyph in the Lynx Working status with the exact eight-path CircleDashed icon used by the Web authority. Refresh and woke-state semantics remain mapped to RefreshCw.",
+  "provenance": {
+    "package": "lucide-react@0.564.0",
+    "webComponent": "CircleDashedIcon",
+    "lynxIcon": "circle-dashed"
+  },
+  "boundary": "Working duration changes with wall-clock time, so this evidence does not claim a cross-capture full-frame SSIM delta. It closes the icon semantic and records a strict same-state post-commit capture. Screenshots remain temporary because the tracked budget is full."
+}
