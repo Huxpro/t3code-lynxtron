@@ -6094,6 +6094,8 @@
   min-height: 20px;
 }
 .source-control-item__summary {
+  color: rgba(var(--muted-foreground-rgb), 0.8);
+  font-size: 13px;
   line-height: 19px;
 }
 .source-control-item__badge {

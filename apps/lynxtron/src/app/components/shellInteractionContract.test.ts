@@ -914,7 +914,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".archived-threads-empty-row .settings-row__desc {\n  margin-top: 0;",
     );
-    expect(overrides).toContain(".source-control-item__summary {\n  line-height: 19px;");
+    expect(overrides).toContain(
+      ".source-control-item__summary {\n  color: rgba(var(--muted-foreground-rgb), 0.8);\n  font-size: 13px;\n  line-height: 19px;",
+    );
     expect(overrides).not.toContain(".source-control-item__summary {\n  margin-top: 4px;");
     expect(componentSource("OtherSettings.tsx")).toContain(
       'className="source-control-item__badge"',

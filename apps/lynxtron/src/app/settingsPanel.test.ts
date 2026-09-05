@@ -345,8 +345,9 @@ describe("Lynx Settings route projection", () => {
       /.source-control-item {[^]*padding-left: 16px;[^]*padding-right: 16px;/,
     );
     expect(overrides).toMatch(
-      /.source-control-item__summary {[^]*margin-top: 4px;[^]*line-height: 19px;/,
+      /.source-control-item__summary {[^}]*color: rgba\(var\(--muted-foreground-rgb\), 0\.8\);[^}]*font-size: 13px;[^}]*line-height: 19px;/,
     );
+    expect(overrides).not.toContain(".source-control-item__summary {\n  margin-top: 4px;");
     expect(settings).not.toContain("Scanning server integrations…");
     expect(settings).not.toContain("status={usesDedicatedModel");
     expect(settings).not.toContain('"Uses global model"');
