@@ -253,7 +253,6 @@ function renderTreeNode(
           itemPath={node.path}
           expanded={expanded}
           chevron={<text className="file-tree__chevron-glyph">▸</text>}
-          folderIcon={<Icon name="folder" size={14} color="#71717a" />}
           onToggle={() => onToggleDirectory(node.path)}
           onContextMenu={() => onContextMenu(node.path)}
         />

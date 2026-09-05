@@ -766,7 +766,7 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("bindblur={() => setSearchFocused(false)}");
     expect(files).toContain("getProjectFilePickerMatches");
     expect(files).toContain('className="files-panel__browser"');
-    expect(files).toContain('folderIcon={<Icon name="folder" size={14}');
+    expect(files).not.toContain('folderIcon={<Icon name="folder" size={14}');
     expect(files).toContain("fileIcon={<ProjectFileIcon path={node.path} />}");
     expect(files).not.toContain("showLeadingSpacer=");
     expect(componentSource("ProjectFileIcon.tsx")).toContain("projectFileIconPresentation(path)");
