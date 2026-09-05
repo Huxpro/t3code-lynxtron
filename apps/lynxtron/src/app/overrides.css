@@ -9283,6 +9283,10 @@
   font-size: 12px;
   line-height: 16px;
 }
+.files-panel .file-tree-row--file .project-file-icon {
+  margin-right: -4px;
+  margin-left: 4px;
+}
 .files-panel .file-tree-row--selected .file-tree-row__name {
   color: var(--foreground);
 }
