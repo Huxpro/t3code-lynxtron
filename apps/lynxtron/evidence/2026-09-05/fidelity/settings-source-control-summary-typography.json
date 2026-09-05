@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T03:53:00-04:00",
+  "captureCommit": "d5af1c8c163c8225f6312190f4455928b49a70db",
+  "productCommit": "cbbe09296b76ea420b85b6b2aa6880620642eeb5",
+  "stateId": "settings-source-control",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-source-control",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "04aa0e9754e670eff1e6ae442fb693cd11f2d0e36091b2c6e6d483c0dda70c56",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "f2df8df77dd67a0edd494cdbc84064da0c0a6474665a04a37dcf2efd35129cd1",
+    "webImageSha256": "7d98e024fc5bbe3fb9e91c91ff20ce90484cece15b043d3359e52a1cd7a52fef",
+    "lynxImageSha256": "087af1f8e1c9ef0816a30e84a0a117b895242bb18d18b7a3491eaa5fa4e6e498",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "settingsContentMatch": true,
+    "rendererErrors": 0
+  },
+  "typography": {
+    "web": {
+      "fontSize": "13px",
+      "lineHeight": "18.85px",
+      "color": "oklab(0.603664 0.00000521541 0.00000223517 / 0.8)"
+    },
+    "lynx": {
+      "fontSize": "13px",
+      "lineHeight": "19px",
+      "color": "rgba(129, 129, 129, 0.8)"
+    },
+    "maximumLayoutHeightDelta": 0.3125,
+    "remainingCopyWidthDelta": 20
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over fixed same-viewport regions",
+    "baseline": {
+      "fullFrame": { "ssim": 0.88684, "mae": 5.495788, "significantShare": 0.046509 },
+      "settingsMain": { "ssim": 0.875103, "mae": 6.434306, "significantShare": 0.055677 },
+      "sourceRows": { "ssim": 0.81282, "mae": 9.450373, "significantShare": 0.081848 },
+      "longRows": { "ssim": 0.707187, "mae": 13.983403, "significantShare": 0.124878 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.911272, "mae": 3.347155, "significantShare": 0.037067 },
+      "settingsMain": { "ssim": 0.907748, "mae": 3.566665, "significantShare": 0.043074 },
+      "sourceRows": { "ssim": 0.863747, "mae": 5.00343, "significantShare": 0.062305 },
+      "longRows": { "ssim": 0.797468, "mae": 5.962139, "significantShare": 0.090024 }
+    }
+  },
+  "boundary": "The Lynx summary now restores the shared 13px muted-foreground-at-80-percent contract while preserving the already-aligned row geometry. Web and Lynx still allocate copy width differently by up to 20px because their trailing controls have different intrinsic widths; provider icon rasterization, control material, and font shaping remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}
