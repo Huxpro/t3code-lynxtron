@@ -7767,6 +7767,10 @@
   background-color: var(--background);
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
+.theme-dark .provider-instance-dialog__steps {
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px rgba(var(--foreground-rgb), 0.05);
+}
 .provider-instance-dialog__step {
   display: flex;
   flex-direction: row;
@@ -7787,6 +7791,11 @@
     0 0 0 1px rgba(0, 0, 0, 0.05),
     0 1px 2px rgba(0, 0, 0, 0.05);
 }
+.theme-dark .provider-instance-dialog__step--active {
+  box-shadow:
+    0 0 0 1px rgba(var(--foreground-rgb), 0.05),
+    0 1px 2px rgba(var(--background-rgb), 0.12);
+}
 .provider-instance-dialog__step-number {
   display: flex;
   align-items: center;
@@ -7804,12 +7813,19 @@
 .theme-light .provider-instance-dialog__step-number {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
+.theme-dark .provider-instance-dialog__step-number {
+  background-color: rgba(var(--foreground-rgb), 0.05);
+  box-shadow: 0 0 0 1px rgba(var(--foreground-rgb), 0.1);
+}
 .provider-instance-dialog__step--active .provider-instance-dialog__step-number {
   color: var(--primary);
   background-color: rgba(var(--primary-rgb), 0.1);
   border-color: rgba(var(--primary-rgb), 0.3);
 }
 .theme-light .provider-instance-dialog__step--active .provider-instance-dialog__step-number {
+  box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.3);
+}
+.theme-dark .provider-instance-dialog__step--active .provider-instance-dialog__step-number {
   box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.3);
 }
 .provider-instance-dialog__step-number-label,
@@ -7928,6 +7944,7 @@
 .theme-dark .provider-instance-dialog__driver {
   border-color: rgba(var(--foreground-rgb), 0.06);
   background-color: rgba(var(--foreground-rgb), 0.03);
+  box-shadow: 0 0 0 1px rgba(var(--foreground-rgb), 0.05);
 }
 .theme-dark .provider-instance-dialog__driver--disabled {
   background-color: rgba(var(--foreground-rgb), 0.02);
@@ -7935,6 +7952,7 @@
 .theme-dark .provider-instance-dialog__driver--selected {
   border-color: var(--primary);
   background-color: rgba(var(--primary-rgb), 0.15);
+  box-shadow: 0 0 0 2px var(--primary);
 }
 .provider-instance-dialog__driver-check {
   position: absolute;

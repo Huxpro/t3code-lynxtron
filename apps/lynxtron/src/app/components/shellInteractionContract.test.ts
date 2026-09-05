@@ -1007,6 +1007,15 @@ describe("desktop shell interaction contract", () => {
       ".theme-light .provider-instance-dialog__driver--selected {\n  background-color: rgba(var(--primary-rgb), 0.08);\n  box-shadow: 0 0 0 2px var(--primary);",
     );
     expect(overrides).toContain(
+      ".theme-dark .provider-instance-dialog__steps {\n  border-radius: 14px;\n  box-shadow: 0 0 0 1px rgba(var(--foreground-rgb), 0.05);",
+    );
+    expect(overrides).toContain(
+      ".theme-dark .provider-instance-dialog__step-number {\n  background-color: rgba(var(--foreground-rgb), 0.05);\n  box-shadow: 0 0 0 1px rgba(var(--foreground-rgb), 0.1);",
+    );
+    expect(overrides).toContain(
+      ".theme-dark .provider-instance-dialog__driver--selected {\n  border-color: var(--primary);\n  background-color: rgba(var(--primary-rgb), 0.15);\n  box-shadow: 0 0 0 2px var(--primary);",
+    );
+    expect(overrides).toContain(
       ".theme-light .provider-instance-dialog__driver {\n  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);",
     );
     expect(overrides).toContain(
