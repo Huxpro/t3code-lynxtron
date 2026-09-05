@@ -992,6 +992,12 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".provider-instance-dialog__step-number {\n  display: flex;");
     expect(overrides).toContain("  box-sizing: border-box;");
     expect(overrides).toContain(
+      ".theme-light .provider-instance-dialog__steps {\n  border-radius: 14px;\n  background-color: var(--background);",
+    );
+    expect(overrides).toContain(
+      ".theme-light .provider-instance-dialog__step--active {\n  box-shadow:",
+    );
+    expect(overrides).toContain(
       ".theme-light .file-editor-line__number {\n  color: rgb(94, 94, 94);\n  font-size: 13px;",
     );
     expect(overrides).toContain(
