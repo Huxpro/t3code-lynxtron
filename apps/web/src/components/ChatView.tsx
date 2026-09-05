@@ -5888,10 +5888,18 @@ function ChatViewContent(props: ChatViewProps) {
       layoutControls={rightPanelOpen && !shouldUsePlanSidebarSheet ? panelLayoutControls : null}
       header={chatHeaderNode}
       banner={
-        <ThreadErrorBanner
-          error={threadError}
-          onDismiss={() => setThreadError(activeThread.id, null)}
-        />
+        <>
+          <ThreadErrorBanner
+            error={threadError}
+            onDismiss={() => setThreadError(activeThread.id, null)}
+          />
+          {!isDraftHeroState ? (
+            <ProviderStatusBanner
+              status={visibleProviderStatus}
+              onDismiss={() => setDismissedProviderStatusBannerKey(providerStatusBannerKey)}
+            />
+          ) : null}
+        </>
       }
       chatColumnHidden={rightPanelMaximized}
       afterChatColumn={terminalDrawersNode}
@@ -5906,13 +5914,14 @@ function ChatViewContent(props: ChatViewProps) {
         ) : null
       }
     >
-      {/* Provider status overlays the timeline without changing its content height. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-        <ProviderStatusBanner
-          status={visibleProviderStatus}
-          onDismiss={() => setDismissedProviderStatusBannerKey(providerStatusBannerKey)}
-        />
-      </div>
+      {isDraftHeroState ? (
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
+          <ProviderStatusBanner
+            status={visibleProviderStatus}
+            onDismiss={() => setDismissedProviderStatusBannerKey(providerStatusBannerKey)}
+          />
+        </div>
+      ) : null}
       {/* Messages Wrapper */}
       <div className="relative flex min-h-0 flex-1 flex-col">
         {/* Messages — LegendList handles virtualization and scrolling internally */}

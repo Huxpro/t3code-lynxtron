@@ -441,6 +441,10 @@ function providerStatusBannerMatches(state) {
   const web = state?.web?.providerStatusBannerMetrics;
   const lynx = state?.lynx?.providerStatusBannerMetrics;
   if (!web && !lynx) return true;
+  const webTimelineTop = state?.web?.timelineMetrics?.anatomy?.rowRoot?.rect?.y ?? null;
+  const lynxTimelineTop = state?.lynx?.timelineMetrics?.anatomy?.rowRoot?.rect?.y ?? null;
+  const timelineDoesNotOverlap = (banner, timelineTop) =>
+    timelineTop === null || timelineTop >= banner.alert.rect.y + banner.alert.rect.height;
   return (
     Boolean(web && lynx) &&
     web.text === lynx.text &&
@@ -448,6 +452,10 @@ function providerStatusBannerMatches(state) {
     lynx.actionLabels.length === 1 &&
     web.actionLabels[0]?.startsWith("Dismiss ") &&
     lynx.actionLabels[0]?.startsWith("Dismiss ") &&
+    web.title?.style?.color !== web.message?.style?.color &&
+    lynx.title?.style?.color !== lynx.message?.style?.color &&
+    timelineDoesNotOverlap(web, webTimelineTop) &&
+    timelineDoesNotOverlap(lynx, lynxTimelineTop) &&
     Math.abs(web.alert.rect.width - lynx.alert.rect.width) <= 24 &&
     Math.abs(web.alert.rect.height - lynx.alert.rect.height) <= 2 &&
     Math.abs(web.icon.rect.x - web.alert.rect.x - (lynx.icon.rect.x - lynx.alert.rect.x)) <= 2 &&

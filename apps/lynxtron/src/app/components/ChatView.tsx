@@ -605,23 +605,50 @@ export function ChatView({ threadId }: ChatViewProps) {
         />
       }
       banner={
-        visibleThreadError && !hero ? (
-          <ThreadErrorBannerSurface
-            description={visibleThreadError}
-            icon={<Icon name="circle-alert" size={16} color="#ef4444" />}
-            action={
-              <SmallIconButton
-                className="thread-error-dismiss"
-                label="Dismiss error"
-                icon={<Icon name="x" size={14} color="#ef4444" />}
-                onTap={dismissThreadError}
+        <>
+          {visibleThreadError && !hero ? (
+            <ThreadErrorBannerSurface
+              description={visibleThreadError}
+              icon={<Icon name="circle-alert" size={16} color="#ef4444" />}
+              action={
+                <SmallIconButton
+                  className="thread-error-dismiss"
+                  label="Dismiss error"
+                  icon={<Icon name="x" size={14} color="#ef4444" />}
+                  onTap={dismissThreadError}
+                />
+              }
+            />
+          ) : null}
+          {!hero && visibleProviderStatusNotice ? (
+            <view className="provider-status-banner-flow">
+              <ThreadErrorBannerSurface
+                title={visibleProviderStatusNotice.title}
+                description={visibleProviderStatusNotice.message}
+                icon={
+                  <Icon
+                    name="info"
+                    size={16}
+                    color={visibleProviderStatusNotice.tone === "warning" ? "#f59e0b" : "#ef4444"}
+                  />
+                }
+                action={
+                  <SmallIconButton
+                    className="provider-status-banner__dismiss"
+                    label={`Dismiss ${activeProviderStatus?.displayName ?? activeProviderStatus?.driver ?? "provider"} provider ${activeProviderStatus?.status ?? "error"}`}
+                    icon={<Icon name="x" size={14} color="#818181" />}
+                    onTap={() =>
+                      setDismissedProviderStatusNoticeKey(visibleProviderStatusNotice.key)
+                    }
+                  />
+                }
               />
-            }
-          />
-        ) : null
+            </view>
+          ) : null}
+        </>
       }
       bodyOverlay={
-        showEmptyTranscript || visibleProviderStatusNotice ? (
+        showEmptyTranscript || (hero && visibleProviderStatusNotice) ? (
           <>
             {showEmptyTranscript ? (
               <TranscriptEmptySurface
@@ -629,7 +656,7 @@ export function ChatView({ threadId }: ChatViewProps) {
                 title={EMPTY_TRANSCRIPT_PLACEHOLDER}
               />
             ) : null}
-            {visibleProviderStatusNotice ? (
+            {hero && visibleProviderStatusNotice ? (
               <view className="provider-status-banner-overlay">
                 <ThreadErrorBannerSurface
                   title={visibleProviderStatusNotice.title}
@@ -673,7 +700,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           messages={messages}
           activities={activities}
           sessionStatus={sessionStatus}
-          hasTopBanner={Boolean(visibleThreadError)}
+          hasTopBanner={Boolean(visibleThreadError || visibleProviderStatusNotice)}
           cwd={cwd}
           latestTurn={latestTurn}
           proposedPlans={proposedPlans}

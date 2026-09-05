@@ -104,6 +104,7 @@ function readElementBox(element) {
   ) {
     return null;
   }
+  const copy = alert.querySelector(".thread-error-copy") ?? alert.children[1];
   return {
     tagName: element.tagName.toLowerCase(),
     lynxComputedDisplay: element.getAttribute("lynx-computed-display"),
@@ -191,7 +192,9 @@ function readHeroMetrics(root) {
 }
 
 function readProviderStatusBannerMetrics(root) {
-  const overlay = root?.querySelector(".provider-status-banner-overlay");
+  const overlay = root?.querySelector(
+    ".provider-status-banner-flow, .provider-status-banner-overlay",
+  );
   const alert =
     overlay?.querySelector(".thread-error-alert") ??
     root?.querySelector(".thread-error-alert") ??
@@ -203,7 +206,9 @@ function readProviderStatusBannerMetrics(root) {
     overlay: readElementBox(overlay ?? alert.parentElement),
     alert: readElementBox(alert),
     icon: readElementBox(alert.querySelector(".thread-error-icon, svg")),
-    description: readElementBox(alert.querySelector(".thread-error-copy") ?? alert.children[1]),
+    description: readElementBox(copy),
+    title: readElementBox(alert.querySelector(".thread-error-title") ?? copy?.children[0]),
+    message: readElementBox(alert.querySelector(".thread-error-description") ?? copy?.children[1]),
     action: readElementBox(action),
     dismiss: readElementBox(dismiss),
     text: alert.textContent?.trim() ?? "",

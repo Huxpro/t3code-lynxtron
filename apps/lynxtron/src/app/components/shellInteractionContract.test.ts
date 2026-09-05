@@ -282,19 +282,30 @@ describe("desktop shell interaction contract", () => {
 
     expect(chatView).toContain("availableThreadModels({ models, providerEntries })");
     expect(chatView).toContain("projectProviderStatusNotice(activeProviderStatus)");
-    expect(chatView).toContain("showEmptyTranscript || visibleProviderStatusNotice ? (");
+    expect(chatView).toContain("showEmptyTranscript || (hero && visibleProviderStatusNotice) ? (");
+    expect(chatView).toContain('className="provider-status-banner-flow"');
     expect(chatView).toContain('className="provider-status-banner-overlay"');
     expect(chatView).toContain('name="info"');
     expect(chatView).toContain("title={visibleProviderStatusNotice.title}");
     expect(chatView).toContain("description={visibleProviderStatusNotice.message}");
     expect(chatView).not.toContain(") : visibleProviderStatusNotice ? (");
     expect(chatView).not.toContain("visibleProviderStatusNotice && !hero");
-    expect(chatView).toContain("hasTopBanner={Boolean(visibleThreadError)}");
+    expect(chatView).toContain(
+      "hasTopBanner={Boolean(visibleThreadError || visibleProviderStatusNotice)}",
+    );
     expect(chatView).toContain('className="provider-status-banner__dismiss"');
     expect(chatView).toContain('icon={<Icon name="x" size={14} color="#818181" />}');
     expect(chatView).not.toContain('label={providersRefreshPending ? "Refreshing…" : "Refresh"}');
+    expect(overrides).toContain(
+      ".provider-status-banner-flow {\n  display: flex;\n  flex-shrink: 0;\n  width: 100%;",
+    );
     expect(overrides).toContain(".chat-body-reference > .provider-status-banner-overlay {");
-    expect(overrides).toContain(".provider-status-banner__dismiss {");
+    expect(overrides).toContain(
+      ".provider-status-banner-overlay .provider-status-banner__dismiss {",
+    );
+    expect(overrides).toContain(
+      ".provider-status-banner-overlay .thread-error-description {\n  color: var(--muted-foreground);",
+    );
     expect(overrides).toContain("white-space: pre-wrap;");
     expect(chatView).toContain("resolveThreadLockedConnectionValue({");
     expect(chatView).toContain("hasActiveThread: activeThread !== undefined");
@@ -308,7 +319,9 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain('label="Dismiss error"');
     expect(chatView).toContain('className="thread-error-dismiss"');
     expect(chatView).toContain("onTap={dismissThreadError}");
-    expect(chatView).toContain("hasTopBanner={Boolean(visibleThreadError)}");
+    expect(chatView).toContain(
+      "hasTopBanner={Boolean(visibleThreadError || visibleProviderStatusNotice)}",
+    );
     expect(chatView).not.toContain("setSessionError");
   });
 

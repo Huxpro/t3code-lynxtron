@@ -34,6 +34,21 @@ describe("ChatRouteSurface", () => {
     expect(markup.indexOf("data-chat-content")).toBeLessThan(markup.indexOf("data-right-panel"));
   });
 
+  it("keeps banners in layout flow ahead of the body overlay and timeline", () => {
+    const markup = renderToStaticMarkup(
+      <ChatRouteSurface
+        header={<div data-header />}
+        banner={<div data-banner />}
+        bodyOverlay={<div data-body-overlay />}
+      >
+        <div data-timeline />
+      </ChatRouteSurface>,
+    );
+
+    expect(markup.indexOf("data-banner")).toBeLessThan(markup.indexOf("data-timeline"));
+    expect(markup.indexOf("data-timeline")).toBeLessThan(markup.indexOf("data-body-overlay"));
+  });
+
   it("keeps the chat column flexible by default", () => {
     const markup = renderToStaticMarkup(
       <ChatRouteSurface header={<div data-header />}>

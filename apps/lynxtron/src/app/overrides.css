@@ -3910,6 +3910,11 @@
   left: 0;
   pointer-events: none;
 }
+.provider-status-banner-flow {
+  display: flex;
+  flex-shrink: 0;
+  width: 100%;
+}
 .chat-body-reference > .provider-status-banner-overlay {
   position: absolute;
   top: 0;
@@ -3918,11 +3923,17 @@
   z-index: 20;
   pointer-events: none;
 }
+.provider-status-banner-flow .thread-error-banner,
 .provider-status-banner-overlay .thread-error-banner {
   pointer-events: auto;
 }
+.provider-status-banner-flow .thread-error-alert,
 .provider-status-banner-overlay .thread-error-alert {
   padding-right: 40px;
+}
+.provider-status-banner-flow .thread-error-description,
+.provider-status-banner-overlay .thread-error-description {
+  color: var(--muted-foreground);
 }
 /* ======= Transcript native list (surface: chat transcript; Lynx host leaf
    for the shared transcript projection; remove-when: transcript row chrome is
@@ -6595,6 +6606,7 @@
 .ui-button__authority-label--edge {
   left: 111px;
 }
+.provider-status-banner-flow .provider-status-banner__dismiss,
 .provider-status-banner-overlay .provider-status-banner__dismiss {
   position: absolute;
   top: 8px;

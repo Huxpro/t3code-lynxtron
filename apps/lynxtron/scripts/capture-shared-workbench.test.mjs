@@ -58,12 +58,17 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "function providerStatusBannerMatches(state)");
     assert.include(source, "web.actionLabels.length === 1");
     assert.include(source, "lynx.actionLabels.length === 1");
+    assert.include(source, "timelineDoesNotOverlap(web, webTimelineTop)");
+    assert.include(source, "web.title?.style?.color !== web.message?.style?.color");
     assert.include(source, "finalProviderStatusBannerReady");
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
       "utf8",
     );
     assert.include(workbench, "function readProviderStatusBannerMetrics(root)");
+    assert.include(workbench, 'const copy = alert.querySelector(".thread-error-copy")');
+    assert.include(workbench, "copy?.children[0]");
+    assert.include(workbench, "copy?.children[1]");
     assert.include(workbench, "providerStatusBannerMetrics: readProviderStatusBannerMetrics");
   });
 
