@@ -24618,6 +24618,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-header-height-current",
+      "observedAt": "2026-09-05T02:26:00-04:00",
+      "commit": "d60e1f93f",
+      "codeCommit": "4f139e3f7cd404de79497607bc27ce053f3ad315",
+      "codeState": "commit",
+      "label": "Keybindings table header alignment",
+      "narrative": "A current dark 1280 by 820 same-state capture showed the Lynx Keybindings header at 34px while Web used 33.5px, shifting every following 41px row by half a pixel. Matching the header height restores exact header and first-row y geometry. Header SSIM improves from 0.888220 to 0.924621 and MAE from 3.923306 to 3.341834; table and full-frame metrics also improve.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same isolated state, 45 ordered bindings, 18 conflict indicators, route, dark theme, viewport, and zero renderer errors. The change only adjusts the table header height."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-keybindings-header-height.json",
+          "classification": "tracked-current",
+          "sha256": "93c1973d861db9c91f4bc1a5b3ae3db6ab1e76e1318ae04cb0c6a6e8d95cec94"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 948,
+              "confidence": 0.99,
+              "method": "keybindings-header-and-row-geometry",
+              "source": "Header and first visible rows now share exact x, y, width, and height across Web and Lynx"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-keybindings-current-runtime",
+              "source": "Same isolated state, all 45 bindings and 18 conflicts, matching route, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
