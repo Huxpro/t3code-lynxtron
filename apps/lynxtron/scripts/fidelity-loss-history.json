@@ -24536,6 +24536,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-step-rail-material-current",
+      "observedAt": "2026-09-05T01:07:00-04:00",
+      "commit": "5fb7d1141",
+      "codeCommit": "02776f1ce78034868758db8b79549525e2f66ccf",
+      "codeState": "commit",
+      "label": "Provider dialog step-rail material parity",
+      "narrative": "The light Add Provider step rail had exact geometry after number-circle sizing, but Lynx still used a 12px muted shell with no ring while Web used a 14px background shell with a one-pixel ring; the active step also lacked Web's ring. Restoring those light-only materials improves rail SSIM from 0.895495 to 0.918137 and MAE from 4.032060 to 2.481968; dialog SSIM improves from 0.811916 to 0.821092.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, light theme, viewport, exact rail and step geometry, full wizard lifecycle, and zero renderer errors. The change only restores step-rail material."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-step-rail-material.json",
+          "classification": "tracked-current",
+          "sha256": "2f57898925ddda0af8011d7408645c48b546064be5c681f843cfb5d57e1d8405"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.178908,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-ssim",
+              "source": "1 - exact dialog SSIM 0.821092; MAE 5.935954 and 7.7951 percent significant pixels after step-rail material alignment"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-runtime",
+              "source": "Same snapshot and route, complete Driver to Identity to Config to save to delete to dismiss flow, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
