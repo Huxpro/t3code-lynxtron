@@ -1198,6 +1198,7 @@ describe("shared workbench lifecycle fault capture", () => {
     );
     assert.include(workbench, "descriptionBox: readElementBox(");
     assert.include(source, "sourceControlLoadingSettingsGeometryMatches");
+    assert.include(workbench, '"icon", "dot", "label", "badge", "detail", "button", "switch"');
     assert.include(source, "T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING");
     assert.include(workbench, "sourceControlEmptyTitles:");
     assert.include(workbench, "data-source-control-loading-row");

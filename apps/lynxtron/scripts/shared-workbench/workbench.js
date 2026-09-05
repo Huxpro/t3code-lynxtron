@@ -2766,6 +2766,22 @@ function readLynxPane() {
                 ].map((item) => ({
                   id: item.getAttribute("data-source-control-loading-row"),
                   box: readElementBox(item),
+                  layout: readElementBox(item.querySelector(".source-control-loading-row__layout")),
+                  copy: readElementBox(item.querySelector(".source-control-loading-row__copy")),
+                  headline: readElementBox(
+                    item.querySelector(".source-control-loading-row__headline"),
+                  ),
+                  actions: readElementBox(
+                    item.querySelector(".source-control-loading-row__actions"),
+                  ),
+                  parts: ["icon", "dot", "label", "badge", "detail", "button", "switch"].map(
+                    (part) => ({
+                      part,
+                      box: readElementBox(
+                        item.querySelector(`.source-control-loading-row__${part}`),
+                      ),
+                    }),
+                  ),
                 })),
               },
               sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
@@ -3835,6 +3851,7 @@ function readWebPane() {
                 loadingRows: [...doc.querySelectorAll('[data-slot="skeleton"]')].map((item) => ({
                   id: item.getAttribute("data-source-control-loading-row"),
                   box: readElementBox(item),
+                  className: item.getAttribute("class") ?? "",
                 })),
               },
               sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>
