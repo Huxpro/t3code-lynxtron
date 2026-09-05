@@ -25186,6 +25186,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-archive-empty-gap-current",
+      "observedAt": "2026-09-05T10:05:00-04:00",
+      "commit": "e9b8be426e3c0e951440801728abc3445cae9a59",
+      "codeCommit": "e9b8be426e3c0e951440801728abc3445cae9a59",
+      "codeState": "commit",
+      "label": "Settings Archive empty-row gap parity",
+      "narrative": "The single Archive empty row inherited the generic four-pixel inter-row margin, making the Lynx section and rows containers four pixels taller than Web. Removing that margin only for the empty row brings both containers within 0.15625px of the authority while preserving the exact empty copy and icon. Pixel metrics are unchanged because only empty trailing layout space moved.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one immutable snapshot, Archive route, empty state, dark theme, viewport, and zero renderer errors. The change removes only the empty row's trailing margin."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-archive-empty-gap.json",
+          "classification": "tracked-current",
+          "sha256": "606ef8115eb3ea49f52b0cd0522266c931b1b23fae6cfceb057bbe6bd46d600b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-archive"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.15625, 0, 0, 0, 0.15625, 0, 0, 0, 0.15625],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "archive-empty-section-geometry",
+              "source": "Section, rows container, and sole empty row share x, y, and width with heights within 0.15625px"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-archive-current-runtime",
+              "source": "Strict paired capture passes with the same empty archive state, route, theme, viewport, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
