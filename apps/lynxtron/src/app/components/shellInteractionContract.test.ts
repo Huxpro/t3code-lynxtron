@@ -1600,6 +1600,12 @@ describe("desktop shell interaction contract", () => {
     expect(detailsPopoverBlock).not.toContain("top:");
     expect(detailsPopoverBlock).not.toContain("left:");
     expect(detailsPopoverBlock).toContain("width: max-content;");
+    expect(overrides).toContain(
+      ".sidebar-v2-details-title {\n  height: 12px;\n  overflow: hidden;\n  color: var(--foreground);\n  font-family: var(--font-sans);\n  font-size: 12px;\n  font-weight: 500;",
+    );
+    expect(overrides).toContain(
+      ".sidebar-v2-details-value {\n  color: var(--foreground);\n  font-family: var(--font-sans);\n  font-size: 12px;\n  line-height: 15px;",
+    );
     expect(overrides).not.toContain(".sidebar-v2-details-dismiss {");
     expect(componentSource("Composer.tsx")).toContain("composer-context-item--overlay-open");
     expect(tooltipSource).toContain("const hoverInsideRef = useRef(false);");

@@ -493,7 +493,7 @@
   color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 12px;
 }
 .sidebar-v2-details-rows {
@@ -513,8 +513,8 @@
 .sidebar-v2-details-value {
   color: var(--foreground);
   font-family: var(--font-sans);
-  font-size: 11px;
-  line-height: 16px;
+  font-size: 12px;
+  line-height: 15px;
   opacity: 0.76;
 }
 .sidebar {
