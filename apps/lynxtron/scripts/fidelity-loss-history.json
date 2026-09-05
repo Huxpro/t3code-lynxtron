@@ -25679,6 +25679,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-action-play-icon-current",
+      "observedAt": "2026-09-05T16:30:00-04:00",
+      "commit": "76fb144fa96d7e79d4245bbf4d932a3e642f4887",
+      "codeCommit": "76fb144fa96d7e79d4245bbf4d932a3e642f4887",
+      "codeState": "commit",
+      "label": "Project Action play icon parity",
+      "narrative": "The default Project Action semantic is play. Web rendered Lucide Play while Lynx mapped the same value to ArrowUp. Lynx now generates and renders the same Play path at 16px. The strict same-snapshot dialog remains exactly 512 by 671 in both renderers with all fields and controls matched, zero errors, and full-frame SSIM improving from 0.918620 to 0.918675.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use byte-identical Web authority pixels, one immutable snapshot and project, the same dialog state and exact geometry, and zero renderer errors. Only the generated Lynx icon and play mapping changed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/project-action-play-icon.json",
+          "classification": "tracked-current",
+          "sha256": "18bb9fff39ff192c5468c16e0a37bfef0fb45c98c8d6a6528c307300a5aaefa1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["project-action-dialog"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-default-icon-semantic",
+              "source": "Both renderers show the Play glyph for the default play project-script icon and preserve all field, option, and action semantics"
+            },
+            "material": {
+              "residual": 0.081325,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - strict post-commit SSIM 0.918675, improved from 0.918620 for the isolated 16px icon change"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-action-dialog-current-runtime",
+              "source": "Strict same-server capture passes with exact dialog geometry, matching fields and actions, generated icon coverage, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
