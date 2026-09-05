@@ -237,7 +237,6 @@ function EditableFilePreview({
 function renderTreeNode(
   node: ProjectEntryTreeNode,
   depth: number,
-  hasDirectoryNodes: boolean,
   expandedDirectories: Readonly<Record<string, boolean>>,
   selectedPath: string | null,
   onToggleDirectory: (path: string) => void,
@@ -264,7 +263,6 @@ function renderTreeNode(
               renderTreeNode(
                 child,
                 depth + 1,
-                hasDirectoryNodes,
                 expandedDirectories,
                 selectedPath,
                 onToggleDirectory,
@@ -284,7 +282,6 @@ function renderTreeNode(
       name={node.name}
       depth={depth}
       itemPath={node.path}
-      showLeadingSpacer={hasDirectoryNodes || depth > 0}
       selected={node.path === selectedPath}
       fileIcon={<ProjectFileIcon path={node.path} />}
       onSelect={() => onSelectFile(node.path)}
@@ -365,7 +362,6 @@ export function FilesPanel({
     );
   }, [listing.entries, search]);
   const tree = useMemo(() => buildProjectEntryTree(visibleEntries), [visibleEntries]);
-  const hasDirectoryNodes = useMemo(() => tree.some((node) => node.kind === "directory"), [tree]);
 
   const toggleDirectory = useCallback((path: string) => {
     setExpandedDirectories((current) => ({
@@ -431,7 +427,6 @@ export function FilesPanel({
                       renderTreeNode(
                         node,
                         0,
-                        hasDirectoryNodes,
                         expandedDirectories,
                         selectedPath,
                         toggleDirectory,
