@@ -2467,6 +2467,9 @@
   font-size: 12px;
   line-height: 16px;
 }
+.composer-lifecycle-banner [data-connection-lifecycle-actions] {
+  gap: 4px;
+}
 .composer-lifecycle-banner .connection-lifecycle-reconnect {
   width: 101px;
   border-color: rgb(var(--primary-rgb));
@@ -2477,7 +2480,7 @@
   opacity: 0.64;
 }
 .composer-lifecycle-banner .connection-lifecycle-connections {
-  min-width: 88px;
+  width: 88px;
   border-color: rgba(var(--foreground-rgb), 0.08);
   background-color: rgba(var(--foreground-rgb), 0.026);
   color: var(--foreground);
