@@ -7939,6 +7939,11 @@
   line-height: 13.3333px;
   margin-left: auto;
 }
+.provider-instance-dialog__early-access {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+}
 .provider-instance-dialog__early-access + .provider-instance-dialog__driver-check {
   margin-left: 0;
 }

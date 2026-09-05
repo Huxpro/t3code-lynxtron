@@ -987,6 +987,9 @@ describe("desktop shell interaction contract", () => {
       ".theme-light .provider-instance-dialog__driver {\n  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);",
     );
     expect(overrides).toContain(
+      ".provider-instance-dialog__early-access {\n  position: absolute;\n  top: 14px;\n  right: 12px;",
+    );
+    expect(overrides).toContain(
       ".theme-light .file-editor-line__number {\n  color: rgb(94, 94, 94);\n  font-size: 13px;",
     );
     expect(overrides).toContain(
