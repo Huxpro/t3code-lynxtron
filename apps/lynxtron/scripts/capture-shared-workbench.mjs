@@ -6410,7 +6410,14 @@ async function main() {
         });
       }
       if (!keepServer) await stopOwnedChild(child);
-      if (userDataDir) await rm(userDataDir, { recursive: true, force: true });
+      if (userDataDir) {
+        await rm(userDataDir, {
+          recursive: true,
+          force: true,
+          maxRetries: 5,
+          retryDelay: 100,
+        });
+      }
       if (fixturePreparation.kind === "file-editing-disposable-workspace") {
         await rm(fixturePreparation.disposableWorkspace, { recursive: true, force: true });
         await rm(fixturePreparation.failedWriteWorkspace, { recursive: true, force: true });

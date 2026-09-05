@@ -47,6 +47,12 @@ describe("shared workbench lifecycle fault capture", () => {
     );
   });
 
+  it("retries cleanup of the owned Chrome profile", () => {
+    assert.include(source, "if (userDataDir) {");
+    assert.include(source, "maxRetries: 5");
+    assert.include(source, "retryDelay: 100");
+  });
+
   it("opens the modeled light compact-controls state by default", () => {
     assert.include(source, '"composer-compact-controls-light": "compact-controls"');
     assert.include(source, 'stateId === "composer-compact-controls-light" ||');
@@ -627,6 +633,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "fileEditorMetrics: state?.web?.fileEditorMetrics ?? null");
     assert.include(source, "fileEditorMetrics: state?.lynx?.fileEditorMetrics ?? null");
     assert.include(workbench, "function readFileEditorMetrics");
+    assert.include(workbench, "function readSourceControlRows");
+    assert.include(workbench, "sourceControlRowMetrics: readSourceControlRows(root)");
+    assert.include(workbench, "sourceControlRowMetrics: readSourceControlRows(doc)");
+    assert.include(workbench, 'item.querySelector(".source-control-item__summary")');
     assert.include(workbench, 'step.querySelector(".provider-instance-dialog__step-number")');
     assert.include(workbench, 'step.querySelector(".provider-instance-dialog__step-label")');
     assert.include(workbench, "fileEditorMetrics: readFileEditorMetrics(root)");
@@ -997,7 +1007,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "await stopOwnedChild(chrome)");
     assert.include(source, 'process.once("SIGINT", onSigint)');
     assert.include(source, 'process.once("SIGTERM", onSigterm)');
-    assert.include(source, "await rm(userDataDir, { recursive: true, force: true })");
+    assert.include(source, "await rm(userDataDir, {");
+    assert.include(source, "recursive: true");
+    assert.include(source, "force: true");
+    assert.include(source, "maxRetries: 5");
   });
 
   it("requires and measures the same settings sections on both renderers", () => {

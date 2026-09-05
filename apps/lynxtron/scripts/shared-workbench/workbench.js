@@ -862,6 +862,23 @@ function readKeybindingsMetrics(root) {
   };
 }
 
+function readSourceControlRows(root) {
+  return [...(root?.querySelectorAll(".source-control-item") ?? [])].map((item) => ({
+    text: item.textContent?.trim() ?? "",
+    box: readElementBox(item),
+    badge: readElementBox(item.querySelector("[data-slot='badge'], .source-control-item__badge")),
+    layout: readElementBox(item.querySelector(".source-control-item__layout")),
+    copy: readElementBox(item.querySelector(".source-control-item__copy")),
+    headline: readElementBox(item.querySelector(".source-control-item__headline")),
+    summary: readElementBox(item.querySelector(".source-control-item__summary")),
+    children: [...item.children].map((child) => ({
+      className: child.getAttribute("class") ?? "",
+      text: child.textContent?.trim() ?? "",
+      box: readElementBox(child),
+    })),
+  }));
+}
+
 function readSidebarStageIdentity(root) {
   const backdrop = root?.querySelector("[data-stage-backdrop-variant]") ?? null;
   const brand = root?.querySelector(".sidebar-brand") ?? null;
@@ -2706,20 +2723,7 @@ function readLynxPane() {
                   box: readElementBox(item),
                   rows: readElementBox(item.querySelector(".settings-section__rows")),
                 })),
-                sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
-                  (item) => ({
-                    text: item.textContent?.trim() ?? "",
-                    box: readElementBox(item),
-                    badge: readElementBox(
-                      item.querySelector("[data-slot='badge'], .source-control-item__badge"),
-                    ),
-                    children: [...item.children].map((child) => ({
-                      className: child.getAttribute("class") ?? "",
-                      text: child.textContent?.trim() ?? "",
-                      box: readElementBox(child),
-                    })),
-                  }),
-                ),
+                sourceControlRows: readSourceControlRows(root),
                 settingsRows: [...(root?.querySelectorAll('[data-settings-row="true"]') ?? [])].map(
                   readSettingsRowGeometry,
                 ),
@@ -2733,6 +2737,7 @@ function readLynxPane() {
               sourceControlRows: [...(root?.querySelectorAll(".source-control-item") ?? [])].map(
                 (item) => item.textContent?.trim(),
               ),
+              sourceControlRowMetrics: readSourceControlRows(root),
               emptyTexts: [...(root?.querySelectorAll(".settings-empty__text") ?? [])].map((item) =>
                 item.textContent?.trim(),
               ),
@@ -3787,20 +3792,7 @@ function readWebPane() {
                     rows: readElementBox(item.querySelector(":scope > div:nth-child(2)")),
                   }),
                 ),
-                sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map(
-                  (item) => ({
-                    text: item.textContent?.trim() ?? "",
-                    box: readElementBox(item),
-                    badge: readElementBox(
-                      item.querySelector("[data-slot='badge'], .source-control-item__badge"),
-                    ),
-                    children: [...item.children].map((child) => ({
-                      className: child.getAttribute("class") ?? "",
-                      text: child.textContent?.trim() ?? "",
-                      box: readElementBox(child),
-                    })),
-                  }),
-                ),
+                sourceControlRows: readSourceControlRows(doc),
                 settingsRows: [...doc.querySelectorAll('[data-settings-row="true"]')].map(
                   readSettingsRowGeometry,
                 ),
@@ -3812,6 +3804,7 @@ function readWebPane() {
               sourceControlRows: [...doc.querySelectorAll(".source-control-item")].map((item) =>
                 item.textContent?.trim(),
               ),
+              sourceControlRowMetrics: readSourceControlRows(doc),
               emptyTexts: [...doc.querySelectorAll(".settings-empty__text")].map((item) =>
                 item.textContent?.trim(),
               ),
