@@ -25791,7 +25791,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/composer-reconnect-actions.json",
           "classification": "tracked-current",
-          "sha256": "d58e89263f5fb7897649b563e8526ea2d26bec51f1c5819c792df23d4e3782a2"
+          "sha256": "4d1a3ac8b67285fbd1865832b67f94688275baf32c5ef3a56d201422ee1134fa"
         }
       ],
       "updates": [
@@ -25880,7 +25880,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/composer-reconnect-actions.json",
           "classification": "tracked-current",
-          "sha256": "d58e89263f5fb7897649b563e8526ea2d26bec51f1c5819c792df23d4e3782a2"
+          "sha256": "4d1a3ac8b67285fbd1865832b67f94688275baf32c5ef3a56d201422ee1134fa"
         }
       ],
       "updates": [
@@ -25900,6 +25900,48 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - strict post-commit SSIM 0.957761; the 768 by 68 banner ROI improves from 0.801487 to 0.807520"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-reconnect-action-group-current",
+      "observedAt": "2026-09-05T19:31:30-04:00",
+      "commit": "00c2b75e5b9dbcfa2567faede21827745b3cc318",
+      "codeCommit": "00c2b75e5b9dbcfa2567faede21827745b3cc318",
+      "codeState": "commit",
+      "label": "Composer reconnect action group parity",
+      "narrative": "The lifecycle action wrapper now exposes a shared semantic class so Lynx can reliably apply Web's four-pixel gap. The complete action group, Reconnecting action, and Connections action now share y and height, Connections matches x and width exactly, and all remaining deltas are at most 0.44px. Banner ROI SSIM improves from 0.807520 to 0.810856 and full-frame SSIM from 0.957761 to 0.957917.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use one immutable snapshot and thread, byte-identical Web authority pixels, the same reconnecting state and viewport, zero renderer errors, and a change limited to the shared action wrapper class and its Lynx gap rule."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/composer-reconnect-actions.json",
+          "classification": "tracked-current",
+          "sha256": "4d1a3ac8b67285fbd1865832b67f94688275baf32c5ef3a56d201422ee1134fa"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-disabled"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.4375, 0, 0.4375, 0, 0.4375, 0, 0.4375, 0, 0, 0, 0, 0],
+              "anchorScale": 193.4375,
+              "confidence": 0.99,
+              "method": "lifecycle-banner-action-group-geometry",
+              "source": "Action group and Reconnecting differ by only 0.44px in x and width; Connections x y width and height plus the four-pixel inter-control gap match exactly"
+            },
+            "material": {
+              "residual": 0.042083,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - strict post-commit SSIM 0.957917; the 768 by 68 banner ROI improves from 0.807520 to 0.810856"
             }
           }
         }
