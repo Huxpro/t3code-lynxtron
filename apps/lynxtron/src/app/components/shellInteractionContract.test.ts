@@ -1107,6 +1107,7 @@ describe("desktop shell interaction contract", () => {
     expect(addItemBlock).toContain("height: 28px;");
     expect(addItemBlock).toContain("padding: 4px 8px;");
     expect(overrides).toContain(".right-panel__add-item--disabled {\n  opacity: 0.64;");
+    expect(overrides).toMatch(/\.right-panel-empty-card__description \{[\s\S]*line-height: 16px;/);
     expect(overrides).toContain(".theme-light .right-panel__add-menu {");
     expect(panel).toContain('case "file":');
     expect(panel).toContain("<FilePanel path={surface.path} />");

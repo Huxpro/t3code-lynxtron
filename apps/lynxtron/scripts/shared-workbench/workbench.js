@@ -1374,6 +1374,11 @@ function readReviewMetrics(root) {
     panelEmpty: Boolean(emptySurface),
     panelRect: readElementBox(rightPanel),
     emptyRect: readElementBox(emptySurface),
+    emptyTitle: readElementBox(emptySurface?.querySelector(".right-panel-empty__title")),
+    emptyDescription: readElementBox(
+      emptySurface?.querySelector(".right-panel-empty__description"),
+    ),
+    emptyGrid: readElementBox(emptySurface?.querySelector(".right-panel-empty-grid")),
     activeKind:
       rightPanel?.getAttribute("data-right-panel-active-kind") ??
       (diffSurface ? "diff" : emptySurface ? "empty" : null),
