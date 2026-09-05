@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T05:12:00-04:00",
+  "stateId": "settings-providers-add-dialog",
+  "productCommit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
+  "captureCommit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-providers-add-dialog",
+    "stage": "driver",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "fa738e648e83cd90ae876cb96f2c599ed54a6dc11439ae6cddf2290ee26d31c4",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "61b622e5a81717a4ca4b07ed0165870504d9a899002806b7d8b6ef13ca90f7b3",
+    "webImageSha256": "ae7e64013528d42bf8438e6687fe5593e648334df5901dc7f2529c74acad0fca",
+    "lynxImageSha256": "6f0967176cf068bee6a9cb2ef5a9b0a8751237da1748b6b58fab25c251f4427e",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "dialogMatch": true,
+    "rendererErrors": 0
+  },
+  "resolvedMaterial": {
+    "stepRail": {
+      "radius": "14px",
+      "webRingAlpha": 0.05,
+      "lynxRingAlpha": 0.05
+    },
+    "activeStep": { "webRingAlpha": 0.05, "lynxRingAlpha": 0.05 },
+    "activeNumber": { "webRingAlpha": 0.3, "lynxRingAlpha": 0.3 },
+    "inactiveNumber": {
+      "webFillAlpha": 0.05,
+      "lynxFillAlpha": 0.05,
+      "webRingAlpha": 0.1,
+      "lynxRingAlpha": 0.1
+    },
+    "selectedCard": { "webRingWidth": 2, "lynxRingWidth": 2 },
+    "ordinaryCard": { "webRingAlpha": 0.05, "lynxRingAlpha": 0.05 }
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over fixed same-viewport regions",
+    "baseline": {
+      "fullFrame": { "ssim": 0.9326, "mae": 2.868437, "significantShare": 0.027342 },
+      "dialog": { "ssim": 0.845966, "mae": 5.940461, "significantShare": 0.067695 },
+      "stepRail": { "ssim": 0.899475, "mae": 3.365465, "significantShare": 0.04135 },
+      "driverGrid": { "ssim": 0.801036, "mae": 6.858109, "significantShare": 0.093609 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.944155, "mae": 2.66679, "significantShare": 0.025988 },
+      "dialog": { "ssim": 0.888192, "mae": 5.257477, "significantShare": 0.06311 },
+      "stepRail": { "ssim": 0.949086, "mae": 2.769976, "significantShare": 0.03206 },
+      "driverGrid": { "ssim": 0.847194, "mae": 6.026453, "significantShare": 0.08881 }
+    }
+  },
+  "boundary": "The change is dark-theme-only and restores the Web ring and radius material already verified in the light wizard. Dialog geometry and the complete driver-stage interaction gate remain unchanged. Text shaping and provider icon rasterization remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}
