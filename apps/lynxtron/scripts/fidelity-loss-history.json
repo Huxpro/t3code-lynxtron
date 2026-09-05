@@ -24707,6 +24707,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-save-error-rendering-regression-repair",
+      "observedAt": "2026-09-05T04:24:00-04:00",
+      "commit": "869e91e16",
+      "codeCommit": "2a9eafbb0",
+      "codeState": "commit",
+      "label": "File editor save-error rendering regression repair",
+      "narrative": "A current real write-failure flow exposed a regression in the Lynx file editor: the error label resolved to zero width, leaving only Retry save visible against ordinary pending-state material. The error modifier now gives the label the Web authority's remaining 256px allocation, 11px by 16.5px typography, destructive foreground, 5 percent destructive background, 20 percent destructive divider, and transparent 8px ghost retry control. Web and Lynx failure bars are both 359 by 33; label and retry geometry differ by at most 0.203125px.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Separate Web-writer and Lynx-writer runs use the same immutable source seed, project, sessionless thread, route, theme, viewport, real delayed project.writeFile failure, Retry pointer action, persistence check, and reopen check. The product change is scoped to the Lynx error modifier."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/file-editor-save-error-rendering.json",
+          "classification": "tracked-current",
+          "sha256": "efaf765b5c2dc699d73df09939c1c6adbda98338850cd3efff800019f1a4933f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-editing-save"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.203125, 0, 0, 0, 0.203125, 0],
+              "anchorScale": 359,
+              "confidence": 0.99,
+              "method": "paired-file-save-error-label-geometry",
+              "source": "Failure bar, visible error label, and Retry save control match Web within 0.203125px"
+            },
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "paired-file-save-error-computed-style",
+              "source": "The visible error label matches Web at 11px font size, 16.5px line height, destructive foreground, one-line clipping, and a nonzero 256px allocation"
+            },
+            "material": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "paired-file-save-error-material-contract",
+              "source": "Destructive 5 percent background, destructive 20 percent divider, transparent retry background and border, and 8px retry radius match the Web authority"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-file-save-failure-retry-reopen",
+              "source": "Both Browser writers show pending, real write failure, visible error copy, Retry, persisted sentinel bytes, matching reopen content, zero renderer errors, and clean process disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
