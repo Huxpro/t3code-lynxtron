@@ -1639,7 +1639,7 @@ describe("desktop shell interaction contract", () => {
       ".quick-switch-file-row--detailed .palette-row__description {\n  color: rgba(var(--muted-foreground-rgb), 0.7);\n  font-size: 12px;\n  line-height: 16px;",
     );
     expect(overrides).toContain(
-      ".quick-switch-source-row .palette-row__description {\n  font-size: 12px;\n  line-height: 16px;",
+      ".quick-switch-source-row .palette-row__description {\n  color: rgba(var(--muted-foreground-rgb), 0.7);\n  font-size: 12px;\n  line-height: 16px;",
     );
     expect(overrides).toContain(".quick-switch-action-row > .lynx-kbd {");
     expect(overrides).toContain("letter-spacing: 1.2px;");

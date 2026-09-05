@@ -10454,6 +10454,7 @@
   opacity: 0.64;
 }
 .quick-switch-source-row .palette-row__description {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
   font-size: 12px;
   line-height: 16px;
 }
