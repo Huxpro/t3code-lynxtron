@@ -36,7 +36,10 @@ export const ProviderStatusBanner = memo(function ProviderStatusBanner({
   const providerName = status.displayName?.trim() || formatProviderDriverKindLabel(status.driver);
 
   return (
-    <div className="pointer-events-auto mx-auto w-fit max-w-[calc(100%-2rem)] pt-3">
+    <div
+      className="pointer-events-auto mx-auto w-fit max-w-[calc(100%-2rem)] pt-3"
+      data-provider-status-banner
+    >
       <div
         className={cn(
           "relative inline-flex items-center gap-3 rounded-xl border py-3 ps-3.5 pe-10 text-card-foreground text-sm",

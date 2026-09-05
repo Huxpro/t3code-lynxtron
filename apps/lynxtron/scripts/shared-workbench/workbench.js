@@ -193,9 +193,9 @@ function readHeroMetrics(root) {
 
 function readProviderStatusBannerMetrics(root) {
   const overlay = root?.querySelector(
-    ".provider-status-banner-flow, .provider-status-banner-overlay",
+    "[data-provider-status-banner], .provider-status-banner-flow, .provider-status-banner-overlay",
   );
-  const alert = overlay?.querySelector(".thread-error-alert");
+  const alert = overlay?.querySelector('.thread-error-alert, [role="alert"]');
   if (!alert) return null;
   const action = alert.querySelector(".thread-error-action");
   const dismiss = alert.querySelector('[aria-label^="Dismiss "], button[aria-label^="Dismiss "]');
