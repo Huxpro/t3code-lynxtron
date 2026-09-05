@@ -10393,6 +10393,10 @@ async function captureCell({
     JSON.stringify(state?.web?.overlayMetrics?.providerIds ?? []) ===
       JSON.stringify(state?.lynx?.overlayMetrics?.providerIds ?? []) &&
     modelPickerSemanticsMatch(state?.web?.overlayMetrics, state?.lynx?.overlayMetrics);
+  const overlayRowCountMatch = isModelPickerOverlay
+    ? (state?.web?.overlayMetrics?.semanticKeys?.length ?? 0) ===
+      (state?.lynx?.overlayMetrics?.semanticKeys?.length ?? 0)
+    : state?.web?.overlayMetrics?.rowCount === state?.lynx?.overlayMetrics?.rowCount;
   const overlayContentMatch = isModelPickerOverlay
     ? modelPickerSemanticMatch
     : webOverlayRowLabels.length === 0 && lynxOverlayRowLabels.length === 0
@@ -12140,6 +12144,7 @@ async function captureCell({
     (!isSidebarThreadShortcutState || sidebarThreadShortcutStage === "complete") &&
     (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
     (stateId !== "add-project-sources" || addProjectSourcesStage === "complete") &&
+    (!isModelPickerOverlay || (modelPickerSemanticMatch && overlayRowCountMatch)) &&
     settingsContentMatch !== false &&
     lynxStyled &&
     consoleErrors.length === 0 &&
@@ -12702,10 +12707,7 @@ async function captureCell({
       overlayContentMatch,
       modelPickerSemanticMatch,
       settingsContentMatch,
-      overlayRowCountMatch: isModelPickerOverlay
-        ? (state?.web?.overlayMetrics?.semanticKeys?.length ?? 0) ===
-          (state?.lynx?.overlayMetrics?.semanticKeys?.length ?? 0)
-        : state?.web?.overlayMetrics?.rowCount === state?.lynx?.overlayMetrics?.rowCount,
+      overlayRowCountMatch,
       webProjectSelectionStage,
       webProjectActionMenuOpened,
       webShortcutInputChannel,

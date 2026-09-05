@@ -41,6 +41,10 @@ describe("shared workbench lifecycle fault capture", () => {
     }
     assert.include(source, '"model-picker-query": "pickle"');
     assert.include(source, '"model-picker-provider-rail": "opencode"');
+    assert.include(
+      source,
+      "(!isModelPickerOverlay || (modelPickerSemanticMatch && overlayRowCountMatch))",
+    );
   });
 
   it("opens the modeled light compact-controls state by default", () => {
