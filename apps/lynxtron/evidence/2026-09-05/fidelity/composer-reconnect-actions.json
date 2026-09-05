@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T18:11:26-04:00",
+  "stateId": "composer-disabled",
+  "productCommit": "855fd9066c2bd7c3053a1319bf5dda53aa86858e",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "59d1087d89a8bb4c1cf2d8c10dcd0705d5c5dea8488c5b31a3f1a60bee55f836",
+    "webBundleSha256": "e485b395b0c7577c8de228e95ac6e6811d9621ad1e4fc274353a4e6720580724",
+    "lynxBundleSha256": "9e949d0d94d9d7966d9e0ebe24bfa27f57911d7fb3b469845f6bb38ccc7d527d",
+    "webImageSha256": "bbe9b87c6e0c30288fecd948e60067c66f546364573469a8cb388f8a9e04fae0",
+    "lynxImageSha256": "01b0e688b18054eeb0b9b2163ddf45efe578a4892b6f16040ddb304a24c1b925",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webReconnect": [943.5625, 574, 101.4375, 24],
+    "lynxReconnect": [941.328125, 574, 101, 24],
+    "webConnections": [1049, 574, 88, 24],
+    "lynxConnections": [1048.328125, 574, 88.671875, 24]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM",
+    "fullFrameBefore": 0.953971,
+    "fullFrameCurrent": 0.95748,
+    "bannerRoiBefore": 0.726771,
+    "bannerRoiCurrent": 0.801487,
+    "bannerRoi": [384, 552, 768, 68]
+  },
+  "fix": "Restore the shared reconnect and Connections control height, border, radius, primary fill, foreground, and disabled opacity in the Lynx compatibility layer. Restrict the provider-status probe to the dedicated provider wrapper so it cannot misclassify the separate lifecycle banner.",
+  "boundary": "The lifecycle banner copy remains renderer-truthful: Web reports its environment WebSocket failure while Lynx reports the shared server closure. This evidence claims action styling and measurement validity, not identical transport wording. Screenshots remain temporary because the tracked budget is full."
+}

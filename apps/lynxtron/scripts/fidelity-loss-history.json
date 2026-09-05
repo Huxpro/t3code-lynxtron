@@ -25773,6 +25773,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-reconnect-actions-current",
+      "observedAt": "2026-09-05T18:11:26-04:00",
+      "commit": "855fd9066c2bd7c3053a1319bf5dda53aa86858e",
+      "codeCommit": "855fd9066c2bd7c3053a1319bf5dda53aa86858e",
+      "codeState": "commit",
+      "label": "Composer reconnect action parity",
+      "narrative": "The shared lifecycle surface rendered Web's disabled reconnect action as a 24px blue primary pill with eight-pixel corners and 0.64 opacity, while missing Lynx utility coverage left it transparent, 21px tall, four-pixel rounded, and 0.5 opaque. Scoped compatibility styles now align both actions without changing lifecycle behavior. The provider-status probe also stops treating an unrelated Web lifecycle alert as a provider banner. The previously failing strict state now passes; banner ROI SSIM improves from 0.726771 to 0.801487 and full-frame SSIM from 0.953971 to 0.957480.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use one immutable snapshot and thread, byte-identical Web authority pixels, the same reconnecting lifecycle, viewport and theme, and zero renderer errors. Product styles are scoped to lifecycle banner actions; the probe change only removes a false provider-banner classification."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/composer-reconnect-actions.json",
+          "classification": "tracked-current",
+          "sha256": "a3dfe0dbf191c8a8572228d5f7f43f4cfef891b05c778bff189f922ac3e45079"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-disabled"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [2.234375, 0, 0.4375, 0, 0.671875, 0, 0.671875, 0],
+              "anchorScale": 101.4375,
+              "confidence": 0.99,
+              "method": "lifecycle-banner-action-geometry",
+              "source": "Both controls match the Web 24px height; reconnect width differs by 0.44px and Connections width and right edge differ by 0.67px"
+            },
+            "material": {
+              "residual": 0.04252,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - strict post-commit SSIM 0.957480, improved from 0.953971; the 768 by 68 banner ROI improves from 0.726771 to 0.801487"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "lifecycle-banner-current-runtime",
+              "source": "Strict same-server reconnecting capture passes with matching lifecycle state, valid provider-banner classification, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
