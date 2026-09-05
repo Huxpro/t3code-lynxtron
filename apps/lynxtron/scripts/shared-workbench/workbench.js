@@ -1646,6 +1646,10 @@ function readFileEditorMetrics(root) {
   const saveError = root?.querySelector(
     '[data-file-save-error]:not([data-file-save-error="false"])',
   );
+  const saveErrorLabel =
+    root?.querySelector(".files-panel__preview-status--error") ??
+    saveError?.querySelector("span") ??
+    null;
   const saveRetry = root?.querySelector(
     '[data-file-save-retry]:not([data-file-save-retry="false"])',
   );
@@ -1711,6 +1715,8 @@ function readFileEditorMetrics(root) {
     statusbarText: readComposedText(statusbar),
     saveError: readElementBox(saveError),
     saveErrorText: readComposedText(saveError),
+    saveErrorLabel: readElementBox(saveErrorLabel),
+    saveErrorLabelText: readComposedText(saveErrorLabel),
     saveRetry: readElementBox(saveRetry),
     saveRetryText: readComposedText(saveRetry),
     tabs,

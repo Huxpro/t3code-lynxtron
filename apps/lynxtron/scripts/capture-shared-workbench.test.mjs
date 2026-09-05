@@ -633,6 +633,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "fileEditorMetrics: state?.web?.fileEditorMetrics ?? null");
     assert.include(source, "fileEditorMetrics: state?.lynx?.fileEditorMetrics ?? null");
     assert.include(workbench, "function readFileEditorMetrics");
+    assert.include(workbench, ".files-panel__preview-status--error");
+    assert.include(workbench, "saveErrorLabel: readElementBox(saveErrorLabel)");
+    assert.include(source, "metrics?.saveErrorLabel?.rect?.width > 0");
+    assert.include(source, "metrics?.saveErrorLabelText");
     assert.include(workbench, "function readSourceControlRows");
     assert.include(workbench, "sourceControlRowMetrics: readSourceControlRows(root)");
     assert.include(workbench, "sourceControlRowMetrics: readSourceControlRows(doc)");

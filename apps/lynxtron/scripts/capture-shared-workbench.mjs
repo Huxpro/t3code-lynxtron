@@ -5376,7 +5376,11 @@ async function runFileEditingSaveFlow({
       (candidate) => {
         const metrics = candidate?.[fileEditClient]?.fileEditorMetrics;
         return Boolean(
-          metrics?.saveError && metrics?.saveRetry && metrics?.saveRetryText === "Retry save",
+          metrics?.saveError &&
+          metrics?.saveErrorLabel?.rect?.width > 0 &&
+          metrics?.saveErrorLabelText &&
+          metrics?.saveRetry &&
+          metrics?.saveRetryText === "Retry save",
         );
       },
       `${fileEditClient} inline file save failure`,
