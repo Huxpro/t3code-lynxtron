@@ -88,7 +88,7 @@ const SETTINGS_ANCHOR_BY_ROUTE = {
   "settings-keybindings": ["keybindings"],
   "settings-connections": ["remote-environments"],
   "settings-source-control": ["source-control"],
-  "settings-beta": ["legacy-sidebar"],
+  "settings-beta": ["background-activity", "legacy-sidebar"],
   "settings-archive": ["archive"],
 };
 
@@ -383,6 +383,9 @@ function readSettingsRows(root, ids) {
         unavailable: row.getAttribute("data-settings-unavailable"),
         box: readElementBox(row),
         titleBox: readElementBox(title),
+        titleAccessoryBox: readElementBox(
+          row.querySelector('[aria-label="Background policy details"]'),
+        ),
         descriptionBox: readElementBox(description),
         statusBox: readElementBox(status),
         controlBox: readElementBox(control),

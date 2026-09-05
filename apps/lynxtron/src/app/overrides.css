@@ -6210,6 +6210,19 @@
   letter-spacing: -0.07px;
   font-family: var(--font-sans);
 }
+.settings-background-policy-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 6px;
+}
+.settings-background-policy-info__icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.8;
+}
 .settings-row__desc {
   color: var(--muted-foreground-80);
   max-width: 576px;

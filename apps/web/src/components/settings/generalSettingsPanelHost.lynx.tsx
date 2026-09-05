@@ -7,6 +7,7 @@ import { useEffect, useState } from "@lynx-js/react";
 import type { BackgroundActivityProfile, ProviderInstanceId } from "@t3tools/contracts";
 import { createModelSelection } from "@t3tools/shared/model";
 import { ModelPicker } from "../../../../lynxtron/src/app/components/ModelPicker";
+import { Icon } from "../../../../lynxtron/src/app/components/Icon";
 import { useT3ClientState } from "../../../../lynxtron/src/app/state/t3Client";
 import {
   getGeneralSettingsSurfaceActions,
@@ -49,6 +50,16 @@ export function GeneralSettingsBackgroundActivityContent({
     <SettingsRow
       id="background-activity"
       title="Background activity"
+      titleAccessory={
+        <view aria-label="Background policy details" className="settings-background-policy-info">
+          <Icon
+            name="info"
+            size={14}
+            color="#818181"
+            className="settings-background-policy-info__icon"
+          />
+        </view>
+      }
       description={description}
       status={
         profile === "advanced"

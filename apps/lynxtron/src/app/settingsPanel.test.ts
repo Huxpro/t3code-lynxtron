@@ -150,6 +150,13 @@ describe("Lynx Settings route projection", () => {
       ),
       "utf8",
     );
+    const generalLayout = readFileSync(
+      path.resolve(
+        import.meta.dirname,
+        "../../../web/src/components/settings/generalSettingsHost.lynx.tsx",
+      ),
+      "utf8",
+    );
     const layout = readFileSync(
       path.resolve(
         import.meta.dirname,
@@ -175,6 +182,10 @@ describe("Lynx Settings route projection", () => {
     expect(generalHost).toContain("<ModelPicker");
     expect(generalHost).toContain("setTextGenerationModelSelection");
     expect(generalHost).toContain('id="background-activity"');
+    expect(generalHost).toContain('aria-label="Background policy details"');
+    expect(generalHost).toContain('name="info"');
+    expect(generalLayout).toContain("readonly titleAccessory?: ReactNode;");
+    expect(generalLayout).toContain("{titleAccessory}");
     expect(generalHost).toContain('ariaLabel="Background activity profile"');
     expect(generalWebHost).toContain('id="background-activity"');
     expect(generalHost).toContain("onProfileChange(value)");

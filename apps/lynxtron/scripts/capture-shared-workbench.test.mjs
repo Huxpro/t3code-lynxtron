@@ -1124,8 +1124,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"Beta mutation restored state"');
     assert.include(source, "finalBetaMutationReady");
     assert.include(workbench, "function readBetaMutationSettings");
+    assert.include(workbench, '"settings-beta": ["background-activity", "legacy-sidebar"]');
     assert.include(workbench, "sidebarAutoSettleAfterDays: 3");
     assert.include(source, "function settingsNavigationStateMatches(state)");
+    assert.include(source, "function backgroundPolicyAccessoryMatches(webMetrics, lynxMetrics)");
+    assert.include(workbench, "titleAccessoryBox: readElementBox(");
+    assert.include(workbench, "Background policy details");
     assert.include(source, "items.every((item) => item.labelBox?.rect?.width > 0");
     assert.include(source, "settingsBackLabel?.rect?.width > 0");
     assert.include(workbench, "labelBox: readElementBox(labelElement)");

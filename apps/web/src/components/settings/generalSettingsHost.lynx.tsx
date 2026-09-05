@@ -94,6 +94,7 @@ export function GeneralSettingsLegacySection({ children }: { readonly children: 
 
 export function SettingsRow({
   title,
+  titleAccessory,
   description,
   status,
   resetAction,
@@ -104,6 +105,7 @@ export function SettingsRow({
   id,
 }: {
   readonly title: ReactNode;
+  readonly titleAccessory?: ReactNode;
   readonly description: ReactNode;
   readonly status?: ReactNode;
   readonly resetAction?: ReactNode;
@@ -127,6 +129,7 @@ export function SettingsRow({
       <view className="settings-row__text flex min-w-0 flex-1 flex-col">
         <view className="settings-row__title-line">
           <text className="settings-row__title">{title}</text>
+          {titleAccessory}
           {resetAction ? <view className="settings-row__reset">{resetAction}</view> : null}
         </view>
         <text className="settings-row__desc">{description}</text>

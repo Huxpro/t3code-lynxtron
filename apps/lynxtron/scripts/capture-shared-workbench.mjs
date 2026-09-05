@@ -1240,6 +1240,19 @@ function generalSettingsContentMatches(webMetrics, lynxMetrics) {
   );
 }
 
+function backgroundPolicyAccessoryMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "settings-general" && !isBetaSettingsState) return true;
+  const web = webMetrics?.rows?.find((row) => row.id === "background-activity");
+  const lynx = lynxMetrics?.rows?.find((row) => row.id === "background-activity");
+  return (
+    web?.titleAccessoryBox?.rect?.width > 0 &&
+    web?.titleAccessoryBox?.rect?.height > 0 &&
+    lynx?.titleAccessoryBox?.rect?.width > 0 &&
+    lynx?.titleAccessoryBox?.rect?.height > 0 &&
+    rectDeltaWithin(web.titleAccessoryBox, lynx.titleAccessoryBox, 3)
+  );
+}
+
 function appearanceSettingsContentMatches(webMetrics, lynxMetrics) {
   if (stateId !== "settings-appearance") return true;
   const webRows = webMetrics?.rows ?? [];
@@ -10185,6 +10198,7 @@ async function captureCell({
           ((state?.web?.settingsMetrics?.rowIds ?? []).includes("source-control") &&
             (state?.lynx?.settingsMetrics?.rowIds ?? []).includes("source-control"));
   const finalSettingsGeometryReady =
+    backgroundPolicyAccessoryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
     keybindingsSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
     providerSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
     connectionsSettingsGeometryMatches(state?.web?.settingsMetrics, state?.lynx?.settingsMetrics) &&
