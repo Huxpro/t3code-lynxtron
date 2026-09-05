@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "observedAt": "2026-09-05T05:12:00-04:00",
   "stateId": "settings-providers-add-dialog",
-  "productCommit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
-  "captureCommit": "2deb0589c5154dc34a2405c419a65c110a183eb9",
+  "productCommit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
+  "captureCommit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
   "scope": {
     "authority": "web",
     "candidate": "lynx",
@@ -14,11 +14,11 @@
     "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
   },
   "capture": {
-    "reportSha256": "fa738e648e83cd90ae876cb96f2c599ed54a6dc11439ae6cddf2290ee26d31c4",
+    "reportSha256": "fb9977238d5ea146423ea7207f0e59b7cacf068ff726b7cb34e2cad8f0cea56f",
     "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
-    "lynxBundleSha256": "61b622e5a81717a4ca4b07ed0165870504d9a899002806b7d8b6ef13ca90f7b3",
-    "webImageSha256": "ae7e64013528d42bf8438e6687fe5593e648334df5901dc7f2529c74acad0fca",
-    "lynxImageSha256": "6f0967176cf068bee6a9cb2ef5a9b0a8751237da1748b6b58fab25c251f4427e",
+    "lynxBundleSha256": "b18eb813bc2e3c389454c9b5b81520a80af4161fdb635785480d549d610d5efb",
+    "webImageSha256": "09358df83bce87f695c3a731febda783a387cb1acc9fafda76da67956464e470",
+    "lynxImageSha256": "5654193c6db35b875f59a7bcc951b2dac1c13dc9f66e7ba4002d8c737ecc43bd",
     "passed": true,
     "identityMatch": true,
     "stateIdentityMatch": true,
@@ -40,7 +40,8 @@
       "lynxRingAlpha": 0.1
     },
     "selectedCard": { "webRingWidth": 2, "lynxRingWidth": 2 },
-    "ordinaryCard": { "webRingAlpha": 0.05, "lynxRingAlpha": 0.05 }
+    "ordinaryCard": { "webRingAlpha": 0.05, "lynxRingAlpha": 0.05 },
+    "driverLabelXDelta": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   "pixelMetric": {
     "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over fixed same-viewport regions",
@@ -51,11 +52,11 @@
       "driverGrid": { "ssim": 0.801036, "mae": 6.858109, "significantShare": 0.093609 }
     },
     "current": {
-      "fullFrame": { "ssim": 0.944155, "mae": 2.66679, "significantShare": 0.025988 },
-      "dialog": { "ssim": 0.888192, "mae": 5.257477, "significantShare": 0.06311 },
+      "fullFrame": { "ssim": 0.946674, "mae": 2.535373, "significantShare": 0.025196 },
+      "dialog": { "ssim": 0.896526, "mae": 4.812361, "significantShare": 0.060428 },
       "stepRail": { "ssim": 0.949086, "mae": 2.769976, "significantShare": 0.03206 },
-      "driverGrid": { "ssim": 0.847194, "mae": 6.026453, "significantShare": 0.08881 }
+      "driverGrid": { "ssim": 0.865237, "mae": 4.985865, "significantShare": 0.082541 }
     }
   },
-  "boundary": "The change is dark-theme-only and restores the Web ring and radius material already verified in the light wizard. Dialog geometry and the complete driver-stage interaction gate remain unchanged. Text shaping and provider icon rasterization remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+  "boundary": "The dark material change restores the Web ring and radius contract already verified in the light wizard. The shared 11px Lynx gap accounts for its one-pixel card border and aligns all nine label origins with Web. Dialog geometry and the complete driver-stage interaction gate remain unchanged. Text shaping and provider icon rasterization remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
 }
