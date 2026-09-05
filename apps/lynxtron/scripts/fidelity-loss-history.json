@@ -24814,20 +24814,20 @@
       "id": "provider-dialog-dark-material-current",
       "observedAt": "2026-09-05T05:12:00-04:00",
       "commit": "da8c81bd3",
-      "codeCommit": "9da7228bd45cf75f013e2bb7942521f7eb5836f9",
+      "codeCommit": "7a0e18db6fb00a6d207eedfb376330e5b572c213",
       "codeState": "commit",
       "label": "Provider dialog dark material parity",
-      "narrative": "The dark Add Provider Driver stage had exact dialog, step, and card geometry but omitted Web's subtle rings, retained a 12px step-rail radius, and placed every driver label one pixel left because its bordered card used a 10px gap. Restoring the rail, step, number, and card rings plus a border-aware 11px card gap raises full-frame SSIM from 0.932600 to 0.946674, dialog SSIM from 0.845966 to 0.896526, rail SSIM from 0.899475 to 0.949086, and driver-grid SSIM from 0.801036 to 0.865237.",
+      "narrative": "The dark Add Provider Driver stage had exact dialog, step, and card geometry but omitted Web's subtle rings, retained a 12px step-rail radius, placed every driver label one pixel left, and rendered six provider badges without their 16px badge boxes. Restoring the rail, step, number, card, and badge material plus border-aware card spacing raises full-frame SSIM from 0.932600 to 0.947453, dialog SSIM from 0.845966 to 0.900131, rail SSIM from 0.899475 to 0.949086, and driver-grid SSIM from 0.801036 to 0.873225.",
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
-        "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product changes restore dark material and align all nine label origins."
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, dark theme, 1280 by 820 viewport, exact Driver-stage geometry, provider inventory, selected Codex card, and zero renderer errors. The product changes restore dark material, align all nine label origins, and restore six badge boxes."
       },
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-dark-material.json",
           "classification": "tracked-current",
-          "sha256": "462930cd31f5e78c2f68aa49ea1a8ddd0f2d87e4e3184920f1a7faba46f07692"
+          "sha256": "da689d482e025b3b7573495e490442eb70dccfd315d1e0150c40b5851dcab85e"
         }
       ],
       "updates": [
@@ -24836,17 +24836,17 @@
           "clients": ["lynx"],
           "dimensions": {
             "geometry": {
-              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               "anchorScale": 259,
               "confidence": 0.99,
               "method": "provider-dialog-driver-label-origins",
-              "source": "All nine driver label x origins match Web after accounting for the Lynx card border"
+              "source": "All nine driver label x origins plus six badge y origins and heights match Web after accounting for the Lynx card border"
             },
             "material": {
-              "residual": 0.103474,
+              "residual": 0.099869,
               "confidence": 0.99,
               "method": "provider-dialog-dark-ssim",
-              "source": "1 - exact dialog SSIM 0.896526; MAE 4.812361 and 6.0428 percent significant pixels after dark ring, radius, and card-content alignment"
+              "source": "1 - exact dialog SSIM 0.900131; MAE 4.668203 and 4.7872 percent significant pixels after dark ring, radius, card-content, and badge alignment"
             },
             "runtime": {
               "residual": 0,
