@@ -141,6 +141,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
               >
                 <MenuTrigger
                   aria-label="Filter threads by project"
+                  data-floating-anchor="sidebar-project-scope"
                   data-testid="sidebar-v2-project-scope-trigger"
                   className="sidebar-v2-project-scope-trigger flex h-8 w-full min-w-0 cursor-pointer items-center gap-2 rounded-md px-2 text-left text-sm font-medium text-sidebar-muted-foreground outline-none hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
                 >

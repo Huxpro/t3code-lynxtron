@@ -5,8 +5,10 @@ import {
   type ReactElement,
   type ReactNode,
   runOnBackground,
+  runOnMainThread,
   useCallback,
   useContext,
+  useEffect,
   useMainThreadRef,
   useMemo,
   useState,
@@ -18,6 +20,7 @@ import {
   type FloatingSide,
 } from "@t3tools/client-runtime/presentation/floating-relation";
 import { HostView } from "./hostElements";
+import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -46,6 +49,42 @@ interface MainThreadElement {
   setAttribute(name: string, value: unknown): void;
   setStyleProperties(styles: Record<string, string>): void;
   setStyleProperty(name: string, value: string): void;
+}
+
+interface GlobalEventEmitterLike {
+  addListener?: (eventName: string, listener: (value: unknown) => void) => void;
+}
+
+declare const lynx:
+  | {
+      getJSModule?: (name: string) => GlobalEventEmitterLike | undefined;
+    }
+  | undefined;
+
+const T3_MENU_TEST_EVENT = "t3:menu-test";
+let menuTestBridgeInstalled = false;
+
+function installMenuTestBridge(): void {
+  "background only";
+  if (menuTestBridgeInstalled) return;
+  let registry: GlobalEventEmitterLike | undefined;
+  try {
+    registry = typeof lynx !== "undefined" ? lynx.getJSModule?.("GlobalEventEmitter") : undefined;
+  } catch {
+    registry = undefined;
+  }
+  if (!registry?.addListener) return;
+  menuTestBridgeInstalled = true;
+  registry.addListener(T3_MENU_TEST_EVENT, (value: unknown) => {
+    const relationId =
+      typeof value === "object" && value !== null
+        ? (value as { readonly relationId?: unknown }).relationId
+        : null;
+    if (typeof relationId !== "string") return;
+    void (
+      globalThis as { __T3_LYNXTRON_MENU_PROBE__?: Record<string, () => Promise<void>> }
+    ).__T3_LYNXTRON_MENU_PROBE__?.[relationId]?.();
+  });
 }
 
 interface RadioContextValue {
@@ -86,6 +125,7 @@ export function Menu({
 }
 
 export function MenuTrigger({ children, render, ...props }: ElementProps) {
+  const menuProbeEnabled = useViewportSnapshot().testResize === true;
   const context = useContext(MenuContext);
   const triggerRef = useMainThreadRef<MainThreadElement>(null);
   const toggle = useCallback(
@@ -129,6 +169,22 @@ export function MenuTrigger({ children, render, ...props }: ElementProps) {
     "main-thread:ref": triggerRef,
     "main-thread:bindtap": handleTap,
   };
+  const relationId =
+    props["data-floating-anchor"] ??
+    (isValidElement(render) ? render.props["data-floating-anchor"] : undefined);
+  useEffect(() => {
+    if (!menuProbeEnabled || typeof relationId !== "string") return;
+    const target = globalThis as {
+      __T3_LYNXTRON_MENU_PROBE__?: Record<string, () => Promise<void>>;
+    };
+    const probes = target.__T3_LYNXTRON_MENU_PROBE__ ?? {};
+    probes[relationId] = () => runOnMainThread(handleTap)();
+    target.__T3_LYNXTRON_MENU_PROBE__ = probes;
+    installMenuTestBridge();
+    return () => {
+      delete probes[relationId];
+    };
+  }, [handleTap, menuProbeEnabled, relationId]);
   if (isValidElement(render)) {
     return cloneElement(render, { ...props, ...triggerProps, children });
   }

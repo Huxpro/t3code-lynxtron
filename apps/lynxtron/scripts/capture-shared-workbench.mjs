@@ -132,7 +132,7 @@ const providerId = argValue("--provider-id", defaultProviderIdByStateId[stateId]
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
-const projectSettingsExpectation = argValue("--project-settings-expect", "missing");
+const projectSettingsExpectation = argValue("--project-settings-expect", "parity");
 const legacySidebarEnabled =
   argValue("--legacy-sidebar", stateId === "sidebar-project-groups" ? "true" : "false") === "true";
 const requestedSidebarWidthValue = Number(argValue("--sidebar-width", ""));
@@ -8233,7 +8233,13 @@ async function captureCell({
         if (webNeedsProjectScope && scopePoints?.web) {
           await dispatchPointerClickWithMove(cdp, sessionId, scopePoints.web);
         } else if (lynxNeedsProjectScope && scopePoints?.lynx) {
-          await dispatchPointerClickWithMove(cdp, sessionId, scopePoints.lynx);
+          const invoked = await evaluate(
+            cdp,
+            sessionId,
+            `document.getElementById('lynx-pane')?.contentWindow
+              ?.__T3_LYNX_WEB_PREVIEW__?.invokeMenuForHarness?.('sidebar-project-scope') ?? false`,
+          ).catch(() => false);
+          if (!invoked) await dispatchPointerClickWithMove(cdp, sessionId, scopePoints.lynx);
         }
         projectSettingsTimeline.push({
           elapsedMs: Date.now() - readyStart,
@@ -12539,7 +12545,7 @@ async function captureCell({
         match: finalProjectSettingsReady,
         expectation: isProjectSettingsState ? projectSettingsExpectation : "not-required",
         inputChannel: isProjectSettingsState
-          ? "dual-scope-pointer|web-project-action-pointer"
+          ? "web-scope-pointer|lynx-menu-main-thread-probe|dual-project-action-pointer"
           : "not-required",
         interaction: projectSettingsInteraction,
         timeline: projectSettingsTimeline,

@@ -461,7 +461,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "lynx?.querySelector('.terminal-panel') !== null");
   });
 
-  it("captures the newly discovered Sidebar project-settings scope without hiding a missing Lynx entry", () => {
+  it("captures the Sidebar project-settings scope through both renderer event paths", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
       "utf8",
@@ -469,7 +469,7 @@ describe("shared workbench lifecycle fault capture", () => {
 
     assert.include(source, 'stateId === "sidebar-project-settings"');
     assert.include(source, '"sidebar-project-settings": "existing-thread"');
-    assert.include(source, 'argValue("--project-settings-expect", "missing")');
+    assert.include(source, 'argValue("--project-settings-expect", "parity")');
     assert.include(source, '["missing", "parity"].includes(projectSettingsExpectation)');
     assert.include(source, "function projectSettingsReady(state, interaction)");
     assert.include(source, 'state?.web?.productState?.overlay === "project-settings-dialog"');
@@ -477,9 +477,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "interaction?.lynxScopeActionCount === 0");
     assert.include(source, "interaction?.webActionClicked === true");
     assert.include(source, "interaction?.lynxActionClicked === true");
+    assert.include(source, "invokeMenuForHarness?.('sidebar-project-scope')");
+    assert.include(source, "lynx-menu-main-thread-probe");
     assert.include(source, "projectSettingsInteraction");
     assert.include(source, "projectSettingsTimeline");
-    assert.include(source, "dual-scope-pointer|web-project-action-pointer");
+    assert.include(
+      source,
+      "web-scope-pointer|lynx-menu-main-thread-probe|dual-project-action-pointer",
+    );
     assert.include(source, "[data-sidebar-project-scope-option]");
     assert.include(source, "[data-sidebar-project-action]");
     assert.include(source, "finalProjectSettingsReady");

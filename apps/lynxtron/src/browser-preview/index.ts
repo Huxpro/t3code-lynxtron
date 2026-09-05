@@ -311,6 +311,10 @@ const diagnostics: BrowserPreviewDiagnostics = {
     emitGlobalEvent("t3:tooltip-test", [{ relationId, action }]);
     return true;
   },
+  invokeMenuForHarness: (relationId) => {
+    emitGlobalEvent("t3:menu-test", [{ relationId }]);
+    return true;
+  },
   invokeResizeForHarness: (target, startX, endX) => {
     emitGlobalEvent("t3:resize-test", [{ target, startX, endX }]);
     return true;

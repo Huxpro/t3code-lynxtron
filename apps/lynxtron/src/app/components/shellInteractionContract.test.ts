@@ -34,6 +34,10 @@ const hostElementsSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
   "utf8",
 );
+const menuSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
+  "utf8",
+);
 const rightPanelSurfaceSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/RightPanelSurface.tsx"),
   "utf8",
@@ -1358,6 +1362,7 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarControlsSource).toContain(
       "sidebar-v2-project-scope-host relative min-w-0 flex-1",
     );
+    expect(sidebarControlsSource).toContain('data-floating-anchor="sidebar-project-scope"');
     expect(sidebarControlsSource).toContain("onContextMenu={option.onContextMenu}");
     expect(sidebarControlsSource.match(/onContextMenu=\{option.onContextMenu\}/g)).toHaveLength(2);
     expect(
@@ -1378,6 +1383,11 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".sidebar-v2-control-group {\n  width: 100%;\n  box-sizing: border-box;\n}",
     );
+    expect(menuSource).toContain('const T3_MENU_TEST_EVENT = "t3:menu-test";');
+    expect(menuSource).toContain(
+      'if (!menuProbeEnabled || typeof relationId !== "string") return;',
+    );
+    expect(menuSource).toContain("runOnMainThread(handleTap)()");
   });
 
   it("keeps the authority brand on the shared titlebar inset", () => {
