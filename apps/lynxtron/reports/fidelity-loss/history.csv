@@ -430,3 +430,4 @@ lifecycle-error-hero-banner-current,2026-09-05T11:16:00-04:00,b895356cc2e434bcd7
 lifecycle-error-banner-material-current,2026-09-05T11:35:00-04:00,2d001df48d55b412e721c5c7e3209d7f8db36802,commit,Lifecycle reconnecting banner material parity,0.176942,0.176941,0.035202,0.146912,0.853088,0.814948
 hero-heading-baseline-current,2026-09-05T12:34:00-04:00,d33f1796526d575f6e5bb5c1afc71b8650f73775,commit,Hero heading baseline parity,0.176932,0.176932,0.035191,0.146912,0.853088,0.814958
 lifecycle-error-banner-copy-current,2026-09-05T13:40:00-04:00,ab8cd07bf7e60de70a60c650550915111b7c4e34,commit,Lifecycle reconnecting banner copy alignment,0.17693,0.17693,0.035188,0.146912,0.853088,0.81496
+review-empty-description-line-height-current,2026-09-05T14:02:00-04:00,cb880f0852a359dfcee0cb31428aa04677eae185,commit,Right panel empty-state vertical alignment,0.176843,0.176843,0.035086,0.146912,0.853088,0.815047
