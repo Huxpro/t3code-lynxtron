@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T04:53:00-04:00",
+  "stateId": "file-editor-detail",
+  "productCommit": "45b2a7e6e",
+  "captureCommit": "4c385567d4f129bcfbb2f6e54994915091e3c4e9",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "sourceSeedSha256": "22d498b2d182c8e92fedc6c46b42b74fae5360e85413e7b9c5c647f6bd5698ce"
+  },
+  "capture": {
+    "reportSha256": "42901fc0b638ea5cd8be1c51dabb6964bc55143efb71e7740a710e1059db47c0",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "80975a9a5f29df9b2470e9b88b85e970afeed811bccec3b5d87dbfa15bfb687c",
+    "webImageSha256": "215e961ce608aad1a0c1e0d170a6bbf0a0c45e7c73ad110953dc9d6a241a2f64",
+    "lynxImageSha256": "34945cd9fb2aabef1070bd56bc7cccb6a4df65036db12c1a1aac00c5a5ded17d",
+    "rendererErrors": 0,
+    "aggregateCapturePassed": false,
+    "aggregateCaptureBoundary": "The disposable fixture exposed an unrelated Claude authentication provider banner, so only the File Editor toolbar region and breadcrumb geometry are used."
+  },
+  "before": {
+    "behavior": "The project breadcrumb wrapped to three lines and overflowed the 40px toolbar. A nowrap-only experiment then covered the Open In and explorer controls.",
+    "toolbarSsim": 0.460494
+  },
+  "current": {
+    "web": {
+      "breadcrumbViewport": [709, 44, 173, 39],
+      "breadcrumbList": [590, 44, 291.5625, 39],
+      "visibleSuffix": "docs > PORT_WORKFLOW.md",
+      "rightBoundary": 881.5625
+    },
+    "lynx": {
+      "breadcrumbViewport": [709, 43.5, 200, 40],
+      "breadcrumbList": [709, 43.5, 200, 40],
+      "visibleSuffix": "docs > PORT_WORKFLOW.md",
+      "visibleParts": [
+        [719.296875, 54.5, 43.46875, 18],
+        [762.765625, 54.5, 146.234375, 18]
+      ],
+      "rightBoundary": 909,
+      "viewportRightBoundary": 909,
+      "controlsOccluded": false
+    },
+    "toolbarSsim": 0.612385
+  },
+  "boundary": "The Lynx breadcrumb is single-line, clipped to its own viewport, and keeps the current file suffix visible without imperative scrolling. The 27px Web/Lynx breadcrumb viewport-width difference comes from adjacent toolbar control allocation and remains explicit. Screenshots remain temporary because the tracked screenshot budget is full."
+}
