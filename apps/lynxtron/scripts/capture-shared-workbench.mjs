@@ -373,6 +373,24 @@ function composerAnatomyMatches(webMetrics, lynxMetrics) {
   if (Boolean(webStatus) !== Boolean(lynxStatus)) return false;
   if (webStatus && lynxStatus) {
     if (!rectDeltaWithin(webStatus, lynxStatus, 2)) return false;
+    const lifecycleStatus =
+      webStatus.attributes?.["data-variant"] !== undefined ||
+      lynxStatus.attributes?.["data-connection-lifecycle-phase"] !== undefined;
+    if (lifecycleStatus) {
+      const webCopy = webMetrics.anatomy?.statusCopy?.rect;
+      const lynxCopy = lynxMetrics.anatomy?.statusCopy?.rect;
+      const webAction = webMetrics.anatomy?.statusAction?.rect;
+      const lynxAction = lynxMetrics.anatomy?.statusAction?.rect;
+      if (!webCopy || !lynxCopy || !webAction || !lynxAction) return false;
+      if (Math.abs(webCopy.x - lynxCopy.x) > 2 || Math.abs(webCopy.y - lynxCopy.y) > 2) {
+        return false;
+      }
+      if (Math.abs(webCopy.height - lynxCopy.height) > 2) return false;
+      if (Math.abs(webAction.x + webAction.width - (lynxAction.x + lynxAction.width)) > 2) {
+        return false;
+      }
+      return true;
+    }
     for (const key of ["statusCopy", "statusAction"]) {
       const webLeaf = webMetrics.anatomy?.[key];
       const lynxLeaf = lynxMetrics.anatomy?.[key];

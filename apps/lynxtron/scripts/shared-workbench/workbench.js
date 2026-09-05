@@ -2459,12 +2459,28 @@ function readLynxPane() {
                   "[data-connection-lifecycle-phase], .connection-lifecycle-banner-reference, [data-composer-settled-banner]",
                 ),
               ),
-              statusCopy: readElementBox(root?.querySelector(".composer-settled-banner__copy")),
-              statusTitle: readElementBox(root?.querySelector(".composer-settled-banner__title")),
-              statusDescription: readElementBox(
-                root?.querySelector(".composer-settled-banner__description"),
+              statusCopy: readElementBox(
+                root?.querySelector("[data-connection-lifecycle-copy]") ??
+                  root?.querySelector(".composer-settled-banner__copy"),
               ),
-              statusAction: readElementBox(root?.querySelector(".composer-settled-banner__action")),
+              statusTitle: readElementBox(
+                root?.querySelector("[data-connection-lifecycle-title]") ??
+                  root?.querySelector(".composer-settled-banner__title"),
+              ),
+              statusDescription: readElementBox(
+                root?.querySelector("[data-connection-lifecycle-description]") ??
+                  root?.querySelector(".composer-settled-banner__description"),
+              ),
+              statusAction: readElementBox(
+                root?.querySelector("[data-connection-lifecycle-actions]") ??
+                  root?.querySelector(".composer-settled-banner__action"),
+              ),
+              statusReconnect: readElementBox(
+                root?.querySelector("[data-connection-lifecycle-reconnect]"),
+              ),
+              statusConnections: readElementBox(
+                root?.querySelector("[data-connection-lifecycle-connections]"),
+              ),
               surface: readElementBox(root?.querySelector(".composer-surface")),
               approvalBody: readElementBox(root?.querySelector(".composer-approval-body")),
               pending: readElementBox(
@@ -3429,26 +3445,59 @@ function readWebPane() {
                   ),
               ),
               statusCopy: readElementBox(
-                [...doc.querySelectorAll('[data-slot="alert-title"]')].find((item) =>
-                  item.textContent?.includes("This thread is settled"),
-                )?.parentElement,
+                doc.querySelector("[data-connection-lifecycle-copy]") ??
+                  [...doc.querySelectorAll('[data-slot="alert"]')]
+                    .find((item) =>
+                      /Failed to connect|Reconnecting|Connection failed/.test(
+                        item.textContent ?? "",
+                      ),
+                    )
+                    ?.querySelector('[data-slot="alert-title"]')?.parentElement ??
+                  [...doc.querySelectorAll('[data-slot="alert-title"]')].find((item) =>
+                    item.textContent?.includes("This thread is settled"),
+                  )?.parentElement,
               ),
               statusTitle: readElementBox(
-                [...doc.querySelectorAll('[data-slot="alert-title"]')].find((item) =>
-                  item.textContent?.includes("This thread is settled"),
-                ),
+                doc.querySelector("[data-connection-lifecycle-title]") ??
+                  [...doc.querySelectorAll('[data-slot="alert-title"]')].find((item) =>
+                    /Failed to connect|Reconnecting|Connection failed|This thread is settled/.test(
+                      item.textContent ?? "",
+                    ),
+                  ),
               ),
               statusDescription: readElementBox(
-                [...doc.querySelectorAll('[data-slot="alert-description"]')].find((item) =>
-                  item.textContent?.includes(
-                    "Sending a message moves it back to Active in the sidebar.",
+                doc.querySelector("[data-connection-lifecycle-description]") ??
+                  [...doc.querySelectorAll('[data-slot="alert-description"]')].find(
+                    (item) =>
+                      item.textContent?.includes("WebSocket connection") ||
+                      item.textContent?.includes(
+                        "Sending a message moves it back to Active in the sidebar.",
+                      ),
                   ),
-                ),
               ),
               statusAction: readElementBox(
-                [...doc.querySelectorAll('[data-slot="alert-action"]')].find((item) =>
-                  item.textContent?.includes("Un-settle"),
-                ),
+                doc.querySelector("[data-connection-lifecycle-actions]") ??
+                  [...doc.querySelectorAll('[data-slot="alert-action"]')].find((item) =>
+                    item.textContent?.includes("Connections"),
+                  ) ??
+                  [...doc.querySelectorAll('[data-slot="alert-action"]')].find((item) =>
+                    item.textContent?.includes("Un-settle"),
+                  ),
+              ),
+              statusReconnect: readElementBox(
+                doc.querySelector("[data-connection-lifecycle-reconnect]") ??
+                  [...(doc.querySelectorAll('[data-slot="alert-action"] button') ?? [])].find(
+                    (item) =>
+                      /^(?:Reconnect|Reconnecting(?:\.\.\.|…))$/.test(
+                        item.textContent?.trim() ?? "",
+                      ),
+                  ),
+              ),
+              statusConnections: readElementBox(
+                doc.querySelector("[data-connection-lifecycle-connections]") ??
+                  [...(doc.querySelectorAll('[data-slot="alert-action"] button') ?? [])].find(
+                    (item) => item.textContent?.trim() === "Connections",
+                  ),
               ),
               surface: readElementBox(doc.querySelector(".composer-surface")),
               approvalBody: readElementBox(doc.querySelector(".composer-approval-body")),

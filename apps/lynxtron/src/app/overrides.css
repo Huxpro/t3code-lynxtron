@@ -2440,6 +2440,7 @@
 }
 .composer-lifecycle-banner .connection-lifecycle-banner-reference {
   margin: 0;
+  gap: 8px;
   min-height: 68px;
   padding: 12px 14px;
   border-width: 1px;
@@ -2458,6 +2459,16 @@
   justify-content: center;
   width: 16px;
   height: 16px;
+}
+.connection-lifecycle-title,
+.connection-lifecycle-description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+}
+.connection-lifecycle-description {
+  margin-top: 2px;
+  color: var(--muted-foreground);
 }
 .composer-settled-banner {
   display: flex;

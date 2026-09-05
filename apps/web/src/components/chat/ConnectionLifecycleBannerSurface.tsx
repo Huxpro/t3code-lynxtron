@@ -33,18 +33,24 @@ export function ConnectionLifecycleBannerSurface({
       role={presentation.tone === "error" ? "alert" : "status"}
     >
       {icon ? <HostView className="connection-lifecycle-icon">{icon}</HostView> : null}
-      <HostView className="min-w-0 flex-1">
-        <HostText className="connection-lifecycle-title block truncate text-xs font-medium text-foreground">
+      <HostView className="min-w-0 flex-1" data-connection-lifecycle-copy>
+        <HostText
+          className="connection-lifecycle-title block truncate text-xs font-medium text-foreground"
+          data-connection-lifecycle-title
+        >
           {presentation.title}
         </HostText>
         {presentation.description ? (
-          <HostText className="connection-lifecycle-description mt-0.5 block text-[11px] leading-snug text-muted-foreground">
+          <HostText
+            className="connection-lifecycle-description mt-0.5 block text-[11px] leading-snug text-muted-foreground"
+            data-connection-lifecycle-description
+          >
             {presentation.description}
           </HostText>
         ) : null}
       </HostView>
       {recovery ? (
-        <HostView className="flex shrink-0 items-center gap-1.5">
+        <HostView className="flex shrink-0 items-center gap-1.5" data-connection-lifecycle-actions>
           <HostButton
             type="button"
             className={cn(
@@ -52,6 +58,7 @@ export function ConnectionLifecycleBannerSurface({
               recovery.primaryDisabled ? "opacity-50" : "active:bg-accent",
             )}
             aria-disabled={recovery.primaryDisabled}
+            data-connection-lifecycle-reconnect
             onClick={recovery.primaryDisabled ? undefined : onReconnect}
           >
             <HostText>{recovery.primaryLabel}</HostText>
@@ -59,6 +66,7 @@ export function ConnectionLifecycleBannerSurface({
           <HostButton
             type="button"
             className="connection-lifecycle-connections rounded px-2 py-1 text-[11px] font-medium text-muted-foreground active:bg-accent"
+            data-connection-lifecycle-connections
             onClick={onOpenConnections}
           >
             <HostText>{recovery.secondaryLabel}</HostText>
