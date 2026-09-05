@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T00:25:00-04:00",
+  "captureCommit": "5ae6886f7d0bf648b46497fc0144299d0da19b8d",
+  "productCommit": "5ae6886f7d0bf648b46497fc0144299d0da19b8d",
+  "stateId": "settings-providers-add-dialog-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "80cd54463dc46871c125e2d35862bcc254d4314bc663252359d03f21a4f3e120",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "a03167d600ce7c2081dd506447d9f6d4af04f8e71fd08ced365b4f1abbeb2106",
+    "webImageSha256": "07cc6cb8cd43e47e57b299548279e444850b6f2a2940711f83114b4f2426d574",
+    "lynxImageSha256": "81948a9b239e3ceddeed3402ecd2f2c810f7b0437a24a50f96ce4d59b6302ff0",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "dialogMatch": true,
+    "stage": "complete",
+    "inputChannel": "dual-cdp-pointer",
+    "rendererErrors": 0
+  },
+  "badgeGeometry": {
+    "cursorWeb": [556.0625, 412, 67.9375, 16],
+    "cursorLynx": [560.6113891601562, 413.5065002441406, 62.43243408203125, 13.293792724609375],
+    "grokWeb": [823.0625, 412, 67.9375, 16],
+    "grokLynx": [826.9231567382812, 413.5065002441406, 62.432373046875, 13.293792724609375]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over fixed same-viewport regions",
+    "baseline": {
+      "fullFrame": { "ssim": 0.919153, "mae": 2.378087, "significantShare": 0.032955 },
+      "dialog": { "ssim": 0.799392, "mae": 6.483239, "significantShare": 0.081752 },
+      "driverGrid": { "ssim": 0.707904, "mae": 7.29643, "significantShare": 0.112401 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.921111, "mae": 2.327594, "significantShare": 0.032319 },
+      "dialog": { "ssim": 0.806561, "mae": 6.312218, "significantShare": 0.079596 },
+      "driverGrid": { "ssim": 0.725749, "mae": 6.896607, "significantShare": 0.107362 },
+      "cursorCard": { "ssim": 0.674845, "mae": 9.284983, "significantShare": 0.177343 },
+      "grokCard": { "ssim": 0.685069, "mae": 8.56552, "significantShare": 0.1712 }
+    }
+  },
+  "boundary": "The Early Access badges are anchored 14px from the top and 12px from the right of their driver cards, bringing both badge origins within 4.55px of Web while preserving the title flow. Coming Soon cards already used the correct right-edge relation and remain unchanged. The complete wizard lifecycle and zero-error capture remain intact. Screenshots remain temporary because the tracked screenshot budget is full."
+}
