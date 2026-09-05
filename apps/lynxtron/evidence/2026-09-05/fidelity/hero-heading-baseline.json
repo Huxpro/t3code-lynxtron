@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T12:34:00-04:00",
+  "stateIds": ["new-thread-hero", "lifecycle-error"],
+  "productCommit": "d33f1796526d575f6e5bb5c1afc71b8650f73775",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "sourceSeedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "newThreadHero": {
+    "reportSha256": "473c63790f4b15722271bb52e49058942f3f891194decc278d048346fbc6cb24",
+    "webImageSha256": "3d00523ac21de0d7633f5be084f4f85243d2c8446cd764276f52149f7d9e10a2",
+    "lynxImageSha256": "08c462ca2095ce8547225ff10df9816e0d5a67af5b18e4a1b71fa1e2e8fb5925",
+    "fullFrameSsimBefore": 0.947541,
+    "fullFrameSsimCurrent": 0.948866,
+    "webHeadline": [276, 271, 984, 37],
+    "lynxHeadline": [384, 271, 768, 36],
+    "pass": true
+  },
+  "lifecycleError": {
+    "reportSha256": "b2566f4942d5468dca323496337d6d34be87b00ac0635f5dec907e1a3381dd63",
+    "webImageSha256": "ab473bf994fe651a884317b32e73a1ca3fae1d7a66d18159f2013c0331963826",
+    "lynxImageSha256": "265f9e92bedf35614c30fc608531f7aaffd04731ad747f8db8f9c1b103ebae97",
+    "fullFrameSsimBefore": 0.928926,
+    "fullFrameSsimCurrent": 0.930251,
+    "webHeadline": [276, 195, 984, 37],
+    "lynxHeadline": [384, 195, 768, 36],
+    "pass": true
+  },
+  "fix": "Move only the shared Lynx hero headline one pixel upward. Composer and lifecycle banner rectangles remain unchanged.",
+  "boundary": "The headline content width intentionally differs because Web uses a max-w-5xl heading while Lynx uses the 768px Composer column. The vertical origin now matches exactly; the one-pixel height difference is text raster rounding."
+}

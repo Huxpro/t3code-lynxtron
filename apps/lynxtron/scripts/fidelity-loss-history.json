@@ -25317,6 +25317,73 @@
           }
         }
       ]
+    },
+    {
+      "id": "hero-heading-baseline-current",
+      "observedAt": "2026-09-05T12:34:00-04:00",
+      "commit": "d33f1796526d575f6e5bb5c1afc71b8650f73775",
+      "codeCommit": "d33f1796526d575f6e5bb5c1afc71b8650f73775",
+      "codeState": "commit",
+      "label": "Hero heading baseline parity",
+      "narrative": "The shared Lynx Hero heading sat one pixel below Web in both the ordinary new-thread state and the newly repaired reconnecting error state. Moving only the heading leaf upward one pixel preserves the exact 768 by 140 Composer and 768 by 68 lifecycle card positions. Strict post-commit captures pass for both states. Full-frame SSIM improves from 0.947541 to 0.948866 for new-thread Hero and from 0.928926 to 0.930251 for lifecycle error.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Two independent same-snapshot strict captures retain byte-identical Web authority frames and change only the Lynx heading transform. Both move from a one-pixel vertical delta to exact y alignment without moving Composer or lifecycle-card geometry."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/hero-heading-baseline.json",
+          "classification": "tracked-current",
+          "sha256": "e7242902c4e6959731272988b7894625ac697bb63d7066bc6c559676fadd8a0f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "hero-heading-and-composer-geometry",
+              "source": "Headline y matches exactly; its height differs by one pixel while Composer and editor rectangles match exactly"
+            },
+            "material": {
+              "residual": 0.051134,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - strict post-commit SSIM 0.948866, improved from 0.947541 with byte-identical Web authority pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "new-thread-hero-current-runtime",
+              "source": "Strict same-server capture passes with matching project, model, controls, route, theme, viewport, and zero renderer errors"
+            }
+          }
+        },
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "lifecycle-hero-heading-and-composer-geometry",
+              "source": "Headline y, lifecycle banner, and Composer positions match exactly; headline height differs by one pixel"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "lifecycle-error-headline-current-runtime",
+              "source": "Strict owned-server fault capture passes with stable provider preflight, matching lifecycle content, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
