@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T08:58:00-04:00",
+  "stateId": "sidebar-inline-search",
+  "productCommit": "5d6ce99993d55584925c1702c23f4591c5b3d4c9",
+  "captureCommit": "5d6ce99993d55584925c1702c23f4591c5b3d4c9",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "query": "fidelity",
+    "snapshotSha256": "22d498b2d182c8e92fedc6c46b42b74fae5360e85413e7b9c5c647f6bd5698ce"
+  },
+  "capture": {
+    "reportSha256": "045a8f4fa5eadf0d760d8bb3a44bb0ece08d842c90d0b1f7e51b3a237b2a58bc",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "b07490d8d9cd14836aef4d29b2030dc89bdc2615246532f0a3b8c5cdcdc36d67",
+    "webImageSha256": "b65615738c5ecb3394101cb1aa34228ccc4bf618f3be14ec28e22e58785ee58f",
+    "lynxImageSha256": "f27c26d1989629ad0d9fbe3d44db7ac16ee6fea9390466f5875f0c0e3b45c533",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "webQuery": "fidelity",
+    "lynxQuery": "fidelity",
+    "webResults": ["File error fidelity"],
+    "lynxResults": ["File error fidelity"],
+    "lynxTextFillColor": "rgb(241, 243, 247)"
+  },
+  "geometry": {
+    "webInput": [40, 65, 131, 30],
+    "lynxInput": [41, 66, 139, 30]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": {
+      "fullFrame": { "mae": 1.512025, "significantShare": 0.016123 },
+      "searchRow": { "ssim": 0.759765, "mae": 9.71474, "significantShare": 0.071914 }
+    },
+    "current": {
+      "fullFrame": { "mae": 1.514529, "significantShare": 0.016201 },
+      "searchRow": { "ssim": 0.789879, "mae": 10.058359, "significantShare": 0.082636 }
+    }
+  },
+  "boundary": "The Lynx search host already carried the exact query but its internal Web Components input did not inherit a paintable text style. The Browser Preview adapter now supplies the scoped input box, font, currentColor text fill, and caret inheritance. The strict gate requires a nonzero inner input and nontransparent text fill. The provider-auth banner is outside the fixed search-row crop and receives no attribution."
+}

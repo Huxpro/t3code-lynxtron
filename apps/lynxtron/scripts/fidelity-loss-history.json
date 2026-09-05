@@ -25145,6 +25145,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-inline-search-input-text-current",
+      "observedAt": "2026-09-05T08:58:00-04:00",
+      "commit": "5d6ce99993d55584925c1702c23f4591c5b3d4c9",
+      "codeCommit": "5d6ce99993d55584925c1702c23f4591c5b3d4c9",
+      "codeState": "commit",
+      "label": "Sidebar inline search text visibility",
+      "narrative": "The Lynx search state and result filter already held the exact fidelity query, but the Browser Preview custom-element input painted no text. A scoped internal-input rule restores the query with inherited font and foreground fill. Search-row SSIM improves from 0.759765 to 0.789879 while the same result remains selected.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one immutable snapshot, thread, query, result, dark theme, viewport, and zero renderer errors. The change is limited to the Lynx Browser Preview inner input style and its visibility gate."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/sidebar-inline-search-input-text.json",
+          "classification": "tracked-current",
+          "sha256": "53cbb32efc4fb7c3c77dba52a5b2fd004fbb215243f5062e59e6008f1356c506"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-inline-search"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-inline-search-visible-value",
+              "source": "Both inner inputs visibly expose fidelity and both result lists contain the same File error fidelity row"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-inline-search-current-runtime",
+              "source": "Strict paired capture passes after one focused input per renderer with matching query and result, nontransparent inner input fill, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

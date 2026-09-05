@@ -424,3 +424,4 @@ settings-navigation-stacking-current,2026-09-05T07:04:00-04:00,7f349b25392d81e09
 settings-background-policy-info-current,2026-09-05T07:30:00-04:00,a7c79318e08ccf85ecc4d8366132f0c387ab3313,commit,Settings background policy info parity,0.17698,0.17698,0.035246,0.146912,0.853088,0.81491
 settings-keybindings-keycap-order-current,2026-09-05T08:10:00-04:00,916d7e8698ffa74b8212ef94dbf4f2a17817c380,commit,Settings keybinding keycap parity,0.176958,0.176958,0.035221,0.146912,0.853088,0.814932
 sidebar-settings-footer-real-row-current,2026-09-05T08:30:00-04:00,3532f0e20d5ba0e9a28b77f34ec2a7686131e719,commit,Sidebar Settings footer real-row parity,0.176941,0.176941,0.0352,0.146912,0.853088,0.814949
+sidebar-inline-search-input-text-current,2026-09-05T08:58:00-04:00,5d6ce99993d55584925c1702c23f4591c5b3d4c9,commit,Sidebar inline search text visibility,0.176941,0.176941,0.0352,0.146912,0.853088,0.814949
