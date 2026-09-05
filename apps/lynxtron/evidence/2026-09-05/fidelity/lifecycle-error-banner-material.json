@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T11:35:00-04:00",
+  "stateId": "lifecycle-error",
+  "productCommit": "2d001df48d55b412e721c5c7e3209d7f8db36802",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "sourceSeedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "dba8dc3d627077776609cab6d74303bb3450217c21c04d6095c98202d48f24ee",
+    "webImageSha256": "ab473bf994fe651a884317b32e73a1ca3fae1d7a66d18159f2013c0331963826",
+    "lynxImageSha256": "3e08d3cc8e234387910440bb3e1adcdd2442ed2a1cbca66be171650fd1ab69cf",
+    "lynxBundleSha256": "3e8edbe3fc2e576fc179c8bd572d22770a41fadb9c8502dbb7094cbf385e226f",
+    "pass": true,
+    "rendererErrors": 0,
+    "fullFrameSsimBefore": 0.9228,
+    "fullFrameSsimCurrent": 0.928926,
+    "bannerCropSsimBefore": 0.566775,
+    "bannerCropSsimCurrent": 0.634624
+  },
+  "identity": {
+    "sameServerFault": true,
+    "sameProject": "background-only",
+    "sameEnvironmentLabel": "MacBook Pro (3)",
+    "sameModelLabel": "Claude Fable 5",
+    "sameComposerState": "disabled",
+    "samePlaceholder": "Ask for follow-up changes or attach images",
+    "sameControls": ["model", "model-option", "runtime", "interaction"],
+    "stablePreflightPolls": 34,
+    "lynxConnectionStatus": "reconnecting"
+  },
+  "geometry": {
+    "webHeadline": [276, 195, 984, 37],
+    "lynxHeadline": [384, 196, 768, 36],
+    "webBanner": [384, 264, 768, 68],
+    "lynxBanner": [384, 264, 768, 68],
+    "webComposer": [384, 340, 768, 140],
+    "lynxComposer": [384, 340, 768, 140]
+  },
+  "fix": [
+    "Use the shared environment label instead of the hard-coded T3 Code title.",
+    "Expose a stable tone class so reconnecting uses the same amber warning material in Browser Preview and Native."
+  ],
+  "boundary": "The full-frame and banner metrics are diagnostic current measurements. The milestone updates lifecycle material from the directly comparable prior strict capture while retaining typography and physical-interaction debt."
+}

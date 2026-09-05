@@ -25276,6 +25276,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "lifecycle-error-banner-material-current",
+      "observedAt": "2026-09-05T11:35:00-04:00",
+      "commit": "2d001df48d55b412e721c5c7e3209d7f8db36802",
+      "codeCommit": "2d001df48d55b412e721c5c7e3209d7f8db36802",
+      "codeState": "commit",
+      "label": "Lifecycle reconnecting banner material parity",
+      "narrative": "The restored Lynx reconnecting card still used the generic T3 Code title and neutral surface while Web used the active environment label and amber warning material. The shared surface now exposes an explicit tone class and Lynx derives the title from the shared server config. On the same immutable fault fixture, full-frame SSIM improves from 0.922800 to 0.928926 and the fixed 768 by 68 banner crop improves from 0.566775 to 0.634624 without changing geometry, model, controls, placeholder, or lifecycle state.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use byte-identical Web authority pixels, one snapshot, project, provider projection, server-fault sequence, theme, viewport, and zero renderer errors. Only the Lynx environment title and reconnecting tone material change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/lifecycle-error-banner-material.json",
+          "classification": "tracked-current",
+          "sha256": "196da96ac5ee26819cd1824c6d1cf3a28860ae6733d0c0582c71c79b9cf3c39e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.071074,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - current strict full-frame SSIM 0.928926; fixed banner crop SSIM improves from 0.566775 to 0.634624"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "lifecycle-error-title-material-current-runtime",
+              "source": "Strict capture passes after 34 stable provider polls, owned server termination, matching reconnecting state, exact banner and Composer geometry, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
