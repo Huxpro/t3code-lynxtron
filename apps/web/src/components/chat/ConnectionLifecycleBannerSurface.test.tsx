@@ -25,6 +25,7 @@ describe("ConnectionLifecycleBannerSurface", () => {
     );
 
     expect(markup).toContain("connection-lifecycle-banner-reference");
+    expect(markup).toContain("connection-lifecycle-actions");
     expect(markup).toContain('data-connection-lifecycle-phase="error"');
     expect(markup).toContain("Server exited unexpectedly.");
     expect(markup).toContain("connection-lifecycle-reconnect");

@@ -50,7 +50,10 @@ export function ConnectionLifecycleBannerSurface({
         ) : null}
       </HostView>
       {recovery ? (
-        <HostView className="flex shrink-0 items-center gap-1.5" data-connection-lifecycle-actions>
+        <HostView
+          className="connection-lifecycle-actions flex shrink-0 items-center gap-1.5"
+          data-connection-lifecycle-actions
+        >
           <HostButton
             type="button"
             className={cn(

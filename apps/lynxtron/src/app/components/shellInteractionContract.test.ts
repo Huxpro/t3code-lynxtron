@@ -158,7 +158,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".composer-lifecycle-banner .connection-lifecycle-reconnect,");
     expect(overrides).toContain("width: 101px;");
     expect(overrides).toContain("opacity: 0.64;");
-    expect(overrides).toContain("[data-connection-lifecycle-actions]");
+    expect(overrides).toContain(".connection-lifecycle-actions");
     expect(overrides).toContain("gap: 4px;");
     expect(overrides).toContain("width: 88px;");
     expect(chatView).not.toContain(

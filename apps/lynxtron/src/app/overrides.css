@@ -2467,7 +2467,7 @@
   font-size: 12px;
   line-height: 16px;
 }
-.composer-lifecycle-banner [data-connection-lifecycle-actions] {
+.composer-lifecycle-banner .connection-lifecycle-actions {
   gap: 4px;
 }
 .composer-lifecycle-banner .connection-lifecycle-reconnect {
