@@ -989,6 +989,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".provider-instance-dialog__early-access {\n  position: absolute;\n  top: 14px;\n  right: 12px;",
     );
+    expect(overrides).toContain(".provider-instance-dialog__step-number {\n  display: flex;");
+    expect(overrides).toContain("  box-sizing: border-box;");
     expect(overrides).toContain(
       ".theme-light .file-editor-line__number {\n  color: rgb(94, 94, 94);\n  font-size: 13px;",
     );

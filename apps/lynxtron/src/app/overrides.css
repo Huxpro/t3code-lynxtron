@@ -7787,6 +7787,7 @@
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
+  box-sizing: border-box;
 }
 .provider-instance-dialog__step--active .provider-instance-dialog__step-number {
   color: var(--primary);
