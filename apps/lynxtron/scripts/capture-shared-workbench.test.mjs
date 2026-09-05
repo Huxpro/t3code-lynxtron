@@ -103,6 +103,7 @@ describe("shared workbench lifecycle fault capture", () => {
   it("filters only expected transport errors during the injected disconnect", () => {
     assert.include(source, "isLifecycleFaultState");
     assert.include(source, "/WebSocket connection .* failed:/");
+    assert.include(source, "/WebSocket is already in CLOSING or CLOSED state\\./");
     assert.include(source, "/SocketReadError: An error occurred during Read/");
   });
 
@@ -114,10 +115,7 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("stabilizes provider presentation before capturing the disabled fault state", () => {
-    assert.include(
-      source,
-      'const requiresStableProviderFaultPreflight = stateId === "composer-disabled"',
-    );
+    assert.include(source, "const requiresStableProviderFaultPreflight = isLifecycleFaultState");
     assert.include(source, "let lifecycleFaultPreflightStablePolls");
     assert.include(source, "webModel.length > 0");
     assert.include(source, "webModel === lynxModel");

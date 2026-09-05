@@ -255,7 +255,6 @@ export function ChatView({ threadId }: ChatViewProps) {
       proposedPlanCount: proposedPlans.length,
     });
   const providerAvailable =
-    status === "ready" &&
     resolveSelectableProviderInstanceEntry(
       providerEntries,
       activeProviderInstanceId ?? presentedModelSelection?.instanceId,
@@ -586,6 +585,8 @@ export function ChatView({ threadId }: ChatViewProps) {
       }
       activeThreadKind={activeDraftThread ? "draft" : activeThread ? "server" : "none"}
       activeThreadId={activeThreadId}
+      connectionStatus={status}
+      connectionStatusDetail={statusDetail}
       layoutControls={<ChatLayoutControls rightPanelOpen={rightPanel.isOpen} />}
       header={
         <ChatHeader
@@ -740,10 +741,11 @@ export function ChatView({ threadId }: ChatViewProps) {
         showInteractionModeToggle={showInteractionModeToggle}
         availableWidth={centerPanelWidth}
         statusBanner={
-          shouldRenderConnectionLifecycleBanner({ hero }) && connectionLifecycle.visible ? (
+          shouldRenderConnectionLifecycleBanner() && connectionLifecycle.visible ? (
             <view className="composer-lifecycle-banner">
               <ConnectionLifecycleBannerSurface
                 presentation={connectionLifecycle}
+                icon={<Icon name="wifi-off" size={16} color="#f59e0b" />}
                 onReconnect={() => {
                   void reconnect().catch(() => undefined);
                 }}

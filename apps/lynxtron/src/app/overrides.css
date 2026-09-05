@@ -2440,6 +2440,27 @@
 }
 .composer-lifecycle-banner .connection-lifecycle-banner-reference {
   margin: 0;
+  min-height: 68px;
+  padding: 12px 14px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 22px;
+  box-sizing: border-box;
+}
+.composer-lifecycle-banner
+  .connection-lifecycle-banner-reference[data-connection-lifecycle-phase="connecting"],
+.composer-lifecycle-banner
+  .connection-lifecycle-banner-reference[data-connection-lifecycle-phase="reconnecting"] {
+  border-color: rgba(var(--warning-rgb), 0.32);
+  background-color: rgba(var(--warning-rgb), 0.04);
+}
+.connection-lifecycle-icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
 }
 .composer-settled-banner {
   display: flex;
@@ -3864,6 +3885,12 @@
   bottom: 100%;
   width: 100%;
   padding-bottom: 32px;
+}
+.hero__headline-slot--status {
+  padding-bottom: 8px;
+}
+.hero__headline-slot--status .hero__headline {
+  margin-bottom: 32px;
 }
 .hero__headline {
   display: block;

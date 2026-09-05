@@ -132,16 +132,27 @@ describe("desktop shell interaction contract", () => {
     const chatView = componentSource("ChatView.tsx");
 
     expect(chatView).toContain(
-      "shouldRenderConnectionLifecycleBanner({ hero }) && connectionLifecycle.visible",
+      "shouldRenderConnectionLifecycleBanner() && connectionLifecycle.visible",
     );
     expect(chatView).toContain(") : activeThreadSettled ? (");
   });
 
   it("keeps connection lifecycle feedback in the Composer overlay", () => {
     const chatView = componentSource("ChatView.tsx");
+    const composer = componentSource("Composer.tsx");
     expect(chatView).toContain('className="composer-lifecycle-banner"');
-    expect(chatView).toContain("shouldRenderConnectionLifecycleBanner({ hero })");
+    expect(chatView).toContain("shouldRenderConnectionLifecycleBanner()");
+    expect(composer).toContain("hero__headline-slot--status");
+    expect(composer).toContain("{statusBanner}");
+    expect(overrides).toContain(".hero__headline-slot--status {");
+    expect(overrides).toContain("padding-bottom: 8px;");
     expect(overrides).toContain(".composer-lifecycle-banner {");
+    expect(chatView).toContain('<Icon name="wifi-off" size={16} color="#f59e0b" />');
+    expect(overrides).toContain('data-connection-lifecycle-phase="reconnecting"');
+    expect(chatView).not.toContain(
+      'status === "ready" &&\n    resolveSelectableProviderInstanceEntry',
+    );
+    expect(chatView).toContain('disabled={status !== "ready" || sessionStatus === "starting"}');
   });
 
   it("reports archived thread identity to isolated Native readiness harnesses", () => {

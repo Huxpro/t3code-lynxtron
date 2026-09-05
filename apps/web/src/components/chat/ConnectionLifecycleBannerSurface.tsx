@@ -1,14 +1,17 @@
 import type { ConnectionLifecyclePresentation } from "@t3tools/client-runtime/connection/presentation";
+import type { ReactNode } from "react";
 
 import { cn } from "../../lib/cn";
 import { HostButton, HostText, HostView } from "../ui/hostElements";
 
 export function ConnectionLifecycleBannerSurface({
   presentation,
+  icon,
   onReconnect,
   onOpenConnections,
 }: {
   readonly presentation: ConnectionLifecyclePresentation;
+  readonly icon?: ReactNode;
   readonly onReconnect: () => void;
   readonly onOpenConnections: () => void;
 }) {
@@ -28,6 +31,7 @@ export function ConnectionLifecycleBannerSurface({
       data-connection-lifecycle-phase={presentation.phase}
       role={presentation.tone === "error" ? "alert" : "status"}
     >
+      {icon ? <HostView className="connection-lifecycle-icon">{icon}</HostView> : null}
       <HostView className="min-w-0 flex-1">
         <HostText className="connection-lifecycle-title block truncate text-xs font-medium text-foreground">
           {presentation.title}

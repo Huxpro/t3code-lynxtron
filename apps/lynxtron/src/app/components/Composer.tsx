@@ -1630,7 +1630,9 @@ export function Composer({
     return (
       <view className="hero">
         <view className="hero__inner">
-          <view className="hero__headline-slot">
+          <view
+            className={`hero__headline-slot${statusBanner ? " hero__headline-slot--status" : ""}`}
+          >
             <ComposerHeroHeadline
               project={
                 <HostInlineText className="hero__project-name">
@@ -1638,6 +1640,7 @@ export function Composer({
                 </HostInlineText>
               }
             />
+            {statusBanner}
           </view>
           {card}
         </view>

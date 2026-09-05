@@ -2017,6 +2017,8 @@ function readLynxPane() {
         selectedThread: settingsRoute || heroPresent ? null : activeThreadId,
         activeThreadKind: chatSurface?.getAttribute("data-active-thread-kind") ?? null,
         activeThreadId: chatSurface?.getAttribute("data-active-thread-id") ?? null,
+        connectionStatus: chatSurface?.getAttribute("data-connection-status") ?? null,
+        connectionStatusDetail: chatSurface?.getAttribute("data-connection-status-detail") ?? null,
         selectedModel: null,
         visibleModelLabel,
         interactionMode:
@@ -2452,7 +2454,11 @@ function readLynxPane() {
               (item) => item.textContent?.trim() ?? "",
             ),
             anatomy: {
-              statusBanner: readElementBox(root?.querySelector("[data-composer-settled-banner]")),
+              statusBanner: readElementBox(
+                root?.querySelector(
+                  "[data-connection-lifecycle-phase], .connection-lifecycle-banner-reference, [data-composer-settled-banner]",
+                ),
+              ),
               statusCopy: readElementBox(root?.querySelector(".composer-settled-banner__copy")),
               statusTitle: readElementBox(root?.querySelector(".composer-settled-banner__title")),
               statusDescription: readElementBox(
@@ -3413,9 +3419,14 @@ function readWebPane() {
             })(),
             anatomy: {
               statusBanner: readElementBox(
-                [...doc.querySelectorAll('[data-slot="alert"]')].find((item) =>
-                  item.textContent?.includes("This thread is settled"),
-                ),
+                doc.querySelector("[data-connection-lifecycle-phase]") ??
+                  doc.querySelector(".connection-lifecycle-banner-reference") ??
+                  [...doc.querySelectorAll('[data-slot="alert"]')].find((item) =>
+                    /Failed to connect|Reconnecting|Connection failed/.test(item.textContent ?? ""),
+                  ) ??
+                  [...doc.querySelectorAll('[data-slot="alert"]')].find((item) =>
+                    item.textContent?.includes("This thread is settled"),
+                  ),
               ),
               statusCopy: readElementBox(
                 [...doc.querySelectorAll('[data-slot="alert-title"]')].find((item) =>

@@ -1,9 +1,7 @@
 import type { ConnectionStatus } from "../bridge";
 
-export function shouldRenderConnectionLifecycleBanner(options: {
-  readonly hero: boolean;
-}): boolean {
-  return !options.hero;
+export function shouldRenderConnectionLifecycleBanner(): boolean {
+  return true;
 }
 
 export function resolveConnectionScopedValue<T>(options: {

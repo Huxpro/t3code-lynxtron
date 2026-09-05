@@ -27,6 +27,8 @@ export function ChatRouteSurface({
   onClick,
   activeThreadKind,
   activeThreadId,
+  connectionStatus,
+  connectionStatusDetail,
 }: {
   /** Layout controls rendered ahead of the column (Web: inline right-panel mode). */
   readonly layoutControls?: ReactNode;
@@ -51,12 +53,16 @@ export function ChatRouteSurface({
   /** Semantic lifecycle marker used by cross-renderer verification. */
   readonly activeThreadKind?: "draft" | "server" | "none";
   readonly activeThreadId?: string;
+  readonly connectionStatus?: string;
+  readonly connectionStatusDetail?: string;
 }) {
   return (
     <HostView
       className="chat-view-surface-reference relative flex min-h-0 min-w-0 flex-1 overflow-hidden bg-background"
       data-active-thread-kind={activeThreadKind}
       data-active-thread-id={activeThreadId}
+      data-connection-status={connectionStatus}
+      data-connection-status-detail={connectionStatusDetail}
       onClick={onClick}
     >
       {layoutControls}

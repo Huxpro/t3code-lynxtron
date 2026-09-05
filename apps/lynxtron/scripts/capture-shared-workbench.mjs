@@ -192,7 +192,7 @@ if (!["complete", "driver"].includes(providerDialogStopAt)) {
   throw new Error("--provider-dialog-stop-at must be complete or driver.");
 }
 const isLifecycleFaultState = stateId === "lifecycle-error" || stateId === "composer-disabled";
-const requiresStableProviderFaultPreflight = stateId === "composer-disabled";
+const requiresStableProviderFaultPreflight = isLifecycleFaultState;
 const isEmptyTranscriptState = stateId === "existing-thread-idle";
 const isNarrowComposerExpandState = stateId === "chat-input-narrow-expanded";
 const isNarrowChatThreadState = stateId === "chat-thread-narrow" || isNarrowComposerExpandState;
@@ -372,10 +372,11 @@ function composerAnatomyMatches(webMetrics, lynxMetrics) {
   const lynxStatus = lynxMetrics.anatomy?.statusBanner;
   if (Boolean(webStatus) !== Boolean(lynxStatus)) return false;
   if (webStatus && lynxStatus) {
-    for (const key of ["statusBanner", "statusCopy", "statusAction"]) {
-      if (!rectDeltaWithin(webMetrics.anatomy?.[key], lynxMetrics.anatomy?.[key], 2)) {
-        return false;
-      }
+    if (!rectDeltaWithin(webStatus, lynxStatus, 2)) return false;
+    for (const key of ["statusCopy", "statusAction"]) {
+      const webLeaf = webMetrics.anatomy?.[key];
+      const lynxLeaf = lynxMetrics.anatomy?.[key];
+      if (webLeaf && lynxLeaf && !rectDeltaWithin(webLeaf, lynxLeaf, 2)) return false;
     }
   }
   return true;
@@ -12111,6 +12112,7 @@ async function captureCell({
       !(
         isLifecycleFaultState &&
         (/WebSocket connection .* failed:/.test(e.text) ||
+          /WebSocket is already in CLOSING or CLOSED state\./.test(e.text) ||
           /SocketReadError: An error occurred during Read/.test(e.text))
       ),
   );

@@ -445,7 +445,7 @@ export class LiveConnectorHost {
       if (this.#disposed || !this.diagnostics.connected) return;
       this.diagnostics.connected = false;
       this.diagnostics.error = "Shared server connection closed.";
-      this.#setStatus("error", this.diagnostics.error);
+      this.#setStatus("reconnecting", this.diagnostics.error);
     });
   }
 

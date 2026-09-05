@@ -7,9 +7,8 @@ import {
 } from "./connectionPresentation.logic";
 
 describe("connection-scoped presentation", () => {
-  it("keeps the draft hero centered when connection state changes", () => {
-    assert.isFalse(shouldRenderConnectionLifecycleBanner({ hero: true }));
-    assert.isTrue(shouldRenderConnectionLifecycleBanner({ hero: false }));
+  it("renders connection recovery in both draft and existing-thread composers", () => {
+    assert.isTrue(shouldRenderConnectionLifecycleBanner());
   });
 
   it("retains the last known presentation only while the connection is unavailable", () => {

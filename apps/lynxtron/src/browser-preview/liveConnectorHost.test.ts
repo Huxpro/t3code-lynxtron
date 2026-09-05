@@ -158,6 +158,11 @@ describe("LiveConnectorHost", () => {
     assert.equal(T3_CONNECTOR_EVENT, "t3:connector-event");
   });
 
+  it("projects an unexpected shared-server close as reconnecting", () => {
+    const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
+    assert.include(source, 'this.#setStatus("reconnecting", this.diagnostics.error)');
+  });
+
   it("waits for the live config before replying to renderer readiness", () => {
     const hostSource = readFileSync(
       path.join(srcRoot, "browser-preview/liveConnectorHost.ts"),
