@@ -24488,6 +24488,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-step-number-sizing-current",
+      "observedAt": "2026-09-05T00:51:00-04:00",
+      "commit": "5df24c1a2",
+      "codeCommit": "06d70fd02ee99fee114a069ff39bd8a49c8ef78e",
+      "codeState": "commit",
+      "label": "Provider dialog step-number sizing parity",
+      "narrative": "The light Add Provider step rail used 20px number circles in both renderers, but Lynx applied its 1px border outside that size and rendered 22px circles, shifting every step label two pixels. Border-box sizing restores exact 20 by 20 number boxes and matching label origins for all three 170 by 36 steps. Step-rail SSIM reaches 0.895495; dialog SSIM improves from 0.806561 to 0.811916 and MAE from 6.312218 to 6.089731.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, light theme, viewport, exact dialog geometry, full wizard lifecycle, and zero renderer errors. The change only corrects step-number box sizing."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-step-number-sizing.json",
+          "classification": "tracked-current",
+          "sha256": "e631825856eb4df06a24a5e655b30deb74eb5a48ca11a01e5d321fcf092d7fc4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "provider-dialog-step-number-geometry",
+              "source": "All three step boxes, 20 by 20 number circles, and label origins match Web exactly"
+            },
+            "material": {
+              "residual": 0.188084,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-ssim",
+              "source": "1 - exact dialog SSIM 0.811916; MAE 6.089731 and 7.8412 percent significant pixels after step sizing alignment"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-runtime",
+              "source": "Same snapshot and route, complete Driver to Identity to Config to save to delete to dismiss flow, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
