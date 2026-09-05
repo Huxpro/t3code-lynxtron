@@ -9385,6 +9385,7 @@
   flex-grow: 1;
   width: 0;
   height: 40px;
+  overflow: hidden;
 }
 .file-panel__breadcrumb-list,
 .file-panel__breadcrumb-part {
@@ -9394,6 +9395,7 @@
   flex-shrink: 0;
 }
 .file-panel__breadcrumb-list {
+  justify-content: flex-end;
   min-width: 100%;
   height: 40px;
 }
@@ -9402,6 +9404,7 @@
 }
 .file-panel__breadcrumb {
   flex-shrink: 0;
+  white-space: nowrap;
   color: var(--muted-foreground);
   font-family: var(--font-sans);
   font-size: 12px;

@@ -944,6 +944,15 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
     expect(files).toContain("projectFileLineTokens(path, line)");
+    expect(overrides).toContain(
+      ".file-panel__breadcrumb {\n  flex-shrink: 0;\n  white-space: nowrap;",
+    );
+    expect(overrides).toContain(
+      ".file-panel__breadcrumbs {\n  display: flex;\n  flex-direction: row;\n  flex-grow: 1;\n  width: 0;\n  height: 40px;\n  overflow: hidden;",
+    );
+    expect(overrides).toContain(
+      ".file-panel__breadcrumb-list {\n  justify-content: flex-end;\n  min-width: 100%;",
+    );
     expect(files).toContain("serializeComposerFileLink(path)");
     expect(files).toContain('{ id: "copy-mention", label: "Copy mention" }');
     expect(files).toContain('{ id: "add-to-chat", label: "Add to chat" }');
