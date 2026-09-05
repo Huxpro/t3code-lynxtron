@@ -145,6 +145,7 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("hero__headline-slot--status");
     expect(composer).toContain("{statusBanner}");
     expect(overrides).toContain(".hero__headline-slot--status {");
+    expect(overrides).toContain("transform: translateY(-1px);");
     expect(overrides).toContain("padding-bottom: 8px;");
     expect(overrides).toContain(".composer-lifecycle-banner {");
     expect(chatView).toContain('<Icon name="wifi-off" size={16} color="#f59e0b" />');

@@ -3892,6 +3892,7 @@
 .hero__headline {
   display: block;
   width: 100%;
+  transform: translateY(-1px);
   color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 30px;
