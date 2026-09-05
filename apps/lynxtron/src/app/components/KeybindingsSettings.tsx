@@ -2,6 +2,7 @@ import {
   buildKeybindingRows,
   commandLabel,
   formatKeybindingShortcutLabel,
+  shortcutToKeybindingInput,
 } from "../../../../web/src/components/settings/KeybindingsSettings.logic";
 import type { KeybindingShortcut } from "@t3tools/contracts";
 import { useT3ClientState } from "../state/t3Client";
@@ -10,9 +11,18 @@ import { Icon } from "./Icon";
 import { SettingsSection } from "./SettingsControls";
 
 function shortcutParts(shortcut: KeybindingShortcut, platform: string): ReadonlyArray<string> {
-  const label = formatKeybindingShortcutLabel(shortcut, platform);
-  if (!platform.toLowerCase().includes("darwin")) return label.split("+");
-  return label.match(/[⌘⇧⌥⌃]|[^⌘⇧⌥⌃]+/gu)?.filter(Boolean) ?? [label];
+  if (!platform.toLowerCase().includes("darwin")) {
+    return formatKeybindingShortcutLabel(shortcut, platform).split("+");
+  }
+  return shortcutToKeybindingInput(shortcut)
+    .split("+")
+    .map((part) => {
+      if (part === "mod" || part === "meta") return "⌘";
+      if (part === "shift") return "⇧";
+      if (part === "alt") return "⌥";
+      if (part === "ctrl") return "⌃";
+      return part.length === 1 ? part.toUpperCase() : part;
+    });
 }
 
 export function KeybindingsSettings() {

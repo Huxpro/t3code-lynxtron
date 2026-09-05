@@ -1666,6 +1666,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"settings-keybindings": "settings-general"');
     assert.include(source, "function keybindingsSettingsContentMatches");
     assert.include(source, "function keybindingsSettingsGeometryMatches");
+    assert.include(source, "command, shortcut, when, source, conflicts, keycaps");
+    assert.include(workbench, "keybindings-table__keycap");
     assert.include(source, "JSON.stringify(canonical(webRows))");
     assert.include(source, "!rectDeltaWithin(webHeader, lynxHeader, 2)");
     assert.include(source, "const sharedColumnGeometry");

@@ -868,6 +868,12 @@ function readKeybindingsMetrics(root) {
       when: row.getAttribute("data-keybinding-when"),
       source: row.getAttribute("data-keybinding-source"),
       conflicts: JSON.parse(row.getAttribute("data-keybinding-conflicts") ?? "[]"),
+      keycaps: [
+        ...(row.querySelectorAll("[data-slot='kbd'], .keybindings-table__keycap") ?? []),
+      ].map((keycap) => ({
+        text: keycap.textContent?.trim() ?? "",
+        box: readElementBox(keycap),
+      })),
       box: readElementBox(row),
       columns: [...row.children].map((item) => ({
         text: item.textContent?.trim().replace(/\s+/g, " ") ?? "",

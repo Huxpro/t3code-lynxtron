@@ -1241,6 +1241,10 @@ describe("desktop shell interaction contract", () => {
     expect(keybindingsSettingsSource).toContain(
       '<Icon name="triangle-alert" size={14} color="#f59e0b" />',
     );
+    expect(overrides).toContain(".keybindings-table__keycaps {\n  gap: 4px;\n  margin-left: 7px;");
+    expect(overrides).toContain(
+      ".keybindings-table__keycap {\n  width: 24px;\n  height: 20px;\n  min-width: 24px;\n  padding: 0;\n  box-sizing: border-box;",
+    );
     expect(componentSource("KeybindingsSettings.tsx")).not.toContain(
       "Keybindings are read-only on Lynxtron until renderer keyboard capture is verified.",
     );

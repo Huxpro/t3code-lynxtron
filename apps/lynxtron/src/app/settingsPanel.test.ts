@@ -218,6 +218,8 @@ describe("Lynx Settings route projection", () => {
     expect(keybindings).toContain("rows.map((row, index) =>");
     expect(keybindings).toContain("formatKeybindingShortcutLabel(row.binding.shortcut, platform)");
     expect(keybindings).toContain("data-keybinding-conflicts={JSON.stringify(row.conflicts)}");
+    expect(keybindings).toContain("shortcutToKeybindingInput(shortcut)");
+    expect(keybindings).toContain('if (part === "mod" || part === "meta") return "⌘";');
     expect(keybindings).toContain('name="triangle-alert"');
     expect(keybindings).toContain("Keybindings are read-only on Lynxtron");
     expect(keybindings).toContain('<Icon name="info" size={14} color="#f59e0b" />');

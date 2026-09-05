@@ -1293,12 +1293,13 @@ function keybindingsSettingsContentMatches(webMetrics, lynxMetrics) {
   const webRows = webMetrics?.keybindings?.rows ?? [];
   const lynxRows = lynxMetrics?.keybindings?.rows ?? [];
   const canonical = (rows) =>
-    rows.map(({ command, shortcut, when, source, conflicts }) => ({
+    rows.map(({ command, shortcut, when, source, conflicts, keycaps }) => ({
       command,
       shortcut,
       when,
       source,
       conflicts,
+      keycaps: keycaps.map(({ text }) => text),
     }));
   return (
     webRows.length > 0 &&
