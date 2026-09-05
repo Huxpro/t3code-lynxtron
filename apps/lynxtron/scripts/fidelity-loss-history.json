@@ -24309,6 +24309,96 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-detail-light-browser-current",
+      "observedAt": "2026-09-04T23:34:00-04:00",
+      "commit": "60c4af8c5",
+      "codeCommit": "3e6867671dafb8ccdfe3ac5367fba0c45563cd33",
+      "codeState": "commit",
+      "label": "Light File Editor Browser convergence",
+      "narrative": "A sequence of same-snapshot light 1280 by 820 Browser captures aligned the Lynx file preview's line-number typography and content insets, selected-row material, file-row indentation, directory anatomy, and file-icon anchor with the Web authority. Full-frame SSIM improves from 0.854274 to 0.924219 and MAE from 6.470413 to 3.669977; editor SSIM improves from 0.685387 to 0.983471; Explorer SSIM improves from 0.752740 to 0.819596. The final state preserves exact editor and row geometry, real file switching and return navigation, and zero renderer errors. Native acceptance remains explicit evidence debt.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "All captures use the same immutable snapshot, selected thread, files, route, light theme, viewport, Web bundle, and shipping pointer interactions. Each retained CSS or anatomy change improved both SSIM and MAE without changing state or interaction gates."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/file-editor-detail-light-typography.json",
+          "classification": "tracked-current",
+          "sha256": "3fd5adfae49fec5a40a12d86d8c7dcbe4697fd59d3e1dd3f3b5e931d0cb23de5"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/file-editor-explorer-selection.json",
+          "classification": "tracked-current",
+          "sha256": "cca65078bbf802e2f2288f41e93e51d4581779e3ba8cc4c1eda918224b507f0e"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/file-editor-explorer-indentation.json",
+          "classification": "tracked-current",
+          "sha256": "6d5cb4c307492ef7f85e811bec2656a0d8a98b449336952433332aceb08d2d54"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/file-editor-explorer-directory-row.json",
+          "classification": "tracked-current",
+          "sha256": "283d4f00f0c95dda411ae4715f2d3951a763c6f9e1d48c9bd828b157ee263f72"
+        },
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/file-editor-explorer-icon-offset.json",
+          "classification": "tracked-current",
+          "sha256": "85d3d259fbd8ac0a981f5f1738fa3530b2fb784547556afec7cd1cf19cacf454"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-editor-light-current-content",
+              "source": "Both renderers show the same project, current file, switched file, visible file rows, and source content"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 1],
+              "anchorScale": 736,
+              "confidence": 0.99,
+              "method": "file-editor-light-current-geometry",
+              "source": "Editor, first-line gutter/content, toolbar, and file-row geometry match; Explorer outer allocation differs by one divider pixel"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-editor-light-switch-and-return",
+              "source": "Both renderers open the target file, switch to the second file through the Explorer, and return to the file browser"
+            },
+            "material": {
+              "pixel": {
+                "mae": 3.669977,
+                "significantShare": 0.048113
+              },
+              "confidence": 0.99,
+              "method": "file-editor-light-full-frame-pixel",
+              "source": "Same-snapshot 1280 by 820 full-frame comparison after typography, selection, indentation, directory, and icon-anchor convergence; SSIM is 0.924219"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-editor-light-current-shared-runtime",
+              "source": "One isolated server and snapshot, matching route and state identity, shipping pointer interactions, zero renderer errors, and clean Browser disposal"
+            },
+            "typography": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 20,
+              "confidence": 0.99,
+              "method": "file-editor-light-first-line-typography",
+              "source": "Both renderers resolve 13px SF Mono-family source text, 20px line height, matching first-line boxes, and equivalent light line-number color"
+            }
+          }
+        }
+      ]
     }
   ]
 }
