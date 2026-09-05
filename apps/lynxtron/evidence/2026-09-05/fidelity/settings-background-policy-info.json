@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T07:30:00-04:00",
+  "stateId": "settings-general",
+  "productCommit": "a7c79318e08ccf85ecc4d8366132f0c387ab3313",
+  "captureCommit": "a7c79318e08ccf85ecc4d8366132f0c387ab3313",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-general",
+    "snapshotSha256": "22d498b2d182c8e92fedc6c46b42b74fae5360e85413e7b9c5c647f6bd5698ce"
+  },
+  "capture": {
+    "reportSha256": "b4d7acbd2e0536a28fc6f8cfdf61ae7a31bcd7eafc7ff1ff3aa728804a510e1b",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "a100b3a572f3406643b42704ed088d484062000f4beffab65605fe94eec5270f",
+    "webImageSha256": "0ed005bfb0f766c0737b9bd0b610df122fe4fa9e4324c294106acb07eed311e7",
+    "lynxImageSha256": "1156bac940850b96447abfcf1ec807a61b341a430796516a8c58fcc7691334f8",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "settingsContentMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "webAccessory": [472.734375, 670.75, 20, 20],
+    "lynxAccessory": [471.9375, 672, 20, 20],
+    "maxDelta": 1.25
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": {
+      "fullFrame": { "ssim": 0.913046, "mae": 3.278695, "significantShare": 0.041011 },
+      "titleCrop": { "ssim": 0.720042, "mae": 13.422346, "significantShare": 0.157037 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.913098, "mae": 3.279561, "significantShare": 0.041043 },
+      "titleCrop": { "ssim": 0.739764, "mae": 13.590741, "significantShare": 0.163333 }
+    }
+  },
+  "boundary": "The Lynx General renderer now exposes the same 20 by 20 Background activity policy accessory as Web, within 1.25px of the authority origin, without changing the row or select control. The accessible label is retained. The existing Lynx tooltip render-clone path caused runtime errors in this composition, so this slice intentionally restores the static accessory only; hover-popup parity remains a separate interaction task. Screenshots remain temporary to preserve the tracked screenshot budget."
+}

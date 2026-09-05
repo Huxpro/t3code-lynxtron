@@ -24974,7 +24974,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-navigation-stacking.json",
           "classification": "tracked-current",
-          "sha256": "f3aaff93a7d8419dc6bc646db553d45bd17a4606fa5841804c5da6e38be4a116"
+          "sha256": "fcf421f869a726182dad3f15c559199888ca87bf3bd43c787ef1ebfc622b84d8"
         }
       ],
       "updates": [
@@ -24999,6 +24999,47 @@
               "confidence": 0.99,
               "method": "settings-general-current-runtime",
               "source": "Strict paired capture passes with matching General route, settings content, navigation selection, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "settings-background-policy-info-current",
+      "observedAt": "2026-09-05T07:30:00-04:00",
+      "commit": "a7c79318e08ccf85ecc4d8366132f0c387ab3313",
+      "codeCommit": "a7c79318e08ccf85ecc4d8366132f0c387ab3313",
+      "codeState": "commit",
+      "label": "Settings background policy info parity",
+      "narrative": "Web presents a 20 by 20 information accessory beside Background activity while Lynx omitted it. A shared title-accessory slot and scoped Lynx info icon restore that visible affordance within 1.25px of Web without moving the row or profile control. Focused title-crop SSIM improves from 0.720042 to 0.739764.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The controlled baseline and current capture share byte-identical Web authority pixels, one immutable snapshot, General route, light theme, viewport, settings values, and zero renderer errors. The product change adds only the missing title accessory."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-background-policy-info.json",
+          "classification": "tracked-current",
+          "sha256": "5805c4a5b543f2c80d090b819d85c05c5ccb2b3924524f83c7e8928db11a48c9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-background-policy-accessory",
+              "source": "Both renderers expose a visible 20 by 20 Background policy details accessory beside the same title"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-general-light-current-runtime",
+              "source": "Strict paired capture passes with the same General route, light theme, settings values, visible accessory, zero renderer errors, and clean Browser disposal"
             }
           }
         }
