@@ -434,3 +434,4 @@ review-empty-description-line-height-current,2026-09-05T14:02:00-04:00,cb880f085
 sidebar-thread-hover-details-typography-current,2026-09-05T14:46:00-04:00,af07097946ef00c2838669679b7983442acd14f3,commit,Sidebar thread hover details typography,0.176769,0.176769,0.035044,0.146871,0.853129,0.815121
 project-settings-menu-probe-current,2026-09-05T15:05:00-04:00,987f4f0e3a35efe0356d78bbab2985d8bdb64acb,commit,Project Settings menu harness parity,0.176769,0.176769,0.035044,0.146871,0.853129,0.815121
 compact-controls-menu-height-current,2026-09-05T15:35:00-04:00,a8c236df012f9ae623565019533daaf09619cccc,commit,Compact Composer controls menu height parity,0.17652,0.17652,0.034753,0.146871,0.853129,0.81537
+compact-controls-light-hero-containment-current,2026-09-05T16:12:00-04:00,03694d6294e54162a30b9610f918d81991f3da89,commit,Light Hero compact controls containment,0.17629,0.17629,0.034484,0.146871,0.853129,0.8156

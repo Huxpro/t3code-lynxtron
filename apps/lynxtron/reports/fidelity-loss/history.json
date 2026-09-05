@@ -38561,6 +38561,67 @@
       ],
       "fromPoint": "project-settings-menu-probe-current",
       "toPoint": "compact-controls-menu-height-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 29013,
+      "commit": "4311314a91be47250c8916bea398e09f90c4efc4",
+      "committedAt": "2026-09-05T15:40:16-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): record compact controls alignment",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "compact-controls-menu-height-current",
+      "toPoint": "compact-controls-light-hero-containment-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 58,
+      "commit": "facd685865b4e3dcdc77d205d67f97502c4a19bc",
+      "committedAt": "2026-09-05T15:59:13-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): contain compact controls menu",
+      "surfaces": [
+        "shell",
+        "composer"
+      ],
+      "fromPoint": "compact-controls-menu-height-current",
+      "toPoint": "compact-controls-light-hero-containment-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 10,
+      "commit": "03694d6294e54162a30b9610f918d81991f3da89",
+      "committedAt": "2026-09-05T16:10:18-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): align constrained hero surfaces",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "compact-controls-menu-height-current",
+      "toPoint": "compact-controls-light-hero-containment-current"
+    },
+    {
+      "allocation": "measured-product-change",
+      "changedLines": 0,
+      "commit": "03694d6294e54162a30b9610f918d81991f3da89",
+      "committedAt": "2026-09-05T16:12:00-04:00",
+      "confidence": 0.99,
+      "delta": -0.00023,
+      "reason": "Before and after use byte-identical Web authority pixels, one immutable snapshot and draft, the same light theme, inline Files panel, provider error, viewport, and zero renderer errors. Only Lynx Hero containment and responsive insets changed.",
+      "subject": "Light Hero compact controls containment",
+      "surfaces": [
+        "composer"
+      ],
+      "fromPoint": "compact-controls-menu-height-current",
+      "toPoint": "compact-controls-light-hero-containment-current"
     }
   ],
   "commitSeries": [
@@ -66591,6 +66652,50 @@
       "rawLoss": 0.17652,
       "smoothedLoss": 0.176733,
       "subject": "Compact Composer controls menu height parity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "4311314a91be47250c8916bea398e09f90c4efc4",
+      "committedAt": "2026-09-05T15:40:16-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.17652,
+      "smoothedLoss": 0.176686,
+      "subject": "docs(lynxtron): record compact controls alignment"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "facd685865b4e3dcdc77d205d67f97502c4a19bc",
+      "committedAt": "2026-09-05T15:59:13-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.17652,
+      "smoothedLoss": 0.17665,
+      "subject": "fix(lynxtron): contain compact controls menu"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "03694d6294e54162a30b9610f918d81991f3da89",
+      "committedAt": "2026-09-05T16:10:18-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.17652,
+      "smoothedLoss": 0.176621,
+      "subject": "fix(lynxtron): align constrained hero surfaces"
+    },
+    {
+      "allocation": "measured-product-change",
+      "commit": "03694d6294e54162a30b9610f918d81991f3da89",
+      "committedAt": "2026-09-05T16:12:00-04:00",
+      "confidence": 0.99,
+      "delta": -0.00023,
+      "measuredCheckpoint": "compact-controls-light-hero-containment-current",
+      "rawLoss": 0.17629,
+      "smoothedLoss": 0.176548,
+      "subject": "Light Hero compact controls containment"
     }
   ],
   "generatedAt": "2026-08-25T00:45:00-07:00",
@@ -505699,6 +505804,1012 @@
       ],
       "bestLoss": 0.17652,
       "improvementFromBaseline": 0.81537
+    },
+    {
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use byte-identical Web authority pixels, one immutable snapshot and draft, the same light theme, inline Files panel, provider error, viewport, and zero renderer errors. Only Lynx Hero containment and responsive insets changed."
+      },
+      "commit": "03694d6294e54162a30b9610f918d81991f3da89",
+      "codeCommit": "03694d6294e54162a30b9610f918d81991f3da89",
+      "codeState": "commit",
+      "id": "compact-controls-light-hero-containment-current",
+      "label": "Light Hero compact controls containment",
+      "narrative": "In the light Hero state with an inline Files panel, Web collision handling caps the compact-controls menu at y=4 and height 429 while Lynx previously rendered the full 565px menu from y=-132. The Hero also retained a 24px inset instead of Web's 20px, and its provider error banner spanned the full center column instead of using Web's 16px side inset. The responsive height model and insets now align menu, Composer context strip, and error banner. The complete strict state passes and full-frame SSIM improves from 0.922929 to 0.927317.",
+      "observedAt": "2026-09-05T16:12:00-04:00",
+      "screenshots": [],
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/compact-controls-light-hero-containment.json",
+          "classification": "tracked-current",
+          "sha256": "937531f50d58b0454a7ac0d8b68144f5309be3af616b7c9cb7ae9cb9f5519c43"
+        }
+      ],
+      "confidence": 0.853129,
+      "evidenceDebt": 0.146871,
+      "loss": 0.17629,
+      "observedResidual": 0.034484,
+      "byDimension": {
+        "content": {
+          "confidence": 0.987749,
+          "evidenceDebt": 0.012251,
+          "loss": 0.015297,
+          "observedResidual": 0.003083
+        },
+        "geometry": {
+          "confidence": 0.902655,
+          "evidenceDebt": 0.097345,
+          "loss": 0.103322,
+          "observedResidual": 0.006622
+        },
+        "typography": {
+          "confidence": 0.668118,
+          "evidenceDebt": 0.331882,
+          "loss": 0.358117,
+          "observedResidual": 0.039267
+        },
+        "material": {
+          "confidence": 0.640527,
+          "evidenceDebt": 0.359473,
+          "loss": 0.44777,
+          "observedResidual": 0.137851
+        },
+        "interaction": {
+          "confidence": 0.833469,
+          "evidenceDebt": 0.166531,
+          "loss": 0.223942,
+          "observedResidual": 0.068882
+        },
+        "runtime": {
+          "confidence": 0.989133,
+          "evidenceDebt": 0.010867,
+          "loss": 0.015137,
+          "observedResidual": 0.004318
+        }
+      },
+      "byGroup": {
+        "shell": {
+          "confidence": 0.793936,
+          "evidenceDebt": 0.206064,
+          "loss": 0.222366,
+          "observedResidual": 0.020533
+        },
+        "composer": {
+          "confidence": 0.824815,
+          "evidenceDebt": 0.175185,
+          "loss": 0.19624,
+          "observedResidual": 0.025526
+        },
+        "transcript": {
+          "confidence": 0.822444,
+          "evidenceDebt": 0.177556,
+          "loss": 0.211603,
+          "observedResidual": 0.041397
+        },
+        "overlays": {
+          "confidence": 0.924106,
+          "evidenceDebt": 0.075894,
+          "loss": 0.118046,
+          "observedResidual": 0.045613
+        },
+        "settings": {
+          "confidence": 0.807595,
+          "evidenceDebt": 0.192405,
+          "loss": 0.215939,
+          "observedResidual": 0.029141
+        },
+        "review": {
+          "confidence": 0.860134,
+          "evidenceDebt": 0.139866,
+          "loss": 0.167136,
+          "observedResidual": 0.031705
+        }
+      },
+      "states": [
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-archive-mutation",
+          "label": "Settings · Archive · Mutation",
+          "loss": 0.54149,
+          "observedResidual": 0.244443,
+          "weight": 2
+        },
+        {
+          "confidence": 0.6138,
+          "evidenceDebt": 0.3862,
+          "group": "review",
+          "id": "right-panel-terminal",
+          "label": "Right Panel · Terminal Session",
+          "loss": 0.419464,
+          "observedResidual": 0.054194,
+          "weight": 4
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "shell",
+          "id": "lifecycle-native-recovery",
+          "label": "Lifecycle · Native Recovery",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 3
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-beta-mutation",
+          "label": "Settings · Beta · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.60685,
+          "evidenceDebt": 0.39315,
+          "group": "settings",
+          "id": "settings-connections-mutation",
+          "label": "Settings · Connections · Mutation",
+          "loss": 0.39893,
+          "observedResidual": 0.009525,
+          "weight": 2
+        },
+        {
+          "confidence": 0.63756,
+          "evidenceDebt": 0.36244,
+          "group": "shell",
+          "id": "lifecycle-error",
+          "label": "Lifecycle · Reconnecting",
+          "loss": 0.366577,
+          "observedResidual": 0.006488,
+          "weight": 4
+        },
+        {
+          "confidence": 0.65646,
+          "evidenceDebt": 0.34354,
+          "group": "transcript",
+          "id": "existing-thread-idle",
+          "label": "Existing Thread · Idle",
+          "loss": 0.348676,
+          "observedResidual": 0.007824,
+          "weight": 5
+        },
+        {
+          "confidence": 0.71448,
+          "evidenceDebt": 0.28552,
+          "group": "settings",
+          "id": "settings-providers-add-dialog-light",
+          "label": "Settings · Add Provider Wizard · Light",
+          "loss": 0.330982,
+          "observedResidual": 0.063629,
+          "weight": 4
+        },
+        {
+          "confidence": 0.68364,
+          "evidenceDebt": 0.31636,
+          "group": "composer",
+          "id": "composer-working",
+          "label": "Composer · Working",
+          "loss": 0.325822,
+          "observedResidual": 0.013841,
+          "weight": 5
+        },
+        {
+          "confidence": 0.9362,
+          "evidenceDebt": 0.0638,
+          "group": "transcript",
+          "id": "transcript-native-external-link-context-menu",
+          "label": "Transcript · Native External Link Context Menu",
+          "loss": 0.323136,
+          "observedResidual": 0.277009,
+          "weight": 2
+        },
+        {
+          "confidence": 0.9362,
+          "evidenceDebt": 0.0638,
+          "group": "transcript",
+          "id": "transcript-native-file-link-context-menu",
+          "label": "Transcript · Native File Link Context Menu",
+          "loss": 0.323136,
+          "observedResidual": 0.277009,
+          "weight": 2
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "overlays",
+          "id": "model-picker-selected",
+          "label": "Model Picker · Selected Model",
+          "loss": 0.295838,
+          "observedResidual": 0.017576,
+          "weight": 4
+        },
+        {
+          "confidence": 0.7126,
+          "evidenceDebt": 0.2874,
+          "group": "overlays",
+          "id": "sidebar-v2-new-thread-hover",
+          "label": "Sidebar V2 · New Thread Hover",
+          "loss": 0.295659,
+          "observedResidual": 0.01159,
+          "weight": 2
+        },
+        {
+          "confidence": 0.7126,
+          "evidenceDebt": 0.2874,
+          "group": "overlays",
+          "id": "sidebar-v2-new-project-hover",
+          "label": "Sidebar V2 · New Project Hover",
+          "loss": 0.29556,
+          "observedResidual": 0.011451,
+          "weight": 2
+        },
+        {
+          "confidence": 0.70884,
+          "evidenceDebt": 0.29116,
+          "group": "transcript",
+          "id": "existing-thread-failed",
+          "label": "Existing Thread · Failed",
+          "loss": 0.294352,
+          "observedResidual": 0.004504,
+          "weight": 4
+        },
+        {
+          "confidence": 0.73734,
+          "evidenceDebt": 0.26266,
+          "group": "composer",
+          "id": "composer-hero",
+          "label": "Composer · Hero Idle",
+          "loss": 0.294,
+          "observedResidual": 0.042504,
+          "weight": 5
+        },
+        {
+          "confidence": 0.71176,
+          "evidenceDebt": 0.28824,
+          "group": "review",
+          "id": "right-panel-terminal-horizontal-split",
+          "label": "Right Panel · Terminal Horizontal Split",
+          "loss": 0.293907,
+          "observedResidual": 0.007962,
+          "weight": 3
+        },
+        {
+          "confidence": 0.71176,
+          "evidenceDebt": 0.28824,
+          "group": "review",
+          "id": "right-panel-terminal-vertical-split",
+          "label": "Right Panel · Terminal Vertical Split",
+          "loss": 0.293907,
+          "observedResidual": 0.007962,
+          "weight": 3
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "settings",
+          "id": "settings-beta-light",
+          "label": "Settings · Beta · Light",
+          "loss": 0.293267,
+          "observedResidual": 0.013989,
+          "weight": 3
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "settings",
+          "id": "settings-keybindings",
+          "label": "Settings · Keybindings",
+          "loss": 0.289919,
+          "observedResidual": 0.009319,
+          "weight": 4
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "composer",
+          "id": "composer-sendable",
+          "label": "Composer · Sendable",
+          "loss": 0.287604,
+          "observedResidual": 0.006089,
+          "weight": 5
+        },
+        {
+          "confidence": 0.71676,
+          "evidenceDebt": 0.28324,
+          "group": "settings",
+          "id": "settings-archive-light",
+          "label": "Settings · Archive · Light",
+          "loss": 0.286818,
+          "observedResidual": 0.004992,
+          "weight": 3
+        },
+        {
+          "confidence": 0.73461,
+          "evidenceDebt": 0.26539,
+          "group": "shell",
+          "id": "new-thread-hero-light",
+          "label": "New Thread · Hero · Light",
+          "loss": 0.272415,
+          "observedResidual": 0.009563,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75444,
+          "evidenceDebt": 0.24556,
+          "group": "settings",
+          "id": "settings-beta",
+          "label": "Settings · Beta",
+          "loss": 0.253086,
+          "observedResidual": 0.009976,
+          "weight": 3
+        },
+        {
+          "confidence": 0.75204,
+          "evidenceDebt": 0.24796,
+          "group": "composer",
+          "id": "composer-docked",
+          "label": "Composer · Docked Idle",
+          "loss": 0.252617,
+          "observedResidual": 0.006192,
+          "weight": 5
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "settings",
+          "id": "settings-source-control-error",
+          "label": "Settings · Source Control · Error",
+          "loss": 0.252132,
+          "observedResidual": 0.011227,
+          "weight": 3
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "composer",
+          "id": "composer-disabled",
+          "label": "Composer · Environment Unavailable",
+          "loss": 0.251934,
+          "observedResidual": 0.010966,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "settings",
+          "id": "settings-source-control",
+          "label": "Settings · Source Control",
+          "loss": 0.24924,
+          "observedResidual": 0.007404,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "shell",
+          "id": "project-scope-open",
+          "label": "Sidebar · Project Scope Open",
+          "loss": 0.248661,
+          "observedResidual": 0.006638,
+          "weight": 4
+        },
+        {
+          "confidence": 0.75636,
+          "evidenceDebt": 0.24364,
+          "group": "settings",
+          "id": "settings-archive",
+          "label": "Settings · Archive",
+          "loss": 0.248184,
+          "observedResidual": 0.006008,
+          "weight": 3
+        },
+        {
+          "confidence": 0.78576,
+          "evidenceDebt": 0.21424,
+          "group": "composer",
+          "id": "composer-plan-mode",
+          "label": "Composer · Plan Mode",
+          "loss": 0.237719,
+          "observedResidual": 0.02988,
+          "weight": 4
+        },
+        {
+          "confidence": 0.77421,
+          "evidenceDebt": 0.22579,
+          "group": "settings",
+          "id": "settings-general",
+          "label": "Settings · General",
+          "loss": 0.23288,
+          "observedResidual": 0.009158,
+          "weight": 5
+        },
+        {
+          "confidence": 0.77436,
+          "evidenceDebt": 0.22564,
+          "group": "overlays",
+          "id": "model-picker-default",
+          "label": "Model Picker · Default",
+          "loss": 0.232099,
+          "observedResidual": 0.008341,
+          "weight": 5
+        },
+        {
+          "confidence": 0.7774,
+          "evidenceDebt": 0.2226,
+          "group": "transcript",
+          "id": "existing-thread-approval",
+          "label": "Existing Thread · Approval",
+          "loss": 0.229107,
+          "observedResidual": 0.00837,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-checkpoint",
+          "label": "Review · Checkpoint",
+          "loss": 0.21661,
+          "observedResidual": 0.005901,
+          "weight": 4
+        },
+        {
+          "confidence": 0.78804,
+          "evidenceDebt": 0.21196,
+          "group": "review",
+          "id": "review-tree",
+          "label": "Review · Changed Files Tree",
+          "loss": 0.216522,
+          "observedResidual": 0.005789,
+          "weight": 4
+        },
+        {
+          "confidence": 0.81636,
+          "evidenceDebt": 0.18364,
+          "group": "shell",
+          "id": "sidebar-inline-search",
+          "label": "Sidebar · Inline Search",
+          "loss": 0.215219,
+          "observedResidual": 0.038682,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83124,
+          "evidenceDebt": 0.16876,
+          "group": "shell",
+          "id": "sidebar-resize",
+          "label": "Sidebar · Resize Interaction",
+          "loss": 0.200734,
+          "observedResidual": 0.038465,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83556,
+          "evidenceDebt": 0.16444,
+          "group": "composer",
+          "id": "settled-banner-inline-files-narrow",
+          "label": "Settled Banner · Inline Files · Narrow",
+          "loss": 0.182832,
+          "observedResidual": 0.022012,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83556,
+          "evidenceDebt": 0.16444,
+          "group": "shell",
+          "id": "sidebar-footer-inline-files-narrow",
+          "label": "Sidebar Footer · Inline Files · Narrow",
+          "loss": 0.181083,
+          "observedResidual": 0.019918,
+          "weight": 3
+        },
+        {
+          "confidence": 0.83556,
+          "evidenceDebt": 0.16444,
+          "group": "overlays",
+          "id": "workspace-menu-open",
+          "label": "Workspace Menu · Open",
+          "loss": 0.176789,
+          "observedResidual": 0.014779,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83364,
+          "evidenceDebt": 0.16636,
+          "group": "overlays",
+          "id": "quick-switch-default",
+          "label": "Quick Switch · Default",
+          "loss": 0.173823,
+          "observedResidual": 0.008953,
+          "weight": 4
+        },
+        {
+          "confidence": 0.83556,
+          "evidenceDebt": 0.16444,
+          "group": "review",
+          "id": "review-diff",
+          "label": "Review · Full Diff",
+          "loss": 0.170574,
+          "observedResidual": 0.007342,
+          "weight": 5
+        },
+        {
+          "confidence": 0.9736,
+          "evidenceDebt": 0.0264,
+          "group": "overlays",
+          "id": "right-panel-native-tab-context-menu",
+          "label": "Right Panel · Native Tab Context Menu",
+          "loss": 0.160484,
+          "observedResidual": 0.13772,
+          "weight": 2
+        },
+        {
+          "confidence": 0.85446,
+          "evidenceDebt": 0.14554,
+          "group": "transcript",
+          "id": "existing-thread-working",
+          "label": "Existing Thread · Working",
+          "loss": 0.158522,
+          "observedResidual": 0.015193,
+          "weight": 5
+        },
+        {
+          "confidence": 0.85446,
+          "evidenceDebt": 0.14554,
+          "group": "shell",
+          "id": "new-thread-hero",
+          "label": "New Thread · Hero",
+          "loss": 0.151034,
+          "observedResidual": 0.00643,
+          "weight": 5
+        },
+        {
+          "confidence": 0.8514,
+          "evidenceDebt": 0.1486,
+          "group": "overlays",
+          "id": "git-publish-dialog",
+          "label": "Git Publish · Provider Step",
+          "loss": 0.1486,
+          "observedResidual": 0,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9736,
+          "evidenceDebt": 0.0264,
+          "group": "overlays",
+          "id": "right-panel-native-file-context-menu",
+          "label": "Right Panel · Native File Row Context Menu",
+          "loss": 0.138336,
+          "observedResidual": 0.114971,
+          "weight": 2
+        },
+        {
+          "confidence": 0.96364,
+          "evidenceDebt": 0.03636,
+          "group": "overlays",
+          "id": "command-palette-navigation",
+          "label": "Command Palette · Hover and Keyboard Navigation",
+          "loss": 0.138116,
+          "observedResidual": 0.105596,
+          "weight": 4
+        },
+        {
+          "confidence": 0.96084,
+          "evidenceDebt": 0.03916,
+          "group": "settings",
+          "id": "settings-providers-add-dialog",
+          "label": "Settings · Add Provider Wizard",
+          "loss": 0.126712,
+          "observedResidual": 0.09112,
+          "weight": 4
+        },
+        {
+          "confidence": 0.8962,
+          "evidenceDebt": 0.1038,
+          "group": "settings",
+          "id": "settings-source-control-loading",
+          "label": "Settings · Source Control · Loading",
+          "loss": 0.122838,
+          "observedResidual": 0.021243,
+          "weight": 3
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "review",
+          "id": "review-empty",
+          "label": "Review · Empty",
+          "loss": 0.11868,
+          "observedResidual": 0.028142,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98,
+          "evidenceDebt": 0.02,
+          "group": "overlays",
+          "id": "sidebar-native-thread-context-menu",
+          "label": "Sidebar · Native Thread Context Menu",
+          "loss": 0.118,
+          "observedResidual": 0.1,
+          "weight": 2
+        },
+        {
+          "confidence": 0.903,
+          "evidenceDebt": 0.097,
+          "group": "transcript",
+          "id": "existing-thread-completed",
+          "label": "Existing Thread · Completed",
+          "loss": 0.115661,
+          "observedResidual": 0.020666,
+          "weight": 5
+        },
+        {
+          "confidence": 0.92492,
+          "evidenceDebt": 0.07508,
+          "group": "review",
+          "id": "right-panel-terminal-multi-session",
+          "label": "Right Panel · Terminal Multi-session",
+          "loss": 0.113475,
+          "observedResidual": 0.041512,
+          "weight": 3
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "review",
+          "id": "files-browser",
+          "label": "Files Browser · Default",
+          "loss": 0.110848,
+          "observedResidual": 0.019505,
+          "weight": 4
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "overlays",
+          "id": "project-action-dialog",
+          "label": "Project Action · Add Dialog",
+          "loss": 0.104535,
+          "observedResidual": 0.012543,
+          "weight": 4
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "composer",
+          "id": "composer-compact-controls-open",
+          "label": "Composer · Compact Controls Open",
+          "loss": 0.098331,
+          "observedResidual": 0.005702,
+          "weight": 4
+        },
+        {
+          "confidence": 0.90684,
+          "evidenceDebt": 0.09316,
+          "group": "composer",
+          "id": "composer-compact-controls-light",
+          "label": "Composer · Compact Controls · Light",
+          "loss": 0.097255,
+          "observedResidual": 0.004516,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "quick-switch-query-light",
+          "label": "Quick Switch · Query · Light",
+          "loss": 0.094,
+          "observedResidual": 0.079043,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9616,
+          "evidenceDebt": 0.0384,
+          "group": "overlays",
+          "id": "sidebar-native-project-context-menu",
+          "label": "Sidebar · Native Project Context Menu",
+          "loss": 0.093824,
+          "observedResidual": 0.057637,
+          "weight": 2
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "review",
+          "id": "file-editor-detail-narrow-inline",
+          "label": "File Editor · Detail · Narrow Inline",
+          "loss": 0.091578,
+          "observedResidual": 0.082402,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "file-picker-default",
+          "label": "File Picker · Default",
+          "loss": 0.090922,
+          "observedResidual": 0.075915,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98184,
+          "evidenceDebt": 0.01816,
+          "group": "overlays",
+          "id": "quick-switch-query",
+          "label": "Quick Switch · Query",
+          "loss": 0.082513,
+          "observedResidual": 0.065544,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "composer",
+          "id": "composer-compact-controls-inline-files-short",
+          "label": "Composer · Compact Controls · Inline Files · Short",
+          "loss": 0.081718,
+          "observedResidual": 0.072442,
+          "weight": 4
+        },
+        {
+          "confidence": 0.97764,
+          "evidenceDebt": 0.02236,
+          "group": "overlays",
+          "id": "sidebar-project-settings",
+          "label": "Sidebar · Project Settings",
+          "loss": 0.081236,
+          "observedResidual": 0.060223,
+          "weight": 4
+        },
+        {
+          "confidence": 0.96084,
+          "evidenceDebt": 0.03916,
+          "group": "review",
+          "id": "file-editor-editing-save",
+          "label": "File Editor · Editing and Save",
+          "loss": 0.079386,
+          "observedResidual": 0.041865,
+          "weight": 5
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "overlays",
+          "id": "right-panel-add-menu",
+          "label": "Right Panel · Add Surface Menu",
+          "loss": 0.079223,
+          "observedResidual": 0.069922,
+          "weight": 4
+        },
+        {
+          "confidence": 0.97896,
+          "evidenceDebt": 0.02104,
+          "group": "overlays",
+          "id": "model-picker-empty",
+          "label": "Model Picker · Empty",
+          "loss": 0.075032,
+          "observedResidual": 0.055152,
+          "weight": 3
+        },
+        {
+          "confidence": 0.9648,
+          "evidenceDebt": 0.0352,
+          "group": "shell",
+          "id": "sidebar-project-groups",
+          "label": "Sidebar · Project Groups",
+          "loss": 0.071263,
+          "observedResidual": 0.037379,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98184,
+          "evidenceDebt": 0.01816,
+          "group": "overlays",
+          "id": "quick-switch-actions-only",
+          "label": "Quick Switch · Actions Only",
+          "loss": 0.071,
+          "observedResidual": 0.053817,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "quick-switch-empty",
+          "label": "Quick Switch · Empty",
+          "loss": 0.068187,
+          "observedResidual": 0.052804,
+          "weight": 3
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "model-picker-query",
+          "label": "Model Picker · Query",
+          "loss": 0.066853,
+          "observedResidual": 0.051449,
+          "weight": 4
+        },
+        {
+          "confidence": 0.97912,
+          "evidenceDebt": 0.02088,
+          "group": "overlays",
+          "id": "add-project-sources",
+          "label": "Command Palette · Add Project Sources",
+          "loss": 0.066092,
+          "observedResidual": 0.046176,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9852,
+          "evidenceDebt": 0.0148,
+          "group": "composer",
+          "id": "composer-native-branch-context-menu",
+          "label": "Composer · Native Branch Context Menu",
+          "loss": 0.065136,
+          "observedResidual": 0.051092,
+          "weight": 2
+        },
+        {
+          "confidence": 0.96684,
+          "evidenceDebt": 0.03316,
+          "group": "settings",
+          "id": "settings-providers",
+          "label": "Settings · Providers",
+          "loss": 0.061803,
+          "observedResidual": 0.029626,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9796,
+          "evidenceDebt": 0.0204,
+          "group": "overlays",
+          "id": "sidebar-v2-new-thread-projects",
+          "label": "Command Palette · New Thread Projects",
+          "loss": 0.061459,
+          "observedResidual": 0.041914,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "composer",
+          "id": "composer-compact-controls-inline-files-narrow",
+          "label": "Composer · Compact Controls · Inline Files · Narrow",
+          "loss": 0.059721,
+          "observedResidual": 0.050223,
+          "weight": 4
+        },
+        {
+          "confidence": 0.988,
+          "evidenceDebt": 0.012,
+          "group": "review",
+          "id": "file-editor-detail",
+          "label": "File Editor · Detail",
+          "loss": 0.059408,
+          "observedResidual": 0.047984,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9796,
+          "evidenceDebt": 0.0204,
+          "group": "transcript",
+          "id": "existing-thread-question",
+          "label": "Existing Thread · Question",
+          "loss": 0.059364,
+          "observedResidual": 0.039776,
+          "weight": 4
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "overlays",
+          "id": "diff-scope-menu",
+          "label": "Diff · Scope Menu",
+          "loss": 0.058063,
+          "observedResidual": 0.048549,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "settings",
+          "id": "settings-appearance",
+          "label": "Settings · Appearance",
+          "loss": 0.051018,
+          "observedResidual": 0.035353,
+          "weight": 3
+        },
+        {
+          "confidence": 0.97296,
+          "evidenceDebt": 0.02704,
+          "group": "overlays",
+          "id": "sidebar-thread-hover-preview",
+          "label": "Sidebar · Thread Hover Preview",
+          "loss": 0.047936,
+          "observedResidual": 0.021477,
+          "weight": 3
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "review",
+          "id": "file-editor-detail-light",
+          "label": "File Editor · Detail · Light",
+          "loss": 0.047343,
+          "observedResidual": 0.03772,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9796,
+          "evidenceDebt": 0.0204,
+          "group": "settings",
+          "id": "settings-connections",
+          "label": "Settings · Connections",
+          "loss": 0.04016,
+          "observedResidual": 0.020171,
+          "weight": 3
+        },
+        {
+          "confidence": 0.9832,
+          "evidenceDebt": 0.0168,
+          "group": "settings",
+          "id": "settings-connections-mutation-browser",
+          "label": "Settings · Connections · Browser Mutation",
+          "loss": 0.040124,
+          "observedResidual": 0.023723,
+          "weight": 2
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "composer",
+          "id": "composer-inline-files-narrow",
+          "label": "Composer · Inline Files · Narrow",
+          "loss": 0.032843,
+          "observedResidual": 0.023074,
+          "weight": 4
+        },
+        {
+          "confidence": 0.98376,
+          "evidenceDebt": 0.01624,
+          "group": "overlays",
+          "id": "model-picker-provider-rail",
+          "label": "Model Picker · Provider Rail",
+          "loss": 0.028931,
+          "observedResidual": 0.012901,
+          "weight": 4
+        },
+        {
+          "confidence": 0.9844,
+          "evidenceDebt": 0.0156,
+          "group": "settings",
+          "id": "settings-beta-mutation-browser",
+          "label": "Settings · Beta · Browser Mutation",
+          "loss": 0.028812,
+          "observedResidual": 0.013421,
+          "weight": 2
+        },
+        {
+          "confidence": 0.99,
+          "evidenceDebt": 0.01,
+          "group": "overlays",
+          "id": "project-action-keybinding-mutation",
+          "label": "Project Action · Keybinding Mutation",
+          "loss": 0.01,
+          "observedResidual": 0,
+          "weight": 2
+        }
+      ],
+      "bestLoss": 0.17629,
+      "improvementFromBaseline": 0.8156
     }
   ],
   "provenance": {
