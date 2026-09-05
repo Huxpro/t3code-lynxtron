@@ -1691,6 +1691,13 @@ function readFileEditorMetrics(root) {
     breadcrumbs: readElementBox(
       lynxSurface?.querySelector(".file-panel__breadcrumbs") ?? webBreadcrumbs,
     ),
+    breadcrumbList: readElementBox(
+      lynxSurface?.querySelector(".file-panel__breadcrumb-list") ??
+        webBreadcrumbs?.querySelector("[data-slot='scroll-area-viewport'] > div"),
+    ),
+    breadcrumbParts: [...(lynxSurface?.querySelectorAll(".file-panel__breadcrumb-part") ?? [])].map(
+      readElementBox,
+    ),
     breadcrumbText,
     currentFile,
     editor: editorBox,
