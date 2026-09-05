@@ -409,3 +409,4 @@ file-picker-description-color-current,2026-09-04T21:47:00-04:00,4382a1145,commit
 add-project-sources-description-color-current,2026-09-04T22:01:15-04:00,10a9d8b77,commit,Add Project source description color parity,0.178144,0.178144,0.036564,0.146953,0.853047,0.813746
 file-editor-detail-light-browser-current,2026-09-04T23:34:00-04:00,60c4af8c5,commit,Light File Editor Browser convergence,0.177972,0.177972,0.036362,0.146953,0.853047,0.813918
 provider-dialog-light-card-material-current,2026-09-05T00:05:00-04:00,160033a0d,commit,Provider dialog light card material parity,0.177952,0.177952,0.03634,0.146953,0.853047,0.813938
+provider-dialog-early-access-alignment-current,2026-09-05T00:25:00-04:00,551dd7023,commit,Provider dialog Early Access badge alignment,0.177947,0.177947,0.036334,0.146953,0.853047,0.813943

@@ -24447,6 +24447,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-early-access-alignment-current",
+      "observedAt": "2026-09-05T00:25:00-04:00",
+      "commit": "551dd7023",
+      "codeCommit": "5ae6886f7d0bf648b46497fc0144299d0da19b8d",
+      "codeState": "commit",
+      "label": "Provider dialog Early Access badge alignment",
+      "narrative": "The light Add Provider Driver stage placed Early Access immediately after short provider labels because the Lynx text leaf does not reproduce the Web label's flex growth. The badge now uses the card's existing relative positioning context and a fixed right/top anchor while Coming Soon remains unchanged. Driver-grid SSIM improves from 0.707904 to 0.725749 and MAE from 7.296430 to 6.896607; dialog SSIM improves from 0.799392 to 0.806561.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, light theme, viewport, exact card geometry, provider labels, full wizard lifecycle, and zero renderer errors. The change only anchors the two Early Access badges."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-early-access-alignment.json",
+          "classification": "tracked-current",
+          "sha256": "73fb0ec6b8244b6f12d02fbd69e73141d8b345a13a57e3791cfa9d319b9ef723"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.193439,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-ssim",
+              "source": "1 - exact dialog SSIM 0.806561; MAE 6.312218 and 7.9596 percent significant pixels after Early Access alignment"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-runtime",
+              "source": "Same snapshot and route, complete Driver to Identity to Config to save to delete to dismiss flow, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
