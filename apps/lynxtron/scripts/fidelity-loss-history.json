@@ -25098,6 +25098,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-settings-footer-real-row-current",
+      "observedAt": "2026-09-05T08:30:00-04:00",
+      "commit": "3532f0e20d5ba0e9a28b77f34ec2a7686131e719",
+      "codeCommit": "3532f0e20d5ba0e9a28b77f34ec2a7686131e719",
+      "codeState": "commit",
+      "label": "Sidebar Settings footer real-row parity",
+      "narrative": "The 1280px Lynx sidebar still overlaid a stale captured Settings-row bitmap and hid its real shared row, leaving a black footer block against the current Web sidebar. Removing that calibration sprite restores the live row at opacity one. Footer SSIM improves from 0.475160 to 0.882728, sidebar SSIM from 0.902729 to 0.924706, and full-frame SSIM from 0.958142 to 0.962483.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one immutable snapshot, thread, selected model, open model picker, dark theme, viewport, and zero renderer errors. The product change only removes the stale footer bitmap path."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/sidebar-settings-footer-real-row.json",
+          "classification": "tracked-current",
+          "sha256": "48cc46841e867b91aabf3dd7140d535bb10c7952015240202bc23aeec08a772f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-selected"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-settings-real-row-content",
+              "source": "The live Settings icon and label are visible and the stale authority bitmap is absent"
+            },
+            "material": {
+              "residual": 0.117272,
+              "confidence": 0.99,
+              "method": "sidebar-settings-footer-ssim",
+              "source": "1 - fixed 256 by 48 footer SSIM 0.882728; footer MAE 3.897244 and 4.6305 percent significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "model-picker-selected-footer-runtime",
+              "source": "Strict paired capture passes with the same thread, model picker selection, footer row, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
