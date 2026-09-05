@@ -928,6 +928,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".keybindings-table__row--alternate {\n  background-color: rgba(255, 255, 255, 0.006);",
     );
+    expect(overrides).toContain(".keybindings-table__header {\n  height: 33.5px;");
     expect(overrides).toContain("line-height: 20px;");
     expect(overrides).toContain(
       ".diff-code-line {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  min-height: 20px;",
