@@ -99,7 +99,7 @@ function statusPresentation(
         label: "Working",
         className:
           "animate-sidebar-working-text text-sky-600 motion-reduce:animate-none dark:text-sky-400",
-        icon: <Icon name="refresh-cw" size={16} color="#a1a1aa" className="size-4 shrink-0" />,
+        icon: <Icon name="circle-dashed" size={16} color="#a1a1aa" className="size-4 shrink-0" />,
         workingDuration: <LynxWorkingDuration thread={thread} />,
       };
     case "connecting":

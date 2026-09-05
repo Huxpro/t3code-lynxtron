@@ -1427,6 +1427,7 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("topStatus={statusPresentation(status, thread)}");
     expect(sidebarSource).toContain('case "working":');
     expect(sidebarSource).toContain('label: "Working"');
+    expect(sidebarSource).toContain('name="circle-dashed"');
     expect(sidebarSource).toContain("function LynxWorkingDuration");
     expect(sidebarSource).toContain("resolveWorkingStartedAt(thread)");
     expect(sidebarSource).toContain("formatWorkingDurationLabel(Date.now() - startedMs)");
