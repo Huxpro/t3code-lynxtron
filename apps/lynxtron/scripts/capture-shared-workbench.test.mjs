@@ -1126,6 +1126,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "function readBetaMutationSettings");
     assert.include(workbench, "sidebarAutoSettleAfterDays: 3");
     assert.include(source, "function settingsNavigationStateMatches(state)");
+    assert.include(source, "items.every((item) => item.labelBox?.rect?.width > 0");
+    assert.include(source, "settingsBackLabel?.rect?.width > 0");
+    assert.include(workbench, "labelBox: readElementBox(labelElement)");
+    assert.include(workbench, "settingsBackLabel: readSettingsNavigationChrome(root).backLabel");
     assert.include(source, "visuallySelectedItems.length === 1");
     assert.include(source, "finalSettingsNavigationReady");
     assert.include(source, '"model-picker-empty": "model-picker"');

@@ -1218,8 +1218,10 @@ describe("desktop shell interaction contract", () => {
       '<text className="settings-nav__back-label" bindtap={navigateBack}>',
     );
     expect(overrides).toContain(
-      ".settings-nav__items {\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;",
+      ".settings-nav__items {\n  position: relative;\n  z-index: 1;\n  display: flex;\n  flex-direction: column;\n  box-sizing: border-box;",
     );
+    expect(overrides).toContain(".settings-nav__search {\n  position: relative;\n  z-index: 1;");
+    expect(overrides).toContain(".settings-nav__footer {\n  position: relative;\n  z-index: 1;");
     expect(overrides).toContain(
       ".settings-nav__item {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  box-sizing: border-box;\n  height: 32px;",
     );

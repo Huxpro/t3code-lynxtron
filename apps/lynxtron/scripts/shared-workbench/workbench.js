@@ -562,6 +562,12 @@ function readSettingsNavigationChrome(root) {
   return {
     footer: readElementBox(root?.querySelector(".settings-nav__footer") ?? back?.parentElement),
     back: readElementBox(back),
+    backLabel: readElementBox(
+      back?.querySelector(".settings-nav__back-label") ??
+        [...(back?.querySelectorAll("span") ?? [])].find(
+          (element) => readComposedText(element) === "Back",
+        ),
+    ),
   };
 }
 
@@ -574,9 +580,14 @@ function readSettingsNavigationItems(root) {
           SETTINGS_NAV_LABELS.includes(readComposedText(element)),
         );
   return (lynxItems.length > 0 ? lynxItems : webItems).map((item) => {
-    const label =
-      item.querySelector(".settings-nav__item-label")?.textContent?.trim() ??
-      readComposedText(item);
+    const itemText = readComposedText(item);
+    const labelElement =
+      item.querySelector(".settings-nav__item-label") ??
+      [...item.querySelectorAll("span")].find(
+        (element) => readComposedText(element) === itemText,
+      ) ??
+      null;
+    const label = labelElement?.textContent?.trim() ?? itemText;
     const box = readElementBox(item);
     const backgroundColor = box?.style?.backgroundColor ?? "";
     const active =
@@ -593,6 +604,7 @@ function readSettingsNavigationItems(root) {
           backgroundColor !== "rgba(0,0,0,0)"),
       className: item.getAttribute("class") ?? "",
       box,
+      labelBox: readElementBox(labelElement),
     };
   });
 }
@@ -2290,6 +2302,7 @@ function readLynxPane() {
           footer: readElementBox(root?.querySelector("[data-sidebar='footer']")),
           settingsFooter: readSettingsNavigationChrome(root).footer,
           settingsBack: readSettingsNavigationChrome(root).back,
+          settingsBackLabel: readSettingsNavigationChrome(root).backLabel,
           settingsRow: readElementBox(root?.querySelector(".sidebar-settings-row")),
           settingsAuthority: readElementBox(root?.querySelector(".sidebar-settings-authority")),
           searchRow: readElementBox(root?.querySelector(".sidebar-v2-control-row--search")),
@@ -3637,6 +3650,7 @@ function readWebPane() {
           footer: readElementBox(doc.querySelector("[data-sidebar='footer']")),
           settingsFooter: readSettingsNavigationChrome(doc).footer,
           settingsBack: readSettingsNavigationChrome(doc).back,
+          settingsBackLabel: readSettingsNavigationChrome(doc).backLabel,
           settingsRow: readElementBox(doc.querySelector(".sidebar-settings-row")),
           settingsAuthority: readElementBox(doc.querySelector(".sidebar-settings-authority")),
           searchRow: readElementBox(doc.querySelector(".sidebar-v2-control-row--search")),

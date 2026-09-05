@@ -5461,6 +5461,8 @@
   opacity: 0;
 }
 .settings-nav__search {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -5500,6 +5502,8 @@
   line-height: 12px;
 }
 .settings-nav__items {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -5534,6 +5538,8 @@
   color: var(--sidebar-foreground);
 }
 .settings-nav__footer {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   padding: 8px;

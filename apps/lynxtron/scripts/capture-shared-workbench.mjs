@@ -1194,6 +1194,10 @@ function settingsNavigationStateMatches(state) {
     const activeItems = items.filter((item) => item.active);
     const visuallySelectedItems = items.filter((item) => item.visuallySelected);
     return (
+      items.length === 7 &&
+      items.every((item) => item.labelBox?.rect?.width > 0 && item.labelBox?.rect?.height > 0) &&
+      client?.sidebarDiagnostics?.chrome?.settingsBackLabel?.rect?.width > 0 &&
+      client?.sidebarDiagnostics?.chrome?.settingsBackLabel?.rect?.height > 0 &&
       activeItems.length === 1 &&
       activeItems[0]?.label === expectedLabel &&
       visuallySelectedItems.length === 1 &&
