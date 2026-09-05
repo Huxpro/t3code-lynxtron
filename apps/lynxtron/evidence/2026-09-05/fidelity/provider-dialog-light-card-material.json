@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T00:05:00-04:00",
+  "captureCommit": "853b27353c78b4bc393769a0d129c6f6106de021",
+  "productCommit": "853b27353c78b4bc393769a0d129c6f6106de021",
+  "stateId": "settings-providers-add-dialog-light",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "e056c8173a52600756b9d3b4e9a458c2ce91d552950586101689dcbc3179b6b6",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "c6e046645094518fefa43ba269842b93bed8be0461e148a940f104cdd4663110",
+    "webImageSha256": "07cc6cb8cd43e47e57b299548279e444850b6f2a2940711f83114b4f2426d574",
+    "lynxImageSha256": "f11d3179d2dfef4efcfa132e468308e0a88407045a5c2375145261c29a241719",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "dialogMatch": true,
+    "stage": "complete",
+    "inputChannel": "dual-cdp-pointer",
+    "rendererErrors": 0
+  },
+  "material": {
+    "selectedCard": {
+      "webBackground": "primary at 8 percent alpha",
+      "lynxBackground": "primary at 8 percent alpha",
+      "webRing": "2px primary",
+      "lynxRing": "2px primary"
+    },
+    "ordinaryCards": {
+      "webBackground": "rgb(255, 255, 255)",
+      "lynxBackground": "rgb(255, 255, 255)",
+      "webRing": "1px black at 5 percent alpha",
+      "lynxRing": "1px black at 5 percent alpha"
+    }
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over fixed same-viewport regions",
+    "baseline": {
+      "fullFrame": { "ssim": 0.911778, "mae": 2.566521, "significantShare": 0.032985 },
+      "dialog": { "ssim": 0.772426, "mae": 7.121471, "significantShare": 0.081852 },
+      "driverGrid": { "ssim": 0.667179, "mae": 8.281862, "significantShare": 0.112567 },
+      "selectedCard": { "ssim": 0.726082, "mae": 16.441939, "significantShare": 0.138294 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.919153, "mae": 2.378087, "significantShare": 0.032955 },
+      "dialog": { "ssim": 0.799392, "mae": 6.48324, "significantShare": 0.081752 },
+      "driverGrid": { "ssim": 0.707904, "mae": 7.29643, "significantShare": 0.112401 },
+      "selectedCard": { "ssim": 0.731598, "mae": 12.280332, "significantShare": 0.136539 },
+      "ordinaryCard": { "ssim": 0.763428, "mae": 5.951796, "significantShare": 0.09556 }
+    }
+  },
+  "boundary": "The light provider wizard now reproduces the Web authority's selected 8 percent primary fill, selected 2px primary ring, and ordinary 1px black 5 percent ring. The complete Driver to Identity to Config to save to delete to dismiss flow and zero-error capture remain intact. Small subpixel card geometry during the completed transition, backdrop blur, and variable-font rasterization remain explicit Browser residuals; Native acceptance remains separate. Screenshots remain temporary because the tracked screenshot budget is full."
+}
