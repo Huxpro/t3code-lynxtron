@@ -426,3 +426,4 @@ settings-keybindings-keycap-order-current,2026-09-05T08:10:00-04:00,916d7e8698ff
 sidebar-settings-footer-real-row-current,2026-09-05T08:30:00-04:00,3532f0e20d5ba0e9a28b77f34ec2a7686131e719,commit,Sidebar Settings footer real-row parity,0.176941,0.176941,0.0352,0.146912,0.853088,0.814949
 sidebar-inline-search-input-text-current,2026-09-05T08:58:00-04:00,5d6ce99993d55584925c1702c23f4591c5b3d4c9,commit,Sidebar inline search text visibility,0.176941,0.176941,0.0352,0.146912,0.853088,0.814949
 settings-archive-empty-gap-current,2026-09-05T10:05:00-04:00,e9b8be426e3c0e951440801728abc3445cae9a59,commit,Settings Archive empty-row gap parity,0.176941,0.176941,0.0352,0.146912,0.853088,0.814949
+lifecycle-error-hero-banner-current,2026-09-05T11:16:00-04:00,b895356cc2e434bcd7845f1d44c0a3f9c930a1cf,commit,Hero connection error rendering parity,0.176941,0.176941,0.035201,0.146912,0.853088,0.814949

@@ -25204,7 +25204,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-archive-empty-gap.json",
           "classification": "tracked-current",
-          "sha256": "606ef8115eb3ea49f52b0cd0522266c931b1b23fae6cfceb057bbe6bd46d600b"
+          "sha256": "4bfb66a11f915bb4840077974734059ed9942acf954a1d1a02d8d584db213668"
         }
       ],
       "updates": [
@@ -25224,6 +25224,54 @@
               "confidence": 0.99,
               "method": "settings-archive-current-runtime",
               "source": "Strict paired capture passes with the same empty archive state, route, theme, viewport, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "lifecycle-error-hero-banner-current",
+      "observedAt": "2026-09-05T11:16:00-04:00",
+      "commit": "b895356cc2e434bcd7845f1d44c0a3f9c930a1cf",
+      "codeCommit": "b895356cc2e434bcd7845f1d44c0a3f9c930a1cf",
+      "codeState": "commit",
+      "label": "Hero connection error rendering parity",
+      "narrative": "The Lynx hero dropped its connection lifecycle banner and cleared the last-known model as soon as transport recovery began, leaving only No provider available while Web retained the model and rendered a recovery card. The hero now renders the shared lifecycle surface between its heading and Composer, keeps the last-known selectable provider presentation while sending remains disabled, and matches Web's 768 by 68 banner and 768 by 140 Composer geometry. The Browser Preview host also classifies an unexpected server close as reconnecting and the harness waits for stable provider parity before fault injection. The strict same-server capture passes with zero renderer errors; the banner crop SSIM rises diagnostically from 0.390338 in the invalid early-fault frame to 0.566775 in the valid matched state.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The admitted capture uses one isolated server and immutable snapshot, waits for matching model, controls, and placeholder before terminating the owned server, then requires identical lifecycle, banner and Composer geometry, state identity, and zero renderer errors."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/lifecycle-error-hero-banner.json",
+          "classification": "tracked-current",
+          "sha256": "e473687e1a05f8a9962d9f32c4c396fc7917bd9f301e4658baf3310356df15a4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "matched-hero-lifecycle-content",
+              "source": "Both clients retain Claude Fable 5, the same placeholder and four Composer controls, and expose reconnecting recovery copy after the same owned server closes"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "matched-hero-lifecycle-geometry",
+              "source": "Banner and Composer rectangles match exactly at 768 by 68 and 768 by 140; headline vertical position and height differ by one pixel"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "owned-server-fault-after-stable-provider-preflight",
+              "source": "Provider parity is stable for 23 polls before the harness stops its owned server; both clients reach connecting lifecycle and the capture passes with zero renderer errors"
             }
           }
         }

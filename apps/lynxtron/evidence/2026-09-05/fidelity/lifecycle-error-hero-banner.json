@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T11:16:00-04:00",
+  "stateId": "lifecycle-error",
+  "productCommit": "b895356cc2e434bcd7845f1d44c0a3f9c930a1cf",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "sourceSeedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "153733ef4ddac6cc1273500b391fba31e146d0f3c210f43dcfe4b42d3d42d4be",
+    "webImageSha256": "ab473bf994fe651a884317b32e73a1ca3fae1d7a66d18159f2013c0331963826",
+    "lynxImageSha256": "35aee7ce2abdbe1567637f0b0cc85f75d2111c8d3258e0962dbf6d0c0cb229cc",
+    "lynxBundleSha256": "85d6510c624e90cbcabc2d9a2f387164caa31e912a66b85ad3d25dc9fdc46c54",
+    "pass": true,
+    "rendererErrors": 0,
+    "fullFrameSsim": 0.9228,
+    "bannerCropSsim": 0.566775
+  },
+  "identity": {
+    "sameServerFault": true,
+    "sameProject": "background-only",
+    "sameModelLabel": "Claude Fable 5",
+    "sameComposerState": "disabled",
+    "samePlaceholder": "Ask for follow-up changes or attach images",
+    "sameControls": ["model", "model-option", "runtime", "interaction"],
+    "stablePreflightPolls": 23,
+    "lynxConnectionStatus": "reconnecting",
+    "lynxConnectionDetail": "Shared server connection closed."
+  },
+  "geometry": {
+    "webHeadline": [276, 195, 984, 37],
+    "lynxHeadline": [384, 196, 768, 36],
+    "webBanner": [384, 264, 768, 68],
+    "lynxBanner": [384, 264, 768, 68],
+    "webComposer": [384, 340, 768, 140],
+    "lynxComposer": [384, 340, 768, 140]
+  },
+  "before": {
+    "classification": "diagnostic-only",
+    "lynxBannerPresent": false,
+    "lynxModelLabel": null,
+    "lynxPlaceholder": "Enable a provider in Settings to send a message",
+    "bannerCropSsim": 0.390338,
+    "reasonNotComparable": "The old harness killed the server before the Lynx provider projection stabilized. It proves the visible regression but is not admitted as a matched product-state baseline."
+  },
+  "fix": [
+    "Render the shared connection lifecycle surface in the hero layout instead of dropping statusBanner.",
+    "Preserve the last-known selectable model and canonical placeholder while transport recovery disables sending.",
+    "Project an unexpected Browser Preview server close as reconnecting, matching the Web environment lifecycle semantics.",
+    "Match the Web banner's 768x68 geometry, 22px radius, amber reconnecting material, and WifiOff icon.",
+    "Require stable provider and Composer parity before the lifecycle harness terminates its owned server."
+  ],
+  "boundary": "The current strict capture proves Browser parity for content, lifecycle state, model retention, banner and Composer geometry, and zero renderer errors. Full-frame material is recorded diagnostically but not used to overwrite the historical lifecycle material residual because the provider-health overlay and platform text raster remain independent differences."
+}
