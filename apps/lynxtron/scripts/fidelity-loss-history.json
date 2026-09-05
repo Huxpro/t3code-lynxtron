@@ -24761,6 +24761,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-breadcrumb-overflow-current",
+      "observedAt": "2026-09-05T04:53:00-04:00",
+      "commit": "a858d4f31",
+      "codeCommit": "45b2a7e6e",
+      "codeState": "commit",
+      "label": "File editor breadcrumb overflow parity",
+      "narrative": "At the 1024 by 820 File Editor allocation, Lynx wrapped the long project breadcrumb onto three lines and overflowed the 40px toolbar. A nowrap-only experiment then covered the adjacent Open In and explorer controls. The final rule keeps the breadcrumb single-line, clips it to its 200px viewport, and right-aligns the list so the same docs and current-file suffix remains visible as Web. The fixed toolbar crop improves from 0.460494 to 0.612385 SSIM.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.98,
+        "reason": "The before and after diagnostic frames use the same isolated thread snapshot, file path, 1024 by 820 viewport, dark theme, and zero renderer errors. The product change only affects breadcrumb wrapping, clipping, and overflow alignment."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/file-editor-breadcrumb-overflow.json",
+          "classification": "tracked-current",
+          "sha256": "f3747afc199a32d0826d6b8208f36645822d3a8a3bfd4c40a0e97ab615739981"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 200,
+              "confidence": 0.98,
+              "method": "file-breadcrumb-viewport-containment",
+              "source": "The Lynx breadcrumb remains one line, its last visible part ends exactly at the 909px viewport boundary, and no toolbar control is occluded"
+            },
+            "material": {
+              "residual": 0.387615,
+              "confidence": 0.98,
+              "method": "file-toolbar-region-ssim",
+              "source": "1 - fixed 359 by 40 toolbar crop SSIM 0.612385, improved from 0.460494 before wrap and overflow repair"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.98,
+              "method": "file-detail-breadcrumb-current-runtime",
+              "source": "Same isolated snapshot and file path, zero renderer errors, exact bundle identity, and clean Browser process disposal; unrelated provider-auth banner is excluded"
+            }
+          }
+        }
+      ]
     }
   ]
 }
