@@ -547,7 +547,8 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("getComposerModelOptionLetterSpacing(modelOptionLabel)");
     expect(overrides).toContain(".composer-primary-action--send {");
     expect(overrides).toContain("background-color: rgba(var(--primary-rgb), 0.9);");
-    expect(composer).toContain('name={busy ? "square" : "send-arrow"}');
+    expect(composer).toContain('name={busy ? "stop-square" : "send-arrow"}');
+    expect(composer).toContain("size={busy ? 12 : 14}");
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
     expect(composer).toContain("responsiveMenuWheelDelta(");
     expect(modelPicker).toContain('className="picker-list"');

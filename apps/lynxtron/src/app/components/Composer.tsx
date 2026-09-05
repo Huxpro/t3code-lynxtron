@@ -675,7 +675,11 @@ export function Composer({
                       aria-label={busy ? "Stop response" : "Send message"}
                       catchtap={handleSend}
                     >
-                      <Icon name={busy ? "square" : "send-arrow"} size={16} color="#ffffff" />
+                      <Icon
+                        name={busy ? "stop-square" : "send-arrow"}
+                        size={busy ? 12 : 16}
+                        color="#ffffff"
+                      />
                     </view>
                   </view>
                 )
@@ -1459,7 +1463,13 @@ export function Composer({
                   ) : null}
                   <ComposerPrimaryAction
                     state={controlState.primaryActionState}
-                    icon={<Icon name={busy ? "square" : "send-arrow"} size={14} color="#ffffff" />}
+                    icon={
+                      <Icon
+                        name={busy ? "stop-square" : "send-arrow"}
+                        size={busy ? 12 : 14}
+                        color="#ffffff"
+                      />
+                    }
                     onClick={handleSend}
                   />
                 </>

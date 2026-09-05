@@ -66,6 +66,7 @@ export type IconName =
   | "play"
   | "arrow-up"
   | "send-arrow"
+  | "stop-square"
   | "square"
   | "message-square-plus"
   | "send"
@@ -166,6 +167,7 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverr
     if (
       name === "openai" ||
       name === "send-arrow" ||
+      name === "stop-square" ||
       name === "claude" ||
       name === "cursor" ||
       name === "grok" ||
