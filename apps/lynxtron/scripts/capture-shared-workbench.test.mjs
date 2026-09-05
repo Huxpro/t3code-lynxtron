@@ -1441,6 +1441,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'step: "sibling-dismissed"');
     assert.include(source, "Sidebar hover targets resolved to the same thread");
     assert.include(source, 'step: "dismissed"');
+    assert.include(source, "waitForSidebarTooltipDismissed(cdp, sessionId, client, relationId)");
+    assert.include(source, "sidebarTooltipVisible(dismissal.tooltip)");
+    assert.include(source, 'movePointerToSidebarControl(cdp, sessionId, "web", selector)');
+    assert.include(source, 'invokeLynxTooltipProbe(cdp, sessionId, relationId, "hover")');
     assert.include(source, "opened before the 600ms authority delay");
     assert.include(source, "clickSidebarControl");
     assert.include(source, "clickPaletteBack");

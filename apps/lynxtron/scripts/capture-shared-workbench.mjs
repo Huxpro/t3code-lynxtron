@@ -4538,29 +4538,25 @@ async function runSidebarControlHoverFlow(cdp, sessionId, kind) {
       },
       sessionId,
     );
-    await delay(80);
-    const dismissed = await readSidebarTooltip(cdp, sessionId, client, relationId);
-    timeline.push({ client, step: "dismissed", tooltip: dismissed });
-    if (dismissed !== null) {
-      throw new Error(`${client} ${relationId} remained open after pointer leave`);
+    const dismissal = await waitForSidebarTooltipDismissed(cdp, sessionId, client, relationId);
+    timeline.push({ client, step: "dismissed", ...dismissal });
+    if (sidebarTooltipVisible(dismissal.tooltip)) {
+      throw new Error(
+        `${client} ${relationId} remained open after pointer leave: ${JSON.stringify(dismissal)}`,
+      );
     }
   }
 
-  const webFocused = await focusRemoteElement(
-    cdp,
-    sessionId,
-    `(() => {
-      const frame = document.getElementById('web-pane');
-      return frame?.contentWindow?.document?.querySelector(${JSON.stringify(selector)}) ?? null;
-    })()`,
-  );
-  if (!webFocused) throw new Error(`Could not focus Web ${selector} for the paired hover frame`);
-  await delay(650);
-  await movePointerToSidebarControl(cdp, sessionId, "lynx", selector);
-  await delay(650);
+  const finalWebPointer = await movePointerToSidebarControl(cdp, sessionId, "web", selector);
+  if (!finalWebPointer?.moved) {
+    throw new Error(`Could not hover Web ${selector} for the paired hover frame`);
+  }
+  const finalWeb = await waitForSidebarTooltip(cdp, sessionId, "web", relationId, expectedText);
+  await invokeLynxTooltipProbe(cdp, sessionId, relationId, "hover");
+  const finalLynx = await waitForSidebarTooltip(cdp, sessionId, "lynx", relationId, expectedText);
   const final = {
-    web: await readSidebarTooltip(cdp, sessionId, "web", relationId),
-    lynx: await readSidebarTooltip(cdp, sessionId, "lynx", relationId),
+    web: finalWeb,
+    lynx: finalLynx,
   };
   if (!final.web?.text.includes(expectedText) || !final.lynx?.text.includes(expectedText)) {
     throw new Error(`Could not retain paired ${relationId} hover frame: ${JSON.stringify(final)}`);
