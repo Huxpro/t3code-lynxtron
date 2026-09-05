@@ -1016,11 +1016,14 @@ describe("desktop shell interaction contract", () => {
       ".theme-dark .provider-instance-dialog__driver--selected {\n  border-color: var(--primary);\n  background-color: rgba(var(--primary-rgb), 0.15);\n  box-shadow: 0 0 0 2px var(--primary);",
     );
     expect(overrides).toMatch(/\.provider-instance-dialog__driver \{[^}]*gap: 11px;/);
+    expect(overrides).toMatch(
+      /\.provider-instance-dialog__early-access,[^]*\.provider-instance-dialog__coming-soon \{[^}]*height: 16px;[^}]*padding: 0 3px;[^}]*border-width: 1px;[^}]*border-radius: 4px;[^}]*background-color: rgba\(var\(--warning-rgb\), 0\.16\);[^}]*box-sizing: border-box;/,
+    );
     expect(overrides).toContain(
       ".theme-light .provider-instance-dialog__driver {\n  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);",
     );
     expect(overrides).toContain(
-      ".provider-instance-dialog__early-access {\n  position: absolute;\n  top: 14px;\n  right: 12px;",
+      ".provider-instance-dialog__early-access {\n  position: absolute;\n  top: 13px;\n  right: 12px;",
     );
     expect(overrides).toContain(".provider-instance-dialog__step-number {\n  display: flex;");
     expect(overrides).toContain("  box-sizing: border-box;");

@@ -7969,6 +7969,18 @@
 }
 .provider-instance-dialog__early-access,
 .provider-instance-dialog__coming-soon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 16px;
+  padding: 0 3px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 4px;
+  background-color: rgba(var(--warning-rgb), 0.16);
+  box-sizing: border-box;
   color: var(--warning-foreground);
   font-family: var(--font-sans);
   font-size: 10px;
@@ -7978,7 +7990,7 @@
 }
 .provider-instance-dialog__early-access {
   position: absolute;
-  top: 14px;
+  top: 13px;
   right: 12px;
 }
 .provider-instance-dialog__early-access + .provider-instance-dialog__driver-check {
