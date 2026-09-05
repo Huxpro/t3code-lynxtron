@@ -104,7 +104,6 @@ function readElementBox(element) {
   ) {
     return null;
   }
-  const copy = alert.querySelector(".thread-error-copy") ?? alert.children[1];
   return {
     tagName: element.tagName.toLowerCase(),
     lynxComputedDisplay: element.getAttribute("lynx-computed-display"),
@@ -202,6 +201,7 @@ function readProviderStatusBannerMetrics(root) {
   if (!alert) return null;
   const action = alert.querySelector(".thread-error-action");
   const dismiss = alert.querySelector('[aria-label^="Dismiss "], button[aria-label^="Dismiss "]');
+  const copy = alert.querySelector(".thread-error-copy") ?? alert.children[1];
   return {
     overlay: readElementBox(overlay ?? alert.parentElement),
     alert: readElementBox(alert),
