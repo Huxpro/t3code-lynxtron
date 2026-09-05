@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T06:24:00-04:00",
+  "stateId": "file-picker-default",
+  "productCommit": "a11abc4106756adc7c3552a6981462ff9c3627df",
+  "captureCommit": "a11abc4106756adc7c3552a6981462ff9c3627df",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "file-picker",
+    "snapshotSha256": "22d498b2d182c8e92fedc6c46b42b74fae5360e85413e7b9c5c647f6bd5698ce"
+  },
+  "capture": {
+    "reportSha256": "d82bc50a3c1d851b240046134f215bebbdfe3d29d0198d9637d908bff82304a1",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "7873e30975572f4f7de63bff9941d011e8aa6391fcb4f69618b29ae908848866",
+    "webImageSha256": "9e29a6ad6cff9c9c960a92b6399ba40979d9ac108a8de84bbef0943a9f8f52b8",
+    "lynxImageSha256": "6dc866efd085cc76df016cf50876b86b3adbf6e8f680a9676e2d73b7b9ad9b97",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "overlayContentMatch": true,
+    "overlayRowCountMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "rows": ["PORTING_STRATEGY.md", "PORT_WORKFLOW.md", "index.ts"],
+    "exactOrderMatch": true
+  },
+  "geometry": {
+    "baseline": {
+      "webPanel": [352, 82, 576, 278],
+      "lynxPanel": [352, 82, 576, 420],
+      "webResults": [353, 131, 574, 188],
+      "lynxResultsViewport": [353, 131, 574, 330],
+      "webFooterY": 319,
+      "lynxFooterY": 461
+    },
+    "current": {
+      "webPanel": [352, 82, 576, 278],
+      "lynxPanel": [352, 82, 576, 278],
+      "webResults": [353, 131, 574, 188],
+      "lynxResultsViewport": [353, 131, 574, 188],
+      "webFooter": [353, 319, 574, 40],
+      "lynxFooter": [353, 319, 574, 40]
+    }
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": {
+      "fullFrame": { "ssim": 0.94295, "mae": 1.827964, "significantShare": 0.020267 },
+      "panel": { "ssim": 0.888421, "mae": 5.104589, "significantShare": 0.057991 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.960049, "mae": 1.237001, "significantShare": 0.014573 },
+      "panel": { "ssim": 0.916628, "mae": 4.052287, "significantShare": 0.044739 },
+      "results": { "mae": 4.3785, "significantShare": 0.047428 }
+    }
+  },
+  "boundary": "Removing the fixed 330px file-results height lets the popup shrink to its three real rows while retaining a 330px maximum for long-list scrolling. Footer, results, and panel geometry now match Web exactly. Font and icon rasterization remain explicit residuals. Screenshots remain temporary because the tracked screenshot budget is full."
+}
