@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T13:40:00-04:00",
+  "stateId": "lifecycle-error",
+  "productCommit": "ab8cd07bf7e60de70a60c650550915111b7c4e34",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "sourceSeedSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db"
+  },
+  "capture": {
+    "reportSha256": "d36f74dcfb569a3fc089dc11d79595da034eeb5f7ec0a276825415aac9c1c971",
+    "webImageSha256": "ab473bf994fe651a884317b32e73a1ca3fae1d7a66d18159f2013c0331963826",
+    "lynxImageSha256": "c88b823c71ecd9da0fe61e76fa35ac91d6c0248600f96ec4c8737c3cd59fa1c2",
+    "lynxBundleSha256": "489cd0be1813aa7e2753e260ae44f02536c20733206b0c6c139c331bd124c207",
+    "pass": true,
+    "rendererErrors": 0,
+    "fullFrameSsimBefore": 0.930251,
+    "fullFrameSsimCurrent": 0.934578,
+    "bannerCropSsimBefore": 0.634624,
+    "bannerCropSsimCurrent": 0.726771
+  },
+  "geometry": {
+    "webBanner": [384, 264, 768, 68],
+    "lynxBanner": [384, 264, 768, 68],
+    "webCopy": [423, 277, 512.5625, 42],
+    "lynxCopy": [423, 277, 516.5625, 42],
+    "webTitle": [423, 277, 512.5625, 20],
+    "lynxTitle": [423, 277, 516.5625, 20],
+    "webDescription": [423, 299, 512.5625, 20],
+    "lynxDescription": [423, 299, 516.5625, 20],
+    "webActionRight": 1137,
+    "lynxActionRight": 1137
+  },
+  "fix": "Match Web's eight-pixel icon-to-copy gap and explicit 14px/20px title and description typography while retaining intrinsic action widths.",
+  "boundary": "Button text boxes remain renderer-intrinsic, but the action group's right edge matches exactly. A fixed button-width experiment reduced banner SSIM and was reverted."
+}

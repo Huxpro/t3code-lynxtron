@@ -25384,6 +25384,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "lifecycle-error-banner-copy-current",
+      "observedAt": "2026-09-05T13:40:00-04:00",
+      "commit": "ab8cd07bf7e60de70a60c650550915111b7c4e34",
+      "codeCommit": "ab8cd07bf7e60de70a60c650550915111b7c4e34",
+      "codeState": "commit",
+      "label": "Lifecycle reconnecting banner copy alignment",
+      "narrative": "The restored reconnecting card still placed its copy four pixels too far right and compressed both text lines to 18px because Browser Preview did not preserve the shared gap and line-height utilities. Explicit Lynx gap and 14px by 20px text metrics align both copy origins and heights with Web while leaving the exact 768 by 68 card and Composer rectangles unchanged. The banner crop SSIM improves from 0.634624 to 0.726771 and full-frame SSIM improves from 0.930251 to 0.934578.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures use byte-identical Web authority pixels, the same immutable snapshot and owned server fault, matching provider controls and placeholder, and zero renderer errors. Only the Lynx lifecycle copy gap and typography changed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/lifecycle-error-banner-copy.json",
+          "classification": "tracked-current",
+          "sha256": "6b6908b5cee6ef8162d3d2336824ecbb1ffcc1bbd271aa8724d37bd42ea6ea88"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "lifecycle-banner-leaf-geometry",
+              "source": "Banner, copy x/y/height, title x/y/height, description x/y/height, and action right edge match; only intrinsic copy width differs by four pixels"
+            },
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "lifecycle-banner-copy-computed-style",
+              "source": "Title and description use explicit 14px font size and 20px line height with a two-pixel inter-line gap, matching Web geometry"
+            },
+            "material": {
+              "residual": 0.065422,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - strict post-commit SSIM 0.934578; fixed banner crop SSIM improves from 0.634624 to 0.726771"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "lifecycle-error-copy-current-runtime",
+              "source": "Strict same-server fault capture passes with matched state, model, controls, placeholder, banner and Composer geometry, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
