@@ -36,5 +36,21 @@
     "bannerRoi": [384, 552, 768, 68]
   },
   "fix": "Restore the shared reconnect and Connections control height, border, radius, primary fill, foreground, and disabled opacity in the Lynx compatibility layer. Restrict the provider-status probe to the dedicated provider wrapper so it cannot misclassify the separate lifecycle banner.",
-  "boundary": "The lifecycle banner copy remains renderer-truthful: Web reports its environment WebSocket failure while Lynx reports the shared server closure. This evidence claims action styling and measurement validity, not identical transport wording. Screenshots remain temporary because the tracked budget is full."
+  "boundary": "The lifecycle banner copy remains renderer-truthful: Web reports its environment WebSocket failure while Lynx reports the shared server closure. This evidence claims action styling and measurement validity, not identical transport wording. Screenshots remain temporary because the tracked budget is full.",
+  "spacingRefinement": {
+    "productCommit": "5a72512800bbdf313293c78768fa7db8c9b92132",
+    "reportSha256": "971cac1d3b7aa313d9ad7dab16cfe31a7197357a007ab1184693c93217cda03a",
+    "webBundleSha256": "63a614681f513b333b6e29a3c7c51db246ee19fbe3e540e533fd699d910512b0",
+    "lynxBundleSha256": "adbdf929d1cd43112ee5228e2a377ae0fc56420c457702aa44bb24b2f76771bf",
+    "webImageSha256": "a543082e8b359cdcebad7744296dbb8948459f0fa556ffe23d1f37a6e008ada5",
+    "lynxImageSha256": "85df8ce5db6c8cbb19519494fd42ea5027f46ee5ceec861d99f62fb02df8b31c",
+    "fullFrameSsim": 0.957761,
+    "bannerRoiSsim": 0.80752,
+    "webReconnect": [943.5625, 574, 101.4375, 24],
+    "lynxReconnect": [942, 574, 101, 24],
+    "webConnections": [1049, 574, 88, 24],
+    "lynxConnections": [1049, 574, 88, 24],
+    "passed": true,
+    "rendererErrors": 0
+  }
 }
