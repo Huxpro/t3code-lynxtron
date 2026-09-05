@@ -63,8 +63,8 @@ describe("Quick Switch material", () => {
     expect(filesPanel).toContain("border-radius: 18px;");
     expect(filesPanel).not.toContain("box-sizing: border-box;");
     expect(browserFilesPanel).toContain("max-height: 418px;");
-    expect(filesResults).toContain("height: 330px;");
     expect(filesResults).toContain("max-height: 330px;");
+    expect(filesResults).not.toMatch(/(^|\n)  height: 330px;/u);
     expect(rule(".palette-panel")).toContain("max-height: 418px;");
     expect(rule(".palette-search")).toContain("min-height: 48px;");
     expect(rule(".palette-search")).toContain("max-height: 48px;");
