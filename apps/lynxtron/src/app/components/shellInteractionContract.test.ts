@@ -998,6 +998,12 @@ describe("desktop shell interaction contract", () => {
       ".theme-light .provider-instance-dialog__step--active {\n  box-shadow:",
     );
     expect(overrides).toContain(
+      ".theme-light .provider-instance-dialog__step-number {\n  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);",
+    );
+    expect(overrides).toContain(
+      ".theme-light .provider-instance-dialog__step--active .provider-instance-dialog__step-number {\n  box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.3);",
+    );
+    expect(overrides).toContain(
       ".theme-light .file-editor-line__number {\n  color: rgb(94, 94, 94);\n  font-size: 13px;",
     );
     expect(overrides).toContain(

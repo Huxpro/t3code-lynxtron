@@ -7799,10 +7799,16 @@
   border-color: var(--border);
   box-sizing: border-box;
 }
+.theme-light .provider-instance-dialog__step-number {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
 .provider-instance-dialog__step--active .provider-instance-dialog__step-number {
   color: var(--primary);
   background-color: rgba(var(--primary-rgb), 0.1);
   border-color: rgba(var(--primary-rgb), 0.3);
+}
+.theme-light .provider-instance-dialog__step--active .provider-instance-dialog__step-number {
+  box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.3);
 }
 .provider-instance-dialog__step-number-label,
 .provider-instance-dialog__step-label {
