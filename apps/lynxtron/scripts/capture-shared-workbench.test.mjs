@@ -94,6 +94,7 @@ describe("shared workbench lifecycle fault capture", () => {
       "utf8",
     );
     assert.include(workbench, "function readProviderStatusBannerMetrics(root)");
+    assert.include(workbench, 'const alert = overlay?.querySelector(".thread-error-alert")');
     assert.include(workbench, 'const copy = alert.querySelector(".thread-error-copy")');
     assert.include(workbench, "copy?.children[0]");
     assert.include(workbench, "copy?.children[1]");

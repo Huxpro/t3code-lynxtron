@@ -155,6 +155,10 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain('<Icon name="wifi-off" size={16} color="#f59e0b" />');
     expect(chatView).toContain('targetLabel: serverConfig?.environment.label ?? "T3 Code"');
     expect(overrides).toContain(".connection-lifecycle-banner-reference--warning");
+    expect(overrides).toContain(".composer-lifecycle-banner .connection-lifecycle-reconnect,");
+    expect(overrides).toContain("width: 101px;");
+    expect(overrides).toContain("opacity: 0.64;");
+    expect(overrides).toContain("min-width: 88px;");
     expect(chatView).not.toContain(
       'status === "ready" &&\n    resolveSelectableProviderInstanceEntry',
     );

@@ -195,10 +195,7 @@ function readProviderStatusBannerMetrics(root) {
   const overlay = root?.querySelector(
     ".provider-status-banner-flow, .provider-status-banner-overlay",
   );
-  const alert =
-    overlay?.querySelector(".thread-error-alert") ??
-    root?.querySelector(".thread-error-alert") ??
-    root?.querySelector('[role="alert"]');
+  const alert = overlay?.querySelector(".thread-error-alert");
   if (!alert) return null;
   const action = alert.querySelector(".thread-error-action");
   const dismiss = alert.querySelector('[aria-label^="Dismiss "], button[aria-label^="Dismiss "]');
