@@ -24908,6 +24908,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-content-height-current",
+      "observedAt": "2026-09-05T06:24:00-04:00",
+      "commit": "7015727db",
+      "codeCommit": "a11abc4106756adc7c3552a6981462ff9c3627df",
+      "codeState": "commit",
+      "label": "File Picker content-height parity",
+      "narrative": "The File Picker rendered the same three files in both Browser clients, but Lynx forced its results scroll-view to 330px and left 142px of empty space below the rows. Removing the fixed height while retaining the 330px maximum lets the popup shrink from 576 by 420 to Web's exact 576 by 278, aligns the results viewport at 574 by 188 and footer y at 319, and raises full-frame SSIM from 0.942950 to 0.960049.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share one immutable sessionless-thread snapshot, project workspace, three ordered file rows, dark theme, 1280 by 820 viewport, and zero renderer errors. The change only removes the fixed short-list height."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/file-picker-content-height.json",
+          "classification": "tracked-current",
+          "sha256": "3404f351ad30a508a7a590989c2f8dcf891b31882a6db4c72b54cf74e4e31277"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 574,
+              "confidence": 0.99,
+              "method": "file-picker-content-height-geometry",
+              "source": "Panel, search, results viewport, results content, and footer geometry now match Web exactly for the three-row fixture"
+            },
+            "material": {
+              "residual": 0.083372,
+              "confidence": 0.99,
+              "method": "file-picker-panel-ssim",
+              "source": "1 - fixed 576 by 278 panel SSIM 0.916628; MAE 4.052287 and 4.4739 percent significant pixels after content-height alignment"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "file-picker-current-runtime",
+              "source": "Strict paired capture passes with the same three ordered file rows, matching overlay state and row count, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
