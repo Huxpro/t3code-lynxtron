@@ -24131,6 +24131,28 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-status-banner-flow-current",
+      "observedAt": "2026-09-04T20:15:30-04:00",
+      "commit": "2ba0bd1d8",
+      "codeCommit": "2ba0bd1d8",
+      "codeState": "commit",
+      "label": "Provider status banner flow and contrast",
+      "narrative": "Provider-status errors were absolutely overlaid on the timeline. With an existing message, both Web and Lynx could paint the first row inside the banner; the Lynx light-theme description also inherited destructive red instead of the Web muted foreground. Both renderers now keep provider notices in the shared banner flow for non-Hero threads while preserving the Hero overlay. The same diagnostic fixture moves first-row clearance from -66px to +16px on Web and from -34px to +20px on Lynx, and the Lynx description now uses the muted token. The exact Codex timeout string is covered without truncation by the shared banner test.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.96,
+        "reason": "Before and after diagnostic captures use the same isolated SQLite snapshot, selected thread, provider error, message, route, light theme, viewport, and zero renderer errors. The direct projection fixture proves only visual layout; standard provider-banner semantics remain covered by the shared gate."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/provider-status-banner-flow.json",
+          "classification": "tracked-current",
+          "sha256": "1e501b7a312f99c0b0faf23fc1e516e65bf5f48106f889702f7fd79917badc0e"
+        }
+      ],
+      "updates": []
     }
   ]
 }
