@@ -24660,6 +24660,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-summary-typography-current",
+      "observedAt": "2026-09-05T03:53:00-04:00",
+      "commit": "5ea336d44",
+      "codeCommit": "cbbe09296b76ea420b85b6b2aa6880620642eeb5",
+      "codeState": "commit",
+      "label": "Source Control summary typography parity",
+      "narrative": "A current dark 1280 by 820 same-state Source Control capture showed Lynx summary copy inheriting 16px foreground text while Web uses 13px muted foreground at 80 percent alpha. Restoring that contract raises full-frame SSIM from 0.886840 to 0.911272 and lowers MAE from 5.495788 to 3.347155; the six-row crop improves from 0.812820 to 0.863747 SSIM and the long-copy rows from 0.707187 to 0.797468.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, Source Control route, dark theme, viewport, six provider rows, exact outer row geometry, and zero renderer errors. The product change only restores summary font size and color."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-source-control-summary-typography.json",
+          "classification": "tracked-current",
+          "sha256": "be77faf3a11c118f1185148371e19e9b23c3fcc557724d268277326392b711f6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "source-control-summary-computed-style",
+              "source": "All six summaries match Web at 13px and muted foreground at 80 percent alpha; line-height differs only by Web's 18.85px computed value versus Lynx's 19px contract"
+            },
+            "material": {
+              "residual": 0.088728,
+              "confidence": 0.99,
+              "method": "settings-source-control-full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.911272; MAE 3.347155 and 3.7067 percent significant pixels after summary typography alignment"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-source-control-current-runtime",
+              "source": "Same immutable snapshot, route, theme, six provider rows, matching state identity, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

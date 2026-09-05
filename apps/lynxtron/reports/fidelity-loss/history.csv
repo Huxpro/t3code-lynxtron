@@ -414,3 +414,4 @@ provider-dialog-step-number-sizing-current,2026-09-05T00:51:00-04:00,5df24c1a2,c
 provider-dialog-step-rail-material-current,2026-09-05T01:07:00-04:00,5fb7d1141,commit,Provider dialog step-rail material parity,0.177937,0.177937,0.036322,0.146953,0.853047,0.813953
 provider-dialog-step-indicator-material-current,2026-09-05T01:20:00-04:00,d9f497a5d,commit,Provider dialog step-indicator material parity,0.177936,0.177936,0.03632,0.146953,0.853047,0.813954
 settings-keybindings-header-height-current,2026-09-05T02:26:00-04:00,d60e1f93f,commit,Keybindings table header alignment,0.177935,0.177935,0.03632,0.146953,0.853047,0.813955
+settings-source-control-summary-typography-current,2026-09-05T03:53:00-04:00,5ea336d44,commit,Source Control summary typography parity,0.177912,0.177912,0.036292,0.146953,0.853047,0.813978
