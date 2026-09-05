@@ -24255,6 +24255,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "add-project-sources-description-color-current",
+      "observedAt": "2026-09-04T22:01:15-04:00",
+      "commit": "10a9d8b77",
+      "codeCommit": "10a9d8b77",
+      "codeState": "commit",
+      "label": "Add Project source description color parity",
+      "narrative": "The six Add Project source descriptions had exact Web geometry and 12px/16px typography, but Lynx inherited foreground white because the shared text-muted-foreground/70 utility did not compile into the native stylesheet. A scoped source-row color restores the authority's muted 70% tone without changing content, badges, icons, or layout. The exact 576x420 panel improves from 0.878621 to 0.893407 SSIM, MAE from 5.604289 to 4.087813, and significant pixels from 5.9773% to 5.3239%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one snapshot, six ordered source rows, route, theme, viewport, exact panel and row geometry, and zero renderer errors. The product change only restores the scoped description color."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-04/fidelity/add-project-sources-description-color.json",
+          "classification": "tracked-current",
+          "sha256": "9b5c83f899cba8bf63bee1ed375994b92e882af87e7c6318eb5a7d7a05aec27a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["add-project-sources"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "add-project-sources-current-content",
+              "source": "Both renderers expose the same six ordered source choices and truthful setup badges"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "add-project-sources-current-row-geometry",
+              "source": "Panel and sampled row, icon, copy, title, and description anchors remain exact"
+            },
+            "material": {
+              "residual": 0.106593,
+              "confidence": 0.99,
+              "method": "add-project-sources-panel-ssim",
+              "source": "1 - exact panel SSIM 0.893407; MAE 4.087813 and 5.3239% significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "add-project-sources-current-shared-runtime",
+              "source": "Same snapshot, source row order, panel geometry, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

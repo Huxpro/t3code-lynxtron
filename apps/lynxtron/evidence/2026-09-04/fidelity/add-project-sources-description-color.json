@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-04T22:01:15-04:00",
+  "captureCommit": "10a9d8b77",
+  "productCommit": "10a9d8b77",
+  "stateId": "add-project-sources",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "09de34f6c19cc489b8d8f11647c420bbcacfd19fc347157857a44c9917145ea5",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "4f7bc9806bcd3175240f2746d70c8e645f4d8303a111fb4324c958c9cfee13c6",
+    "webImageSha256": "cb0fe6f0256f7a96f1efbee8c95cce0199087e83f4ffe7c07ba808100dc53b12",
+    "lynxImageSha256": "d5003a1e4fe10b0da3b6f6530101635f35114cfee38a422cfd4c38bf970e0746",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "rowCount": 6,
+    "rowOrderMatch": true,
+    "panel": [352, 82, 576, 420],
+    "descriptionColorBefore": "inherited foreground",
+    "descriptionColorAfter": "rgba(129, 129, 129, 0.7)"
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16 over the exact 576x420 Add Project Sources panel",
+    "baseline": { "ssim": 0.878621, "mae": 5.604289, "significantShare": 0.059773 },
+    "current": { "ssim": 0.893407, "mae": 4.087813, "significantShare": 0.053239 }
+  },
+  "boundary": "The existing source-row geometry and provider icons remain unchanged. The fix restores the shared text-muted-foreground/70 color only for Add Project source descriptions; interaction and Native evidence remain separate. Screenshots remain temporary because the tracked screenshot budget is full."
+}
