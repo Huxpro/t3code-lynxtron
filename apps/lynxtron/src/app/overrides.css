@@ -9286,6 +9286,9 @@
 .files-panel .file-tree-row--selected .file-tree-row__name {
   color: var(--foreground);
 }
+.theme-light .files-panel .file-tree-row--selected {
+  background-color: rgba(var(--foreground-rgb), 0.12);
+}
 
 .file-panel {
   display: flex;

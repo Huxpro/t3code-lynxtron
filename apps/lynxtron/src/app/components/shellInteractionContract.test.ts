@@ -992,6 +992,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("width: 75px;");
     expect(overrides).toContain("height: 24px;");
     expect(overrides).toContain(".files-panel__save-label {\n  white-space: nowrap;");
+    expect(overrides).toContain(
+      ".theme-light .files-panel .file-tree-row--selected {\n  background-color: rgba(var(--foreground-rgb), 0.12);",
+    );
     expect(overrides).toContain(".files-panel__preview-status {\n  flex-grow: 1;");
     expect(overrides).toContain("text-overflow: ellipsis;");
     expect(overrides).toContain("border-radius: 0;");
