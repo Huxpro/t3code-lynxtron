@@ -25044,6 +25044,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-keycap-order-current",
+      "observedAt": "2026-09-05T08:10:00-04:00",
+      "commit": "916d7e8698ffa74b8212ef94dbf4f2a17817c380",
+      "codeCommit": "916d7e8698ffa74b8212ef94dbf4f2a17817c380",
+      "codeState": "commit",
+      "label": "Settings keybinding keycap parity",
+      "narrative": "Lynx split the formatted macOS display string, which reordered Shift before Command and rendered 32 by 18 caps. Reusing the canonical input token order and matching Web's 24 by 20 caps restores both content order and repeated geometry. The two affected visible rows improve from 0.718591 to 0.907795 SSIM and full-frame SSIM improves from 0.882828 to 0.891087.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one immutable snapshot, Keybindings route, 45 bindings, dark theme, viewport, and zero renderer errors. The product change only corrects Lynx keycap order and dimensions."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-keybindings-keycap-order.json",
+          "classification": "tracked-current",
+          "sha256": "3fe0293c8447a748368a76b6237eb187f602882d44986683616347a20f36bcd0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybinding-keycap-order",
+              "source": "All keycap arrays now match Web; visible Shift bindings render Command then Shift then key"
+            },
+            "geometry": {
+              "anchorDeltas": [-0.171875, 0, 0, 0, -0.171875, 0, 0, 0],
+              "anchorScale": 24,
+              "confidence": 0.99,
+              "method": "keybinding-keycap-geometry",
+              "source": "The two visible three-cap sequences use exact 24 by 20 boxes and x origins within 0.171875px"
+            },
+            "material": {
+              "residual": 0.092205,
+              "confidence": 0.99,
+              "method": "keybinding-two-row-ssim",
+              "source": "1 - fixed two-row crop SSIM 0.907795; crop MAE 4.945176 and 4.4118 percent significant pixels"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-keybindings-current-runtime",
+              "source": "Strict paired capture passes with 45 canonical rows, matching keycap arrays, exact state identity, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

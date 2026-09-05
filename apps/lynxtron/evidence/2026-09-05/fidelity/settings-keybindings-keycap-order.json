@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T08:10:00-04:00",
+  "stateId": "settings-keybindings",
+  "productCommit": "916d7e8698ffa74b8212ef94dbf4f2a17817c380",
+  "captureCommit": "916d7e8698ffa74b8212ef94dbf4f2a17817c380",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-keybindings",
+    "snapshotSha256": "22d498b2d182c8e92fedc6c46b42b74fae5360e85413e7b9c5c647f6bd5698ce"
+  },
+  "capture": {
+    "reportSha256": "13201200134f91963b8a7fc416ade4d584289882a97e7d31d1d9444dfad2311f",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "619825839314a93448d749b145c7ac76e3557fe6575add8986b84ea38996150b",
+    "webImageSha256": "10eef48a7ec8346e44a8179db4f2bc0d05ab0c248bcc569f5573a91bb02ab99b",
+    "lynxImageSha256": "1f6a04fe2b2bdf0a61cd88eb90e46a7aa29dfe739df0bbbb9faa704c5efefb11",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "settingsContentMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "chatNewAlternate": { "web": ["⌘", "⇧", "O"], "lynx": ["⌘", "⇧", "O"] },
+    "chatNewLocal": { "web": ["⌘", "⇧", "N"], "lynx": ["⌘", "⇧", "N"] }
+  },
+  "geometry": {
+    "webKeycapX": [636.171875, 664.171875, 692.171875],
+    "lynxKeycapX": [636, 664, 692],
+    "webKeycapSize": [24, 20],
+    "lynxKeycapSize": [24, 20],
+    "maxDelta": 0.171875
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": {
+      "fullFrame": { "ssim": 0.882828, "mae": 5.154524, "significantShare": 0.043517 },
+      "twoRows": { "ssim": 0.718591, "mae": 9.046588, "significantShare": 0.066235 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.891087, "mae": 4.970743, "significantShare": 0.042663 },
+      "twoRows": { "ssim": 0.907795, "mae": 4.945176, "significantShare": 0.044118 }
+    }
+  },
+  "boundary": "Lynx now derives macOS keycap order from the same canonical input-token ordering used by Web and renders each cap at the authority's 24 by 20 size and four-pixel gap. The read-only Lynx capability remains explicit and is not conflated with this shared visual/content correction. Screenshots remain temporary to preserve the tracked screenshot budget."
+}

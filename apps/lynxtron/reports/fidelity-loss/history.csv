@@ -422,3 +422,4 @@ settings-source-control-error-current-refresh,2026-09-05T06:01:00-04:00,59a28a7e
 file-picker-content-height-current,2026-09-05T06:24:00-04:00,7015727db,commit,File Picker content-height parity,0.1773,0.177294,0.035622,0.146912,0.853088,0.81459
 settings-navigation-stacking-current,2026-09-05T07:04:00-04:00,7f349b25392d81e096c3bfaabe3863be823f6014,commit,Settings navigation stacking parity,0.17698,0.17698,0.035246,0.146912,0.853088,0.81491
 settings-background-policy-info-current,2026-09-05T07:30:00-04:00,a7c79318e08ccf85ecc4d8366132f0c387ab3313,commit,Settings background policy info parity,0.17698,0.17698,0.035246,0.146912,0.853088,0.81491
+settings-keybindings-keycap-order-current,2026-09-05T08:10:00-04:00,916d7e8698ffa74b8212ef94dbf4f2a17817c380,commit,Settings keybinding keycap parity,0.176958,0.176958,0.035221,0.146912,0.853088,0.814932
