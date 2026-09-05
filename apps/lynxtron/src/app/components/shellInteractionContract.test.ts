@@ -833,13 +833,9 @@ describe("desktop shell interaction contract", () => {
     expect(browserPreviewSource).toContain(
       '".file-editor-line__content>lynx-wrapper>.file-editor-token::part(inner-box){" +',
     );
-    expect(browserPreviewSource).toContain('".theme-light .sidebar-settings-authority{" +');
-    expect(sidebarSource).toContain(
-      "viewport.width === 1280 && viewport.height === 820 && sidebarWidth === 256",
-    );
-    expect(sidebarSource).toContain(
-      '<image className="sidebar-settings-authority" src={settingsRowUrl} />',
-    );
+    expect(browserPreviewSource).not.toContain('".sidebar-settings-authority{" +');
+    expect(sidebarSource).not.toContain("settingsRowUrl");
+    expect(sidebarSource).not.toContain("footerAuthorityVisual=");
     const settingsRowStart = overrides.indexOf(".sidebar-settings-row {");
     const settingsRowBlock = overrides.slice(
       settingsRowStart,

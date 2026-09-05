@@ -1127,6 +1127,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, '"settings-beta": ["background-activity", "legacy-sidebar"]');
     assert.include(workbench, "sidebarAutoSettleAfterDays: 3");
     assert.include(source, "function settingsNavigationStateMatches(state)");
+    assert.include(source, 'if (!semanticRoute.startsWith("settings-"))');
+    assert.include(source, "if (!realFooterReady || !authorityHidden");
     assert.include(source, "function backgroundPolicyAccessoryMatches(webMetrics, lynxMetrics)");
     assert.include(workbench, "titleAccessoryBox: readElementBox(");
     assert.include(workbench, "Background policy details");

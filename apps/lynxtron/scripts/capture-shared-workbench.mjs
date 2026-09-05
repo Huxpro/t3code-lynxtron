@@ -2039,6 +2039,27 @@ function sidebarControlGeometryMatches(state) {
 function sidebarFooterThemeMatches(state, viewportWidth, viewportHeight) {
   const web = state?.web?.sidebarDiagnostics?.chrome;
   const lynx = state?.lynx?.sidebarDiagnostics?.chrome;
+  const authority = lynx?.settingsAuthority;
+  const authorityHidden =
+    authority === null ||
+    authority?.style?.display === "none" ||
+    authority?.style?.opacity === "0" ||
+    (authority?.rect?.width === 0 && authority?.rect?.height === 0);
+  if (!semanticRoute.startsWith("settings-")) {
+    const realFooterReady = [web, lynx].every((chrome) => {
+      const footer = chrome?.footer?.rect;
+      const row = chrome?.settingsRow?.rect;
+      return (
+        footer?.height === 48 &&
+        row?.height === 32 &&
+        row.y >= footer.y &&
+        row.y + row.height <= footer.y + footer.height
+      );
+    });
+    if (!realFooterReady || !authorityHidden || lynx?.settingsRow?.style?.opacity !== "1") {
+      return false;
+    }
+  }
   const responsiveViewport = viewportWidth !== 1280 || viewportHeight !== 820;
   if (responsiveViewport) {
     const responsiveFooterReady = [web, lynx].every((chrome) => {
@@ -2051,7 +2072,6 @@ function sidebarFooterThemeMatches(state, viewportWidth, viewportHeight) {
         row.y + row.height <= footer.y + footer.height
       );
     });
-    const authority = lynx?.settingsAuthority;
     const responsiveAuthorityHidden =
       authority === null ||
       authority?.style?.display === "none" ||
@@ -2081,10 +2101,7 @@ function sidebarFooterThemeMatches(state, viewportWidth, viewportHeight) {
     !isNearBlack(web.footer.style?.backgroundColor) &&
     !isNearBlack(lynx.footer.style?.backgroundColor) &&
     lynx.settingsRow?.style?.opacity === "1" &&
-    (lynx.settingsAuthority === null ||
-      lynx.settingsAuthority.style?.display === "none" ||
-      lynx.settingsAuthority.style?.opacity === "0" ||
-      (lynx.settingsAuthority.rect?.width === 0 && lynx.settingsAuthority.rect?.height === 0))
+    authorityHidden
   );
 }
 

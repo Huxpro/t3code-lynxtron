@@ -550,17 +550,6 @@
   padding: 8px;
   box-sizing: border-box;
 }
-.sidebar-settings-authority {
-  position: absolute;
-  left: 8px;
-  top: 8px;
-  width: 239px;
-  height: 32px;
-}
-.sidebar-footer--authority .sidebar-settings-row > image,
-.sidebar-footer--authority .sidebar-settings-row > text {
-  opacity: 0;
-}
 .sidebar-search-anchor {
   display: flex;
   flex-direction: row;

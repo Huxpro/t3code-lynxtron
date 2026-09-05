@@ -37,7 +37,6 @@ import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV
 import { HostText } from "./ui/hostElements";
 import { useSidebar } from "./ui/sidebar";
 import { TooltipPopup } from "./ui/tooltip";
-import settingsRowUrl from "../../../lynxtron/src/app/assets/sidebar-settings-row@2x.png?external";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import {
   clientCapabilities,
@@ -1192,11 +1191,6 @@ export default function SidebarV2() {
         hasProjects={projects.length > 0}
         scopedDisplayName={scopedProject?.title ?? null}
         onAddProjectClick={uiActions.openAddProject}
-        footerAuthorityVisual={
-          viewport.width === 1280 && viewport.height === 820 && sidebarWidth === 256 ? (
-            <image className="sidebar-settings-authority" src={settingsRowUrl} />
-          ) : undefined
-        }
       />
       {projectSettingsProject ? (
         <ProjectSettingsDialog
