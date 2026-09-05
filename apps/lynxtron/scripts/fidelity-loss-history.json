@@ -24399,6 +24399,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-light-card-material-current",
+      "observedAt": "2026-09-05T00:05:00-04:00",
+      "commit": "160033a0d",
+      "codeCommit": "853b27353c78b4bc393769a0d129c6f6106de021",
+      "codeState": "commit",
+      "label": "Provider dialog light card material parity",
+      "narrative": "The light Add Provider Driver stage already matched Web at 576 by 538 with identical header, body, footer, step rail, nine cards, and complete forward and reverse workflow. Lynx still omitted the one-pixel card rings and used a stronger selected fill. Restoring the Web authority's ordinary 5 percent black ring plus selected 8 percent primary fill and 2px primary ring improves dialog SSIM from 0.772426 to 0.799392 and MAE from 7.121471 to 6.483239; the driver grid improves from 0.667179 to 0.707904 and selected-card MAE from 16.441939 to 12.280332.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, light theme, viewport, Driver-stage content, exact dialog and card geometry, full wizard lifecycle, and zero renderer errors. The product change only restores card material."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-light-card-material.json",
+          "classification": "tracked-current",
+          "sha256": "b0ae89c4b38237b964c1fd683972238b9f6605b59bf1ce2bfe4cfa8549297122"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-card-geometry",
+              "source": "Dialog, header, body, footer, step rail, and all nine 259 by 44 driver cards match Web geometry"
+            },
+            "material": {
+              "residual": 0.200608,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-ssim",
+              "source": "1 - exact dialog SSIM 0.799392; MAE 6.483239 and 8.1752 percent significant pixels after card material alignment"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-runtime",
+              "source": "Same snapshot and route, complete Driver to Identity to Config to save to delete to dismiss flow, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
