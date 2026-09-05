@@ -29,9 +29,11 @@ export function compactControlsContentHeight(
 
 export function compactControlsPanelHeight(options: {
   readonly contentHeight: number;
+  readonly hero?: boolean;
   readonly viewportHeight: number;
 }): number {
   const intrinsicHeight = options.contentHeight + PANEL_BORDER_PX;
   const viewportLimit = Math.max(160, options.viewportHeight - VIEWPORT_COLLISION_CHROME_PX);
-  return Math.min(intrinsicHeight, viewportLimit);
+  const anchorLimit = options.hero ? Math.floor(options.viewportHeight / 2) + 19 : viewportLimit;
+  return Math.min(intrinsicHeight, viewportLimit, anchorLimit);
 }

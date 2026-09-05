@@ -2128,19 +2128,23 @@ function sidebarFooterThemeMatches(state, viewportWidth, viewportHeight) {
 
 function compactControlsEvidenceReady(state) {
   if (!isCompactControlsState) return true;
-  const clientsReady = [state?.web, state?.lynx].every((client) => {
+  const visibilityByClient = [state?.web, state?.lynx].map((client) => {
+    const anatomy = client?.overlayMetrics?.anatomy;
+    const scrollBottom = (anatomy?.scroll?.rect?.y ?? 0) + (anatomy?.scroll?.rect?.height ?? 0);
+    const lastRowBottom =
+      (anatomy?.lastRow?.rect?.y ?? Number.POSITIVE_INFINITY) +
+      (anatomy?.lastRow?.rect?.height ?? 0);
+    return { lastRowBottom, overflowed: lastRowBottom > scrollBottom + 1 };
+  });
+  const clientsReady = [state?.web, state?.lynx].every((client, index) => {
     const footer = client?.composerMetrics?.anatomy?.footer;
     const context = client?.composerMetrics?.anatomy?.context;
     const panel = client?.reviewMetrics?.panelRect;
     const overlayMetrics = client?.overlayMetrics;
     const anatomy = overlayMetrics?.anatomy;
-    const scrollBottom = (anatomy?.scroll?.rect?.y ?? 0) + (anatomy?.scroll?.rect?.height ?? 0);
-    const lastRowBottom =
-      (anatomy?.lastRow?.rect?.y ?? Number.POSITIVE_INFINITY) +
-      (anatomy?.lastRow?.rect?.height ?? 0);
-    const initialVisibilityReady = isShortCompactControlsState
-      ? lastRowBottom > scrollBottom + 1
-      : lastRowBottom <= scrollBottom + 1;
+    const initialVisibilityReady =
+      visibilityByClient[0]?.overflowed === visibilityByClient[1]?.overflowed &&
+      (!isShortCompactControlsState || visibilityByClient[index]?.overflowed === true);
     return (
       client?.productState?.overlay === "compact-controls" &&
       footer?.attributes?.["data-chat-composer-footer-compact"] === "true" &&
@@ -2164,11 +2168,18 @@ function compactControlsEvidenceReady(state) {
   const containment = compactControlsContainment(state);
   const webPanel = state?.web?.overlayMetrics?.anatomy?.panel?.rect;
   const lynxPanel = state?.lynx?.overlayMetrics?.anatomy?.panel?.rect;
+  const webTrigger = state?.web?.overlayMetrics?.triggerRect;
+  const lynxTrigger = state?.lynx?.overlayMetrics?.triggerRect;
   const panelGeometryMatches =
     isShortCompactControlsState ||
     (webPanel &&
       lynxPanel &&
-      ["x", "y", "width", "height"].every((key) => Math.abs(webPanel[key] - lynxPanel[key]) <= 2));
+      webTrigger &&
+      lynxTrigger &&
+      Math.abs(webPanel.y - lynxPanel.y) <= 2 &&
+      Math.abs(webPanel.width - lynxPanel.width) <= 2 &&
+      Math.abs(webPanel.height - lynxPanel.height) <= 2 &&
+      Math.abs(webPanel.x - webTrigger.x - (lynxPanel.x - lynxTrigger.x)) <= 2);
   return (
     clientsReady &&
     panelGeometryMatches &&

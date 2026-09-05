@@ -331,7 +331,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "composer-compact-controls-inline-files-short"');
     assert.include(source, "function compactControlsEvidenceReady(state)");
     assert.include(source, "const panelGeometryMatches =");
-    assert.include(source, "Math.abs(webPanel[key] - lynxPanel[key]) <= 2");
+    assert.include(
+      source,
+      "visibilityByClient[0]?.overflowed === visibilityByClient[1]?.overflowed",
+    );
+    assert.include(source, "Math.abs(webPanel.height - lynxPanel.height) <= 2");
+    assert.include(
+      source,
+      "Math.abs(webPanel.x - webTrigger.x - (lynxPanel.x - lynxTrigger.x)) <= 2",
+    );
     assert.include(source, "function compactControlsContainment(state)");
     assert.include(source, '"workspace-menu",');
     assert.include(source, '"compact-controls",');
@@ -349,7 +357,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "composer-compact-controls-menu__scroll");
     assert.include(workbench, "composer-compact-controls-dismiss");
     assert.include(workbench, "lastRow:");
-    assert.include(source, "lastRowBottom <= scrollBottom + 1");
+    assert.include(
+      source,
+      "visibilityByClient[0]?.overflowed === visibilityByClient[1]?.overflowed",
+    );
     assert.include(source, "lastRowBottom > scrollBottom + 1");
     assert.include(source, "context.x >= composer.x");
     assert.include(source, "contextRight <= composerRight");

@@ -450,6 +450,7 @@ export function Composer({
   }, [mobileComposerExpanded, viewport.width]);
   const compactControlsMenuHeight = compactControlsPanelHeight({
     contentHeight: compactControlsMeasuredContentHeight ?? compactControlsEstimatedContentHeight,
+    hero,
     viewportHeight: viewport.height,
   });
   const sendState = deriveComposerSendState({

@@ -20,6 +20,15 @@ describe("compact controls menu height", () => {
     expect(compactControlsPanelHeight({ contentHeight: 563, viewportHeight: 600 })).toBe(497);
   });
 
+  it("caps a Hero menu to the space above its centered Composer", () => {
+    expect(
+      compactControlsPanelHeight({ contentHeight: 563, hero: true, viewportHeight: 820 }),
+    ).toBe(429);
+    expect(
+      compactControlsPanelHeight({ contentHeight: 563, hero: true, viewportHeight: 600 }),
+    ).toBe(319);
+  });
+
   it("omits Mode rows when the provider does not expose the toggle", () => {
     expect(compactControlsContentHeight(sections, false)).toBe(470);
   });
