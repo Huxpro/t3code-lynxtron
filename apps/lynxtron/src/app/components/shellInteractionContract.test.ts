@@ -979,6 +979,12 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".theme-light .file-editor-token--heading,");
     expect(overrides).toContain(".theme-light .file-editor-token--string,");
     expect(overrides).toContain(".theme-light .file-editor-token--property {");
+    expect(overrides).toContain(
+      ".theme-light .file-editor-line__number {\n  color: rgb(94, 94, 94);\n  font-size: 13px;",
+    );
+    expect(overrides).toContain(
+      ".theme-light .file-editor-line__content {\n  padding-left: 7.8px;\n  padding-right: 7.8px;",
+    );
     expect(overrides).toContain(".file-panel__statusbar {");
     expect(overrides).toContain("height: 33px;");
     expect(overrides).toContain(".files-panel__save {\n  display: flex;");

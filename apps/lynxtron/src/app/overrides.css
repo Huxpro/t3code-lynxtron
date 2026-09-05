@@ -9560,6 +9560,14 @@
 .theme-light .file-editor-token--property {
   color: #946200;
 }
+.theme-light .file-editor-line__number {
+  color: rgb(94, 94, 94);
+  font-size: 13px;
+}
+.theme-light .file-editor-line__content {
+  padding-left: 7.8px;
+  padding-right: 7.8px;
+}
 .file-panel__statusbar {
   display: flex;
   flex-direction: row;
