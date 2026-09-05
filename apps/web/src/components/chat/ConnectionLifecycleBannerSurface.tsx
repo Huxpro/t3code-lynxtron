@@ -22,6 +22,7 @@ export function ConnectionLifecycleBannerSurface({
     <HostView
       className={cn(
         "connection-lifecycle-banner-reference mx-3 mt-2 flex min-w-0 items-center gap-3 rounded-md border px-3 py-2",
+        `connection-lifecycle-banner-reference--${presentation.tone}`,
         presentation.tone === "error"
           ? "border-destructive/40 bg-destructive/10"
           : presentation.tone === "warning"

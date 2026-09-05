@@ -2447,10 +2447,7 @@
   border-radius: 22px;
   box-sizing: border-box;
 }
-.composer-lifecycle-banner
-  .connection-lifecycle-banner-reference[data-connection-lifecycle-phase="connecting"],
-.composer-lifecycle-banner
-  .connection-lifecycle-banner-reference[data-connection-lifecycle-phase="reconnecting"] {
+.composer-lifecycle-banner .connection-lifecycle-banner-reference--warning {
   border-color: rgba(var(--warning-rgb), 0.32);
   background-color: rgba(var(--warning-rgb), 0.04);
 }

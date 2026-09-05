@@ -331,11 +331,11 @@ export function ChatView({ threadId }: ChatViewProps) {
     () =>
       projectConnectionLifecycle({
         phase: status,
-        targetLabel: "T3 Code",
+        targetLabel: serverConfig?.environment.label ?? "T3 Code",
         detail: statusDetail,
         recoverySubject: "the local backend",
       }),
-    [status, statusDetail],
+    [serverConfig?.environment.label, status, statusDetail],
   );
   const showInteractionModeToggle =
     providerEntries.find((entry) => entry.instanceId === modelInstanceId)?.snapshot
