@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T07:04:00-04:00",
+  "stateId": "settings-general",
+  "productCommit": "7f349b25392d81e096c3bfaabe3863be823f6014",
+  "captureCommit": "7f349b25392d81e096c3bfaabe3863be823f6014",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-general",
+    "snapshotSha256": "22d498b2d182c8e92fedc6c46b42b74fae5360e85413e7b9c5c647f6bd5698ce"
+  },
+  "capture": {
+    "reportSha256": "8606aa32370f3c65588da4bcc88f2252c881dd66c6ad6c8d779d07fc9b226a3d",
+    "webBundleSha256": "cf0ae59b49d29de2aebaf369c77b08a76121c0da0449a1d02a00ab82a6af22b7",
+    "lynxBundleSha256": "abe41289881bdca2d407fbb9de00ae0a3a6e23e003d2b15b97f9e2a58da921a1",
+    "webImageSha256": "3a40a85a2da1a6f64e06887d79915d415f08e8d14dcf33aed66c8bb6f3bd5426",
+    "lynxImageSha256": "56d968300fb2f1b21939b3548a3a6bad60a0e416c5fe37f4a37df98e3ffc2239",
+    "passed": true,
+    "identityMatch": true,
+    "stateIdentityMatch": true,
+    "settingsContentMatch": true,
+    "rendererErrors": 0
+  },
+  "visibility": {
+    "labels": [
+      "General",
+      "Appearance",
+      "Keybindings",
+      "Providers",
+      "Source Control",
+      "Connections",
+      "Archive"
+    ],
+    "webLabelWidths": [51.59375, 80.8125, 80.171875, 62.015625, 99.03125, 84, 49.859375],
+    "lynxLabelWidths": [51.296875, 79.59375, 80.890625, 62.53125, 98.875, 83.125, 49.734375],
+    "webBackLabel": [31.953125, 20],
+    "lynxBackLabel": [32.515625, 20],
+    "allVisible": true
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM, mean absolute RGB error, and share of pixels with a channel delta of at least 16",
+    "baseline": {
+      "fullFrame": { "ssim": 0.903626, "mae": 3.463941, "significantShare": 0.038887 },
+      "sidebar": { "ssim": 0.897227, "mae": 3.638088, "significantShare": 0.022899 }
+    },
+    "current": {
+      "fullFrame": { "ssim": 0.910524, "mae": 3.376232, "significantShare": 0.039151 },
+      "sidebar": { "ssim": 0.932154, "mae": 3.19954, "significantShare": 0.024219 }
+    }
+  },
+  "boundary": "The Settings labels, selected-row material, shortcut, and Back label existed with nonzero layout boxes but were painted below the sidebar grain. Raising the search, item-list, and footer content layers restores the complete Web-authority rail without moving the 239 by 32 navigation rows or changing settings semantics. The slightly higher thresholded-pixel share is expected because previously missing content now renders; SSIM and MAE both improve. Screenshots remain temporary to preserve the tracked screenshot budget."
+}

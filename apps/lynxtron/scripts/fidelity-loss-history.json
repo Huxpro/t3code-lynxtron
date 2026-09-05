@@ -24956,6 +24956,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-navigation-stacking-current",
+      "observedAt": "2026-09-05T07:04:00-04:00",
+      "commit": "7f349b25392d81e096c3bfaabe3863be823f6014",
+      "codeCommit": "7f349b25392d81e096c3bfaabe3863be823f6014",
+      "codeState": "commit",
+      "label": "Settings navigation stacking parity",
+      "narrative": "Lynx laid out all Settings navigation labels with nonzero boxes, but its full-surface sidebar grain painted above the text, active-row material, shortcut, and Back label. Raising the three Settings content layers restores all seven labels and Back while preserving exact row geometry. Full-frame SSIM improves from 0.903626 to 0.910524 and sidebar SSIM from 0.897227 to 0.932154.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share byte-identical Web authority pixels, one immutable snapshot, General route, settings content, dark theme, viewport, and zero renderer errors. The product change only raises Settings navigation content above the sidebar grain."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-navigation-stacking.json",
+          "classification": "tracked-current",
+          "sha256": "f3aaff93a7d8419dc6bc646db553d45bd17a4606fa5841804c5da6e38be4a116"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-general"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-navigation-visible-labels",
+              "source": "Seven navigation labels plus Search, shortcut, selected row, and Back are visibly restored; every label has a nonzero measured box"
+            },
+            "material": {
+              "residual": 0.067846,
+              "confidence": 0.99,
+              "method": "settings-sidebar-ssim",
+              "source": "1 - fixed 256 by 820 sidebar SSIM 0.932154; sidebar MAE 3.199540 after restoring content stacking"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-general-current-runtime",
+              "source": "Strict paired capture passes with matching General route, settings content, navigation selection, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
