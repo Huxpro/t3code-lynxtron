@@ -10476,6 +10476,7 @@
   min-height: 48px;
 }
 .quick-switch-file-row--detailed .palette-row__description {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
   font-size: 12px;
   line-height: 16px;
 }

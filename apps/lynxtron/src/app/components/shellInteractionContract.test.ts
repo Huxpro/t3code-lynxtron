@@ -1636,7 +1636,7 @@ describe("desktop shell interaction contract", () => {
     expect(appIndex).toContain("if (appliedInitialRoute.current) return;");
     expect(appIndex).toContain('overlay === "file-picker"');
     expect(overrides).toContain(
-      ".quick-switch-file-row--detailed .palette-row__description {\n  font-size: 12px;\n  line-height: 16px;",
+      ".quick-switch-file-row--detailed .palette-row__description {\n  color: rgba(var(--muted-foreground-rgb), 0.7);\n  font-size: 12px;\n  line-height: 16px;",
     );
     expect(overrides).toContain(
       ".quick-switch-source-row .palette-row__description {\n  font-size: 12px;\n  line-height: 16px;",
