@@ -2152,6 +2152,10 @@ function readLynxPane() {
                   active: item.getAttribute("data-model-picker-provider-active") === "true",
                   disabled: item.getAttribute("aria-disabled") === "true",
                   rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+                  box: readElementBox(item),
+                  icon: readElementBox(
+                    item.querySelector(".model-picker-rail-icon, image, img, svg"),
+                  ),
                 };
               })
             : [],
@@ -3071,6 +3075,8 @@ function readWebPane() {
                       modelPickerContent?.getAttribute("data-model-picker-selected-provider"),
                   disabled: Boolean(button?.disabled),
                   rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+                  box: readElementBox(button ?? item),
+                  icon: readElementBox((button ?? item).querySelector("image, img, svg")),
                 };
               })
             : [],

@@ -57,6 +57,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "labelBox: readElementBox");
   });
 
+  it("records model-picker provider rail button and icon leaves", () => {
+    const workbench = readFileSync(
+      path.join(import.meta.dirname, "shared-workbench/workbench.js"),
+      "utf8",
+    );
+    assert.include(workbench, "box: readElementBox(button ?? item)");
+    assert.include(workbench, ".model-picker-rail-icon, image, img, svg");
+  });
+
   it("fails fast for modeled states that require Native-only verification", () => {
     assert.include(source, "const nativeOnlyStateIds = new Set([");
     assert.include(source, '"settings-archive-mutation"');
