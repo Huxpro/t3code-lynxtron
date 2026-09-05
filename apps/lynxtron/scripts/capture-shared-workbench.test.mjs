@@ -623,6 +623,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "fileEditorMetrics: state?.web?.fileEditorMetrics ?? null");
     assert.include(source, "fileEditorMetrics: state?.lynx?.fileEditorMetrics ?? null");
     assert.include(workbench, "function readFileEditorMetrics");
+    assert.include(workbench, 'step.querySelector(".provider-instance-dialog__step-number")');
+    assert.include(workbench, 'step.querySelector(".provider-instance-dialog__step-label")');
     assert.include(workbench, "fileEditorMetrics: readFileEditorMetrics(root)");
     assert.include(workbench, "fileEditorMetrics: readFileEditorMetrics(doc)");
     assert.include(workbench, 'root?.querySelector(".file-panel")');

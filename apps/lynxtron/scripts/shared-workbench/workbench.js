@@ -779,6 +779,16 @@ function readAddProviderDialog(root) {
         ? stepElements.indexOf(step) === wizardStep
         : step.getAttribute("aria-current") === "step",
       box: readElementBox(step),
+      number: readElementBox(
+        step.querySelector(".provider-instance-dialog__step-number") ??
+          step.querySelector("[aria-hidden='true']"),
+      ),
+      labelBox: readElementBox(
+        step.querySelector(".provider-instance-dialog__step-label") ??
+          [...step.querySelectorAll("span")].find(
+            (leaf) => leaf.getAttribute("aria-hidden") !== "true",
+          ),
+      ),
       textLeaves: [...step.querySelectorAll("span, text, x-text")]
         .filter(
           (leaf) => leaf.querySelector("span, text, x-text") === null && readComposedText(leaf),
