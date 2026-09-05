@@ -2580,18 +2580,25 @@ async function dismissWebProviderNotification(cdp, sessionId, timeout = 8_000) {
       `(() => {
         const pane = document.getElementById('web-pane');
         const doc = pane?.contentWindow?.document;
-        const popup = doc?.querySelector('[data-slot="toast-popup"]');
-        if (!pane || !popup) return { present: false };
-        const popupRect = popup.getBoundingClientRect();
-        const popupStyle = doc.defaultView?.getComputedStyle(popup);
-        const popupVisible =
-          popupRect.width > 0 &&
-          popupRect.height > 0 &&
-          popupStyle?.display !== 'none' &&
-          popupStyle?.visibility !== 'hidden' &&
-          Number(popupStyle?.opacity ?? 1) > 0;
-        if (!popupVisible) return { present: false };
-        const dismiss = popup.querySelector('button[aria-label="Dismiss notification"]');
+        if (!pane || !doc) return { present: false };
+        const isVisible = (candidate) => {
+          const rect = candidate.getBoundingClientRect();
+          const style = doc.defaultView?.getComputedStyle(candidate);
+          return (
+            rect.width > 0 &&
+            rect.height > 0 &&
+            style?.display !== 'none' &&
+            style?.visibility !== 'hidden' &&
+            Number(style?.opacity ?? 1) > 0
+          );
+        };
+        const popup = Array.from(doc.querySelectorAll('[data-slot="toast-popup"]')).find(
+          isVisible,
+        );
+        const dismiss = Array.from(
+          doc.querySelectorAll('button[aria-label="Dismiss notification"]'),
+        ).find(isVisible);
+        if (!popup && !dismiss) return { present: false };
         if (!dismiss) return { present: true, point: null };
         const paneRect = pane.getBoundingClientRect();
         const rect = dismiss.getBoundingClientRect();

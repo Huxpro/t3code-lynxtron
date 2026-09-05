@@ -161,7 +161,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "async function dismissWebProviderNotification");
     assert.include(source, "let clickAttempts = 0");
     assert.include(source, "let absentSince = null");
-    assert.include(source, "const popup = doc?.querySelector('[data-slot=\"toast-popup\"]')");
+    assert.include(source, "doc.querySelectorAll('[data-slot=\"toast-popup\"]')");
+    assert.include(source, "const popup = Array.from");
+    assert.include(source, "doc.querySelectorAll('button[aria-label=\"Dismiss notification\"]')");
+    assert.include(source, "if (!popup && !dismiss) return { present: false }");
     assert.include(source, "if (!dismiss) return { present: true, point: null }");
     assert.include(source, "clickAttempts < 3");
     assert.include(source, "nextClickAt = Date.now() + 750");
