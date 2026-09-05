@@ -1465,9 +1465,11 @@ function addProviderDialogPairMatches(state, viewportWidth, viewportHeight, expe
     expectedStep !== 0 ||
     (JSON.stringify(enabledDriverLabels(web)) === JSON.stringify(enabledDriverLabels(lynx)) &&
       JSON.stringify(disabledDriverLabels(web)) === JSON.stringify(disabledDriverLabels(lynx)));
+  const animationSettled = web?.box?.style?.opacity === "1" && lynx?.box?.style?.opacity === "1";
   return (
     web?.present === true &&
     lynx?.present === true &&
+    animationSettled &&
     web.activeStep === expectedStep &&
     lynx.activeStep === expectedStep &&
     geometryReady &&

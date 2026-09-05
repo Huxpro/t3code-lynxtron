@@ -1730,6 +1730,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "settings-providers-add-dialog-light"');
     assert.include(source, '"settings-providers-add-dialog-light": "settings-general"');
     assert.include(source, "function addProviderDialogPairMatches");
+    assert.include(source, "const animationSettled =");
     assert.include(source, "async function runAddProviderDialogFlow");
     assert.include(source, "const providerDialogStopAt = argValue(");
     assert.include(
