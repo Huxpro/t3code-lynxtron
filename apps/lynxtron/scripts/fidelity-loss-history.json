@@ -24577,6 +24577,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-step-indicator-material-current",
+      "observedAt": "2026-09-05T01:20:00-04:00",
+      "commit": "d9f497a5d",
+      "codeCommit": "5bed001666b84a19c3577cf33c4941ccc1d17d8d",
+      "codeState": "commit",
+      "label": "Provider dialog step-indicator material parity",
+      "narrative": "The light Add Provider step rail had exact 20 by 20 indicator geometry but Lynx omitted the Web rings around active and inactive numbers. Adding the active primary 30 percent ring and inactive black 10 percent ring raises step-rail SSIM from 0.918137 to 0.946155 and lowers MAE from 2.481968 to 2.306833; dialog SSIM improves from 0.821092 to 0.822885.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, Providers route, light theme, viewport, exact indicator geometry, full wizard lifecycle, and zero renderer errors. The change only restores indicator rings."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/provider-dialog-step-indicator-material.json",
+          "classification": "tracked-current",
+          "sha256": "e2fda9e712569ceef10aec28ca64d0916880befd04161ee554b43ced7100a346"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.177115,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-ssim",
+              "source": "1 - exact dialog SSIM 0.822885; MAE 5.922874 and 7.7473 percent significant pixels after step-indicator ring alignment"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-current-runtime",
+              "source": "Same snapshot and route, complete Driver to Identity to Config to save to delete to dismiss flow, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
