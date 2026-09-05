@@ -9622,6 +9622,10 @@
   background-color: var(--muted);
   box-sizing: border-box;
 }
+.file-panel__statusbar--error {
+  border-top-color: rgba(var(--destructive-rgb), 0.2);
+  background-color: rgba(var(--destructive-rgb), 0.05);
+}
 
 .files-panel__save {
   display: flex;
@@ -9658,7 +9662,18 @@
   font-family: var(--font-sans);
 }
 .files-panel__preview-status--error {
-  color: var(--destructive);
+  width: calc(100% - 83px);
+  color: var(--destructive-foreground);
+  font-size: 11px;
+  line-height: 16.5px;
+}
+.files-panel__save--error {
+  justify-content: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 8px;
+  background-color: transparent;
 }
 
 .files-panel__preview-error {

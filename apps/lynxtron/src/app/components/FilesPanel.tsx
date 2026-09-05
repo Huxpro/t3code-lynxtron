@@ -209,7 +209,9 @@ function EditableFilePreview({
       )}
       {saveStatus !== "saved" || saveError ? (
         <view
-          className="file-panel__statusbar"
+          className={`file-panel__statusbar${
+            saveStatus === "error" ? " file-panel__statusbar--error" : ""
+          }`}
           data-file-save-error={saveStatus === "error" ? "true" : "false"}
         >
           <text
@@ -220,7 +222,9 @@ function EditableFilePreview({
             {saveError ?? (saveStatus === "pending" ? "Unsaved changes" : "Save failed")}
           </text>
           <view
-            className="files-panel__save"
+            className={`files-panel__save${
+              saveStatus === "error" ? " files-panel__save--error" : ""
+            }`}
             data-file-save-retry={saveStatus === "error" ? "true" : "false"}
             bindtap={flush}
           >

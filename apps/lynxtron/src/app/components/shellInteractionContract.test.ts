@@ -963,6 +963,17 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain('data-file-save-error={saveStatus === "error" ? "true" : "false"}');
     expect(files).toContain('data-file-save-retry={saveStatus === "error" ? "true" : "false"}');
     expect(files).toContain('{saveStatus === "error" ? "Retry save" : "Save now"}');
+    expect(files).toContain('" file-panel__statusbar--error"');
+    expect(files).toContain('" files-panel__save--error"');
+    expect(overrides).toContain(
+      ".file-panel__statusbar--error {\n  border-top-color: rgba(var(--destructive-rgb), 0.2);\n  background-color: rgba(var(--destructive-rgb), 0.05);",
+    );
+    expect(overrides).toContain(
+      ".files-panel__preview-status--error {\n  width: calc(100% - 83px);\n  color: var(--destructive-foreground);\n  font-size: 11px;\n  line-height: 16.5px;",
+    );
+    expect(overrides).toContain(
+      ".files-panel__save--error {\n  justify-content: center;\n  border-width: 1px;\n  border-style: solid;\n  border-color: transparent;\n  border-radius: 8px;\n  background-color: transparent;",
+    );
     expect(files).toContain("onFailure: (failure) => {");
     expect(files).toContain("void coordinator.flush()");
     expect(files).toContain("if (!viewport.testResize) return;");
