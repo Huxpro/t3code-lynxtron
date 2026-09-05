@@ -25744,12 +25744,12 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/composer-stop-glyph.json",
           "classification": "tracked-current",
-          "sha256": "133558e338b7cf0d5764825bd3cf1141189d730d73a0f6a8acfa83c3391e9c72"
+          "sha256": "95705b9445c4d84ed9e0d54e5dd2f72db741af846805327e1469bb2353593e00"
         }
       ],
       "updates": [
         {
-          "states": ["existing-thread-working"],
+          "states": ["existing-thread-working", "composer-working"],
           "clients": ["lynx"],
           "dimensions": {
             "content": {
@@ -25768,7 +25768,7 @@
               "residual": 0,
               "confidence": 0.99,
               "method": "running-session-current-runtime",
-              "source": "Strict same-server capture passes with matching running session projection, exact action geometry, zero renderer errors, and clean disposal"
+              "source": "Independent existing-thread-working and composer-working same-server captures pass with matching running session projection, exact action geometry, zero renderer errors, and clean disposal"
             }
           }
         }

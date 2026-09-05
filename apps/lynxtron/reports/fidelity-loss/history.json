@@ -38705,10 +38705,11 @@
       "commit": "79fb73826",
       "committedAt": "2026-09-05T17:39:38-04:00",
       "confidence": 0.99,
-      "delta": -0.000016,
+      "delta": -0.00005,
       "reason": "Before and after use one immutable snapshot and running thread, byte-identical Web authority pixels, the same viewport and theme, exact action geometry, and zero renderer errors. Only the Lynx busy-action glyph changed.",
       "subject": "Composer stop glyph parity",
       "surfaces": [
+        "composer",
         "transcript"
       ],
       "fromPoint": "project-action-play-icon-current",
@@ -66848,10 +66849,10 @@
       "commit": "79fb73826",
       "committedAt": "2026-09-05T17:39:38-04:00",
       "confidence": 0.99,
-      "delta": -0.000016,
+      "delta": -0.00005,
       "measuredCheckpoint": "composer-stop-glyph-current",
-      "rawLoss": 0.176214,
-      "smoothedLoss": 0.176307,
+      "rawLoss": 0.17618,
+      "smoothedLoss": 0.176299,
       "subject": "Composer stop glyph parity"
     }
   ],
@@ -507992,13 +507993,13 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/composer-stop-glyph.json",
           "classification": "tracked-current",
-          "sha256": "133558e338b7cf0d5764825bd3cf1141189d730d73a0f6a8acfa83c3391e9c72"
+          "sha256": "95705b9445c4d84ed9e0d54e5dd2f72db741af846805327e1469bb2353593e00"
         }
       ],
       "confidence": 0.853129,
       "evidenceDebt": 0.146871,
-      "loss": 0.176214,
-      "observedResidual": 0.034394,
+      "loss": 0.17618,
+      "observedResidual": 0.034354,
       "byDimension": {
         "content": {
           "confidence": 0.987749,
@@ -508021,8 +508022,8 @@
         "material": {
           "confidence": 0.640527,
           "evidenceDebt": 0.359473,
-          "loss": 0.447223,
-          "observedResidual": 0.136996
+          "loss": 0.446983,
+          "observedResidual": 0.136622
         },
         "interaction": {
           "confidence": 0.833469,
@@ -508047,8 +508048,8 @@
         "composer": {
           "confidence": 0.824815,
           "evidenceDebt": 0.175185,
-          "loss": 0.19624,
-          "observedResidual": 0.025526
+          "loss": 0.196035,
+          "observedResidual": 0.025278
         },
         "transcript": {
           "confidence": 0.822444,
@@ -508162,8 +508163,8 @@
           "group": "composer",
           "id": "composer-working",
           "label": "Composer · Working",
-          "loss": 0.325822,
-          "observedResidual": 0.013841,
+          "loss": 0.323746,
+          "observedResidual": 0.010803,
           "weight": 5
         },
         {
@@ -508977,8 +508978,8 @@
           "weight": 2
         }
       ],
-      "bestLoss": 0.176214,
-      "improvementFromBaseline": 0.815676
+      "bestLoss": 0.17618,
+      "improvementFromBaseline": 0.81571
     }
   ],
   "provenance": {

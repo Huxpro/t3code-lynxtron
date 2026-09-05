@@ -436,4 +436,4 @@ project-settings-menu-probe-current,2026-09-05T15:05:00-04:00,987f4f0e3a35efe035
 compact-controls-menu-height-current,2026-09-05T15:35:00-04:00,a8c236df012f9ae623565019533daaf09619cccc,commit,Compact Composer controls menu height parity,0.17652,0.17652,0.034753,0.146871,0.853129,0.81537
 compact-controls-light-hero-containment-current,2026-09-05T16:12:00-04:00,03694d6294e54162a30b9610f918d81991f3da89,commit,Light Hero compact controls containment,0.17629,0.17629,0.034484,0.146871,0.853129,0.8156
 project-action-play-icon-current,2026-09-05T16:30:00-04:00,76fb144fa96d7e79d4245bbf4d932a3e642f4887,commit,Project Action play icon parity,0.17623,0.17623,0.034413,0.146871,0.853129,0.81566
-composer-stop-glyph-current,2026-09-05T17:39:38-04:00,79fb73826,commit,Composer stop glyph parity,0.176214,0.176214,0.034394,0.146871,0.853129,0.815676
+composer-stop-glyph-current,2026-09-05T17:39:38-04:00,79fb73826,commit,Composer stop glyph parity,0.17618,0.17618,0.034354,0.146871,0.853129,0.81571

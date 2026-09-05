@@ -33,6 +33,16 @@
     "stopButtonRoiCurrent": 0.960846,
     "stopButtonRoi": [1107, 723, 32, 32]
   },
+  "composerWorkingCrossCheck": {
+    "captureCommit": "883e442b3d8ff74d0a90779c1973f7c4ce5365e7",
+    "reportSha256": "259ba458dc2fe98de96f60a8d1e6406e2bf9d751fd2bb2517c657326acdcc56c",
+    "webImageSha256": "2192a9a01f74e91f9acb5d08783b6fb5b78d4a23a218c14ac2f6c108a2768c9b",
+    "lynxImageSha256": "608c820e21b31680016fc88cbf7958a0b9bf023099b58baf0a2467592ebb288a",
+    "fullFrameSsim": 0.966128,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "rendererErrors": 0
+  },
   "fix": "Render the Web authority's filled 8 by 8 rounded stop square in a 12 by 12 viewBox instead of reusing the outlined Lucide Square icon.",
-  "boundary": "The change is limited to the busy Composer action on desktop and mobile Lynx layouts. Existing outlined square semantics remain unchanged, and screenshots stay temporary because the tracked budget is full."
+  "boundary": "The change is limited to the busy Composer action on desktop and mobile Lynx layouts. Existing outlined square semantics remain unchanged. Separate existing-thread-working and composer-working strict captures prove both modeled paths; screenshots stay temporary because the tracked budget is full."
 }
