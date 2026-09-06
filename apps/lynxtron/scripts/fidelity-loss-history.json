@@ -27982,6 +27982,72 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-narrow-wrapping-current",
+      "observedAt": "2026-09-06T15:48:00-04:00",
+      "commit": "b38bc7a19",
+      "codeCommit": "b38bc7a19",
+      "codeState": "commit",
+      "label": "Narrow File Editor dark wrapping parity",
+      "narrative": "The dark Lynx File Editor retained the pre-parity 12px gutter and asymmetric 0/12px source padding even though light mode already matched Web's 13px gutter and symmetric 7.8px content inset. Promoting those values to the theme-independent contract synchronizes Markdown wrapping line by line. Full-frame SSIM improves from 0.839008 to 0.945723 and the exact 359x776 editor surface improves from 0.633087 to 0.961663.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same snapshot, persisted thread, file revision, viewport, pane width, theme, real open/back interactions, Web pixels, and zero-error runtime isolate the Lynx dark source padding and gutter typography correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/file-editor-narrow-wrapping-current.json",
+          "classification": "tracked-current",
+          "sha256": "a8fa06fd9b13086ac753f548cfb47969f3d3d6f0974cbbba3aca2749cc302af3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail-narrow-inline"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-file-revision-and-inline-flow",
+              "source": "Both panes open docs/PORT_WORKFLOW.md at revision 6260:m9wd30 and render the same continuous Markdown source lines."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "current-narrow-file-editor-geometry",
+              "source": "Surface, editor, gutter, and content rectangles match exactly; both use a 13px SF Mono source scale, 20px line height, and equivalent symmetric content padding."
+            },
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "aligned-source-wrap-typography",
+              "source": "The same 13px SF Mono stack, 20px line height, 13px gutter, and symmetric 7.8px source padding produce matching line wraps; residual covers host glyph rasterization."
+            },
+            "material": {
+              "residual": 0.038337,
+              "confidence": 0.99,
+              "method": "current-narrow-editor-panel-ssim",
+              "source": "1 - exact 359x776 editor surface SSIM 0.961663; full-frame SSIM is 0.945723. Remaining pixels are lightweight tokenizer versus Pierre/TextMate tones and glyph rasterization."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-file-open-and-back",
+              "source": "Real Browser pointers open the same file in both panes and the 28x28 Back controls return both clients to Files."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-narrow-file-runtime",
+              "source": "Same snapshot 5572c031, project, persisted thread cf1b2820, 1024x820 viewport, 360px pane, exact committed bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
