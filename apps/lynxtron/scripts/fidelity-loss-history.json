@@ -26166,6 +26166,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-git-details-current",
+      "observedAt": "2026-09-05T22:20:00-04:00",
+      "commit": "8335addeaaa1b488284d91636410e95c8302da08",
+      "codeCommit": "8335addeaaa1b488284d91636410e95c8302da08",
+      "codeState": "commit",
+      "label": "Settings Source Control Git details parity",
+      "narrative": "The Lynx Git discovery row now exposes the same expandable fetch-interval settings as Web instead of omitting the details action. A strict post-commit 1280 by 820 pair opens both disclosures through real pointer input and matches the Fetch interval title, description, current value, seconds unit, 864 by 63 details box, and 128 by 28 NumberField with zero renderer errors. Persistent mutation evidence remains separate until the harness backs up and conditionally restores settings.json.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same immutable snapshot, route, viewport, settings value, and product commit isolate the newly restored disclosure and settings UI."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-source-control-git-details.json",
+          "classification": "tracked-current",
+          "sha256": "3082cb7b6797459659cae9e02842aad1075f10274492bdeaba78c09baafa22c3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "source-control-git-details-content",
+              "source": "Both clients expose Fetch interval, the same guidance, value 30, and seconds unit"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0.34375, 0, 0, 0],
+              "anchorScale": 864,
+              "confidence": 0.99,
+              "method": "source-control-git-details-geometry",
+              "source": "Details boxes match exactly at 864 by 63; NumberFields match at 128 by 28 with only 0.34375px intrinsic control x allocation"
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-cdp-pointer-disclosure",
+              "source": "Real pointer clicks open the Git details disclosure in both Browser renderers"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-source-control-details-runtime",
+              "source": "Strict post-commit pair passes with matching state/content, current bundles, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
