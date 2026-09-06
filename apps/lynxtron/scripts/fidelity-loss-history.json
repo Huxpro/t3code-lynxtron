@@ -27575,6 +27575,66 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-selected-clean-current",
+      "observedAt": "2026-09-06T12:03:26-04:00",
+      "commit": "880f43ab5",
+      "codeCommit": "74596ee36",
+      "codeState": "commit",
+      "label": "Model Picker selected clean current evidence",
+      "narrative": "A fresh paired capture on the committed focus and hover cleanup gate removes the Lynx search caret and Sidebar action contamination. The selected Codex model, ordered provider rail, disabled states, six visible rows, overlay position, and row rhythm remain matched. The improved scores are classified as measurement refinement rather than product gain.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "Only pre-capture focus and pointer state changed; the existing selected-model and provider-order implementation is unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/model-picker-selected-clean-current.json",
+          "classification": "tracked-current",
+          "sha256": "1711083e38908aa8a72d7336987ec08f26d73f73084b4c25b75ca2fd96c22ac2"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-selected"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "selected-model-provider-current-semantics",
+              "source": "Selected codex:gpt-5.6-sol row, six visible model keys, five provider ids, provider order, active state, and disabled states all match Web."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 1, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "clean-selected-model-current-geometry",
+              "source": "Overlay geometry and anchor offset are exact; selected rows share x, y, and height with one pixel of host width quantization."
+            },
+            "typography": {
+              "residual": 0.08851,
+              "confidence": 0.99,
+              "method": "clean-selected-row-ssim",
+              "source": "1 - selected-row SSIM 0.911490 after removing caret and Sidebar hover contamination."
+            },
+            "material": {
+              "residual": 0.090762,
+              "confidence": 0.99,
+              "method": "clean-model-picker-panel-ssim",
+              "source": "1 - panel SSIM 0.909238; full-frame SSIM is 0.963053."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-clean-selected-model-runtime",
+              "source": "Same pristine snapshot, thread, route, selected model, provider state, committed harness, exact bundles, zero renderer errors, and clean disposal."
+            }
+          }
+        }
+      ]
     }
   ]
 }
