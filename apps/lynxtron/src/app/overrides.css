@@ -1475,7 +1475,6 @@
 .sidebar-settings-row {
   height: 32px;
   box-sizing: border-box;
-  transform: translateX(1.5px);
 }
 .sidebar-settings-icon {
   opacity: 0.66;

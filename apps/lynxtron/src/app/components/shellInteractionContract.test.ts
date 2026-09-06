@@ -1435,6 +1435,7 @@ describe("desktop shell interaction contract", () => {
     );
     expect(overrides.match(/\.sidebar-inline-search \{[^}]*transform:/)).toBeNull();
     expect(overrides.match(/\.sidebar-v2-project-scope-trigger \{[^}]*transform:/)).toBeNull();
+    expect(overrides.match(/\.sidebar-settings-row \{[^}]*transform:/)).toBeNull();
     expect(menuSource).toContain('const T3_MENU_TEST_EVENT = "t3:menu-test";');
     expect(menuSource).toContain(
       'if (!menuProbeEnabled || typeof relationId !== "string") return;',
