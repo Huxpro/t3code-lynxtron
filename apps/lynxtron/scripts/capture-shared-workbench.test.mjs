@@ -259,6 +259,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "if (webHeroPresent !== lynxHeroPresent) return false");
     assert.include(source, "finalHeroGeometryReady");
     assert.include(source, "unpersistedHeroStateReady(state)");
+    assert.include(source, "paired stable local drafts for hero state");
+    assert.include(source, "newThreadHeroNavigationTimeline");
+    assert.include(source, "composerToolbarAllocationMatches(next?.web?.composerMetrics");
     assert.include(source, "heroGeometry:");
     assert.include(workbench, "function readHeroMetrics(root)");
     assert.include(workbench, "heroMetrics: readHeroMetrics(root)");

@@ -7136,6 +7136,7 @@ async function captureCell({
   let lastLifecycleFaultPreflightKey = "";
   const lifecycleFaultPreflightTimeline = [];
   let reachedTargetState = false;
+  const newThreadHeroNavigationTimeline = [];
   let webFilesBrowserInputSent = !isFilesSurfaceState;
   let lynxFilesBrowserInputSent = !isFilesSurfaceState;
   let webFileEditorInputSent = !isFileEditorState;
@@ -7188,6 +7189,18 @@ async function captureCell({
       sessionId,
       `(() => { const w = window.__T3_WORKBENCH__; return w ? w.read() : null; })()`,
     ).catch(() => null);
+    if (
+      isNewThreadHeroState &&
+      !unpersistedHeroStateReady(state) &&
+      state?.web?.connected === true &&
+      state?.lynx?.connected === true &&
+      state?.web?.productState?.selectedProject === expectProject &&
+      state?.lynx?.productState?.selectedProject === expectProject &&
+      state?.web?.sidebarDiagnostics?.chrome?.newThread?.rect?.width === 32 &&
+      state?.lynx?.sidebarDiagnostics?.chrome?.newThread?.rect?.width === 32
+    ) {
+      break;
+    }
     if (webRoute === "/settings/general") {
       webDraftLandingStablePolls = state?.web?.literalRoute?.startsWith("/draft/")
         ? webDraftLandingStablePolls + 1
@@ -9444,6 +9457,71 @@ async function captureCell({
     }
     await delay(100);
   }
+  if (isNewThreadHeroState && !unpersistedHeroStateReady(state)) {
+    state = await waitForSidebarV2Controls(cdp, sessionId);
+    for (const client of ["web", "lynx"]) {
+      if (
+        state?.[client]?.heroPresent === true &&
+        state?.[client]?.productState?.selectedThread === null &&
+        ["draft", "none"].includes(state?.[client]?.productState?.activeThreadKind)
+      ) {
+        newThreadHeroNavigationTimeline.push({ client, step: "already-draft" });
+        continue;
+      }
+      if (!(await clickSidebarControl(cdp, sessionId, client, ".sidebar-v2-new-thread"))) {
+        throw new Error(`Missing ${client} New thread trigger for hero state`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          (next?.[client]?.heroPresent === true &&
+            next?.[client]?.productState?.selectedThread === null &&
+            ["draft", "none"].includes(next?.[client]?.productState?.activeThreadKind)) ||
+          (client === "web"
+            ? next?.web?.overlayMetrics?.paletteView === "submenu"
+            : next?.lynx?.overlayMetrics?.paletteView === "new-thread-projects"),
+        3_000,
+        `${client} new thread navigation for hero state`,
+      );
+      if (
+        state?.[client]?.heroPresent === true &&
+        state?.[client]?.productState?.selectedThread === null &&
+        ["draft", "none"].includes(state?.[client]?.productState?.activeThreadKind)
+      ) {
+        newThreadHeroNavigationTimeline.push({ client, step: "direct-draft" });
+        continue;
+      }
+      const labels = state?.[client]?.overlayMetrics?.rowLabels ?? [];
+      const projectLabel = labels.find((label) => label === expectProject) ?? labels[0] ?? "";
+      if (!projectLabel || !(await clickPaletteRow(cdp, sessionId, client, projectLabel))) {
+        throw new Error(`${client} new thread project picker had no selectable project`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          next?.[client]?.productState?.overlay === null &&
+          next?.[client]?.heroPresent === true &&
+          next?.[client]?.productState?.selectedThread === null &&
+          ["draft", "none"].includes(next?.[client]?.productState?.activeThreadKind),
+        3_000,
+        `${client} local draft for hero state`,
+      );
+      newThreadHeroNavigationTimeline.push({ client, step: "selected-project", projectLabel });
+    }
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) =>
+        unpersistedHeroStateReady(next) &&
+        composerAnatomyMatches(next?.web?.composerMetrics, next?.lynx?.composerMetrics) &&
+        composerToolbarAllocationMatches(next?.web?.composerMetrics, next?.lynx?.composerMetrics),
+      10_000,
+      "paired stable local drafts for hero state",
+    );
+    reachedTargetState = true;
+  }
   if (stateId === "command-palette-navigation") {
     const navigation = await runCommandPaletteNavigationFlow(cdp, sessionId);
     state = navigation.state;
@@ -10351,13 +10429,17 @@ async function captureCell({
       composerExpectation,
       height,
     );
+  const finalComposerAnatomyReady = composerAnatomyMatches(
+    state?.web?.composerMetrics,
+    state?.lynx?.composerMetrics,
+  );
   const finalComposerReady =
     isFlatSidebarLayoutState ||
     isNarrowChatThreadState ||
     (isReviewState && width <= 1023) ||
     (finalComposerInputReady &&
       finalComposerStateReady &&
-      composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
+      finalComposerAnatomyReady &&
       completedComposerProviderStateMatches(state) &&
       completedNoDiffStateMatches(state) &&
       completedProjectFaviconMatches(state) &&
@@ -12432,6 +12514,15 @@ async function captureCell({
       finalCoreGeometryReady,
       finalHeroGeometryReady,
       finalComposerReady,
+      composerGate: {
+        input: finalComposerInputReady,
+        state: finalComposerStateReady,
+        anatomy: finalComposerAnatomyReady,
+        completedProvider: completedComposerProviderStateMatches(state),
+        completedNoDiff: completedNoDiffStateMatches(state),
+        completedFavicon: completedProjectFaviconMatches(state),
+        completedHeaderOpen: completedHeaderOpenActionMatches(state),
+      },
       completedComposerProviderState: readCompletedComposerProviderState(state),
       completedNoDiffState: {
         match: completedNoDiffStateMatches(state),
@@ -12728,6 +12819,10 @@ async function captureCell({
         draftLifecycle: newThreadDraftLifecycle,
         web: state?.web?.overlayMetrics ?? null,
         lynx: state?.lynx?.overlayMetrics ?? null,
+      },
+      newThreadHeroNavigation: {
+        match: !isNewThreadHeroState || unpersistedHeroStateReady(state),
+        timeline: newThreadHeroNavigationTimeline,
       },
       multiStepQuestion: {
         match: !isMultiStepQuestionState || multiStepQuestionStage === "complete",
