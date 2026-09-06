@@ -26054,6 +26054,62 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-marks-current",
+      "observedAt": "2026-09-05T21:12:34-04:00",
+      "commit": "b089f4fce7f91e21220642d03fd787163c3ed7b3",
+      "codeCommit": "b089f4fce7f91e21220642d03fd787163c3ed7b3",
+      "codeState": "commit",
+      "label": "Settings Source Control mark parity",
+      "narrative": "A strict post-commit dark 1280 by 820 capture restores the six provider and VCS marks that Web renders beside Source Control status dots. Lynx now uses the exact Git and Jujutsu artwork from the Web authority plus its existing GitHub, GitLab, Azure DevOps, and Bitbucket assets. All six outer row rectangles remain byte-for-byte geometrically unchanged. Full-frame SSIM improves from 0.918218 to 0.921087 and the fixed Source Control content crop improves from 0.880891 to 0.885725.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures share the same immutable snapshot, route, theme, viewport, six discovery rows, Web authority frame, and zero renderer errors. The product change only supplies the missing marks."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-source-control-marks.json",
+          "classification": "tracked-current",
+          "sha256": "4658c71975047721044850caf8284db632d3adb74e1b6da4bbe6232ead6412dd"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "source-control-provider-mark-inventory",
+              "source": "Both clients render Git, Jujutsu, GitHub, GitLab, Azure DevOps, and Bitbucket marks with the shared overlaid status-dot anatomy"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "source-control-row-geometry",
+              "source": "All six outer row x y width and height values match Web exactly and remain unchanged from the pre-fix capture"
+            },
+            "material": {
+              "residual": 0.078913,
+              "confidence": 0.99,
+              "method": "settings-source-control-full-frame-ssim",
+              "source": "1 - post-commit full-frame SSIM 0.921087; fixed Source Control content crop improves from 0.880891 to 0.885725"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-source-control-current-runtime",
+              "source": "Same immutable snapshot, route, theme, six discovery rows, matching state identity, zero renderer errors, and clean Browser disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
