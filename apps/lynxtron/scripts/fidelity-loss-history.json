@@ -28066,7 +28066,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "33f785ddd74129d9c380fa94927a9a0d900815e5ec78fba2a48ae59ad5c910c7"
+          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
         }
       ],
       "updates": [
@@ -28114,7 +28114,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "33f785ddd74129d9c380fa94927a9a0d900815e5ec78fba2a48ae59ad5c910c7"
+          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
         }
       ],
       "updates": [
@@ -28133,6 +28133,54 @@
               "confidence": 0.99,
               "method": "paired-project-settings-summary-actions-runtime",
               "source": "Same snapshot, persisted thread, project, route, theme, viewport, committed bundles, matching summary gate, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-settings-footer-layout-current",
+      "observedAt": "2026-09-06T16:55:00-04:00",
+      "commit": "b1fd0e53a",
+      "codeCommit": "b1fd0e53a",
+      "codeState": "commit",
+      "label": "Project Settings single-member footer parity",
+      "narrative": "Lynx right-aligned both Project Settings footer actions while Web places Remove project at the left and Close at the right for a single-member group. A single-member footer modifier restores space-between alignment and border-box button sizing. Remove x/y/height now match exactly, Close x differs by 0.22px, full-frame SSIM improves from 0.912881 to 0.918415, and the fixed dialog crop improves from 0.751621 to 0.790972.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same snapshot, persisted thread, project, dialog, theme, viewport, interaction flow, Web authority frame, and zero-error runtime isolate the footer layout correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
+          "classification": "tracked-current",
+          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 11.0625, 0, 0.21875, 0, 0.21875, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "project-settings-footer-anchors",
+              "source": "Dialog and footer bounds match; Remove x/y/height match exactly, Close x differs by 0.22px, and remaining button width differences come from text/icon raster allocation."
+            },
+            "material": {
+              "residual": 0.209028,
+              "confidence": 0.99,
+              "method": "current-project-settings-dialog-ssim",
+              "source": "1 - fixed 576x260 dialog crop SSIM 0.790972, improved from 0.751621; full-frame SSIM improves from 0.912881 to 0.918415."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-project-settings-footer-runtime",
+              "source": "Same snapshot, persisted thread, project, dark theme, 1280x820 viewport, exact committed bundles, strict summary/action gate, and zero renderer errors."
             }
           }
         }
