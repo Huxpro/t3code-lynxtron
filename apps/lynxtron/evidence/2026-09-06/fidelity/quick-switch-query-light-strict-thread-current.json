@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T15:18:00-04:00",
+  "stateId": "quick-switch-query-light",
+  "captureCommit": "41770ddc6",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "query": "settings",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "a24be055a27ab1ff37aabcd35571b1a611cf3e4e4e3ff46f3940f1a87810fab6",
+    "webImageSha256": "5e6fdd2265d76af0fa05f500d08fa3195abbbb7773553c4c7aa48c91a0c721cd",
+    "lynxImageSha256": "bf400871f005e2fd4e8b969cd3b0bdfb71f4930f4cdc5eacea5bb7e786ff0c0e",
+    "webBundle": "77045d540877",
+    "lynxBundle": "d21f3d1a1310",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "queryWeb": "settings",
+    "queryLynx": "settings",
+    "sectionWeb": "Actions",
+    "sectionLynx": "Actions",
+    "resultWeb": "Open settings",
+    "resultLynx": "Open settings"
+  },
+  "geometry": {
+    "panelWeb": [352, 82, 576, 166],
+    "panelLynx": [352, 82, 576, 166],
+    "searchWeb": [353, 83, 574, 48],
+    "searchLynx": [353, 83, 574, 48],
+    "resultsWeb": [353, 131, 574, 76],
+    "resultsLynx": [353, 131, 574, 76],
+    "rowWeb": [361, 167, 558, 32],
+    "rowLynx": [361, 167, 558, 32],
+    "footerWeb": [353, 207, 574, 40],
+    "footerLynx": [353, 207, 574, 40]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM on the full 1280x820 frame and exact 576x166 query panel crop",
+    "fullFrameSsim": 0.96646,
+    "panelSsim": 0.946632
+  },
+  "boundary": "The strict capture proves the same persisted thread and exact query-result geometry. Remaining visible residual is primarily light glass shadow composition and text/icon rasterization. Screenshots remain temporary because the tracked screenshot budget is full."
+}
