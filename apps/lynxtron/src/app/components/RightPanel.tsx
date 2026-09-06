@@ -108,6 +108,7 @@ const ADDABLE_SURFACES: ReadonlyArray<{
     disabledReason: null,
   },
 ];
+const INACTIVE_BROWSER_SUSPEND_MS = 30_000;
 
 function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps) {
   switch (surface.kind) {
@@ -145,6 +146,7 @@ export function RightPanel({
   const sheet = useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY);
   const viewport = useViewportSnapshot();
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const [inactiveBrowserExpired, setInactiveBrowserExpired] = useState(false);
   const previousActiveBrowserId = useRef<string | null>(null);
   const browserSurfaces = state.surfaces.filter(
     (surface): surface is Extract<RightPanelSurface, { kind: "browser" }> =>
@@ -157,10 +159,20 @@ export function RightPanel({
       browserSurfaces.map((surface) => surface.id),
       state.activeSurfaceId,
       previousActiveBrowserId.current,
+      inactiveBrowserExpired,
     ),
   );
   useEffect(() => {
-    if (activeBrowserId) previousActiveBrowserId.current = activeBrowserId;
+    if (activeBrowserId) {
+      previousActiveBrowserId.current = activeBrowserId;
+      setInactiveBrowserExpired(false);
+      return;
+    }
+    if (!previousActiveBrowserId.current) return;
+    const timeout = setTimeout(() => {
+      setInactiveBrowserExpired(true);
+    }, INACTIVE_BROWSER_SUSPEND_MS);
+    return () => clearTimeout(timeout);
   }, [activeBrowserId]);
   const browserAvailable = isEmbeddedBrowserAvailable();
   const resize = useResizableWidth({

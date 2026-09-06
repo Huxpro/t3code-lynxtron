@@ -64,6 +64,7 @@ describe("BrowserPanel URL contract", () => {
     expect(selectWarmBrowserSurfaceIds(["a", "b", "c"], "c", "b")).toEqual(["c", "b"]);
     expect(selectWarmBrowserSurfaceIds(["a", "b", "c"], "c", null)).toEqual(["c", "b"]);
     expect(selectWarmBrowserSurfaceIds(["a", "b"], "files:1", "a")).toEqual(["a"]);
+    expect(selectWarmBrowserSurfaceIds(["a", "b"], "files:1", "a", true)).toEqual([]);
     expect(selectWarmBrowserSurfaceIds(["a", "b"], "b", "removed")).toEqual(["b", "a"]);
     expect(selectWarmBrowserSurfaceIds([], null, null)).toEqual([]);
   });

@@ -37,10 +37,13 @@ export function selectWarmBrowserSurfaceIds(
   browserSurfaceIds: ReadonlyArray<string>,
   activeSurfaceId: string | null,
   previousActiveBrowserId: string | null,
+  inactiveBrowserExpired = false,
 ): ReadonlyArray<string> {
   const available = new Set(browserSurfaceIds);
+  const hasActiveBrowser = activeSurfaceId !== null && available.has(activeSurfaceId);
+  if (!hasActiveBrowser && inactiveBrowserExpired) return [];
   const selected: string[] = [];
-  if (activeSurfaceId && available.has(activeSurfaceId)) selected.push(activeSurfaceId);
+  if (hasActiveBrowser) selected.push(activeSurfaceId);
   if (
     previousActiveBrowserId &&
     available.has(previousActiveBrowserId) &&
@@ -51,7 +54,7 @@ export function selectWarmBrowserSurfaceIds(
   if (selected.length === 0) {
     const fallback = browserSurfaceIds.at(-1);
     if (fallback) selected.push(fallback);
-  } else if (selected.length === 1 && activeSurfaceId && available.has(activeSurfaceId)) {
+  } else if (selected.length === 1 && hasActiveBrowser) {
     const fallback = browserSurfaceIds.findLast((surfaceId) => surfaceId !== activeSurfaceId);
     if (fallback) selected.push(fallback);
   }
