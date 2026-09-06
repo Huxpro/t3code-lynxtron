@@ -54,6 +54,7 @@ interface BrowserPreviewDiagnostics {
   ): boolean;
   openWorkspaceMenuForHarness(open: boolean): boolean;
   invokeTooltipForHarness(relationId: string, action: "hover" | "leave"): boolean;
+  invokeMenuForHarness(relationId: string): boolean;
   invokeResizeForHarness(target: "sidebar" | "right-panel", startX: number, endX: number): boolean;
 }
 
