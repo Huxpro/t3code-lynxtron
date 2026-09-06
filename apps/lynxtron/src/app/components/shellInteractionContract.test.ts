@@ -1305,6 +1305,8 @@ describe("desktop shell interaction contract", () => {
     expect(componentSource("KeybindingsSettings.tsx")).toContain(
       "buildKeybindingRows(keybindings, query)",
     );
+    expect(keybindingsSettingsSource).toContain(".removeKeybinding(input)");
+    expect(keybindingsSettingsSource).toContain("replace: rowKeybindingTarget(row)");
     expect(keybindingsSettingsSource).toContain(
       '<Icon name="triangle-alert" size={14} color="#f59e0b" />',
     );

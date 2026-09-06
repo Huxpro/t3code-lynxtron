@@ -253,7 +253,9 @@ const isSidebarControlHoverState =
   stateId === "sidebar-v2-new-thread-hover" || stateId === "sidebar-v2-new-project-hover";
 const isSidebarThreadHoverPreviewState = stateId === "sidebar-thread-hover-preview";
 const isNewThreadHeroState = stateId === "new-thread-hero" || stateId === "new-thread-hero-light";
-const isKeybindingsMutationState = stateId === "settings-keybindings-mutation";
+const isKeybindingsRemoveMutationState = stateId === "settings-keybindings-remove-mutation";
+const isKeybindingsMutationState =
+  stateId === "settings-keybindings-mutation" || isKeybindingsRemoveMutationState;
 const isFailedThreadState =
   stateId === "existing-thread-failed" || stateId === "existing-thread-failed-dismissed";
 const isFailedThreadDismissedState = stateId === "existing-thread-failed-dismissed";
@@ -1120,6 +1122,7 @@ async function keybindingsControlPoint(cdp, sessionId, client, selector) {
         : doc;
       const target = root?.querySelector(${JSON.stringify(selector)});
       if (!frame || !target) return null;
+      target.scrollIntoView?.({ block: 'center', inline: 'nearest' });
       const frameRect = frame.getBoundingClientRect();
       const rect = target.getBoundingClientRect();
       return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
@@ -9672,6 +9675,39 @@ async function captureCell({
       webCount: state?.web?.settingsMetrics?.keybindings?.rows?.length ?? 0,
       lynxCount: state?.lynx?.settingsMetrics?.keybindings?.rows?.length ?? 0,
     });
+    if (isKeybindingsRemoveMutationState) {
+      const removePoint = await keybindingsControlPoint(
+        cdp,
+        sessionId,
+        "lynx",
+        '[aria-label="Remove Settings: Open keybinding"]',
+      );
+      if (!removePoint) throw new Error("Missing Lynx Remove Settings: Open keybinding control");
+      await dispatchPointerClickWithMove(cdp, sessionId, removePoint);
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) => {
+          const rowPresent = (client) =>
+            next?.[client]?.settingsMetrics?.keybindings?.rows?.some(
+              (row) => row.command === command && row.shortcut.includes("Y"),
+            ) === true;
+          const removeObserved =
+            next?.lynx?.connectorDiagnostics?.commands?.some(
+              ({ method }) => method === "removeKeybinding",
+            ) === true;
+          return !rowPresent("web") && !rowPresent("lynx") && removeObserved;
+        },
+        5_000,
+        "removed keybinding from both renderers",
+      );
+      keybindingsMutationTimeline.push({
+        step: "removed",
+        command,
+        webCount: state?.web?.settingsMetrics?.keybindings?.rows?.length ?? 0,
+        lynxCount: state?.lynx?.settingsMetrics?.keybindings?.rows?.length ?? 0,
+      });
+    }
     reachedTargetState = true;
   }
   if (isNewThreadHeroState && !unpersistedHeroStateReady(state)) {
@@ -10862,8 +10898,9 @@ async function captureCell({
       failedThreadDismissalTimeline.every(({ step }) => step === "dismissed"));
   const finalKeybindingsMutationReady =
     !isKeybindingsMutationState ||
-    (keybindingsMutationTimeline.length === 2 &&
-      keybindingsMutationTimeline.at(-1)?.step === "saved");
+    (keybindingsMutationTimeline.length === (isKeybindingsRemoveMutationState ? 3 : 2) &&
+      keybindingsMutationTimeline.at(-1)?.step ===
+        (isKeybindingsRemoveMutationState ? "removed" : "saved"));
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" &&
     stateId !== "existing-thread-question" &&

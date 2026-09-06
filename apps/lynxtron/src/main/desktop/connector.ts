@@ -94,6 +94,8 @@ import {
   type ProjectWriteFileResult,
   type ServerConfig,
   type ServerConfigStreamEvent,
+  type ServerRemoveKeybindingInput,
+  type ServerRemoveKeybindingResult,
   type ServerUpsertKeybindingInput,
   type ServerUpsertKeybindingResult,
   type ServerSettings,
@@ -1368,6 +1370,15 @@ export class T3Connector {
     if (!this.client) throw new Error("not connected");
     return this.runClient<ServerUpsertKeybindingResult>(
       this.client[WS_METHODS.serverUpsertKeybinding](input),
+    );
+  }
+
+  async removeKeybinding(
+    input: ServerRemoveKeybindingInput,
+  ): Promise<ServerRemoveKeybindingResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<ServerRemoveKeybindingResult>(
+      this.client[WS_METHODS.serverRemoveKeybinding](input),
     );
   }
 

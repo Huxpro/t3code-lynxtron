@@ -81,6 +81,15 @@ describe("LiveConnectorHost", () => {
       () =>
         host.handleNativeCall(
           T3_CONNECTOR_METHODS.command,
+          { method: "removeKeybinding", params: { command: "settings.open", key: "mod+y" } },
+          "bridge",
+        ),
+      /not connected/,
+    );
+    assert.throws(
+      () =>
+        host.handleNativeCall(
+          T3_CONNECTOR_METHODS.command,
           { method: "upsertKeybinding", params: { command: "settings.open", key: "mod+y" } },
           "bridge",
         ),

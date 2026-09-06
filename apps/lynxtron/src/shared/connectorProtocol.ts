@@ -272,6 +272,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "deleteProject",
   "updateProjectScripts",
   "upsertKeybinding",
+  "removeKeybinding",
   "openInEditor",
   "browseFilesystem",
   "listProjectEntries",

@@ -6,7 +6,12 @@ import {
   shortcutToKeybindingInput,
 } from "../../../../web/src/components/settings/KeybindingsSettings.logic";
 import { useCallback, useState } from "@lynx-js/react";
-import type { KeybindingCommand, KeybindingShortcut } from "@t3tools/contracts";
+import type {
+  KeybindingCommand,
+  KeybindingShortcut,
+  ServerRemoveKeybindingInput,
+  ServerUpsertKeybindingInput,
+} from "@t3tools/contracts";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { Kbd, KbdGroup } from "../../../../web/src/components/ui/kbd";
 import { Icon } from "./Icon";
@@ -27,6 +32,14 @@ function shortcutParts(shortcut: KeybindingShortcut, platform: string): Readonly
     });
 }
 
+function rowKeybindingTarget(row: ReturnType<typeof buildKeybindingRows>[number]) {
+  return {
+    command: row.command,
+    key: row.key,
+    ...(row.when.trim() ? { when: row.when } : {}),
+  } satisfies ServerRemoveKeybindingInput;
+}
+
 export function KeybindingsSettings() {
   const { serverConfig } = useT3ClientState();
   const keybindings = serverConfig?.keybindings ?? [];
@@ -36,6 +49,9 @@ export function KeybindingsSettings() {
   const [command, setCommand] = useState("");
   const [shortcut, setShortcut] = useState("");
   const [when, setWhen] = useState("");
+  const [editingRowId, setEditingRowId] = useState<string | null>(null);
+  const [editingShortcut, setEditingShortcut] = useState("");
+  const [editingWhen, setEditingWhen] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const rows = buildKeybindingRows(keybindings, query);
@@ -43,27 +59,49 @@ export function KeybindingsSettings() {
   const platform = serverConfig?.environment.platform.os ?? "darwin";
   const inputValue = (event: { detail?: { value?: unknown } }) =>
     typeof event.detail?.value === "string" ? event.detail.value : "";
+  const persist = useCallback(
+    (input: ServerUpsertKeybindingInput) => {
+      if (saving) return;
+      setSaving(true);
+      setError(null);
+      void t3ClientActions
+        .upsertKeybinding(input)
+        .then(() => setEditingRowId(null))
+        .catch((cause) => setError(cause instanceof Error ? cause.message : String(cause)))
+        .finally(() => setSaving(false));
+    },
+    [saving],
+  );
   const save = useCallback(() => {
     const selectedCommand = commandOptions.find((option) => option === command);
     const key = shortcut.trim();
     if (!selectedCommand || !key || saving) return;
-    setSaving(true);
-    setError(null);
-    void t3ClientActions
-      .upsertKeybinding({
-        command: selectedCommand as KeybindingCommand,
-        key,
-        ...(when.trim() ? { when: when.trim() } : {}),
-      })
-      .then(() => {
-        setAddOpen(false);
-        setCommand("");
-        setShortcut("");
-        setWhen("");
-      })
-      .catch((cause) => setError(cause instanceof Error ? cause.message : String(cause)))
-      .finally(() => setSaving(false));
-  }, [command, commandOptions, saving, shortcut, when]);
+    persist({
+      command: selectedCommand as KeybindingCommand,
+      key,
+      ...(when.trim() ? { when: when.trim() } : {}),
+    });
+    setAddOpen(false);
+    setCommand("");
+    setShortcut("");
+    setWhen("");
+  }, [command, commandOptions, persist, saving, shortcut, when]);
+  const remove = useCallback(
+    (input: ServerRemoveKeybindingInput) => {
+      if (saving) return;
+      setSaving(true);
+      setError(null);
+      void t3ClientActions
+        .removeKeybinding(input)
+        .then(() => {
+          setAddOpen(false);
+          setEditingRowId(null);
+        })
+        .catch((cause) => setError(cause instanceof Error ? cause.message : String(cause)))
+        .finally(() => setSaving(false));
+    },
+    [saving],
+  );
 
   return (
     <view className="settings-panel settings-panel--keybindings">
@@ -174,16 +212,51 @@ export function KeybindingsSettings() {
             data-keybinding-conflicts={JSON.stringify(row.conflicts)}
           >
             <text className="keybindings-table__command">{commandLabel(row.command)}</text>
-            <view className="keybindings-table__key">
-              <KbdGroup className="keybindings-table__keycaps">
-                {shortcutParts(row.binding.shortcut, platform).map((part, partIndex) => (
-                  <Kbd key={`${row.id}:${part}:${partIndex}`} className="keybindings-table__keycap">
-                    {part}
-                  </Kbd>
-                ))}
-              </KbdGroup>
+            <view
+              className="keybindings-table__key"
+              aria-label={
+                editingRowId === row.id
+                  ? undefined
+                  : `Edit shortcut for ${commandLabel(row.command)}`
+              }
+              bindtap={() => {
+                if (editingRowId === row.id) return;
+                setEditingRowId(row.id);
+                setEditingShortcut(row.key);
+                setEditingWhen(row.when);
+              }}
+            >
+              {editingRowId === row.id ? (
+                <input
+                  aria-label={`Keybinding for ${commandLabel(row.command)}`}
+                  className="keybindings-table__edit-input"
+                  {...({ value: editingShortcut } as object)}
+                  bindinput={(event) => setEditingShortcut(inputValue(event))}
+                />
+              ) : (
+                <KbdGroup className="keybindings-table__keycaps">
+                  {shortcutParts(row.binding.shortcut, platform).map((part, partIndex) => (
+                    <Kbd
+                      key={`${row.id}:${part}:${partIndex}`}
+                      className="keybindings-table__keycap"
+                    >
+                      {part}
+                    </Kbd>
+                  ))}
+                </KbdGroup>
+              )}
             </view>
-            <text className="keybindings-table__when">{row.when || "Always"}</text>
+            {editingRowId === row.id ? (
+              <input
+                aria-label={`When clause for ${commandLabel(row.command)}`}
+                className="keybindings-table__edit-input keybindings-table__edit-when"
+                placeholder="Always"
+                {...({ value: editingWhen } as object)}
+                bindinput={(event) => setEditingWhen(inputValue(event))}
+              />
+            ) : (
+              <text className="keybindings-table__when">{row.when || "Always"}</text>
+            )}
             <view
               className={
                 row.conflicts.length > 0
@@ -197,6 +270,57 @@ export function KeybindingsSettings() {
               {row.conflicts.length > 0 ? (
                 <Icon name="triangle-alert" size={14} color="#f59e0b" />
               ) : null}
+              {editingRowId === row.id ? (
+                <>
+                  <view
+                    aria-label={`Save ${commandLabel(row.command)} keybinding`}
+                    bindtap={() => {
+                      const key = editingShortcut.trim();
+                      if (!key || saving) return;
+                      persist({
+                        command: row.command,
+                        key,
+                        ...(editingWhen.trim() ? { when: editingWhen.trim() } : {}),
+                        replace: rowKeybindingTarget(row),
+                      });
+                    }}
+                  >
+                    <Icon name="check" size={12} color="#818181" />
+                  </view>
+                  <view
+                    aria-label={`Cancel editing ${commandLabel(row.command)}`}
+                    bindtap={() => setEditingRowId(null)}
+                  >
+                    <Icon name="x" size={12} color="#818181" />
+                  </view>
+                </>
+              ) : (
+                <>
+                  {row.source === "Custom" && row.defaultKey ? (
+                    <view
+                      aria-label={`Reset ${commandLabel(row.command)} to default`}
+                      bindtap={() =>
+                        persist({
+                          command: row.command,
+                          key: row.defaultKey!,
+                          ...(row.defaultWhen.trim() ? { when: row.defaultWhen } : {}),
+                          replace: rowKeybindingTarget(row),
+                        })
+                      }
+                    >
+                      <Icon name="rotate-ccw" size={12} color="#818181" />
+                    </view>
+                  ) : null}
+                  {row.source !== "Default" ? (
+                    <view
+                      aria-label={`Remove ${commandLabel(row.command)} keybinding`}
+                      bindtap={() => remove(rowKeybindingTarget(row))}
+                    >
+                      <Icon name="trash-2" size={12} color="#818181" />
+                    </view>
+                  ) : null}
+                </>
+              )}
             </view>
           </view>
         ))}

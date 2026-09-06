@@ -196,6 +196,7 @@ describe("connector protocol guards", () => {
     assert.isTrue(isConnectorCommandName("deleteProject"));
     assert.isTrue(isConnectorCommandName("updateProjectScripts"));
     assert.isTrue(isConnectorCommandName("upsertKeybinding"));
+    assert.isTrue(isConnectorCommandName("removeKeybinding"));
     assert.isTrue(isConnectorCommandName("openInEditor"));
     assert.isTrue(isConnectorCommandName("searchProjectEntries"));
     assert.isTrue(isConnectorCommandName("refreshProviders"));

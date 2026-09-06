@@ -51,6 +51,8 @@ import {
   type ProjectWriteFileInput,
   type ProjectWriteFileResult,
   type ServerConfig,
+  type ServerRemoveKeybindingInput,
+  type ServerRemoveKeybindingResult,
   type ServerSettings,
   type ServerSettingsPatch,
   type ServerUpsertKeybindingInput,
@@ -914,6 +916,16 @@ export class LiveConnectorHost {
       return this.#runClient<ServerUpsertKeybindingResult>(
         this.#client[WS_METHODS.serverUpsertKeybinding](
           request.params as ServerUpsertKeybindingInput,
+        ),
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "removeKeybinding") {
+      return this.#runClient<ServerRemoveKeybindingResult>(
+        this.#client[WS_METHODS.serverRemoveKeybinding](
+          request.params as ServerRemoveKeybindingInput,
         ),
       ).then((value) => {
         this.#recordCommandResult(request.method, value);

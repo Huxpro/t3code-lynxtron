@@ -52,6 +52,8 @@ import type {
   ProjectWriteFileInput,
   ProjectWriteFileResult,
   ServerConfig,
+  ServerRemoveKeybindingInput,
+  ServerRemoveKeybindingResult,
   ServerUpsertKeybindingInput,
   ServerUpsertKeybindingResult,
   ServerSettingsPatch,
@@ -204,6 +206,7 @@ export interface T3ConnectorCommandBridge {
     scripts: ReadonlyArray<ProjectScript>;
   }): Promise<void>;
   upsertKeybinding(input: ServerUpsertKeybindingInput): Promise<ServerUpsertKeybindingResult>;
+  removeKeybinding(input: ServerRemoveKeybindingInput): Promise<ServerRemoveKeybindingResult>;
   openInEditor(input: { cwd: string; editor: EditorId }): Promise<void>;
   browseFilesystem(input: FilesystemBrowseInput): Promise<FilesystemBrowseResult>;
   listProjectEntries(input: ProjectListEntriesInput): Promise<ProjectListEntriesResult>;

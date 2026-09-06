@@ -61,6 +61,8 @@ import type {
   ProviderInstanceConfig,
   ProviderInstanceId,
   ServerConfig,
+  ServerRemoveKeybindingInput,
+  ServerRemoveKeybindingResult,
   ServerProvider,
   ServerSettings,
   ServerSettingsPatch,
@@ -1342,6 +1344,16 @@ async function upsertKeybinding(
   return bridge.upsertKeybinding(input);
 }
 
+async function removeKeybinding(
+  input: ServerRemoveKeybindingInput,
+): Promise<ServerRemoveKeybindingResult> {
+  const bridge = getBridge();
+  if (!bridge?.removeKeybinding) {
+    return Promise.reject(new Error("Keybinding removal is unavailable."));
+  }
+  return bridge.removeKeybinding(input);
+}
+
 async function openInEditor(cwd: string, editor: EditorId): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.openInEditor) {
@@ -2064,5 +2076,6 @@ export const t3ClientActions = {
   updateProject,
   updateProjectScripts,
   upsertKeybinding,
+  removeKeybinding,
   writeProjectFile,
 } as const;

@@ -225,7 +225,12 @@ describe("Lynx Settings route projection", () => {
     expect(keybindings).toContain('aria-label="Add keybinding"');
     expect(keybindings).toContain('data-keybinding-add-row="true"');
     expect(keybindings).toContain("t3ClientActions");
-    expect(keybindings).toContain(".upsertKeybinding({");
+    expect(keybindings).toContain(".upsertKeybinding(input)");
+    expect(keybindings).toContain(".removeKeybinding(input)");
+    expect(keybindings).toContain("replace: rowKeybindingTarget(row)");
+    expect(keybindings).toContain("`Edit shortcut for ${commandLabel(row.command)}`");
+    expect(keybindings).toContain("aria-label={`Reset ${commandLabel(row.command)} to default`}");
+    expect(keybindings).toContain("aria-label={`Remove ${commandLabel(row.command)} keybinding`}");
     expect(keybindings).not.toContain("Read-only ·");
     expect(keybindings).not.toContain("Keyboard support is limited on Lynxtron.");
     expect(overrides).toContain(".settings-panel--keybindings {");

@@ -17,6 +17,7 @@ describe("shared workbench semantic route inference", () => {
     ["project-scope-open", "project-scope-open"],
     ["settings-general", "settings-general"],
     ["settings-keybindings-mutation", "settings-keybindings"],
+    ["settings-keybindings-remove-mutation", "settings-keybindings"],
     ["settings-beta-light", "settings-beta"],
     ["settings-connections-mutation-browser", "settings-connections"],
     ["settings-providers-add-dialog-light", "settings-providers"],

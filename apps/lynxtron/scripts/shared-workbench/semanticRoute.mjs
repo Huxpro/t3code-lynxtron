@@ -52,6 +52,7 @@ const settingsRouteByStateId = new Map([
   ["settings-model-picker", "settings-general"],
   ["settings-model-picker-mutation", "settings-general"],
   ["settings-keybindings-mutation", "settings-keybindings"],
+  ["settings-keybindings-remove-mutation", "settings-keybindings"],
   ["settings-background-activity-mutation", "settings-general"],
   ["settings-providers-add-dialog", "settings-providers"],
   ["settings-providers-add-dialog-light", "settings-providers"],

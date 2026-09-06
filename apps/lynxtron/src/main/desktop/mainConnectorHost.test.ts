@@ -881,13 +881,17 @@ describe("dispatchConnectorCommand", () => {
     ]);
   });
 
-  it("forwards canonical keybinding upserts without reshaping the payload", async () => {
-    const calls: unknown[] = [];
+  it("forwards canonical keybinding mutations without reshaping payloads", async () => {
+    const calls: Array<{ method: string; input: unknown }> = [];
     const connector = {
       connect: () => Promise.resolve(),
       dispose: () => {},
       upsertKeybinding: (input: unknown) => {
-        calls.push(input);
+        calls.push({ method: "upsertKeybinding", input });
+        return Promise.resolve({ keybindings: [], issues: [] });
+      },
+      removeKeybinding: (input: unknown) => {
+        calls.push({ method: "removeKeybinding", input });
         return Promise.resolve({ keybindings: [], issues: [] });
       },
     } as ConnectorLike;
@@ -900,8 +904,15 @@ describe("dispatchConnectorCommand", () => {
       method: "upsertKeybinding",
       params,
     });
+    await dispatchConnectorCommand(connector, {
+      method: "removeKeybinding",
+      params,
+    });
 
-    assert.deepEqual(calls, [params]);
+    assert.deepEqual(calls, [
+      { method: "upsertKeybinding", input: params },
+      { method: "removeKeybinding", input: params },
+    ]);
   });
 
   it("throws a clear error for missing connector methods", () => {

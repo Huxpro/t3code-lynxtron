@@ -298,6 +298,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'const shortcut = "mod+shift+y"');
     assert.include(source, 'method === "upsertKeybinding"');
     assert.include(source, "finalKeybindingsMutationReady");
+    assert.include(source, 'stateId === "settings-keybindings-remove-mutation"');
+    assert.include(source, 'method === "removeKeybinding"');
+    assert.include(source, "removed keybinding from both renderers");
   });
 
   it("synchronizes the provider runtime for real working-state captures", () => {
