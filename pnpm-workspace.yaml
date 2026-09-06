@@ -128,6 +128,7 @@ packageExtensions:
 
 patchedDependencies:
   "@effect/platform-bun@4.0.0-beta.102": patches/@effect__platform-bun@4.0.0-beta.102.patch
+  "app-builder-lib@26.13.0": patches/app-builder-lib@26.13.0.patch
   "@effect/platform-node@4.0.0-beta.102": patches/@effect__platform-node@4.0.0-beta.102.patch
   "@effect/vitest@4.0.0-beta.102": patches/@effect__vitest@4.0.0-beta.102.patch
   "@expo/metro-config@56.0.14": patches/@expo%2Fmetro-config@56.0.14.patch

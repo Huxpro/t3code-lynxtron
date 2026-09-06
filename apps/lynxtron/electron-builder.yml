@@ -1,0 +1,28 @@
+productName: T3 Code Lynxtron
+appId: codes.t3.lynxtron
+directories:
+  output: release
+  app: dist/desktop
+files:
+  - main.js
+  - preload.js
+  - connector.bundle.cjs
+  - "**/*.lynx.bundle"
+  - "**/*.js"
+  - "**/*.json"
+  - .lynxtron/native/**/*
+  - "!.lynxtron/native/**/frameworks{,/**/*}"
+  - "!node_modules/@lynx-js/cef-webview{,/**/*}"
+asar: true
+npmRebuild: false
+electronBranding:
+  projectName: lynxtron
+  productName: Lynxtron
+afterExtract: ./scripts/cef-frameworks.mjs
+afterPack: ./scripts/cef-frameworks.mjs
+mac:
+  identity: null
+  target:
+    - target: dir
+      arch:
+        - arm64

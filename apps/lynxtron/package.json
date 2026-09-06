@@ -10,6 +10,7 @@
     "build": "pnpm run prepare:cef-runtime && pnpm run generate:css && pnpm run build:icons && pnpm run format:generated && rspeedy build && rspack build && pnpm run build:connector",
     "build:browser-preview": "cross-env T3_LYNXTRON_WEB_PREVIEW=1 rspeedy build && rspack build --config rspack.browser-preview.config.ts",
     "build:workbench": "pnpm run build:browser-preview && pnpm --dir ../web exec vp build",
+    "package:dir": "pnpm run build && lynxtron-builder --dir --publish never",
     "capture:workbench": "node scripts/capture-shared-workbench.mjs",
     "seed:workbench": "node scripts/sb2-seed-shared-state.mjs",
     "evidence:verify": "node scripts/verify-evidence-manifest.mjs",
@@ -68,6 +69,7 @@
   "devDependencies": {
     "@lynx-js/config-rsbuild-plugin": "0.0.2",
     "@lynx-js/lynx-core": "0.1.3",
+    "@lynx-js/lynxtron-builder": "0.0.18",
     "@lynx-js/lynxtron-dev-plugins": "0.0.18",
     "@lynx-js/react": "0.120.0",
     "@lynx-js/react-rsbuild-plugin": "^0.16.1",

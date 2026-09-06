@@ -49,6 +49,9 @@ export default defineConfig({
           transform(content: Buffer) {
             const pkg = JSON.parse(content.toString("utf-8"));
             delete pkg.type;
+            delete pkg.dependencies;
+            delete pkg.devDependencies;
+            delete pkg.scripts;
             return JSON.stringify(pkg, null, 2);
           },
         },

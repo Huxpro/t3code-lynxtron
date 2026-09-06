@@ -1,4 +1,4 @@
-import { access, cp, mkdir, readlink, rm } from "node:fs/promises";
+import { access, cp, lstat, mkdir, readlink, readdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { createRequire } from "node:module";
 
@@ -36,6 +36,66 @@ export async function copyCefFrameworks(destination) {
   return true;
 }
 
+async function requireRelativeResolvedLink(linkPath) {
+  const target = await readlink(linkPath);
+  if (path.isAbsolute(target)) {
+    throw new Error(`Framework link must be relative: ${linkPath} -> ${target}`);
+  }
+  await access(path.resolve(path.dirname(linkPath), target));
+  return target;
+}
+
+async function findFiles(root, filename) {
+  const matches = [];
+  const visit = async (directory) => {
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const target = path.join(directory, entry.name);
+      if (entry.isSymbolicLink()) continue;
+      if (entry.isDirectory()) await visit(target);
+      else if (entry.name === filename) matches.push(target);
+    }
+  };
+  await visit(root);
+  return matches;
+}
+
+export async function verifyPackagedCefRuntime(appPath) {
+  const frameworks = path.join(appPath, "Contents", "Frameworks");
+  const resources = path.join(appPath, "Contents", "Resources");
+  const links = {
+    cefCurrent: await requireRelativeResolvedLink(
+      path.join(frameworks, "Chromium Embedded Framework.framework", "Versions", "Current"),
+    ),
+    cefBinary: await requireRelativeResolvedLink(
+      path.join(frameworks, "Chromium Embedded Framework.framework", "Chromium Embedded Framework"),
+    ),
+    lynxtronCurrent: await requireRelativeResolvedLink(
+      path.join(frameworks, "Lynxtron Framework.framework", "Versions", "Current"),
+    ),
+    lynxtronBinary: await requireRelativeResolvedLink(
+      path.join(frameworks, "Lynxtron Framework.framework", "Lynxtron Framework"),
+    ),
+  };
+  const addons = await findFiles(resources, "cef_extension.node");
+  if (addons.length !== 1) {
+    throw new Error(`Packaged app must contain exactly one CEF addon; found ${addons.length}`);
+  }
+  const nestedFrameworks = [
+    path.join(resources, "app", "node_modules", "@lynx-js", "cef-webview"),
+    path.join(resources, "app", ".lynxtron", "native", "node_modules", "@lynx-js", "cef-webview"),
+  ].map((packagePath) =>
+    path.join(packagePath, "dist", process.platform, process.arch, "frameworks"),
+  );
+  if (
+    (await Promise.all(nestedFrameworks.map((target) => lstat(target).catch(() => null)))).some(
+      (entry) => entry !== null,
+    )
+  ) {
+    throw new Error("Packaged CEF framework must not be duplicated under app resources");
+  }
+  return { addons, links };
+}
+
 export async function afterExtract({ appOutDir, electronPlatformName }) {
   if (electronPlatformName !== "darwin") return;
   await copyCefFrameworks(path.join(appOutDir, "Lynxtron.app", "Contents", "Frameworks"));
@@ -44,11 +104,7 @@ export async function afterExtract({ appOutDir, electronPlatformName }) {
 export async function afterPack({ appOutDir, packager }) {
   if (process.platform !== "darwin") return;
   const productName = packager.appInfo.productFilename;
-  const frameworks = path.join(appOutDir, `${productName}.app`, "Contents", "Frameworks");
-  const framework = path.join(frameworks, "Chromium Embedded Framework.framework");
-  const current = await readlink(path.join(framework, "Versions", "Current"));
-  if (path.isAbsolute(current))
-    throw new Error("CEF framework contains an absolute Current symlink");
+  await verifyPackagedCefRuntime(path.join(appOutDir, `${productName}.app`));
 }
 
 async function main() {

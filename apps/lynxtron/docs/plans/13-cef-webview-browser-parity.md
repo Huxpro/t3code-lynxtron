@@ -7,7 +7,7 @@ This plan replaces the current Lynxtron browser preview slice with a production-
 - Product authority: the current Electron implementation in `apps/web/src/components/preview`, `apps/web/src/browser`, `apps/desktop/src/preview`, and the preview schemas in `packages/contracts`.
 - Lynxtron API baseline: the official Browser tutorial uses one `<webview>` per tab, `use-osr={true}`, `enable-debug={true}`, stable mounted WebViews with wrapper `z-index` switching, and ref `.invoke()` for navigation commands.
 - Proven native reference: Synara's `BrowserDockPane.lynx.tsx`, `browserView.lynx.ts`, `browserViewProbe.ts`, native `browser-view-probe.mm`, and `browserTabsPersistence.lynx.ts`. Synara proves bounded host-owned view attachment, per-thread persistence, active-plus-one-warm budgeting, 30-second inactive-pane suspension, popup classification, protocol filtering, navigation state projection, and explicit teardown.
-- Current T3 status: `@lynx-js/cef-webview` 0.0.18 is registered and staged, and `BrowserPanel.tsx` implements the first OSR slice. CEF remains opt-in because initialization blocks in `cef_extension.node -> CefInitialize`, and the binding does not expose an isolated cache-root option. Packaged `.app` creation also fails while copying relative framework symlinks under pnpm.
+- Current T3 status: `@lynx-js/cef-webview` 0.0.18 is registered and staged, and `BrowserPanel.tsx` implements the first OSR slice. CEF remains opt-in because initialization blocks in `cef_extension.node -> CefInitialize`, the binding does not expose an isolated cache-root option, and the macOS initializer does not set `windowless_rendering_enabled` even though the T3 surface requests OSR. Packaged `.app` creation now succeeds with explicit Lynxtron branding and a pnpm patch that preserves framework-relative symlinks.
 - Safety: never share the user's live browser/session directory. Runtime identity, cache paths, cookies, permissions, downloads, popups, and automation leases must be scoped to the owned environment and tab.
 
 ## Electron parity checklist
@@ -39,7 +39,7 @@ This plan replaces the current Lynxtron browser preview slice with a production-
 
 - [x] Verify the repository-owned runtime staging path independently: `prepare:cef-runtime` copies the 0.0.18 CEF framework and all five helper apps into the devtool runtime, the framework's four standard relative symlinks resolve, and every expected executable exists. Do not replace these valid framework symlinks with flattened copies.
 - [ ] Patch or upgrade the Lynxtron/CEF binding so JavaScript initialization options reach CEF, including an explicit run-owned cache root.
-- [ ] Repair the upstream packaged-app traversal of the already-valid relative CEF framework symlinks and restore packaged `.app` output.
+- [x] Repair packaged-app traversal of the already-valid relative CEF and Lynxtron framework symlinks. The T3 builder now uses explicit Lynxtron branding, packages one AutoLink addon without a duplicate 292 MB CEF framework, copies the framework and helpers through the lifecycle hook, and verifies all relative links in the emitted `.app`.
 - [ ] Launch one exact-owned packaged process with an isolated `T3_LYNXTRON_BASE_DIR`; record PID, executable, bundle hash, cache root, viewport, and DevTool client identity.
 - [ ] Load an HTTP page and retain `bindload` and `bindlocationchange` evidence. Repeat with one expected failure and prove recovery in the same tab.
 
@@ -93,4 +93,4 @@ Exit: the complete Electron builtin-browser journey can be performed in Lynxtron
 
 ## Current blocker boundary
 
-CEF0 is `blocked(runtime-gap-cef-init-and-packaging)` until both conditions are true: CEF initialization accepts an isolated cache root without hanging, and the builder emits a runnable packaged `.app`. Work that does not require a running CEF process may continue: shared contract extraction, state-machine tests, policy tests, persistence tests, resource-budget tests, and Browser chrome fidelity. Do not claim Native WebView parity from Browser Preview or from compilation alone.
+CEF0 is `blocked(runtime-gap-cef-init)` until the upstream C API and N-API binding accept an isolated cache root and the macOS initializer reaches `CefInitialize` with OSR enabled without hanging. The packaged-app blocker is closed: the builder emits a structurally valid `.app` with one addon, one CEF framework, and resolved framework links. Work that does not require a running CEF process may continue: shared contract extraction, state-machine tests, policy tests, persistence tests, resource-budget tests, and Browser chrome fidelity. Do not claim Native WebView parity from Browser Preview, packaging, or compilation alone.
