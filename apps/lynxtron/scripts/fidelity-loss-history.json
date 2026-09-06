@@ -27360,6 +27360,66 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-terminal-same-session-current",
+      "observedAt": "2026-09-06T10:14:00-04:00",
+      "commit": "8434468b6",
+      "codeCommit": "8434468b6",
+      "codeState": "commit",
+      "label": "Right Panel Terminal same-session capture",
+      "narrative": "The prior paired Terminal image compared different server sessions: Lynx wrote pwd to term-1 while Web independently allocated term-2. The workbench now identifies terminal viewports, opens term-1 through Lynx, attaches Web to that existing PTY, and rejects mismatched ids or panel widths. The retained current capture has the same thread, term-1, pwd output, Terminal 1 title, and 540px versus 541px panels. It also confirms substantial remaining structure: Lynx keeps a session-control row and Run command row, and its text surface wraps the cwd differently from Web Ghostty.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The title fix and same-session harness remove one product drift and one invalid evidence ambiguity without hiding the remaining visual differences."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/right-panel-terminal-same-session.json",
+          "classification": "tracked-current",
+          "sha256": "f1ae547acf35522e0cde51c8391a281f70abc0a84074c937c5d9d5d433eb2f62"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-terminal-id-and-output",
+              "source": "Both panes show Terminal 1 attached to term-1 with the same pwd command and cwd output."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 1, 0],
+              "anchorScale": 540,
+              "confidence": 0.99,
+              "method": "capture-time-terminal-panel-bounds",
+              "source": "Web is 540px wide and Lynx is 541px at the retained pre-resize frame."
+            },
+            "typography": {
+              "residual": 0.18,
+              "confidence": 0.99,
+              "method": "same-pty-terminal-typography-review",
+              "source": "Prompt and cwd are readable in both; Lynx structured text wraps the cwd while Web Ghostty keeps it on one line."
+            },
+            "material": {
+              "residual": 0.24,
+              "confidence": 0.99,
+              "method": "same-pty-terminal-material-review",
+              "source": "Title and core dark surface align, but Lynx retains an extra session-control row and bottom Run command row absent from Web."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-server-same-terminal-runtime",
+              "source": "One isolated server and thread, one term-1 PTY, advancing terminal stream, exact committed bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

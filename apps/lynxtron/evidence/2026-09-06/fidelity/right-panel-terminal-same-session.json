@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T10:14:00-04:00",
+  "stateId": "right-panel-terminal",
+  "productCommit": "8434468b6",
+  "harnessCommit": "8434468b6",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "ddd6fa68f745019881f69be433b5e48eaec076d89a761385860b33202599854e",
+    "webImageSha256": "90b378af7ce1d10355ef4ebc7de32bd8e5a840d8e640ff82b9c3fcb63eb5a3f8",
+    "lynxImageSha256": "480b8bf5b75f33f685ebae54de576d0adf02d51f500161623603a2638972ddfb",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "terminalIdentity": {
+    "webTerminalId": "term-1",
+    "lynxTerminalId": "term-1",
+    "webPanelWidth": 540,
+    "lynxPanelWidth": 541,
+    "command": "pwd",
+    "outputIncludes": "/Users/bytedance/github/t3code-lynxtron",
+    "webTitle": "Terminal 1",
+    "lynxTitle": "Terminal 1"
+  },
+  "fix": "Add a workbench-only Web attach hook and renderer terminal identity attributes so paired captures attach both renderers to the same server-owned PTY. Align the initial Lynx surface label with Web's Terminal 1 title.",
+  "boundary": "This evidence restores valid typography and material measurement after the earlier dimension-ambiguous capture. Residual remains intentionally high because Lynx still has an extra session-controls row and Run command row, and its structured text rendering wraps the cwd differently from Web Ghostty. Screenshots remain temporary."
+}
