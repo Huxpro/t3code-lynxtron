@@ -543,6 +543,7 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".transcript-user-meta-spacer{height:40px!important;}" +
       ".transcript-assistant-group,[data-timeline-row-kind='work']{" +
       "padding-bottom:8px;box-sizing:border-box;}" +
+      ".transcript-work-group__entries{width:calc(100% + 8px)!important;}" +
       ".transcript-assistant-row{display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
       ".transcript-assistant-meta-spacer{display:block;width:100%;height:24px;}" +
       ".transcript-assistant-meta-spacer--code{height:31px;}" +

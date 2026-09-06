@@ -348,7 +348,7 @@ function WorkGroupRows({
           {groupLabel}
         </HostText>
       ) : null}
-      <HostView className="flex flex-col gap-px">
+      <HostView className="transcript-work-group__entries flex flex-col gap-px">
         {nonEmptyEntries.map((workEntry) => (
           <WorkEntryRow
             key={workEntry.id}

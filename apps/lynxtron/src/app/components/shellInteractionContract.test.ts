@@ -353,6 +353,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".lynx-web-preview .timeline-list--top-banner {\n  padding-top: 16px;",
     );
+    expect(browserPreviewSource).toContain(
+      ".transcript-work-group__entries{width:calc(100% + 8px)!important;}",
+    );
     expect(chatView).toContain("onTap={dismissThreadError}");
     expect(chatView).toContain(
       "hasTopBanner={Boolean(visibleThreadError || visibleProviderStatusNotice)}",
