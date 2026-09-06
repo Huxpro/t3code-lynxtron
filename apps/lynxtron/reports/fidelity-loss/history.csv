@@ -461,3 +461,4 @@ existing-thread-sidebar-project-favicon-current,2026-09-06T05:40:31-04:00,ac3475
 existing-thread-header-project-action-readiness-current,2026-09-06T05:52:00-04:00,de9a4b1d9,commit,Header project-action readiness parity,0.174443,0.174393,0.034174,0.145232,0.854768,0.817447
 existing-thread-sidebar-control-origins-current,2026-09-06T06:01:00-04:00,be6e751ad,commit,Sidebar control origins parity,0.174441,0.174393,0.034172,0.145232,0.854768,0.817449
 existing-thread-sidebar-settings-row-current,2026-09-06T06:08:00-04:00,0385f6587,commit,Sidebar Settings row origin parity,0.174441,0.174393,0.034172,0.145232,0.854768,0.817449
+existing-thread-failed-sidebar-status-current,2026-09-06T06:48:00-04:00,a7e167aa4,commit,Failed Sidebar status content parity,0.174455,0.174393,0.034188,0.145232,0.854768,0.817435

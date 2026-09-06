@@ -26925,6 +26925,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-failed-sidebar-status-current",
+      "observedAt": "2026-09-06T06:48:00-04:00",
+      "commit": "a7e167aa4",
+      "codeCommit": "a7e167aa4",
+      "codeState": "commit",
+      "label": "Failed Sidebar status content parity",
+      "narrative": "The Web authority renders failed thread status as the red Failed label only, while the Lynx adapter added a 16px warning icon and 4px gap. That candidate-only content expanded the status slot by about 21px and visibly squeezed the project title. Removing the icon restores the shared status presentation and leaves only about one pixel of text-shaping width difference.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A fresh connector-created failed turn holds the persisted error, thread, snapshot, theme, viewport, and transcript geometry constant while changing only the Lynx status content."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/failed-sidebar-status-content.json",
+          "classification": "tracked-current",
+          "sha256": "e840b3dd01b9b177f2f4fc1ed1c4e6c72b5ac545ae7c36a305eb0d4d56613738"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "failed-sidebar-status-content",
+              "source": "Both renderers show the same Failed label without a candidate-only icon."
+            },
+            "geometry": {
+              "anchorDeltas": [1.015625, 0, 1.015625, 0],
+              "anchorScale": 37.171875,
+              "confidence": 0.99,
+              "method": "failed-sidebar-status-slot-geometry",
+              "source": "The previous 21px structural slot difference is reduced to roughly one pixel of text shaping; project-title x and transcript row origin are exact."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-failed-current-capture",
+              "source": "Strict failed-thread capture passes with matching state identity, session projection, transcript geometry, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
