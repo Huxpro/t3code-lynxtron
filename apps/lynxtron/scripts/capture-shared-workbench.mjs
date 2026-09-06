@@ -11703,6 +11703,71 @@ async function captureCell({
       );
     }
   }
+  if (stateId === "model-picker-selected") {
+    const blurred = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const read = (frameId, shadow) => {
+          const doc = document.getElementById(frameId)?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const input = root?.querySelector('#model-picker-search-input, input[placeholder="Search models..."]');
+          input?.blur();
+          return {
+            inputPresent: input !== null && input !== undefined,
+            focused:
+              root?.activeElement === input || input?.ownerDocument?.activeElement === input,
+          };
+        };
+        return { web: read('web-pane', false), lynx: read('lynx-pane', true) };
+      })()`,
+    );
+    if (
+      blurred?.web?.inputPresent !== true ||
+      blurred?.lynx?.inputPresent !== true ||
+      blurred.web.focused ||
+      blurred.lynx.focused
+    ) {
+      throw new Error(`Model Picker search focus cleanup failed: ${JSON.stringify(blurred)}`);
+    }
+    await cdp.send(
+      "Input.dispatchMouseEvent",
+      {
+        type: "mouseMoved",
+        x: Math.round(layout.webPane.x + layout.webPane.width),
+        y: 1,
+        button: "none",
+        pointerType: "mouse",
+      },
+      sessionId,
+    );
+    const lynxSidebarTarget = await sidebarThreadCardTarget(cdp, sessionId, "lynx");
+    if (lynxSidebarTarget?.relationId) {
+      await invokeLynxTooltipProbe(cdp, sessionId, lynxSidebarTarget.relationId, "leave");
+    }
+    await delay(250);
+    const cleanedState = await readWorkbenchState(cdp, sessionId);
+    const lynxSidebarDisclosure = lynxSidebarTarget?.threadId
+      ? await readSidebarThreadDisclosure(cdp, sessionId, "lynx", lynxSidebarTarget.threadId)
+      : null;
+    if (
+      cleanedState?.web?.productState?.overlay !== "model-picker" ||
+      cleanedState?.lynx?.productState?.overlay !== "model-picker" ||
+      Number(lynxSidebarDisclosure?.actionsOpacity ?? 0) > 0.01 ||
+      !modelPickerSemanticsMatch(
+        cleanedState?.web?.overlayMetrics,
+        cleanedState?.lynx?.overlayMetrics,
+      )
+    ) {
+      throw new Error(
+        `Model Picker state changed during focus and hover cleanup: ${JSON.stringify({
+          web: cleanedState?.web?.productState,
+          lynx: cleanedState?.lynx?.productState,
+          lynxSidebarDisclosure,
+        })}`,
+      );
+    }
+  }
   state = await readWorkbenchState(cdp, sessionId);
   const clip = (r) => ({
     x: Math.round(r.x),
