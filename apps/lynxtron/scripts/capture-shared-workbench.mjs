@@ -253,6 +253,7 @@ const isSidebarControlHoverState =
   stateId === "sidebar-v2-new-thread-hover" || stateId === "sidebar-v2-new-project-hover";
 const isSidebarThreadHoverPreviewState = stateId === "sidebar-thread-hover-preview";
 const isNewThreadHeroState = stateId === "new-thread-hero" || stateId === "new-thread-hero-light";
+const isKeybindingsMutationState = stateId === "settings-keybindings-mutation";
 const isFailedThreadState =
   stateId === "existing-thread-failed" || stateId === "existing-thread-failed-dismissed";
 const isFailedThreadDismissedState = stateId === "existing-thread-failed-dismissed";
@@ -1105,6 +1106,41 @@ async function clickExactButtonText(cdp, sessionId, client, label, withinDialog 
   if (!point) return false;
   await dispatchPointerClickWithMove(cdp, sessionId, point);
   return true;
+}
+
+async function keybindingsControlPoint(cdp, sessionId, client, selector) {
+  return evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const target = root?.querySelector(${JSON.stringify(selector)});
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+    })()`,
+  );
+}
+
+async function fillLynxKeybindingInput(cdp, sessionId, ariaLabel, value) {
+  const focused = await focusRemoteElement(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById('lynx-pane');
+      const root = frame?.contentWindow?.document
+        ?.getElementById('t3-lynx-preview')?.shadowRoot;
+      const host = root?.querySelector(${JSON.stringify(`[aria-label="${ariaLabel}"]`)});
+      return host?.shadowRoot?.querySelector('input') ?? host ?? null;
+    })()`,
+  );
+  if (!focused) throw new Error(`Could not focus Lynx ${ariaLabel}`);
+  await cdp.send("Input.insertText", { text: value }, sessionId);
 }
 
 async function readControlPoint(cdp, sessionId, client, selector) {
@@ -3671,6 +3707,12 @@ async function waitForWorkbenchState(
           },
         ]),
       ),
+      keybindings: {
+        web: state?.web?.settingsMetrics?.keybindings ?? null,
+        lynx: state?.lynx?.settingsMetrics?.keybindings ?? null,
+        lynxCommands: state?.lynx?.connectorDiagnostics?.commands ?? [],
+        lynxLastResult: state?.lynx?.connectorDiagnostics?.lastCommandResult ?? null,
+      },
     })}`,
   );
 }
@@ -7012,6 +7054,7 @@ async function captureCell({
     "settings-model-picker-mutation": "settings-general",
     "settings-appearance": "settings-general",
     "settings-keybindings": "settings-general",
+    "settings-keybindings-mutation": "settings-general",
     "settings-providers": "settings-general",
     "settings-providers-add-dialog": "settings-general",
     "settings-providers-add-dialog-light": "settings-general",
@@ -7204,6 +7247,7 @@ async function captureCell({
   let reachedTargetState = false;
   const newThreadHeroNavigationTimeline = [];
   const failedThreadDismissalTimeline = [];
+  const keybindingsMutationTimeline = [];
   let webFilesBrowserInputSent = !isFilesSurfaceState;
   let lynxFilesBrowserInputSent = !isFilesSurfaceState;
   let webFileEditorInputSent = !isFileEditorState;
@@ -9558,6 +9602,78 @@ async function captureCell({
     }
     reachedTargetState = true;
   }
+  if (isKeybindingsMutationState) {
+    const command = "settings.open";
+    const shortcut = "mod+shift+y";
+    const beforeCount = state?.lynx?.settingsMetrics?.keybindings?.rows?.length ?? 0;
+    const addPoint = await keybindingsControlPoint(
+      cdp,
+      sessionId,
+      "lynx",
+      '[aria-label="Add keybinding"]',
+    );
+    if (!addPoint) throw new Error("Missing Lynx Add keybinding control");
+    await dispatchPointerClickWithMove(cdp, sessionId, addPoint);
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => next?.lynx?.settingsMetrics?.keybindings?.addRow !== null,
+      3_000,
+      "Lynx keybinding add row",
+    );
+    keybindingsMutationTimeline.push({ step: "opened", beforeCount });
+    await fillLynxKeybindingInput(cdp, sessionId, "Keybinding command", command);
+    await fillLynxKeybindingInput(cdp, sessionId, "Keybinding shortcut", shortcut);
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => {
+        const addRow = next?.lynx?.settingsMetrics?.keybindings?.addRow;
+        return (
+          addRow?.values?.command === command &&
+          addRow?.values?.shortcut === shortcut &&
+          addRow?.saveDisabled === false
+        );
+      },
+      3_000,
+      "enabled Lynx keybinding save",
+    );
+    const savePoint = await keybindingsControlPoint(
+      cdp,
+      sessionId,
+      "lynx",
+      '[aria-label="Save keybinding"]',
+    );
+    if (!savePoint) throw new Error("Missing Lynx Save keybinding control");
+    await dispatchPointerClickWithMove(cdp, sessionId, savePoint);
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => {
+        const rowFor = (client) =>
+          next?.[client]?.settingsMetrics?.keybindings?.rows?.find(
+            (row) => row.command === command && row.shortcut.includes("Y"),
+          ) ?? null;
+        const upsertObserved =
+          next?.lynx?.connectorDiagnostics?.commands?.some(
+            ({ method }) => method === "upsertKeybinding",
+          ) === true;
+        const webRow = rowFor("web");
+        const lynxRow = rowFor("lynx");
+        return Boolean(webRow && lynxRow && webRow.shortcut === lynxRow.shortcut && upsertObserved);
+      },
+      5_000,
+      "persisted keybinding in both renderers",
+    );
+    keybindingsMutationTimeline.push({
+      step: "saved",
+      command,
+      shortcut,
+      webCount: state?.web?.settingsMetrics?.keybindings?.rows?.length ?? 0,
+      lynxCount: state?.lynx?.settingsMetrics?.keybindings?.rows?.length ?? 0,
+    });
+    reachedTargetState = true;
+  }
   if (isNewThreadHeroState && !unpersistedHeroStateReady(state)) {
     state = await waitForSidebarV2Controls(cdp, sessionId);
     for (const client of ["web", "lynx"]) {
@@ -10744,6 +10860,10 @@ async function captureCell({
     !isFailedThreadDismissedState ||
     (failedThreadDismissalTimeline.length === 2 &&
       failedThreadDismissalTimeline.every(({ step }) => step === "dismissed"));
+  const finalKeybindingsMutationReady =
+    !isKeybindingsMutationState ||
+    (keybindingsMutationTimeline.length === 2 &&
+      keybindingsMutationTimeline.at(-1)?.step === "saved");
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" &&
     stateId !== "existing-thread-question" &&
@@ -10870,95 +10990,113 @@ async function captureCell({
           ? finalBackgroundActivityMutationReady
           : isSettingsModelMutationState
             ? finalSettingsModelMutationReady
-            : isConnectionsMutationState
-              ? finalConnectionsMutationReady
-              : isBetaSettingsState
-                ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
-                : stateId === "settings-general" || stateId === "settings-model-picker"
-                  ? generalSettingsContentMatches(
-                      state?.web?.settingsMetrics,
-                      state?.lynx?.settingsMetrics,
-                    )
-                  : stateId === "settings-appearance"
-                    ? appearanceSettingsContentMatches(
+            : isKeybindingsMutationState
+              ? finalKeybindingsMutationReady
+              : isConnectionsMutationState
+                ? finalConnectionsMutationReady
+                : isBetaSettingsState
+                  ? finalSettingsGeometryReady && legacySidebarSettingsReady(state)
+                  : stateId === "settings-general" || stateId === "settings-model-picker"
+                    ? generalSettingsContentMatches(
                         state?.web?.settingsMetrics,
                         state?.lynx?.settingsMetrics,
                       )
-                    : stateId === "settings-keybindings"
-                      ? keybindingsSettingsContentMatches(
+                    : stateId === "settings-appearance"
+                      ? appearanceSettingsContentMatches(
                           state?.web?.settingsMetrics,
                           state?.lynx?.settingsMetrics,
                         )
-                      : isProvidersSettingsState
-                        ? providerSettingsContentMatches(
+                      : stateId === "settings-keybindings"
+                        ? keybindingsSettingsContentMatches(
                             state?.web?.settingsMetrics,
                             state?.lynx?.settingsMetrics,
                           )
-                        : stateId === "settings-connections"
-                          ? connectionsSettingsContentMatches(
+                        : isProvidersSettingsState
+                          ? providerSettingsContentMatches(
                               state?.web?.settingsMetrics,
                               state?.lynx?.settingsMetrics,
                             )
-                          : stateId === "settings-source-control-loading"
-                            ? state?.web?.settingsMetrics?.loading === true &&
-                              state?.lynx?.settingsMetrics?.loading === true &&
-                              JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
-                                JSON.stringify(state?.lynx?.settingsMetrics?.sectionTitles ?? []) &&
-                              JSON.stringify(
-                                state?.web?.settingsMetrics?.navigationLabels ?? [],
-                              ) ===
-                                JSON.stringify(state?.lynx?.settingsMetrics?.navigationLabels ?? [])
-                            : stateId === "settings-source-control-error"
-                              ? JSON.stringify(
-                                  state?.web?.settingsMetrics?.navigationLabels ?? [],
-                                ) ===
-                                  JSON.stringify(
-                                    state?.lynx?.settingsMetrics?.navigationLabels ?? [],
-                                  ) &&
+                          : stateId === "settings-connections"
+                            ? connectionsSettingsContentMatches(
+                                state?.web?.settingsMetrics,
+                                state?.lynx?.settingsMetrics,
+                              )
+                            : stateId === "settings-source-control-loading"
+                              ? state?.web?.settingsMetrics?.loading === true &&
+                                state?.lynx?.settingsMetrics?.loading === true &&
                                 JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
                                   JSON.stringify(
                                     state?.lynx?.settingsMetrics?.sectionTitles ?? [],
                                   ) &&
                                 JSON.stringify(
-                                  state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                                ) ===
-                                  JSON.stringify(
-                                    state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
-                                  ) &&
-                                JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                                  JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                                (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ??
-                                  0) > 0 &&
-                                (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ??
-                                  0) > 0
-                              : JSON.stringify(
                                   state?.web?.settingsMetrics?.navigationLabels ?? [],
                                 ) ===
                                   JSON.stringify(
                                     state?.lynx?.settingsMetrics?.navigationLabels ?? [],
-                                  ) &&
-                                JSON.stringify(state?.web?.settingsMetrics?.sectionTitles ?? []) ===
+                                  )
+                              : stateId === "settings-source-control-error"
+                                ? JSON.stringify(
+                                    state?.web?.settingsMetrics?.navigationLabels ?? [],
+                                  ) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.navigationLabels ?? [],
+                                    ) &&
                                   JSON.stringify(
-                                    state?.lynx?.settingsMetrics?.sectionTitles ?? [],
-                                  ) &&
-                                JSON.stringify(state?.web?.settingsMetrics?.sectionTexts ?? []) ===
+                                    state?.web?.settingsMetrics?.sectionTitles ?? [],
+                                  ) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.sectionTitles ?? [],
+                                    ) &&
                                   JSON.stringify(
-                                    state?.lynx?.settingsMetrics?.sectionTexts ?? [],
-                                  ) &&
-                                JSON.stringify(
-                                  state?.web?.settingsMetrics?.sourceControlRows ?? [],
-                                ) ===
+                                    state?.web?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                                  ) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.sourceControlEmptyTitles ?? [],
+                                    ) &&
+                                  JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.errorTexts ?? [],
+                                    ) &&
+                                  (state?.web?.settingsMetrics?.sourceControlRetryLabels?.length ??
+                                    0) > 0 &&
+                                  (state?.lynx?.settingsMetrics?.sourceControlRetryLabels?.length ??
+                                    0) > 0
+                                : JSON.stringify(
+                                    state?.web?.settingsMetrics?.navigationLabels ?? [],
+                                  ) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.navigationLabels ?? [],
+                                    ) &&
                                   JSON.stringify(
-                                    state?.lynx?.settingsMetrics?.sourceControlRows ?? [],
-                                  ) &&
-                                JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
-                                  JSON.stringify(state?.lynx?.settingsMetrics?.emptyTexts ?? []) &&
-                                JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
-                                  JSON.stringify(state?.lynx?.settingsMetrics?.errorTexts ?? []) &&
-                                ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                                  (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
-                                  JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
-                                    JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
+                                    state?.web?.settingsMetrics?.sectionTitles ?? [],
+                                  ) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.sectionTitles ?? [],
+                                    ) &&
+                                  JSON.stringify(
+                                    state?.web?.settingsMetrics?.sectionTexts ?? [],
+                                  ) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.sectionTexts ?? [],
+                                    ) &&
+                                  JSON.stringify(
+                                    state?.web?.settingsMetrics?.sourceControlRows ?? [],
+                                  ) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.sourceControlRows ?? [],
+                                    ) &&
+                                  JSON.stringify(state?.web?.settingsMetrics?.emptyTexts ?? []) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.emptyTexts ?? [],
+                                    ) &&
+                                  JSON.stringify(state?.web?.settingsMetrics?.errorTexts ?? []) ===
+                                    JSON.stringify(
+                                      state?.lynx?.settingsMetrics?.errorTexts ?? [],
+                                    ) &&
+                                  ((state?.web?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                                    (state?.lynx?.settingsMetrics?.rowIds?.length ?? 0) === 0 ||
+                                    JSON.stringify(state?.web?.settingsMetrics?.rowIds ?? []) ===
+                                      JSON.stringify(state?.lynx?.settingsMetrics?.rowIds ?? []));
 
   const layout = await evaluate(
     cdp,
@@ -12607,6 +12745,7 @@ async function captureCell({
     completedHeaderOpenActionMatches(state) &&
     finalProviderStatusBannerReady &&
     finalFailedThreadDismissalReady &&
+    finalKeybindingsMutationReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
@@ -12711,6 +12850,7 @@ async function captureCell({
       completedHeaderOpenActionReady: completedHeaderOpenActionMatches(state),
       finalProviderStatusBannerReady,
       finalFailedThreadDismissalReady,
+      finalKeybindingsMutationReady,
       finalPendingRequestReady,
       multiStepQuestionStage,
       commandPaletteNavigationStage,
@@ -12950,6 +13090,10 @@ async function captureCell({
       failedThreadDismissal: {
         match: !isFailedThreadDismissedState || finalFailedThreadDismissalReady,
         timeline: failedThreadDismissalTimeline,
+      },
+      keybindingsMutation: {
+        match: finalKeybindingsMutationReady,
+        timeline: keybindingsMutationTimeline,
       },
       multiStepQuestion: {
         match: !isMultiStepQuestionState || multiStepQuestionStage === "complete",

@@ -876,6 +876,38 @@ function readKeybindingsMetrics(root) {
     ...(root?.querySelectorAll("[data-keybinding-command][data-keybinding-shortcut]") ?? []),
   ];
   return {
+    actions: {
+      search: readElementBox(root?.querySelector('[aria-label="Search keybindings"]')),
+      add: readElementBox(root?.querySelector('[aria-label="Add keybinding"]')),
+      openFile: readElementBox(root?.querySelector('[aria-label="Open keybindings.json"]')),
+    },
+    addRow: (() => {
+      const row = root?.querySelector('[data-keybinding-add-row="true"]');
+      const inputValue = (selector) => {
+        const host = row?.querySelector(selector);
+        const input = host?.shadowRoot?.querySelector("input") ?? host;
+        return input?.value ?? input?.getAttribute?.("value") ?? null;
+      };
+      const save = row?.querySelector('[aria-label="Save keybinding"]');
+      return row
+        ? {
+            box: readElementBox(row),
+            command: readElementBox(row.querySelector('[aria-label="Keybinding command"]')),
+            shortcut: readElementBox(row.querySelector('[aria-label="Keybinding shortcut"]')),
+            when: readElementBox(row.querySelector('[aria-label="Keybinding when clause"]')),
+            values: {
+              command: inputValue('[aria-label="Keybinding command"]'),
+              shortcut: inputValue('[aria-label="Keybinding shortcut"]'),
+              when: inputValue('[aria-label="Keybinding when clause"]'),
+            },
+            save: readElementBox(save),
+            saveDisabled:
+              save?.getAttribute("class")?.includes("keybindings-add-row__save--disabled") ?? true,
+            cancel: readElementBox(row.querySelector('[aria-label="Cancel new keybinding"]')),
+            error: row.querySelector(".keybindings-add-row__error")?.textContent?.trim() ?? null,
+          }
+        : null;
+    })(),
     header: readElementBox(header),
     headerColumns: [...(header?.children ?? [])].map((item) => ({
       text: item.textContent?.trim() ?? "",

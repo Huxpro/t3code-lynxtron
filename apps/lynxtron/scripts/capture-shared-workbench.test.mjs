@@ -54,7 +54,7 @@ describe("shared workbench lifecycle fault capture", () => {
   });
 
   it("reports product and Composer state when an interaction postcondition times out", () => {
-    assert.include(source, "productState: { web: state?.web?.productState");
+    assert.match(source, /productState:\s*\{\s*web: state\?\.web\?\.productState/);
     assert.include(source, "toolbarAllocation:");
     assert.include(source, "state?.[client]?.composerMetrics?.anatomy?.toolbarAllocation");
   });
@@ -289,6 +289,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "Failed-thread dismissal requires both initial error banners");
     assert.include(source, "finalFailedThreadDismissalReady");
     assert.include(source, "failedThreadDismissalTimeline");
+  });
+
+  it("persists a Lynx keybinding through the real connector and observes both panes", () => {
+    assert.include(source, 'stateId === "settings-keybindings-mutation"');
+    assert.include(source, "fillLynxKeybindingInput");
+    assert.include(source, 'const command = "settings.open"');
+    assert.include(source, 'const shortcut = "mod+shift+y"');
+    assert.include(source, 'method === "upsertKeybinding"');
+    assert.include(source, "finalKeybindingsMutationReady");
   });
 
   it("synchronizes the provider runtime for real working-state captures", () => {
