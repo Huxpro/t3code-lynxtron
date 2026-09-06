@@ -16,6 +16,25 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, "..");
 const outFile = path.join(repoRoot, "src/app/components/iconData.ts");
+const webIconsFile = path.resolve(repoRoot, "../web/src/components/Icons.tsx");
+
+function extractJujutsuBody() {
+  const source = fs.readFileSync(webIconsFile, "utf8");
+  const component = source.match(/export const JujutsuIcon:[\s\S]*?export const GitLabIcon:/)?.[0];
+  if (!component) throw new Error(`Could not find JujutsuIcon in ${webIconsFile}`);
+
+  const paths = [...component.matchAll(/<path\s+d="([^"]+)"\s+fill="([^"]+)"\s*\/>/g)];
+  if (paths.length !== 7) {
+    throw new Error(`Expected 7 JujutsuIcon paths, found ${paths.length}`);
+  }
+  const body = paths.map(([, d, fill]) => `<path d="${d}" fill="${fill}"/>`).join("");
+  return (
+    `<defs><g id="jujutsu-a">${body}</g></defs>` +
+    '<rect width="1024" height="1024" rx="270" fill="#a7bcd9"/>' +
+    '<use href="#jujutsu-a" transform="matrix(-1 0 0 1 1024 0)"/>' +
+    '<use href="#jujutsu-a"/>'
+  );
+}
 
 // Inner SVG markup per icon, verbatim from lucide-react.
 const ICON_BODIES = {
@@ -141,6 +160,17 @@ const ICON_BODIES = {
 // Brand/fill icons (non-lucide): filled paths with their own viewBox + color,
 // copied verbatim from t3code's web UI (apps/web/src/components).
 const FILL_ICONS = {
+  // VCS marks — apps/web/src/components/Icons.tsx.
+  git: {
+    viewBox: "0 0 256 256",
+    color: "#DE4C36",
+    body: '<path d="M251.17 116.6 139.4 4.82a16.49 16.49 0 0 0-23.31 0l-23.21 23.2 29.44 29.45a19.57 19.57 0 0 1 24.8 24.96l28.37 28.38a19.61 19.61 0 1 1-11.75 11.06L137.28 95.4v69.64a19.62 19.62 0 1 1-16.13-.57V94.2a19.61 19.61 0 0 1-10.65-25.73L81.46 39.44 4.83 116.08a16.49 16.49 0 0 0 0 23.32L116.6 251.17a16.49 16.49 0 0 0 23.32 0l111.25-111.25a16.5 16.5 0 0 0 0-23.33" fill="#DE4C36"/>',
+  },
+  jujutsu: {
+    viewBox: "0 0 1024 1024",
+    color: "multicolor",
+    body: extractJujutsuBody(),
+  },
   // Source-control provider marks — apps/web/src/components/Icons.tsx.
   github: {
     viewBox: "0 0 16 16",

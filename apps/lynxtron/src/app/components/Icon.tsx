@@ -101,6 +101,8 @@ export type IconName =
   | "grok"
   | "opencode"
   | "github-copilot"
+  | "git"
+  | "jujutsu"
   | "github"
   | "gitlab"
   | "azure-devops"
@@ -174,6 +176,8 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverr
       name === "grok" ||
       name === "opencode" ||
       name === "github-copilot" ||
+      name === "git" ||
+      name === "jujutsu" ||
       name === "github" ||
       name === "gitlab" ||
       name === "azure-devops" ||

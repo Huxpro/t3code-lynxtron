@@ -437,6 +437,13 @@ describe("desktop shell interaction contract", () => {
     );
     expect(overrides).toContain(".source-control-writing-row:last-child {\n  margin-bottom: 0;");
     expect(componentSource("OtherSettings.tsx")).toContain('className="source-control-retry-icon"');
+    expect(otherSettingsSource).toContain('git: "git"');
+    expect(otherSettingsSource).toContain('jj: "jujutsu"');
+    expect(otherSettingsSource).toContain('github: "github"');
+    expect(otherSettingsSource).toContain('gitlab: "gitlab"');
+    expect(otherSettingsSource).toContain('"azure-devops": "azure-devops"');
+    expect(otherSettingsSource).toContain('bitbucket: "bitbucket"');
+    expect(otherSettingsSource.match(/icon=\{sourceControlIcon\(item\.kind\)\}/g)).toHaveLength(2);
     expect(providers).toContain("backgroundActivityOverrideSettings");
     expect(providers).toContain("t3ClientActions");
     expect(providers).toContain(".updateServerSettings(");

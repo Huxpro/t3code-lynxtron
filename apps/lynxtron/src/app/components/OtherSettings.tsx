@@ -48,6 +48,7 @@ import {
   Toggle,
 } from "./SettingsControls";
 import { Icon } from "./Icon";
+import type { IconName } from "./Icon";
 import {
   pairingCredentialAfterRevocation,
   type PairingCredentialState,
@@ -67,6 +68,20 @@ const EMPTY_SOURCE_CONTROL_DISCOVERY: SourceControlDiscoveryState = {
   pending: true,
   error: null,
 };
+
+const SOURCE_CONTROL_ICONS = {
+  git: "git",
+  jj: "jujutsu",
+  github: "github",
+  gitlab: "gitlab",
+  "azure-devops": "azure-devops",
+  bitbucket: "bitbucket",
+} as const satisfies Readonly<Record<string, IconName>>;
+
+function sourceControlIcon(kind: string): ReactNode {
+  const icon = SOURCE_CONTROL_ICONS[kind as keyof typeof SOURCE_CONTROL_ICONS];
+  return icon ? <Icon name={icon} size={18} /> : undefined;
+}
 
 function sourceControlSummaryForLynx(parts: ReadonlyArray<SourceControlSummaryPart>): string {
   return parts
@@ -331,7 +346,12 @@ export function SourceControlSettings() {
           {presentation.versionControlSystems.map((item) => (
             <SourceControlItemRowSurface
               key={item.id}
-              mark={<SourceControlMarkSurface tone={item.statusTone} />}
+              mark={
+                <SourceControlMarkSurface
+                  tone={item.statusTone}
+                  icon={sourceControlIcon(item.kind)}
+                />
+              }
               label={item.label}
               version={item.version ?? undefined}
               badge={
@@ -362,7 +382,12 @@ export function SourceControlSettings() {
           {presentation.sourceControlProviders.map((item) => (
             <SourceControlItemRowSurface
               key={item.id}
-              mark={<SourceControlMarkSurface tone={item.statusTone} />}
+              mark={
+                <SourceControlMarkSurface
+                  tone={item.statusTone}
+                  icon={sourceControlIcon(item.kind)}
+                />
+              }
               label={item.label}
               version={item.version ?? undefined}
               badge={

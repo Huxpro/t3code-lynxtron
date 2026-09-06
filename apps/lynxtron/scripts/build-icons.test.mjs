@@ -62,4 +62,14 @@ describe("Lynx icon raster contracts", () => {
     assert.include(iconSource, '| "info"');
     assert.include(generatedSource, '"info@14@#f59e0b"');
   });
+
+  it("generates exact Web source-control marks", () => {
+    assert.include(scriptSource, "git: {");
+    assert.include(scriptSource, "body: extractJujutsuBody()");
+    assert.include(scriptSource, "Expected 7 JujutsuIcon paths");
+    assert.include(iconSource, '| "git"');
+    assert.include(iconSource, '| "jujutsu"');
+    assert.include(generatedSource, '"git@fill"');
+    assert.include(generatedSource, '"jujutsu@fill"');
+  });
 });
