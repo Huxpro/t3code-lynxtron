@@ -26973,6 +26973,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-failed-dismissal-current",
+      "observedAt": "2026-09-06T07:18:00-04:00",
+      "commit": "4078bc511",
+      "codeCommit": "54f3ff939",
+      "codeState": "commit",
+      "label": "Failed-thread dismissal reverse-state parity",
+      "narrative": "The Web authority's Dismiss error control wrote a null local override, but its nullish fallback immediately restored the same persisted session error, so an enabled button hit by a real pointer had no visible effect. Web now records the exact persisted error text that was dismissed: the current banner stays hidden, a changed persisted error reappears, and local action errors still take precedence. Both Browser renderers now dismiss the error while retaining the failed session, Sidebar Failed status, transcript row, and disabled Composer.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The fresh failed fixture reproduced the no-op through an enabled, unobstructed Web button; the post-fix paired run records real pointer dismissal and unchanged failure semantics in both renderers."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/failed-thread-dismissal-current.json",
+          "classification": "tracked-current",
+          "sha256": "a6aae73419d915ac1e4339af2f5640a8f433923f536e662b77be291c4a4896f0"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "failed-thread-dismissal-reverse-state",
+              "source": "Both banners disappear while the same failed session, Sidebar status, transcript row, and disabled Composer remain."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-browser-real-pointer",
+              "source": "Each renderer's visible Dismiss error control is clicked and observed independently."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-failed-dismissed-capture",
+              "source": "Strict paired capture passes with matching state identity, session projection, transcript geometry, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

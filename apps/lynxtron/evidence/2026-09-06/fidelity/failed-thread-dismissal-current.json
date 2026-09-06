@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T07:18:00-04:00",
+  "stateId": "existing-thread-failed-dismissed",
+  "productCommit": "54f3ff939",
+  "harnessCommit": "4078bc511",
+  "captureBaseCommit": "ed5cf762f",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "52200abd-a8b6-432c-9dc8-d49c32a98ec7",
+    "snapshotSha256": "d5967526ff833a7a68ad2bb4e543ca17ee594152e66db1bc751924a03bea3eb6"
+  },
+  "fixture": {
+    "kind": "connector-created-disposable-failed-turn",
+    "failureReason": "Model not found: opencode/not-a-real-model.",
+    "latestTurnState": "error",
+    "sessionStatus": "error"
+  },
+  "capture": {
+    "reportSha256": "f9e3732e4c828b6779387467992ba5babf8bd9f3b4c419a4c309fc34a6b4666b",
+    "webImageSha256": "8789729f13756253f694a34a61219ff9fa440a3d148579950e8198578b5db1ec",
+    "lynxImageSha256": "f7e0ef5bc84858428d49777de1ee955b066166ec6556ae35daaf4dabdc9d602d",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "failedTranscriptGeometryMatch": true,
+    "rendererErrors": 0
+  },
+  "interaction": {
+    "channel": "real-browser-pointer",
+    "web": "dismissed",
+    "lynx": "dismissed",
+    "replacementBannerWeb": null,
+    "replacementBannerLynx": null
+  },
+  "postcondition": {
+    "webBanner": null,
+    "lynxBanner": null,
+    "sidebarStatusWeb": "Failed",
+    "sidebarStatusLynx": "Failed",
+    "webTranscriptRowOrigin": [384, 100],
+    "lynxTranscriptRowOrigin": [384, 100],
+    "webComposer": ["idle", "disabled"],
+    "lynxComposer": ["idle", "disabled"]
+  },
+  "fix": "Track the exact persisted error text dismissed by the Web client instead of writing a null local override that immediately falls back to the same persisted session error. A changed persisted error becomes visible again.",
+  "boundary": "The dismissal is client-local and does not clear the persisted failed session. Native physical-pointer correlation remains blocked by the missing Lynxtron 0.0.18 application bundle. Screenshots remain temporary."
+}
