@@ -13,6 +13,7 @@ describe("shared workbench semantic route inference", () => {
     ["composer-docked", "existing-thread"],
     ["review-diff", "existing-thread"],
     ["right-panel-terminal-vertical-split", "existing-thread"],
+    ["command-palette-navigation", "existing-thread"],
     ["model-picker-selected", "new-thread"],
     ["project-scope-open", "project-scope-open"],
     ["settings-general", "settings-general"],

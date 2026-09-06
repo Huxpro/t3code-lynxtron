@@ -45,6 +45,7 @@ const existingThreadStateIds = new Set([
   "quick-switch-query-light",
   "quick-switch-actions-only",
   "quick-switch-empty",
+  "command-palette-navigation",
 ]);
 
 const settingsRouteByStateId = new Map([

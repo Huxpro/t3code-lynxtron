@@ -946,6 +946,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "const currentStateIdentityMatches = () =>");
     assert.include(source, "selectedProject: webState.selectedProject");
     assert.include(source, "selectedProject: lynxState.selectedProject");
+    assert.include(source, "activeThreadKind: webState.activeThreadKind");
+    assert.include(source, "activeThreadKind: lynxState.activeThreadKind");
+    assert.include(source, "activeThreadId: webState.activeThreadId");
+    assert.include(source, "activeThreadId: lynxState.activeThreadId");
     assert.include(source, "stateIdentityMatch = currentStateIdentityMatches()");
     assert.include(source, "finalCoreGeometryReady =");
     assert.include(source, "fixturePreparation.disposed = true");
