@@ -133,10 +133,10 @@ export function ProjectSettingsDialog({
               className="project-settings-dialog__summary flex flex-row"
             >
               <Icon name="folder" size={13} color="#818181" />
-              <text className="project-settings-path" text-maxline="1">
+              <text className="project-settings-path" data-project-settings-path text-maxline="1">
                 {member.workspaceRoot}
               </text>
-              <text className="project-settings-environment">
+              <text className="project-settings-environment" data-project-settings-environment>
                 {member.environmentLabel ?? "Current environment"}
               </text>
             </view>

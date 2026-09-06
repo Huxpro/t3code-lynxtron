@@ -950,6 +950,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "activeThreadKind: lynxState.activeThreadKind");
     assert.include(source, "activeThreadId: webState.activeThreadId");
     assert.include(source, "activeThreadId: lynxState.activeThreadId");
+    assert.include(source, "JSON.stringify(webDialog?.environments ?? [])");
+    assert.include(source, "JSON.stringify(lynxDialog?.environments ?? [])");
     assert.include(source, "stateIdentityMatch = currentStateIdentityMatches()");
     assert.include(source, "finalCoreGeometryReady =");
     assert.include(source, "fixturePreparation.disposed = true");

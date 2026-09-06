@@ -2442,6 +2442,9 @@ function projectSettingsReady(state, interaction) {
       JSON.stringify(["Project name", "Grouping rule"]) &&
     (lynxDialog?.controls?.projectNames?.length ?? 0) > 0 &&
     (lynxDialog?.controls?.groupingRules?.length ?? 0) > 0 &&
+    JSON.stringify(webDialog?.paths ?? []) === JSON.stringify(lynxDialog?.paths ?? []) &&
+    JSON.stringify(webDialog?.environments ?? []) ===
+      JSON.stringify(lynxDialog?.environments ?? []) &&
     (lynxDialog?.removeLabels ?? []).includes("Remove project") &&
     (lynxDialog?.footerButtons ?? []).some(({ label }) => label === "Close") &&
     interaction?.lynxScopeActionCount > 0 &&

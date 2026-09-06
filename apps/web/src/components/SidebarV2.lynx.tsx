@@ -1203,7 +1203,7 @@ export default function SidebarV2() {
               environmentId: projectSettingsProject.environmentId,
               title: projectSettingsProject.title,
               workspaceRoot: projectSettingsProject.workspaceRoot,
-              environmentLabel: null,
+              environmentLabel: serverConfig?.environment.label ?? null,
             },
           ]}
           onClose={() => setProjectSettingsProjectId(null)}

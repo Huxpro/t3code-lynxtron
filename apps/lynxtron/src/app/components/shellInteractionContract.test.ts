@@ -1817,6 +1817,7 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarProjectListHost).toContain("bindlongpress:");
     expect(sidebarProjectListHost).toContain("<ProjectSettingsDialog");
     expect(sidebarSource).toContain("data-sidebar-project-action={project.id}");
+    expect(sidebarSource).toContain("serverConfig?.environment.label ?? null");
     expect(sidebarSource).toContain("aria-label={`Project actions for ${project.title}`}");
     expect(sidebarSource).toContain("showNativeContextMenu([");
     expect(sidebarSource).toContain("void showThreadContextMenu(");
@@ -1825,6 +1826,7 @@ describe("desktop shell interaction contract", () => {
     expect(hostElementsSource).toContain('"main-thread:bindmousedown": handleMouseDown');
     expect(sidebarSource).toContain("<ProjectSettingsDialog");
     expect(projectSettings).toContain("Project settings");
+    expect(projectSettings).toContain("data-project-settings-environment");
     expect(projectSettings).toContain("Project name");
     expect(projectSettings).toContain("Grouping rule");
     expect(projectSettings).toContain("Remove project");

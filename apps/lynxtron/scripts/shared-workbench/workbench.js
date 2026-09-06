@@ -1359,7 +1359,10 @@ function readProjectSettingsDialog(root) {
         readElementBox(field),
       ),
     },
-    paths: [...dialog.querySelectorAll(".project-settings-path, .font-mono")]
+    paths: [...dialog.querySelectorAll("[data-project-settings-path]")]
+      .map((element) => readComposedText(element))
+      .filter(Boolean),
+    environments: [...dialog.querySelectorAll("[data-project-settings-environment]")]
       .map((element) => readComposedText(element))
       .filter(Boolean),
     fieldLabels,

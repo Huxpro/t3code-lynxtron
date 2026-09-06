@@ -2711,7 +2711,9 @@ export default function SidebarV2() {
                 <div key={member.physicalProjectKey} className="flex min-w-0 items-center gap-3">
                   <span className="flex min-w-0 items-center gap-1">
                     <FolderIcon className="size-3.5 shrink-0 opacity-60" />
-                    <span className="min-w-0 truncate font-mono">{member.workspaceRoot}</span>
+                    <span className="min-w-0 truncate font-mono" data-project-settings-path>
+                      {member.workspaceRoot}
+                    </span>
                     <Button
                       size="icon-xs"
                       variant="ghost"
@@ -2727,7 +2729,7 @@ export default function SidebarV2() {
                   </span>
                   <span className="flex min-w-0 shrink-0 items-center gap-1">
                     <ServerIcon className="size-3.5 shrink-0 opacity-60" />
-                    <span className="min-w-0 truncate">
+                    <span className="min-w-0 truncate" data-project-settings-environment>
                       {member.environmentLabel ?? "Current environment"}
                     </span>
                   </span>
