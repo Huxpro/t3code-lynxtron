@@ -4066,6 +4066,7 @@
 .provider-status-banner-flow .thread-error-description,
 .provider-status-banner-overlay .thread-error-description {
   color: var(--muted-foreground);
+  letter-spacing: -0.1px;
 }
 /* ======= Transcript native list (surface: chat transcript; Lynx host leaf
    for the shared transcript projection; remove-when: transcript row chrome is
