@@ -27635,6 +27635,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-idle-hover-clean-current",
+      "observedAt": "2026-09-06T12:49:00-04:00",
+      "commit": "244809fde",
+      "codeCommit": "ef373a785",
+      "codeState": "commit",
+      "label": "Existing thread idle hover-clean evidence",
+      "narrative": "A fresh same-thread capture clears the Browser pointer and Lynx main-thread Sidebar hover projection before retaining the frame. Both panes show the same empty idle thread, disabled Composer, controls, context, and exact core geometry; the cleaner frame reaches 0.972823 full-frame SSIM.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The product UI is unchanged; this checkpoint removes transient Sidebar action pixels from non-hover evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/existing-thread-idle-hover-clean-current.json",
+          "classification": "tracked-current",
+          "sha256": "0488f4008fd0434aebe09e5818e21ad4d7acb3eb38ba09682cf05ea5de836109"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "hover-clean-idle-thread-content",
+              "source": "Both panes select the same persisted thread and render zero transcript rows, GPT-5.6-Sol, the shared placeholder, controls, context, idle state, and disabled send."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "hover-clean-idle-core-geometry",
+              "source": "The 1024 by 768 empty transcript, 768 by 140 Composer, 766 by 138 surface, 734 by 70 editor, and 766 by 44 footer match exactly."
+            },
+            "material": {
+              "residual": 0.027177,
+              "confidence": 0.99,
+              "method": "hover-clean-full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.972823 after removing transient Lynx Sidebar hover actions."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-hover-clean-idle-runtime",
+              "source": "Same pristine snapshot, thread, route, theme, viewport, exact bundles, matching idle session projection, zero renderer errors, and clean disposal."
+            }
+          }
+        }
+      ]
     }
   ]
 }

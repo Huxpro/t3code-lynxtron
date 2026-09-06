@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T12:49:00-04:00",
+  "stateId": "existing-thread-idle",
+  "productCommit": "ef373a785",
+  "harnessCommit": "244809fde",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "capture": {
+    "reportSha256": "7b2bc6608e1832c5fad64db9785149ea42820568c212f5704b8fad067110a8a9",
+    "webImageSha256": "0e039f3f4b044ac4fcddc313c38893237c048d0fb99cb7f49d0218dcb72e5d00",
+    "lynxImageSha256": "d012932994dab58dd26a7438d210b7888da4e3aa7ff5fb3f14d82714d5b0fc48",
+    "webBundleSha256": "ee0e297e659598db014eb66e24db01e6a9c31d77591b6ee11959403b0c61fd28",
+    "lynxBundleSha256": "6d1283cdc4cea505e2c5f9338bdd9001cff239b762307c8a6db6ee607c4e6de1",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "idleThread": {
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "composerState": "idle",
+    "primaryState": "disabled",
+    "timelineRowCount": 0,
+    "emptyRectWeb": [256, 52, 1024, 768],
+    "emptyRectLynx": [256, 52, 1024, 768],
+    "composerRectWeb": [384, 628, 768, 140],
+    "composerRectLynx": [384, 628, 768, 140],
+    "editorRectWeb": [401, 645, 734, 70],
+    "editorRectLynx": [401, 645, 734, 70],
+    "fullFrameSsim": 0.972823
+  },
+  "harnessFix": "All non-hover states now move the browser pointer outside both panes, clear the Lynx main-thread Sidebar hover projection, and fail if thread actions remain visible.",
+  "boundary": "This is a measurement refinement over the existing idle-thread implementation. It removes transient Sidebar action pixels without claiming product improvement. Screenshots remain temporary."
+}
