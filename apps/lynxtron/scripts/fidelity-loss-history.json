@@ -26582,6 +26582,50 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-header-add-action-current",
+      "observedAt": "2026-09-06T04:14:42-04:00",
+      "commit": "295a4bda0f425bf4d66cfe77acf118560d55b165",
+      "codeCommit": "295a4bda0f425bf4d66cfe77acf118560d55b165",
+      "codeState": "commit",
+      "label": "Header Add action geometry parity",
+      "narrative": "The Lynx Header retained a stale 108px Add-action width after its icon and chevron were aligned, while current Web measures 93.8125px. Setting the outer box to 94px aligns Add within 0.1875px and moves the whole action group back to within roughly two pixels of Web without changing Open or Commit sizing.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A post-commit paired capture uses one isolated snapshot, project, route, provider state, theme, and viewport; only the Lynx Add-action width changed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/header-add-action-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "e52b4b0bedb1b820e17a00b370ba9353429bb7341a27560c0e31668c594fbfee"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                1.40625, 0, 0.1875, 0, 1.59375, 0, 0.0625, 0, 1.65625, 0, 1.65625, 0
+              ],
+              "anchorScale": 94,
+              "confidence": 0.99,
+              "method": "header-action-group-geometry",
+              "source": "Add is 94 by 24px versus Web 93.8125 by 24px; Open and Commit remain within two pixels in the same post-commit capture"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-new-thread-capture",
+              "source": "Post-commit capture passes the complete same-server hard gate with matching state identity and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
