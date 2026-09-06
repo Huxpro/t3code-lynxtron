@@ -3441,17 +3441,25 @@ async function focusRemoteElement(cdp, sessionId, expression) {
   }
 }
 
-async function dispatchKeyToRemoteElement(cdp, sessionId, expression, key, code, keyCode) {
+async function dispatchKeyToRemoteElement(
+  cdp,
+  sessionId,
+  expression,
+  key,
+  code,
+  keyCode,
+  modifiers = 0,
+) {
   const focused = await focusRemoteElement(cdp, sessionId, expression);
   if (!focused) return false;
   await cdp.send(
     "Input.dispatchKeyEvent",
-    { type: "rawKeyDown", key, code, windowsVirtualKeyCode: keyCode },
+    { type: "rawKeyDown", modifiers, key, code, windowsVirtualKeyCode: keyCode },
     sessionId,
   );
   await cdp.send(
     "Input.dispatchKeyEvent",
-    { type: "keyUp", key, code, windowsVirtualKeyCode: keyCode },
+    { type: "keyUp", modifiers, key, code, windowsVirtualKeyCode: keyCode },
     sessionId,
   );
   return true;
@@ -4198,15 +4206,33 @@ async function runSidebarThreadHoverPreviewFlow(cdp, sessionId, viewport) {
 async function dispatchMetaDigit(cdp, sessionId, digit) {
   const code = `Digit${digit}`;
   const keyCode = 48 + digit;
-  await cdp.send(
-    "Input.dispatchKeyEvent",
-    { type: "rawKeyDown", modifiers: 4, key: String(digit), code, windowsVirtualKeyCode: keyCode },
+  return dispatchKeyToRemoteElement(
+    cdp,
     sessionId,
+    `document.getElementById('web-pane')?.contentWindow?.document
+      ?.querySelector('[data-thread-id] [role="button"]') ?? null`,
+    String(digit),
+    code,
+    keyCode,
+    4,
   );
-  await cdp.send(
-    "Input.dispatchKeyEvent",
-    { type: "keyUp", modifiers: 4, key: String(digit), code, windowsVirtualKeyCode: keyCode },
+}
+
+async function dispatchWebModifierState(cdp, sessionId, type, metaKey) {
+  return evaluate(
+    cdp,
     sessionId,
+    `(() => {
+      const target = document.getElementById('web-pane')?.contentWindow;
+      if (!target) return false;
+      target.dispatchEvent(new target.KeyboardEvent(${JSON.stringify(type)}, {
+        key: 'Meta',
+        code: 'MetaLeft',
+        metaKey: ${JSON.stringify(metaKey)},
+        bubbles: true,
+      }));
+      return true;
+    })()`,
   );
 }
 
@@ -4238,11 +4264,8 @@ async function runSidebarThreadShortcutFlow(cdp, sessionId) {
   const allRowsHideJumpLabels = (client) =>
     (client?.sidebarDiagnostics?.threads ?? []).every((row) => row.jumpLabel === null);
 
-  await cdp.send(
-    "Input.dispatchKeyEvent",
-    { type: "rawKeyDown", modifiers: 4, key: "Meta", code: "MetaLeft", windowsVirtualKeyCode: 91 },
-    sessionId,
-  );
+  const webModifierDown = await dispatchWebModifierState(cdp, sessionId, "keydown", true);
+  if (!webModifierDown) throw new Error("Web modifier-down event was not dispatched");
   const lynxModifierDown = await evaluate(
     cdp,
     sessionId,
@@ -4265,11 +4288,8 @@ async function runSidebarThreadShortcutFlow(cdp, sessionId) {
     webLabels: state.web.sidebarDiagnostics.threads.map((row) => row.jumpLabel),
     lynxLabels: state.lynx.sidebarDiagnostics.threads.map((row) => row.jumpLabel),
   });
-  await cdp.send(
-    "Input.dispatchKeyEvent",
-    { type: "keyUp", modifiers: 0, key: "Meta", code: "MetaLeft", windowsVirtualKeyCode: 91 },
-    sessionId,
-  );
+  const webModifierUp = await dispatchWebModifierState(cdp, sessionId, "keyup", false);
+  if (!webModifierUp) throw new Error("Web modifier-up event was not dispatched");
   const lynxModifierUp = await evaluate(
     cdp,
     sessionId,
@@ -4289,7 +4309,8 @@ async function runSidebarThreadShortcutFlow(cdp, sessionId) {
   );
   timeline.push({ step: "modifier-up" });
 
-  await dispatchMetaDigit(cdp, sessionId, targetIndex + 1);
+  const webJumpDispatched = await dispatchMetaDigit(cdp, sessionId, targetIndex + 1);
+  if (!webJumpDispatched) throw new Error("Web thread jump key was not dispatched");
   state = await waitForWorkbenchState(
     cdp,
     sessionId,
@@ -4316,7 +4337,8 @@ async function runSidebarThreadShortcutFlow(cdp, sessionId) {
   timeline.push({ step: "lynx-jump", threadId: targetThreadId });
 
   if (initialIndex >= 0) {
-    await dispatchMetaDigit(cdp, sessionId, initialIndex + 1);
+    const webRestoreDispatched = await dispatchMetaDigit(cdp, sessionId, initialIndex + 1);
+    if (!webRestoreDispatched) throw new Error("Web thread restore key was not dispatched");
     await evaluate(
       cdp,
       sessionId,

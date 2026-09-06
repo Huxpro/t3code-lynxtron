@@ -1426,6 +1426,16 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"pending-user-session"');
   });
 
+  it("drives Sidebar shortcut hint modifiers inside each renderer", () => {
+    assert.include(source, "async function dispatchWebModifierState");
+    assert.include(source, "modifiers = 0");
+    assert.include(source, "Web thread jump key was not dispatched");
+    assert.include(source, "new target.KeyboardEvent(${JSON.stringify(type)}");
+    assert.include(source, 'dispatchWebModifierState(cdp, sessionId, "keydown", true)');
+    assert.include(source, 'dispatchWebModifierState(cdp, sessionId, "keyup", false)');
+    assert.include(source, "dispatchModifierState(");
+  });
+
   it("records the Sidebar V2 action hover and new-thread project flows", () => {
     const workbench = readFileSync(
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
