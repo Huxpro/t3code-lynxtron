@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { browserEventError, browserEventUrl, resolveBrowserNavigation } from "./browserPanel.logic";
+import {
+  browserEventError,
+  browserEventFailure,
+  browserEventUrl,
+  resolveBrowserNavigation,
+} from "./browserPanel.logic";
 
 describe("BrowserPanel URL contract", () => {
   it("shares preview URL normalization with the Electron browser", () => {
@@ -27,5 +32,16 @@ describe("BrowserPanel URL contract", () => {
       "Connection refused",
     );
     expect(browserEventError(null)).toBe("The page could not be loaded.");
+  });
+
+  it("ignores aborted loads and preserves typed WebView failures", () => {
+    expect(browserEventFailure({ detail: { errorCode: -3, errorMsg: "ERR_ABORTED" } })).toBeNull();
+    expect(
+      browserEventFailure({ detail: { errorCode: -102, errorMsg: "ERR_CONNECTION_REFUSED" } }),
+    ).toEqual({ code: -102, message: "ERR_CONNECTION_REFUSED" });
+    expect(browserEventFailure(null)).toEqual({
+      code: null,
+      message: "The page could not be loaded.",
+    });
   });
 });

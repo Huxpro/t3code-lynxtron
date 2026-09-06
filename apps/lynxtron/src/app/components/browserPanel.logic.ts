@@ -27,3 +27,22 @@ export function browserEventError(event: unknown): string {
   }
   return typeof detail.errorMsg === "string" ? detail.errorMsg : "The page could not be loaded.";
 }
+
+export interface BrowserLoadFailure {
+  readonly code: number | null;
+  readonly message: string;
+}
+
+/** Matches Electron's did-fail-load policy: aborted navigations are not user-visible failures. */
+export function browserEventFailure(event: unknown): BrowserLoadFailure | null {
+  const detail =
+    event && typeof event === "object" && "detail" in event && event.detail ? event.detail : null;
+  const code =
+    detail && typeof detail === "object" && "errorCode" in detail
+      ? typeof detail.errorCode === "number"
+        ? detail.errorCode
+        : null
+      : null;
+  if (code === -3) return null;
+  return { code, message: browserEventError(event) };
+}

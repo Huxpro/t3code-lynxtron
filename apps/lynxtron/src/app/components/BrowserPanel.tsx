@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "@lynx-js/react";
 import { Icon } from "./Icon";
-import { browserEventError, browserEventUrl, resolveBrowserNavigation } from "./browserPanel.logic";
+import {
+  browserEventFailure,
+  browserEventUrl,
+  resolveBrowserNavigation,
+} from "./browserPanel.logic";
 import { readBrowserTab, storeBrowserTab } from "./browserTabPersistence.lynx";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
 
@@ -133,8 +137,10 @@ export function BrowserPanel({
             setError(null);
           }}
           binderror={(event) => {
+            const failure = browserEventFailure(event);
+            if (!failure) return;
             setLoading(false);
-            setError(browserEventError(event));
+            setError(failure.message);
           }}
           bindlocationchange={(event) => {
             const nextUrl = browserEventUrl(event);
