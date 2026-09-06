@@ -26883,6 +26883,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-sidebar-settings-row-current",
+      "observedAt": "2026-09-06T06:08:00-04:00",
+      "commit": "0385f6587",
+      "codeCommit": "0385f6587",
+      "codeState": "commit",
+      "label": "Sidebar Settings row origin parity",
+      "narrative": "An early Lynx-only 1.5px transform shifted the full Settings row after the shared footer had already reached the Web inset. Removing the stale compensation restores exact x, y, width, and height parity while preserving the icon's separate optical adjustment.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same completed fixture and unchanged footer allocation isolate the explicit row transform as the source of the mismatch."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-settings-row-origin.json",
+          "classification": "tracked-current",
+          "sha256": "e53bea42f87b79c33fcf9b75ffdab5c178ddbe79802c815991ec7e49e6afb05d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "sidebar-settings-row-geometry",
+              "source": "Settings row x, y, width, and height exactly match Web after removing the stale transform."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-completed-current-capture",
+              "source": "Strict paired capture passes with matching state identity and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
