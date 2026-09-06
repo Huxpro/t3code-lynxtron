@@ -28245,6 +28245,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-light-complete-current",
+      "observedAt": "2026-09-06T18:30:55-04:00",
+      "commit": "675428b7e",
+      "codeCommit": "7c7aa40cf",
+      "codeState": "commit",
+      "label": "Provider dialog light complete lifecycle refresh",
+      "narrative": "A current-head light 1280 by 820 run restores complete Browser coverage after the newer Driver-only point. A stricter Identity gate requires the three visible fields, label/control/helper anatomy, ordered copy, validation error, and geometry to match within 2px. Both clients reach Identity, reject an invalid Config skip with the same error, dismiss and reset, then Lynx creates codex_fidelity_browser through real input while Web observes the shared card; deletion remains absent for three stable samples and both dialogs finish closed.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "This point refreshes current Browser interaction and runtime coverage with a stricter gate. It claims no product code improvement and does not reduce Native evidence debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/provider-dialog-light-complete-current.json",
+          "classification": "tracked-current",
+          "sha256": "f129641f277752911b097e61fb47c4e4237ad2f8de04b916ff7bf2ecfb875843"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-provider-complete-content",
+              "source": "Driver, three Identity fields and helpers, blocked Config validation, shared provider card, deletion, and final closed state match the Web authority."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 1, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0, 0.5],
+              "anchorScale": 526,
+              "confidence": 0.99,
+              "method": "current-provider-identity-field-geometry",
+              "source": "All three Identity field and label/control/helper rectangles match within 1px at the same 526px content width."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-provider-complete-flow",
+              "source": "Real pointer and text input cover Driver, Identity, blocked Config navigation, dismissal, reset, Config, save, shared projection, delete, and final dismissal."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-provider-shared-runtime",
+              "source": "One pristine isolated seed and server, exact shipping bundles, matched route, theme and viewport, zero renderer errors, and three stable delete reverse-state samples."
+            }
+          }
+        }
+      ]
     }
   ]
 }
