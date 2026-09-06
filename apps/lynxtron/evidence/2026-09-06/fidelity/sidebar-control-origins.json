@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T06:01:00-04:00",
+  "stateId": "existing-thread-completed-no-diff",
+  "productCommit": "be6e751ad",
+  "captureBaseCommit": "3036be4be",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "82ab97b6-f29e-450b-b5d1-9a0a2b168d52",
+    "snapshotSha256": "41142c507349ddb34ae05e454cea2ab11e15ffed9a90f64ef4c1a9b1aecdafba"
+  },
+  "capture": {
+    "reportSha256": "ad8a1b3f75a452736e5fd76e1a1d0fdde557e57d1aa26ca14e17a25875f77755",
+    "webImageSha256": "9c28c9bb28578f8654e81fd0f87a30680f94316088d8616306cf8c303ec13439",
+    "lynxImageSha256": "9bc11e06e72f43b81a5fe20d52add50619228dd98c83fc65e7c57c247bf3c0d7",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "webSearchInput": [40, 65, 163, 30],
+    "lynxSearchInput": [41, 66, 163, 30],
+    "webProjectScope": [8, 104, 203, 32],
+    "lynxProjectScope": [9, 106, 203, 32]
+  },
+  "after": {
+    "webSearchInput": [40, 65, 163, 30],
+    "lynxSearchInput": [40, 65, 163, 30],
+    "webProjectScope": [8, 104, 203, 32],
+    "lynxProjectScope": [8, 104, 203, 32],
+    "webSearchRow": [8, 64, 239, 32],
+    "lynxSearchRow": [8, 64, 239, 32],
+    "webProjectRow": [8, 104, 239, 32],
+    "lynxProjectRow": [8, 104, 239, 32]
+  },
+  "fix": "Remove obsolete one- and two-pixel Lynx transforms now that the shared Sidebar V2 control rows and slots own the canonical geometry.",
+  "boundary": "The diagnostic chrome.search field selects the Web input but the Lynx wrapper, so only the comparable real input box and project trigger are admitted. Screenshots remain temporary."
+}

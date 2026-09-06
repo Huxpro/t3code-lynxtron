@@ -26811,7 +26811,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/header-project-action-readiness.json",
           "classification": "tracked-current",
-          "sha256": "75c9eee1985399844ea9729630f110245ee494f6e9590b8834413d3cf66ad7fc"
+          "sha256": "ca999c4b314c3f668c3973bad93e9df680509e7aa316410f83cb1afc0c718f40"
         }
       ],
       "updates": [
@@ -26831,6 +26831,48 @@
               "confidence": 0.99,
               "method": "header-add-action-menu-geometry",
               "source": "The Add action menu differs by 0.453125px in x and 0.1875px in width; subsequent Open and Git controls differ by at most 0.265625px."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-completed-current-capture",
+              "source": "Strict paired capture passes with matching state identity and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "existing-thread-sidebar-control-origins-current",
+      "observedAt": "2026-09-06T06:01:00-04:00",
+      "commit": "be6e751ad",
+      "codeCommit": "be6e751ad",
+      "codeState": "commit",
+      "label": "Sidebar control origins parity",
+      "narrative": "The shared Search and project-scope rows already had exact Web geometry, but two early Lynx-only transforms displaced their real controls by one and two pixels. Removing those stale offsets aligns the Search input and project-scope trigger exactly without changing the shared row allocation.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same completed fixture records identical parent rows before and after, isolating the two explicit transforms as the source of the child-origin mismatch."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-control-origins.json",
+          "classification": "tracked-current",
+          "sha256": "e6dd879a9186feb53fdaf15acb4c29c7165a14b0e24ab72587428020f74cfe88"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 203,
+              "confidence": 0.99,
+              "method": "sidebar-control-origin-geometry",
+              "source": "Search input and project-scope trigger x, y, width, and height exactly match Web after removing the stale transforms."
             },
             "runtime": {
               "residual": 0,
