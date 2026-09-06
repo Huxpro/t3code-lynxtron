@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T08:45:00-04:00",
+  "stateId": "settings-keybindings-mutation",
+  "productCommit": "f7ef9015d",
+  "harnessCommit": "bea7eb9ca",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "settings-keybindings",
+    "snapshotSha256": "1f465f0ce4d1079e4025cf05a62e8669f348e4ff44dd5cf98e62006edfdf1461"
+  },
+  "capture": {
+    "reportSha256": "91814c8bd6921d3a416c24cc24f4da6bf5261d0d227acaa0939d89d418a0f05d",
+    "webImageSha256": "e152e1fce71ed3df62757714fdfba789b9c3de40ec6a4c7e5bb796383747630c",
+    "lynxImageSha256": "c8bb89d43e656e5527ec7cdddec02e14a22837a87db6da7f5b1f03dfe94c20bf",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "interaction": {
+    "channel": "lynx-browser-pointer-and-text-input",
+    "initialBindingCount": 45,
+    "command": "settings.open",
+    "shortcutInput": "mod+shift+y",
+    "connectorCommand": "upsertKeybinding",
+    "finalBindingCountWeb": 46,
+    "finalBindingCountLynx": 46
+  },
+  "canonicalRow": {
+    "command": "settings.open",
+    "displayShortcut": "⇧⌘Y",
+    "when": "Always",
+    "source": "Custom",
+    "conflicts": [],
+    "webRect": [294, 1325.5, 948, 41],
+    "lynxRect": [294, 1325.5, 948, 41]
+  },
+  "fix": "Replace the Lynx read-only heading with Search and Add controls, add a writable binding row, and forward upsertKeybinding through the live Browser Preview connector so the shared server config stream updates both renderers.",
+  "boundary": "This slice covers search presentation and adding a canonical binding. Existing-row edit, remove/reset, and Open keybindings.json remain separate parity work. Native physical-key capture remains blocked by the missing Lynxtron 0.0.18 application bundle. Screenshots remain temporary."
+}

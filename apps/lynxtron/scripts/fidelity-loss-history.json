@@ -27212,6 +27212,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-add-mutation-current",
+      "observedAt": "2026-09-06T08:45:00-04:00",
+      "commit": "bea7eb9ca",
+      "codeCommit": "f7ef9015d",
+      "codeState": "commit",
+      "label": "Keybindings search and add mutation",
+      "narrative": "The Lynx Keybindings page no longer presents a misleading read-only status. It now exposes Search and Add controls, filters through the shared row projection, validates commands against the shared command options, and persists new bindings through the existing typed connector. Browser Preview gained the missing upsert forwarding branch. In disposable state, a real Lynx pointer and text-input flow adds settings.open on mod+shift+y; the server writes keybindings.json, emits the canonical config, and both Web and Lynx render the same 46th Custom row at identical geometry.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The mutation uses the real server RPC and config stream; both renderers independently observe the resulting canonical row."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/keybindings-add-mutation.json",
+          "classification": "tracked-current",
+          "sha256": "7690e265ee3c49d9004ac88d21388dfddbb4c341f4cc25c3611fbe151acb6e92"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "keybinding-add-config-stream",
+              "source": "Search and Add are present and one canonical Custom row persists into both panes; edit, remove/reset, and Open JSON remain uncovered."
+            },
+            "interaction": {
+              "residual": 0.08,
+              "confidence": 0.99,
+              "method": "lynx-add-binding-browser-flow",
+              "source": "Pointer opens Add, three real inputs settle, Save invokes upsertKeybinding, and both panes reach 46 rows."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 948,
+              "confidence": 0.99,
+              "method": "custom-keybinding-row-geometry",
+              "source": "The new settings.open row is 948 by 41 at x=294 y=1325.5 in both panes."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-keybinding-mutation",
+              "source": "The live connector records upsertKeybinding and the server returns 46 resolved bindings with no issues or renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
