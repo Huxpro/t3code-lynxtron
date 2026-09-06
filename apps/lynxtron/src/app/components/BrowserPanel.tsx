@@ -34,12 +34,17 @@ export function BrowserPanel({
   const webview = useRef<WebViewRef | null>(null);
 
   useEffect(() => {
-    storeBrowserTab(clientCapabilities.storage, threadId, {
-      tabId,
-      url,
-      title: url || "Browser",
-    });
-  }, [tabId, threadId, url]);
+    storeBrowserTab(
+      clientCapabilities.storage,
+      threadId,
+      {
+        tabId,
+        url,
+        title: url || "Browser",
+      },
+      { active },
+    );
+  }, [active, tabId, threadId, url]);
 
   const invoke = useCallback((method: "eval" | "reload", func?: string) => {
     webview.current

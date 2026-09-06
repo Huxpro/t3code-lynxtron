@@ -181,13 +181,21 @@ export function storeBrowserTab(
   storage: BrowserStorage,
   threadId: string | null,
   tab: PersistedBrowserTab,
+  options: { readonly active?: boolean } = {},
 ): void {
   if (!threadId) return;
   const current = readBrowserTabsState(storage, threadId, tab.tabId);
+  const recentHistory =
+    tab.url && tab.url !== "about:blank"
+      ? [
+          { tabId: tab.tabId, url: tab.url, title: tab.title },
+          ...current.recentHistory.filter((entry) => entry.url !== tab.url),
+        ].slice(0, MAX_HISTORY_PER_THREAD)
+      : current.recentHistory;
   storeBrowserTabsState(storage, threadId, {
-    activeTabId: tab.tabId,
+    activeTabId: options.active === false ? current.activeTabId : tab.tabId,
     tabs: [tab, ...current.tabs.filter((entry) => entry.tabId !== tab.tabId)],
-    recentHistory: current.recentHistory,
+    recentHistory,
   });
 }
 

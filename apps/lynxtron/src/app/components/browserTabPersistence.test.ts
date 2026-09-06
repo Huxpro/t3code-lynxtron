@@ -139,4 +139,42 @@ describe("Lynxtron browser tab persistence", () => {
     });
     expect(readBrowserTabsState(empty, "thread-a", "fallback").activeTabId).toBe("fallback");
   });
+
+  it("records recent navigation without letting inactive panels steal active identity", () => {
+    const storage = memoryStorage();
+    storeBrowserTab(storage, "thread-a", {
+      tabId: "tab-1",
+      url: "https://one.example/",
+      title: "One",
+    });
+    storeBrowserTab(
+      storage,
+      "thread-a",
+      { tabId: "tab-2", url: "https://two.example/", title: "Two" },
+      { active: false },
+    );
+    storeBrowserTab(storage, "thread-a", {
+      tabId: "tab-1",
+      url: "https://one.example/next",
+      title: "One next",
+    });
+
+    expect(readBrowserTabsState(storage, "thread-a", "fallback")).toEqual({
+      activeTabId: "tab-1",
+      tabs: [
+        {
+          tabId: "tab-1",
+          url: "https://one.example/next",
+          title: "One next",
+          faviconUrl: "",
+        },
+        { tabId: "tab-2", url: "https://two.example/", title: "Two", faviconUrl: "" },
+      ],
+      recentHistory: [
+        { tabId: "tab-1", url: "https://one.example/next", title: "One next" },
+        { tabId: "tab-2", url: "https://two.example/", title: "Two" },
+        { tabId: "tab-1", url: "https://one.example/", title: "One" },
+      ],
+    });
+  });
 });
