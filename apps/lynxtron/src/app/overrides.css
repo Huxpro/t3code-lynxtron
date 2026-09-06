@@ -12097,6 +12097,9 @@
 .project-settings-dialog__footer--single {
   justify-content: space-between;
 }
+.project-settings-dialog__footer--single .project-settings-dialog__button--danger {
+  width: 148px;
+}
 .project-settings-dialog__button {
   display: flex;
   align-items: center;

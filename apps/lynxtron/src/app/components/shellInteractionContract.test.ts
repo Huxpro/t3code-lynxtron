@@ -1835,6 +1835,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".project-settings-dialog__footer--single {\n  justify-content: space-between;",
     );
+    expect(overrides).toContain(
+      ".project-settings-dialog__footer--single .project-settings-dialog__button--danger {\n  width: 148px;",
+    );
     expect(projectSettings).toContain("Project name");
     expect(projectSettings).toContain("Grouping rule");
     expect(projectSettings).toContain("Remove project");
