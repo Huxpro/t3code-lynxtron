@@ -46,6 +46,7 @@ Exit: three fresh cold starts reach semantic product readiness and one real page
 
 ### CEF1 — Canonical tab and navigation lifecycle
 
+- [x] Add a versioned per-thread persistence schema for active tab, ordered tabs, favicon, and bounded recent history. The reader migrates the existing v1 tab arrays and rejects unsafe URLs, duplicate tab ids, invalid active ids, malformed JSON, and empty writes; the existing single-tab API remains compatible while UI multi-tab ownership is implemented.
 - [ ] Replace the single-tab practical limitation with durable per-thread tab state: active tab, ordered tabs, title, URL, favicon, history capabilities, loading, and last error.
 - [ ] Keep WebViews mounted while warm and switch them with wrapper `z-index`, as required by the official Lynxtron pattern.
 - [ ] Port Synara's active-plus-one-warm budget and inactive-pane suspension, including cancellation tokens that prevent stale timers from destroying a reactivated tab.

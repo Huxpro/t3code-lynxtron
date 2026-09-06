@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { __testing, readBrowserTab, storeBrowserTab } from "./browserTabPersistence.lynx";
+import {
+  __testing,
+  readBrowserTab,
+  readBrowserTabsState,
+  storeBrowserTab,
+  storeBrowserTabsState,
+} from "./browserTabPersistence.lynx";
 
 function memoryStorage(initial: string | null = null) {
   let value = initial;
@@ -48,5 +54,89 @@ describe("Lynxtron browser tab persistence", () => {
       `Tab ${__testing.MAX_TABS_PER_THREAD}`,
     );
     expect(readBrowserTab(storage, "thread-a", "tab-0").url).toBe("");
+  });
+
+  it("round-trips active tab, ordered tabs, and bounded recent history", () => {
+    const storage = memoryStorage();
+    const history = Array.from({ length: __testing.MAX_HISTORY_PER_THREAD + 2 }, (_, index) => ({
+      tabId: `tab-${index}`,
+      url: `https://history-${index}.example/`,
+      title: `History ${index}`,
+    }));
+    storeBrowserTabsState(storage, "thread-a", {
+      activeTabId: "tab-2",
+      tabs: [
+        { tabId: "tab-1", url: "https://one.example/", title: "One" },
+        { tabId: "tab-2", url: "about:blank", title: "Browser" },
+      ],
+      recentHistory: history,
+    });
+
+    expect(readBrowserTabsState(storage, "thread-a", "fallback")).toEqual({
+      activeTabId: "tab-2",
+      tabs: [
+        { tabId: "tab-1", url: "https://one.example/", title: "One", faviconUrl: "" },
+        { tabId: "tab-2", url: "about:blank", title: "Browser", faviconUrl: "" },
+      ],
+      recentHistory: history.slice(0, __testing.MAX_HISTORY_PER_THREAD),
+    });
+  });
+
+  it("migrates legacy arrays and drops unsafe URLs, duplicates, and invalid active ids", () => {
+    const legacy = memoryStorage(
+      JSON.stringify({
+        "thread-a": [
+          { tabId: "safe", url: "https://example.com/", title: "Example" },
+          { tabId: "safe", url: "https://duplicate.example/", title: "Duplicate" },
+          { tabId: "unsafe", url: "file:///tmp/private", title: "Private" },
+        ],
+      }),
+    );
+    expect(readBrowserTabsState(legacy, "thread-a", "fallback")).toEqual({
+      activeTabId: "safe",
+      tabs: [{ tabId: "safe", url: "https://example.com/", title: "Example", faviconUrl: "" }],
+      recentHistory: [],
+    });
+
+    const invalid = memoryStorage(
+      JSON.stringify({
+        version: 2,
+        state: {
+          tabsByThreadId: {
+            "thread-a": {
+              activeTabId: "missing",
+              tabs: [{ tabId: "safe", url: "https://example.com/", title: "Example" }],
+              recentHistory: [
+                { tabId: "old", url: "https://older.example/", title: "Older" },
+                { tabId: "duplicate", url: "https://older.example/", title: "Duplicate" },
+                { tabId: "unsafe", url: "javascript:bad", title: "Unsafe" },
+              ],
+            },
+          },
+        },
+      }),
+    );
+    expect(readBrowserTabsState(invalid, "thread-a", "fallback")).toEqual({
+      activeTabId: "safe",
+      tabs: [{ tabId: "safe", url: "https://example.com/", title: "Example", faviconUrl: "" }],
+      recentHistory: [{ tabId: "old", url: "https://older.example/", title: "Older" }],
+    });
+  });
+
+  it("falls back safely for missing threads, malformed JSON, and empty writes", () => {
+    const malformed = memoryStorage("{not-json");
+    expect(readBrowserTabsState(malformed, "thread-a", "fallback")).toEqual({
+      activeTabId: "fallback",
+      tabs: [{ tabId: "fallback", url: "", title: "Browser", faviconUrl: "" }],
+      recentHistory: [],
+    });
+
+    const empty = memoryStorage();
+    storeBrowserTabsState(empty, "thread-a", {
+      activeTabId: "missing",
+      tabs: [],
+      recentHistory: [],
+    });
+    expect(readBrowserTabsState(empty, "thread-a", "fallback").activeTabId).toBe("fallback");
   });
 });

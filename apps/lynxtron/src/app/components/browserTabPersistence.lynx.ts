@@ -1,5 +1,6 @@
 export const BROWSER_TABS_STORAGE_KEY = "t3code:lynxtron-browser-tabs:v1";
 const MAX_TABS_PER_THREAD = 20;
+const MAX_HISTORY_PER_THREAD = 12;
 
 interface BrowserStorage {
   getItem(key: string): string | null;
@@ -10,17 +11,90 @@ export interface PersistedBrowserTab {
   readonly tabId: string;
   readonly url: string;
   readonly title: string;
+  readonly faviconUrl?: string;
 }
 
-type PersistedBrowserState = Record<string, ReadonlyArray<PersistedBrowserTab>>;
+export interface PersistedBrowserHistoryEntry {
+  readonly tabId: string;
+  readonly url: string;
+  readonly title: string;
+}
+
+export interface PersistedBrowserTabsState {
+  readonly activeTabId: string;
+  readonly tabs: ReadonlyArray<PersistedBrowserTab>;
+  readonly recentHistory: ReadonlyArray<PersistedBrowserHistoryEntry>;
+}
+
+type PersistedBrowserState = Record<string, PersistedBrowserTabsState>;
 
 function safeString(value: unknown, maximum: number): string {
   return typeof value === "string" ? value.trim().slice(0, maximum) : "";
 }
 
-function safeUrl(value: unknown): string {
+function safeUrl(value: unknown): string | null {
   const raw = safeString(value, 8_192);
-  return /^https?:\/\/[^\s]+$/iu.test(raw) ? raw : "";
+  if (!raw) return "";
+  if (raw === "about:blank") return raw;
+  return /^https?:\/\/[^\s]+$/iu.test(raw) ? raw : null;
+}
+
+function defaultTab(tabId: string): PersistedBrowserTab {
+  return { tabId, url: "", title: "Browser", faviconUrl: "" };
+}
+
+function parseTab(value: unknown): PersistedBrowserTab | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  const candidate = value as Record<string, unknown>;
+  const tabId = safeString(candidate.tabId ?? candidate.id, 128);
+  const url = safeUrl(candidate.url);
+  if (!tabId || url === null) return null;
+  return {
+    tabId,
+    url,
+    title: safeString(candidate.title, 200) || url || "Browser",
+    faviconUrl: safeUrl(candidate.faviconUrl) ?? "",
+  };
+}
+
+function parseTabs(value: unknown): PersistedBrowserTab[] {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set<string>();
+  return value.slice(0, MAX_TABS_PER_THREAD).flatMap((entry) => {
+    const tab = parseTab(entry);
+    if (!tab || seen.has(tab.tabId)) return [];
+    seen.add(tab.tabId);
+    return [tab];
+  });
+}
+
+function parseHistory(value: unknown): PersistedBrowserHistoryEntry[] {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set<string>();
+  return value.slice(0, MAX_HISTORY_PER_THREAD).flatMap((entry) => {
+    const tab = parseTab(entry);
+    if (!tab || !tab.url || tab.url === "about:blank" || seen.has(tab.url)) return [];
+    seen.add(tab.url);
+    return [{ tabId: tab.tabId, url: tab.url, title: tab.title }];
+  });
+}
+
+function parseThreadState(value: unknown): PersistedBrowserTabsState | null {
+  const legacyTabs = Array.isArray(value) ? parseTabs(value) : null;
+  const candidate =
+    value && typeof value === "object" && !Array.isArray(value)
+      ? (value as Record<string, unknown>)
+      : null;
+  const tabs = legacyTabs ?? parseTabs(candidate?.tabs);
+  if (tabs.length === 0) return null;
+  const requestedActiveTabId = safeString(candidate?.activeTabId, 128);
+  return {
+    activeTabId: tabs.some((tab) => tab.tabId === requestedActiveTabId)
+      ? requestedActiveTabId
+      : tabs[0]!.tabId,
+    tabs,
+    recentHistory: parseHistory(candidate?.recentHistory),
+  };
 }
 
 function readAll(storage: BrowserStorage): PersistedBrowserState {
@@ -29,20 +103,16 @@ function readAll(storage: BrowserStorage): PersistedBrowserState {
   try {
     const parsed = JSON.parse(raw) as unknown;
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+    const record = parsed as Record<string, unknown>;
+    const source =
+      record.state && typeof record.state === "object" && !Array.isArray(record.state)
+        ? ((record.state as Record<string, unknown>).tabsByThreadId ?? {})
+        : record;
+    if (!source || typeof source !== "object" || Array.isArray(source)) return {};
     return Object.fromEntries(
-      Object.entries(parsed).flatMap(([threadId, value]) => {
-        if (!Array.isArray(value)) return [];
-        const seen = new Set<string>();
-        const tabs = value.slice(0, MAX_TABS_PER_THREAD).flatMap<PersistedBrowserTab>((entry) => {
-          if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
-          const candidate = entry as Record<string, unknown>;
-          const tabId = safeString(candidate.tabId, 128);
-          if (!tabId || seen.has(tabId)) return [];
-          seen.add(tabId);
-          const url = safeUrl(candidate.url);
-          return [{ tabId, url, title: safeString(candidate.title, 200) || url || "Browser" }];
-        });
-        return tabs.length > 0 ? [[threadId, tabs]] : [];
+      Object.entries(source).flatMap(([threadId, value]) => {
+        const state = parseThreadState(value);
+        return state ? [[threadId, state]] : [];
       }),
     );
   } catch {
@@ -50,14 +120,61 @@ function readAll(storage: BrowserStorage): PersistedBrowserState {
   }
 }
 
+export function readBrowserTabsState(
+  storage: BrowserStorage,
+  threadId: string | null,
+  fallbackTabId: string,
+): PersistedBrowserTabsState {
+  const fallback = defaultTab(fallbackTabId);
+  if (!threadId) return { activeTabId: fallbackTabId, tabs: [fallback], recentHistory: [] };
+  return (
+    readAll(storage)[threadId] ?? {
+      activeTabId: fallbackTabId,
+      tabs: [fallback],
+      recentHistory: [],
+    }
+  );
+}
+
+export function storeBrowserTabsState(
+  storage: BrowserStorage,
+  threadId: string | null,
+  state: PersistedBrowserTabsState,
+): void {
+  if (!threadId) return;
+  const tabs = parseTabs(state.tabs);
+  if (tabs.length === 0) return;
+  const activeTabId = tabs.some((tab) => tab.tabId === state.activeTabId)
+    ? state.activeTabId
+    : tabs[0]!.tabId;
+  const all = readAll(storage);
+  storage.setItem(
+    BROWSER_TABS_STORAGE_KEY,
+    JSON.stringify({
+      version: 2,
+      state: {
+        tabsByThreadId: {
+          ...all,
+          [threadId]: {
+            activeTabId,
+            tabs,
+            recentHistory: parseHistory(state.recentHistory),
+          },
+        },
+      },
+    }),
+  );
+}
+
 export function readBrowserTab(
   storage: BrowserStorage,
   threadId: string | null,
   tabId: string,
 ): PersistedBrowserTab {
-  const fallback = { tabId, url: "", title: "Browser" };
-  if (!threadId) return fallback;
-  return readAll(storage)[threadId]?.find((tab) => tab.tabId === tabId) ?? fallback;
+  const tab =
+    readBrowserTabsState(storage, threadId, tabId).tabs.find((tab) => tab.tabId === tabId) ??
+    defaultTab(tabId);
+  return tab.faviconUrl ? tab : { tabId: tab.tabId, url: tab.url, title: tab.title };
 }
 
 export function storeBrowserTab(
@@ -66,13 +183,12 @@ export function storeBrowserTab(
   tab: PersistedBrowserTab,
 ): void {
   if (!threadId) return;
-  const all = readAll(storage);
-  const current = all[threadId] ?? [];
-  const tabs = [tab, ...current.filter((entry) => entry.tabId !== tab.tabId)].slice(
-    0,
-    MAX_TABS_PER_THREAD,
-  );
-  storage.setItem(BROWSER_TABS_STORAGE_KEY, JSON.stringify({ ...all, [threadId]: tabs }));
+  const current = readBrowserTabsState(storage, threadId, tab.tabId);
+  storeBrowserTabsState(storage, threadId, {
+    activeTabId: tab.tabId,
+    tabs: [tab, ...current.tabs.filter((entry) => entry.tabId !== tab.tabId)],
+    recentHistory: current.recentHistory,
+  });
 }
 
-export const __testing = { MAX_TABS_PER_THREAD };
+export const __testing = { MAX_TABS_PER_THREAD, MAX_HISTORY_PER_THREAD };
