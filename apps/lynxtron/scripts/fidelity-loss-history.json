@@ -26110,6 +26110,62 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-source-control-label-typography-current",
+      "observedAt": "2026-09-05T21:30:00-04:00",
+      "commit": "ef83766e7b6820aff307c7a31f27f44fc27a0ba8",
+      "codeCommit": "ef83766e7b6820aff307c7a31f27f44fc27a0ba8",
+      "codeState": "commit",
+      "label": "Settings Source Control label typography parity",
+      "narrative": "The Source Control labels and versions in Lynx inherited one 16px foreground style, flattening Web's hierarchy. Stable shared leaf classes now restore the Web authority's 14px medium labels and 12px muted monospace versions. All six outer row rectangles remain exact. Full-frame SSIM improves from 0.921087 to 0.932305 and the fixed content crop improves from 0.885725 to 0.905584.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same snapshot, route, viewport, discovery inventory, and row geometry isolate two typography leaves. The Web authority image remains byte-identical."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/settings-source-control-label-typography.json",
+          "classification": "tracked-current",
+          "sha256": "6b17ec06ac49689888e8aa75a2c1ded87ef744a5ab02576cf3675c916c7a1c5b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-source-control"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+              ],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "source-control-row-geometry",
+              "source": "All six outer row x y width and height values remain exact"
+            },
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "source-control-label-version-computed-style",
+              "source": "Lynx names use 14px medium 20px-line text and versions use 12px muted monospace 16px-line text, matching Web tokens"
+            },
+            "material": {
+              "residual": 0.067695,
+              "confidence": 0.99,
+              "method": "settings-source-control-full-frame-ssim",
+              "source": "1 - post-commit full-frame SSIM 0.932305; fixed content crop improves to 0.905584"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "settings-source-control-current-runtime",
+              "source": "Strict same-server capture passes with identical state and content, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }
