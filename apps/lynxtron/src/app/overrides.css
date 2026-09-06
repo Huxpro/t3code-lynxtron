@@ -6165,6 +6165,19 @@
 .source-control-item__headline {
   min-height: 20px;
 }
+.source-control-item__label {
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.005em;
+}
+.source-control-item__version {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 16px;
+}
 .source-control-item__summary {
   color: rgba(var(--muted-foreground-rgb), 0.8);
   font-size: 13px;

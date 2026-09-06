@@ -290,11 +290,13 @@ export function SourceControlItemRowSurface({
         <HostView className="source-control-item__copy flex min-w-0 flex-1 flex-col gap-1">
           <HostView className="source-control-item__headline flex min-w-0 flex-wrap items-center gap-2">
             {mark}
-            <HostText className="truncate text-sm font-medium tracking-[-0.005em] text-foreground">
+            <HostText className="source-control-item__label truncate text-sm font-medium tracking-[-0.005em] text-foreground">
               {label}
             </HostText>
             {version ? (
-              <HostText className="font-mono text-xs text-muted-foreground">{version}</HostText>
+              <HostText className="source-control-item__version font-mono text-xs text-muted-foreground">
+                {version}
+              </HostText>
             ) : null}
             {badge}
           </HostView>

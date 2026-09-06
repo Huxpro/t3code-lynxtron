@@ -444,6 +444,14 @@ describe("desktop shell interaction contract", () => {
     expect(otherSettingsSource).toContain('"azure-devops": "azure-devops"');
     expect(otherSettingsSource).toContain('bitbucket: "bitbucket"');
     expect(otherSettingsSource.match(/icon=\{sourceControlIcon\(item\.kind\)\}/g)).toHaveLength(2);
+    expect(settingsSurfaces).toContain("source-control-item__label truncate text-sm");
+    expect(settingsSurfaces).toContain("source-control-item__version font-mono text-xs");
+    expect(overrides).toContain(
+      ".source-control-item__label {\n  color: var(--foreground);\n  font-size: 14px;\n  font-weight: 500;\n  line-height: 20px;",
+    );
+    expect(overrides).toContain(
+      ".source-control-item__version {\n  color: var(--muted-foreground);\n  font-family: var(--font-mono);\n  font-size: 12px;\n  line-height: 16px;",
+    );
     expect(providers).toContain("backgroundActivityOverrideSettings");
     expect(providers).toContain("t3ClientActions");
     expect(providers).toContain(".updateServerSettings(");
