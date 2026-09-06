@@ -63,7 +63,7 @@ export function projectModelPickerProviders(
   entries: ReadonlyArray<ProviderInstanceEntry>,
   context: Pick<ModelPickerContext, "lockedProvider" | "lockedContinuationGroupKey">,
 ): ReadonlyArray<ModelPickerProviderPresentation> {
-  return entries
+  const presentations = entries
     .filter((entry) => entry.enabled)
     .map((entry) => ({
       entry,
@@ -74,6 +74,14 @@ export function projectModelPickerProviders(
           continuationGroupKey: context.lockedContinuationGroupKey,
         }),
     }));
+  if (context.lockedProvider === null) return presentations;
+  const available: ModelPickerProviderPresentation[] = [];
+  const disabled: ModelPickerProviderPresentation[] = [];
+  for (const presentation of presentations) {
+    if (presentation.disabledReason === null) available.push(presentation);
+    else disabled.push(presentation);
+  }
+  return [...available, ...disabled];
 }
 
 export function modelPickerRowDisabledReason(

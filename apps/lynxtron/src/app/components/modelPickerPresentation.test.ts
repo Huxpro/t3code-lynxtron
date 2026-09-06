@@ -205,6 +205,23 @@ describe("Lynx model picker presentation", () => {
     ).toEqual([null, null]);
   });
 
+  it("moves the thread-compatible provider before locked rail items", () => {
+    const presentations = projectModelPickerProviders(
+      entries,
+      context({
+        lockedProvider: ProviderDriverKind.make("opencode"),
+        lockedContinuationGroupKey: "opencode",
+      }),
+    );
+
+    expect(presentations.map(({ entry }) => entry.instanceId)).toEqual([
+      "opencode",
+      "codex",
+      "grok",
+      "locked",
+    ]);
+  });
+
   it("disables unavailable provider models when search reveals them", () => {
     const grok = models.find((model) => model.instanceId === "grok")!;
     expect(modelPickerRowDisabledReason(grok, context())).toBe(
