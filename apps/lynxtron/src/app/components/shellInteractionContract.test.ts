@@ -1827,6 +1827,10 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("<ProjectSettingsDialog");
     expect(projectSettings).toContain("Project settings");
     expect(projectSettings).toContain("data-project-settings-environment");
+    expect(projectSettings).toContain("data-project-settings-copy-path");
+    expect(projectSettings).toContain(
+      "clientCapabilities.clipboard.writeText(member.workspaceRoot)",
+    );
     expect(projectSettings).toContain("Project name");
     expect(projectSettings).toContain("Grouping rule");
     expect(projectSettings).toContain("Remove project");

@@ -2720,6 +2720,7 @@ export default function SidebarV2() {
                       className="size-4 shrink-0 rounded-sm"
                       aria-label="Copy project path"
                       title="Copy project path"
+                      data-project-settings-copy-path
                       onClick={() =>
                         copyPathToClipboard(member.workspaceRoot, { path: member.workspaceRoot })
                       }
@@ -2728,7 +2729,10 @@ export default function SidebarV2() {
                     </Button>
                   </span>
                   <span className="flex min-w-0 shrink-0 items-center gap-1">
-                    <ServerIcon className="size-3.5 shrink-0 opacity-60" />
+                    <ServerIcon
+                      className="size-3.5 shrink-0 opacity-60"
+                      data-project-settings-environment-icon
+                    />
                     <span className="min-w-0 truncate" data-project-settings-environment>
                       {member.environmentLabel ?? "Current environment"}
                     </span>

@@ -11893,6 +11893,22 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.project-settings-summary-action {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+.project-settings-environment-icon {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+.project-settings-environment {
+  flex-shrink: 0;
+}
 .project-settings-dialog__body {
   flex-grow: 1;
   flex-shrink: 1;

@@ -1365,6 +1365,13 @@ function readProjectSettingsDialog(root) {
     environments: [...dialog.querySelectorAll("[data-project-settings-environment]")]
       .map((element) => readComposedText(element))
       .filter(Boolean),
+    summaryActions: {
+      copyPath: dialog.querySelector("[data-project-settings-copy-path]") !== null,
+      environmentIcon:
+        dialog.querySelector(
+          "[data-project-settings-environment-icon], .project-settings-environment-icon",
+        ) !== null,
+    },
     fieldLabels,
     controls: {
       projectNames: [

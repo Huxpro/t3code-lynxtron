@@ -2445,6 +2445,10 @@ function projectSettingsReady(state, interaction) {
     JSON.stringify(webDialog?.paths ?? []) === JSON.stringify(lynxDialog?.paths ?? []) &&
     JSON.stringify(webDialog?.environments ?? []) ===
       JSON.stringify(lynxDialog?.environments ?? []) &&
+    webDialog?.summaryActions?.copyPath === true &&
+    lynxDialog?.summaryActions?.copyPath === true &&
+    webDialog?.summaryActions?.environmentIcon === true &&
+    lynxDialog?.summaryActions?.environmentIcon === true &&
     (lynxDialog?.removeLabels ?? []).includes("Remove project") &&
     (lynxDialog?.footerButtons ?? []).some(({ label }) => label === "Close") &&
     interaction?.lynxScopeActionCount > 0 &&

@@ -4,6 +4,7 @@ import type { SidebarProjectGroupingMode } from "@t3tools/contracts";
 import type { SidebarProjectSettingsMember } from "../../../../web/src/components/sidebar/SidebarProjectListHost.types";
 import { deriveProjectGroupingOverrideKey } from "../../../../web/src/logicalProject";
 import { useClientSettings, useUpdateClientSettings } from "../../../../web/src/hooks/useSettings";
+import { clientCapabilities } from "../platform/clientCapabilities";
 import { t3ClientActions } from "../state/t3Client";
 import { Icon } from "./Icon";
 
@@ -136,6 +137,20 @@ export function ProjectSettingsDialog({
               <text className="project-settings-path" data-project-settings-path text-maxline="1">
                 {member.workspaceRoot}
               </text>
+              <view
+                className="project-settings-summary-action"
+                data-project-settings-copy-path
+                aria-label="Copy project path"
+                bindtap={() => void clientCapabilities.clipboard.writeText(member.workspaceRoot)}
+              >
+                <Icon name="copy" size={14} color="#818181" />
+              </view>
+              <Icon
+                name="globe"
+                size={14}
+                color="#818181"
+                className="project-settings-environment-icon"
+              />
               <text className="project-settings-environment" data-project-settings-environment>
                 {member.environmentLabel ?? "Current environment"}
               </text>
