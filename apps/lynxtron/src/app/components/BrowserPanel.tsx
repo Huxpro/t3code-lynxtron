@@ -3,7 +3,9 @@ import { Icon } from "./Icon";
 import {
   browserEventFailure,
   browserEventUrl,
+  browserFailurePresentation,
   resolveBrowserNavigation,
+  type BrowserLoadFailure,
 } from "./browserPanel.logic";
 import { readBrowserTab, storeBrowserTab } from "./browserTabPersistence.lynx";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
@@ -34,7 +36,7 @@ export function BrowserPanel({
   const [url, setUrl] = useState(initialTab.current.url);
   const [draft, setDraft] = useState(initialTab.current.url);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<BrowserLoadFailure | null>(null);
   const webview = useRef<WebViewRef | null>(null);
 
   useEffect(() => {
@@ -63,7 +65,7 @@ export function BrowserPanel({
   const navigate = useCallback((rawUrl: string) => {
     const result = resolveBrowserNavigation(rawUrl);
     if (!result.ok) {
-      setError(result.message);
+      setError({ code: null, message: result.message });
       return;
     }
     setError(null);
@@ -109,9 +111,7 @@ export function BrowserPanel({
         />
       </view>
       {error ? (
-        <view className="browser-panel__error">
-          <text>{error}</text>
-        </view>
+        <BrowserUnreachable url={url || draft} failure={error} onReload={() => invoke("reload")} />
       ) : null}
       {!url ? (
         <view className="browser-panel__empty">
@@ -140,7 +140,7 @@ export function BrowserPanel({
             const failure = browserEventFailure(event);
             if (!failure) return;
             setLoading(false);
-            setError(failure.message);
+            setError(failure);
           }}
           bindlocationchange={(event) => {
             const nextUrl = browserEventUrl(event);
@@ -160,6 +160,34 @@ export function BrowserPanel({
           <text>Loading…</text>
         </view>
       ) : null}
+    </view>
+  );
+}
+
+function BrowserUnreachable({
+  url,
+  failure,
+  onReload,
+}: {
+  readonly url: string;
+  readonly failure: BrowserLoadFailure;
+  readonly onReload: () => void;
+}) {
+  const presentation = browserFailurePresentation(url, failure);
+  return (
+    <view className="browser-panel__error">
+      <Icon name="wifi-off" size={48} color="#818181" />
+      <text className="browser-panel__error-title">This site can't be reached</text>
+      <text className="browser-panel__error-description">
+        <text className="browser-panel__error-host">{presentation.host}</text>
+        {`: ${presentation.description}.`}
+      </text>
+      <text className="browser-panel__error-code">{presentation.errorLabel}</text>
+      <view className="browser-panel__error-actions">
+        <view className="browser-panel__error-reload" bindtap={onReload}>
+          <text>Reload</text>
+        </view>
+      </view>
     </view>
   );
 }

@@ -1,12 +1,21 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  describePreviewError,
   isLoopbackHost,
   isPreviewableUrl,
   newPreviewTabId,
   normalizePreviewUrl,
   PreviewUrlNormalizationError,
 } from "./preview.ts";
+
+describe("describePreviewError", () => {
+  it("maps Chromium failures to friendly copy and preserves unknown details", () => {
+    expect(describePreviewError("ERR_CONNECTION_REFUSED")).toBe("Connection refused");
+    expect(describePreviewError("Custom failure")).toBe("Custom failure");
+    expect(describePreviewError("")).toBe("Network error");
+  });
+});
 
 describe("newPreviewTabId", () => {
   it("returns a unique tab id every call", () => {

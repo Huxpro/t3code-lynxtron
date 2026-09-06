@@ -4,6 +4,7 @@ import {
   browserEventError,
   browserEventFailure,
   browserEventUrl,
+  browserFailurePresentation,
   resolveBrowserNavigation,
 } from "./browserPanel.logic";
 
@@ -42,6 +43,19 @@ describe("BrowserPanel URL contract", () => {
     expect(browserEventFailure(null)).toEqual({
       code: null,
       message: "The page could not be loaded.",
+    });
+  });
+
+  it("matches the Electron unreachable-page copy contract", () => {
+    expect(
+      browserFailurePresentation("http://localhost:5173/path", {
+        code: -102,
+        message: "ERR_CONNECTION_REFUSED",
+      }),
+    ).toEqual({
+      host: "localhost:5173",
+      description: "Connection refused",
+      errorLabel: "ERR_CONNECTION_REFUSED",
     });
   });
 });

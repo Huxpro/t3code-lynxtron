@@ -8885,6 +8885,11 @@
   left: 0;
   z-index: 4;
   background-color: var(--background);
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0;
+  padding: 48px 32px;
+  text-align: left;
 }
 .browser-panel__empty-title {
   color: var(--foreground);
@@ -8893,9 +8898,51 @@
   font-weight: 500;
 }
 .browser-panel__empty-description,
-.browser-panel__error {
+.browser-panel__error-description {
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+.browser-panel__error-title {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 24px;
+  font-weight: 600;
+}
+.browser-panel__error-host {
+  color: var(--foreground);
+  font-weight: 600;
+}
+.browser-panel__error-code {
+  margin-top: 24px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+.browser-panel__error-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  align-self: stretch;
+  flex-grow: 1;
+  padding-top: 32px;
+}
+.browser-panel__error-reload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  height: 32px;
+  padding-left: 14px;
+  padding-right: 14px;
+  border-radius: 6px;
+  background-color: var(--primary);
+  color: var(--primary-foreground);
   font-family: var(--font-sans);
   font-size: 12px;
+  font-weight: 500;
 }
 .browser-panel__loading {
   position: absolute;

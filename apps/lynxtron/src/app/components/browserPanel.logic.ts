@@ -1,4 +1,4 @@
-import { normalizePreviewUrl } from "@t3tools/shared/preview";
+import { describePreviewError, normalizePreviewUrl } from "@t3tools/shared/preview";
 
 export function resolveBrowserNavigation(
   rawUrl: string,
@@ -45,4 +45,21 @@ export function browserEventFailure(event: unknown): BrowserLoadFailure | null {
       : null;
   if (code === -3) return null;
   return { code, message: browserEventError(event) };
+}
+
+export function browserFailurePresentation(url: string, failure: BrowserLoadFailure) {
+  let host = url;
+  try {
+    host = new URL(url).host;
+  } catch {
+    // Preserve the original value when the runtime reports a malformed URL.
+  }
+  return {
+    host,
+    description: describePreviewError(failure.message),
+    errorLabel:
+      failure.message.length > 0
+        ? failure.message
+        : `ERR_${Math.abs(failure.code ?? 0) || "FAILED"}`,
+  };
 }
