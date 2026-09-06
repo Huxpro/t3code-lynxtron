@@ -2749,6 +2749,7 @@ function readLynxPane() {
             tone: item.getAttribute("data-transcript-work-tone"),
             state: item.getAttribute("data-transcript-work-state"),
             box: readElementBox(item),
+            ancestors: readElementAncestors(item),
             line: readElementBox(item.querySelector(".transcript-work-entry-line")),
             icon: readElementBox(item.querySelector(".transcript-work-entry-icon")),
             iconImage: readElementBox(
@@ -3780,6 +3781,7 @@ function readWebPane() {
           tone: item.getAttribute("data-transcript-work-tone"),
           state: item.getAttribute("data-transcript-work-state"),
           box: readElementBox(item),
+          ancestors: readElementAncestors(item),
           line: readElementBox(item.querySelector(".transcript-work-entry-line")),
           heading: readElementBox(item.querySelector(".transcript-work-entry-heading")),
           preview: readElementBox(item.querySelector(".transcript-work-entry-preview")),
