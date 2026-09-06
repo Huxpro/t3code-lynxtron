@@ -1455,6 +1455,7 @@ describe("desktop shell interaction contract", () => {
     );
 
     expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
+    expect(sidebarSource).toMatch(/case "failed":[\s\S]*?label: "Failed"[\s\S]*?icon: null/);
     expect(faviconSource).toContain("size = 14");
     expect(faviconSource).toContain("size={size}");
     expect(faviconSource).toContain("t3ClientActions");

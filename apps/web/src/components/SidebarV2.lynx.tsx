@@ -127,7 +127,7 @@ function statusPresentation(
       return {
         label: "Failed",
         className: "text-red-700 dark:text-red-300",
-        icon: <Icon name="triangle-alert" size={16} color="#a1a1aa" className="size-4 shrink-0" />,
+        icon: null,
         workingDuration: null,
       };
     case "ready":
