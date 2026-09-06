@@ -27020,6 +27020,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-idle-current-refresh-2",
+      "observedAt": "2026-09-06T07:35:00-04:00",
+      "commit": "687c265e5",
+      "codeCommit": "90fc114e2",
+      "codeState": "commit",
+      "label": "Idle thread current-head evidence refresh",
+      "narrative": "A reusable idle seeder now creates a real persisted thread through the connector without sending a prompt, waits for shell admission, and verifies that session, turn, and message projections remain empty. The strict paired capture selects that exact thread in both renderers and matches the empty transcript, GPT-5.6-Sol with Low, Full access, Build, Current checkout and branch context, and the 768 by 140 docked Composer with zero renderer errors.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This refreshes current evidence for an existing state and does not attribute a visual change to the harness commit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/idle-thread-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "667580482663da4052d6caf5776312833e1c20e127267ec29b588ff1d54b47d3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-created-idle-thread",
+              "source": "Both panes select the same persisted zero-message thread and expose matching empty transcript and Composer controls."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "idle-thread-core-geometry",
+              "source": "Empty transcript and docked Composer x, y, width, and height exactly match Web."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-idle-current-capture",
+              "source": "Strict capture passes with matching state identity, session projection, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
