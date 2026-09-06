@@ -26000,6 +26000,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-idle-current-head-refresh",
+      "observedAt": "2026-09-05T20:10:17-04:00",
+      "commit": "ef373a785f1913e08284bdb2c48f7f4794be83e9",
+      "codeCommit": "ef373a785f1913e08284bdb2c48f7f4794be83e9",
+      "codeState": "commit",
+      "label": "Existing-thread idle current-head refresh",
+      "narrative": "A fresh current-head Browser capture places Web and Lynx on one immutable snapshot, project, idle thread, dark theme, and 1280 by 820 viewport. Both render zero transcript rows, GPT-5.6-Sol, the same placeholder and controls, ready lifecycle, and exact Composer surface, editor, and footer rectangles with zero renderer errors. Full-frame SSIM is 0.968256, reducing the stale material residual from the prior 0.944915 capture. The remaining eight-pixel toolbar width delta is intrinsic text and icon raster allocation, not an outer layout shift.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This refresh measures the cumulative current Browser state and does not assign its improvement to one intervening product commit. Existing Native evidence remains separate."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/existing-thread-idle-current-head.json",
+          "classification": "tracked-current",
+          "sha256": "cbbaaf6b686ec74ac3c3fb7f68aafa0145e11872a0945b6e087e2a0accd8a06d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-idle"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-idle-session-content",
+              "source": "Both panes select the same idle thread and render zero transcript rows, GPT-5.6-Sol, the same placeholder, controls, and ready lifecycle"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0],
+              "anchorScale": 766,
+              "confidence": 0.99,
+              "method": "current-idle-composer-geometry",
+              "source": "Composer surface, editor and footer x y width height match exactly; toolbar outer width differs by eight pixels from intrinsic text and icon allocation"
+            },
+            "material": {
+              "residual": 0.031744,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - current strict full-frame SSIM 0.968256, improving on the prior tracked 0.944915 Browser frame"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-idle-shared-runtime",
+              "source": "Strict same-server capture passes with exact state identity, current bundles, zero renderer errors, and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T20:10:17-04:00",
+  "stateId": "existing-thread-idle",
+  "captureCommit": "ef373a785f1913e08284bdb2c48f7f4794be83e9",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "project": "t3code-lynxtron",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "27a4a0979e1d4224021940f0a95dc180e5dfc458d0f34f9de4f2fca0952d7949",
+    "webBundleSha256": "63a614681f513b333b6e29a3c7c51db246ee19fbe3e540e533fd699d910512b0",
+    "lynxBundleSha256": "addf845e90d3062bc80f1beb078d965619ceb91e8fe3627e9120995981d78d84",
+    "webImageSha256": "0e039f3f4b044ac4fcddc313c38893237c048d0fb99cb7f49d0218dcb72e5d00",
+    "lynxImageSha256": "a8a71990996fa937ce72b376f2ce63274b32158e20bfc50b25fd797bbaa08fc9",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "fullFrameSsim": 0.968256
+  },
+  "geometry": {
+    "webComposerSurface": [385, 629, 766, 138],
+    "lynxComposerSurface": [385, 629, 766, 138],
+    "webEditorArea": [385, 629, 766, 94],
+    "lynxEditorArea": [385, 629, 766, 94],
+    "webFooter": [385, 723, 766, 44],
+    "lynxFooter": [385, 723, 766, 44],
+    "webToolbarWidth": 718,
+    "lynxToolbarWidth": 710
+  },
+  "classification": {
+    "productChangeRequired": false,
+    "acceptedResidual": [
+      "The Composer surface, editor area, and footer rectangles match exactly.",
+      "The eight-pixel toolbar width delta is distributed across intrinsic text and icon raster widths rather than a container or anchor shift.",
+      "Remaining full-frame differences are dominated by font, icon, and Sidebar texture rasterization plus hover-only controls."
+    ]
+  },
+  "boundary": "This is a current-head Browser measurement refresh. It does not replace the existing exact-bundle Native evidence and does not attribute accumulated improvements since the prior August capture to one product commit. Screenshots remain temporary because the tracked budget is full."
+}
