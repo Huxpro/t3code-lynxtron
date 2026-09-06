@@ -337,6 +337,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".provider-status-banner-overlay .thread-error-description {\n  color: var(--muted-foreground);",
     );
+    expect(overrides).toContain("letter-spacing: -0.1px;");
     expect(overrides).toContain("white-space: pre-wrap;");
     expect(chatView).toContain("resolveThreadLockedConnectionValue({");
     expect(chatView).toContain("hasActiveThread: activeThread !== undefined");

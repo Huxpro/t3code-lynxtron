@@ -27737,6 +27737,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-hero-provider-banner-copy-current",
+      "observedAt": "2026-09-06T14:01:00-04:00",
+      "commit": "5f2e11c42",
+      "codeCommit": "5f2e11c42",
+      "codeState": "commit",
+      "label": "Composer Hero provider banner copy width parity",
+      "narrative": "The provider warning had matching structure and copy but Lynx font advance widened the content by 7.84px. A local -0.1px description tracking correction preserves the single-line message and brings the centered alert to within 0.16px of Web, improving full-frame SSIM from 0.955249 to 0.958465.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same snapshot, route, theme, viewport, Web pixels, and banner content isolate the one-rule Lynx typography correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/composer-hero-provider-banner-copy.json",
+          "classification": "tracked-current",
+          "sha256": "1d1a70997a73407d5822ac0a55fab6ebf4c1e9521a877bc099926b5854f0c13d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.078125, 0, 0.15625, 0, 0.078125, 0, 0.15625, 0],
+              "anchorScale": 573,
+              "confidence": 0.99,
+              "method": "provider-banner-copy-width-geometry",
+              "source": "The alert and copy share Web y and height; centered x differs by 0.08px and width by 0.16px."
+            },
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "provider-description-tracking",
+              "source": "The shared 14px description remains one line after a Lynx-only -0.1px tracking correction compensates host glyph advance."
+            },
+            "material": {
+              "residual": 0.041535,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - full-frame SSIM 0.958465, improved from the same-state pre-fix 0.955249; banner crop SSIM is 0.824369."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-provider-warning-runtime",
+              "source": "Same isolated snapshot, provider warning, route, theme, viewport, exact committed bundles, zero renderer errors, and clean disposal."
+            }
+          }
+        }
+      ]
     }
   ]
 }

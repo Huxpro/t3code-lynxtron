@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T14:01:00-04:00",
+  "stateId": "composer-hero",
+  "productCommit": "5f2e11c42",
+  "harnessCommit": "5f2e11c42",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread"
+  },
+  "capture": {
+    "reportSha256": "22e728df4700eafd8467eaa3ed65d76bf8df4ccae9953dc31b3390e50ffc1e6d",
+    "webImageSha256": "3d00523ac21de0d7633f5be084f4f85243d2c8446cd764276f52149f7d9e10a2",
+    "lynxImageSha256": "cc6ef79d1912c27b0d07a4b8fc24de4c7c087e1cb469358ae90d8fe3a51f09ca",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "providerBanner": {
+    "title": "Claude is unauthenticated",
+    "description": "Claude Agent CLI is not authenticated. Run `claude auth login` and try again.",
+    "alertRectWeb": [481.578125, 64, 572.828125, 70],
+    "alertRectLynx": [481.5, 64, 572.984375, 70],
+    "copyRectWeb": [524.578125, 77, 488.828125, 44],
+    "copyRectLynx": [524.5, 77, 488.984375, 44],
+    "fullFrameSsimBefore": 0.955249,
+    "fullFrameSsimAfter": 0.958465,
+    "bannerCropSsimAfter": 0.824369
+  },
+  "fix": "Apply -0.1px letter spacing only to the Lynx provider-status description, compensating for accumulated host font advance without changing shared copy, padding, gap, or lifecycle banner geometry.",
+  "boundary": "This proves Browser-first provider-banner geometry and material improvement for the current dark Hero state. Remaining full-frame differences include renderer font and icon rasterization. Screenshots remain temporary."
+}
