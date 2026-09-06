@@ -6253,7 +6253,7 @@ WHERE project_id = '${escapedProjectId}'`,
       await rm(mutationReport.backup, { force: true });
     }
   }
-  if (stateId !== "model-picker-selected" && !requiresRunningRuntime && !isComposerPlanModeState) {
+  if (!requiresRunningRuntime && !isComposerPlanModeState) {
     return {
       kind: "pristine-seed",
       sourceSha256: seed?.snapshotSha256 ?? null,
@@ -6294,12 +6294,7 @@ SET status = 'running',
     )
 WHERE thread_id = '${escapedThreadId}';`;
         })()
-      : `UPDATE projection_threads
-SET model_selection_json = json_object(
-  'instanceId', '${selectedModelFixture.instanceId}',
-  'model', '${selectedModelFixture.model}'
-)
-WHERE thread_id = '${escapedThreadId}';`;
+      : "";
   const mutation = spawnSync(
     process.env.T3_NODE_BIN?.trim() || "node",
     [sqliteStateScript, "exec", "--base-dir", baseDir, "--sql", sql],
@@ -6323,7 +6318,7 @@ WHERE thread_id = '${escapedThreadId}'`
         ? `SELECT status, json_extract(runtime_payload_json, '$.activeTurnId') AS active_turn_id
 FROM provider_session_runtime
 WHERE thread_id = '${escapedThreadId}'`
-        : `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`;
+        : "";
     const query = spawnSync(
       process.env.T3_NODE_BIN?.trim() || "node",
       [sqliteStateScript, "query", "--base-dir", baseDir, "--sql", verificationSql],
@@ -6344,8 +6339,7 @@ WHERE thread_id = '${escapedThreadId}'`
         ? queryReport.rows?.length === 1 &&
           queryReport.rows[0]?.status === "running" &&
           queryReport.rows[0]?.active_turn_id === expectedThreadFixture.activeTurnId
-        : queryReport.rows?.length === 1 &&
-          queryReport.rows[0]?.model_selection_json === JSON.stringify(selectedModelFixture);
+        : false;
     if (!fixtureMatches) {
       throw new Error(
         `${stateId} fixture verification mismatch: ${JSON.stringify(queryReport.rows ?? [])}`,
@@ -6374,14 +6368,7 @@ WHERE thread_id = '${escapedThreadId}'`
             runtimeStatus: "running",
             backupRemoved: true,
           }
-        : {
-            kind: "thread-model-selection",
-            sourceSha256: seed?.snapshotSha256 ?? null,
-            preparedSha256: prepared.sha256,
-            threadId,
-            modelSelection: selectedModelFixture,
-            backupRemoved: true,
-          };
+        : null;
   } finally {
     await rm(mutationReport.backup, { force: true });
   }

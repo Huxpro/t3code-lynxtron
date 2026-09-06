@@ -1875,16 +1875,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "modelPickerInteraction: modelPickerInteractionEvidence");
   });
 
-  it("prepares the selected model through the isolated thread projection", () => {
+  it("preserves the real thread model for selected-model captures", () => {
     assert.include(source, "async function prepareStateFixture");
-    assert.include(source, 'stateId !== "model-picker-selected"');
-    assert.include(source, '"apps/server/scripts/t3-sqlite-state.ts"');
-    assert.include(source, "UPDATE projection_threads");
-    assert.include(source, "model_selection_json = json_object");
-    assert.include(source, '"codex"');
-    assert.include(source, '"gpt-5.4-mini"');
-    assert.include(source, "} finally {");
-    assert.include(source, "await rm(mutationReport.backup, { force: true })");
+    assert.include(source, "if (!requiresRunningRuntime && !isComposerPlanModeState)");
+    assert.notInclude(source, 'stateId !== "model-picker-selected" && !requiresRunningRuntime');
     assert.include(source, "sourceSeedHash: seed?.snapshotSha256 ?? null");
     assert.include(source, "fixturePreparation.preparedSha256");
   });
