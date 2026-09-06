@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T13:28:00-04:00",
+  "stateId": "settings-beta-light",
+  "productCommit": "ebbc1ac95",
+  "harnessCommit": "28d169083",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-beta"
+  },
+  "capture": {
+    "reportSha256": "8e5d56d304322457d3dc4940eba35c37a278c175e4aa3d578b4803cdb8c4f03f",
+    "webImageSha256": "4e0dcddcc6cac8acb1526effa96b1c2f57388766f1550b5410c28c79eb1c0c87",
+    "lynxImageSha256": "7d3122ad9ebdb3d28709d3e954e1c32a3cd707ff77c25ae83b6535009faebe3a",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "fullFrameSsim": 0.91232
+  },
+  "settings": {
+    "selectedNavigationItem": "General",
+    "navigationRowRectsMatch": true,
+    "legacySectionExpanded": true,
+    "legacySidebarEnabled": false,
+    "legacyRowRectWeb": [320, 1280.34375, 896, 85.6875],
+    "legacyRowRectLynx": [320, 1287, 896, 86],
+    "legacySwitchRectWeb": [1170, 1314.1875, 30, 18],
+    "legacySwitchRectLynx": [1170, 1321, 30, 18]
+  },
+  "harnessFix": "The Web settings opener now binds its inner document before elementFromPoint, allowing the settings-beta alias to recover from the index draft redirect and enter the real General settings route.",
+  "boundary": "The route repair is harness-only. Existing product content and control geometry remain credited to earlier product checkpoints; this evidence refreshes their current reproducibility. Screenshots remain temporary."
+}

@@ -27689,6 +27689,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-beta-light-routing-current",
+      "observedAt": "2026-09-06T13:28:00-04:00",
+      "commit": "28d169083",
+      "codeCommit": "ebbc1ac95",
+      "codeState": "commit",
+      "label": "Settings Beta light routing refresh",
+      "narrative": "The Web settings navigation probe previously referenced an undefined inner document, swallowed the exception, and never advanced to its fallback, leaving Web on a draft while Lynx rendered General settings. The repaired probe reaches the same expanded Legacy section in both panes; all seven navigation rows, active selection, switch semantics, and core settings geometry pass with zero renderer errors.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The fix restores the paired-capture route and refreshes existing product evidence without assigning a product delta."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/settings-beta-light-routing-current.json",
+          "classification": "tracked-current",
+          "sha256": "ffc844ed145e0368ec2baae6c10161446617da6c659901e8ec663f0f2481f73f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-beta-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-expanded-general-settings-content",
+              "source": "Both panes render the same General settings rows with the Legacy section expanded and Sidebar legacy disabled."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 6.65625, 0.3125, 0, 6.8125, 0, 0],
+              "anchorScale": 896,
+              "confidence": 0.99,
+              "method": "current-beta-light-settings-geometry",
+              "source": "All seven navigation rows match exactly; Legacy row and switch preserve the measured 6.8px cumulative vertical rhythm delta."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-beta-light-routing-runtime",
+              "source": "Same pristine snapshot, semantic settings-beta route, light theme, viewport, exact bundles, expanded Legacy state, zero renderer errors, and clean disposal."
+            }
+          }
+        }
+      ]
     }
   ]
 }
