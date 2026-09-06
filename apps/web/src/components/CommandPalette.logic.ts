@@ -8,6 +8,7 @@ import { type ReactNode } from "react";
 import {
   normalizeCommandPaletteSearchText,
   parseCommandPaletteSearchQuery,
+  projectCommandPaletteThread,
   rankCommandPaletteSearchItems,
 } from "@t3tools/client-runtime/presentation/command-palette";
 import {
@@ -156,17 +157,12 @@ export function buildThreadActionItems<TThread extends BuildThreadActionItemsThr
 
   return visibleThreads.map((thread) => {
     const projectTitle = input.projectTitleById.get(thread.projectId);
-    const descriptionParts: string[] = [];
-
-    if (projectTitle) {
-      descriptionParts.push(projectTitle);
-    }
-    if (thread.branch) {
-      descriptionParts.push(`#${thread.branch}`);
-    }
-    if (thread.id === input.activeThreadId) {
-      descriptionParts.push("Current thread");
-    }
+    const presentation = projectCommandPaletteThread({
+      thread,
+      projectTitle,
+      activeThreadId: input.activeThreadId,
+      formatTimestamp: formatRelativeTimeLabel,
+    });
 
     const leadingContent = input.renderLeadingContent?.(thread);
     const trailingContent = input.renderTrailingContent?.(thread);
@@ -176,17 +172,10 @@ export function buildThreadActionItems<TThread extends BuildThreadActionItemsThr
       {
         kind: "action" as const,
         value: `thread:${thread.id}`,
-        searchTerms: [
-          thread.title,
-          projectTitle ?? ``,
-          thread.branch ?? ``,
-          contentMatch?.snippet ?? ``,
-        ],
-        title: thread.title,
-        description: descriptionParts.join(` · `),
-        timestamp: formatRelativeTimeLabel(
-          thread.latestUserMessageAt ?? thread.updatedAt ?? thread.createdAt,
-        ),
+        searchTerms: [...presentation.searchTerms, contentMatch?.snippet ?? ``],
+        title: presentation.title,
+        description: presentation.description,
+        timestamp: presentation.timestamp,
         icon: input.icon,
       },
       leadingContent ? { titleLeadingContent: leadingContent } : {},

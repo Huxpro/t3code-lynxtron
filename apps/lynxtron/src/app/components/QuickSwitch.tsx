@@ -26,6 +26,7 @@ import { resolvePathLinkTarget } from "@t3tools/client-runtime/presentation/path
 import { formatRelativeTimeLabel } from "@t3tools/client-runtime/presentation/time";
 import {
   parseCommandPaletteSearchQuery,
+  projectCommandPaletteThread,
   rankCommandPaletteSearchItems,
 } from "@t3tools/client-runtime/presentation/command-palette";
 import {
@@ -972,6 +973,12 @@ export function QuickSwitch({
                     {filteredThreads.map((t, threadIndex) => {
                       const isCurrent = t.id === activeThreadId;
                       const threadProjectName = projectTitleById.get(t.projectId) ?? projectName;
+                      const presentation = projectCommandPaletteThread({
+                        thread: t,
+                        projectTitle: threadProjectName,
+                        activeThreadId,
+                        formatTimestamp: formatRelativeTimeLabel,
+                      });
                       const itemIndex = filteredActions.length + threadIndex;
                       return (
                         <PaletteRowSurface
@@ -990,9 +997,9 @@ export function QuickSwitch({
                               className="qs-row__icon-img"
                             />
                           }
-                          title={t.title || "Untitled thread"}
-                          description={`${threadProjectName} · ${t.branch ? `#${t.branch}` : "No branch"}${isCurrent ? " · Current thread" : ""}`}
-                          timestamp={formatRelativeTimeLabel(t.updatedAt, Date.now())}
+                          title={presentation.title}
+                          description={presentation.description}
+                          timestamp={presentation.timestamp}
                           onHoverStart={() => setActiveIndex(itemIndex)}
                           onSelect={() => handleThreadTap(t.id)}
                         />

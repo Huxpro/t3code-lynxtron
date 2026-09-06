@@ -3,6 +3,37 @@ export interface CommandPaletteSearchQuery {
   readonly normalizedQuery: string;
 }
 
+export interface CommandPaletteThreadPresentationInput {
+  readonly id: string;
+  readonly title: string;
+  readonly branch?: string | null;
+  readonly createdAt: string;
+  readonly updatedAt: string;
+  readonly latestUserMessageAt?: string | null;
+}
+
+export function projectCommandPaletteThread(input: {
+  readonly thread: CommandPaletteThreadPresentationInput;
+  readonly projectTitle?: string | null;
+  readonly activeThreadId?: string | null;
+  readonly now?: number;
+  readonly formatTimestamp: (isoDate: string, nowMs: number) => string;
+}) {
+  const { thread } = input;
+  const descriptionParts = [input.projectTitle?.trim() ?? ""];
+  if (thread.branch) descriptionParts.push(`#${thread.branch}`);
+  if (thread.id === input.activeThreadId) descriptionParts.push("Current thread");
+  return {
+    title: thread.title || "Untitled thread",
+    description: descriptionParts.filter(Boolean).join(" · "),
+    timestamp: input.formatTimestamp(
+      thread.latestUserMessageAt ?? thread.updatedAt ?? thread.createdAt,
+      input.now ?? Date.now(),
+    ),
+    searchTerms: [thread.title, input.projectTitle ?? "", thread.branch ?? ""],
+  };
+}
+
 export function normalizeCommandPaletteSearchText(value: string): string {
   return value.trim().toLowerCase().replace(/\s+/gu, " ");
 }
