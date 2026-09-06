@@ -4052,9 +4052,6 @@
 .provider-status-banner-overlay .thread-error-banner {
   pointer-events: auto;
 }
-.provider-status-banner-overlay .thread-error-banner {
-  width: 573px;
-}
 .provider-status-banner-flow .thread-error-alert,
 .provider-status-banner-overlay .thread-error-alert {
   padding-right: 40px;
