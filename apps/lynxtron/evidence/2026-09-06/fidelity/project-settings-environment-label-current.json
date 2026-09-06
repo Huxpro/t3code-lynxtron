@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "observedAt": "2026-09-06T16:16:00-04:00",
   "stateId": "sidebar-project-settings",
-  "productCommit": "be959b09f",
+  "productCommit": "5fdcd0440",
   "scope": {
     "authority": "web",
     "candidate": "lynx",
@@ -13,9 +13,9 @@
     "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
   },
   "capture": {
-    "reportSha256": "eabe87da99b97347fe0b1f5177cd38ca4d403f0db6129b828b4fd50d109627fa",
+    "reportSha256": "843fefea969605fad5de22f5cfe0b4461310ae4011395bcb60fc9bd42bd1c9b5",
     "webImageSha256": "133c18c1d00737c74b5104c3346c7d3f00b18aca25080d977e5420911cbbadf1",
-    "lynxImageSha256": "53db6609c0d6411aca59c7ae3c8db0178e84dc3b2adca75b0ecdf40021b513f4",
+    "lynxImageSha256": "7da5c53327c9fd7d43e87e1b5b3c9c907bfcbdb5db34f1231af5b20fb60357a8",
     "webBundle": "9da99a9a60a3",
     "lynxBundle": "5e648dfd1cf2",
     "passed": true,
@@ -31,6 +31,13 @@
     "summaryCrop": [377, 269, 526, 32],
     "summaryCropSsim": 0.991914
   },
+  "summaryActions": {
+    "copyPathWeb": true,
+    "copyPathLynx": true,
+    "environmentIconWeb": true,
+    "environmentIconLynx": true,
+    "copyCapability": "clientCapabilities.clipboard.writeText"
+  },
   "geometry": {
     "dialogWeb": [352, 288, 576, 244],
     "dialogLynx": [352, 288, 576, 244]
@@ -42,5 +49,5 @@
     "webActionClicked": true,
     "lynxActionClicked": true
   },
-  "boundary": "The product fix restores the real server environment label and the harness now requires summary path and environment arrays to match. The 0.991914 metric is scoped to the summary row and does not replace the existing whole-dialog material residual. Screenshots remain temporary because the tracked screenshot budget is full."
+  "boundary": "The product fixes restore the real server environment label plus the Copy path and environment-icon affordances, and the harness now requires all four summary facts. The 0.991914 metric is scoped to the summary row and does not replace the existing whole-dialog material residual. Screenshots remain temporary because the tracked screenshot budget is full."
 }
