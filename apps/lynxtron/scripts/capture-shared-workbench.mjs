@@ -1579,6 +1579,34 @@ function addProviderDialogPairMatches(state, viewportWidth, viewportHeight, expe
     (dialog?.drivers ?? [])
       .filter((driver) => driver.disabled)
       .map((driver) => driver.label.replace(/Coming Soon/gu, "").trim());
+  const visibleIdentityFields = (dialog) =>
+    (dialog?.identityFields ?? [])
+      .filter((field) => field.box?.rect?.width > 0 && field.box?.rect?.height > 0)
+      .map((field) => ({
+        box: field.box,
+        children: field.children ?? [],
+        label: field.children?.[0]?.text?.trim() ?? "",
+        helper: field.children?.at(-1)?.text?.trim() ?? "",
+      }));
+  const webIdentityFields = visibleIdentityFields(web);
+  const lynxIdentityFields = visibleIdentityFields(lynx);
+  const identityParity =
+    expectedStep !== 1 ||
+    (webIdentityFields.length === 3 &&
+      lynxIdentityFields.length === 3 &&
+      webIdentityFields.every((webField, index) => {
+        const lynxField = lynxIdentityFields[index];
+        return (
+          webField.label === lynxField?.label &&
+          webField.helper === lynxField?.helper &&
+          rectDeltaWithin(webField.box, lynxField?.box, 2) &&
+          webField.children.length === lynxField?.children.length &&
+          webField.children.every((child, childIndex) =>
+            rectDeltaWithin(child.box, lynxField.children[childIndex]?.box, 2),
+          )
+        );
+      }) &&
+      (web?.error?.trim() ?? "") === (lynx?.error?.trim() ?? ""));
   const geometryReady =
     rectDeltaWithin(web?.box, lynx?.box, 2) &&
     rectDeltaWithin(web?.header, lynx?.header, 2) &&
@@ -1606,6 +1634,7 @@ function addProviderDialogPairMatches(state, viewportWidth, viewportHeight, expe
     geometryReady &&
     JSON.stringify(canonicalSteps(web)) === JSON.stringify(canonicalSteps(lynx)) &&
     driverParity &&
+    identityParity &&
     web.backdrop?.rect?.x === 0 &&
     lynx.backdrop?.rect?.x === 0 &&
     web.backdrop?.rect?.y === 0 &&
