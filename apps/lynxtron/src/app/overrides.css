@@ -4507,6 +4507,12 @@
   font-weight: 500;
   line-height: 20px;
 }
+.transcript-work-entry-heading--error {
+  color: var(--destructive);
+}
+.transcript-work-entry-heading--warning {
+  color: var(--warning);
+}
 .transcript-work-entry-preview--native {
   flex-grow: 1;
   flex-shrink: 1;

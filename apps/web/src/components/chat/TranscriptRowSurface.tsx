@@ -222,7 +222,7 @@ function WorkEntryRow({
     showFailedIndicator &&
     (workEntry.sourceActivityKind === "runtime.error" || !workLogEntryIsToolLike(workEntry));
   const iconWrapperClass = cn(
-    "flex size-5 shrink-0 items-center justify-center",
+    "transcript-work-entry-icon flex size-5 shrink-0 items-center justify-center",
     showWarningIndicator || showDestructiveRowStyle
       ? "text-destructive"
       : workEntry.tone === "tool" || showFailedIndicator

@@ -346,6 +346,10 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain('className="thread-error-dismiss"');
     expect(overrides).toContain(".thread-error-action {\n  width: 24px;\n  height: 24px;");
     expect(overrides).toContain(".thread-error-dismiss.ui-button--icon-xs {");
+    expect(overrides).toContain(".transcript-work-entry-heading--error {");
+    expect(componentSource("MessagesTimeline.tsx")).toContain(
+      'className.includes("text-destructive")',
+    );
     expect(overrides).toContain(
       ".lynx-web-preview .timeline-list--top-banner {\n  padding-top: 16px;",
     );

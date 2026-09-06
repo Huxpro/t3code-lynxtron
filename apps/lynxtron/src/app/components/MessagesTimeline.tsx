@@ -488,12 +488,29 @@ function buildLynxTranscriptRowElements(
           style={{ width: "14px", height: "14px" }}
         />
       ) : (
-        <Icon name={name} size={14} className={className} />
+        <Icon
+          name={name}
+          size={14}
+          color={
+            className.includes("text-destructive")
+              ? "#ef4444"
+              : className.includes("text-warning")
+                ? "#f59e0b"
+                : "#818181"
+          }
+          className={className}
+        />
       ),
     renderWorkCopy: ({ heading, headingClassName, preview }) => (
       <view className="transcript-work-entry-copy-native">
         <text
-          className={`transcript-work-entry-heading transcript-work-entry-heading--native ${headingClassName}`}
+          className={`transcript-work-entry-heading transcript-work-entry-heading--native${
+            headingClassName.includes("text-destructive")
+              ? " transcript-work-entry-heading--error"
+              : headingClassName.includes("text-warning")
+                ? " transcript-work-entry-heading--warning"
+                : ""
+          } ${headingClassName}`}
           text-maxline="1"
         >
           {heading}
