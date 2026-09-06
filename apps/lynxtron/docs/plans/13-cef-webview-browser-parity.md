@@ -60,7 +60,8 @@ Exit: create, navigate, switch, back, forward, reload, close, reopen, thread swi
 ### CEF2 — Host policy, remote ownership, and failures
 
 - [ ] Port the Electron session policy: isolated persistent storage, browser-compatible user agent/client hints, preferred languages, sandbox boundary, and no Node access in guest pages.
-- [ ] Share URL normalization, copyable URL policy, and load-error presentation instead of duplicating renderer-specific rules. Preserve T3 Electron's current-tab `window.open` behavior for parity; track Synara's richer popup classification separately rather than silently changing product semantics.
+- [x] Share HTTP(S) URL normalization across address navigation and current-tab `window.open`; unsupported guest protocols are denied without replacing the committed page. Preserve T3 Electron's current-tab popup behavior for parity; track Synara's richer popup classification separately rather than silently changing product semantics.
+- [ ] Share copyable URL policy and load-error presentation instead of duplicating renderer-specific rules.
 - [ ] Resolve local-server targets relative to the owning environment, including remote/relay/tunnel environments.
 - [ ] Match Electron's current-tab `window.open` handling, deny external schemes without losing the committed page, and offer an explicit system-browser action. If ordinary-tab/OAuth-popup routing is later adopted from Synara, land it on Electron and Lynxtron together with shared policy tests.
 - [ ] Define permission, download, certificate, and authentication behavior before enabling arbitrary pages.

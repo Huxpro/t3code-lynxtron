@@ -1390,11 +1390,16 @@ const makeNativeOperations = Effect.fn("PreviewManager.makeOperations")(function
         wc.on("did-fail-load", failed as never);
         wc.ipc.on(HUMAN_INPUT_CHANNEL, humanInput);
         wc.setWindowOpenHandler(({ url }) => {
-          runFork(
-            attemptPromise({ operation: "openPreviewWindow", tabId, webContentsId: wc.id }, () =>
-              wc.loadURL(url),
-            ).pipe(Effect.ignore),
-          );
+          try {
+            const normalizedUrl = normalizePreviewUrl(url);
+            runFork(
+              attemptPromise({ operation: "openPreviewWindow", tabId, webContentsId: wc.id }, () =>
+                wc.loadURL(normalizedUrl),
+              ).pipe(Effect.ignore),
+            );
+          } catch {
+            // Keep the committed page when a guest requests an unsupported protocol.
+          }
           return { action: "deny" };
         });
         wc.on("before-input-event", beforeInput);

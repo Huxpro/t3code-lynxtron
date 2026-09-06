@@ -353,6 +353,57 @@ describe("PreviewManager", () => {
     ),
   );
 
+  effectIt.effect("keeps popup navigation in the current tab and rejects unsafe protocols", () =>
+    withManager((manager) =>
+      Effect.gen(function* () {
+        const loadURL = vi.fn(async () => undefined);
+        let openWindow:
+          | ((input: { readonly url: string }) => { readonly action: "deny" })
+          | undefined;
+        fromId.mockReturnValue({
+          id: 42,
+          isDestroyed: () => false,
+          getType: () => "webview",
+          getURL: () => "https://example.com/current",
+          getTitle: () => "Example",
+          isLoading: () => false,
+          getZoomFactor: () => 1,
+          setZoomFactor: vi.fn(),
+          loadURL,
+          on: vi.fn(),
+          off: vi.fn(),
+          ipc: { on: vi.fn(), off: vi.fn() },
+          send: webviewSend,
+          navigationHistory: { canGoBack: () => false, canGoForward: () => false },
+          setWindowOpenHandler: vi.fn((handler: typeof openWindow) => {
+            openWindow = handler;
+          }),
+          debugger: {
+            isAttached: () => false,
+            attach: vi.fn(),
+            sendCommand: vi.fn(async () => undefined),
+            on: vi.fn(),
+            off: vi.fn(),
+          },
+        } as never);
+
+        yield* manager.createTab("tab_popup");
+        yield* manager.registerWebview("tab_popup", 42);
+
+        expect(openWindow).toBeDefined();
+        expect(openWindow?.({ url: "https://example.com/next" })).toEqual({ action: "deny" });
+        yield* Effect.yieldNow;
+        expect(loadURL).toHaveBeenCalledWith("https://example.com/next");
+
+        loadURL.mockClear();
+        expect(openWindow?.({ url: "file:///tmp/private" })).toEqual({ action: "deny" });
+        expect(openWindow?.({ url: "javascript:alert(1)" })).toEqual({ action: "deny" });
+        yield* Effect.yieldNow;
+        expect(loadURL).not.toHaveBeenCalled();
+      }),
+    ),
+  );
+
   effectIt.effect("mirrors Electron's effective zoom across registration and navigation", () =>
     withManager((manager) =>
       Effect.gen(function* () {
