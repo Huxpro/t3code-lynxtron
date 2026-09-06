@@ -1458,8 +1458,14 @@ describe("desktop shell interaction contract", () => {
     expect(faviconSource).toContain("createAssetUrl");
     expect(faviconSource).toContain("binderror");
     expect(chatHeaderSource).toContain("<ProjectFavicon");
-    expect(chatHeaderSource).toContain("trailingChevron={!compactActions}");
-    expect(overrides).toContain(".action-btn--add {\n  width: 108px;");
+    expect(chatHeaderSource).toContain("trailingChevron={!compactActions && hasProjectActions}");
+    expect(chatHeaderSource).toContain("importableProjectScripts(projectScripts, fileScripts)");
+    expect(chatHeaderSource).toContain(
+      "updateProjectScripts(projectId, [...projectScripts, script])",
+    );
+    expect(chatHeaderSource).toContain("onRunProjectScript(script)");
+    expect(overrides).toContain(".action-btn--add {\n  width: 94px;");
+    expect(overrides).toContain(".action-btn--add-menu {\n  width: 108px;");
     expect(componentSource("OpenInPicker.tsx")).toContain(
       'data-header-action={anchor === "header-open-in-menu" ? "open" : undefined}',
     );

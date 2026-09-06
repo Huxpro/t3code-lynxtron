@@ -79,6 +79,9 @@ import approvalDetailLabelUrl from "../assets/approval-detail-label@2x.png?exter
 import approvalDetailValuePendingUrl from "../assets/approval-detail-value-pending@2x.png?external";
 import approvalEyebrowUrl from "../assets/approval-eyebrow@2x.png?external";
 import approvalSummaryUrl from "../assets/approval-summary@2x.png?external";
+import { useT3ProjectFileScripts } from "../hooks/useT3ProjectFileScripts";
+import type { ProjectScript } from "@t3tools/contracts";
+import { runProjectScriptInTerminal } from "./projectActionImports.logic";
 
 interface ChatViewProps {
   threadId?: string;
@@ -175,6 +178,25 @@ export function ChatView({ threadId }: ChatViewProps) {
     [activeThread?.projectId, projects],
   );
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot;
+  const fileScripts = useT3ProjectFileScripts(cwd ?? null);
+  const runProjectScript = useCallback(
+    async (script: ProjectScript) => {
+      if (!activeThreadId || !activeProject || !cwd) {
+        throw new Error("Open a project thread before running an action.");
+      }
+      await runProjectScriptInTerminal({
+        script,
+        threadId: activeThreadId,
+        projectCwd: activeProject.workspaceRoot,
+        cwd,
+        worktreePath: activeThread?.worktreePath ?? null,
+        openTerminal: t3ClientActions.openTerminal,
+        writeTerminal: t3ClientActions.writeTerminal,
+        openPanel: () => uiActions.openRightPanelSurface("terminal"),
+      });
+    },
+    [activeProject, activeThread?.worktreePath, activeThreadId, cwd],
+  );
   const currentRepoContext = checkoutRepoContext?.cwd === cwd ? checkoutRepoContext : null;
   const checkoutBranch = currentRepoContext?.branch ?? null;
 
@@ -598,6 +620,10 @@ export function ChatView({ threadId }: ChatViewProps) {
           availableEditors={serverConfig?.availableEditors ?? []}
           platform={serverConfig?.environment.platform.os}
           keybindings={serverConfig?.keybindings}
+          projectId={activeProject?.id}
+          projectScripts={activeProject?.scripts ?? []}
+          fileScripts={fileScripts}
+          onRunProjectScript={runProjectScript}
           rightPanelOpen={rightPanel.isOpen}
           centerPanelWidth={centerPanelWidth}
           onCenterPanelWidthChange={setCenterPanelWidth}

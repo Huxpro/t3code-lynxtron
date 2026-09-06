@@ -8,6 +8,8 @@ import type {
   EditorId,
   ExecutionEnvironmentPlatformOs,
   ResolvedKeybindingsConfig,
+  ProjectScript,
+  T3ProjectFileScript,
   VcsStatusResult,
 } from "@t3tools/contracts";
 import { ChatHeaderSurface } from "../../../../web/src/components/chat/ChatHeaderSurface";
@@ -19,6 +21,7 @@ import headerPendingUrl from "../assets/header-pending@2x.png?external";
 import { Icon, type IconName } from "./Icon";
 import { OpenInPicker } from "./OpenInPicker";
 import { shouldCompactHeaderActions } from "./chatHeaderLayout";
+import { importableProjectScripts, importedProjectScript } from "./projectActionImports.logic";
 
 interface ChatHeaderProps {
   projectName: string;
@@ -29,6 +32,9 @@ interface ChatHeaderProps {
   availableEditors?: ReadonlyArray<EditorId>;
   platform?: ExecutionEnvironmentPlatformOs;
   keybindings?: ResolvedKeybindingsConfig;
+  projectId?: string;
+  projectScripts?: ReadonlyArray<ProjectScript>;
+  fileScripts?: ReadonlyArray<T3ProjectFileScript>;
   sessionStatus?: unknown;
   connectionStatus?: unknown;
   statusDetail?: string;
@@ -37,6 +43,7 @@ interface ChatHeaderProps {
   onCenterPanelWidthChange?: (width: number) => void;
   gitMenuOpen?: boolean;
   onGitMenuOpenChange?: (open: boolean) => void;
+  onRunProjectScript?: (script: ProjectScript) => Promise<void>;
 }
 
 export function ChatLayoutControls({ rightPanelOpen = false }: { rightPanelOpen?: boolean }) {
@@ -157,17 +164,48 @@ export function ChatHeader({
   availableEditors = [],
   platform,
   keybindings,
+  projectId,
+  projectScripts = [],
+  fileScripts = [],
   rightPanelOpen,
   centerPanelWidth = 1024,
   onCenterPanelWidthChange = () => undefined,
   gitMenuOpen = false,
   onGitMenuOpenChange = () => undefined,
+  onRunProjectScript,
 }: ChatHeaderProps) {
   const [gitInitPending, setGitInitPending] = useState(false);
   const [gitActionPending, setGitActionPending] = useState(false);
+  const [projectActionsMenuOpen, setProjectActionsMenuOpen] = useState(false);
+  const [projectActionError, setProjectActionError] = useState<string | null>(null);
   const useAuthoritySurface =
     projectName === "pending-fixture" && threadTitle === "Run printf pending-approval";
   const compactActions = shouldCompactHeaderActions(centerPanelWidth);
+  const importableActions = useMemo(
+    () => importableProjectScripts(projectScripts, fileScripts),
+    [fileScripts, projectScripts],
+  );
+  const hasProjectActions = projectScripts.length > 0 || importableActions.length > 0;
+  const importAction = (fileScript: T3ProjectFileScript) => {
+    if (!projectId) return;
+    const script = importedProjectScript(projectScripts, fileScript);
+    setProjectActionError(null);
+    void t3ClientActions
+      .updateProjectScripts(projectId, [...projectScripts, script])
+      .then(() => setProjectActionsMenuOpen(false))
+      .catch((cause) =>
+        setProjectActionError(cause instanceof Error ? cause.message : String(cause)),
+      );
+  };
+  const runProjectAction = (script: ProjectScript) => {
+    if (!onRunProjectScript) return;
+    setProjectActionError(null);
+    void onRunProjectScript(script)
+      .then(() => setProjectActionsMenuOpen(false))
+      .catch((cause) =>
+        setProjectActionError(cause instanceof Error ? cause.message : String(cause)),
+      );
+  };
   const gitQuickAction = useMemo(
     () =>
       resolveQuickAction(
@@ -265,13 +303,62 @@ export function ChatHeader({
         actions={
           <view className="topbar__actions-inner lynx-titlebar-no-drag">
             <ActionButton
-              className={`action-btn--add${compactActions ? " action-btn--compact" : ""}`}
+              className={`action-btn--add${hasProjectActions ? " action-btn--add-menu" : ""}${compactActions ? " action-btn--compact" : ""}`}
               icon="plus"
               label={compactActions ? undefined : "Add action"}
-              trailingChevron={!compactActions}
-              primaryAriaLabel="Add action"
-              onPrimaryTap={uiActions.openProjectActionDialog}
+              trailingChevron={!compactActions && hasProjectActions}
+              primaryAriaLabel={hasProjectActions ? "Project actions" : "Add action"}
+              onPrimaryTap={
+                hasProjectActions
+                  ? () => setProjectActionsMenuOpen((open) => !open)
+                  : uiActions.openProjectActionDialog
+              }
             />
+            {projectActionsMenuOpen ? (
+              <>
+                <view
+                  className="topbar-project-action-menu-dismiss"
+                  bindtap={() => setProjectActionsMenuOpen(false)}
+                />
+                <view className="topbar-project-action-menu" catchtap={() => undefined}>
+                  {projectScripts.map((script) => (
+                    <view
+                      key={script.id}
+                      className="topbar-project-action-menu__item"
+                      bindtap={() => runProjectAction(script)}
+                    >
+                      <Icon name="play" size={14} color="#818181" />
+                      <text className="topbar-project-action-menu__label">{script.name}</text>
+                    </view>
+                  ))}
+                  {importableActions.map((script) => (
+                    <view
+                      key={`${script.name}:${script.command}`}
+                      className="topbar-project-action-menu__item"
+                      bindtap={() => importAction(script)}
+                    >
+                      <Icon name="cloud-upload" size={14} color="#818181" />
+                      <text className="topbar-project-action-menu__label">
+                        Import {script.name}
+                      </text>
+                    </view>
+                  ))}
+                  <view
+                    className="topbar-project-action-menu__item"
+                    bindtap={() => {
+                      setProjectActionsMenuOpen(false);
+                      uiActions.openProjectActionDialog();
+                    }}
+                  >
+                    <Icon name="plus" size={14} color="#818181" />
+                    <text className="topbar-project-action-menu__label">Add action</text>
+                  </view>
+                  {projectActionError ? (
+                    <text className="topbar-project-action-menu__error">{projectActionError}</text>
+                  ) : null}
+                </view>
+              </>
+            ) : null}
             <OpenInPicker
               availableEditors={availableEditors}
               cwd={cwd}
