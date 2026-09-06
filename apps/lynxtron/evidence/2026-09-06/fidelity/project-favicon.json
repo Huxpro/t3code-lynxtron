@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T01:54:00-04:00",
+  "stateId": "existing-thread-completed-no-diff",
+  "productCommit": "5dcd118d7213e3b84d61a1b62383e9ed1897d4d0",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "0b205b3c-9614-4499-80b4-973a4e7c0892",
+    "snapshotSha256": "4054afd1b681efeb32baa53c4ddd0ed19bd760ed36bac530e1de9c84f2da1e24"
+  },
+  "capture": {
+    "reportSha256": "55273fedd68f5e00ec58f60e71f685a2115aac4cedf4db76dfce9a039960c339",
+    "lynxBundleSha256": "045e1dc1719fbe719cc492098cb67c4bf84fff2c7153bd249809cdaeafd720a6",
+    "webImageSha256": "eb8e111355d7615a8c2445dc43d077a29d0c4f8e007e0ce7020e3274476af537",
+    "lynxImageSha256": "d256cbfc02ddff3688b0fbd15271538d853e5b7e163c946dcf8943da0c27219d",
+    "passed": true,
+    "rendererErrors": 0,
+    "assetRequests": 2,
+    "assetPathMatches": true,
+    "iconGeometry": { "web": [276, 19, 14, 14], "lynx": [276, 19, 14, 14] }
+  },
+  "before": {
+    "lynxIcon": "folder fallback",
+    "fullFrameMae": 1.993039,
+    "headerMae": 11.592223,
+    "projectRegionMae": 12.469274,
+    "iconRegionMae": 66.544239
+  },
+  "after": {
+    "webIcon": "signed project favicon",
+    "lynxIcon": "same signed project favicon",
+    "fullFrameMae": 1.962147,
+    "headerMae": 11.233361,
+    "projectRegionMae": 9.219501,
+    "iconRegionMae": 7.566872
+  },
+  "fix": "Expose assets.createUrl through the typed main connector, normalize signed URLs to HTTP for renderer loading, and make the shared Lynx ProjectFavicon load the same authenticated project asset with a cached folder fallback.",
+  "boundary": "The gate compares the signed asset pathname because Web and Lynx are served from distinct owned loopback ports. Native uses the same connector resolver; this Browser capture proves protocol and rendering parity but is not a Native screenshot claim."
+}

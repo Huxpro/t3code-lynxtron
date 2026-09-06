@@ -26432,6 +26432,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-project-favicon-current",
+      "observedAt": "2026-09-06T01:54:00-04:00",
+      "commit": "5dcd118d7213e3b84d61a1b62383e9ed1897d4d0",
+      "codeCommit": "5dcd118d7213e3b84d61a1b62383e9ed1897d4d0",
+      "codeState": "commit",
+      "label": "Project favicon parity",
+      "narrative": "Lynx previously rendered a fixed folder glyph wherever Web showed the project's discovered favicon. The typed connector now forwards assets.createUrl, converts the signed relative URL into a renderer-loadable HTTP URL, and the shared Lynx favicon leaf waits for connector readiness, caches successful URLs, and retains the folder fallback on missing or failed assets. A strict same-thread capture proves identical signed asset path and exact 14px geometry in the Header, with the same asset also requested by Sidebar. The fixed 18x18 icon-region RGB MAE improves from 66.544239 to 7.566872.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same completed thread, snapshot, route, theme, viewport, and Web authority isolate the project-icon source change; geometry is unchanged and the connector diagnostics record the signed asset calls."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-favicon.json",
+          "classification": "tracked-current",
+          "sha256": "a31a1c2fe82659fc9c44f9156b4f03650452929d7636210a9ef036733c6a5829"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-favicon-asset-identity",
+              "source": "Web img and Lynx x-image use the same signed asset pathname; Header and Sidebar each issue the typed createAssetUrl command"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 14,
+              "confidence": 0.99,
+              "method": "project-favicon-box-geometry",
+              "source": "Both Header favicon boxes are exactly x=276, y=19, width=14, height=14"
+            },
+            "material": {
+              "residual": 0.037834,
+              "confidence": 0.99,
+              "method": "project-favicon-region-rgb-mae",
+              "source": "Normalized 18x18 icon-region MAE falls from 66.544239 to 7.566872; project-region MAE falls from 12.469274 to 9.219501"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "typed-asset-command-runtime",
+              "source": "Post-commit strict capture passes with two successful createAssetUrl results and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
