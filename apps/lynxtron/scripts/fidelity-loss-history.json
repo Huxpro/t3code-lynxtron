@@ -28066,7 +28066,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "8355a7b0bf86a38882765e4326ed1c3e23b7eadf87c98cc55d2a42ff5b2363d7"
+          "sha256": "33f785ddd74129d9c380fa94927a9a0d900815e5ec78fba2a48ae59ad5c910c7"
         }
       ],
       "updates": [
@@ -28092,6 +28092,47 @@
               "confidence": 0.99,
               "method": "paired-project-settings-summary-runtime",
               "source": "Same snapshot 5572c031, project, persisted thread cf1b2820, dark theme, exact committed bundles, matching scope/action interaction, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "project-settings-summary-actions-current",
+      "observedAt": "2026-09-06T16:31:00-04:00",
+      "commit": "5fdcd0440",
+      "codeCommit": "5fdcd0440",
+      "codeState": "commit",
+      "label": "Project Settings summary action parity",
+      "narrative": "The Lynx Project Settings summary now exposes the same Copy project path action and environment affordance as Web. Copy uses the existing client clipboard capability, while the strengthened capture gate requires both actions plus matching path and environment text before the state can pass.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A committed same-thread capture proves both summary actions and matching summary content without changing the already-measured whole-dialog material residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
+          "classification": "tracked-current",
+          "sha256": "33f785ddd74129d9c380fa94927a9a0d900815e5ec78fba2a48ae59ad5c910c7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-summary-actions",
+              "source": "Both panes expose the same project path, MacBook Pro (3) environment, Copy path affordance, and environment icon."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-project-settings-summary-actions-runtime",
+              "source": "Same snapshot, persisted thread, project, route, theme, viewport, committed bundles, matching summary gate, and zero renderer errors."
             }
           }
         }
