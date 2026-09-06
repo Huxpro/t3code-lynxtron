@@ -680,6 +680,7 @@ export default function SidebarV2() {
         environmentId={project.environmentId}
         cwd={project.workspaceRoot}
         className="size-4 shrink-0"
+        size={16}
       />
     ),
     onContextMenu: () => {
@@ -777,6 +778,7 @@ export default function SidebarV2() {
               environmentId={scopedProject.environmentId}
               cwd={scopedProject.workspaceRoot}
               className="size-4 shrink-0"
+              size={16}
             />
           ) : null,
           scopedDisplayName: scopedProject?.title ?? null,
@@ -877,6 +879,7 @@ export default function SidebarV2() {
                     environmentId={thread.environmentId}
                     cwd={project?.workspaceRoot ?? ""}
                     className="size-4 shrink-0"
+                    size={16}
                   />
                 }
                 title={

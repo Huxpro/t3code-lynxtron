@@ -1478,7 +1478,11 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain(
       'className="sidebar-v2-search-result__favicon size-4 shrink-0"',
     );
-    expect(sidebarSource).toContain("size={16}");
+    expect(
+      sidebarSource.match(
+        /className="(?:sidebar-v2-search-result__favicon )?size-4 shrink-0"\s+size=\{16\}/g,
+      ),
+    ).toHaveLength(4);
     expect(sidebarSource).toContain("topStatus={statusPresentation(status, thread)}");
     expect(sidebarSource).toContain('case "working":');
     expect(sidebarSource).toContain('label: "Working"');
@@ -1580,7 +1584,7 @@ describe("desktop shell interaction contract", () => {
       ".sidebar-v2-row-project-title {\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;\n  min-width: 0;\n}",
     );
     expect(overrides).toContain(
-      ".sidebar-v2-row-card .sidebar-v2-row-status-slot {\n  flex-grow: 0;\n  flex-shrink: 0;\n}",
+      ".sidebar-v2-row-card .sidebar-v2-row-status-slot {\n  flex-grow: 0;\n  flex-shrink: 0;\n  box-sizing: border-box;\n}",
     );
     expect(faviconSource).toContain('name="folder"');
     expect(faviconSource).not.toContain("background-color");
