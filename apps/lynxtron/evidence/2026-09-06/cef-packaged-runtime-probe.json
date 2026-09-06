@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T19:39:59-04:00",
+  "commit": "59b745e616713b304ac2b8787bfc17af9ae54e69",
+  "runtime": "packaged macOS arm64 app",
+  "appExecutableSha256": "dccabe3471bf0343cce4e241d8dde4abb090d44984c590c2904f6b5241d00aea",
+  "cefAddonSha256": "2bcb941aab17e990b0e4f23c302c9c8d8e4f12b3a0f74d5912eedcf204d654f2",
+  "logSha256": "b1b892d9fb62db3a79970a2e81fde6a8c684f6cd43634c777cf4db9c3304de2c",
+  "environment": {
+    "cefEnabled": true,
+    "isolatedBaseDir": "/tmp/t3-cef-packaged-probe.mx0W6R/state",
+    "viewport": "1280x820",
+    "backgroundLaunch": true
+  },
+  "result": {
+    "initializeReturned": true,
+    "initializeValue": true,
+    "mainConnectorStarted": true,
+    "lynxBundleLoadStarted": true,
+    "cacheRootWarning": "Please customize CefSettings.root_cache_path for your application.",
+    "duplicateClassWarning": "CrCoreCursor is implemented in both Lynxtron Framework and Chromium Embedded Framework.",
+    "networkServiceCrashed": true,
+    "semanticReadinessReached": false
+  },
+  "cleanup": {
+    "ownedPid": 92528,
+    "signal": "SIGTERM",
+    "ownedProcessExited": true
+  },
+  "classification": "Packaging and CefInitialize return are proven for the packaged runtime. Native browser acceptance remains blocked by missing cache-root configuration and the duplicate Chromium class/network-service crash."
+}
