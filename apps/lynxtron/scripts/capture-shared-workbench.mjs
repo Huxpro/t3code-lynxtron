@@ -9520,6 +9520,22 @@ async function captureCell({
       10_000,
       "paired stable local drafts for hero state",
     );
+    await movePointer(cdp, sessionId, { x: width + width / 2, y: height / 2 });
+    await invokeLynxTooltipProbe(cdp, sessionId, "sidebar-new-thread-tooltip", "leave");
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) =>
+        next?.web?.sidebarDiagnostics?.chrome?.newThread?.attributes?.[
+          "data-tooltip-pointer-inside"
+        ] !== "true" &&
+        next?.lynx?.sidebarDiagnostics?.chrome?.newThread?.attributes?.[
+          "data-tooltip-pointer-inside"
+        ] !== "true",
+      3_000,
+      "neutral pointer after paired hero navigation",
+    );
+    newThreadHeroNavigationTimeline.push({ client: "both", step: "pointer-neutral" });
     reachedTargetState = true;
   }
   if (stateId === "command-palette-navigation") {
