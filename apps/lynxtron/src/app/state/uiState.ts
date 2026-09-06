@@ -214,7 +214,7 @@ function kindLabel(kind: RightPanelKind): string {
     case "browser":
       return "Browser";
     case "terminal":
-      return "Terminal";
+      return "Terminal 1";
   }
 }
 

@@ -1517,6 +1517,19 @@ function ChatViewContent(props: ChatViewProps) {
     [activeThread],
   );
   const activeThreadKey = activeThreadRef ? scopedThreadKey(activeThreadRef) : null;
+  useEffect(() => {
+    if (!window.__T3_WORKBENCH_DESKTOP_VISUAL__ || !activeThreadRef) return;
+    const openTerminalForWorkbench = (terminalId: string) => {
+      useRightPanelStore.getState().openTerminal(activeThreadRef, terminalId);
+      return true;
+    };
+    window.__T3_WORKBENCH_OPEN_TERMINAL__ = openTerminalForWorkbench;
+    return () => {
+      if (window.__T3_WORKBENCH_OPEN_TERMINAL__ === openTerminalForWorkbench) {
+        delete window.__T3_WORKBENCH_OPEN_TERMINAL__;
+      }
+    };
+  }, [activeThreadRef]);
   const [timelineAnchor, setTimelineAnchor] = useState<{
     readonly threadKey: string | null;
     readonly messageId: MessageId | null;

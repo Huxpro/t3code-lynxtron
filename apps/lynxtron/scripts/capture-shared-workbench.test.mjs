@@ -517,6 +517,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "terminalCommand: rightPanelTerminalCommand");
     assert.include(source, 'if (stateId === "right-panel-terminal") {');
     assert.include(source, "Terminal paired capture panel widths diverged");
+    assert.include(source, "Terminal paired capture sessions diverged");
+    assert.include(source, "data-terminal-id");
+    assert.include(source, "__T3_WORKBENCH_OPEN_TERMINAL__?.('term-1')");
     assert.include(source, "geometry: terminalCaptureGeometry");
     assert.isBelow(
       source.indexOf('if (stateId === "right-panel-terminal") {'),

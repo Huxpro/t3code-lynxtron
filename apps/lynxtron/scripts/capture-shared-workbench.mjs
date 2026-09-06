@@ -11947,14 +11947,68 @@ async function captureCell({
           };
         })()`,
       ).catch(() => null);
-      if (triggerPoints?.web) {
+      if (isRightPanelTerminalState) {
+        if (!triggerPoints?.lynx) throw new Error("Missing Lynx terminal trigger");
+        await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.lynx);
+        const lynxTerminalPresent = () =>
+          evaluate(
+            cdp,
+            sessionId,
+            `document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot
+              ?.querySelector('.terminal-panel[data-terminal-session-id="term-1"]') !== null`,
+          ).catch(() => false);
+        let lynxTerminalReady = await lynxTerminalPresent();
+        let lynxTerminalPoint = null;
+        for (let attempt = 0; !lynxTerminalReady && attempt < 20; attempt += 1) {
+          lynxTerminalReady = await lynxTerminalPresent();
+          if (lynxTerminalReady) break;
+          lynxTerminalPoint = await evaluate(
+            cdp,
+            sessionId,
+            `(() => {
+              const frame = document.getElementById('lynx-pane');
+              const root = frame?.contentWindow?.document
+                ?.getElementById('t3-lynx-preview')?.shadowRoot;
+              const target = root?.querySelector('[data-right-panel-add-kind="terminal"]');
+              if (!frame || !target) return null;
+              const frameRect = frame.getBoundingClientRect();
+              const rect = target.getBoundingClientRect();
+              return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+            })()`,
+          ).catch(() => null);
+          if (lynxTerminalPoint) break;
+          await delay(50);
+        }
+        if (!lynxTerminalReady) {
+          if (!lynxTerminalPoint) throw new Error("Missing Lynx Terminal menu row");
+          await dispatchPointerClickWithMove(cdp, sessionId, lynxTerminalPoint);
+        }
+        const lynxTerminalDeadline = Date.now() + 5_000;
+        while (Date.now() < lynxTerminalDeadline) {
+          lynxTerminalReady = await lynxTerminalPresent();
+          if (lynxTerminalReady) break;
+          await delay(50);
+        }
+        if (!lynxTerminalReady) throw new Error("Lynx authority terminal term-1 did not open");
+        const attached = await evaluate(
+          cdp,
+          sessionId,
+          `document.getElementById('web-pane')?.contentWindow
+            ?.__T3_WORKBENCH_OPEN_TERMINAL__?.('term-1') ?? false`,
+        ).catch(() => false);
+        if (!attached) throw new Error("Web authority terminal attach hook was unavailable");
+      }
+      if (triggerPoints?.web && !isRightPanelTerminalState) {
         await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.web);
       }
-      if (triggerPoints?.lynx) {
+      if (triggerPoints?.lynx && !isRightPanelTerminalState) {
         await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.lynx);
       }
-      let terminalPoints = null;
-      for (let attempt = 0; attempt < 20; attempt += 1) {
+      let terminalPoints = isRightPanelTerminalState
+        ? { web: { alreadySelected: true }, lynx: { alreadySelected: true } }
+        : null;
+      for (let attempt = 0; !isRightPanelTerminalState && attempt < 20; attempt += 1) {
         terminalPoints = await evaluate(
           cdp,
           sessionId,
@@ -11990,12 +12044,32 @@ async function captureCell({
             };
           })()`,
         ).catch(() => null);
-        if (terminalPoints?.web && (terminalPoints?.lynx || terminalPoints?.lynx?.alreadySelected))
+        if (
+          terminalPoints?.web &&
+          (isRightPanelTerminalState ||
+            terminalPoints?.lynx ||
+            terminalPoints?.lynx?.alreadySelected)
+        )
           break;
         await delay(100);
       }
-      if (terminalPoints?.web)
+      if (terminalPoints?.web && !terminalPoints.web.alreadySelected)
         await dispatchPointerClickWithMove(cdp, sessionId, terminalPoints.web);
+      if (isRightPanelTerminalState) {
+        const webTerminalDeadline = Date.now() + 5_000;
+        let webTerminalReady = false;
+        while (Date.now() < webTerminalDeadline) {
+          webTerminalReady = await evaluate(
+            cdp,
+            sessionId,
+            `document.getElementById('web-pane')?.contentWindow?.document
+              ?.querySelector('[data-terminal-id="term-1"]') !== null`,
+          ).catch(() => false);
+          if (webTerminalReady) break;
+          await delay(50);
+        }
+        if (!webTerminalReady) throw new Error("Web authority terminal term-1 did not open");
+      }
       if (terminalPoints?.lynx && !terminalPoints.lynx.alreadySelected) {
         await dispatchPointerClickWithMove(cdp, sessionId, terminalPoints.lynx);
       }
@@ -12009,10 +12083,11 @@ async function captureCell({
               ?.getElementById('t3-lynx-preview')?.shadowRoot;
             return {
               web:
-                web
-                  ?.querySelector('[data-active-tab="true"]')
-                  ?.textContent?.trim()
-                  .includes('Terminal') === true &&
+                (web?.querySelector('[data-terminal-id="term-1"]') !== null ||
+                  web
+                    ?.querySelector('[data-active-tab="true"]')
+                    ?.textContent?.trim()
+                    .includes('Terminal') === true) &&
                 web?.querySelector('[data-floating-popup="right-panel-add-menu"]') === null,
               lynx:
                 lynx
@@ -12108,6 +12183,11 @@ async function captureCell({
               return {
                 webPanelWidth: state?.web?.reviewMetrics?.panelRect?.rect?.width ?? null,
                 lynxPanelWidth: state?.lynx?.reviewMetrics?.panelRect?.rect?.width ?? null,
+                webTerminalId: document.getElementById('web-pane')?.contentWindow?.document
+                  ?.querySelector('[data-terminal-id]')?.getAttribute('data-terminal-id') ?? null,
+                lynxTerminalId: document.getElementById('lynx-pane')?.contentWindow?.document
+                  ?.getElementById('t3-lynx-preview')?.shadowRoot
+                  ?.querySelector('.terminal-panel')?.getAttribute('data-terminal-session-id') ?? null,
               };
             })()`,
           );
@@ -12120,6 +12200,14 @@ async function captureCell({
           ) {
             throw new Error(
               `Terminal paired capture panel widths diverged: ${JSON.stringify(terminalCaptureGeometry)}`,
+            );
+          }
+          if (
+            !terminalCaptureGeometry.webTerminalId ||
+            terminalCaptureGeometry.webTerminalId !== terminalCaptureGeometry.lynxTerminalId
+          ) {
+            throw new Error(
+              `Terminal paired capture sessions diverged: ${JSON.stringify(terminalCaptureGeometry)}`,
             );
           }
           rightPanelTerminalScreenshot = {

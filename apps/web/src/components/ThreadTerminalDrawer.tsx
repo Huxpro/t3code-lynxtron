@@ -793,6 +793,8 @@ export function TerminalViewport({
   return (
     <div
       ref={containerRef}
+      data-terminal-id={terminalId}
+      data-terminal-status={terminalStatus}
       className="relative h-full w-full overflow-hidden rounded-[4px] bg-background"
     />
   );

@@ -62,6 +62,10 @@ const clientSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/t3Client.ts"),
   "utf8",
 );
+const uiStateSource = readFileSync(
+  path.resolve(import.meta.dirname, "../state/uiState.ts"),
+  "utf8",
+);
 const webFilePreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/files/FilePreviewPanel.tsx"),
   "utf8",
@@ -774,6 +778,7 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain(".writeTerminal({");
     expect(terminal).toContain(".closeTerminal({");
     expect(terminal).toContain('aria-label="New terminal"');
+    expect(uiStateSource).toContain('case "terminal":\n      return "Terminal 1";');
     expect(terminal).toContain("addTerminalSession");
     expect(terminal).toContain("activateTerminalSession");
     expect(terminal).toContain("removeTerminalSession");
