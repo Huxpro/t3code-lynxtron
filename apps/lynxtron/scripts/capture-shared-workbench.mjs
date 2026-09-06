@@ -2865,7 +2865,8 @@ async function openWebSettingsFromSidebar(cdp, sessionId, useDomFallback) {
     sessionId,
     `(() => {
       const frame = document.getElementById('web-pane');
-      const target = frame?.contentWindow?.document?.querySelector('.sidebar-settings-row');
+        const doc = frame?.contentWindow?.document;
+        const target = doc?.querySelector('.sidebar-settings-row');
       if (!frame || !target) return null;
       const frameRect = frame.getBoundingClientRect();
       const rect = target.getBoundingClientRect();
