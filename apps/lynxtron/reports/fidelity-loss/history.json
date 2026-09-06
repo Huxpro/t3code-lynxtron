@@ -46825,12 +46825,57 @@
       "toPoint": "project-settings-footer-layout-current"
     },
     {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 19,
+      "commit": "5bbdf843185367be99535710cc578f951ea705e9",
+      "committedAt": "2026-09-06T16:59:26-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): extend project footer evidence",
+      "surfaces": [
+        "settings"
+      ],
+      "fromPoint": "project-settings-summary-actions-current",
+      "toPoint": "project-settings-footer-layout-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 31346,
+      "commit": "877bca67e964f17c3c058f7cf00aee04a0bb104a",
+      "committedAt": "2026-09-06T17:09:04-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "docs(lynxtron): register project footer parity",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "project-settings-summary-actions-current",
+      "toPoint": "project-settings-footer-layout-current"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "changedLines": 6,
+      "commit": "2560419face5fd7718a9a53b199db0610f60bbe8",
+      "committedAt": "2026-09-06T17:12:38-04:00",
+      "confidence": 0,
+      "delta": null,
+      "reason": "This interval ends in an explicit evidence measurement; no independent before/after measurement supports assigning its delta to this commit.",
+      "subject": "fix(lynxtron): match project removal width",
+      "surfaces": [
+        "shell"
+      ],
+      "fromPoint": "project-settings-summary-actions-current",
+      "toPoint": "project-settings-footer-layout-current"
+    },
+    {
       "allocation": "measured-product-change",
       "changedLines": 0,
-      "commit": "b1fd0e53a",
+      "commit": "2560419fa",
       "committedAt": "2026-09-06T16:55:00-04:00",
       "confidence": 0.99,
-      "delta": -0.000026,
+      "delta": -0.00003,
       "reason": "Same snapshot, persisted thread, project, dialog, theme, viewport, interaction flow, Web authority frame, and zero-error runtime isolate the footer layout correction.",
       "subject": "Project Settings single-member footer parity",
       "surfaces": [
@@ -80854,14 +80899,47 @@
       "subject": "fix(lynxtron): align project settings footer"
     },
     {
+      "allocation": "unmeasured-product-commit",
+      "commit": "5bbdf843185367be99535710cc578f951ea705e9",
+      "committedAt": "2026-09-06T16:59:26-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.170015,
+      "smoothedLoss": 0.170046,
+      "subject": "docs(lynxtron): extend project footer evidence"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "877bca67e964f17c3c058f7cf00aee04a0bb104a",
+      "committedAt": "2026-09-06T17:09:04-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.170015,
+      "smoothedLoss": 0.170039,
+      "subject": "docs(lynxtron): register project footer parity"
+    },
+    {
+      "allocation": "unmeasured-product-commit",
+      "commit": "2560419face5fd7718a9a53b199db0610f60bbe8",
+      "committedAt": "2026-09-06T17:12:38-04:00",
+      "confidence": 0,
+      "delta": null,
+      "measuredCheckpoint": null,
+      "rawLoss": 0.170015,
+      "smoothedLoss": 0.170034,
+      "subject": "fix(lynxtron): match project removal width"
+    },
+    {
       "allocation": "measured-product-change",
-      "commit": "b1fd0e53a",
+      "commit": "2560419fa",
       "committedAt": "2026-09-06T16:55:00-04:00",
       "confidence": 0.99,
-      "delta": -0.000026,
+      "delta": -0.00003,
       "measuredCheckpoint": "project-settings-footer-layout-current",
-      "rawLoss": 0.169989,
-      "smoothedLoss": 0.17004,
+      "rawLoss": 0.169985,
+      "smoothedLoss": 0.170023,
       "subject": "Project Settings single-member footer parity"
     }
   ],
@@ -569284,7 +569362,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
+          "sha256": "aba171cc71f027df1173b1e381bcb3e2994491105e31210c01c3b11749447879"
         }
       ],
       "confidence": 0.858405,
@@ -570290,7 +570368,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
+          "sha256": "aba171cc71f027df1173b1e381bcb3e2994491105e31210c01c3b11749447879"
         }
       ],
       "confidence": 0.858405,
@@ -571284,25 +571362,25 @@
         "confidence": 0.99,
         "reason": "Same snapshot, persisted thread, project, dialog, theme, viewport, interaction flow, Web authority frame, and zero-error runtime isolate the footer layout correction."
       },
-      "commit": "b1fd0e53a",
-      "codeCommit": "b1fd0e53a",
+      "commit": "2560419fa",
+      "codeCommit": "2560419fa",
       "codeState": "commit",
       "id": "project-settings-footer-layout-current",
       "label": "Project Settings single-member footer parity",
-      "narrative": "Lynx right-aligned both Project Settings footer actions while Web places Remove project at the left and Close at the right for a single-member group. A single-member footer modifier restores space-between alignment and border-box button sizing. Remove x/y/height now match exactly, Close x differs by 0.22px, full-frame SSIM improves from 0.912881 to 0.918415, and the fixed dialog crop improves from 0.751621 to 0.790972.",
+      "narrative": "Lynx right-aligned both Project Settings footer actions while Web places Remove project at the left and Close at the right for a single-member group. A single-member footer modifier restores space-between alignment and border-box sizing, then scopes the fixed destructive action to the authority width. Remove x/y/height now match exactly and width differs by 0.5px; Close x/width differ by about 0.22px. Full-frame SSIM improves from 0.912881 to 0.918821 and the fixed dialog crop improves from 0.751621 to 0.793857.",
       "observedAt": "2026-09-06T16:55:00-04:00",
       "screenshots": [],
       "sources": [
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
+          "sha256": "aba171cc71f027df1173b1e381bcb3e2994491105e31210c01c3b11749447879"
         }
       ],
       "confidence": 0.858405,
       "evidenceDebt": 0.141595,
-      "loss": 0.169989,
-      "observedResidual": 0.033078,
+      "loss": 0.169985,
+      "observedResidual": 0.033074,
       "byDimension": {
         "content": {
           "confidence": 0.987749,
@@ -571313,8 +571391,8 @@
         "geometry": {
           "confidence": 0.902655,
           "evidenceDebt": 0.097345,
-          "loss": 0.102745,
-          "observedResidual": 0.005983
+          "loss": 0.102737,
+          "observedResidual": 0.005974
         },
         "typography": {
           "confidence": 0.678364,
@@ -571325,8 +571403,8 @@
         "material": {
           "confidence": 0.64565,
           "evidenceDebt": 0.35435,
-          "loss": 0.435442,
-          "observedResidual": 0.125597
+          "loss": 0.435427,
+          "observedResidual": 0.125574
         },
         "interaction": {
           "confidence": 0.850118,
@@ -571363,8 +571441,8 @@
         "overlays": {
           "confidence": 0.924106,
           "evidenceDebt": 0.075894,
-          "loss": 0.116928,
-          "observedResidual": 0.044403
+          "loss": 0.116915,
+          "observedResidual": 0.04439
         },
         "settings": {
           "confidence": 0.81344,
@@ -572036,8 +572114,8 @@
           "group": "overlays",
           "id": "sidebar-project-settings",
           "label": "Sidebar · Project Settings",
-          "loss": 0.079164,
-          "observedResidual": 0.058103,
+          "loss": 0.078883,
+          "observedResidual": 0.057815,
           "weight": 4
         },
         {
@@ -572281,8 +572359,8 @@
           "weight": 2
         }
       ],
-      "bestLoss": 0.169989,
-      "improvementFromBaseline": 0.821901
+      "bestLoss": 0.169985,
+      "improvementFromBaseline": 0.821905
     }
   ],
   "provenance": {

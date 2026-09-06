@@ -28066,7 +28066,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
+          "sha256": "aba171cc71f027df1173b1e381bcb3e2994491105e31210c01c3b11749447879"
         }
       ],
       "updates": [
@@ -28114,7 +28114,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
+          "sha256": "aba171cc71f027df1173b1e381bcb3e2994491105e31210c01c3b11749447879"
         }
       ],
       "updates": [
@@ -28141,11 +28141,11 @@
     {
       "id": "project-settings-footer-layout-current",
       "observedAt": "2026-09-06T16:55:00-04:00",
-      "commit": "b1fd0e53a",
-      "codeCommit": "b1fd0e53a",
+      "commit": "2560419fa",
+      "codeCommit": "2560419fa",
       "codeState": "commit",
       "label": "Project Settings single-member footer parity",
-      "narrative": "Lynx right-aligned both Project Settings footer actions while Web places Remove project at the left and Close at the right for a single-member group. A single-member footer modifier restores space-between alignment and border-box button sizing. Remove x/y/height now match exactly, Close x differs by 0.22px, full-frame SSIM improves from 0.912881 to 0.918415, and the fixed dialog crop improves from 0.751621 to 0.790972.",
+      "narrative": "Lynx right-aligned both Project Settings footer actions while Web places Remove project at the left and Close at the right for a single-member group. A single-member footer modifier restores space-between alignment and border-box sizing, then scopes the fixed destructive action to the authority width. Remove x/y/height now match exactly and width differs by 0.5px; Close x/width differ by about 0.22px. Full-frame SSIM improves from 0.912881 to 0.918821 and the fixed dialog crop improves from 0.751621 to 0.793857.",
       "attribution": {
         "allocation": "measured-product-change",
         "confidence": 0.99,
@@ -28155,7 +28155,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
           "classification": "tracked-current",
-          "sha256": "e42950bcaae6693b7bdb5c4553faa0322663d7939cfb33410b14ecb2a82d0aba"
+          "sha256": "aba171cc71f027df1173b1e381bcb3e2994491105e31210c01c3b11749447879"
         }
       ],
       "updates": [
@@ -28164,17 +28164,17 @@
           "clients": ["lynx"],
           "dimensions": {
             "geometry": {
-              "anchorDeltas": [0, 0, 0, 0, 0, 0, 11.0625, 0, 0.21875, 0, 0.21875, 0],
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0.5, 0, 0.21875, 0, 0.21875, 0],
               "anchorScale": 576,
               "confidence": 0.99,
               "method": "project-settings-footer-anchors",
-              "source": "Dialog and footer bounds match; Remove x/y/height match exactly, Close x differs by 0.22px, and remaining button width differences come from text/icon raster allocation."
+              "source": "Dialog and footer bounds match; Remove x/y/height match exactly and width differs by 0.5px, while Close x/width differ by about 0.22px."
             },
             "material": {
-              "residual": 0.209028,
+              "residual": 0.206143,
               "confidence": 0.99,
               "method": "current-project-settings-dialog-ssim",
-              "source": "1 - fixed 576x260 dialog crop SSIM 0.790972, improved from 0.751621; full-frame SSIM improves from 0.912881 to 0.918415."
+              "source": "1 - fixed 576x260 dialog crop SSIM 0.793857, improved from 0.751621; full-frame SSIM improves from 0.912881 to 0.918821."
             },
             "runtime": {
               "residual": 0,
