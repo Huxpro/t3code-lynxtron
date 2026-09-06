@@ -33,6 +33,31 @@ export interface BrowserLoadFailure {
   readonly message: string;
 }
 
+export function selectWarmBrowserSurfaceIds(
+  browserSurfaceIds: ReadonlyArray<string>,
+  activeSurfaceId: string | null,
+  previousActiveBrowserId: string | null,
+): ReadonlyArray<string> {
+  const available = new Set(browserSurfaceIds);
+  const selected: string[] = [];
+  if (activeSurfaceId && available.has(activeSurfaceId)) selected.push(activeSurfaceId);
+  if (
+    previousActiveBrowserId &&
+    available.has(previousActiveBrowserId) &&
+    previousActiveBrowserId !== activeSurfaceId
+  ) {
+    selected.push(previousActiveBrowserId);
+  }
+  if (selected.length === 0) {
+    const fallback = browserSurfaceIds.at(-1);
+    if (fallback) selected.push(fallback);
+  } else if (selected.length === 1 && activeSurfaceId && available.has(activeSurfaceId)) {
+    const fallback = browserSurfaceIds.findLast((surfaceId) => surfaceId !== activeSurfaceId);
+    if (fallback) selected.push(fallback);
+  }
+  return selected;
+}
+
 /** Matches Electron's did-fail-load policy: aborted navigations are not user-visible failures. */
 export function browserEventFailure(event: unknown): BrowserLoadFailure | null {
   const detail =

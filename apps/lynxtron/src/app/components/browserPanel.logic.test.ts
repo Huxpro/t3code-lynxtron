@@ -6,6 +6,7 @@ import {
   browserEventUrl,
   browserFailurePresentation,
   resolveBrowserNavigation,
+  selectWarmBrowserSurfaceIds,
 } from "./browserPanel.logic";
 
 describe("BrowserPanel URL contract", () => {
@@ -57,5 +58,13 @@ describe("BrowserPanel URL contract", () => {
       description: "Connection refused",
       errorLabel: "ERR_CONNECTION_REFUSED",
     });
+  });
+
+  it("keeps the active browser and one warm inactive browser mounted", () => {
+    expect(selectWarmBrowserSurfaceIds(["a", "b", "c"], "c", "b")).toEqual(["c", "b"]);
+    expect(selectWarmBrowserSurfaceIds(["a", "b", "c"], "c", null)).toEqual(["c", "b"]);
+    expect(selectWarmBrowserSurfaceIds(["a", "b"], "files:1", "a")).toEqual(["a"]);
+    expect(selectWarmBrowserSurfaceIds(["a", "b"], "b", "removed")).toEqual(["b", "a"]);
+    expect(selectWarmBrowserSurfaceIds([], null, null)).toEqual([]);
   });
 });

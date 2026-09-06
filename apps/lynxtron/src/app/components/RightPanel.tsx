@@ -1,4 +1,4 @@
-import { useCallback, useState } from "@lynx-js/react";
+import { useCallback, useEffect, useRef, useState } from "@lynx-js/react";
 import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
 import {
   RIGHT_PANEL_DEFAULT_WIDTH,
@@ -28,6 +28,7 @@ import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
 import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
 import { BrowserPanel } from "./BrowserPanel";
+import { selectWarmBrowserSurfaceIds } from "./browserPanel.logic";
 import { useT3ClientState } from "../state/t3Client";
 import {
   clientCapabilities,
@@ -144,6 +145,23 @@ export function RightPanel({
   const sheet = useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY);
   const viewport = useViewportSnapshot();
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const previousActiveBrowserId = useRef<string | null>(null);
+  const browserSurfaces = state.surfaces.filter(
+    (surface): surface is Extract<RightPanelSurface, { kind: "browser" }> =>
+      surface.kind === "browser",
+  );
+  const activeBrowserId =
+    browserSurfaces.find((surface) => surface.id === state.activeSurfaceId)?.id ?? null;
+  const mountedBrowserIds = new Set(
+    selectWarmBrowserSurfaceIds(
+      browserSurfaces.map((surface) => surface.id),
+      state.activeSurfaceId,
+      previousActiveBrowserId.current,
+    ),
+  );
+  useEffect(() => {
+    if (activeBrowserId) previousActiveBrowserId.current = activeBrowserId;
+  }, [activeBrowserId]);
   const browserAvailable = isEmbeddedBrowserAvailable();
   const resize = useResizableWidth({
     storageKey: RIGHT_PANEL_WIDTH_STORAGE_KEY,
@@ -422,11 +440,8 @@ export function RightPanel({
 
       {/* Content */}
       <view className="right-panel__content">
-        {state.surfaces
-          .filter(
-            (surface): surface is Extract<RightPanelSurface, { kind: "browser" }> =>
-              surface.kind === "browser",
-          )
+        {browserSurfaces
+          .filter((surface) => mountedBrowserIds.has(surface.id))
           .map((surface) => (
             <BrowserPanel
               key={`${activeThreadId ?? "no-thread"}:${surface.tabId}`}
