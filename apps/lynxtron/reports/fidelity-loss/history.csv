@@ -481,3 +481,4 @@ composer-hero-provider-banner-copy-current,2026-09-06T14:01:00-04:00,5f2e11c42,c
 command-palette-thread-identity-gate-current,2026-09-06T14:53:00-04:00,3e3760fbc,commit,Command palette persisted-thread identity gate,0.170947,0.170947,0.034194,0.141595,0.858405,0.820943
 command-palette-thread-metadata-current,2026-09-06T14:54:00-04:00,d0c5fa28e,commit,Command palette Recent Threads metadata parity,0.170972,0.170947,0.034223,0.141595,0.858405,0.820918
 file-picker-strict-thread-current,2026-09-06T15:12:00-04:00,a33f13367,commit,File Picker strict persisted-thread refresh,0.170957,0.170947,0.034205,0.141595,0.858405,0.820933
+quick-switch-query-light-strict-thread-current,2026-09-06T15:18:00-04:00,4c109d67e,commit,Light Quick Switch query strict-thread refresh,0.170748,0.170748,0.033963,0.141595,0.858405,0.821142

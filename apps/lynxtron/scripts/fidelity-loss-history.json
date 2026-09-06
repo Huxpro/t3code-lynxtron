@@ -27928,6 +27928,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-light-strict-thread-current",
+      "observedAt": "2026-09-06T15:18:00-04:00",
+      "commit": "4c109d67e",
+      "codeCommit": "41770ddc6",
+      "codeState": "commit",
+      "label": "Light Quick Switch query strict-thread refresh",
+      "narrative": "A fresh current-bundle light capture applies the strengthened active-thread identity gate to the settings query. Both panes use the same snapshot and persisted thread, render one Open settings result, and match the 576x166 panel plus search, results, row, and footer rectangles exactly. The exact panel crop reaches 0.946632 SSIM.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No Quick Switch product styling changes in this checkpoint. It replaces older evidence with a stricter same-thread current-bundle measurement."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/quick-switch-query-light-strict-thread-current.json",
+          "classification": "tracked-current",
+          "sha256": "765ca07e2eefa42f0e3b089ca661c88b0ae8078fd3df87cd9abb6e77da8a12da"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-query-content",
+              "source": "Both panes contain the settings query, Actions section, and single Open settings result."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-light-query-geometry",
+              "source": "Panel, search, results, section, result row, and footer rectangles match exactly."
+            },
+            "material": {
+              "residual": 0.053368,
+              "confidence": 0.99,
+              "method": "current-light-query-panel-ssim",
+              "source": "1 - exact 576x166 panel crop SSIM 0.946632; full-frame SSIM is 0.966460. Remaining pixels are light glass shadow and text/icon rasterization."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-light-query-runtime",
+              "source": "Same snapshot 5572c031, project, persisted thread cf1b2820, light theme, 1280x820 viewport, exact committed bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
