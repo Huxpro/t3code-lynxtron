@@ -27420,6 +27420,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-light-driver-current",
+      "observedAt": "2026-09-06T10:19:00-04:00",
+      "commit": "c0266aaba",
+      "codeCommit": "c0266aaba",
+      "codeState": "commit",
+      "label": "Provider dialog light Driver current coverage",
+      "narrative": "A fresh light 1280 by 820 paired capture opens the Add Provider dialog through real pointer input and stops at the Driver step. Both renderers show the same title, description, three-step rail, nine ordered provider choices, selected Codex state, Cancel, and Next. Dialog, header, rail, body, and footer geometry match exactly. This fills only current Lynx Driver-step content, typography, and open-interaction coverage; later wizard steps and Native remain explicit debt.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The exact committed bundles, same route, light theme, viewport, Driver state, strict dialog gate, and zero renderer errors support current coverage without claiming unvisited stages."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/provider-dialog-light-driver-current.json",
+          "classification": "tracked-current",
+          "sha256": "caccbbb2c34677e37fbba7ce5d22cca46e9903d7a5ecdb964a824f3db82614f8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-driver-semantic-parity",
+              "source": "Title, description, three steps, nine ordered provider labels, selected Codex state, Cancel, and Next match."
+            },
+            "typography": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "provider-driver-typography-anchors",
+              "source": "Title resolves to 20px, weight 600, line-height 20px at identical bounds; residual preserves variable versus bundled font shaping visible in smaller labels."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-pointer-provider-driver-open",
+              "source": "Real pointer input opens both dialogs and both settle on Driver step 0 with the same selected choice."
+            }
+          }
+        }
+      ]
     }
   ]
 }

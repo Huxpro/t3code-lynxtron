@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T10:19:00-04:00",
+  "stateId": "settings-providers-add-dialog-light",
+  "productCommit": "c0266aaba",
+  "harnessCommit": "c0266aaba",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers"
+  },
+  "capture": {
+    "reportSha256": "2aae603046d1a7e9dae6153b7d63c3d2afffd28438c0aa01104a97ece3201edc",
+    "webImageSha256": "13c840c42fa3e7bd718376945706ec53886a206ee94757675640c9d3169ef204",
+    "lynxImageSha256": "282b4819d8b65325e7bc4c393b7c2a789ff42cc971db530d792eac58f3500cd4",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "driverStep": {
+    "inputChannel": "dual-cdp-pointer",
+    "activeStepWeb": 0,
+    "activeStepLynx": 0,
+    "dialogRectWeb": [352, 141, 576, 538],
+    "dialogRectLynx": [352, 141, 576, 538],
+    "headerRectWeb": [353, 142, 574, 156],
+    "headerRectLynx": [353, 142, 574, 156],
+    "stepRailRectWeb": [377, 242, 526, 44],
+    "stepRailRectLynx": [377, 242, 526, 44],
+    "bodyRectWeb": [353, 298, 574, 320],
+    "bodyRectLynx": [353, 298, 574, 320],
+    "footerRectWeb": [353, 618, 574, 60],
+    "footerRectLynx": [353, 618, 574, 60],
+    "driverLabelsWeb": [
+      "Codex",
+      "Claude",
+      "Cursor Early Access",
+      "Grok Early Access",
+      "OpenCode",
+      "Github Copilot Coming Soon",
+      "Gemini Coming Soon",
+      "ACP Registry Coming Soon",
+      "Pi Agent Coming Soon"
+    ],
+    "driverLabelsLynx": [
+      "Codex",
+      "Claude",
+      "Cursor Early Access",
+      "Grok Early Access",
+      "OpenCode",
+      "Github Copilot Coming Soon",
+      "Gemini Coming Soon",
+      "ACP Registry Coming Soon",
+      "Pi Agent Coming Soon"
+    ],
+    "titleTypographyWeb": { "fontSize": 20, "fontWeight": 600, "lineHeight": 20 },
+    "titleTypographyLynx": { "fontSize": 20, "fontWeight": 600, "lineHeight": 20 }
+  },
+  "boundary": "This current capture covers opening and rendering the light Driver step only. It does not claim current Identity/Config data entry or save/delete behavior, and Native remains uncovered. Screenshots remain temporary."
+}
