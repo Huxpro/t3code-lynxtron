@@ -27874,6 +27874,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-strict-thread-current",
+      "observedAt": "2026-09-06T15:12:00-04:00",
+      "commit": "a33f13367",
+      "codeCommit": "41770ddc6",
+      "codeState": "commit",
+      "label": "File Picker strict persisted-thread refresh",
+      "narrative": "A fresh current-bundle capture applies the strengthened active-thread identity gate to File Picker. Both panes use the same snapshot, project, persisted thread, route, theme, and viewport; render the same 65 files in the same order; and match the visible 576x420 panel, 574x48 search, 558x48 row, and 574x40 footer geometry exactly. The exact visible panel crop reaches 0.938107 SSIM, up from the prior current 0.916628 measurement.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No File Picker product code changes in this checkpoint. It refreshes the state after prior landed fixes under the stricter persisted-thread evidence contract."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/file-picker-strict-thread-current.json",
+          "classification": "tracked-current",
+          "sha256": "8ccd16e01a619717416cf0ecd1ccd5c9fa9b3cc7d2ab2ee85ab00ec12f4d011a"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-file-picker-content",
+              "source": "Both panes render the same 65 file rows in identical order with matching titles, descriptions, semantic file icons, and footer actions."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-file-picker-visible-geometry",
+              "source": "Panel, search, first visible row, and footer rectangles match exactly. Web total scroll content height versus Lynx viewport height is excluded as DOM accounting, not visible geometry."
+            },
+            "material": {
+              "residual": 0.061893,
+              "confidence": 0.99,
+              "method": "current-file-picker-panel-ssim",
+              "source": "1 - exact 576x278 visible panel crop SSIM 0.938107; full-frame SSIM is 0.957459. Remaining pixels are primarily icon/text rasterization and glass shadow composition."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-file-picker-runtime",
+              "source": "Same snapshot 5572c031, project, persisted thread cf1b2820, dark theme, 1280x820 viewport, exact committed bundles, matching overlay content, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
