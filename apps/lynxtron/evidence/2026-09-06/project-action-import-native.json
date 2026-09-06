@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T05:07:00-04:00",
+  "productCommit": "08cbf9ad5f690ab9c5901e17414649765da159f4",
+  "scope": {
+    "client": "lynxtron",
+    "viewport": "1280x820",
+    "baseDir": "/tmp/t3-project-action-native",
+    "sourceSnapshotSha256": "41142c507349ddb34ae05e454cea2ab11e15ffed9a90f64ef4c1a9b1aecdafba",
+    "ownedPid": 92465,
+    "windowId": 53202
+  },
+  "import": {
+    "source": "t3.json",
+    "visibleMenuItems": ["Import Setup Worktree", "Add action"],
+    "selected": "Import Setup Worktree",
+    "persistedScript": {
+      "id": "setup-worktree",
+      "name": "Setup Worktree",
+      "icon": "configure",
+      "runOnWorktreeCreate": true
+    },
+    "canonicalDatabaseConfirmed": true
+  },
+  "runAction": {
+    "coordinatorTestsPassed": true,
+    "productionBuildPassed": true,
+    "physicalNativeInput": "pending-harness-identity",
+    "reason": "Computer Use returned PID 56004 after being pinned to the owned PID 2715, so the run action was not clicked on an unowned window."
+  },
+  "cleanup": {
+    "ownedProcessStopped": true
+  }
+}
