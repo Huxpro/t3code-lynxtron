@@ -52,8 +52,8 @@ Exit: three fresh cold starts reach semantic product readiness and one real page
 - [x] Match Electron's aborted-navigation policy in the Lynx WebView event adapter: `errorCode === -3` does not create a visible failure, while real CEF error codes retain their runtime message.
 - [x] Persist typed per-tab load failures and clear them on navigation or successful load; do not persist transient loading state across a cold start.
 - [ ] Replace the single-tab practical limitation with durable per-thread tab state: active tab, ordered tabs, title, URL, favicon, history capabilities, loading, and last error.
-- [ ] Keep WebViews mounted while warm and switch them with wrapper `z-index`, as required by the official Lynxtron pattern.
-- [ ] Port Synara's active-plus-one-warm budget and inactive-pane suspension, including cancellation tokens that prevent stale timers from destroying a reactivated tab.
+- [x] Keep active and warm WebViews mounted and switch them with wrapper `z-index`, as required by the official Lynxtron pattern.
+- [x] Port Synara's active-plus-one-warm budget and 30-second inactive-pane suspension; reactivation cancels the pending timer before it can unmount the tab. Native CEF lifecycle evidence remains gated by CEF0.
 - [ ] Match Electron new/select/close fallback behavior and ensure thread switching cannot leak one thread's browser into another.
 - [ ] Replace `history.back()` and `history.forward()` eval where the CEF element exposes direct methods; keep typed fallback behavior explicit if it does not.
 
