@@ -8846,6 +8846,9 @@
 .browser-panel__nav:hover {
   background-color: var(--accent);
 }
+.browser-panel__nav--disabled {
+  opacity: 0.4;
+}
 .browser-panel__address {
   flex-grow: 1;
   height: 28px;

@@ -5,6 +5,7 @@ import {
   browserEventFailure,
   browserEventUrl,
   browserFailurePresentation,
+  browserActionUrl,
   resolveBrowserNavigation,
   selectWarmBrowserSurfaceIds,
 } from "./browserPanel.logic";
@@ -67,5 +68,11 @@ describe("BrowserPanel URL contract", () => {
     expect(selectWarmBrowserSurfaceIds(["a", "b"], "files:1", "a", true)).toEqual([]);
     expect(selectWarmBrowserSurfaceIds(["a", "b"], "b", "removed")).toEqual(["b", "a"]);
     expect(selectWarmBrowserSurfaceIds([], null, null)).toEqual([]);
+  });
+
+  it("shares the safe copy and external-open URL policy", () => {
+    expect(browserActionUrl("example.com/path")).toBe("https://example.com/path");
+    expect(browserActionUrl("")).toBeNull();
+    expect(browserActionUrl("file:///tmp/private")).toBeNull();
   });
 });

@@ -3,6 +3,7 @@ import { Icon } from "./Icon";
 import {
   browserEventFailure,
   browserEventUrl,
+  browserActionUrl,
   browserFailurePresentation,
   resolveBrowserNavigation,
   type BrowserLoadFailure,
@@ -39,6 +40,7 @@ export function BrowserPanel({
   const [error, setError] = useState<BrowserLoadFailure | null>(
     initialTab.current.lastError ?? null,
   );
+  const [copied, setCopied] = useState(false);
   const webview = useRef<WebViewRef | null>(null);
 
   useEffect(() => {
@@ -77,6 +79,19 @@ export function BrowserPanel({
     setUrl(result.url);
   }, []);
 
+  const actionUrl = browserActionUrl(url);
+  const copyUrl = useCallback(() => {
+    if (!actionUrl || !clientCapabilities.clipboard.available()) return;
+    void clientCapabilities.clipboard.writeText(actionUrl).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1_500);
+    });
+  }, [actionUrl]);
+  const openExternal = useCallback(() => {
+    if (!actionUrl || !clientCapabilities.navigation.canOpenExternal()) return;
+    void clientCapabilities.navigation.openExternal(actionUrl);
+  }, [actionUrl]);
+
   const webviewWidth = Math.max(1, Math.round(width));
   const webviewHeight = Math.max(1, Math.round(height - 40));
 
@@ -112,6 +127,22 @@ export function BrowserPanel({
           bindinput={(event: { detail: { value: string } }) => setDraft(event.detail.value)}
           bindconfirm={() => navigate(draft)}
         />
+        <view
+          className={`browser-panel__nav${actionUrl ? "" : " browser-panel__nav--disabled"}`}
+          aria-label={copied ? "Copied link" : "Copy link"}
+          aria-disabled={actionUrl ? "false" : "true"}
+          bindtap={actionUrl ? copyUrl : undefined}
+        >
+          <Icon name="copy" size={14} color="#818181" />
+        </view>
+        <view
+          className={`browser-panel__nav${actionUrl ? "" : " browser-panel__nav--disabled"}`}
+          aria-label="Open in system browser"
+          aria-disabled={actionUrl ? "false" : "true"}
+          bindtap={actionUrl ? openExternal : undefined}
+        >
+          <Icon name="globe" size={14} color="#818181" />
+        </view>
       </view>
       {error ? (
         <BrowserUnreachable url={url || draft} failure={error} onReload={() => invoke("reload")} />

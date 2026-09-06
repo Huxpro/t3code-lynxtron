@@ -64,7 +64,7 @@ Exit: create, navigate, switch, back, forward, reload, close, reopen, thread swi
 - [ ] Port the Electron session policy: isolated persistent storage, browser-compatible user agent/client hints, preferred languages, sandbox boundary, and no Node access in guest pages.
 - [x] Share HTTP(S) URL normalization across address navigation and current-tab `window.open`; unsupported guest protocols are denied without replacing the committed page. Preserve T3 Electron's current-tab popup behavior for parity; track Synara's richer popup classification separately rather than silently changing product semantics.
 - [x] Share load-error descriptions and match Electron's unreachable-page hierarchy in Lynxtron instead of exposing a raw CEF error string.
-- [ ] Share copyable URL policy instead of duplicating renderer-specific rules.
+- [x] Share copyable/external URL policy through `packages/shared/preview` and expose real Lynxtron Copy link and Open in system browser actions with disabled states for blank or unsupported URLs.
 - [ ] Resolve local-server targets relative to the owning environment, including remote/relay/tunnel environments.
 - [ ] Match Electron's current-tab `window.open` handling, deny external schemes without losing the committed page, and offer an explicit system-browser action. If ordinary-tab/OAuth-popup routing is later adopted from Synara, land it on Electron and Lynxtron together with shared policy tests.
 - [ ] Define permission, download, certificate, and authentication behavior before enabling arbitrary pages.

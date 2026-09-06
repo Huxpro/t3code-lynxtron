@@ -1,4 +1,8 @@
-import { describePreviewError, normalizePreviewUrl } from "@t3tools/shared/preview";
+import {
+  describePreviewError,
+  normalizePreviewUrl,
+  resolvePreviewActionUrl,
+} from "@t3tools/shared/preview";
 
 export function resolveBrowserNavigation(
   rawUrl: string,
@@ -90,4 +94,8 @@ export function browserFailurePresentation(url: string, failure: BrowserLoadFail
         ? failure.message
         : `ERR_${Math.abs(failure.code ?? 0) || "FAILED"}`,
   };
+}
+
+export function browserActionUrl(url: string): string | null {
+  return resolvePreviewActionUrl(url);
 }

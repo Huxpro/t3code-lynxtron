@@ -6,6 +6,7 @@ import {
   isPreviewableUrl,
   newPreviewTabId,
   normalizePreviewUrl,
+  resolvePreviewActionUrl,
   PreviewUrlNormalizationError,
 } from "./preview.ts";
 
@@ -116,5 +117,15 @@ describe("normalizePreviewUrl", () => {
         /user|password|access_token|secret|fragment/,
       );
     }
+  });
+});
+
+describe("resolvePreviewActionUrl", () => {
+  it("normalizes HTTP targets and rejects blank or privileged URLs", () => {
+    expect(resolvePreviewActionUrl("example.com/path")).toBe("https://example.com/path");
+    expect(resolvePreviewActionUrl("http://localhost:5173")).toBe("http://localhost:5173/");
+    expect(resolvePreviewActionUrl("")).toBeNull();
+    expect(resolvePreviewActionUrl("file:///tmp/private")).toBeNull();
+    expect(resolvePreviewActionUrl("javascript:alert(1)")).toBeNull();
   });
 });

@@ -126,3 +126,12 @@ export function normalizePreviewUrl(rawUrl: string): string {
   }
   return parsed.href;
 }
+
+/** Return a canonical URL only when it is safe to copy or hand to the system browser. */
+export function resolvePreviewActionUrl(rawUrl: string): string | null {
+  try {
+    return normalizePreviewUrl(rawUrl);
+  } catch {
+    return null;
+  }
+}
