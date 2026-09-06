@@ -3652,6 +3652,25 @@ async function waitForWorkbenchState(
         web: (state?.web?.sidebarDiagnostics?.threads ?? []).map((row) => row.jumpLabel),
         lynx: (state?.lynx?.sidebarDiagnostics?.threads ?? []).map((row) => row.jumpLabel),
       },
+      productState: {
+        web: state?.web?.productState ?? null,
+        lynx: state?.lynx?.productState ?? null,
+      },
+      composer: Object.fromEntries(
+        ["web", "lynx"].map((client) => [
+          client,
+          {
+            layout: state?.[client]?.composerMetrics?.layout ?? null,
+            state: state?.[client]?.composerMetrics?.state ?? null,
+            primaryState: state?.[client]?.composerMetrics?.primaryState ?? null,
+            placeholder: state?.[client]?.composerMetrics?.placeholder ?? null,
+            controls: state?.[client]?.composerMetrics?.controls ?? [],
+            contextLabels: state?.[client]?.composerMetrics?.contextLabels ?? [],
+            statusBanner: state?.[client]?.composerMetrics?.anatomy?.statusBanner ?? null,
+            toolbarAllocation: state?.[client]?.composerMetrics?.anatomy?.toolbarAllocation ?? null,
+          },
+        ]),
+      ),
     })}`,
   );
 }

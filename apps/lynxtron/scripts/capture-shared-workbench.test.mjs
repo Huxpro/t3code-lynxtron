@@ -53,6 +53,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "retryDelay: 100");
   });
 
+  it("reports product and Composer state when an interaction postcondition times out", () => {
+    assert.include(source, "productState: { web: state?.web?.productState");
+    assert.include(source, "toolbarAllocation:");
+    assert.include(source, "state?.[client]?.composerMetrics?.anatomy?.toolbarAllocation");
+  });
+
   it("opens the modeled light compact-controls state by default", () => {
     assert.include(source, '"composer-compact-controls-light": "compact-controls"');
     assert.include(source, 'stateId === "composer-compact-controls-light" ||');
