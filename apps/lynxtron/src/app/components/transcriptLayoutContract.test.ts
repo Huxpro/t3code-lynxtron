@@ -22,6 +22,10 @@ const sharedRowSource = readFileSync(
   "utf8",
 );
 const appSource = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
+const browserPreviewSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
+  "utf8",
+);
 
 describe("transcript layout contract", () => {
   it("measures changed-files compact mode from the transcript viewport like Web", () => {
@@ -50,6 +54,14 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".transcript-turn-fold-outer {\n  width: 100%;\n  height: 29px;");
     expect(overrides).toContain(".transcript-turn-fold-button {");
     expect(overrides).toContain("  height: 16px;");
+    expect(browserPreviewSource).toContain(
+      '".timeline-row-root--turn-fold{height:45px!important;}"',
+    );
+    expect(browserPreviewSource).toContain(
+      '".transcript-assistant-row>.inline-markdown-row{min-height:23px!important;margin-bottom:0!important;}"',
+    );
+    expect(timelineSource).toContain('row.kind === "turn-fold"');
+    expect(timelineSource).toContain('? "timeline-row-root timeline-row-root--turn-fold"');
     expect(overrides).toContain(".transcript-work-entry-body {");
     expect(overrides).toContain(
       ".transcript-work-entry-preview--native {\n  flex-grow: 1;\n  flex-shrink: 1;\n  width: 0;",
@@ -71,7 +83,7 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".lynx-web-preview .timeline-list {\n  padding-top: 48px;");
     expect(overrides).toContain(".timeline-list--top-banner {\n  padding-top: 20px;");
     expect(overrides).toContain(
-      ".lynx-web-preview .timeline-list--top-banner {\n  padding-top: 20px;",
+      ".lynx-web-preview .timeline-list--top-banner {\n  padding-top: 16px;",
     );
     expect(overrides).toContain(
       ".lynx-web-preview .timeline-settled-header-space {\n  display: none;",

@@ -925,12 +925,14 @@ export function MessagesTimeline({
                     ? "timeline-row-root timeline-row-root--assistant"
                     : row.kind === "message" && row.message.role === "user"
                       ? "timeline-row-root timeline-row-root--user"
-                      : row.kind === "work" &&
-                          row.groupedEntries.some(
-                            (entry) => entry.sourceActivityKind === "user-input.requested",
-                          )
-                        ? "timeline-row-root timeline-row-root--user-input"
-                        : "timeline-row-root"
+                      : row.kind === "turn-fold"
+                        ? "timeline-row-root timeline-row-root--turn-fold"
+                        : row.kind === "work" &&
+                            row.groupedEntries.some(
+                              (entry) => entry.sourceActivityKind === "user-input.requested",
+                            )
+                          ? "timeline-row-root timeline-row-root--user-input"
+                          : "timeline-row-root"
               }
             >
               <TranscriptRowSurface

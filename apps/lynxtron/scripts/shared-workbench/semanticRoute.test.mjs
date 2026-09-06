@@ -9,6 +9,7 @@ describe("shared workbench semantic route inference", () => {
     ["composer-sendable", "new-thread"],
     ["model-picker-empty", "new-thread"],
     ["existing-thread-completed", "existing-thread"],
+    ["existing-thread-completed-no-diff", "existing-thread"],
     ["composer-docked", "existing-thread"],
     ["review-diff", "existing-thread"],
     ["right-panel-terminal-vertical-split", "existing-thread"],

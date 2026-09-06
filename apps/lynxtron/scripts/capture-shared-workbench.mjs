@@ -1716,8 +1716,12 @@ function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeigh
   return Math.abs(webRect.y - lynxRect.y) <= 16;
 }
 
+function isCompletedThreadState() {
+  return stateId === "existing-thread-completed" || stateId === "existing-thread-completed-no-diff";
+}
+
 function completedComposerProviderStateMatches(state) {
-  if (stateId !== "existing-thread-completed") return true;
+  if (!isCompletedThreadState()) return true;
   const webLabel = state?.web?.productState?.visibleModelLabel?.trim() ?? "";
   const lynxLabel = state?.lynx?.productState?.visibleModelLabel?.trim() ?? "";
   const webComposer = state?.web?.composerMetrics;
@@ -1730,6 +1734,43 @@ function completedComposerProviderStateMatches(state) {
     JSON.stringify((webComposer?.controls ?? []).map(({ id }) => id)) ===
       JSON.stringify((lynxComposer?.controls ?? []).map(({ id }) => id))
   );
+}
+
+function completedNoDiffStateMatches(state) {
+  if (stateId !== "existing-thread-completed-no-diff") return true;
+  const webRows = state?.web?.timelineMetrics?.rows ?? [];
+  const lynxRows = state?.lynx?.timelineMetrics?.rows ?? [];
+  const webAssistant = webRows.filter((row) => row.role === "assistant");
+  const lynxAssistant = lynxRows.filter((row) => row.role === "assistant");
+  return (
+    JSON.stringify(webRows) === JSON.stringify(lynxRows) &&
+    webAssistant.length > 0 &&
+    JSON.stringify(webAssistant) === JSON.stringify(lynxAssistant) &&
+    webAssistant.every((row) => row.text.trim().length > 0) &&
+    (state?.web?.reviewMetrics?.checkpointCards?.length ?? 0) === 0 &&
+    (state?.lynx?.reviewMetrics?.checkpointCards?.length ?? 0) === 0
+  );
+}
+
+function completedNoDiffGeometryMatches(webMetrics, lynxMetrics) {
+  if (stateId !== "existing-thread-completed-no-diff") return true;
+  const webRows = webMetrics?.rowGeometry ?? [];
+  const lynxRows = lynxMetrics?.rowGeometry ?? [];
+  if (webRows.length !== 3 || lynxRows.length !== 3) return false;
+  return webRows.every((webRow, index) => {
+    const lynxRow = lynxRows[index];
+    return (
+      lynxRow?.id === webRow.id &&
+      lynxRow.kind === webRow.kind &&
+      lynxRow.role === webRow.role &&
+      ["x", "y", "width", "height"].every(
+        (key) =>
+          typeof webRow[key] === "number" &&
+          typeof lynxRow[key] === "number" &&
+          Math.abs(webRow[key] - lynxRow[key]) <= 1,
+      )
+    );
+  });
 }
 
 function readCompletedComposerProviderState(state) {
@@ -6331,6 +6372,7 @@ async function main() {
     "existing-thread-idle",
     "existing-thread-working",
     "existing-thread-completed",
+    "existing-thread-completed-no-diff",
     "existing-thread-failed",
     "existing-thread-approval",
     "existing-thread-question",
@@ -6420,7 +6462,7 @@ async function main() {
         ? seed?.dataset?.workingThread
         : stateId === "composer-plan-mode"
           ? seed?.dataset?.canonicalThread
-          : stateId === "existing-thread-completed"
+          : isCompletedThreadState()
             ? seed?.dataset?.completedThread
             : stateId === "existing-thread-failed"
               ? seed?.dataset?.failedThread
@@ -6444,10 +6486,7 @@ async function main() {
       `State ${stateId} requires a starting thread fixture, but ${seedSource} has none`,
     );
   }
-  if (
-    stateId === "existing-thread-completed" &&
-    expectedThreadFixture?.latestTurnState !== "completed"
-  ) {
+  if (isCompletedThreadState() && expectedThreadFixture?.latestTurnState !== "completed") {
     throw new Error(
       `State ${stateId} requires a populated completed-turn fixture, but ${seedSource} has none`,
     );
@@ -6828,6 +6867,7 @@ async function captureCell({
     "git-publish-dialog": "existing-thread",
     "project-action-dialog": "existing-thread",
     "existing-thread-completed": "existing-thread",
+    "existing-thread-completed-no-diff": "existing-thread",
     "existing-thread-failed": "existing-thread",
     "chat-thread-narrow": "existing-thread",
     "chat-input-narrow-expanded": "existing-thread",
@@ -9243,7 +9283,8 @@ async function captureCell({
       (composerInputReady &&
         composerStateReady &&
         composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
-        completedComposerProviderStateMatches(state));
+        completedComposerProviderStateMatches(state) &&
+        completedNoDiffStateMatches(state));
     const planModeReady = composerPlanModeMatches(state);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
@@ -9307,6 +9348,7 @@ async function captureCell({
       isFlatSidebarLayoutState ||
       isSidebarThreadHoverPreviewState ||
       isNarrowChatThreadState ||
+      completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) ||
       (isReviewState && width <= 1023) ||
       coreGeometryMatches(state?.web, state?.lynx);
     const heroGeometryReady = heroGeometryMatches(state);
@@ -10256,6 +10298,7 @@ async function captureCell({
     isFlatSidebarLayoutState ||
     isSidebarThreadHoverPreviewState ||
     isNarrowChatThreadState ||
+    completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) ||
     (isReviewState && width <= 1023) ||
     isChatOutlineState ||
     coreGeometryMatches(state?.web, state?.lynx);
@@ -10279,7 +10322,8 @@ async function captureCell({
     (finalComposerInputReady &&
       finalComposerStateReady &&
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
-      completedComposerProviderStateMatches(state));
+      completedComposerProviderStateMatches(state) &&
+      completedNoDiffStateMatches(state));
   const finalPlanModeReady = composerPlanModeMatches(state);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
@@ -10950,6 +10994,7 @@ async function captureCell({
     isFlatSidebarLayoutState ||
     isSidebarThreadHoverPreviewState ||
     isNarrowChatThreadState ||
+    completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) ||
     isChatOutlineState ||
     coreGeometryMatches(state?.web, state?.lynx);
   finalFilesBrowserReady = filesBrowserReady(state);
@@ -12316,6 +12361,7 @@ async function captureCell({
     finalSettingsModelMutationReady &&
     finalConnectionsMutationReady &&
     finalTranscriptReady &&
+    completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     finalProviderStatusBannerReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
@@ -12347,6 +12393,11 @@ async function captureCell({
       finalHeroGeometryReady,
       finalComposerReady,
       completedComposerProviderState: readCompletedComposerProviderState(state),
+      completedNoDiffState: {
+        match: completedNoDiffStateMatches(state),
+        webCheckpointCount: state?.web?.reviewMetrics?.checkpointCards?.length ?? 0,
+        lynxCheckpointCount: state?.lynx?.reviewMetrics?.checkpointCards?.length ?? 0,
+      },
       lifecycleFaultPreflight: {
         required: requiresStableProviderFaultPreflight,
         stablePolls: lifecycleFaultPreflightStablePolls,
@@ -12399,6 +12450,10 @@ async function captureCell({
       finalSettingsModelMutationReady,
       finalConnectionsMutationReady,
       finalTranscriptReady,
+      completedNoDiffGeometryReady: completedNoDiffGeometryMatches(
+        state?.web?.timelineMetrics,
+        state?.lynx?.timelineMetrics,
+      ),
       finalProviderStatusBannerReady,
       finalPendingRequestReady,
       multiStepQuestionStage,

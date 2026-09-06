@@ -197,6 +197,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'expectedThreadFixture?.latestTurnState !== "error"');
     assert.include(source, "function completedComposerProviderStateMatches(state)");
     assert.include(source, 'stateId !== "existing-thread-completed"');
+    assert.include(source, 'stateId === "existing-thread-completed-no-diff"');
+    assert.include(source, "function completedNoDiffStateMatches(state)");
+    assert.include(source, "webAssistant.every((row) => row.text.trim().length > 0)");
+    assert.include(source, "state?.web?.reviewMetrics?.checkpointCards?.length ?? 0");
+    assert.include(source, "state?.lynx?.reviewMetrics?.checkpointCards?.length ?? 0");
+    assert.include(source, "completedNoDiffStateMatches(state)");
+    assert.include(source, "completedNoDiffState: {");
+    assert.include(source, "function completedNoDiffGeometryMatches(webMetrics, lynxMetrics)");
+    assert.include(source, "completedNoDiffGeometryReady:");
     assert.include(source, "webLabel.length > 0");
     assert.include(source, "webComposer?.state === lynxComposer?.state");
     assert.include(source, "completedComposerProviderStateMatches(state)");

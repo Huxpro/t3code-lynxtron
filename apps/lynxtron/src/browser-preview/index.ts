@@ -544,7 +544,9 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".transcript-assistant-group,[data-timeline-row-kind='work']{" +
       "padding-bottom:8px;box-sizing:border-box;}" +
       ".transcript-work-group__entries{width:calc(100% + 8px)!important;}" +
+      ".timeline-row-root--turn-fold{height:45px!important;}" +
       ".transcript-assistant-row{display:flex;flex-direction:column;width:100%;box-sizing:border-box;}" +
+      ".transcript-assistant-row>.inline-markdown-row{min-height:23px!important;margin-bottom:0!important;}" +
       ".transcript-assistant-meta-spacer{display:block;width:100%;height:24px;}" +
       ".transcript-assistant-meta-spacer--code{height:31px;}" +
       ".transcript-assistant-meta-spacer--checkpoint{height:26px;}" +
