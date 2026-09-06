@@ -37,8 +37,9 @@ This plan replaces the current Lynxtron browser preview slice with a production-
 
 ### CEF0 — Unblock and prove the runtime
 
+- [x] Verify the repository-owned runtime staging path independently: `prepare:cef-runtime` copies the 0.0.18 CEF framework and all five helper apps into the devtool runtime, the framework's four standard relative symlinks resolve, and every expected executable exists. Do not replace these valid framework symlinks with flattened copies.
 - [ ] Patch or upgrade the Lynxtron/CEF binding so JavaScript initialization options reach CEF, including an explicit run-owned cache root.
-- [ ] Repair builder handling of relative Lynxtron Framework symlinks and restore packaged `.app` output.
+- [ ] Repair the upstream packaged-app traversal of the already-valid relative CEF framework symlinks and restore packaged `.app` output.
 - [ ] Launch one exact-owned packaged process with an isolated `T3_LYNXTRON_BASE_DIR`; record PID, executable, bundle hash, cache root, viewport, and DevTool client identity.
 - [ ] Load an HTTP page and retain `bindload` and `bindlocationchange` evidence. Repeat with one expected failure and prove recovery in the same tab.
 
