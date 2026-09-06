@@ -454,3 +454,4 @@ existing-thread-project-favicon-current,2026-09-06T01:54:00-04:00,5dcd118d7213e3
 existing-thread-header-open-control-current,2026-09-06T02:15:00-04:00,2064b7323,commit,Header Open control geometry parity,0.174441,0.174393,0.034172,0.145232,0.854768,0.817449
 new-thread-provider-status-banner-current,2026-09-06T03:59:52-04:00,ae8b8a0ce8b127a7ec01010210758bef7c60f3d7,commit,Provider status banner geometry parity,0.174445,0.174393,0.034177,0.145232,0.854768,0.817445
 new-thread-header-add-action-current,2026-09-06T04:14:42-04:00,295a4bda0f425bf4d66cfe77acf118560d55b165,commit,Header Add action geometry parity,0.174448,0.174393,0.034181,0.145232,0.854768,0.817442
+new-thread-header-breadcrumb-current,2026-09-06T04:25:49-04:00,b191dba33dc07b1de8e4c553f6b56f941d3c259f,commit,Header breadcrumb geometry parity,0.174442,0.174393,0.034173,0.145232,0.854768,0.817448

@@ -26626,6 +26626,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-header-breadcrumb-current",
+      "observedAt": "2026-09-06T04:25:49-04:00",
+      "commit": "b191dba33dc07b1de8e4c553f6b56f941d3c259f",
+      "codeCommit": "b191dba33dc07b1de8e4c553f6b56f941d3c259f",
+      "codeState": "commit",
+      "label": "Header breadcrumb geometry parity",
+      "narrative": "The Lynx project crumb was approximately 2px narrower because of renderer text shaping, and an obsolete translate moved the thread title another 1.5px left and 1px down. A 2px trailing rhythm correction plus removal of the transform aligns the thread-title origin to x=436.953125, y=16 versus Web x=436.984375, y=16.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A post-commit paired capture holds the isolated snapshot, project, route, provider state, theme, viewport, and Header actions constant while changing only the breadcrumb leaf."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/header-breadcrumb-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "d05f850202a66ee05d4fb6872735191fabd6aa6904973733d8603c30b5f5dc56"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.03125, 0, 1.4375, 0],
+              "anchorScale": 399.21875,
+              "confidence": 0.99,
+              "method": "header-breadcrumb-thread-geometry",
+              "source": "Thread-title x and y match within 0.03125px and zero pixels respectively; height is exactly 20px in both panes"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-new-thread-capture",
+              "source": "Post-commit capture passes the complete same-server hard gate with matching state identity and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
