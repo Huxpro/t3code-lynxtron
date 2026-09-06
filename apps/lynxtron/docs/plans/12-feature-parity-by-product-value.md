@@ -226,6 +226,8 @@ Replace approved placeholders only after chat, remote operation, and review are 
 
 ### Browser follow-up (2026-09-06)
 
+The detailed implementation and acceptance checklist now lives in [Plan 13: Bring the builtin browser to Lynxtron parity](./13-cef-webview-browser-parity.md). Keep this section as the compact status summary.
+
 - [x] Read the Lynxtron Browser introduction and the `<x-webview>` API contract.
 - [x] Audit Synara's successful WKWebView surface and its failed CEF 0.0.16 experiment.
 - [x] Upgrade the Lynxtron host/dev plugin to 0.0.18, register `@lynx-js/cef-webview`, and stage its native package through AutoLink in development and production builds.

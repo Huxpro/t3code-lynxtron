@@ -20,6 +20,8 @@ Use [Prove the Lynxtron architecture through product outcomes](./11-outcome-driv
 
 [Complete Lynxtron feature parity by product value](./12-feature-parity-by-product-value.md) is the queued successor. Start it only after Plan 11 OC7 passes. Plan 12 orders the remaining product gap by user value: complete agent intervention and Composer context, transcript interaction, remote/multi-environment operation, change review, secondary terminal/browser surfaces, and finally platform performance and polish.
 
+[Bring the builtin browser to Lynxtron parity](./13-cef-webview-browser-parity.md) is the executable PF6 browser sub-plan. It maps the official Lynxtron `<webview>` contract, Synara's proven native lifecycle, and every current Electron preview capability to explicit implementation and acceptance gates. CEF0 remains blocked by the documented 0.0.18 initialization and packaging gaps, while shared contract, policy, persistence, and Browser-chrome work may continue independently.
+
 Plan 11 supersedes Plan 10's completed task table and the task order in plans 06 and 09. Keep Plan 10 as architectural history. Plan 11C supersedes Plan 11A/11B as the Harness execution context and may revise the queued Plan 12 order after its residual atlas and priority roadmap are complete. Keep the certification tiers, compatibility ledger, strict reuse calculation, fidelity thresholds, and existing evidence defined in this index, but classify legacy evidence through Plan 11C before using it.
 
 ## Current baseline
