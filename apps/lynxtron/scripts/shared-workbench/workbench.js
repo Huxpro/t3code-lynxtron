@@ -2751,7 +2751,11 @@ function readLynxPane() {
             box: readElementBox(item),
             line: readElementBox(item.querySelector(".transcript-work-entry-line")),
             icon: readElementBox(item.querySelector(".transcript-work-entry-icon")),
-            iconImage: readElementBox(item.querySelector(".transcript-work-entry-icon image")),
+            iconImage: readElementBox(
+              item.querySelector(
+                ".transcript-work-entry-icon image, .transcript-work-entry-icon x-image",
+              ),
+            ),
             heading: readElementBox(item.querySelector(".transcript-work-entry-heading")),
             preview: readElementBox(item.querySelector(".transcript-work-entry-preview")),
             body: readElementBox(item.querySelector(".transcript-work-entry-body")),
