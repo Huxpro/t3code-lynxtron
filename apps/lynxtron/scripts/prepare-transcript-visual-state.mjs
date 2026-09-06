@@ -50,7 +50,12 @@ function waitForSignal(register, label, timeoutMs) {
 export async function prepareTranscriptVisualState(baseDirectory, options = {}) {
   const promptCount = Math.max(1, options.promptCount ?? 1);
   const settleMode = options.settleMode ?? "interrupted";
-  if (settleMode !== "interrupted" && settleMode !== "completed" && settleMode !== "failed") {
+  if (
+    settleMode !== "idle" &&
+    settleMode !== "interrupted" &&
+    settleMode !== "completed" &&
+    settleMode !== "failed"
+  ) {
     throw new Error(`Unsupported transcript settle mode: ${settleMode}`);
   }
   const baseDir = resolve(baseDirectory);
@@ -128,66 +133,90 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
     const { threadId } = await connector.createThread({ projectId: project.id });
     await connector.renameThread({ threadId, title });
     connector.selectThread(threadId);
-    // Earlier prompts are interrupted as soon as their user message persists:
-    // they exist to give the transcript real scroll depth, while only the
-    // final prompt is allowed to accumulate provider work.
-    for (let index = 0; index < promptCount - 1; index += 1) {
-      const before = threadPayloads.get(threadId)?.messages?.length ?? 0;
-      await connector.sendPrompt({
-        threadId,
-        text: `${promptText} (context ${index + 1} of ${promptCount})`,
-      });
+    let payload;
+    if (settleMode === "idle") {
       await waitFor(
-        () => (threadPayloads.get(threadId)?.messages?.length ?? 0) > before,
-        `persisted prompt message ${index + 1}`,
+        () => latestShell.threads.find((thread) => thread.id === threadId),
+        "idle thread shell",
       );
-      await connector.interrupt({ threadId });
-      await new Promise((resolveWait) => setTimeout(resolveWait, 1_500));
-    }
-    const settledPayloadPromise = waitForThread(
-      threadId,
-      (payload) => {
-        const state = payload?.latestTurn?.state;
-        if (settleMode === "failed") {
-          return payload?.sessionStatus === "error" && state === "error" ? payload : null;
-        }
-        if (payload?.sessionStatus === "error") {
-          return { errorState: "session-error", payload };
-        }
-        if (settleMode === "completed") {
-          return state === "completed" &&
-            payload.messages.some(
-              (message) => message.role === "assistant" && message.text.trim().length > 0,
-            )
+      const database = new DatabaseSync(databasePath, { readOnly: true });
+      const counts = database
+        .prepare(
+          `SELECT
+            (SELECT count(*) FROM projection_thread_sessions WHERE thread_id = ?) AS sessions,
+            (SELECT count(*) FROM projection_turns WHERE thread_id = ?) AS turns,
+            (SELECT count(*) FROM projection_thread_messages WHERE thread_id = ?) AS messages`,
+        )
+        .get(threadId, threadId, threadId);
+      database.close();
+      if (counts?.sessions !== 0 || counts?.turns !== 0 || counts?.messages !== 0) {
+        throw new Error(
+          `Idle transcript fixture unexpectedly has runtime rows: ${JSON.stringify(counts)}`,
+        );
+      }
+      payload = { messages: [], activities: [], latestTurn: null };
+    } else {
+      // Earlier prompts are interrupted as soon as their user message persists:
+      // they exist to give the transcript real scroll depth, while only the
+      // final prompt is allowed to accumulate provider work.
+      for (let index = 0; index < promptCount - 1; index += 1) {
+        const before = threadPayloads.get(threadId)?.messages?.length ?? 0;
+        await connector.sendPrompt({
+          threadId,
+          text: `${promptText} (context ${index + 1} of ${promptCount})`,
+        });
+        await waitFor(
+          () => (threadPayloads.get(threadId)?.messages?.length ?? 0) > before,
+          `persisted prompt message ${index + 1}`,
+        );
+        await connector.interrupt({ threadId });
+        await new Promise((resolveWait) => setTimeout(resolveWait, 1_500));
+      }
+      const settledPayloadPromise = waitForThread(
+        threadId,
+        (payload) => {
+          const state = payload?.latestTurn?.state;
+          if (settleMode === "failed") {
+            return payload?.sessionStatus === "error" && state === "error" ? payload : null;
+          }
+          if (payload?.sessionStatus === "error") {
+            return { errorState: "session-error", payload };
+          }
+          if (settleMode === "completed") {
+            return state === "completed" &&
+              payload.messages.some(
+                (message) => message.role === "assistant" && message.text.trim().length > 0,
+              )
+              ? payload
+              : state === "error" || state === "interrupted"
+                ? { errorState: state, payload }
+                : null;
+          }
+          return state === "completed" || state === "error" || state === "interrupted"
             ? payload
-            : state === "error" || state === "interrupted"
-              ? { errorState: state, payload }
-              : null;
-        }
-        return state === "completed" || state === "error" || state === "interrupted"
-          ? payload
-          : null;
-      },
-      `${settleMode} transcript turn`,
-      options.timeoutMs ?? 300_000,
-    );
-    const beforeFinal = threadPayloads.get(threadId)?.messages?.length ?? 0;
-    await connector.sendPrompt({ threadId, text: promptText });
-    await waitFor(
-      () => (threadPayloads.get(threadId)?.messages?.length ?? 0) > beforeFinal,
-      "persisted prompt message",
-    );
-    if (settleMode === "interrupted") {
-      // Existing scroll-depth fixture behavior: allow bounded real work before
-      // interrupting, then retain the resulting canonical projection.
-      await new Promise((resolveWait) => setTimeout(resolveWait, 8_000));
-      await connector.interrupt({ threadId });
+            : null;
+        },
+        `${settleMode} transcript turn`,
+        options.timeoutMs ?? 300_000,
+      );
+      const beforeFinal = threadPayloads.get(threadId)?.messages?.length ?? 0;
+      await connector.sendPrompt({ threadId, text: promptText });
+      await waitFor(
+        () => (threadPayloads.get(threadId)?.messages?.length ?? 0) > beforeFinal,
+        "persisted prompt message",
+      );
+      if (settleMode === "interrupted") {
+        // Existing scroll-depth fixture behavior: allow bounded real work before
+        // interrupting, then retain the resulting canonical projection.
+        await new Promise((resolveWait) => setTimeout(resolveWait, 8_000));
+        await connector.interrupt({ threadId });
+      }
+      const settledResult = await settledPayloadPromise;
+      if (settledResult?.errorState) {
+        throw new Error(`Transcript turn became ${settledResult.errorState} instead of completed.`);
+      }
+      payload = settledResult;
     }
-    const settledResult = await settledPayloadPromise;
-    if (settledResult?.errorState) {
-      throw new Error(`Transcript turn became ${settledResult.errorState} instead of completed.`);
-    }
-    const payload = settledResult;
     const assistantText =
       payload.messages
         .filter((message) => message.role === "assistant")
@@ -231,7 +260,7 @@ export async function prepareTranscriptVisualState(baseDirectory, options = {}) 
       messageCount: payload?.messages?.length ?? 0,
       activityCount: payload?.activities?.length ?? 0,
       latestTurnState: payload?.latestTurn?.state ?? null,
-      settled: true,
+      settled: settleMode !== "idle",
     };
   } finally {
     connector.dispose();

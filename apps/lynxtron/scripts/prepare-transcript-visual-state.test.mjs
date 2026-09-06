@@ -12,6 +12,7 @@ describe("transcript visual-state preparation", () => {
   it("waits for a real completed turn and assistant message", () => {
     assert.include(source, 'settleMode !== "completed" &&');
     assert.include(source, 'settleMode !== "failed"');
+    assert.include(source, 'settleMode !== "idle" &&');
     assert.include(source, 'state === "completed"');
     assert.include(source, 'message.role === "assistant"');
     assert.include(source, "message.text.trim().length > 0");
@@ -20,6 +21,15 @@ describe("transcript visual-state preparation", () => {
     assert.include(source, "const settledResult = await settledPayloadPromise");
     assert.include(source, "if (expectedAssistantText && assistantText !== expectedAssistantText)");
     assert.include(source, 'argumentValue("--expect-assistant")');
+  });
+
+  it("creates idle threads through the real connector without sending a prompt", () => {
+    assert.include(source, 'if (settleMode === "idle")');
+    assert.include(source, "latestShell.threads.find((thread) => thread.id === threadId)");
+    assert.include(source, "SELECT count(*) FROM projection_thread_sessions");
+    assert.include(source, "Idle transcript fixture unexpectedly has runtime rows");
+    assert.include(source, "payload = { messages: [], activities: [], latestTurn: null }");
+    assert.include(source, 'settled: settleMode !== "idle"');
   });
 
   it("interrupts only the legacy scroll-depth fixture mode", () => {
