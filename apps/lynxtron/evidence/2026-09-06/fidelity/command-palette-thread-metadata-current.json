@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T14:54:00-04:00",
+  "stateId": "command-palette-navigation",
+  "productCommit": "d0c5fa28e",
+  "harnessCommit": "3e3760fbc",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "69d4e5cda7c378b435de8f7ced3e04aa78ba746f0584b246170f946489002126",
+    "webImageSha256": "857abb05f617627ad9aa2a9986fdc3556fdd4ef2ec6388716e44bad4a4564e7d",
+    "lynxImageSha256": "e03cdc57f16aa706b0bbd753475e37209c022b84606c97f594f0298114c6990a",
+    "webBundle": "77045d540877",
+    "lynxBundle": "d21f3d1a1310",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "threadMetadata": {
+    "titleWeb": "New thread",
+    "titleLynx": "New thread",
+    "descriptionWeb": "t3code-lynxtron",
+    "descriptionLynx": "t3code-lynxtron",
+    "timestampWeb": "42d ago",
+    "timestampLynx": "42d ago",
+    "removedLynxOnlyFallback": "No branch",
+    "timestampSource": "latestUserMessageAt ?? updatedAt ?? createdAt"
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM on the full 1280x820 frame and exact 576x420 command-palette panel crop",
+    "before": {
+      "fullFrameSsim": 0.94398,
+      "panelSsim": 0.865965
+    },
+    "current": {
+      "fullFrameSsim": 0.945034,
+      "panelSsim": 0.871098
+    }
+  },
+  "interaction": {
+    "completed": true,
+    "timeline": [
+      "hover-web",
+      "hover-lynx",
+      "web-arrow-down",
+      "web-arrow-up",
+      "web-enter",
+      "web-backspace",
+      "web-escape",
+      "lynx-pointer-dismiss",
+      "final-hover"
+    ],
+    "lynxForWebKeyboard": "blocked-browser-proxy-no-main-thread-key-bridge",
+    "nativePhysicalKeyboard": "pending-user-session"
+  },
+  "boundary": "The harness now rejects active-thread kind or id mismatches even for flat-sidebar overlay states. This Browser evidence proves shared Recent Threads metadata and the existing interaction sequence; it does not claim Native physical keyboard acceptance. Screenshots remain temporary because the tracked screenshot budget is full."
+}
