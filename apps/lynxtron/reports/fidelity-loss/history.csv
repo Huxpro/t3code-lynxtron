@@ -472,3 +472,4 @@ settings-keybindings-remove-mutation-current,2026-09-06T09:21:00-04:00,03a2d2527
 settings-keybindings-edit-reset-mutation-current,2026-09-06T09:35:00-04:00,306f48dbe,commit,Keybindings edit and reset mutations,0.173451,0.173423,0.034172,0.144207,0.855793,0.818439
 right-panel-terminal-same-session-current,2026-09-06T10:14:00-04:00,8434468b6,commit,Right Panel Terminal same-session capture,0.17228,0.17228,0.034306,0.142875,0.857125,0.81961
 provider-dialog-light-driver-current,2026-09-06T10:19:00-04:00,c0266aaba,commit,Provider dialog light Driver current coverage,0.172292,0.17228,0.03432,0.142875,0.857125,0.819598
+composer-working-clean-current,2026-09-06T10:49:00-04:00,4e5b7cf14,commit,Composer Working clean retained frame,0.170999,0.170999,0.034255,0.141595,0.858405,0.820891

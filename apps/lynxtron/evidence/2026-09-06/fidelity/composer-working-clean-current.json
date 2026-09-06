@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T10:49:00-04:00",
+  "stateId": "composer-working",
+  "productCommit": "4e5b7cf14",
+  "harnessCommit": "4e5b7cf14",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread"
+  },
+  "capture": {
+    "reportSha256": "09e22cd43591726a096327a0a3f617e9c066f42669b1cc81bdba7e08160672fb",
+    "webImageSha256": "e575cc160eb1b5c0097afb0c05329e1c2d18956ab554692333db8ff4b6839d50",
+    "lynxImageSha256": "741a0a245cfed622c5bcac287c2a2603fe878609b12517dcb434124365a2d580",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "sessionProjection": {
+    "statusWeb": "running",
+    "statusLynx": "running",
+    "sidebarStatusWeb": "Working",
+    "sidebarStatusLynx": "Working",
+    "composerStateWeb": "working",
+    "composerStateLynx": "working",
+    "primaryStateWeb": "stop",
+    "primaryStateLynx": "stop"
+  },
+  "visibleState": {
+    "rowsWeb": ["user:Say hello in exactly 3 words.", "working"],
+    "rowsLynx": ["user:Say hello in exactly 3 words.", "working"],
+    "composerRectWeb": [384, 628, 768, 140],
+    "composerRectLynx": [384, 628, 768, 140],
+    "editorRectWeb": [401, 645, 734, 70],
+    "editorRectLynx": [401, 645, 734, 70],
+    "messageMetaOpacityWeb": 0,
+    "messageMetaOpacityLynx": 0,
+    "providerNotificationVisible": false
+  },
+  "fix": "Harden the paired capture so the retained frame rechecks and dismisses visible Web notifications, parks the pointer outside message rows, waits for the hover transition, and requires both user-message meta surfaces to resolve to zero opacity.",
+  "boundary": "This is Browser-first evidence for the shared working state. Native remains a separate acceptance surface. Minor font rasterization and the 0.5px transcript row-height difference remain conservative residuals. Screenshots remain temporary."
+}

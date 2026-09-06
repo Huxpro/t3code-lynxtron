@@ -27438,7 +27438,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/provider-dialog-light-driver-current.json",
           "classification": "tracked-current",
-          "sha256": "caccbbb2c34677e37fbba7ce5d22cca46e9903d7a5ecdb964a824f3db82614f8"
+          "sha256": "f3d98e185aba3d53396ed1665d5f0be77beeb7fdab1753fe1febe6130b15885f"
         }
       ],
       "updates": [
@@ -27463,6 +27463,66 @@
               "confidence": 0.99,
               "method": "dual-pointer-provider-driver-open",
               "source": "Real pointer input opens both dialogs and both settle on Driver step 0 with the same selected choice."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "composer-working-clean-current",
+      "observedAt": "2026-09-06T10:49:00-04:00",
+      "commit": "4e5b7cf14",
+      "codeCommit": "4e5b7cf14",
+      "codeState": "commit",
+      "label": "Composer Working clean retained frame",
+      "narrative": "The previous Working screenshot was invalid because a Web provider-update toast and sticky Lynx message hover polluted otherwise matching state. The capture now rechecks visible Web toasts immediately before capture, parks the pointer off transcript rows, waits for the opacity transition, and requires both user metadata surfaces to resolve to opacity zero. On the exact committed harness, both panes show the same running thread, user message, Working row, stop control, and Composer geometry without transient overlays.",
+      "attribution": {
+        "allocation": "evidence-session",
+        "confidence": 0.99,
+        "reason": "The update removes capture contamination and measures the existing product on the same server, thread, route, viewport, and committed bundles."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/composer-working-clean-current.json",
+          "classification": "tracked-current",
+          "sha256": "cfa385a32bbb64646ccd3eb50585495dcbf8a66823416d8da3ca416bbb54bdcb"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "working-session-projection",
+              "source": "Both panes render the same user message and one Working row with working composer and stop primary action."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0.5, 0.5],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "working-composer-and-row-geometry",
+              "source": "Composer is exactly 768 by 140 at x384 y628 and editor is exactly 734 by 70 at x401 y645; transcript row heights differ by at most 0.5px."
+            },
+            "material": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "clean-working-pane-review",
+              "source": "After toast and hover-meta cleanup, bubbles, working indicator, composer surface, and stop control visually align; residual preserves font rasterization and icon rendering differences."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "working-stop-state-contract",
+              "source": "Both clients project running session status, Working sidebar status, one Working row, and stop primary state."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-thread-working-runtime",
+              "source": "One isolated server and thread, exact committed bundles, matched running session projection, zero renderer errors, and clean disposal."
             }
           }
         }
