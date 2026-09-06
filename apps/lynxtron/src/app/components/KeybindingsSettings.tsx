@@ -5,7 +5,7 @@ import {
   formatKeybindingShortcutLabel,
   shortcutToKeybindingInput,
 } from "../../../../web/src/components/settings/KeybindingsSettings.logic";
-import { useCallback, useState } from "@lynx-js/react";
+import { useCallback, useMemo, useState } from "@lynx-js/react";
 import type {
   KeybindingCommand,
   KeybindingShortcut,
@@ -13,9 +13,11 @@ import type {
   ServerUpsertKeybindingInput,
 } from "@t3tools/contracts";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import { usePreferredEditorState } from "../state/prefsStore";
 import { Kbd, KbdGroup } from "../../../../web/src/components/ui/kbd";
 import { Icon } from "./Icon";
 import { SettingsSection } from "./SettingsControls";
+import { resolvePreferredEditor } from "./openInEditor.logic";
 
 function shortcutParts(shortcut: KeybindingShortcut, platform: string): ReadonlyArray<string> {
   if (!platform.toLowerCase().includes("darwin")) {
@@ -54,9 +56,15 @@ export function KeybindingsSettings() {
   const [editingWhen, setEditingWhen] = useState("");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [storedEditor] = usePreferredEditorState();
   const rows = buildKeybindingRows(keybindings, query);
   const commandOptions = buildKeybindingCommandOptions(keybindings);
   const platform = serverConfig?.environment.platform.os ?? "darwin";
+  const preferredEditor = useMemo(
+    () => resolvePreferredEditor(serverConfig?.availableEditors ?? [], storedEditor),
+    [serverConfig?.availableEditors, storedEditor],
+  );
+  const keybindingsConfigPath = serverConfig?.keybindingsConfigPath ?? null;
   const inputValue = (event: { detail?: { value?: unknown } }) =>
     typeof event.detail?.value === "string" ? event.detail.value : "";
   const persist = useCallback(
@@ -126,6 +134,25 @@ export function KeybindingsSettings() {
               bindtap={() => setAddOpen(true)}
             >
               <Icon name="plus" size={12} color="#818181" />
+            </view>
+            <view
+              aria-label="Open keybindings.json"
+              aria-disabled={!keybindingsConfigPath || !preferredEditor ? "true" : "false"}
+              className={`keybindings-settings__icon-button${
+                !keybindingsConfigPath || !preferredEditor
+                  ? " keybindings-settings__icon-button--disabled"
+                  : ""
+              }`}
+              bindtap={() => {
+                if (!keybindingsConfigPath || !preferredEditor) return;
+                void t3ClientActions
+                  .openInEditor(keybindingsConfigPath, preferredEditor)
+                  .catch((cause) =>
+                    setError(cause instanceof Error ? cause.message : String(cause)),
+                  );
+              }}
+            >
+              <Icon name="file-json" size={12} color="#818181" />
             </view>
           </view>
         }

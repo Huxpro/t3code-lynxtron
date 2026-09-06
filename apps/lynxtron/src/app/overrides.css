@@ -5920,6 +5920,9 @@
   height: 20px;
   border-radius: 4px;
 }
+.keybindings-settings__icon-button--disabled {
+  opacity: 0.45;
+}
 .keybindings-settings__search {
   display: flex;
   flex-direction: row;

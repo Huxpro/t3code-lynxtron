@@ -223,6 +223,12 @@ describe("Lynx Settings route projection", () => {
     expect(keybindings).toContain('name="triangle-alert"');
     expect(keybindings).toContain('aria-label="Search keybindings"');
     expect(keybindings).toContain('aria-label="Add keybinding"');
+    expect(keybindings).toContain('aria-label="Open keybindings.json"');
+    expect(keybindings).toContain("serverConfig?.keybindingsConfigPath ?? null");
+    expect(keybindings).toContain(
+      "resolvePreferredEditor(serverConfig?.availableEditors ?? [], storedEditor)",
+    );
+    expect(keybindings).toContain(".openInEditor(keybindingsConfigPath, preferredEditor)");
     expect(keybindings).toContain('data-keybinding-add-row="true"');
     expect(keybindings).toContain("t3ClientActions");
     expect(keybindings).toContain(".upsertKeybinding(input)");

@@ -1308,6 +1308,9 @@ describe("desktop shell interaction contract", () => {
     expect(keybindingsSettingsSource).toContain(".removeKeybinding(input)");
     expect(keybindingsSettingsSource).toContain("replace: rowKeybindingTarget(row)");
     expect(keybindingsSettingsSource).toContain(
+      ".openInEditor(keybindingsConfigPath, preferredEditor)",
+    );
+    expect(keybindingsSettingsSource).toContain(
       '<Icon name="triangle-alert" size={14} color="#f59e0b" />',
     );
     expect(overrides).toContain(".keybindings-table__keycaps {\n  gap: 4px;\n  margin-left: 7px;");
