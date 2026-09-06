@@ -5,6 +5,7 @@ Source: the BW2 workbench comparison page
 authority vs Lynx-for-Web across the 7 key product states × 2 viewports.
 
 Classification:
+
 - **product** — a real shared-composition/CSS/leaf defect fixable in this repo.
 - **proxy** — a Lynx-for-Web browser-proxy rendering characteristic that does
   NOT reproduce in Native Lynxtron (BW5 territory); documented, not masked.
@@ -12,7 +13,7 @@ Classification:
   product.
 
 Every gate in the comparison page currently passes because the geometry
-baseline records the *current* per-pane render (so the gate detects change),
+baseline records the _current_ per-pane render (so the gate detects change),
 but the panes are visibly divergent. This log captures those visible
 divergences for triage and fix.
 
@@ -114,7 +115,6 @@ server, so a "reference-host" classification no longer exists. The SB4 findings
 - **D3** live environment banners (version mismatch, provider status, updates)
   — truthful live-server output, `live-state`, expected.
 
-
 ## D4 — Lynx-for-Web icons paint at intrinsic size, overflowing their box [proxy, RESOLVED]
 
 Symptom (SB4, live shared-server homepage): the chat header actions, composer
@@ -124,6 +124,7 @@ totally unlike the Web homepage — even though `getBoundingClientRect` reported
 the correct 14–16px boxes.
 
 Root cause (two parts):
+
 1. **Proxy — `x-image` collapses to `display:inline`.** `Icon`
    (`src/app/components/Icon.tsx`) renders lucide glyphs as pre-rasterized PNGs
    through Lynx's `<image>` (web-core `x-image`) with an inline px `width/height`
@@ -132,7 +133,7 @@ Root cause (two parts):
    host `display:inline` — on which `width` has no effect. Its inner
    `<img part="img">` (`width:100%`) then painted at the PNG's intrinsic size
    and overflowed. Verified by CDP: `cssWidth:16px` but `getBoundingClientRect
-   width:48px`, `display:inline`, `contain:none`.
+width:48px`, `display:inline`, `contain:none`.
 2. **Product — lucide SVG icons in the sidebar.** `SidebarV2.lynx.tsx` rendered
    the working/failed/settle/unsettle/unsnooze/woke status icons with
    lucide-react SVG components (`LoaderIcon`, `TriangleAlertIcon`, etc.) instead
@@ -148,6 +149,7 @@ icon-sized box) plus a short commit delay, and by re-seeding pristine at run
 start for determinism.
 
 Fix:
+
 - **Proxy** — `src/browser-preview/index.ts` `injectLynxLayoutDefaults` injects
   into the `<lynx-view>` shadow root:
   `x-image{display:inline-flex!important;flex:none!important;align-items:center;justify-content:center;overflow:hidden;contain:strict}`
@@ -166,3 +168,14 @@ Remaining homepage deltas are live-state, not layout: the Web pane's live
 environment banners (provider status, version mismatch, updates) and a differing
 active thread / third header action (`Publish repository` vs `Commit`), tracked
 as D2/D3 for Plan 12.
+
+## D5 — Screenshot-reported error state renders incorrectly [product, OPEN]
+
+The 2026-09-05 reference screenshot shows a visibly malformed Lynx error state.
+Keep this as an open fidelity-loss item until the exact error kind and a
+replayable isolated snapshot are available. The current retained fixtures prove
+Source Control discovery error, file-save failure, lifecycle reconnecting, and
+the historical failed-thread banner independently; none may be substituted for
+the screenshot without matching its route, thread, error payload, viewport, and
+UI state. Reproduce the exact state on Web and Lynx, use Web as the authority,
+then retain before/after geometry and pixel evidence.
