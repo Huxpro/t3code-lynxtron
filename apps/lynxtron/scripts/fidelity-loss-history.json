@@ -26709,6 +26709,48 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-sidebar-status-slot-current",
+      "observedAt": "2026-09-06T05:22:35-04:00",
+      "commit": "7ec4e0c11c820905610dfc67520b8a6f63e43cdb",
+      "codeCommit": "7ec4e0c11c820905610dfc67520b8a6f63e43cdb",
+      "codeState": "commit",
+      "label": "Sidebar thread status-slot geometry parity",
+      "narrative": "The shared status slot declares min-w-8 plus 4px left padding. Web's border-box keeps the allocation at 32px, while Lynx content-box expanded it to 36px and shifted the slot left by 4px. Explicit border-box sizing restores the exact Web x=205, y=154, width=32, height=20 geometry and returns the four pixels to the project-title allocation.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same completed thread, snapshot, route, theme, viewport, and Sidebar card isolate the status-slot box-model correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-thread-status-slot.json",
+          "classification": "tracked-current",
+          "sha256": "ad3e32ed238223cd6fa2234529f993c2862d88f94948d8f234abfbbaeb613eb4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 32,
+              "confidence": 0.99,
+              "method": "sidebar-thread-status-slot-geometry",
+              "source": "Status-slot x, y, width, and height exactly match Web after the box-sizing correction"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-completed-current-capture",
+              "source": "Post-commit capture passes the completed-thread hard gate with matching state identity and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
