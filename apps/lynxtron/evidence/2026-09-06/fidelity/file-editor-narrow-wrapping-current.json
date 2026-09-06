@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T15:48:00-04:00",
+  "stateId": "file-editor-detail-narrow-inline",
+  "productCommit": "b38bc7a19",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "rightPanelWidth": 360,
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "file": "docs/PORT_WORKFLOW.md",
+    "contentRevision": "6260:m9wd30"
+  },
+  "capture": {
+    "reportSha256": "07911033ddd4e588fe1846c13bd355efd70fff0a3bbf8e1319fd1f1d8d8f0267",
+    "webImageSha256": "eb2e84994369d46a40dc3961d3223d6b5a61b2808186b105939e9d2bab131a28",
+    "lynxImageSha256": "82d30ef7d4eee60a4c2afb85ce445c12ba939c9d8812df6dc069dbd874b39063",
+    "webBundle": "77045d540877",
+    "lynxBundle": "cb7234cfbc60",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "interaction": {
+    "openedBy": "web-pointer-click|lynx-pointer-click",
+    "returnedBy": "web-back-pointer|lynx-back-pointer",
+    "returnedWeb": true,
+    "returnedLynx": true
+  },
+  "geometry": {
+    "surfaceWeb": [665, 44, 359, 776],
+    "surfaceLynx": [665, 44, 359, 776],
+    "editorWeb": [665, 84, 359, 736],
+    "editorLynx": [665, 84, 359, 736],
+    "gutterWeb": [665, 92, 48.796875, 40],
+    "gutterLynx": [665, 92, 48.796875, 40],
+    "contentWeb": [713.796875, 92, 310.203125, 40],
+    "contentLynx": [713.796875, 92, 310.203125, 40]
+  },
+  "typography": {
+    "fontFamily": "SF Mono",
+    "fontSize": 13,
+    "lineHeight": 20,
+    "gutterPaddingWeb": [15.6025, 7.80127],
+    "gutterPaddingLynx": [15.6, 7.8],
+    "contentPaddingWeb": [7.80127, 7.80127],
+    "contentPaddingLynx": [7.8, 7.8]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM on the full 1024x820 frame and exact 359x776 File Editor surface",
+    "before": {
+      "fullFrameSsim": 0.839008,
+      "panelSsim": 0.633087
+    },
+    "current": {
+      "fullFrameSsim": 0.945723,
+      "panelSsim": 0.961663
+    }
+  },
+  "boundary": "The fix promotes the already-proven light-theme 13px gutter and symmetric 7.8px source padding into the theme-independent editor contract, synchronizing dark-mode wrapping. Lynx retains its lightweight tokenizer, so exact Pierre/TextMate color and glyph raster parity remains out of scope. Screenshots remain temporary because the tracked screenshot budget is full."
+}
