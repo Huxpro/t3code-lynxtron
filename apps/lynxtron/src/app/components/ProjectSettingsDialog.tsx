@@ -275,7 +275,11 @@ export function ProjectSettingsDialog({
           })}
           {error ? <text className="project-settings-dialog__error">{error}</text> : null}
         </scroll-view>
-        <view className="project-settings-dialog__footer flex flex-row">
+        <view
+          className={`project-settings-dialog__footer flex flex-row${
+            singleMember ? " project-settings-dialog__footer--single" : ""
+          }`}
+        >
           {singleMember && confirmingRemoveProjectId !== singleMember.id ? (
             <view
               className="project-settings-dialog__button project-settings-dialog__button--danger"

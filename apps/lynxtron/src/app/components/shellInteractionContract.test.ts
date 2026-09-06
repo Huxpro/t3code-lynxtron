@@ -1831,6 +1831,10 @@ describe("desktop shell interaction contract", () => {
     expect(projectSettings).toContain(
       "clientCapabilities.clipboard.writeText(member.workspaceRoot)",
     );
+    expect(projectSettings).toContain('singleMember ? " project-settings-dialog__footer--single"');
+    expect(overrides).toContain(
+      ".project-settings-dialog__footer--single {\n  justify-content: space-between;",
+    );
     expect(projectSettings).toContain("Project name");
     expect(projectSettings).toContain("Grouping rule");
     expect(projectSettings).toContain("Remove project");

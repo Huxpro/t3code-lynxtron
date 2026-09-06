@@ -12094,6 +12094,9 @@
   gap: 8px;
   box-sizing: border-box;
 }
+.project-settings-dialog__footer--single {
+  justify-content: space-between;
+}
 .project-settings-dialog__button {
   display: flex;
   align-items: center;
@@ -12105,6 +12108,7 @@
   border-color: var(--input);
   border-radius: 8px;
   background-color: transparent;
+  box-sizing: border-box;
 }
 .project-settings-dialog__button--primary {
   border-color: var(--primary);
