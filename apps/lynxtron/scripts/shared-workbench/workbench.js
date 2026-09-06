@@ -216,6 +216,27 @@ function readProviderStatusBannerMetrics(root) {
   };
 }
 
+function readThreadErrorBannerMetrics(root) {
+  const banner = [...(root?.querySelectorAll(".thread-error-banner") ?? [])].find(
+    (candidate) =>
+      !candidate.closest(
+        "[data-provider-status-banner], .provider-status-banner-flow, .provider-status-banner-overlay",
+      ),
+  );
+  const alert = banner?.querySelector(".thread-error-alert");
+  if (!banner || !alert) return null;
+  return {
+    banner: readElementBox(banner),
+    alert: readElementBox(alert),
+    icon: readElementBox(alert.querySelector(".thread-error-icon")),
+    copy: readElementBox(alert.querySelector(".thread-error-copy")),
+    title: readElementBox(alert.querySelector(".thread-error-title")),
+    description: readElementBox(alert.querySelector(".thread-error-description")),
+    action: readElementBox(alert.querySelector(".thread-error-action")),
+    text: alert.textContent?.trim() ?? "",
+  };
+}
+
 function readSidebarThreadMetrics(item) {
   const rect = item.getBoundingClientRect();
   const child = item.querySelector('[role="button"]');
@@ -2029,6 +2050,7 @@ function readLynxPane() {
       heroPresent,
       heroMetrics: readHeroMetrics(root),
       providerStatusBannerMetrics: readProviderStatusBannerMetrics(root),
+      threadErrorBannerMetrics: readThreadErrorBannerMetrics(root),
       activeThreadTitle: d.activeThreadTitle ?? null,
       productState: {
         route: settingsRoute ? (d.connector?.route ?? "/settings/general") : "/",
@@ -3122,6 +3144,7 @@ function readWebPane() {
       heroPresent,
       heroMetrics: readHeroMetrics(doc),
       providerStatusBannerMetrics: readProviderStatusBannerMetrics(doc),
+      threadErrorBannerMetrics: readThreadErrorBannerMetrics(doc),
       literalRoute,
       productState: {
         route: settingsRoute ? literalRoute : "/",

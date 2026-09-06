@@ -4025,7 +4025,7 @@
   align-items: center;
   min-height: 42px;
   padding: 12px 14px;
-  gap: 12px;
+  gap: 8px;
   border-width: 1px;
   border-style: solid;
   border-color: rgba(239, 68, 68, 0.32);
@@ -4061,6 +4061,17 @@
   line-height: 20px;
   white-space: pre-wrap;
 }
+.thread-error-action {
+  width: 24px;
+  height: 24px;
+}
+.thread-error-dismiss.ui-button--icon-xs {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  box-sizing: border-box;
+}
 .timeline-list {
   position: absolute;
   top: 0;
@@ -4090,7 +4101,7 @@
   padding-top: 48px;
 }
 .lynx-web-preview .timeline-list--top-banner {
-  padding-top: 20px;
+  padding-top: 16px;
 }
 .lynx-web-preview .timeline-settled-header-space {
   display: none;

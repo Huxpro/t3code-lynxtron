@@ -344,6 +344,11 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain("visibleThreadError");
     expect(chatView).toContain('label="Dismiss error"');
     expect(chatView).toContain('className="thread-error-dismiss"');
+    expect(overrides).toContain(".thread-error-action {\n  width: 24px;\n  height: 24px;");
+    expect(overrides).toContain(".thread-error-dismiss.ui-button--icon-xs {");
+    expect(overrides).toContain(
+      ".lynx-web-preview .timeline-list--top-banner {\n  padding-top: 16px;",
+    );
     expect(chatView).toContain("onTap={dismissThreadError}");
     expect(chatView).toContain(
       "hasTopBanner={Boolean(visibleThreadError || visibleProviderStatusNotice)}",
