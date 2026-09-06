@@ -27116,6 +27116,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-hero-paired-navigation-current",
+      "observedAt": "2026-09-06T07:55:00-04:00",
+      "commit": "d41e2e684",
+      "codeCommit": "a76fc7608",
+      "codeState": "commit",
+      "label": "New-thread Hero paired navigation refresh",
+      "narrative": "The prior hero harness allowed Web to auto-create a draft while Lynx remained on the seeded completed thread, producing incomparable model and Composer state. The current flow starts both panes on the same completed thread, drives each visible New thread control, accepts the real direct-draft or project-picker product branch, waits for matching model and Composer anatomy, and clears the transient tooltip before capture. Both panes now render unpersisted local drafts with Big Pickle, Build, Full access, matching context, exact Composer and editor geometry, and zero renderer errors.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The checkpoint repairs state preparation and assigns no product pixel improvement."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/new-thread-hero-paired-navigation.json",
+          "classification": "tracked-current",
+          "sha256": "10bb1161cd46bec26d726679fddef14ef8cdc860e2644d7cb011c80c250cb749"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-local-draft-navigation",
+              "source": "Both panes inherit the same source-thread model and expose matching Hero, Composer controls, placeholder, checkout, and branch context."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "new-thread-hero-core-geometry",
+              "source": "Composer frame and editor x, y, width, and height exactly match Web; the headline center gate also passes."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-new-thread-current-capture",
+              "source": "Strict capture passes after real UI navigation with matching state identity and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
