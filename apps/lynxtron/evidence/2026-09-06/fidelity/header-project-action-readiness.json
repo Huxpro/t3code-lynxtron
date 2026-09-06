@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T05:52:00-04:00",
+  "stateId": "existing-thread-completed-no-diff",
+  "productCommit": "de9a4b1d9",
+  "captureBaseCommit": "bf76a7fbc",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "82ab97b6-f29e-450b-b5d1-9a0a2b168d52",
+    "snapshotSha256": "41142c507349ddb34ae05e454cea2ab11e15ffed9a90f64ef4c1a9b1aecdafba"
+  },
+  "capture": {
+    "reportSha256": "284c0a0f174b20bfd1ac02cc0781be5ba6d4a132e684c5906a33d87cb13e7312",
+    "webImageSha256": "9c28c9bb28578f8654e81fd0f87a30680f94316088d8616306cf8c303ec13439",
+    "lynxImageSha256": "14242d39f5492a8e0fd3f918efba2fe85a4168ed6f0c96406cb5d0168aed3718",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "lynxConnectorCommands": [
+      "readVcsStatus",
+      "selectThread",
+      "createAssetUrl",
+      "createAssetUrl",
+      "readProjectFile",
+      "readProjectBranch"
+    ],
+    "projectFile": {
+      "relativePath": "t3.json",
+      "truncated": false,
+      "scriptName": "Setup Worktree"
+    }
+  },
+  "before": {
+    "webAddAction": [812.390625, 14, 107.8125, 24],
+    "lynxAddAction": [825.9375, 14, 94, 24],
+    "lynxReadProjectFileObserved": false
+  },
+  "after": {
+    "webAddAction": [812.390625, 14, 107.8125, 24],
+    "lynxAddAction": [811.9375, 14, 108, 24],
+    "webOpen": [932.203125, 14, 86.9375, 24],
+    "lynxOpen": [931.9375, 14, 87, 24],
+    "webGit": [1031.140625, 14, 164.859375, 24],
+    "lynxGit": [1030.9375, 14, 165.0625, 24],
+    "lynxReadProjectFileObserved": true
+  },
+  "fix": "Retry the t3.json read when connector command readiness changes instead of exhausting the only attempt before the connector is available.",
+  "boundary": "This proves project-action discovery and menu-state geometry. Physical Native terminal execution remains a separate Computer Use acceptance item. Screenshots remain temporary."
+}

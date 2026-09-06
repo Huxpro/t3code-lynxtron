@@ -26793,6 +26793,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-header-project-action-readiness-current",
+      "observedAt": "2026-09-06T05:52:00-04:00",
+      "commit": "de9a4b1d9",
+      "codeCommit": "de9a4b1d9",
+      "codeState": "commit",
+      "label": "Header project-action readiness parity",
+      "narrative": "The Lynx t3.json hook attempted its only file read before connector commands were ready, then never retried because cwd was unchanged. Binding the effect to connector readiness makes the candidate discover Setup Worktree through the real project-file bridge, select the 108px project-action menu state, and align the complete Header action group with Web.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The strict paired capture records the previously absent readProjectFile command and successful t3.json result while holding the completed thread and all visual inputs constant."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/header-project-action-readiness.json",
+          "classification": "tracked-current",
+          "sha256": "75c9eee1985399844ea9729630f110245ee494f6e9590b8834413d3cf66ad7fc"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-project-file-readiness",
+              "source": "Lynx reads t3.json after connector readiness and discovers the same Setup Worktree action as Web."
+            },
+            "geometry": {
+              "anchorDeltas": [0.453125, 0, 0.1875, 0],
+              "anchorScale": 107.8125,
+              "confidence": 0.99,
+              "method": "header-add-action-menu-geometry",
+              "source": "The Add action menu differs by 0.453125px in x and 0.1875px in width; subsequent Open and Git controls differ by at most 0.265625px."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-completed-current-capture",
+              "source": "Strict paired capture passes with matching state identity and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
