@@ -26486,6 +26486,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-header-open-control-current",
+      "observedAt": "2026-09-06T02:15:00-04:00",
+      "commit": "2064b7323",
+      "codeCommit": "2064b7323",
+      "codeState": "commit",
+      "label": "Header Open control geometry parity",
+      "narrative": "The Header probe previously skipped Lynx's nested Open control and misidentified Commit as Open. A stable action id now exposes all three controls. The actual Open group was 96.9375 by 30px at x=922, y=11; matching the Web button-group box reduces it to 87 by 24px at x=931.9375, y=14 versus Web's 86.9375 by 24px at x=932.203125. The fixed Header-action region RGB MAE improves from 19.376091 to 18.109877.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same completed thread, favicon, route, theme, viewport, and action labels isolate the Open-in control box-model correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/header-open-control.json",
+          "classification": "tracked-current",
+          "sha256": "4ade65a96a5f26ead0e2a0fdaaaca4e9d7927db56f431104d27af9b0ff1ffe90"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.265625, 0, 0.0625, 0],
+              "anchorScale": 87,
+              "confidence": 0.99,
+              "method": "header-open-control-geometry",
+              "source": "Open control x, y, width, and height match Web within one pixel after reducing the Lynx outer and inner boxes"
+            },
+            "material": {
+              "residual": 0.090549,
+              "confidence": 0.99,
+              "method": "header-action-region-rgb-mae",
+              "source": "Normalized 225 by 36 Header action-region MAE falls from 19.376091 to 18.109877 and significant-pixel share falls from 17.5926 percent to 14.2922 percent"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "completed-thread-strict-capture",
+              "source": "Post-commit capture passes the completed no-diff, favicon, and Open-action gates with zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
