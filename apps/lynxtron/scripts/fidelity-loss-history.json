@@ -26534,6 +26534,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-provider-status-banner-current",
+      "observedAt": "2026-09-06T03:59:52-04:00",
+      "commit": "ae8b8a0ce8b127a7ec01010210758bef7c60f3d7",
+      "codeCommit": "ae8b8a0ce8b127a7ec01010210758bef7c60f3d7",
+      "codeState": "commit",
+      "label": "Provider status banner geometry parity",
+      "narrative": "The Lynx provider banner counted the dismiss wrapper as a 24px flex item while also absolutely positioning its button, making the alert 35.84375px wider than Web. Moving the wrapper out of flex sizing and matching Web's 12px icon-copy gap reduces the width delta to 7.84375px, preserves the exact 70px alert height, and aligns the dismiss button's vertical inset.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "A post-commit paired capture uses one isolated snapshot, project, route, provider error, theme, and viewport; only the Lynx provider-banner leaf changed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/provider-status-banner-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "b52837faccbca0c27f743ab2ebcedf2c4049686ef61e43df4e575a7d1245c2e3"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-status-copy-and-action-gate",
+              "source": "Both panes render the same provider title, message, and one dismiss action from the shared provider notice projection"
+            },
+            "geometry": {
+              "anchorDeltas": [3.921875, 0, 7.84375, 0, 3.921875, 0, 0, 0],
+              "anchorScale": 572.828125,
+              "confidence": 0.99,
+              "method": "provider-status-banner-geometry",
+              "source": "Alert width delta falls from 35.84375px to 7.84375px; both alerts are 70px tall and both dismiss controls are 24px at y=73"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-provider-error-capture",
+              "source": "Post-commit capture passes same-server identity and the complete hard gate with zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

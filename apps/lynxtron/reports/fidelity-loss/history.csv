@@ -452,3 +452,4 @@ existing-thread-failed-work-row-current,2026-09-05T23:55:00-04:00,6c75e1f230bc44
 existing-thread-completed-no-diff-current,2026-09-06T00:42:00-04:00,e20d1a7d0466324b88f4b25df949f328f6f3a2f4,commit,Completed no-diff transcript spacing parity,0.174419,0.174419,0.034147,0.145232,0.854768,0.817471
 existing-thread-project-favicon-current,2026-09-06T01:54:00-04:00,5dcd118d7213e3b84d61a1b62383e9ed1897d4d0,commit,Project favicon parity,0.174393,0.174393,0.034115,0.145232,0.854768,0.817497
 existing-thread-header-open-control-current,2026-09-06T02:15:00-04:00,2064b7323,commit,Header Open control geometry parity,0.174441,0.174393,0.034172,0.145232,0.854768,0.817449
+new-thread-provider-status-banner-current,2026-09-06T03:59:52-04:00,ae8b8a0ce8b127a7ec01010210758bef7c60f3d7,commit,Provider status banner geometry parity,0.174445,0.174393,0.034177,0.145232,0.854768,0.817445
