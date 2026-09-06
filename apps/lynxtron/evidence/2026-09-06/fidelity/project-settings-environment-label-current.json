@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "observedAt": "2026-09-06T16:16:00-04:00",
   "stateId": "sidebar-project-settings",
-  "productCommit": "5fdcd0440",
+  "productCommit": "b1fd0e53a",
   "scope": {
     "authority": "web",
     "candidate": "lynx",
@@ -13,9 +13,9 @@
     "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
   },
   "capture": {
-    "reportSha256": "843fefea969605fad5de22f5cfe0b4461310ae4011395bcb60fc9bd42bd1c9b5",
+    "reportSha256": "b0c0519fefa4591b3001e0cc3cb4ebf45597b64ce99375396b02cc67881cc763",
     "webImageSha256": "133c18c1d00737c74b5104c3346c7d3f00b18aca25080d977e5420911cbbadf1",
-    "lynxImageSha256": "7da5c53327c9fd7d43e87e1b5b3c9c907bfcbdb5db34f1231af5b20fb60357a8",
+    "lynxImageSha256": "49c296dbe08556ee89c628d686010d945d1ab99dc309789fe745e18a926ec09b",
     "webBundle": "9da99a9a60a3",
     "lynxBundle": "5e648dfd1cf2",
     "passed": true,
@@ -40,7 +40,16 @@
   },
   "geometry": {
     "dialogWeb": [352, 288, 576, 244],
-    "dialogLynx": [352, 288, 576, 244]
+    "dialogLynx": [352, 288, 576, 244],
+    "removeWeb": [377, 483, 147.5, 32],
+    "removeLynx": [377, 483, 136.4375, 32],
+    "closeWeb": [841.921875, 483, 61.078125, 32],
+    "closeLynx": [842.140625, 483, 60.859375, 32]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM on the full 1280x820 frame and fixed 576x260 Project Settings envelope",
+    "before": { "fullFrameSsim": 0.912881, "dialogSsim": 0.751621 },
+    "current": { "fullFrameSsim": 0.918415, "dialogSsim": 0.790972 }
   },
   "interaction": {
     "channel": "web-scope-pointer|lynx-menu-main-thread-probe|dual-project-action-pointer",
@@ -49,5 +58,5 @@
     "webActionClicked": true,
     "lynxActionClicked": true
   },
-  "boundary": "The product fixes restore the real server environment label plus the Copy path and environment-icon affordances, and the harness now requires all four summary facts. The 0.991914 metric is scoped to the summary row and does not replace the existing whole-dialog material residual. Screenshots remain temporary because the tracked screenshot budget is full."
+  "boundary": "The product fixes restore the real server environment label, Copy path and environment-icon affordances, and the single-member footer's space-between layout. Remove and Close y/height match exactly; Close x differs by 0.22px, while Remove width retains an 11px font/icon raster allocation difference. Screenshots remain temporary because the tracked screenshot budget is full."
 }
