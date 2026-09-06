@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T08:10:00-04:00",
+  "stateId": "new-thread-hero-light",
+  "productCommit": "6b915fe6a",
+  "harnessCommit": "ab47389ad",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "new-thread",
+    "sourceThreadId": "82ab97b6-f29e-450b-b5d1-9a0a2b168d52",
+    "snapshotSha256": "41142c507349ddb34ae05e454cea2ab11e15ffed9a90f64ef4c1a9b1aecdafba"
+  },
+  "capture": {
+    "reportSha256": "b22bd960ec1e99f969e68d9621b328462c86ada4dd0b5ea8b3dfb0ebca0e1a0f",
+    "webImageSha256": "d46faa076c52f3e75142e5d199709ccc5e51ac128b5107052f1ef772a4d0c506",
+    "lynxImageSha256": "63d88ed96a6dc121e912898db52c100dcd1d13834854604055c2d27057bb44e6",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "navigation": {
+    "web": "real New thread pointer to local draft",
+    "lynx": "real New thread pointer to local draft",
+    "pointerRestoredToNeutralArea": true
+  },
+  "parity": {
+    "model": "Big Pickle",
+    "modelOption": "Build",
+    "runtime": "Full access",
+    "placeholder": "Ask for follow-up changes or attach images",
+    "checkout": "Current checkout",
+    "branch": "archaeology/final5-20260812",
+    "composerWeb": [384, 340, 768, 140],
+    "composerLynx": [384, 340, 768, 140],
+    "editorWeb": [401, 357, 734, 70],
+    "editorLynx": [401, 357, 734, 70],
+    "heroGeometryMatch": true
+  },
+  "boundary": "This is a current light-theme evidence refresh using the paired navigation protocol. It claims no product delta. Native correlation remains blocked by the missing Lynxtron 0.0.18 application bundle. Screenshots remain temporary."
+}

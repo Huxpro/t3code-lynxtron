@@ -27164,6 +27164,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "new-thread-hero-light-current-refresh",
+      "observedAt": "2026-09-06T08:10:00-04:00",
+      "commit": "ab47389ad",
+      "codeCommit": "6b915fe6a",
+      "codeState": "commit",
+      "label": "New-thread Hero light current-head refresh",
+      "narrative": "The paired New thread navigation protocol now also passes in light theme. Both panes start from the same completed OpenCode thread, create renderer-local unpersisted drafts through real visible controls, inherit Big Pickle and Build, clear transient hover state, and match Hero, Composer, editor, checkout, and branch geometry with zero renderer errors. A first bounded run did not reach the stable Composer anatomy within ten seconds; the immediate repeat reached the same signal-based postcondition and passed, so no product regression is assigned.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This refreshes light-theme evidence for the existing paired-navigation behavior and claims no product pixel change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/new-thread-hero-light-current.json",
+          "classification": "tracked-current",
+          "sha256": "b5145e51dc8a1b33a3296f81a2b8140f60961e31630a71eeb103adf0e38822de"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["new-thread-hero-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-local-draft-navigation-light",
+              "source": "Both light panes expose matching model, controls, placeholder, checkout, and branch context."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "new-thread-hero-light-core-geometry",
+              "source": "Composer frame and editor x, y, width, and height exactly match Web; Hero geometry gate passes."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-new-thread-light-current-capture",
+              "source": "Strict light capture passes with matching state identity and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
