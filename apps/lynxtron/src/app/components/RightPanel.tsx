@@ -413,8 +413,9 @@ export function RightPanel({
           )
           .map((surface) => (
             <BrowserPanel
-              key={surface.tabId}
+              key={`${activeThreadId ?? "no-thread"}:${surface.tabId}`}
               tabId={surface.tabId}
+              threadId={activeThreadId ?? null}
               active={surface.id === state.activeSurfaceId}
               width={terminalWidth}
               height={terminalHeight}

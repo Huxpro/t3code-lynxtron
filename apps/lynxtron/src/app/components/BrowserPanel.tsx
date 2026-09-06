@@ -1,6 +1,8 @@
-import { useCallback, useRef, useState } from "@lynx-js/react";
+import { useCallback, useEffect, useRef, useState } from "@lynx-js/react";
 import { Icon } from "./Icon";
 import { browserEventError, browserEventUrl, resolveBrowserNavigation } from "./browserPanel.logic";
+import { readBrowserTab, storeBrowserTab } from "./browserTabPersistence.lynx";
+import { clientCapabilities } from "../platform/clientCapabilities.lynx";
 
 interface WebViewRef {
   invoke(input: {
@@ -15,18 +17,29 @@ export function BrowserPanel({
   width,
   height,
   tabId,
+  threadId,
   active,
 }: {
   readonly width: number;
   readonly height: number;
   readonly tabId: string;
+  readonly threadId: string | null;
   readonly active: boolean;
 }) {
-  const [url, setUrl] = useState("");
-  const [draft, setDraft] = useState("");
+  const initialTab = useRef(readBrowserTab(clientCapabilities.storage, threadId, tabId));
+  const [url, setUrl] = useState(initialTab.current.url);
+  const [draft, setDraft] = useState(initialTab.current.url);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const webview = useRef<WebViewRef | null>(null);
+
+  useEffect(() => {
+    storeBrowserTab(clientCapabilities.storage, threadId, {
+      tabId,
+      url,
+      title: url || "Browser",
+    });
+  }, [tabId, threadId, url]);
 
   const invoke = useCallback((method: "eval" | "reload", func?: string) => {
     webview.current
