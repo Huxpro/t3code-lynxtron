@@ -86,6 +86,9 @@ function reportReadiness(value: Record<string, unknown>): boolean {
 
 contextBridge.exposeInLynxBTS({
   getAppBranding: () => resolveLynxtronAppBranding(process.env.T3_LYNXTRON_APP_STAGE_LABEL),
+  getBrowserCapabilities: () => ({
+    embedded: process.env.T3_LYNXTRON_CEF_WEBVIEW === "1",
+  }),
   // Preference persistence (sync; small JSON file).
   getPrefs: () => readPrefs(),
   setPrefs: (patch: Record<string, unknown>) => writePrefs(patch ?? {}),

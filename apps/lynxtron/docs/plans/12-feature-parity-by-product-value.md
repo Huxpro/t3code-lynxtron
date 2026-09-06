@@ -230,12 +230,13 @@ Replace approved placeholders only after chat, remote operation, and review are 
 - [x] Audit Synara's successful WKWebView surface and its failed CEF 0.0.16 experiment.
 - [x] Upgrade the Lynxtron host/dev plugin to 0.0.18, register `@lynx-js/cef-webview`, and stage its native package through AutoLink in development and production builds.
 - [x] Replace the disabled Browser placeholder with the first functional OSR slice: HTTP(S) navigation, location synchronization, back, forward, reload, popup routing, loading, and error states.
-- [ ] Prove a real CEF page load with an owned Native process and retain `bindload` / `bindlocationchange` evidence. This requires an explicitly authorized visible Native verification run.
+- [x] Keep CEF opt-in after the 0.0.18 startup blocker and project the unavailable capability honestly in the default Browser card. A fresh 1280 x 820 owned run reached connector/server readiness and rendered the disabled reason without entering CEF.
+- [ ] Prove a real CEF page load and retain `bindload` / `bindlocationchange` evidence. An authorized owned 0.0.18 run on 2026-09-06 loaded the framework but remained inside `cef_extension.node -> CefInitialize` for more than one minute before any `LynxWindow` was created; the process was sampled and stopped by its captured PID.
 - [ ] Restore packaged `.app` output. `@lynx-js/lynxtron-builder@0.0.18` currently fails while copying the Lynxtron Framework's relative symlinks under pnpm; its bundled `app-builder-lib` patch is not applied by its postinstall in a pnpm workspace.
 - [ ] Add durable per-thread multi-tab/history persistence, active-plus-one-warm view budgeting, and inactive-pane suspension using the bounded Synara policy.
 - [ ] Close Electron-only gaps: DevTools/CDP, screenshot and recording, element picking, PiP, zoom, cookie/cache clearing, and browser-use automation.
 
-The CEF 0.0.18 binding ignores the JavaScript `initialize(options)` object and exposes no cache-root option. Until upstream adds one, shared CEF profile isolation remains an explicit runtime gap and must not be described as complete remote/multi-environment isolation.
+The CEF 0.0.18 binding ignores the JavaScript `initialize(options)` object and exposes no cache-root option. The reproduced startup emitted CEF's `root_cache_path` process-singleton warning immediately before blocking. Until upstream adds an isolation option and resolves startup, CEF must remain opt-in and must not be described as complete remote/multi-environment isolation.
 
 ### Required work
 

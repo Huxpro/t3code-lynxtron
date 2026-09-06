@@ -185,8 +185,12 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
 }
 
 app.whenReady().then(() => {
-  const cefInitialized = cefWebview.initialize();
-  console.log(`[cef-webview] initialize returned ${String(cefInitialized)}`);
+  if (process.env.T3_LYNXTRON_CEF_WEBVIEW === "1") {
+    const cefInitialized = cefWebview.initialize();
+    console.log(`[cef-webview] initialize returned ${String(cefInitialized)}`);
+  } else {
+    console.log("[cef-webview] disabled; set T3_LYNXTRON_CEF_WEBVIEW=1 to enable");
+  }
   const viewport = resolveLynxtronViewport();
   const windowPosition = resolveLynxtronWindowPosition();
   const win = new LynxWindow({

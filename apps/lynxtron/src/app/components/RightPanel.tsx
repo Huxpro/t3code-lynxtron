@@ -29,7 +29,11 @@ import { Icon, type IconName } from "./Icon";
 import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
 import { BrowserPanel } from "./BrowserPanel";
 import { useT3ClientState } from "../state/t3Client";
-import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
+import {
+  clientCapabilities,
+  isEmbeddedBrowserAvailable,
+  showNativeContextMenu,
+} from "../platform/clientCapabilities.lynx";
 
 interface RightPanelContentProps {
   activeThreadId: string | null;
@@ -140,6 +144,7 @@ export function RightPanel({
   const sheet = useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY);
   const viewport = useViewportSnapshot();
   const [showAddMenu, setShowAddMenu] = useState(false);
+  const browserAvailable = isEmbeddedBrowserAvailable();
   const resize = useResizableWidth({
     storageKey: RIGHT_PANEL_WIDTH_STORAGE_KEY,
     defaultWidth: RIGHT_PANEL_DEFAULT_WIDTH,
@@ -240,24 +245,35 @@ export function RightPanel({
       : resize.width;
   const terminalHeight = Math.max(1, viewport.height - 52);
 
-  const emptyActions: ReadonlyArray<RightPanelActionItem> = ADDABLE_SURFACES.map((item) => ({
-    key: item.kind,
-    icon: <Icon name={ADDABLE_ICONS[item.kind]} size={20} color="#818181" />,
-    label: item.label,
-    description: item.disabled && item.disabledReason ? item.disabledReason : item.description,
-    disabled: item.disabled,
-    onSelect: () => {
-      if (
-        item.kind === "browser" ||
-        item.kind === "files" ||
-        item.kind === "diff" ||
-        item.kind === "plan" ||
-        item.kind === "terminal"
-      ) {
-        handleAddSurface(item.kind);
-      }
-    },
-  }));
+  const presentedAddableSurfaces = ADDABLE_SURFACES.map((item) =>
+    item.kind === "browser" && !browserAvailable
+      ? {
+          ...item,
+          disabled: true,
+          disabledReason: "CEF browser is unavailable in this Lynxtron runtime.",
+        }
+      : item,
+  );
+  const emptyActions: ReadonlyArray<RightPanelActionItem> = presentedAddableSurfaces.map(
+    (item) => ({
+      key: item.kind,
+      icon: <Icon name={ADDABLE_ICONS[item.kind]} size={20} color="#818181" />,
+      label: item.label,
+      description: item.disabled && item.disabledReason ? item.disabledReason : item.description,
+      disabled: item.disabled,
+      onSelect: () => {
+        if (
+          item.kind === "browser" ||
+          item.kind === "files" ||
+          item.kind === "diff" ||
+          item.kind === "plan" ||
+          item.kind === "terminal"
+        ) {
+          handleAddSurface(item.kind);
+        }
+      },
+    }),
+  );
 
   const panel = (
     <view
@@ -339,7 +355,7 @@ export function RightPanel({
                 data-floating-popup="right-panel-add-menu"
                 catchtap={() => undefined}
               >
-                {ADDABLE_SURFACES.map((item) => (
+                {presentedAddableSurfaces.map((item) => (
                   <view
                     key={item.kind}
                     className={`right-panel__add-item${item.disabled ? " right-panel__add-item--disabled" : ""}`}

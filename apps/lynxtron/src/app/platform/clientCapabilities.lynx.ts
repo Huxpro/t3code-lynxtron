@@ -20,6 +20,12 @@ interface PlatformBridge {
   writeClipboardText?: (value: string) => void;
   openExternal?: (url: string) => Promise<void>;
   openPath?: (path: string) => Promise<void>;
+  getBrowserCapabilities?: () => { readonly embedded?: boolean };
+}
+
+export function isEmbeddedBrowserAvailable(): boolean {
+  "background only";
+  return bridge()?.getBrowserCapabilities?.().embedded === true;
 }
 
 export async function showNativeConfirm(input: {
