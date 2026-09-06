@@ -28048,6 +28048,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-settings-environment-label-current",
+      "observedAt": "2026-09-06T16:16:00-04:00",
+      "commit": "be959b09f",
+      "codeCommit": "be959b09f",
+      "codeState": "commit",
+      "label": "Project Settings environment-label parity",
+      "narrative": "The Lynx Sidebar discarded its available server environment label when building Project Settings members, so the summary rendered the fallback Current environment while Web rendered MacBook Pro (3). Passing the canonical server label restores matching summary content, and the harness now reads and requires both summary paths and environment labels. The exact 526x32 summary crop reaches 0.991914 SSIM.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same snapshot, persisted thread, project, route, theme, viewport, dialog geometry, interaction path, and zero-error runtime isolate the environment-label projection fix."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/project-settings-environment-label-current.json",
+          "classification": "tracked-current",
+          "sha256": "8355a7b0bf86a38882765e4326ed1c3e23b7eadf87c98cc55d2a42ff5b2363d7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-summary-content",
+              "source": "Both panes render the same project path and MacBook Pro (3) environment label; the harness now rejects path or environment-array mismatches."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-project-settings-dialog-geometry",
+              "source": "Both dialogs remain at 352,288 with exact 576x244 bounds."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-project-settings-summary-runtime",
+              "source": "Same snapshot 5572c031, project, persisted thread cf1b2820, dark theme, exact committed bundles, matching scope/action interaction, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
