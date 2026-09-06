@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T00:42:00-04:00",
+  "stateId": "existing-thread-completed-no-diff",
+  "productCommits": [
+    "f3fabea10f4562affa14426b6e956076715e9fba",
+    "e20d1a7d0466324b88f4b25df949f328f6f3a2f4"
+  ],
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "0b205b3c-9614-4499-80b4-973a4e7c0892",
+    "snapshotSha256": "4054afd1b681efeb32baa53c4ddd0ed19bd760ed36bac530e1de9c84f2da1e24"
+  },
+  "capture": {
+    "reportSha256": "805f2c9059ade4615584feeb80be8844cee64bd4a61d84cfaa083ef6a5d4b455",
+    "webBundleSha256Prefix": "7bd6245cbc75",
+    "lynxBundleSha256Prefix": "f3a2240569a0",
+    "webImageSha256": "2482073a0d7833aae70bcdda54e4461b95e941a422f4a526b7f541027c91b4e3",
+    "lynxImageSha256": "5789873cbe5cc47a2f1c0c3700b0b51bc37f51ff85088a562e7ecdc49ce00605",
+    "passed": true,
+    "rendererErrors": 0,
+    "checkpointCards": { "web": 0, "lynx": 0 }
+  },
+  "before": {
+    "webTurnFold": [384, 191, 768, 45],
+    "lynxTurnFold": [384, 191, 768, 29],
+    "webAssistant": [384, 236, 768, 72.75],
+    "lynxAssistant": [384, 220, 768, 81]
+  },
+  "after": {
+    "webTurnFold": [384, 191, 768, 45],
+    "lynxTurnFold": [384, 191, 768, 45],
+    "webAssistant": [384, 236, 768, 72.75],
+    "lynxAssistant": [384, 236, 768, 73]
+  },
+  "fix": "Give completed no-diff turns their own strict capture state, restore the Browser Preview turn-fold wrapper to Web's 45px row contract, and remove the extra seven-pixel inline-markdown margin.",
+  "boundary": "The 45px row correction is Browser Preview-only because Native retains its separately certified 29px turn-fold content contract. The completed-no-diff gate requires completed state, identical non-empty assistant content, zero checkpoint cards, Composer parity, and row geometry within one pixel."
+}
