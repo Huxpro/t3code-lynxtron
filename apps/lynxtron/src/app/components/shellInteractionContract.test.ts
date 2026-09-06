@@ -1433,6 +1433,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".sidebar-v2-control-group {\n  width: 100%;\n  box-sizing: border-box;\n}",
     );
+    expect(overrides.match(/\.sidebar-inline-search \{[^}]*transform:/)).toBeNull();
+    expect(overrides.match(/\.sidebar-v2-project-scope-trigger \{[^}]*transform:/)).toBeNull();
     expect(menuSource).toContain('const T3_MENU_TEST_EVENT = "t3:menu-test";');
     expect(menuSource).toContain(
       'if (!menuProbeEnabled || typeof relationId !== "string") return;',
