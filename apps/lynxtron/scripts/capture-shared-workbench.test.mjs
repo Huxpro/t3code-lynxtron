@@ -221,7 +221,7 @@ describe("shared workbench lifecycle fault capture", () => {
       "completedComposerProviderState: readCompletedComposerProviderState(state)",
     );
     assert.include(source, "function failedTranscriptGeometryMatches(webMetrics, lynxMetrics)");
-    assert.include(source, 'stateId !== "existing-thread-failed"');
+    assert.include(source, "if (!isFailedThreadState) return true");
     assert.include(source, '["x", "y", "width"].every(');
     assert.include(
       source,
@@ -275,6 +275,14 @@ describe("shared workbench lifecycle fault capture", () => {
       source,
       /function failedTranscriptGeometryMatches[\s\S]*?webRows\.length !== 2 \|\| lynxRows\.length !== 2[\s\S]*?function narrowChatResponsiveMatches/,
     );
+  });
+
+  it("drives and gates the failed-thread dismissal reverse state", () => {
+    assert.include(source, 'stateId === "existing-thread-failed-dismissed"');
+    assert.include(source, "clickThreadErrorDismiss");
+    assert.include(source, "Failed-thread dismissal requires both initial error banners");
+    assert.include(source, "finalFailedThreadDismissalReady");
+    assert.include(source, "failedThreadDismissalTimeline");
   });
 
   it("synchronizes the provider runtime for real working-state captures", () => {

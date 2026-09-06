@@ -1,5 +1,6 @@
 const existingThreadStateIds = new Set([
   "existing-thread-completed-no-diff",
+  "existing-thread-failed-dismissed",
   "chat-thread-narrow",
   "chat-input-narrow-expanded",
   "chat-outline",

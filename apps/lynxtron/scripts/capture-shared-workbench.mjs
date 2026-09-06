@@ -253,6 +253,9 @@ const isSidebarControlHoverState =
   stateId === "sidebar-v2-new-thread-hover" || stateId === "sidebar-v2-new-project-hover";
 const isSidebarThreadHoverPreviewState = stateId === "sidebar-thread-hover-preview";
 const isNewThreadHeroState = stateId === "new-thread-hero" || stateId === "new-thread-hero-light";
+const isFailedThreadState =
+  stateId === "existing-thread-failed" || stateId === "existing-thread-failed-dismissed";
+const isFailedThreadDismissedState = stateId === "existing-thread-failed-dismissed";
 const isSidebarThreadShortcutState = stateId === "sidebar-thread-shortcuts";
 const isFilesSurfaceState =
   isFilesBrowserState || isFileEditorState || isCompactControlsState || isRightPanelAddMenuState;
@@ -702,7 +705,7 @@ function workingTranscriptGeometryMatches(webMetrics, lynxMetrics) {
 }
 
 function failedTranscriptGeometryMatches(webMetrics, lynxMetrics) {
-  if (stateId !== "existing-thread-failed") return true;
+  if (!isFailedThreadState) return true;
   const webRows = webMetrics?.rowGeometry ?? [];
   const lynxRows = lynxMetrics?.rowGeometry ?? [];
   if (webRows.length === 0 || webRows.length !== lynxRows.length) return false;
@@ -2803,9 +2806,23 @@ async function openWebSettingsFromSidebar(cdp, sessionId, useDomFallback) {
       if (!frame || !target) return null;
       const frameRect = frame.getBoundingClientRect();
       const rect = target.getBoundingClientRect();
+      const hit = doc.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
       return {
         x: frameRect.x + rect.x + rect.width / 2,
         y: frameRect.y + rect.y + rect.height / 2,
+        target: {
+          tagName: target.tagName,
+          className: target.getAttribute('class'),
+          ariaLabel: target.getAttribute('aria-label'),
+          disabled: target.disabled === true || target.getAttribute('aria-disabled') === 'true',
+          pointerEvents: getComputedStyle(target).pointerEvents,
+          rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        },
+        hit: hit ? {
+          tagName: hit.tagName,
+          className: hit.getAttribute('class'),
+          ariaLabel: hit.getAttribute('aria-label'),
+        } : null,
       };
     })()`,
   ).catch(() => null);
@@ -2891,9 +2908,9 @@ async function providerDialogControlPoint(cdp, sessionId, client, control) {
 
 async function clickProviderDialogControl(cdp, sessionId, client, control) {
   const point = await providerDialogControlPoint(cdp, sessionId, client, control);
-  if (!point) return false;
+  if (!point) return null;
   await dispatchPointerClickWithMove(cdp, sessionId, point);
-  return true;
+  return point;
 }
 
 async function runAddProviderDialogFlow(cdp, sessionId, viewportWidth, viewportHeight) {
@@ -3840,6 +3857,47 @@ async function clickSidebarControl(cdp, sessionId, client, selector) {
   if (!point || point.missing) return false;
   await dispatchPointerClickWithMove(cdp, sessionId, point);
   return true;
+}
+
+async function clickThreadErrorDismiss(cdp, sessionId, client) {
+  const point = await evaluate(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const target =
+        root?.querySelector('[aria-label="Dismiss error"]') ??
+        root?.querySelector('.thread-error-dismiss');
+      if (!frame || !target) return null;
+      const frameRect = frame.getBoundingClientRect();
+      const rect = target.getBoundingClientRect();
+      const hit = doc.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2);
+      return {
+        x: frameRect.x + rect.x + rect.width / 2,
+        y: frameRect.y + rect.y + rect.height / 2,
+        target: {
+          tagName: target.tagName,
+          className: target.getAttribute('class'),
+          ariaLabel: target.getAttribute('aria-label'),
+          disabled: target.disabled === true || target.getAttribute('aria-disabled') === 'true',
+          pointerEvents: getComputedStyle(target).pointerEvents,
+          rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        },
+        hit: hit ? {
+          tagName: hit.tagName,
+          className: hit.getAttribute('class'),
+          ariaLabel: hit.getAttribute('aria-label'),
+        } : null,
+      };
+    })()`,
+  );
+  if (!point) return null;
+  await dispatchPointerClickWithMove(cdp, sessionId, point);
+  return point;
 }
 
 async function clickPaletteBack(cdp, sessionId, client) {
@@ -6408,6 +6466,7 @@ async function main() {
     "existing-thread-completed",
     "existing-thread-completed-no-diff",
     "existing-thread-failed",
+    "existing-thread-failed-dismissed",
     "existing-thread-approval",
     "existing-thread-question",
     "existing-thread-question-multi-step",
@@ -6498,7 +6557,7 @@ async function main() {
           ? seed?.dataset?.canonicalThread
           : isCompletedThreadState()
             ? seed?.dataset?.completedThread
-            : stateId === "existing-thread-failed"
+            : isFailedThreadState
               ? seed?.dataset?.failedThread
               : threadStateIds.has(stateId)
                 ? (seed?.dataset?.idleThread ?? seed?.dataset?.canonicalThread)
@@ -6525,7 +6584,7 @@ async function main() {
       `State ${stateId} requires a populated completed-turn fixture, but ${seedSource} has none`,
     );
   }
-  if (stateId === "existing-thread-failed" && expectedThreadFixture?.latestTurnState !== "error") {
+  if (isFailedThreadState && expectedThreadFixture?.latestTurnState !== "error") {
     throw new Error(
       `State ${stateId} requires a populated failed-turn fixture, but ${seedSource} has none`,
     );
@@ -6903,6 +6962,7 @@ async function captureCell({
     "existing-thread-completed": "existing-thread",
     "existing-thread-completed-no-diff": "existing-thread",
     "existing-thread-failed": "existing-thread",
+    "existing-thread-failed-dismissed": "existing-thread",
     "chat-thread-narrow": "existing-thread",
     "chat-input-narrow-expanded": "existing-thread",
     "chat-outline": "existing-thread",
@@ -7137,6 +7197,7 @@ async function captureCell({
   const lifecycleFaultPreflightTimeline = [];
   let reachedTargetState = false;
   const newThreadHeroNavigationTimeline = [];
+  const failedThreadDismissalTimeline = [];
   let webFilesBrowserInputSent = !isFilesSurfaceState;
   let lynxFilesBrowserInputSent = !isFilesSurfaceState;
   let webFileEditorInputSent = !isFileEditorState;
@@ -9457,6 +9518,40 @@ async function captureCell({
     }
     await delay(100);
   }
+  if (isFailedThreadDismissedState) {
+    const initialFailureText = state?.web?.threadErrorBannerMetrics?.text ?? "";
+    if (
+      !initialFailureText ||
+      !state?.web?.threadErrorBannerMetrics?.banner ||
+      !state?.lynx?.threadErrorBannerMetrics?.banner
+    ) {
+      throw new Error("Failed-thread dismissal requires both initial error banners");
+    }
+    for (const client of ["web", "lynx"]) {
+      const click = await clickThreadErrorDismiss(cdp, sessionId, client);
+      if (!click) {
+        throw new Error(`Missing ${client} failed-thread dismiss control`);
+      }
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) => next?.[client]?.threadErrorBannerMetrics?.text !== initialFailureText,
+        3_000,
+        `${client} dismissed failed-thread banner`,
+      ).catch(async (cause) => {
+        const latest = await readWorkbenchState(cdp, sessionId);
+        throw new Error(
+          `${cause instanceof Error ? cause.message : String(cause)}; click=${JSON.stringify(click)}; latest=${JSON.stringify(latest?.[client]?.threadErrorBannerMetrics)}`,
+        );
+      });
+      failedThreadDismissalTimeline.push({
+        client,
+        step: "dismissed",
+        replacementBanner: state?.[client]?.threadErrorBannerMetrics?.text ?? null,
+      });
+    }
+    reachedTargetState = true;
+  }
   if (isNewThreadHeroState && !unpersistedHeroStateReady(state)) {
     state = await waitForSidebarV2Controls(cdp, sessionId);
     for (const client of ["web", "lynx"]) {
@@ -10639,6 +10734,10 @@ async function captureCell({
     (!stateId.startsWith("existing-thread-") && !isNarrowChatThreadState && !isChatOutlineState) ||
     (isEmptyTranscriptState ? finalEmptyTranscriptReady : finalPopulatedTranscriptReady);
   const finalProviderStatusBannerReady = providerStatusBannerMatches(state);
+  const finalFailedThreadDismissalReady =
+    !isFailedThreadDismissedState ||
+    (failedThreadDismissalTimeline.length === 2 &&
+      failedThreadDismissalTimeline.every(({ step }) => step === "dismissed"));
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" &&
     stateId !== "existing-thread-question" &&
@@ -12501,6 +12600,7 @@ async function captureCell({
     completedProjectFaviconMatches(state) &&
     completedHeaderOpenActionMatches(state) &&
     finalProviderStatusBannerReady &&
+    finalFailedThreadDismissalReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
     (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
@@ -12604,6 +12704,7 @@ async function captureCell({
       completedProjectFaviconReady: completedProjectFaviconMatches(state),
       completedHeaderOpenActionReady: completedHeaderOpenActionMatches(state),
       finalProviderStatusBannerReady,
+      finalFailedThreadDismissalReady,
       finalPendingRequestReady,
       multiStepQuestionStage,
       commandPaletteNavigationStage,
@@ -12839,6 +12940,10 @@ async function captureCell({
       newThreadHeroNavigation: {
         match: !isNewThreadHeroState || unpersistedHeroStateReady(state),
         timeline: newThreadHeroNavigationTimeline,
+      },
+      failedThreadDismissal: {
+        match: !isFailedThreadDismissedState || finalFailedThreadDismissalReady,
+        timeline: failedThreadDismissalTimeline,
       },
       multiStepQuestion: {
         match: !isMultiStepQuestionState || multiStepQuestionStage === "complete",
