@@ -708,6 +708,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "chat-input-narrow-expanded"');
     assert.include(source, 'stateId === "chat-outline"');
     assert.include(source, "runChatOutlineFlow");
+    assert.include(source, "selected.rowY < 52");
+    assert.include(source, "did not bring the target row into view");
     assert.include(source, "chatOutline: chatOutlineEvidence");
     assert.include(source, 'kind: isChatOutlineState ? "chat-outline"');
     assert.include(source, '? "chat-outline" : "narrow-chat-transcript"');

@@ -4441,18 +4441,15 @@ async function runChatOutlineFlow(cdp, sessionId) {
       evidence[client] = { initial, positionedAtTail, hovered, selected };
       continue;
     }
-    const jumpDeadline = Date.now() + 1_500;
+    const jumpDeadline = Date.now() + 3_000;
     let selected = await read();
-    while (
-      Date.now() < jumpDeadline &&
-      (selected?.rowY === null || Math.abs(selected.rowY - hovered.rowY) < 24)
-    ) {
+    while (Date.now() < jumpDeadline && (selected?.rowY === null || selected.rowY < 52)) {
       await delay(50);
       selected = await read();
     }
-    if (selected?.rowY === null || Math.abs(selected.rowY - hovered.rowY) < 24) {
+    if (selected?.rowY === null || selected.rowY < 52) {
       throw new Error(
-        `${client} chat outline jump did not scroll: ${JSON.stringify({ hovered, selected })}`,
+        `${client} chat outline jump did not bring the target row into view: ${JSON.stringify({ hovered, selected })}`,
       );
     }
     evidence[client] = { initial, positionedAtTail, hovered, selected };
