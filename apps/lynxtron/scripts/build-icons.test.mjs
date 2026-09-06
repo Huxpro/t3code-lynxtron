@@ -63,6 +63,11 @@ describe("Lynx icon raster contracts", () => {
     assert.include(generatedSource, '"info@14@#f59e0b"');
   });
 
+  it("generates the destructive failed-work icon variant", () => {
+    assert.include(scriptSource, '{ size: 14, color: "#ef4444" }');
+    assert.include(generatedSource, '"circle-alert@14@#ef4444"');
+  });
+
   it("generates exact Web source-control marks", () => {
     assert.include(scriptSource, "git: {");
     assert.include(scriptSource, "body: extractJujutsuBody()");

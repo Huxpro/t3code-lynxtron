@@ -291,6 +291,7 @@ const VARIANTS = [
   { size: 14, color: "#3b82f6" }, // semantic info
   { size: 16, color: "#60a5fa" }, // active Plan mode
   { size: 14, color: "#f87171" }, // semantic error
+  { size: 14, color: "#ef4444" }, // destructive work entry
   { size: 16, color: "#ef4444" }, // provider error
 ];
 
