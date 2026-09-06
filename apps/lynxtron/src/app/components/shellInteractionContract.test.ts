@@ -1109,10 +1109,14 @@ describe("desktop shell interaction contract", () => {
       ".theme-light .provider-instance-dialog__step--active .provider-instance-dialog__step-number {\n  box-shadow: 0 0 0 1px rgba(var(--primary-rgb), 0.3);",
     );
     expect(overrides).toContain(
-      ".theme-light .file-editor-line__number {\n  color: rgb(94, 94, 94);\n  font-size: 13px;",
+      ".file-editor-line__number {\n  flex-shrink: 0;\n  width: 48.8px;\n  padding-left: 15.6px;\n  padding-right: 7.8px;",
+    );
+    expect(overrides).toContain("  font-size: 13px;\n  line-height: 20px;\n  text-align: right;");
+    expect(overrides).toContain(
+      ".file-editor-line__content {\n  flex-grow: 1;\n  width: 0;\n  padding-left: 7.8px;\n  padding-right: 7.8px;",
     );
     expect(overrides).toContain(
-      ".theme-light .file-editor-line__content {\n  padding-left: 7.8px;\n  padding-right: 7.8px;",
+      ".theme-light .file-editor-line__number {\n  color: rgb(94, 94, 94);",
     );
     expect(overrides).toContain(".file-panel__statusbar {");
     expect(overrides).toContain("height: 33px;");
