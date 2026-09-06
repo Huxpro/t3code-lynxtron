@@ -446,3 +446,4 @@ existing-thread-idle-current-head-refresh,2026-09-05T20:10:17-04:00,ef373a785f19
 settings-source-control-marks-current,2026-09-05T21:12:34-04:00,b089f4fce7f91e21220642d03fd787163c3ed7b3,commit,Settings Source Control mark parity,0.176082,0.176082,0.034239,0.146871,0.853129,0.815808
 settings-source-control-label-typography-current,2026-09-05T21:30:00-04:00,ef83766e7b6820aff307c7a31f27f44fc27a0ba8,commit,Settings Source Control label typography parity,0.176074,0.176074,0.03423,0.146871,0.853129,0.815816
 settings-source-control-git-details-current,2026-09-05T22:20:00-04:00,8335addeaaa1b488284d91636410e95c8302da08,commit,Settings Source Control Git details parity,0.175049,0.175049,0.034189,0.145847,0.854153,0.816841
+existing-thread-failed-d5-current,2026-09-05T22:48:00-04:00,65573a9699a01b85b150c3669f0c68860468e311,commit,Failed thread error-state regression repair,0.175044,0.175044,0.034183,0.145847,0.854153,0.816846

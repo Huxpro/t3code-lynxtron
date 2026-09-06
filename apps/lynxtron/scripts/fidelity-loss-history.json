@@ -26220,6 +26220,63 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-failed-d5-current",
+      "observedAt": "2026-09-05T22:48:00-04:00",
+      "commit": "65573a9699a01b85b150c3669f0c68860468e311",
+      "codeCommit": "65573a9699a01b85b150c3669f0c68860468e311",
+      "codeState": "commit",
+      "label": "Failed thread error-state regression repair",
+      "narrative": "A fresh disposable failed turn created through the real connector reproduces the screenshot-reported malformed error state on current code. Lynx rendered a 40 by 26 dismiss wrapper instead of Web's 24 by 24 control, making the alert two pixels taller, while Browser Preview retained four extra pixels of top-banner transcript inset. Matching the alert gap and action geometry and conditioning the Browser Preview inset restores both transcript row origins to y=130 and y=221. Full-frame SSIM improves from 0.941184 to 0.951504 and the fixed banner region improves from 0.771635 to 0.825325.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after captures use the same connector-created failed snapshot, thread, model-not-found payload, route, theme, viewport, Web bundle, and zero-error gates."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/existing-thread-failed-d5.json",
+          "classification": "tracked-current",
+          "sha256": "266bd640573b38484a8669422913d85716331fa8ece98c8b8ed5c9d093869f26"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-created-failed-thread-content",
+              "source": "Both panes select one failed thread and render the identical persisted model-not-found error, user prompt, failed work status, Big Pickle fallback, and disabled Composer"
+            },
+            "geometry": {
+              "anchorDeltas": [
+                2.890625, 0, 5.78125, 0, 2.890625, 0, 5.78125, 0, 2.890625, 0, 0, 0, 0, 0, 0.25, 0,
+                0, 0, 0, 0
+              ],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "failed-banner-and-transcript-geometry",
+              "source": "Banner and alert y/height match, dismiss actions match 24 by 24, and both transcript row origins match at y=130 and y=221; remaining banner width is intrinsic text shaping"
+            },
+            "material": {
+              "residual": 0.048496,
+              "confidence": 0.99,
+              "method": "existing-thread-failed-full-frame-ssim",
+              "source": "1 - post-commit full-frame SSIM 0.951504; fixed banner region improves from 0.771635 to 0.825325"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-created-failed-runtime",
+              "source": "Real connector persists latestTurnState error, sessionStatus error, and the canonical failure reason; strict capture passes with zero renderer errors and clean disposal"
+            }
+          }
+        }
+      ]
     }
   ]
 }

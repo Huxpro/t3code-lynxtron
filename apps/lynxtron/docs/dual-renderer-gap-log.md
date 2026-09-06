@@ -169,13 +169,15 @@ environment banners (provider status, version mismatch, updates) and a differing
 active thread / third header action (`Publish repository` vs `Commit`), tracked
 as D2/D3 for Plan 12.
 
-## D5 — Screenshot-reported error state renders incorrectly [product, OPEN]
+## D5 — Screenshot-reported error state renders incorrectly [product, RESOLVED]
 
-The 2026-09-05 reference screenshot shows a visibly malformed Lynx error state.
-Keep this as an open fidelity-loss item until the exact error kind and a
-replayable isolated snapshot are available. The current retained fixtures prove
-Source Control discovery error, file-save failure, lifecycle reconnecting, and
-the historical failed-thread banner independently; none may be substituted for
-the screenshot without matching its route, thread, error payload, viewport, and
-UI state. Reproduce the exact state on Web and Lynx, use Web as the authority,
-then retain before/after geometry and pixel evidence.
+The 2026-09-05 reference screenshot showed a visibly malformed Lynx failed-thread
+state. A fresh isolated project now reproduces the state through the real
+connector with `opencode/not-a-real-model`, retaining the persisted model-not-found
+error and the same failed thread for both renderers. The current regression had
+two causes: Lynx's dismiss wrapper was 40×26 instead of 24×24, making the alert
+two pixels taller, and Lynx-for-Web retained a four-pixel excess top-banner list
+inset. Matching the shared action/gap geometry and conditioning only the Browser
+Preview inset restores both transcript row origins to Web's y=130/221. The
+strict post-commit pair passes with identical error text and state, zero renderer
+errors, and full-frame SSIM improving from 0.941184 to 0.951504.
