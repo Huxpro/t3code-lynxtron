@@ -36,7 +36,9 @@ export function BrowserPanel({
   const [url, setUrl] = useState(initialTab.current.url);
   const [draft, setDraft] = useState(initialTab.current.url);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<BrowserLoadFailure | null>(null);
+  const [error, setError] = useState<BrowserLoadFailure | null>(
+    initialTab.current.lastError ?? null,
+  );
   const webview = useRef<WebViewRef | null>(null);
 
   useEffect(() => {
@@ -47,10 +49,11 @@ export function BrowserPanel({
         tabId,
         url,
         title: url || "Browser",
+        ...(error ? { lastError: error } : {}),
       },
       { active },
     );
-  }, [active, tabId, threadId, url]);
+  }, [active, error, tabId, threadId, url]);
 
   const invoke = useCallback((method: "eval" | "reload", func?: string) => {
     webview.current

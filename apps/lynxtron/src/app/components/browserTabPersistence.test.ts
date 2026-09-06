@@ -177,4 +177,32 @@ describe("Lynxtron browser tab persistence", () => {
       ],
     });
   });
+
+  it("round-trips a typed load failure and drops malformed failure payloads", () => {
+    const storage = memoryStorage();
+    storeBrowserTab(storage, "thread-a", {
+      tabId: "tab-1",
+      url: "http://localhost:5173/",
+      title: "localhost:5173",
+      lastError: { code: -102, message: "ERR_CONNECTION_REFUSED" },
+    });
+    expect(readBrowserTab(storage, "thread-a", "tab-1").lastError).toEqual({
+      code: -102,
+      message: "ERR_CONNECTION_REFUSED",
+    });
+
+    const malformed = memoryStorage(
+      JSON.stringify({
+        "thread-a": [
+          {
+            tabId: "tab-1",
+            url: "https://example.com/",
+            title: "Example",
+            lastError: { code: "-102", message: "" },
+          },
+        ],
+      }),
+    );
+    expect(readBrowserTab(malformed, "thread-a", "tab-1").lastError).toBeUndefined();
+  });
 });

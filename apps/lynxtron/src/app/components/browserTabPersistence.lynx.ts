@@ -12,6 +12,7 @@ export interface PersistedBrowserTab {
   readonly url: string;
   readonly title: string;
   readonly faviconUrl?: string;
+  readonly lastError?: { readonly code: number | null; readonly message: string };
 }
 
 export interface PersistedBrowserHistoryEntry {
@@ -49,11 +50,21 @@ function parseTab(value: unknown): PersistedBrowserTab | null {
   const tabId = safeString(candidate.tabId ?? candidate.id, 128);
   const url = safeUrl(candidate.url);
   if (!tabId || url === null) return null;
+  const errorCandidate =
+    candidate.lastError && typeof candidate.lastError === "object"
+      ? (candidate.lastError as Record<string, unknown>)
+      : null;
+  const errorMessage = safeString(errorCandidate?.message, 1_024);
+  const errorCode =
+    typeof errorCandidate?.code === "number" && Number.isInteger(errorCandidate.code)
+      ? errorCandidate.code
+      : null;
   return {
     tabId,
     url,
     title: safeString(candidate.title, 200) || url || "Browser",
     faviconUrl: safeUrl(candidate.faviconUrl) ?? "",
+    ...(errorMessage ? { lastError: { code: errorCode, message: errorMessage } } : {}),
   };
 }
 
@@ -174,7 +185,9 @@ export function readBrowserTab(
   const tab =
     readBrowserTabsState(storage, threadId, tabId).tabs.find((tab) => tab.tabId === tabId) ??
     defaultTab(tabId);
-  return tab.faviconUrl ? tab : { tabId: tab.tabId, url: tab.url, title: tab.title };
+  return tab.faviconUrl || tab.lastError
+    ? tab
+    : { tabId: tab.tabId, url: tab.url, title: tab.title };
 }
 
 export function storeBrowserTab(
