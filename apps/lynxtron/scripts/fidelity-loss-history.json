@@ -27313,6 +27313,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-edit-reset-mutation-current",
+      "observedAt": "2026-09-06T09:35:00-04:00",
+      "commit": "306f48dbe",
+      "codeCommit": "03a2d2527",
+      "codeState": "commit",
+      "label": "Keybindings edit and reset mutations",
+      "narrative": "An existing Lynx Keybindings row now enters an editable shortcut and when state, saves through an upsert replace target, and restores the canonical default through Reset. A paired disposable run adds settings.open on mod+shift+y, edits it to mod+shift+u, and resets it; Web and Lynx observe every canonical config transition.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The interaction uses real Lynx inputs and pointer controls while both renderers observe the same server-owned mutation stream."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/keybindings-edit-reset-mutation.json",
+          "classification": "tracked-current",
+          "sha256": "b24010c21c82e098122326174ee0938c8cc1e7ce9f71579d3e907cb49a30aeca"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "keybinding-existing-row-controls",
+              "source": "Existing rows expose Edit, Reset, and Remove with the same mutation semantics as Web; Open JSON remains host-specific."
+            },
+            "interaction": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "lynx-edit-reset-browser-flow",
+              "source": "Pointer and text input edit the Custom shortcut, Save replaces the exact prior rule, and Reset restores the default in both panes."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-keybinding-replace-stream",
+              "source": "Three typed upsertKeybinding calls move canonical state through add, edit, and default restoration with zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
