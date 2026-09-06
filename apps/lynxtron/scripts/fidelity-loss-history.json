@@ -28185,6 +28185,66 @@
           }
         }
       ]
+    },
+    {
+      "id": "right-panel-add-menu-current-authority",
+      "observedAt": "2026-09-06T18:08:00-04:00",
+      "commit": "2d07434cf",
+      "codeCommit": "bd153c8eb",
+      "codeState": "commit",
+      "label": "Right Panel Add Menu current-authority refresh",
+      "narrative": "A fresh strict same-thread capture replaces the stale 176px authority snapshot: current Electron/Web renders a 128x122 popup and Lynx matches that size plus all four 118x28 rows. Labels, disabled semantics, trigger-relative 0x34 placement, outside dismissal, and Terminal selection match. The remaining 1px x and 0.5px y absolute delta follows the owning trigger and is retained as host quantization.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product code changes are credited. This refresh corrects stale authority geometry and adds current Browser material evidence."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/right-panel-add-menu-current.json",
+          "classification": "tracked-current",
+          "sha256": "5851881e40e858e665bdee831d9ab9556923ad5c8ed400138401a3f5b4571c90"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-add-menu"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-right-panel-add-menu-content",
+              "source": "Both panes expose Browser, Terminal, Files, and Diff with matching disabled semantics."
+            },
+            "geometry": {
+              "anchorDeltas": [1, 0.5, 0, 0, 1, 0.5, 0, 0],
+              "anchorScale": 128,
+              "confidence": 0.99,
+              "method": "current-right-panel-add-menu-geometry",
+              "source": "Menu and rows match 128x122 and 118x28; both retain exact 0x34 trigger-relative placement, with only owning-trigger host quantization remaining."
+            },
+            "material": {
+              "residual": 0.300881,
+              "confidence": 0.99,
+              "method": "aligned-right-panel-add-menu-ssim",
+              "source": "1 - aligned 128x122 panel SSIM 0.699119; full-frame SSIM is 0.930143. Residual is dominated by Web glass and SVG versus Lynx raster icons."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-right-panel-menu-actions",
+              "source": "Real pointers dismiss both menus and select Terminal in both renderers."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-right-panel-menu-runtime",
+              "source": "Same snapshot, persisted thread, route, theme, viewport, committed bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
