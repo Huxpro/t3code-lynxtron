@@ -206,6 +206,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "completedNoDiffState: {");
     assert.include(source, "function completedNoDiffGeometryMatches(webMetrics, lynxMetrics)");
     assert.include(source, "completedNoDiffGeometryReady:");
+    assert.include(source, "function completedProjectFaviconMatches(state)");
+    assert.include(source, "completedProjectFaviconReady:");
+    assert.include(source, 'lynxIcon?.tagName === "x-image"');
     assert.include(source, "webLabel.length > 0");
     assert.include(source, "webComposer?.state === lynxComposer?.state");
     assert.include(source, "completedComposerProviderStateMatches(state)");

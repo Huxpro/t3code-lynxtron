@@ -33,6 +33,8 @@ import {
   MessageId,
   ThreadId,
   type AuthAccessSnapshot,
+  type AssetCreateUrlInput,
+  type AssetCreateUrlResult,
   type AuthAccessStreamEvent,
   type FilesystemBrowseInput,
   type FilesystemBrowseResult,
@@ -109,7 +111,9 @@ import {
   encodeConnectorCommandResult,
   encodeConnectorServerConfig,
   isConnectorCommandName,
+  resolveConnectorAssetUrl,
   type ConnectorCommandRequest,
+  type ConnectorAssetUrlResult,
   type ConnectorConnectionStatus,
   type ConnectorEventEnvelope,
   type ConnectorEventPayload,
@@ -688,6 +692,19 @@ export class LiveConnectorHost {
       }>("/api/auth/pairing-token", params).then((value) => {
         this.#recordCommandResult(request.method, { ...value, credential: "[redacted]" });
         return value;
+      });
+    }
+    if (request.method === "createAssetUrl") {
+      const params = request.params as AssetCreateUrlInput;
+      return this.#runClient<AssetCreateUrlResult>(
+        this.#client[WS_METHODS.assetsCreateUrl](params),
+      ).then((value) => {
+        const result: ConnectorAssetUrlResult = resolveConnectorAssetUrl(
+          this.#options.socketUrl,
+          value,
+        );
+        this.#recordCommandResult(request.method, result);
+        return result;
       });
     }
     if (request.method === "revokePairingLink") {

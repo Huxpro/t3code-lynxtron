@@ -1773,6 +1773,29 @@ function completedNoDiffGeometryMatches(webMetrics, lynxMetrics) {
   });
 }
 
+function completedProjectFaviconMatches(state) {
+  if (stateId !== "existing-thread-completed-no-diff") return true;
+  const webIcon = state?.web?.headerMetrics?.projectIcon;
+  const lynxIcon = state?.lynx?.headerMetrics?.projectIcon;
+  const webSrc = webIcon?.attributes?.src ?? "";
+  const lynxSrc = lynxIcon?.attributes?.src ?? "";
+  const assetIdentity = (src) => {
+    try {
+      return new URL(src).pathname;
+    } catch {
+      return src;
+    }
+  };
+  return (
+    webIcon?.tagName === "img" &&
+    lynxIcon?.tagName === "x-image" &&
+    webSrc.length > 0 &&
+    assetIdentity(webSrc) === assetIdentity(lynxSrc) &&
+    Math.abs(webIcon.rect.width - lynxIcon.rect.width) <= 1 &&
+    Math.abs(webIcon.rect.height - lynxIcon.rect.height) <= 1
+  );
+}
+
 function readCompletedComposerProviderState(state) {
   return {
     match: completedComposerProviderStateMatches(state),
@@ -9284,7 +9307,8 @@ async function captureCell({
         composerStateReady &&
         composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
         completedComposerProviderStateMatches(state) &&
-        completedNoDiffStateMatches(state));
+        completedNoDiffStateMatches(state) &&
+        completedProjectFaviconMatches(state));
     const planModeReady = composerPlanModeMatches(state);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
@@ -10323,7 +10347,8 @@ async function captureCell({
       finalComposerStateReady &&
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
       completedComposerProviderStateMatches(state) &&
-      completedNoDiffStateMatches(state));
+      completedNoDiffStateMatches(state) &&
+      completedProjectFaviconMatches(state));
   const finalPlanModeReady = composerPlanModeMatches(state);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
@@ -12362,6 +12387,7 @@ async function captureCell({
     finalConnectionsMutationReady &&
     finalTranscriptReady &&
     completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
+    completedProjectFaviconMatches(state) &&
     finalProviderStatusBannerReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
@@ -12454,6 +12480,7 @@ async function captureCell({
         state?.web?.timelineMetrics,
         state?.lynx?.timelineMetrics,
       ),
+      completedProjectFaviconReady: completedProjectFaviconMatches(state),
       finalProviderStatusBannerReady,
       finalPendingRequestReady,
       multiStepQuestionStage,

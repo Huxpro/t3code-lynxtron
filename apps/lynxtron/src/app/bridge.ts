@@ -15,6 +15,7 @@
  */
 import type {
   DesktopAppBranding,
+  AssetCreateUrlInput,
   EditorId,
   FilesystemBrowseInput,
   FilesystemBrowseResult,
@@ -78,7 +79,7 @@ import type {
   ActivePlanState,
   LatestProposedPlanState,
 } from "@t3tools/client-runtime/presentation/thread";
-import type { ProjectRepoContext } from "../shared/connectorProtocol";
+import type { ConnectorAssetUrlResult, ProjectRepoContext } from "../shared/connectorProtocol";
 
 export type ConnectionStatus =
   | "idle"
@@ -151,6 +152,7 @@ export interface PairingCredentialResult {
  */
 export interface T3ConnectorCommandBridge {
   reconnect(): Promise<void>;
+  createAssetUrl(input: AssetCreateUrlInput): Promise<ConnectorAssetUrlResult>;
   createProject(input: { workspaceRoot: string }): Promise<{ projectId: string }>;
   createThread(input: { projectId?: string; title?: string }): Promise<{ threadId: string }>;
   selectThread(threadId: string): Promise<void>;

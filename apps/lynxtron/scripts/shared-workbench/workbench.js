@@ -2771,6 +2771,7 @@ function readLynxPane() {
         root: readElementBox(root?.querySelector("[data-chat-header]")),
         content: readElementBox(root?.querySelector(".topbar__content")),
         project: readElementBox(root?.querySelector(".chat-header-project-group")),
+        projectIcon: readElementBox(root?.querySelector(".chat-header-project-icon-reference")),
         thread: readElementBox(root?.querySelector(".topbar__thread")),
         actions: readElementBox(root?.querySelector("[data-chat-header-actions]")),
         actionItems: readHeaderActionItems(root?.querySelectorAll("[data-header-action]") ?? []),
@@ -3796,6 +3797,7 @@ function readWebPane() {
         root: readElementBox(doc.querySelector("[data-chat-header]")),
         content: readElementBox(doc.querySelector(".topbar__content")),
         project: readElementBox(doc.querySelector(".chat-header-project-group")),
+        projectIcon: readElementBox(doc.querySelector(".chat-header-project-icon-reference")),
         thread: readElementBox(doc.querySelector(".topbar__thread")),
         actions: readElementBox(doc.querySelector("[data-chat-header-actions]")),
         actionItems: readHeaderActionItems(doc.querySelectorAll("[data-chat-header-actions] > *"), [

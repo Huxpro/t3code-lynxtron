@@ -36,6 +36,7 @@ import {
 import { ProjectId, ThreadId } from "@t3tools/contracts";
 import type {
   ApprovalRequestId,
+  AssetCreateUrlInput,
   EditorId,
   FilesystemBrowseInput,
   FilesystemBrowseResult,
@@ -118,6 +119,7 @@ import {
   decodeConnectorCommandResult,
   decodeConnectorServerConfig,
   encodeConnectorCommandParams,
+  type ConnectorAssetUrlResult,
 } from "../../shared/connectorProtocol.ts";
 import {
   availableThreadModels,
@@ -1356,6 +1358,14 @@ function browseFilesystem(input: FilesystemBrowseInput): Promise<FilesystemBrows
   return bridge.browseFilesystem(input);
 }
 
+function createAssetUrl(input: AssetCreateUrlInput): Promise<ConnectorAssetUrlResult> {
+  const bridge = getBridge();
+  if (!bridge?.createAssetUrl) {
+    return Promise.reject(new Error("Asset loading is unavailable."));
+  }
+  return bridge.createAssetUrl(input);
+}
+
 function listProjectEntries(cwd: string): Promise<ProjectListEntriesResult> {
   const bridge = getBridge();
   if (!bridge?.listProjectEntries) {
@@ -1996,6 +2006,7 @@ function closeTerminal(input: TerminalCloseInput): Promise<void> {
 export const t3ClientActions = {
   archiveThread,
   browseFilesystem,
+  createAssetUrl,
   cloneRepository,
   createPairingCredential,
   createProject,

@@ -14,6 +14,7 @@
  * instances, or credentials cross the bridge.
  */
 import type {
+  AssetCreateUrlResult,
   OrchestrationCheckpointSummary,
   OrchestrationLatestTurn,
   OrchestrationMessage,
@@ -63,6 +64,21 @@ export interface ConnectorShellPayload {
   readonly projects: ReadonlyArray<OrchestrationProjectShell>;
   readonly threads: ReadonlyArray<OrchestrationThreadShell>;
   readonly archivedThreads?: ReadonlyArray<OrchestrationThreadShell>;
+}
+
+export interface ConnectorAssetUrlResult {
+  readonly url: string;
+  readonly expiresAt: number;
+}
+
+export function resolveConnectorAssetUrl(
+  baseUrl: string,
+  result: AssetCreateUrlResult,
+): ConnectorAssetUrlResult {
+  const url = new URL(result.relativeUrl, baseUrl);
+  url.protocol =
+    url.protocol === "wss:" ? "https:" : url.protocol === "ws:" ? "http:" : url.protocol;
+  return { url: url.toString(), expiresAt: result.expiresAt };
 }
 
 export interface ConnectorThreadPayload {
@@ -228,6 +244,7 @@ export function projectRepoContext(input: {
 /** Allowlisted connector commands the renderer may invoke through main. */
 export const CONNECTOR_COMMAND_NAMES = [
   "reconnect",
+  "createAssetUrl",
   "createProject",
   "createThread",
   "selectThread",

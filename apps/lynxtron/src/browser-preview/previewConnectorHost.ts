@@ -45,6 +45,7 @@ export interface BrowserPreviewConnectorDiagnostics {
 type EmitGlobalEvent = (eventName: string, params: [ConnectorEventEnvelope]) => void;
 
 const UNSUPPORTED_COMMANDS = new Set<ConnectorCommandName>([
+  "createAssetUrl",
   "createProject",
   "browseFilesystem",
   "lookupRepository",

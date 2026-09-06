@@ -60,6 +60,8 @@ import {
   MessageId,
   ThreadId,
   type EditorId,
+  type AssetCreateUrlInput,
+  type AssetCreateUrlResult,
   type FilesystemBrowseInput,
   type FilesystemBrowseResult,
   type GitActionProgressEvent,
@@ -120,6 +122,8 @@ import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
 import { discoverDesktopLocalEnvironment } from "./localEnvironmentRendezvous.ts";
 import {
   projectRepoContext,
+  resolveConnectorAssetUrl,
+  type ConnectorAssetUrlResult,
   type ProjectRepoContext,
   type TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
@@ -1375,6 +1379,14 @@ export class T3Connector {
   async browseFilesystem(input: FilesystemBrowseInput): Promise<FilesystemBrowseResult> {
     if (!this.client) throw new Error("not connected");
     return this.runClient<FilesystemBrowseResult>(this.client[WS_METHODS.filesystemBrowse](input));
+  }
+
+  async createAssetUrl(input: AssetCreateUrlInput): Promise<ConnectorAssetUrlResult> {
+    if (!this.client) throw new Error("not connected");
+    const result = await this.runClient<AssetCreateUrlResult>(
+      this.client[WS_METHODS.assetsCreateUrl](input),
+    );
+    return resolveConnectorAssetUrl(this.httpBaseUrl, result);
   }
 
   async listProjectEntries(input: { cwd: string }): Promise<ProjectListEntriesResult> {

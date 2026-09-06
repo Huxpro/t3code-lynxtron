@@ -8,6 +8,7 @@ const componentSource = (name: string) =>
 const overrides = readFileSync(path.resolve(import.meta.dirname, "../overrides.css"), "utf8");
 const diffPanelSource = componentSource("DiffPanel.tsx");
 const iconSource = componentSource("Icon.tsx");
+const chatHeaderSource = componentSource("ChatHeader.tsx");
 const sidebarSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/SidebarV2.lynx.tsx"),
   "utf8",
@@ -1453,6 +1454,10 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
     expect(faviconSource).toContain("size = 14");
     expect(faviconSource).toContain("size={size}");
+    expect(faviconSource).toContain("t3ClientActions");
+    expect(faviconSource).toContain("createAssetUrl");
+    expect(faviconSource).toContain("binderror");
+    expect(chatHeaderSource).toContain("<ProjectFavicon");
     expect(sidebarSource).toContain(
       'className="sidebar-v2-search-result__favicon size-4 shrink-0"',
     );

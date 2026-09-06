@@ -137,6 +137,9 @@ describe("LiveConnectorHost", () => {
     assert.include(source, "this.diagnostics.commandResults.length > 32");
     assert.include(source, "this.#recordCommandResult(request.method, context)");
     assert.include(source, "this.#client[WS_METHODS.projectsWriteFile](params)");
+    assert.include(source, 'if (request.method === "createAssetUrl")');
+    assert.include(source, "this.#client[WS_METHODS.assetsCreateUrl](params)");
+    assert.include(source, "resolveConnectorAssetUrl");
   });
 
   it("rejects unknown modules and commands", () => {

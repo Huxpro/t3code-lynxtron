@@ -11,7 +11,9 @@ import type {
   VcsStatusResult,
 } from "@t3tools/contracts";
 import { ChatHeaderSurface } from "../../../../web/src/components/chat/ChatHeaderSurface";
+import { ProjectFavicon } from "../../../../web/src/components/ProjectFavicon.lynx";
 import { t3ClientActions } from "../state/t3Client";
+import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../state/environment";
 import { uiActions } from "../state/uiState";
 import headerPendingUrl from "../assets/header-pending@2x.png?external";
 import { Icon, type IconName } from "./Icon";
@@ -238,9 +240,13 @@ export function ChatHeader({
         activeProjectName={projectName}
         activeThreadTitle={threadTitle}
         projectIcon={
-          <view className="chat-header-project-icon-reference topbar__proj-icon">
-            <Icon name="folder" size={14} color="#818181" className="topbar__proj-icon-img" />
-          </view>
+          cwd ? (
+            <ProjectFavicon
+              environmentId={LYNX_PRIMARY_ENVIRONMENT_ID}
+              cwd={cwd}
+              className="chat-header-project-icon-reference topbar__proj-icon"
+            />
+          ) : null
         }
         rightPanelOpen={rightPanelOpen ?? false}
         contentProps={{

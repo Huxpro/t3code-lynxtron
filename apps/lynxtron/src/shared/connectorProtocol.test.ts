@@ -19,6 +19,7 @@ import {
   isConnectorEventEnvelope,
   isConnectorSyncReply,
   projectRepoContext,
+  resolveConnectorAssetUrl,
 } from "./connectorProtocol.ts";
 
 function serverConfig(settings = DEFAULT_SERVER_SETTINGS): ServerConfig {
@@ -171,9 +172,20 @@ describe("connector protocol sequence classification", () => {
 });
 
 describe("connector protocol guards", () => {
+  it("resolves signed asset paths to renderer-loadable HTTP URLs", () => {
+    assert.deepEqual(
+      resolveConnectorAssetUrl("ws://127.0.0.1:4567/ws?ticket=secret", {
+        relativeUrl: "/api/assets/signed/favicon.png",
+        expiresAt: 123,
+      }),
+      { url: "http://127.0.0.1:4567/api/assets/signed/favicon.png", expiresAt: 123 },
+    );
+  });
+
   it("accepts only allowlisted command names", () => {
     assert.isTrue(isConnectorCommandName("sendPrompt"));
     assert.isTrue(isConnectorCommandName("reconnect"));
+    assert.isTrue(isConnectorCommandName("createAssetUrl"));
     assert.isTrue(isConnectorCommandName("respondToApproval"));
     assert.isTrue(isConnectorCommandName("respondToUserInput"));
     assert.isTrue(isConnectorCommandName("readProjectBranch"));

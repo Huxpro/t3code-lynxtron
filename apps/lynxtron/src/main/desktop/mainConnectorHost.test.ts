@@ -106,6 +106,10 @@ function createHarness(overrides: Partial<MainConnectorHostOptions> = {}): Harne
       calls.push({ method: "updateServerSettings", input });
       return Promise.resolve(serverConfig());
     },
+    createAssetUrl: (input: unknown) => {
+      calls.push({ method: "createAssetUrl", input });
+      return Promise.resolve({ url: "http://127.0.0.1/favicon.png", expiresAt: 1 });
+    },
     settleThread: (input: unknown) => {
       calls.push({ method: "settleThread", input });
       return Promise.resolve();
@@ -320,8 +324,17 @@ describe("main connector host", () => {
     await command({ method: "selectThread", params: "t1" });
     assert.deepEqual(connector.calls[1], { method: "selectThread", input: "t1" });
 
-    await command({ method: "interrupt", params: { threadId: "t1", turnId: "turn-1" } });
+    await command({
+      method: "createAssetUrl",
+      params: { resource: { _tag: "project-favicon", cwd: "/repo" } },
+    });
     assert.deepEqual(connector.calls[2], {
+      method: "createAssetUrl",
+      input: { resource: { _tag: "project-favicon", cwd: "/repo" } },
+    });
+
+    await command({ method: "interrupt", params: { threadId: "t1", turnId: "turn-1" } });
+    assert.deepEqual(connector.calls[3], {
       method: "interrupt",
       input: { threadId: "t1", turnId: "turn-1" },
     });
@@ -330,7 +343,7 @@ describe("main connector host", () => {
       method: "respondToApproval",
       params: { threadId: "t1", requestId: "approval-1", decision: "accept" },
     });
-    assert.deepEqual(connector.calls[3], {
+    assert.deepEqual(connector.calls[4], {
       method: "respondToApproval",
       input: { threadId: "t1", requestId: "approval-1", decision: "accept" },
     });
@@ -343,7 +356,7 @@ describe("main connector host", () => {
         answers: { deployment: "Safe" },
       },
     });
-    assert.deepEqual(connector.calls[4], {
+    assert.deepEqual(connector.calls[5], {
       method: "respondToUserInput",
       input: {
         threadId: "t1",
@@ -353,7 +366,7 @@ describe("main connector host", () => {
     });
 
     await command({ method: "refreshProviders", params: { instanceId: "claudeAgent" } });
-    assert.deepEqual(connector.calls[5], {
+    assert.deepEqual(connector.calls[6], {
       method: "refreshProviders",
       input: { instanceId: "claudeAgent" },
     });
@@ -362,19 +375,19 @@ describe("main connector host", () => {
       method: "updateProvider",
       params: { provider: "claudeAgent", instanceId: "claudeAgent" },
     });
-    assert.deepEqual(connector.calls[6], {
+    assert.deepEqual(connector.calls[7], {
       method: "updateProvider",
       input: { provider: "claudeAgent", instanceId: "claudeAgent" },
     });
 
     await command({ method: "readProjectBranch", params: { cwd: "/repo" } });
-    assert.deepEqual(connector.calls[7], {
+    assert.deepEqual(connector.calls[8], {
       method: "readProjectBranch",
       input: { cwd: "/repo" },
     });
 
     await command({ method: "readVcsStatus", params: { cwd: "/repo" } });
-    assert.deepEqual(connector.calls[8], {
+    assert.deepEqual(connector.calls[9], {
       method: "readVcsStatus",
       input: { cwd: "/repo" },
     });
@@ -383,13 +396,13 @@ describe("main connector host", () => {
       method: "getDiffPreview",
       params: { cwd: "/repo", ignoreWhitespace: true },
     });
-    assert.deepEqual(connector.calls[9], {
+    assert.deepEqual(connector.calls[10], {
       method: "getDiffPreview",
       input: { cwd: "/repo", ignoreWhitespace: true },
     });
 
     await command({ method: "initializeRepository", params: { cwd: "/repo" } });
-    assert.deepEqual(connector.calls[10], {
+    assert.deepEqual(connector.calls[11], {
       method: "initializeRepository",
       input: { cwd: "/repo" },
     });
@@ -403,7 +416,7 @@ describe("main connector host", () => {
         visibility: "private",
       },
     });
-    assert.deepEqual(connector.calls[11], {
+    assert.deepEqual(connector.calls[12], {
       method: "publishRepository",
       input: {
         cwd: "/repo",
@@ -414,19 +427,19 @@ describe("main connector host", () => {
     });
 
     await command({ method: "settleThread", params: { threadId: "t1" } });
-    assert.deepEqual(connector.calls[12], {
+    assert.deepEqual(connector.calls[13], {
       method: "settleThread",
       input: { threadId: "t1" },
     });
 
     await command({ method: "unsettleThread", params: { threadId: "t1" } });
-    assert.deepEqual(connector.calls[13], {
+    assert.deepEqual(connector.calls[14], {
       method: "unsettleThread",
       input: { threadId: "t1" },
     });
 
     await command({ method: "regenerateThreadTitle", params: { threadId: "t1" } });
-    assert.deepEqual(connector.calls[14], {
+    assert.deepEqual(connector.calls[15], {
       method: "regenerateThreadTitle",
       input: { threadId: "t1" },
     });
@@ -435,25 +448,25 @@ describe("main connector host", () => {
       method: "snoozeThread",
       params: { threadId: "t1", snoozedUntil: "2026-09-01T09:00:00.000Z" },
     });
-    assert.deepEqual(connector.calls[15], {
+    assert.deepEqual(connector.calls[16], {
       method: "snoozeThread",
       input: { threadId: "t1", snoozedUntil: "2026-09-01T09:00:00.000Z" },
     });
 
     await command({ method: "unsnoozeThread", params: { threadId: "t1" } });
-    assert.deepEqual(connector.calls[16], {
+    assert.deepEqual(connector.calls[17], {
       method: "unsnoozeThread",
       input: { threadId: "t1" },
     });
 
     await command({ method: "revokePairingLink", params: { id: "link-1" } });
-    assert.deepEqual(connector.calls[17], { method: "revokePairingLink", input: "link-1" });
+    assert.deepEqual(connector.calls[18], { method: "revokePairingLink", input: "link-1" });
 
     await command({
       method: "openTerminal",
       params: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
     });
-    assert.deepEqual(connector.calls[18], {
+    assert.deepEqual(connector.calls[19], {
       method: "openTerminal",
       input: { threadId: "t1", terminalId: "term-1", cwd: "/repo" },
     });
@@ -462,7 +475,7 @@ describe("main connector host", () => {
       method: "writeTerminal",
       params: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
     });
-    assert.deepEqual(connector.calls[19], {
+    assert.deepEqual(connector.calls[20], {
       method: "writeTerminal",
       input: { threadId: "t1", terminalId: "term-1", data: "pwd\n" },
     });
@@ -471,7 +484,7 @@ describe("main connector host", () => {
       method: "closeTerminal",
       params: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
     });
-    assert.deepEqual(connector.calls[20], {
+    assert.deepEqual(connector.calls[21], {
       method: "closeTerminal",
       input: { threadId: "t1", terminalId: "term-1", deleteHistory: true },
     });
