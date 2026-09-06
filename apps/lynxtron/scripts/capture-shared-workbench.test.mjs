@@ -268,6 +268,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "heroMetrics: readHeroMetrics(doc)");
   });
 
+  it("accepts the current failed transcript inventory when both renderers match", () => {
+    assert.include(source, "function failedTranscriptGeometryMatches(webMetrics, lynxMetrics)");
+    assert.include(source, "webRows.length === 0 || webRows.length !== lynxRows.length");
+    assert.notMatch(
+      source,
+      /function failedTranscriptGeometryMatches[\s\S]*?webRows\.length !== 2 \|\| lynxRows\.length !== 2[\s\S]*?function narrowChatResponsiveMatches/,
+    );
+  });
+
   it("synchronizes the provider runtime for real working-state captures", () => {
     assert.include(
       source,

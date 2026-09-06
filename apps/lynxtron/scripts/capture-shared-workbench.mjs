@@ -705,7 +705,7 @@ function failedTranscriptGeometryMatches(webMetrics, lynxMetrics) {
   if (stateId !== "existing-thread-failed") return true;
   const webRows = webMetrics?.rowGeometry ?? [];
   const lynxRows = lynxMetrics?.rowGeometry ?? [];
-  if (webRows.length !== 2 || lynxRows.length !== 2) return false;
+  if (webRows.length === 0 || webRows.length !== lynxRows.length) return false;
   return webRows.every((webRow, index) => {
     const lynxRow = lynxRows[index];
     return (
