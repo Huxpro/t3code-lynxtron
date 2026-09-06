@@ -286,11 +286,16 @@ function GitFetchIntervalSettings() {
     automaticGitFetchIntervalSeconds !== defaultAutomaticGitFetchIntervalSeconds;
 
   return (
-    <div className="grid gap-3">
+    <div
+      className="source-control-git-details grid gap-3"
+      data-git-fetch-seconds={automaticGitFetchIntervalSeconds}
+    >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="min-w-0 space-y-1">
+        <div className="source-control-git-details__copy min-w-0 space-y-1">
           <div className="flex min-w-0 items-center gap-1">
-            <span className="text-xs font-medium text-foreground">Fetch interval</span>
+            <span className="source-control-git-details__title text-xs font-medium text-foreground">
+              Fetch interval
+            </span>
             <BackgroundPolicyTooltip>
               This interval is configured for Git only. The shared Background activity policy still
               decides whether Git refreshes may run when the timer fires. Custom intervals appear as
@@ -317,12 +322,12 @@ function GitFetchIntervalSettings() {
               ) : null}
             </span>
           </div>
-          <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground">
+          <p className="source-control-git-details__description max-w-2xl text-xs leading-relaxed text-muted-foreground">
             Refresh remote branch status in the background. Set this to 0 seconds if Git credentials
             or security keys should only be prompted by explicit Git actions.
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="source-control-git-details__control flex shrink-0 items-center gap-2">
           <NumberField
             value={automaticGitFetchIntervalSeconds}
             min={0}
@@ -337,13 +342,15 @@ function GitFetchIntervalSettings() {
               )
             }
           >
-            <NumberFieldGroup>
+            <NumberFieldGroup className="source-control-git-number-field">
               <NumberFieldDecrement aria-label="Decrease fetch interval" />
               <NumberFieldInput aria-label="Automatic Git fetch interval in seconds" />
               <NumberFieldIncrement aria-label="Increase fetch interval" />
             </NumberFieldGroup>
           </NumberField>
-          <span className="text-xs text-muted-foreground">seconds</span>
+          <span className="source-control-git-details__unit text-xs text-muted-foreground">
+            seconds
+          </span>
         </div>
       </div>
     </div>

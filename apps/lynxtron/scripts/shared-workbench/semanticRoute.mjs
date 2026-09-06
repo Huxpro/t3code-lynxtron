@@ -46,6 +46,7 @@ const existingThreadStateIds = new Set([
 ]);
 
 const settingsRouteByStateId = new Map([
+  ["settings-source-control-details", "settings-source-control"],
   ["settings-model-picker", "settings-general"],
   ["settings-model-picker-mutation", "settings-general"],
   ["settings-background-activity-mutation", "settings-general"],

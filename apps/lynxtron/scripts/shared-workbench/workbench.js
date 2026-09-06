@@ -898,6 +898,29 @@ function readSourceControlRows(root) {
   }));
 }
 
+function readSourceControlDetails(root) {
+  const details = root?.querySelector(".source-control-git-details");
+  if (!details) return null;
+  const inputHost = details.querySelector("input");
+  const input = inputHost?.shadowRoot?.querySelector("input") ?? inputHost;
+  return {
+    box: readElementBox(details),
+    copy: readElementBox(details.querySelector(".source-control-git-details__copy")),
+    control: readElementBox(details.querySelector(".source-control-git-details__control")),
+    numberField: readElementBox(details.querySelector(".source-control-git-number-field")),
+    title: details.querySelector(".source-control-git-details__title")?.textContent?.trim() ?? "",
+    description:
+      details.querySelector(".source-control-git-details__description")?.textContent?.trim() ?? "",
+    value:
+      details.getAttribute("data-git-fetch-seconds") ??
+      input?.value ??
+      input?.getAttribute("value") ??
+      "",
+    updatePending: details.getAttribute("data-settings-update-pending") === "true",
+    unit: details.querySelector(".source-control-git-details__unit")?.textContent?.trim() ?? "",
+  };
+}
+
 function readSidebarStageIdentity(root) {
   const backdrop = root?.querySelector("[data-stage-backdrop-variant]") ?? null;
   const brand = root?.querySelector(".sidebar-brand") ?? null;
@@ -2836,6 +2859,7 @@ function readLynxPane() {
                 (item) => item.textContent?.trim(),
               ),
               sourceControlRowMetrics: readSourceControlRows(root),
+              sourceControlDetails: readSourceControlDetails(root),
               emptyTexts: [...(root?.querySelectorAll(".settings-empty__text") ?? [])].map((item) =>
                 item.textContent?.trim(),
               ),
@@ -3957,6 +3981,7 @@ function readWebPane() {
                 item.textContent?.trim(),
               ),
               sourceControlRowMetrics: readSourceControlRows(doc),
+              sourceControlDetails: readSourceControlDetails(doc),
               emptyTexts: [...doc.querySelectorAll(".settings-empty__text")].map((item) =>
                 item.textContent?.trim(),
               ),

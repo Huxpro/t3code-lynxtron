@@ -20,7 +20,9 @@ import type {
   SourceControlWritingStyleMode,
 } from "@t3tools/contracts";
 import { DEFAULT_SERVER_SETTINGS } from "@t3tools/contracts/settings";
-import { useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
+import { resolveServerBackgroundActivitySettings } from "@t3tools/shared/backgroundActivitySettings";
+import * as Duration from "effect/Duration";
+import { Fragment, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 
 import {
   ArchivedThreadsSurface,
@@ -33,6 +35,18 @@ import {
 import { SettingsPageContainer } from "../../../../web/src/components/settings/settingsLayout";
 import { searchableSetting } from "../../../../web/src/components/settings/settingsSearch";
 import { Badge } from "../../../../web/src/components/ui/badge";
+import {
+  backgroundActivityOverrideSettings,
+  durationToSeconds,
+  normalizeIntervalSeconds,
+} from "../../../../web/src/components/settings/SettingsPanels.logic";
+import {
+  NumberField,
+  NumberFieldDecrement,
+  NumberFieldGroup,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "../../../../web/src/components/ui/number-field";
 import {
   Select,
   SelectItem,
@@ -77,10 +91,68 @@ const SOURCE_CONTROL_ICONS = {
   "azure-devops": "azure-devops",
   bitbucket: "bitbucket",
 } as const satisfies Readonly<Record<string, IconName>>;
+const GIT_FETCH_INTERVAL_STEP_SECONDS = 5;
 
 function sourceControlIcon(kind: string): ReactNode {
   const icon = SOURCE_CONTROL_ICONS[kind as keyof typeof SOURCE_CONTROL_ICONS];
   return icon ? <Icon name={icon} size={18} /> : undefined;
+}
+
+function GitFetchIntervalSettings({
+  disabled,
+  onUpdate,
+  settings,
+}: {
+  readonly disabled: boolean;
+  readonly onUpdate: (seconds: number) => void;
+  readonly settings: typeof DEFAULT_SERVER_SETTINGS;
+}) {
+  const resolved = resolveServerBackgroundActivitySettings(settings);
+  const seconds = durationToSeconds(resolved.automaticGitFetchInterval);
+  return (
+    <view
+      className="source-control-git-details"
+      data-git-fetch-seconds={String(seconds)}
+      data-settings-update-pending={disabled ? "true" : "false"}
+    >
+      <view className="source-control-git-details__copy">
+        <view className="source-control-git-details__title-row">
+          <text className="source-control-git-details__title">Fetch interval</text>
+          <Icon name="info" size={14} color="#818181" />
+        </view>
+        <text className="source-control-git-details__description">
+          Refresh remote branch status in the background. Set this to 0 seconds if Git credentials
+          or security keys should only be prompted by explicit Git actions.
+        </text>
+      </view>
+      <view className="source-control-git-details__control">
+        <NumberField
+          value={seconds}
+          min={0}
+          step={GIT_FETCH_INTERVAL_STEP_SECONDS}
+          onValueChange={(value) => {
+            if (!disabled) onUpdate(normalizeIntervalSeconds(value));
+          }}
+        >
+          <NumberFieldGroup className="source-control-git-number-field">
+            <NumberFieldDecrement
+              className="source-control-git-number-field__stepper"
+              aria-label="Decrease fetch interval"
+            />
+            <NumberFieldInput
+              className="source-control-git-number-field__input"
+              aria-label="Automatic Git fetch interval in seconds"
+            />
+            <NumberFieldIncrement
+              className="source-control-git-number-field__stepper"
+              aria-label="Increase fetch interval"
+            />
+          </NumberFieldGroup>
+        </NumberField>
+        <text className="source-control-git-details__unit">seconds</text>
+      </view>
+    </view>
+  );
 }
 
 function sourceControlSummaryForLynx(parts: ReadonlyArray<SourceControlSummaryPart>): string {
@@ -143,6 +215,7 @@ function SourceControlLoadingSection({
 
 export function SourceControlSettings() {
   const { settings, settingsUpdatePending } = useT3ClientState();
+  const [gitDetailsExpanded, setGitDetailsExpanded] = useState(false);
   const [discovery, setDiscovery] = useState<SourceControlDiscoveryState>(
     EMPTY_SOURCE_CONTROL_DISCOVERY,
   );
@@ -344,31 +417,64 @@ export function SourceControlSettings() {
           stacked
         >
           {presentation.versionControlSystems.map((item) => (
-            <SourceControlItemRowSurface
-              key={item.id}
-              mark={
-                <SourceControlMarkSurface
-                  tone={item.statusTone}
-                  icon={sourceControlIcon(item.kind)}
+            <Fragment key={item.id}>
+              <SourceControlItemRowSurface
+                mark={
+                  <SourceControlMarkSurface
+                    tone={item.statusTone}
+                    icon={sourceControlIcon(item.kind)}
+                  />
+                }
+                label={item.label}
+                version={item.version ?? undefined}
+                badge={
+                  item.badgeLabel ? (
+                    <Badge className="source-control-item__badge" variant="warning" size="sm">
+                      {item.badgeLabel}
+                    </Badge>
+                  ) : undefined
+                }
+                summary={sourceControlSummaryForLynx(item.summaryParts)}
+                muted={!item.enabled}
+                control={
+                  <>
+                    {item.kind === "git" ? (
+                      <SmallIconButton
+                        className={
+                          gitDetailsExpanded ? "source-control-details-toggle--expanded" : undefined
+                        }
+                        label="Toggle Git details"
+                        icon={<Icon name="chevron-down" size={14} color="#818181" />}
+                        onTap={() => setGitDetailsExpanded((expanded) => !expanded)}
+                      />
+                    ) : null}
+                    {item.statusTone !== "muted" ? (
+                      <Toggle
+                        ariaLabel={`${item.label} availability`}
+                        value={item.enabled}
+                        disabled
+                      />
+                    ) : null}
+                  </>
+                }
+              />
+              {item.kind === "git" && gitDetailsExpanded && settings ? (
+                <GitFetchIntervalSettings
+                  settings={settings}
+                  disabled={settingsUpdatePending}
+                  onUpdate={(seconds) => {
+                    const resolved = resolveServerBackgroundActivitySettings(settings);
+                    void t3ClientActions
+                      .updateServerSettings(
+                        backgroundActivityOverrideSettings(settings.backgroundActivity, resolved, {
+                          automaticGitFetchInterval: Duration.seconds(seconds),
+                        }),
+                      )
+                      .catch(() => undefined);
+                  }}
                 />
-              }
-              label={item.label}
-              version={item.version ?? undefined}
-              badge={
-                item.badgeLabel ? (
-                  <Badge className="source-control-item__badge" variant="warning" size="sm">
-                    {item.badgeLabel}
-                  </Badge>
-                ) : undefined
-              }
-              summary={sourceControlSummaryForLynx(item.summaryParts)}
-              muted={!item.enabled}
-              control={
-                item.statusTone !== "muted" ? (
-                  <Toggle ariaLabel={`${item.label} availability`} value={item.enabled} disabled />
-                ) : undefined
-              }
-            />
+              ) : null}
+            </Fragment>
           ))}
         </SettingsSection>
       ) : null}

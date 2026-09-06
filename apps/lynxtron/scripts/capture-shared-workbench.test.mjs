@@ -708,6 +708,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "chat-input-narrow-expanded"');
     assert.include(source, 'stateId === "chat-outline"');
     assert.include(source, "runChatOutlineFlow");
+    assert.include(source, 'stateId === "settings-source-control-details"');
+    assert.include(source, "runSourceControlDetailsFlow");
+    assert.include(source, 'aria-label=\"Toggle Git details\"');
     assert.include(source, "selected.rowY < 52");
     assert.include(source, "did not bring the target row into view");
     assert.include(source, "chatOutline: chatOutlineEvidence");

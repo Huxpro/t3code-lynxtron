@@ -452,6 +452,10 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".source-control-item__version {\n  color: var(--muted-foreground);\n  font-family: var(--font-mono);\n  font-size: 12px;\n  line-height: 16px;",
     );
+    expect(otherSettingsSource).toContain('label="Toggle Git details"');
+    expect(otherSettingsSource).toContain("<GitFetchIntervalSettings");
+    expect(otherSettingsSource).toContain("automaticGitFetchInterval: Duration.seconds(seconds)");
+    expect(overrides).toContain(".source-control-details-toggle--expanded {");
     expect(providers).toContain("backgroundActivityOverrideSettings");
     expect(providers).toContain("t3ClientActions");
     expect(providers).toContain(".updateServerSettings(");
