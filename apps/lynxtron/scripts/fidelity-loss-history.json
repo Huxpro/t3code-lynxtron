@@ -27527,6 +27527,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "lifecycle-error-connection-detail-current",
+      "observedAt": "2026-09-06T11:15:00-04:00",
+      "commit": "3f728841c",
+      "codeCommit": "3f728841c",
+      "codeState": "commit",
+      "label": "Lifecycle error connection detail parity",
+      "narrative": "The Browser Preview connector previously replaced the shared transport failure with a generic Shared server connection closed message. It now preserves the synchronized environment label and projects the same WebSocket failure detail as the Web RPC session. A fresh fault capture shows identical title and description, exact 768 by 68 banner geometry, matching Connections control, and only a 0.44px intrinsic Reconnecting button width delta.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The product change is isolated to the connector status detail and the paired fault capture verifies the resulting shared presentation."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/lifecycle-error-connection-detail.json",
+          "classification": "tracked-current",
+          "sha256": "3f1bb9950df13f87509f1123bcca5cdb28b37bd66be2a286c86bbb66494cb105"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-connection-lifecycle-copy",
+              "source": "Environment label, Failed to connect title, WebSocket detail, Reconnecting action, and Connections action match Web."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0.4375, 0, 0.4375, 0, 0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "lifecycle-banner-current-geometry",
+              "source": "Banner is exactly 768 by 68; Connections matches exactly and Reconnecting differs by 0.44px in x and width."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "owned-server-fault-current-runtime",
+              "source": "Both clients pass stable preflight, observe the owned server fault, render reconnecting state, and report zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
