@@ -164,6 +164,7 @@
 .sidebar-v2-row-card .sidebar-v2-row-status-slot {
   flex-grow: 0;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 .sidebar-v2-row-card .sidebar-v2-row-actions {
   z-index: 2;
