@@ -27068,6 +27068,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-selected-provider-order-current",
+      "observedAt": "2026-09-06T07:50:00-04:00",
+      "commit": "74596ee36",
+      "codeCommit": "4fd95cbab",
+      "codeState": "commit",
+      "label": "Selected model and provider rail parity",
+      "narrative": "The selected-model fixture previously rewrote a started OpenCode thread to a Codex model, producing an invalid cross-provider comparison. Preserving the real Big Pickle selection exposed the remaining product loss: Web partitions thread-compatible providers before locked providers, while Lynx kept raw provider order. The Lynx projection now applies the same stable partition. Both panes select Big Pickle, expose the same seven model rows, and order Favorites, OpenCode, Claude, Codex, and Grok identically with matching active and disabled state.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The pristine started-thread snapshot and exact selected key separate the provider-order product fix from removal of the invalid fixture mutation."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/model-picker-selected-provider-order.json",
+          "classification": "tracked-current",
+          "sha256": "fbb69301bdc24f3ad46313dbf20e9ff04b3ce7cbdeefa81f3681c3a9f70281ed"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-selected"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "selected-model-provider-semantics",
+              "source": "Selected key, seven model keys, five provider ids, provider order, active state, and disabled state all match Web."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "model-picker-overlay-geometry",
+              "source": "The selected-model overlay x, y, width, and height exactly match Web."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-selected-model-capture",
+              "source": "Strict paired capture passes with pristine state identity and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

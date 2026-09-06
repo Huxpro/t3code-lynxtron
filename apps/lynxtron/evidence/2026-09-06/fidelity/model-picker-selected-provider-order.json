@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T07:50:00-04:00",
+  "stateId": "model-picker-selected",
+  "productCommit": "4fd95cbab",
+  "harnessCommit": "74596ee36",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "82ab97b6-f29e-450b-b5d1-9a0a2b168d52",
+    "snapshotSha256": "41142c507349ddb34ae05e454cea2ab11e15ffed9a90f64ef4c1a9b1aecdafba"
+  },
+  "capture": {
+    "reportSha256": "b9815abb9e02296a92dda3bc15ab8da1deea76aa9fc552755474137a8c9a28a4",
+    "webImageSha256": "4e75beba1941717827a7c8614593d5d277456e3399e88f5d4d4f1a1b4bf00d11",
+    "lynxImageSha256": "108a25e6fbcb28ec87f94ca798a5a41ee87a1eb8768dd740c07de122bf6cf07c",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "fixtureMutation": "opencode/big-pickle to codex/gpt-5.4-mini",
+    "webSelected": "opencode:opencode/big-pickle",
+    "lynxSelected": "codex:gpt-5.4-mini",
+    "webProviderOrder": ["favorites", "opencode", "claudeAgent", "codex", "grok"],
+    "lynxProviderOrder": ["favorites", "claudeAgent", "codex", "grok", "opencode"]
+  },
+  "after": {
+    "fixturePreparation": "pristine-seed",
+    "webSelected": "opencode:opencode/big-pickle",
+    "lynxSelected": "opencode:opencode/big-pickle",
+    "modelRowCountWeb": 7,
+    "modelRowCountLynx": 7,
+    "providerOrderWeb": ["favorites", "opencode", "claudeAgent", "codex", "grok"],
+    "providerOrderLynx": ["favorites", "opencode", "claudeAgent", "codex", "grok"],
+    "overlayGeometryDelta": [0, 0, 0, 0]
+  },
+  "fix": "Preserve the real started-thread model instead of mutating it across providers, and partition the Lynx provider rail so thread-compatible providers precede locked providers while retaining stable order.",
+  "boundary": "Browser evidence covers selected state, provider order, disabled state, row inventory, and overlay geometry. Native correlation remains blocked by the missing Lynxtron 0.0.18 application bundle. Screenshots remain temporary."
+}
