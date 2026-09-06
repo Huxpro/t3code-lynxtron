@@ -182,6 +182,8 @@ describe("LiveConnectorHost", () => {
   it("projects an unexpected shared-server close as reconnecting", () => {
     const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
     assert.include(source, 'this.#setStatus("reconnecting", this.diagnostics.error)');
+    assert.include(source, 'this.#config?.environment.label ?? "T3 Code"');
+    assert.include(source, "could not establish a WebSocket connection.");
   });
 
   it("waits for the live config before replying to renderer readiness", () => {

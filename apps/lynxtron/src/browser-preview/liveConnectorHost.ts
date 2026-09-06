@@ -452,7 +452,8 @@ export class LiveConnectorHost {
     fiber.addObserver(() => {
       if (this.#disposed || !this.diagnostics.connected) return;
       this.diagnostics.connected = false;
-      this.diagnostics.error = "Shared server connection closed.";
+      const label = this.#config?.environment.label ?? "T3 Code";
+      this.diagnostics.error = `${label} could not establish a WebSocket connection.`;
       this.#setStatus("reconnecting", this.diagnostics.error);
     });
   }
