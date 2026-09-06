@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T04:35:53-04:00",
+  "stateId": "existing-thread-completed-no-diff",
+  "productCommit": "c1b939d6794f0fd8429dbeabb8e7e6517de9d399",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "82ab97b6-f29e-450b-b5d1-9a0a2b168d52",
+    "snapshotSha256": "41142c507349ddb34ae05e454cea2ab11e15ffed9a90f64ef4c1a9b1aecdafba"
+  },
+  "fixture": {
+    "method": "real connector and OpenCode provider",
+    "model": "opencode/big-pickle",
+    "prompt": "Reply with exactly: fidelity loop complete",
+    "assistantText": "fidelity loop complete",
+    "messageCount": 2,
+    "latestTurnState": "completed"
+  },
+  "capture": {
+    "reportSha256": "1e2f21b775532d3328681a2d1514cfc93c3ce468d3cfe35cce054d181dcf6507",
+    "webImageSha256": "66f552341fc708da17b0fc5e9b207d003a74489281967e4f3785282cc14d4557",
+    "lynxImageSha256": "7d9b9ca716e0eaf4c1523dd614c66dbd133be242dd9bdc13812734598e3e1e20",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "composerProviderStateMatch": true,
+    "rendererErrors": 0
+  },
+  "boundary": "This refresh restores current-head completed-state coverage and claims no product improvement. Browser and Native evidence remain separate. Screenshots remain temporary."
+}

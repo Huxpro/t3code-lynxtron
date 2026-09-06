@@ -26668,6 +26668,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-completed-current-refresh-2",
+      "observedAt": "2026-09-06T04:35:53-04:00",
+      "commit": "c1b939d6794f0fd8429dbeabb8e7e6517de9d399",
+      "codeCommit": "c1b939d6794f0fd8429dbeabb8e7e6517de9d399",
+      "codeState": "commit",
+      "label": "Completed thread current-head coverage refresh",
+      "narrative": "The prior completed snapshot had been overwritten by later disposable runs, so a new deterministic completed turn was created through the real connector and OpenCode provider. Admission requires the exact assistant response fidelity loop complete, latestTurn=completed, two persisted messages, matching Web and Lynx state identity, matching idle Composer/Big Pickle projection, and zero renderer errors. This refresh changes evidence confidence only and claims no product improvement.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The checkpoint restores a current reproducible completed-state baseline without attributing visual change to the current commit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/completed-thread-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "d8a663e4c4d2148dd19919591a0c51b713b0a7db1af9ea8a0f02d714b8e51ba5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-completed-content-gate",
+              "source": "Both panes render the same thread, exact prompt and assistant response, completed turn, Big Pickle model, and idle Composer"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-completed-current-capture",
+              "source": "Strict paired capture passes all hard gates with matching session projection and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
