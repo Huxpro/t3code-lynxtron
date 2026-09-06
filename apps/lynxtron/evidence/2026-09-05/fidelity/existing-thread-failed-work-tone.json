@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T23:12:00-04:00",
+  "stateId": "existing-thread-failed",
+  "productCommit": "b46ae8c3d2cb02da9b7101b3a7a0546239f8842e",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "5121bf86-c44a-440d-a156-ac49a6089e9b",
+    "snapshotSha256": "af217161e517eb6a67936f00a8362661e20e809620c9e880de2cb730a062d62a"
+  },
+  "capture": {
+    "reportSha256": "8fd4b9a206d8ed96a822add2ff0c7f10228df8af050e36775e31c89c91a99a59",
+    "webBundleSha256": "7bd6245cbc75df4e339458dc361c25e68814c0335bc9dbafb05373f2de713281",
+    "lynxBundleSha256": "9bbe646c6146a48ecb6dfd5958803f86b3cae4b00c2b17dcdaaf83449ccaaf7b",
+    "webImageSha256": "17385869f6c83681949cc004c46ac9776ea1b75047f3ffb3518aaee873458cae",
+    "lynxImageSha256": "998d573183033f752844d63a14ac75961049801c5223d0d4ac07274cbc44779e",
+    "passed": true,
+    "failedTranscriptGeometryMatch": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "lynxHeadingColor": "rgba(245, 245, 245, 0.82)",
+    "failedRowRegionSsim": 0.952845
+  },
+  "after": {
+    "webHeadingColor": "color(srgb 0.984352 0.254686 0.291814)",
+    "lynxHeadingColor": "rgb(239, 68, 68)",
+    "fontSize": "12px",
+    "fontWeight": "500",
+    "failedRowRegionSsim": 0.958571
+  },
+  "fix": "Preserve the shared destructive and warning work-entry tones through explicit Lynx leaf classes and select the matching pre-rasterized icon color instead of overriding every native heading with foreground/82.",
+  "boundary": "The 12px leaf does not move the rounded six-decimal full-frame SSIM, so only the fixed failed-row region improvement is claimed. The same connector-created failed snapshot and row geometry remain unchanged."
+}

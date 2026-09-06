@@ -26277,6 +26277,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-failed-work-tone-current",
+      "observedAt": "2026-09-05T23:12:00-04:00",
+      "commit": "b46ae8c3d2cb02da9b7101b3a7a0546239f8842e",
+      "codeCommit": "b46ae8c3d2cb02da9b7101b3a7a0546239f8842e",
+      "codeState": "commit",
+      "label": "Failed work-entry tone parity",
+      "narrative": "The shared failed work entry already projected text-destructive, but the Lynx-native heading override replaced it with foreground/82 and the raster icon ignored the semantic class. Explicit error/warning leaf classes and semantic raster colors restore the red Runtime error treatment without moving either transcript row. The fixed failed-row region SSIM improves from 0.952845 to 0.958571; the leaf is too small to move rounded full-frame SSIM.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same connector-created failed snapshot, row geometry, Web authority pixels, route, viewport, and zero-error gates isolate only the failed work-entry tone."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/existing-thread-failed-work-tone.json",
+          "classification": "tracked-current",
+          "sha256": "2e0c211802a10b4eb01ae84a6362b34271b56f52b56d00d855149d20a7d5951e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "failed-work-tone-projection",
+              "source": "Both panes render Runtime error from the same error-tone work entry"
+            },
+            "typography": {
+              "residual": 0.01,
+              "confidence": 0.99,
+              "method": "failed-work-heading-computed-style",
+              "source": "Both headings retain 12px medium 20px-line typography and Lynx now resolves the destructive color instead of foreground/82"
+            },
+            "material": {
+              "residual": 0.041429,
+              "confidence": 0.99,
+              "method": "failed-work-row-region-ssim",
+              "source": "1 - fixed failed-row region SSIM 0.958571, improving from 0.952845"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-created-failed-runtime",
+              "source": "Strict post-commit capture retains the same failed snapshot and row geometry with zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
