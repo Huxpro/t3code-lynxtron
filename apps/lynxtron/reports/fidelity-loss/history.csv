@@ -468,3 +468,4 @@ model-picker-selected-provider-order-current,2026-09-06T07:50:00-04:00,74596ee36
 new-thread-hero-paired-navigation-current,2026-09-06T07:55:00-04:00,d41e2e684,commit,New-thread Hero paired navigation refresh,0.173428,0.173428,0.034144,0.144207,0.855793,0.818462
 new-thread-hero-light-current-refresh,2026-09-06T08:10:00-04:00,ab47389ad,commit,New-thread Hero light current-head refresh,0.173423,0.173423,0.034139,0.144207,0.855793,0.818467
 settings-keybindings-add-mutation-current,2026-09-06T08:45:00-04:00,bea7eb9ca,commit,Keybindings search and add mutation,0.17354,0.173423,0.034276,0.144207,0.855793,0.81835
+settings-keybindings-remove-mutation-current,2026-09-06T09:21:00-04:00,03a2d2527,commit,Keybindings reversible remove mutation,0.173481,0.173423,0.034207,0.144207,0.855793,0.818409

@@ -27266,6 +27266,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-remove-mutation-current",
+      "observedAt": "2026-09-06T09:21:00-04:00",
+      "commit": "03a2d2527",
+      "codeCommit": "03a2d2527",
+      "codeState": "commit",
+      "label": "Keybindings reversible remove mutation",
+      "narrative": "The Lynx typed connector now carries server.removeKeybinding through Native and Browser Preview hosts. Row controls expose edit, reset, and remove; a disposable paired run adds settings.open on mod+shift+y and removes that exact Custom rule, with both renderers moving 45 to 46 to 45 through the shared server config stream.",
+      "attribution": {
+        "allocation": "working-tree-product-change",
+        "confidence": 0.99,
+        "reason": "The captured reverse mutation is a real server RPC observed independently by both renderers."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/keybindings-remove-mutation.json",
+          "classification": "tracked-current",
+          "sha256": "1bee57c582c19ebf9d842db1680c2461b81997499381ab2affbdaa4eeafffc03"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0.02,
+              "confidence": 0.99,
+              "method": "keybinding-row-controls",
+              "source": "Edit, Reset, and Remove controls are present; Open keybindings.json remains separate host work."
+            },
+            "interaction": {
+              "residual": 0.04,
+              "confidence": 0.99,
+              "method": "lynx-add-remove-browser-flow",
+              "source": "The captured pointer flow invokes upsertKeybinding then removeKeybinding and both panes return to 45 rows. Edit and reset remain source-tested only."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-server-keybinding-reverse-mutation",
+              "source": "The live connector records both typed commands, persisted state drops the temporary rule, and renderer errors remain empty."
+            }
+          }
+        }
+      ]
     }
   ]
 }
