@@ -872,14 +872,23 @@ function readAddProviderDialog(root) {
 
 function readKeybindingsMetrics(root) {
   const header = root?.querySelector("[data-keybindings-table-header]") ?? null;
+  const searchHost = root?.querySelector('[aria-label="Search keybindings"]') ?? null;
+  const searchInput =
+    searchHost?.shadowRoot?.querySelector("input") ??
+    (searchHost?.matches?.("input") ? searchHost : null);
   const rows = [
     ...(root?.querySelectorAll("[data-keybinding-command][data-keybinding-shortcut]") ?? []),
   ];
   return {
     actions: {
-      search: readElementBox(root?.querySelector('[aria-label="Search keybindings"]')),
+      search: readElementBox(searchHost),
       add: readElementBox(root?.querySelector('[aria-label="Add keybinding"]')),
       openFile: readElementBox(root?.querySelector('[aria-label="Open keybindings.json"]')),
+    },
+    search: {
+      expanded: searchInput !== null,
+      value: searchInput?.value ?? searchInput?.getAttribute?.("value") ?? "",
+      box: readElementBox(searchHost),
     },
     addRow: (() => {
       const row = root?.querySelector('[data-keybinding-add-row="true"]');

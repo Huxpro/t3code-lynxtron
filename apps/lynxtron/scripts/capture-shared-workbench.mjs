@@ -131,6 +131,7 @@ const defaultProviderIdByStateId = {
 const providerId = argValue("--provider-id", defaultProviderIdByStateId[stateId] ?? "");
 const composerInput = argValue("--composer-input", "");
 const sidebarQuery = argValue("--sidebar-query", "");
+const keybindingsQuery = argValue("--keybindings-query", "");
 const sidebarTargetState = argValue("--sidebar-state", "");
 const projectSettingsExpectation = argValue("--project-settings-expect", "parity");
 const legacySidebarEnabled =
@@ -1148,6 +1149,24 @@ async function fillLynxKeybindingInput(cdp, sessionId, ariaLabel, value, { repla
     })()`,
   );
   if (!focused) throw new Error(`Could not focus Lynx ${ariaLabel}`);
+  await cdp.send("Input.insertText", { text: value }, sessionId);
+}
+
+async function fillKeybindingsSearchInput(cdp, sessionId, client, value) {
+  const focused = await focusRemoteElement(
+    cdp,
+    sessionId,
+    `(() => {
+      const frame = document.getElementById(${JSON.stringify(`${client}-pane`)});
+      const doc = frame?.contentWindow?.document;
+      const root = ${JSON.stringify(client)} === 'lynx'
+        ? doc?.getElementById('t3-lynx-preview')?.shadowRoot
+        : doc;
+      const host = root?.querySelector('input[aria-label="Search keybindings"]');
+      return host?.shadowRoot?.querySelector('input') ?? host ?? null;
+    })()`,
+  );
+  if (!focused) throw new Error(`Could not focus ${client} Keybindings search input`);
   await cdp.send("Input.insertText", { text: value }, sessionId);
 }
 
@@ -9585,7 +9604,7 @@ async function captureCell({
     ) {
       throw new Error("Failed-thread dismissal requires both initial error banners");
     }
-    for (const client of ["web", "lynx"]) {
+    for (const client of ["lynx", "web"]) {
       const click = await clickThreadErrorDismiss(cdp, sessionId, client);
       if (!click) {
         throw new Error(`Missing ${client} failed-thread dismiss control`);
@@ -9786,6 +9805,66 @@ async function captureCell({
         webCount: state?.web?.settingsMetrics?.keybindings?.rows?.length ?? 0,
         lynxCount: state?.lynx?.settingsMetrics?.keybindings?.rows?.length ?? 0,
       });
+    }
+    reachedTargetState = true;
+  }
+  if (stateId === "settings-keybindings" && keybindingsQuery) {
+    const beforeCounts = {
+      web: state?.web?.settingsMetrics?.keybindings?.rows?.length ?? 0,
+      lynx: state?.lynx?.settingsMetrics?.keybindings?.rows?.length ?? 0,
+    };
+    for (const client of ["lynx", "web"]) {
+      const searchPoint = await keybindingsControlPoint(
+        cdp,
+        sessionId,
+        client,
+        '[aria-label="Search keybindings"]',
+      );
+      if (!searchPoint) throw new Error(`Missing ${client} Keybindings search control`);
+      await dispatchPointerClickWithMove(cdp, sessionId, searchPoint);
+      await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) => next?.[client]?.settingsMetrics?.keybindings?.search?.expanded === true,
+        3_000,
+        `${client} Keybindings search expansion`,
+      );
+      await fillKeybindingsSearchInput(cdp, sessionId, client, keybindingsQuery);
+    }
+    state = await waitForWorkbenchState(
+      cdp,
+      sessionId,
+      (next) => {
+        const web = next?.web?.settingsMetrics?.keybindings;
+        const lynx = next?.lynx?.settingsMetrics?.keybindings;
+        return (
+          web?.search?.value === keybindingsQuery &&
+          lynx?.search?.value === keybindingsQuery &&
+          (web?.rows?.length ?? 0) > 0 &&
+          (web?.rows?.length ?? 0) < beforeCounts.web &&
+          JSON.stringify(
+            web?.rows?.map(({ command, shortcut, when, source }) => ({
+              command,
+              shortcut,
+              when,
+              source,
+            })) ?? [],
+          ) ===
+            JSON.stringify(
+              lynx?.rows?.map(({ command, shortcut, when, source }) => ({
+                command,
+                shortcut,
+                when,
+                source,
+              })) ?? [],
+            )
+        );
+      },
+      5_000,
+      "paired Keybindings search result",
+    );
+    if (beforeCounts.web !== beforeCounts.lynx) {
+      throw new Error(`Keybindings initial row counts differed: ${JSON.stringify(beforeCounts)}`);
     }
     reachedTargetState = true;
   }
