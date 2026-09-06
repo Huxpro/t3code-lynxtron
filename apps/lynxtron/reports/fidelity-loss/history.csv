@@ -448,3 +448,4 @@ settings-source-control-label-typography-current,2026-09-05T21:30:00-04:00,ef837
 settings-source-control-git-details-current,2026-09-05T22:20:00-04:00,8335addeaaa1b488284d91636410e95c8302da08,commit,Settings Source Control Git details parity,0.175049,0.175049,0.034189,0.145847,0.854153,0.816841
 existing-thread-failed-d5-current,2026-09-05T22:48:00-04:00,65573a9699a01b85b150c3669f0c68860468e311,commit,Failed thread error-state regression repair,0.175044,0.175044,0.034183,0.145847,0.854153,0.816846
 existing-thread-failed-work-tone-current,2026-09-05T23:12:00-04:00,b46ae8c3d2cb02da9b7101b3a7a0546239f8842e,commit,Failed work-entry tone parity,0.17443,0.17443,0.03416,0.145232,0.854768,0.81746
+existing-thread-failed-work-row-current,2026-09-05T23:55:00-04:00,6c75e1f230bc4410415f1b8b783f755e5da6679f,commit,Failed work-row presentation parity,0.17442,0.17442,0.034147,0.145232,0.854768,0.81747

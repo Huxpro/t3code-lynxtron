@@ -26330,6 +26330,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-failed-work-row-current",
+      "observedAt": "2026-09-05T23:55:00-04:00",
+      "commit": "6c75e1f230bc4410415f1b8b783f755e5da6679f",
+      "codeCommit": "b46ae8c3d2cb02da9b7101b3a7a0546239f8842e",
+      "codeState": "commit",
+      "label": "Failed work-row presentation parity",
+      "narrative": "The failed work row now preserves its destructive heading and glyph tones and the Browser Preview work-group wrapper fills its parent content width, placing the trailing failure status at the same visual edge as Web. The same connector-created failed snapshot retains matching row origins and zero renderer errors. Full-frame SSIM improves from 0.951504 to 0.951738 and the fixed transcript region improves from 0.968273 to 0.971733.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same failed thread, Web authority pixels, route, viewport, and row origins isolate the work-row tone and Browser Preview width corrections."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/existing-thread-failed-work-row.json",
+          "classification": "tracked-current",
+          "sha256": "b26c4ce6cf700f90695c39fbf01f37f9ecbd05cb3523851ad6c8c795dd775c32"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-failed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "failed-work-row-presentation",
+              "source": "Runtime error uses the same destructive semantic treatment and trailing status placement as Web"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0.25, 0, 0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "failed-work-row-visual-edges",
+              "source": "Both transcript row origins match; Lynx fills the 760px parent content box while Web reports 768px including parent negative margins"
+            },
+            "material": {
+              "residual": 0.028267,
+              "confidence": 0.99,
+              "method": "failed-transcript-region-ssim",
+              "source": "1 - fixed transcript region SSIM 0.971733, improving from 0.968273; full frame improves to 0.951738"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-created-failed-runtime",
+              "source": "Strict post-commit failed-thread capture passes with matching state, row geometry, and zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }

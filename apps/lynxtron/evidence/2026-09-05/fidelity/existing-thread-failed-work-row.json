@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-05T23:55:00-04:00",
+  "stateId": "existing-thread-failed",
+  "productCommits": [
+    "b46ae8c3d2cb02da9b7101b3a7a0546239f8842e",
+    "4db18e64643cc0d5b3c00fabeb0fde6a750131a8",
+    "6c75e1f230bc4410415f1b8b783f755e5da6679f"
+  ],
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "threadId": "5121bf86-c44a-440d-a156-ac49a6089e9b",
+    "snapshotSha256": "af217161e517eb6a67936f00a8362661e20e809620c9e880de2cb730a062d62a"
+  },
+  "capture": {
+    "reportSha256": "665fa4338a051f675292c2608400f6d80e2a97c40aa056b8bae17a38275c78ed",
+    "webBundleSha256": "7bd6245cbc75df4e339458dc361c25e68814c0335bc9dbafb05373f2de713281",
+    "lynxBundleSha256": "246b50ff33529952a00b350b6d099df4d072a9bb98844d8eae70ccecfb003477",
+    "webImageSha256": "17385869f6c83681949cc004c46ac9776ea1b75047f3ffb3518aaee873458cae",
+    "lynxImageSha256": "a5f81030696ffa1cc69c264438e4f75e99621d60758df279c29bc1c6edc4efc2",
+    "passed": true,
+    "failedTranscriptGeometryMatch": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "lynxHeadingColor": "rgba(245, 245, 245, 0.82)",
+    "lynxEntryWidth": 154.46875,
+    "fullFrameSsim": 0.951504,
+    "transcriptRegionSsim": 0.968273
+  },
+  "after": {
+    "webHeadingColor": "color(srgb 0.984352 0.254686 0.291814)",
+    "lynxHeadingColor": "rgb(239, 68, 68)",
+    "webEntryWidth": 768,
+    "lynxEntryContentWidth": 760,
+    "fullFrameSsim": 0.951738,
+    "transcriptRegionSsim": 0.971733
+  },
+  "fix": "Preserve destructive work-entry text and icon colors in Lynx, generate the missing 14px destructive raster, and restore the Browser Preview work-group content width so the trailing failed status returns to the right edge.",
+  "boundary": "The Lynx entry width is its parent's 760px content box; Web reports 768px including the parent's negative horizontal margins. Visual edges align, so the eight-pixel DOM accounting difference is Browser proxy structure rather than remaining product loss."
+}
