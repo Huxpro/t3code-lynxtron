@@ -2065,7 +2065,7 @@
   border-bottom-right-radius: 8px;
 }
 .action-btn--add {
-  width: 94px;
+  width: 108px;
 }
 .action-btn--add .action-btn__content {
   transform: translate(-1px, 1px);
@@ -2077,6 +2077,9 @@
   color: var(--header-action-foreground);
   transform: scaleX(1.048);
   transform-origin: left center;
+}
+.action-btn--add .action-btn__chevron-img {
+  margin-left: 2px;
 }
 .action-btn--open {
   width: 87px;

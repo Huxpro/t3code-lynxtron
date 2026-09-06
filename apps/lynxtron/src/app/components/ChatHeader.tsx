@@ -77,6 +77,7 @@ function ActionButton({
   optionsAriaLabel,
   onPrimaryTap,
   onOptionsTap,
+  trailingChevron = false,
   gitAction,
 }: {
   className: string;
@@ -88,6 +89,7 @@ function ActionButton({
   optionsAriaLabel?: string;
   onPrimaryTap?: () => void;
   onOptionsTap?: () => void;
+  trailingChevron?: boolean;
   gitAction?: GitQuickAction | undefined;
 }) {
   const actionId = className.match(/action-btn--([^\s]+)/)?.[1];
@@ -95,6 +97,9 @@ function ActionButton({
     <>
       <Icon name={icon} size={14} color="#818181" className="action-btn__icon-img" />
       {label ? <text className="action-btn__label">{label}</text> : null}
+      {trailingChevron ? (
+        <Icon name="chevron-down" size={14} color="#818181" className="action-btn__chevron-img" />
+      ) : null}
     </>
   );
 
@@ -263,6 +268,7 @@ export function ChatHeader({
               className={`action-btn--add${compactActions ? " action-btn--compact" : ""}`}
               icon="plus"
               label={compactActions ? undefined : "Add action"}
+              trailingChevron={!compactActions}
               primaryAriaLabel="Add action"
               onPrimaryTap={uiActions.openProjectActionDialog}
             />
