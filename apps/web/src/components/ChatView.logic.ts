@@ -122,6 +122,15 @@ export function shouldWriteThreadErrorToCurrentServerThread(input: {
   );
 }
 
+export function resolveVisibleServerThreadError(input: {
+  readonly localError: string | null;
+  readonly persistedError: string | null;
+  readonly dismissedPersistedError: string | null;
+}): string | null {
+  if (input.localError !== null) return input.localError;
+  return input.persistedError === input.dismissedPersistedError ? null : input.persistedError;
+}
+
 export function buildThreadTurnInterruptInput(thread: Pick<Thread, "id" | "session">): {
   threadId: ThreadId;
   turnId?: TurnId;

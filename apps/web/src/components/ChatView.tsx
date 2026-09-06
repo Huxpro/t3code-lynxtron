@@ -276,6 +276,7 @@ import {
   deriveLockedProvider,
   readFileAsDataUrl,
   reconcileMountedTerminalThreadIds,
+  resolveVisibleServerThreadError,
   resolveProviderDriverKindByInstanceId,
   resolveThreadMetadataUpdateForNextTurn,
   resolveSendEnvMode,
@@ -1295,6 +1296,9 @@ function ChatViewContent(props: ChatViewProps) {
   const [localServerErrorsByThreadKey, setLocalServerErrorsByThreadKey] = useState<
     Record<string, LocalThreadErrorEntry>
   >({});
+  const [dismissedPersistedErrorsByThreadKey, setDismissedPersistedErrorsByThreadKey] = useState<
+    Record<string, string>
+  >({});
   const [isConnecting, _setIsConnecting] = useState(false);
   const [isRevertingCheckpoint, setIsRevertingCheckpoint] = useState(false);
   const [maximizedRightPanelThreadKey, setMaximizedRightPanelThreadKey] = useState<string | null>(
@@ -1409,6 +1413,7 @@ function ChatViewContent(props: ChatViewProps) {
     ? null
     : ((draftId ? localDraftErrorsByDraftId[draftId]?.message : null) ?? null);
   const localServerError = localServerErrorsByThreadKey[routeThreadKey]?.message ?? null;
+  const persistedServerError = activeServerThread?.session?.lastError ?? null;
   // Draft errors are keyed by draftId while server errors are keyed by thread
   // key, so a pending draft entry must migrate when the server thread loads or
   // a failed send would silently disappear on promotion. When both keys hold
@@ -1461,7 +1466,11 @@ function ChatViewContent(props: ChatViewProps) {
   const isServerThread = activeServerThread !== null;
   const activeThread = activeServerThread ?? localDraftThread;
   const threadError = isServerThread
-    ? (localServerError ?? activeServerThread?.session?.lastError ?? null)
+    ? resolveVisibleServerThreadError({
+        localError: localServerError,
+        persistedError: persistedServerError,
+        dismissedPersistedError: dismissedPersistedErrorsByThreadKey[routeThreadKey] ?? null,
+      })
     : localDraftError;
   const runtimeMode = composerRuntimeMode ?? activeThread?.runtimeMode ?? DEFAULT_RUNTIME_MODE;
   const interactionMode =
@@ -5891,7 +5900,16 @@ function ChatViewContent(props: ChatViewProps) {
         <>
           <ThreadErrorBanner
             error={threadError}
-            onDismiss={() => setThreadError(activeThread.id, null)}
+            onDismiss={() => {
+              if (localServerError !== null || !isServerThread) {
+                setThreadError(activeThread.id, null);
+              } else if (persistedServerError !== null) {
+                setDismissedPersistedErrorsByThreadKey((existing) => ({
+                  ...existing,
+                  [routeThreadKey]: persistedServerError,
+                }));
+              }
+            }}
           />
           {!isDraftHeroState ? (
             <ProviderStatusBanner

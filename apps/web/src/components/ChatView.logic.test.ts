@@ -31,6 +31,7 @@ import {
   startNewThreadForProject,
   shouldShowBranchMismatchBanner,
   shouldWriteThreadErrorToCurrentServerThread,
+  resolveVisibleServerThreadError,
 } from "./ChatView.logic";
 
 const environmentId = EnvironmentId.make("environment-local");
@@ -484,6 +485,35 @@ describe("shouldWriteThreadErrorToCurrentServerThread", () => {
         targetThreadId: threadId,
       }),
     ).toBe(false);
+  });
+});
+
+describe("resolveVisibleServerThreadError", () => {
+  it("hides only the persisted error text that the user dismissed", () => {
+    expect(
+      resolveVisibleServerThreadError({
+        localError: null,
+        persistedError: "Model not found",
+        dismissedPersistedError: "Model not found",
+      }),
+    ).toBeNull();
+    expect(
+      resolveVisibleServerThreadError({
+        localError: null,
+        persistedError: "Provider disconnected",
+        dismissedPersistedError: "Model not found",
+      }),
+    ).toBe("Provider disconnected");
+  });
+
+  it("keeps a newer local error visible over a dismissed persisted error", () => {
+    expect(
+      resolveVisibleServerThreadError({
+        localError: "Failed to retry",
+        persistedError: "Model not found",
+        dismissedPersistedError: "Model not found",
+      }),
+    ).toBe("Failed to retry");
   });
 });
 
