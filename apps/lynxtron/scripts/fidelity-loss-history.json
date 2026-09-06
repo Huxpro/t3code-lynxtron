@@ -25246,7 +25246,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-05/fidelity/lifecycle-error-hero-banner.json",
           "classification": "tracked-current",
-          "sha256": "e473687e1a05f8a9962d9f32c4c396fc7917bd9f301e4658baf3310356df15a4"
+          "sha256": "57f47b125083d54559bc7f5d033b41d55383c4dd2ac7476616ffb4b3a8b9e805"
         }
       ],
       "updates": [
@@ -25942,6 +25942,60 @@
               "confidence": 0.99,
               "method": "full-frame-ssim",
               "source": "1 - strict post-commit SSIM 0.957917; the 768 by 68 banner ROI improves from 0.807520 to 0.810856"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "lifecycle-error-dual-banner-refresh-current",
+      "observedAt": "2026-09-05T19:51:42-04:00",
+      "commit": "51be29594c6d53ea4e0dd82539e14fe466e8b3b5",
+      "codeCommit": "19567e348",
+      "codeState": "commit",
+      "label": "Lifecycle error dual-banner refresh",
+      "narrative": "An explicit provider-banner marker now lets the paired Browser probe distinguish the top Claude provider error from the separate Composer connection lifecycle banner. On current HEAD both renderers expose identical provider title and message, equal 70px provider-banner height, exact 768 by 68 lifecycle-banner geometry, matching reconnecting state, and zero renderer errors. The provider banner retains a 19.84px intrinsic-width delta from font shaping; no fixed width is introduced. Current full-frame SSIM is 0.938527, improving on the last tracked 0.934578 snapshot while preserving truthful connection copy.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "The Web marker and workbench selector make both banner classes observable without changing pixels. Current material improvement includes already-landed lifecycle action fixes and is recorded as a refresh rather than attributed to the probe alone."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/lifecycle-error-hero-banner.json",
+          "classification": "tracked-current",
+          "sha256": "57f47b125083d54559bc7f5d033b41d55383c4dd2ac7476616ffb4b3a8b9e805"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["lifecycle-error"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-banner-content-probe",
+              "source": "Both renderers expose identical Claude provider error content alongside their truthful reconnecting lifecycle copy"
+            },
+            "geometry": {
+              "anchorDeltas": [9.921875, 0, 19.84375, 0, 0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "dual-banner-current-geometry",
+              "source": "Provider banners share y and 70px height while intrinsic font shaping leaves a 19.84px width delta; lifecycle banners match exactly at 768 by 68"
+            },
+            "material": {
+              "residual": 0.061473,
+              "confidence": 0.99,
+              "method": "full-frame-ssim",
+              "source": "1 - current strict SSIM 0.938527; the fixed dual-banner region SSIM is 0.828605"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-owned-server-fault-runtime",
+              "source": "Strict current-head capture passes with both banner classes identified, matching reconnecting lifecycle, zero renderer errors, and clean disposal"
             }
           }
         }
