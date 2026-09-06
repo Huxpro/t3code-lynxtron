@@ -26384,6 +26384,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "existing-thread-completed-no-diff-current",
+      "observedAt": "2026-09-06T00:42:00-04:00",
+      "commit": "e20d1a7d0466324b88f4b25df949f328f6f3a2f4",
+      "codeCommit": "f3fabea10f4562affa14426b6e956076715e9fba",
+      "codeState": "commit",
+      "label": "Completed no-diff transcript spacing parity",
+      "narrative": "A connector-created completed turn with no file changes now has an independent strict capture state instead of inheriting the checkpoint-card requirement. Both panes render the same prompt and non-empty assistant response, zero checkpoint cards, and matching Composer semantics. The Browser Preview turn-fold row grows from 29px to Web's 45px and the assistant row contracts from 81px to 73px versus Web's 72.75px, aligning every row origin and size within one pixel.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same isolated completed thread, snapshot, route, theme, viewport, prompt, response, and zero-card state isolate the Browser Preview row-spacing correction."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-05/fidelity/existing-thread-completed-no-diff.json",
+          "classification": "tracked-current",
+          "sha256": "72f84d3e7f21ac6ab97c73b02f2e2165511de1809435717392372696fd56cbe7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["existing-thread-completed"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "completed-no-diff-content-gate",
+              "source": "Both panes render the identical prompt and non-empty Fidelity complete assistant response with zero checkpoint cards"
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0.25, 0, 0, 0, 0, 0, 0, 0, 0.25],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "completed-no-diff-row-geometry",
+              "source": "User, turn-fold, and assistant row x, y, width, and height all match within one pixel; the turn-fold delta falls from 16px to zero and assistant height delta from 8.25px to 0.25px"
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "connector-created-completed-runtime",
+              "source": "Strict post-commit completed-no-diff capture requires completed state and passes with zero renderer errors"
+            }
+          }
+        }
+      ]
     }
   ]
 }
