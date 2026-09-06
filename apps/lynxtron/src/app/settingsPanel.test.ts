@@ -205,14 +205,14 @@ describe("Lynx Settings route projection", () => {
     expect(unavailableBlock).toContain("opacity: 0.48;");
   });
 
-  it("renders server keybindings as a read-only Lynx table", () => {
+  it("renders searchable server keybindings with a writable add flow", () => {
     const keybindings = readFileSync(
       path.resolve(import.meta.dirname, "components/KeybindingsSettings.tsx"),
       "utf8",
     );
     const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
 
-    expect(keybindings).toContain('buildKeybindingRows(keybindings, "")');
+    expect(keybindings).toContain("buildKeybindingRows(keybindings, query)");
     expect(keybindings).toContain("serverConfig?.keybindings ?? []");
     expect(keybindings).toContain('id="keybindings"');
     expect(keybindings).toContain("rows.map((row, index) =>");
@@ -221,8 +221,12 @@ describe("Lynx Settings route projection", () => {
     expect(keybindings).toContain("shortcutToKeybindingInput(shortcut)");
     expect(keybindings).toContain('if (part === "mod" || part === "meta") return "⌘";');
     expect(keybindings).toContain('name="triangle-alert"');
-    expect(keybindings).toContain("Keybindings are read-only on Lynxtron");
-    expect(keybindings).toContain('<Icon name="info" size={14} color="#f59e0b" />');
+    expect(keybindings).toContain('aria-label="Search keybindings"');
+    expect(keybindings).toContain('aria-label="Add keybinding"');
+    expect(keybindings).toContain('data-keybinding-add-row="true"');
+    expect(keybindings).toContain("t3ClientActions");
+    expect(keybindings).toContain(".upsertKeybinding({");
+    expect(keybindings).not.toContain("Read-only ·");
     expect(keybindings).not.toContain("Keyboard support is limited on Lynxtron.");
     expect(overrides).toContain(".settings-panel--keybindings {");
     expect(overrides).toContain("max-width: 948px;");

@@ -1302,7 +1302,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".settings-topbar__restore {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  height: 28px;\n  padding: 0 8px;\n  box-sizing: border-box;",
     );
-    expect(componentSource("KeybindingsSettings.tsx")).toContain("Read-only · {rows.length}");
+    expect(componentSource("KeybindingsSettings.tsx")).toContain(
+      "buildKeybindingRows(keybindings, query)",
+    );
     expect(keybindingsSettingsSource).toContain(
       '<Icon name="triangle-alert" size={14} color="#f59e0b" />',
     );

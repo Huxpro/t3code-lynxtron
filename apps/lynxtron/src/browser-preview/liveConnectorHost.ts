@@ -53,6 +53,8 @@ import {
   type ServerConfig,
   type ServerSettings,
   type ServerSettingsPatch,
+  type ServerUpsertKeybindingInput,
+  type ServerUpsertKeybindingResult,
   type SourceControlDiscoveryResult,
   type SourceControlCloneRepositoryInput,
   type SourceControlCloneRepositoryResult,
@@ -903,6 +905,16 @@ export class LiveConnectorHost {
       const params = request.params as ProjectWriteFileInput;
       return this.#runClient<ProjectWriteFileResult>(
         this.#client[WS_METHODS.projectsWriteFile](params),
+      ).then((value) => {
+        this.#recordCommandResult(request.method, value);
+        return value;
+      });
+    }
+    if (request.method === "upsertKeybinding") {
+      return this.#runClient<ServerUpsertKeybindingResult>(
+        this.#client[WS_METHODS.serverUpsertKeybinding](
+          request.params as ServerUpsertKeybindingInput,
+        ),
       ).then((value) => {
         this.#recordCommandResult(request.method, value);
         return value;

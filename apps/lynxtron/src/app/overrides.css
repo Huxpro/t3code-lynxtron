@@ -5905,11 +5905,106 @@
   font-family: var(--font-sans);
   margin-left: auto;
 }
-.keybindings-settings__status {
+.keybindings-settings__status,
+.keybindings-settings__actions {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 5px;
+}
+.keybindings-settings__icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+.keybindings-settings__search {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 34px;
+  padding: 0 12px;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
+}
+.keybindings-settings__search-input {
+  flex-grow: 1;
+  width: 0;
+  height: 30px;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 13px;
+  background-color: transparent;
+}
+.keybindings-add-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 41px;
+  padding: 5px 16px;
+  gap: 8px;
+  border-bottom: 1px solid var(--border);
+  box-sizing: border-box;
+}
+.keybindings-add-row__command,
+.keybindings-add-row__shortcut,
+.keybindings-add-row__when {
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--input);
+  border-radius: 6px;
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  box-sizing: border-box;
+}
+.keybindings-add-row__command {
+  width: 303px;
+}
+.keybindings-add-row__shortcut {
+  width: 231px;
+}
+.keybindings-add-row__when {
+  width: 274px;
+}
+.keybindings-add-row__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 76px;
+  gap: 6px;
+}
+.keybindings-add-row__save {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--primary-foreground);
+  background-color: var(--primary);
+  font-size: 12px;
+}
+.keybindings-add-row__save--disabled {
+  opacity: 0.45;
+}
+.keybindings-add-row__error {
+  position: absolute;
+  left: 16px;
+  top: 35px;
+  color: var(--destructive);
+  font-size: 11px;
+}
+.keybindings-settings__empty {
+  padding: 48px 16px;
+  color: var(--muted-foreground);
+  font-size: 14px;
+  text-align: center;
 }
 .keybindings-table__header,
 .keybindings-table__row {
