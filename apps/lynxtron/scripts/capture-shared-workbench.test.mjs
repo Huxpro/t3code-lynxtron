@@ -301,6 +301,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'stateId === "settings-keybindings-remove-mutation"');
     assert.include(source, 'method === "removeKeybinding"');
     assert.include(source, "removed keybinding from both renderers");
+    assert.include(source, 'stateId === "settings-keybindings-edit-reset-mutation"');
+    assert.include(source, "edited keybinding in both renderers");
+    assert.include(source, "reset keybinding in both renderers");
   });
 
   it("synchronizes the provider runtime for real working-state captures", () => {

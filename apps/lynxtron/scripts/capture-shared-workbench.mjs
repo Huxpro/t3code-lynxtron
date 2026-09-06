@@ -254,8 +254,11 @@ const isSidebarControlHoverState =
 const isSidebarThreadHoverPreviewState = stateId === "sidebar-thread-hover-preview";
 const isNewThreadHeroState = stateId === "new-thread-hero" || stateId === "new-thread-hero-light";
 const isKeybindingsRemoveMutationState = stateId === "settings-keybindings-remove-mutation";
+const isKeybindingsEditResetMutationState = stateId === "settings-keybindings-edit-reset-mutation";
 const isKeybindingsMutationState =
-  stateId === "settings-keybindings-mutation" || isKeybindingsRemoveMutationState;
+  stateId === "settings-keybindings-mutation" ||
+  isKeybindingsRemoveMutationState ||
+  isKeybindingsEditResetMutationState;
 const isFailedThreadState =
   stateId === "existing-thread-failed" || stateId === "existing-thread-failed-dismissed";
 const isFailedThreadDismissedState = stateId === "existing-thread-failed-dismissed";
@@ -1130,7 +1133,7 @@ async function keybindingsControlPoint(cdp, sessionId, client, selector) {
   );
 }
 
-async function fillLynxKeybindingInput(cdp, sessionId, ariaLabel, value) {
+async function fillLynxKeybindingInput(cdp, sessionId, ariaLabel, value, { replace = false } = {}) {
   const focused = await focusRemoteElement(
     cdp,
     sessionId,
@@ -1139,7 +1142,9 @@ async function fillLynxKeybindingInput(cdp, sessionId, ariaLabel, value) {
       const root = frame?.contentWindow?.document
         ?.getElementById('t3-lynx-preview')?.shadowRoot;
       const host = root?.querySelector(${JSON.stringify(`[aria-label="${ariaLabel}"]`)});
-      return host?.shadowRoot?.querySelector('input') ?? host ?? null;
+      const input = host?.shadowRoot?.querySelector('input') ?? host ?? null;
+      if (${replace}) input?.select?.();
+      return input;
     })()`,
   );
   if (!focused) throw new Error(`Could not focus Lynx ${ariaLabel}`);
@@ -9675,6 +9680,80 @@ async function captureCell({
       webCount: state?.web?.settingsMetrics?.keybindings?.rows?.length ?? 0,
       lynxCount: state?.lynx?.settingsMetrics?.keybindings?.rows?.length ?? 0,
     });
+    if (isKeybindingsEditResetMutationState) {
+      const label = "Settings: Open";
+      const editedShortcut = "mod+shift+u";
+      const editPoint = await keybindingsControlPoint(
+        cdp,
+        sessionId,
+        "lynx",
+        `[aria-label="Edit shortcut for ${label}"]`,
+      );
+      if (!editPoint) throw new Error(`Missing Lynx Edit shortcut for ${label} control`);
+      await dispatchPointerClickWithMove(cdp, sessionId, editPoint);
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) =>
+          next?.lynx?.settingsMetrics?.keybindings?.rows?.some(
+            (row) => row.command === command && row.editing !== null,
+          ) === true,
+        3_000,
+        "Lynx keybinding edit row",
+      );
+      await fillLynxKeybindingInput(cdp, sessionId, `Keybinding for ${label}`, editedShortcut, {
+        replace: true,
+      });
+      const saveEditPoint = await keybindingsControlPoint(
+        cdp,
+        sessionId,
+        "lynx",
+        `[aria-label="Save ${label} keybinding"]`,
+      );
+      if (!saveEditPoint) throw new Error(`Missing Lynx Save ${label} keybinding control`);
+      await dispatchPointerClickWithMove(cdp, sessionId, saveEditPoint);
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) => {
+          const rowFor = (client) =>
+            next?.[client]?.settingsMetrics?.keybindings?.rows?.find(
+              (row) => row.command === command && row.shortcut.includes("U"),
+            ) ?? null;
+          return Boolean(rowFor("web") && rowFor("lynx"));
+        },
+        5_000,
+        "edited keybinding in both renderers",
+      );
+      keybindingsMutationTimeline.push({ step: "edited", command, shortcut: editedShortcut });
+      const resetPoint = await keybindingsControlPoint(
+        cdp,
+        sessionId,
+        "lynx",
+        `[aria-label="Reset ${label} to default"]`,
+      );
+      if (!resetPoint) throw new Error(`Missing Lynx Reset ${label} to default control`);
+      await dispatchPointerClickWithMove(cdp, sessionId, resetPoint);
+      state = await waitForWorkbenchState(
+        cdp,
+        sessionId,
+        (next) => {
+          const matchingRows = (client) =>
+            next?.[client]?.settingsMetrics?.keybindings?.rows?.filter(
+              (row) => row.command === command,
+            ) ?? [];
+          return (
+            matchingRows("web").some((row) => row.source === "Default") &&
+            matchingRows("lynx").some((row) => row.source === "Default") &&
+            !matchingRows("web").some((row) => row.shortcut.includes("U")) &&
+            !matchingRows("lynx").some((row) => row.shortcut.includes("U"))
+          );
+        },
+        5_000,
+        "reset keybinding in both renderers",
+      );
+      keybindingsMutationTimeline.push({ step: "reset", command });
+    }
     if (isKeybindingsRemoveMutationState) {
       const removePoint = await keybindingsControlPoint(
         cdp,
@@ -10898,9 +10977,14 @@ async function captureCell({
       failedThreadDismissalTimeline.every(({ step }) => step === "dismissed"));
   const finalKeybindingsMutationReady =
     !isKeybindingsMutationState ||
-    (keybindingsMutationTimeline.length === (isKeybindingsRemoveMutationState ? 3 : 2) &&
+    (keybindingsMutationTimeline.length ===
+      (isKeybindingsRemoveMutationState ? 3 : isKeybindingsEditResetMutationState ? 4 : 2) &&
       keybindingsMutationTimeline.at(-1)?.step ===
-        (isKeybindingsRemoveMutationState ? "removed" : "saved"));
+        (isKeybindingsRemoveMutationState
+          ? "removed"
+          : isKeybindingsEditResetMutationState
+            ? "reset"
+            : "saved"));
   const finalPendingRequestReady =
     stateId !== "existing-thread-approval" &&
     stateId !== "existing-thread-question" &&

@@ -913,24 +913,37 @@ function readKeybindingsMetrics(root) {
       text: item.textContent?.trim() ?? "",
       box: readElementBox(item),
     })),
-    rows: rows.map((row) => ({
-      command: row.getAttribute("data-keybinding-command"),
-      shortcut: row.getAttribute("data-keybinding-shortcut"),
-      when: row.getAttribute("data-keybinding-when"),
-      source: row.getAttribute("data-keybinding-source"),
-      conflicts: JSON.parse(row.getAttribute("data-keybinding-conflicts") ?? "[]"),
-      keycaps: [
-        ...(row.querySelectorAll("[data-slot='kbd'], .keybindings-table__keycap") ?? []),
-      ].map((keycap) => ({
-        text: keycap.textContent?.trim() ?? "",
-        box: readElementBox(keycap),
-      })),
-      box: readElementBox(row),
-      columns: [...row.children].map((item) => ({
-        text: item.textContent?.trim().replace(/\s+/g, " ") ?? "",
-        box: readElementBox(item),
-      })),
-    })),
+    rows: rows.map((row) => {
+      const inputValue = (selector) => {
+        const host = row.querySelector(selector);
+        const input = host?.shadowRoot?.querySelector("input") ?? host;
+        return input?.value ?? input?.getAttribute?.("value") ?? null;
+      };
+      return {
+        command: row.getAttribute("data-keybinding-command"),
+        shortcut: row.getAttribute("data-keybinding-shortcut"),
+        when: row.getAttribute("data-keybinding-when"),
+        source: row.getAttribute("data-keybinding-source"),
+        conflicts: JSON.parse(row.getAttribute("data-keybinding-conflicts") ?? "[]"),
+        editing: row.querySelector('[aria-label^="Save "][aria-label$=" keybinding"]')
+          ? {
+              shortcut: inputValue('[aria-label^="Keybinding for "]'),
+              when: inputValue('[aria-label^="When clause for "]'),
+            }
+          : null,
+        keycaps: [
+          ...(row.querySelectorAll("[data-slot='kbd'], .keybindings-table__keycap") ?? []),
+        ].map((keycap) => ({
+          text: keycap.textContent?.trim() ?? "",
+          box: readElementBox(keycap),
+        })),
+        box: readElementBox(row),
+        columns: [...row.children].map((item) => ({
+          text: item.textContent?.trim().replace(/\s+/g, " ") ?? "",
+          box: readElementBox(item),
+        })),
+      };
+    }),
   };
 }
 
