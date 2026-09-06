@@ -11632,6 +11632,77 @@ async function captureCell({
       height,
     });
   }
+  if (shouldClearWebNotification) {
+    const visibleToast = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const doc = document.getElementById('web-pane')?.contentWindow?.document;
+        const popup = [...(doc?.querySelectorAll('[data-slot="toast-popup"]') ?? [])].find(
+          (candidate) => {
+            const rect = candidate.getBoundingClientRect();
+            const style = doc?.defaultView?.getComputedStyle(candidate);
+            return rect.width > 0 && rect.height > 0 && style?.visibility !== 'hidden' && Number(style?.opacity ?? 1) > 0;
+          },
+        );
+        if (!popup) return null;
+        const rect = popup.getBoundingClientRect();
+        return {
+          text: popup.textContent?.trim().replace(/\s+/g, ' ') ?? '',
+          rect: { x: rect.x, y: rect.y, width: rect.width, height: rect.height },
+        };
+      })()`,
+    ).catch(() => null);
+    if (visibleToast) {
+      if (!(await dismissWebProviderNotification(cdp, sessionId, 4_000))) {
+        throw new Error(
+          `Visible Web notification remained at capture: ${JSON.stringify(visibleToast)}`,
+        );
+      }
+      await evaluate(
+        cdp,
+        sessionId,
+        `new Promise((resolve) => {
+          const frameWindow = document.getElementById('web-pane')?.contentWindow;
+          frameWindow?.requestAnimationFrame(() => frameWindow.requestAnimationFrame(resolve));
+        })`,
+      );
+    }
+  }
+  if (stateId === "composer-working") {
+    await cdp.send(
+      "Input.dispatchMouseEvent",
+      {
+        type: "mouseMoved",
+        x: Math.round(layout.webPane.x + layout.webPane.width),
+        y: 1,
+        button: "none",
+        pointerType: "mouse",
+      },
+      sessionId,
+    );
+    await delay(250);
+    const messageMetaHidden = await evaluate(
+      cdp,
+      sessionId,
+      `(() => {
+        const read = (frameId, shadow) => {
+          const doc = document.getElementById(frameId)?.contentWindow?.document;
+          const root = shadow ? doc?.getElementById('t3-lynx-preview')?.shadowRoot : doc;
+          const meta = root?.querySelector('.transcript-user-meta');
+          if (!meta) return null;
+          const style = doc?.defaultView?.getComputedStyle(meta);
+          return { opacity: style?.opacity ?? null, visibility: style?.visibility ?? null };
+        };
+        return { web: read('web-pane', false), lynx: read('lynx-pane', true) };
+      })()`,
+    );
+    if (messageMetaHidden?.web?.opacity !== "0" || messageMetaHidden?.lynx?.opacity !== "0") {
+      throw new Error(
+        `Composer Working message meta remained visible: ${JSON.stringify(messageMetaHidden)}`,
+      );
+    }
+  }
   state = await readWorkbenchState(cdp, sessionId);
   const clip = (r) => ({
     x: Math.round(r.x),

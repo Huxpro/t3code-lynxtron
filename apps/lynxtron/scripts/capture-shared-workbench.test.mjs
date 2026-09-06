@@ -190,6 +190,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "const finalNotificationDismissed =");
     assert.include(source, "if (shouldClearWebNotification && !finalNotificationDismissed)");
     assert.include(source, "Web provider-update notification appeared after initial cleanup.");
+    assert.include(source, "Visible Web notification remained at capture");
+    assert.include(source, "Composer Working message meta remained visible");
     assert.include(
       source,
       'throw new Error("Web pane did not commit notification dismissal before capture.")',
