@@ -4000,6 +4000,13 @@
 .provider-status-banner-flow .thread-error-alert,
 .provider-status-banner-overlay .thread-error-alert {
   padding-right: 40px;
+  gap: 12px;
+}
+.provider-status-banner-flow .thread-error-action,
+.provider-status-banner-overlay .thread-error-action {
+  position: absolute;
+  top: 8px;
+  right: 8px;
 }
 .provider-status-banner-flow .thread-error-description,
 .provider-status-banner-overlay .thread-error-description {
@@ -6818,9 +6825,9 @@
 }
 .provider-status-banner-flow .provider-status-banner__dismiss,
 .provider-status-banner-overlay .provider-status-banner__dismiss {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+  position: relative;
+  top: 0;
+  right: 0;
   width: 24px;
   min-width: 24px;
   height: 24px;
