@@ -1460,6 +1460,9 @@ describe("desktop shell interaction contract", () => {
     expect(chatHeaderSource).toContain("<ProjectFavicon");
     expect(chatHeaderSource).toContain("trailingChevron={!compactActions && hasProjectActions}");
     expect(chatHeaderSource).toContain("importableProjectScripts(projectScripts, fileScripts)");
+    expect(componentSource("../hooks/useT3ProjectFileScripts.ts")).toContain(
+      "if (!cwd || !connectorCommandsReady)",
+    );
     expect(chatHeaderSource).toContain(
       "updateProjectScripts(projectId, [...projectScripts, script])",
     );

@@ -4,17 +4,18 @@ import { T3ProjectFileFromJson } from "@t3tools/shared/t3ProjectFile";
 import * as Exit from "effect/Exit";
 import * as Schema from "effect/Schema";
 
-import { t3ClientActions } from "../state/t3Client";
+import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 
 const decodeT3ProjectFile = Schema.decodeExit(T3ProjectFileFromJson);
 const NO_SCRIPTS: ReadonlyArray<T3ProjectFileScript> = [];
 
 export function useT3ProjectFileScripts(cwd: string | null): ReadonlyArray<T3ProjectFileScript> {
   const [scripts, setScripts] = useState<ReadonlyArray<T3ProjectFileScript>>(NO_SCRIPTS);
+  const { connectorCommandsReady } = useT3ClientState();
 
   useEffect(() => {
     let cancelled = false;
-    if (!cwd) {
+    if (!cwd || !connectorCommandsReady) {
       setScripts(NO_SCRIPTS);
       return;
     }
@@ -31,7 +32,7 @@ export function useT3ProjectFileScripts(cwd: string | null): ReadonlyArray<T3Pro
     return () => {
       cancelled = true;
     };
-  }, [cwd]);
+  }, [connectorCommandsReady, cwd]);
 
   return scripts;
 }
