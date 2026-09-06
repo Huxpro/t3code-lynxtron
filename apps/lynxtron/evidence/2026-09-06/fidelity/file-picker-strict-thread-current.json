@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T15:12:00-04:00",
+  "stateId": "file-picker-default",
+  "captureCommit": "41770ddc6",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "73f1df78d1b1ac39a1357235379bd2f0c5f3048aafdadceac2161e698a8f81b4",
+    "webImageSha256": "c0fa477b2cab56ebb129d2aba0540c2951009133bc65119c99e5fdf8ce0c79f9",
+    "lynxImageSha256": "2fde33c25f9b57b04cfe148cba06751686581cce4ff8381cef7890a059144819",
+    "webBundle": "77045d540877",
+    "lynxBundle": "d21f3d1a1310",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "overlayContentMatch": true,
+    "overlayRowCountMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "rowCountWeb": 65,
+    "rowCountLynx": 65,
+    "rowOrderMatch": true,
+    "firstSixRows": [
+      "App.tsx",
+      "router.ts",
+      "README.md",
+      "PORT_WORKFLOW.md",
+      "PORTING_STRATEGY.md",
+      "package.json"
+    ]
+  },
+  "geometry": {
+    "panelWeb": [352, 82, 576, 420],
+    "panelLynx": [352, 82, 576, 420],
+    "searchWeb": [353, 83, 574, 48],
+    "searchLynx": [353, 83, 574, 48],
+    "rowWeb": [361, 167, 558, 48],
+    "rowLynx": [361, 167, 558, 48],
+    "footerWeb": [353, 461, 574, 40],
+    "footerLynx": [353, 461, 574, 40]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM on the full 1280x820 frame and exact 576x278 visible File Picker crop",
+    "previous": {
+      "fullFrameSsim": 0.960049,
+      "panelSsim": 0.916628
+    },
+    "current": {
+      "fullFrameSsim": 0.957459,
+      "panelSsim": 0.938107
+    }
+  },
+  "boundary": "The current strict capture proves the same persisted thread, complete 65-row order, and exact visible panel, search, row, and footer geometry. The Web list reports total scroll content height while Lynx reports its 330px viewport; that DOM accounting difference is not treated as a product geometry loss. Remaining visible residual is dominated by SVG-versus-raster icons, text rasterization, and glass shadow composition. Screenshots remain temporary because the tracked screenshot budget is full."
+}
