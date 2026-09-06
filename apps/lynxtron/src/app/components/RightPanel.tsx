@@ -27,6 +27,7 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
 import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
+import { BrowserPanel } from "./BrowserPanel";
 import { useT3ClientState } from "../state/t3Client";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 
@@ -45,7 +46,7 @@ interface RightPanelProps {
   onMaximizedChange?: (maximized: boolean) => void;
 }
 
-type AddableKind = RightPanelKind | "browser";
+type AddableKind = RightPanelKind;
 
 const SURFACE_ICONS: Record<RightPanelKind, IconName> = {
   plan: "clipboard-list",
@@ -53,6 +54,7 @@ const SURFACE_ICONS: Record<RightPanelKind, IconName> = {
   files: "files",
   file: "file-json",
   terminal: "terminal-square",
+  browser: "globe",
 };
 
 const ADDABLE_ICONS: Record<AddableKind, IconName> = {
@@ -62,9 +64,8 @@ const ADDABLE_ICONS: Record<AddableKind, IconName> = {
 };
 
 /**
- * Add-surface catalog, converged on the Web four-entry anatomy. Browser stays
- * a registered placeholder (disabled with an honest reason);
- * Plan opens through the proposed-plan product flow, not this menu.
+ * Add-surface catalog, converged on the Web four-entry anatomy. Plan opens
+ * through the proposed-plan product flow, not this menu.
  */
 const ADDABLE_SURFACES: ReadonlyArray<{
   readonly kind: AddableKind;
@@ -77,8 +78,8 @@ const ADDABLE_SURFACES: ReadonlyArray<{
     kind: "browser",
     label: "Browser",
     description: "Open a local app or URL.",
-    disabled: true,
-    disabledReason: "Embedded browser previews are a registered placeholder on Lynxtron.",
+    disabled: false,
+    disabledReason: null,
   },
   {
     kind: "terminal",
@@ -123,6 +124,8 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
           height={props.terminalHeight}
         />
       );
+    case "browser":
+      return <BrowserPanel width={props.terminalWidth} height={props.terminalHeight} />;
   }
 }
 
@@ -245,6 +248,7 @@ export function RightPanel({
     disabled: item.disabled,
     onSelect: () => {
       if (
+        item.kind === "browser" ||
         item.kind === "files" ||
         item.kind === "diff" ||
         item.kind === "plan" ||
@@ -345,6 +349,7 @@ export function RightPanel({
                       : {
                           bindtap: () => {
                             if (
+                              item.kind === "browser" ||
                               item.kind === "files" ||
                               item.kind === "diff" ||
                               item.kind === "plan" ||

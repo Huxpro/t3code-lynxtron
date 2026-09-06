@@ -9,6 +9,7 @@ packages:
 # true = allowed to run build scripts; false mirrors the pnpm 10 behavior
 # where anything outside onlyBuiltDependencies was silently not built.
 allowBuilds:
+  "@lynx-js/cef-webview": true
   "@lynx-js/lynxtron": true
   "@lynx-js/lynxtron-builder": true
   browser-tabs-lock: false

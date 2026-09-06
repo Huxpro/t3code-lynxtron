@@ -55,19 +55,14 @@ export default defineConfig({
         { from: "./output/bundle/lynx/", to: "." },
       ],
     }),
-    ...(isDev
-      ? [
-          pluginLynxtron({
-            isDev,
-            entry: path.resolve(__dirname, "./dist/desktop"),
-            env: {
-              T3_LYNXTRON_BUNDLE_PATH:
-                process.env.T3_LYNXTRON_DEV_BUNDLE_URL ??
-                "http://127.0.0.1:3000/main.lynx.bundle",
-            },
-          }),
-        ]
-      : []),
+    pluginLynxtron({
+      isDev,
+      entry: path.resolve(__dirname, "./dist/desktop"),
+      env: {
+        T3_LYNXTRON_BUNDLE_PATH:
+          process.env.T3_LYNXTRON_DEV_BUNDLE_URL ?? "http://127.0.0.1:3000/main.lynx.bundle",
+      },
+    }),
   ],
   resolve: { extensions: [".ts", ".js"] },
 });

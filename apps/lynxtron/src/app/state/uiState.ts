@@ -24,12 +24,12 @@ import type { ProviderInstanceId, TurnId } from "@t3tools/contracts";
 import { appAtomRegistry } from "./atomRegistry";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
 
-export type RightPanelKind = "plan" | "diff" | "files" | "file" | "terminal";
+export type RightPanelKind = "plan" | "diff" | "files" | "file" | "browser" | "terminal";
 
 export type RightPanelSurface =
   | {
       readonly id: string;
-      readonly kind: "plan" | "files" | "terminal";
+      readonly kind: "plan" | "files" | "browser" | "terminal";
       readonly label: string;
     }
   | {
@@ -202,6 +202,8 @@ function kindLabel(kind: RightPanelKind): string {
       return "Files";
     case "file":
       return "File";
+    case "browser":
+      return "Browser";
     case "terminal":
       return "Terminal";
   }

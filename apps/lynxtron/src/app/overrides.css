@@ -8632,6 +8632,98 @@
   flex-grow: 1;
   height: 0;
 }
+.browser-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  height: 0;
+  min-height: 0;
+  background-color: var(--background);
+}
+.browser-panel__chrome {
+  gap: 2px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--sidebar-border);
+}
+.browser-panel__nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+}
+.browser-panel__nav:hover {
+  background-color: var(--accent);
+}
+.browser-panel__address {
+  flex-grow: 1;
+  height: 28px;
+  min-height: 28px;
+  margin-left: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(var(--foreground-rgb), 0.1);
+  border-radius: 6px;
+  background-color: var(--muted);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+.browser-panel__webview {
+  flex-shrink: 0;
+}
+.browser-panel__empty,
+.browser-panel__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+  gap: 8px;
+  padding: 24px;
+  color: var(--muted-foreground);
+  text-align: center;
+}
+.browser-panel__error {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  background-color: var(--background);
+}
+.browser-panel__empty-title {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+}
+.browser-panel__empty-description,
+.browser-panel__error {
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+.browser-panel__loading {
+  position: absolute;
+  top: 44px;
+  right: 8px;
+  z-index: 3;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background-color: rgba(var(--popover-rgb), 0.9);
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
 .diff-panel-subheader,
 [data-surface-subheader] {
   display: flex;

@@ -224,6 +224,19 @@ After the agent finishes, the user must be able to understand the result before 
 
 Replace approved placeholders only after chat, remote operation, and review are complete. Treat terminal emulation and embedded browsing as separate runtime products, not visual components.
 
+### Browser follow-up (2026-09-06)
+
+- [x] Read the Lynxtron Browser introduction and the `<x-webview>` API contract.
+- [x] Audit Synara's successful WKWebView surface and its failed CEF 0.0.16 experiment.
+- [x] Upgrade the Lynxtron host/dev plugin to 0.0.18, register `@lynx-js/cef-webview`, and stage its native package through AutoLink in development and production builds.
+- [x] Replace the disabled Browser placeholder with the first functional OSR slice: HTTP(S) navigation, location synchronization, back, forward, reload, popup routing, loading, and error states.
+- [ ] Prove a real CEF page load with an owned Native process and retain `bindload` / `bindlocationchange` evidence. This requires an explicitly authorized visible Native verification run.
+- [ ] Restore packaged `.app` output. `@lynx-js/lynxtron-builder@0.0.18` currently fails while copying the Lynxtron Framework's relative symlinks under pnpm; its bundled `app-builder-lib` patch is not applied by its postinstall in a pnpm workspace.
+- [ ] Add durable per-thread multi-tab/history persistence, active-plus-one-warm view budgeting, and inactive-pane suspension using the bounded Synara policy.
+- [ ] Close Electron-only gaps: DevTools/CDP, screenshot and recording, element picking, PiP, zoom, cookie/cache clearing, and browser-use automation.
+
+The CEF 0.0.18 binding ignores the JavaScript `initialize(options)` object and exposes no cache-root option. Until upstream adds one, shared CEF profile isolation remains an explicit runtime gap and must not be described as complete remote/multi-environment isolation.
+
 ### Required work
 
 1. Re-evaluate Lynxtron runtime capabilities for terminal transport/input/rendering and embedded browser isolation/navigation.

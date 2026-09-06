@@ -41,6 +41,7 @@ describe("project scope state", () => {
 
 const plan: RightPanelSurface = { id: "plan:1", kind: "plan", label: "Plan" };
 const files = { id: "files:2", kind: "files", label: "Files" } satisfies RightPanelSurface;
+const browser = { id: "browser:3", kind: "browser", label: "Browser" } satisfies RightPanelSurface;
 const file: RightPanelSurface = {
   id: "file:AGENTS.md",
   kind: "file",
@@ -70,6 +71,24 @@ describe("applyRightPanelAction", () => {
       applyRightPanelAction(opened, {
         type: "open",
         surface: { ...plan, id: "plan:other" },
+      }),
+    ).toBe(opened);
+  });
+
+  it("opens Browser as a singleton right-panel surface", () => {
+    const opened = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
+      type: "open",
+      surface: browser,
+    });
+    expect(opened).toEqual({
+      isOpen: true,
+      surfaces: [browser],
+      activeSurfaceId: browser.id,
+    });
+    expect(
+      applyRightPanelAction(opened, {
+        type: "open",
+        surface: { ...browser, id: "browser:other" },
       }),
     ).toBe(opened);
   });

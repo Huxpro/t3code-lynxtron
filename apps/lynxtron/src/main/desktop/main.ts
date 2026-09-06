@@ -1,4 +1,5 @@
 import { app, clipboard, dialog, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
+import cefWebview from "@lynx-js/cef-webview/lynxtron";
 import path from "path";
 
 import {
@@ -184,6 +185,8 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
 }
 
 app.whenReady().then(() => {
+  const cefInitialized = cefWebview.initialize();
+  console.log(`[cef-webview] initialize returned ${String(cefInitialized)}`);
   const viewport = resolveLynxtronViewport();
   const windowPosition = resolveLynxtronWindowPosition();
   const win = new LynxWindow({

@@ -1,0 +1,29 @@
+import { normalizePreviewUrl } from "@t3tools/shared/preview";
+
+export function resolveBrowserNavigation(
+  rawUrl: string,
+): { readonly ok: true; readonly url: string } | { readonly ok: false; readonly message: string } {
+  try {
+    return { ok: true, url: normalizePreviewUrl(rawUrl) };
+  } catch {
+    return { ok: false, message: "Enter a valid HTTP or HTTPS URL." };
+  }
+}
+
+export function browserEventUrl(event: unknown): string | null {
+  if (!event || typeof event !== "object" || !("detail" in event)) return null;
+  const detail = event.detail;
+  if (!detail || typeof detail !== "object" || !("url" in detail)) return null;
+  return typeof detail.url === "string" ? detail.url : null;
+}
+
+export function browserEventError(event: unknown): string {
+  if (!event || typeof event !== "object" || !("detail" in event)) {
+    return "The page could not be loaded.";
+  }
+  const detail = event.detail;
+  if (!detail || typeof detail !== "object" || !("errorMsg" in detail)) {
+    return "The page could not be loaded.";
+  }
+  return typeof detail.errorMsg === "string" ? detail.errorMsg : "The page could not be loaded.";
+}
