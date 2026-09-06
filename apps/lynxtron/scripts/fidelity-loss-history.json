@@ -27791,6 +27791,89 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-thread-identity-gate-current",
+      "observedAt": "2026-09-06T14:53:00-04:00",
+      "commit": "3e3760fbc",
+      "codeCommit": "3e3760fbc",
+      "codeState": "commit",
+      "label": "Command palette persisted-thread identity gate",
+      "narrative": "The command-palette capture previously admitted a Web draft against a Lynx empty shell because the flat-Sidebar identity projection omitted active thread kind and id, and the state was incorrectly routed as new-thread. The harness now selects the existing-thread fixture and requires both panes to report the same persisted active thread before evidence can pass.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This checkpoint changes evidence admission only. It rejects mismatched draft/none frames and assigns no product repair credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/command-palette-thread-metadata-current.json",
+          "classification": "tracked-current",
+          "sha256": "3a357b1a44f9b62df14a013426b9c545c22f44e9e3ba7f91d96ac47e8af8a360"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-persisted-thread-identity-gate",
+              "source": "Both panes use snapshot 5572c031, project t3code-lynxtron, persisted thread cf1b2820, existing-thread route, dark theme, 1280x820 viewport, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "command-palette-thread-metadata-current",
+      "observedAt": "2026-09-06T14:54:00-04:00",
+      "commit": "d0c5fa28e",
+      "codeCommit": "d0c5fa28e",
+      "codeState": "commit",
+      "label": "Command palette Recent Threads metadata parity",
+      "narrative": "Web already omitted an absent branch and based relative time on latest user activity, while Lynx appended No branch and used session-refreshed updatedAt. Moving the pure thread presentation rule into client-runtime makes both renderers show t3code-lynxtron and 42d ago for the same persisted thread. Full-frame SSIM improves from 0.943980 to 0.945034 and the exact 576x420 panel crop improves from 0.865965 to 0.871098.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same committed harness, snapshot, project, persisted thread, route, theme, viewport, interaction timeline, and zero-error runtime isolate the shared Recent Threads projection change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/command-palette-thread-metadata-current.json",
+          "classification": "tracked-current",
+          "sha256": "3a357b1a44f9b62df14a013426b9c545c22f44e9e3ba7f91d96ac47e8af8a360"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "shared-command-palette-thread-presentation",
+              "source": "Both panes show the same New thread title, t3code-lynxtron description, omitted missing branch, and 42d ago timestamp from latestUserMessageAt."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-command-palette-panel-geometry",
+              "source": "Both panes render the command palette at 352,82 with exact 576x420 bounds after the complete interaction sequence."
+            },
+            "material": {
+              "residual": 0.128902,
+              "confidence": 0.99,
+              "method": "current-command-palette-panel-ssim",
+              "source": "1 - exact 576x420 panel crop SSIM 0.871098; full-frame SSIM is 0.945034. Remaining pixels are dominated by text rasterization and glass rendering."
+            }
+          }
+        }
+      ]
     }
   ]
 }
