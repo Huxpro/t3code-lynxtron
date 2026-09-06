@@ -125,7 +125,7 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
         />
       );
     case "browser":
-      return <BrowserPanel width={props.terminalWidth} height={props.terminalHeight} />;
+      return null;
   }
 }
 
@@ -406,14 +406,30 @@ export function RightPanel({
 
       {/* Content */}
       <view className="right-panel__content">
+        {state.surfaces
+          .filter(
+            (surface): surface is Extract<RightPanelSurface, { kind: "browser" }> =>
+              surface.kind === "browser",
+          )
+          .map((surface) => (
+            <BrowserPanel
+              key={surface.tabId}
+              tabId={surface.tabId}
+              active={surface.id === state.activeSurfaceId}
+              width={terminalWidth}
+              height={terminalHeight}
+            />
+          ))}
         {hasActiveSurface ? (
-          renderSurface(activeSurface, {
-            activeThreadId: activeThreadId ?? null,
-            activePlan,
-            activeProposedPlan,
-            terminalHeight,
-            terminalWidth,
-          })
+          activeSurface.kind === "browser" ? null : (
+            renderSurface(activeSurface, {
+              activeThreadId: activeThreadId ?? null,
+              activePlan,
+              activeProposedPlan,
+              terminalHeight,
+              terminalWidth,
+            })
+          )
         ) : (
           <RightPanelEmptySurface actions={emptyActions} />
         )}

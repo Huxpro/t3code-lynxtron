@@ -29,8 +29,14 @@ export type RightPanelKind = "plan" | "diff" | "files" | "file" | "browser" | "t
 export type RightPanelSurface =
   | {
       readonly id: string;
-      readonly kind: "plan" | "files" | "browser" | "terminal";
+      readonly kind: "plan" | "files" | "terminal";
       readonly label: string;
+    }
+  | {
+      readonly id: string;
+      readonly kind: "browser";
+      readonly label: string;
+      readonly tabId: string;
     }
   | {
       readonly id: string;
@@ -115,7 +121,10 @@ export function applyRightPanelAction(
 ): RightPanelState {
   switch (action.type) {
     case "open": {
-      const existing = state.surfaces.find((surface) => surface.kind === action.surface.kind);
+      const existing =
+        action.surface.kind === "browser"
+          ? undefined
+          : state.surfaces.find((surface) => surface.kind === action.surface.kind);
       if (existing && action.surface.kind === "diff" && existing.kind === "diff") {
         const next = {
           ...existing,
@@ -378,11 +387,18 @@ export const uiActions = {
               turnId: selection?.turnId ?? null,
               filePath: selection?.filePath?.trim() || null,
             }
-          : {
-              id: `${kind}:${nextSurfaceId++}`,
-              kind,
-              label: kindLabel(kind),
-            },
+          : kind === "browser"
+            ? {
+                id: `browser:${nextSurfaceId}`,
+                kind,
+                label: kindLabel(kind),
+                tabId: `browser-tab-${nextSurfaceId++}`,
+              }
+            : {
+                id: `${kind}:${nextSurfaceId++}`,
+                kind,
+                label: kindLabel(kind),
+              },
     });
   },
   openFileSurface(path: string): void {

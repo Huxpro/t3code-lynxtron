@@ -14,9 +14,13 @@ interface WebViewRef {
 export function BrowserPanel({
   width,
   height,
+  tabId,
+  active,
 }: {
   readonly width: number;
   readonly height: number;
+  readonly tabId: string;
+  readonly active: boolean;
 }) {
   const [url, setUrl] = useState("");
   const [draft, setDraft] = useState("");
@@ -50,7 +54,12 @@ export function BrowserPanel({
   const webviewHeight = Math.max(1, Math.round(height - 40));
 
   return (
-    <view className="browser-panel" data-browser-url={url}>
+    <view
+      className={`browser-panel${active ? " browser-panel--active" : ""}`}
+      data-browser-tab-id={tabId}
+      data-browser-url={url}
+      style={{ zIndex: active ? 1 : 0 }}
+    >
       <view className="browser-panel__chrome" data-surface-subheader>
         <view
           className="browser-panel__nav"
@@ -92,7 +101,7 @@ export function BrowserPanel({
         </view>
       ) : (
         <x-webview
-          id="t3-browser-webview"
+          id={`t3-browser-webview-${tabId}`}
           className="browser-panel__webview"
           src={url}
           use-osr={true}

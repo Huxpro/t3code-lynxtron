@@ -41,7 +41,12 @@ describe("project scope state", () => {
 
 const plan: RightPanelSurface = { id: "plan:1", kind: "plan", label: "Plan" };
 const files = { id: "files:2", kind: "files", label: "Files" } satisfies RightPanelSurface;
-const browser = { id: "browser:3", kind: "browser", label: "Browser" } satisfies RightPanelSurface;
+const browser = {
+  id: "browser:3",
+  kind: "browser",
+  label: "Browser",
+  tabId: "browser-tab-3",
+} satisfies RightPanelSurface;
 const file: RightPanelSurface = {
   id: "file:AGENTS.md",
   kind: "file",
@@ -75,7 +80,7 @@ describe("applyRightPanelAction", () => {
     ).toBe(opened);
   });
 
-  it("opens Browser as a singleton right-panel surface", () => {
+  it("keeps each Browser tab as an independent right-panel surface", () => {
     const opened = applyRightPanelAction(INITIAL_RIGHT_PANEL_STATE, {
       type: "open",
       surface: browser,
@@ -85,12 +90,12 @@ describe("applyRightPanelAction", () => {
       surfaces: [browser],
       activeSurfaceId: browser.id,
     });
-    expect(
-      applyRightPanelAction(opened, {
-        type: "open",
-        surface: { ...browser, id: "browser:other" },
-      }),
-    ).toBe(opened);
+    const second = { ...browser, id: "browser:other", tabId: "browser-tab-other" };
+    expect(applyRightPanelAction(opened, { type: "open", surface: second })).toEqual({
+      isOpen: true,
+      surfaces: [browser, second],
+      activeSurfaceId: second.id,
+    });
   });
 
   it("activates the nearest remaining surface when the active surface closes", () => {
