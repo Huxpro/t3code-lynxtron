@@ -1458,6 +1458,15 @@ describe("desktop shell interaction contract", () => {
     expect(faviconSource).toContain("createAssetUrl");
     expect(faviconSource).toContain("binderror");
     expect(chatHeaderSource).toContain("<ProjectFavicon");
+    expect(componentSource("OpenInPicker.tsx")).toContain(
+      'data-header-action={anchor === "header-open-in-menu" ? "open" : undefined}',
+    );
+    expect(overrides).toContain(
+      ".open-in-control {\n  position: relative;\n  z-index: 61;\n  width: 87px;\n  height: 24px;",
+    );
+    expect(overrides).toContain(
+      ".open-in-picker__group {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: 87px;\n  height: 24px;",
+    );
     expect(sidebarSource).toContain(
       'className="sidebar-v2-search-result__favicon size-4 shrink-0"',
     );

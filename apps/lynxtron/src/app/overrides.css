@@ -2186,12 +2186,15 @@
 .open-in-control {
   position: relative;
   z-index: 61;
+  width: 87px;
+  height: 24px;
 }
 .open-in-picker__group {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 28px;
+  width: 87px;
+  height: 24px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
@@ -2204,16 +2207,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 26px;
+  height: 22px;
   cursor: pointer;
 }
 .open-in-picker__primary {
+  flex: 1;
   min-width: 34px;
-  padding: 0 8px;
+  padding: 0 7px;
   gap: 5px;
 }
 .open-in-picker__options {
-  width: 28px;
+  width: 24px;
   border-left-width: 1px;
   border-left-style: solid;
   border-left-color: var(--border);

@@ -209,6 +209,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "function completedProjectFaviconMatches(state)");
     assert.include(source, "completedProjectFaviconReady:");
     assert.include(source, 'lynxIcon?.tagName === "x-image"');
+    assert.include(source, "function completedHeaderOpenActionMatches(state)");
+    assert.include(source, 'item.id === "open"');
+    assert.include(source, "completedHeaderOpenActionReady:");
     assert.include(source, "webLabel.length > 0");
     assert.include(source, "webComposer?.state === lynxComposer?.state");
     assert.include(source, "completedComposerProviderStateMatches(state)");

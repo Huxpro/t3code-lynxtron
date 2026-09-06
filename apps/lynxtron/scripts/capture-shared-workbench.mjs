@@ -1796,6 +1796,17 @@ function completedProjectFaviconMatches(state) {
   );
 }
 
+function completedHeaderOpenActionMatches(state) {
+  if (stateId !== "existing-thread-completed-no-diff") return true;
+  const findOpen = (pane) => pane?.headerMetrics?.actionItems?.find((item) => item.id === "open");
+  const webOpen = findOpen(state?.web);
+  const lynxOpen = findOpen(state?.lynx);
+  if (!webOpen?.box?.rect || !lynxOpen?.box?.rect || webOpen.text !== lynxOpen.text) return false;
+  return ["x", "y", "width", "height"].every(
+    (key) => Math.abs(webOpen.box.rect[key] - lynxOpen.box.rect[key]) <= 1,
+  );
+}
+
 function readCompletedComposerProviderState(state) {
   return {
     match: completedComposerProviderStateMatches(state),
@@ -9308,7 +9319,8 @@ async function captureCell({
         composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
         completedComposerProviderStateMatches(state) &&
         completedNoDiffStateMatches(state) &&
-        completedProjectFaviconMatches(state));
+        completedProjectFaviconMatches(state) &&
+        completedHeaderOpenActionMatches(state));
     const planModeReady = composerPlanModeMatches(state);
     const sessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
     const stageIdentityReady = sidebarStageIdentityMatches(state);
@@ -10348,7 +10360,8 @@ async function captureCell({
       composerAnatomyMatches(state?.web?.composerMetrics, state?.lynx?.composerMetrics) &&
       completedComposerProviderStateMatches(state) &&
       completedNoDiffStateMatches(state) &&
-      completedProjectFaviconMatches(state));
+      completedProjectFaviconMatches(state) &&
+      completedHeaderOpenActionMatches(state));
   const finalPlanModeReady = composerPlanModeMatches(state);
   const finalSessionProjectionReady = sessionProjectionMatches(state, expectedThreadFixture);
   const finalStageIdentityReady = sidebarStageIdentityMatches(state);
@@ -12388,6 +12401,7 @@ async function captureCell({
     finalTranscriptReady &&
     completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
     completedProjectFaviconMatches(state) &&
+    completedHeaderOpenActionMatches(state) &&
     finalProviderStatusBannerReady &&
     finalPendingRequestReady &&
     (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
@@ -12481,6 +12495,7 @@ async function captureCell({
         state?.lynx?.timelineMetrics,
       ),
       completedProjectFaviconReady: completedProjectFaviconMatches(state),
+      completedHeaderOpenActionReady: completedHeaderOpenActionMatches(state),
       finalProviderStatusBannerReady,
       finalPendingRequestReady,
       multiStepQuestionStage,

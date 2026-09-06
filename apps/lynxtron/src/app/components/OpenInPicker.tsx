@@ -64,7 +64,10 @@ export function OpenInPicker({
   };
 
   return (
-    <view className={`open-in-control${compact ? " open-in-control--compact" : ""}`}>
+    <view
+      className={`open-in-control${compact ? " open-in-control--compact" : ""}`}
+      data-header-action={anchor === "header-open-in-menu" ? "open" : undefined}
+    >
       <view className="open-in-picker__group" aria-label="Open in editor">
         <view
           className="open-in-picker__primary"
