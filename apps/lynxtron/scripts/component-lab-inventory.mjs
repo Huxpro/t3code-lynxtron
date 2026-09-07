@@ -356,8 +356,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const json = stableJson(report);
   if (process.argv.includes("--check")) {
     if (!existsSync(output)) throw new Error(`Components Lab inventory is missing: ${output}`);
-    const current = readFileSync(output, "utf8");
-    if (current !== json) {
+    const current = JSON.parse(readFileSync(output, "utf8"));
+    if (stableJson(current) !== json) {
       throw new Error(
         "Components Lab inventory drifted. Run pnpm --filter @t3tools/lynxtron report:components-lab and review the component/use-site changes.",
       );
