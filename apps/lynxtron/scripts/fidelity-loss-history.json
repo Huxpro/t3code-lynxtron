@@ -28299,6 +28299,91 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-creation-hover-current-refresh",
+      "observedAt": "2026-09-06T19:48:31-04:00",
+      "commit": "42bcdc20a",
+      "codeCommit": "42bcdc20a6e9b640db60e759868ece6e9ecc38da",
+      "codeState": "commit",
+      "label": "Sidebar creation hover current refresh",
+      "narrative": "Fresh current-head Browser captures keep Web and Lynx on the same immutable snapshot, persisted thread, dark theme, and 1280x820 viewport. New thread and New project retain identical copy, x/y/height, right/center/+4 relation, 600ms delayed opening, and immediate leave dismissal. Width deltas remain 2.203125px and 1.0625px respectively, matching the prior accepted font-shaping boundary rather than exposing new product drift.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No Sidebar product code changed. This point replaces stale Browser evidence without crediting stable platform font shaping as an improvement."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-creation-hover-current.json",
+          "classification": "tracked-current",
+          "sha256": "17fde49fbeedac138175a41d792af932054f53bea1a21fb5bad74fc087032203"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-v2-new-thread-hover"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sidebar-new-thread-tooltip-copy",
+              "source": "Both clients render New thread with the same configured Shift-Command-N shortcut."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 2.203125, 0],
+              "anchorScale": 128,
+              "confidence": 0.99,
+              "method": "current-sidebar-new-thread-tooltip-geometry",
+              "source": "Both tooltips are at x251 y67 and 26px high; only platform font shaping changes width."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-browser-pointer-delay-dismiss",
+              "source": "Real pointer hover proves no early popup, opening after the 600ms authority delay, and dismissal on leave."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-shared-server-hover-runtime",
+              "source": "Same snapshot, thread, theme, viewport, exact bundles, matching identity, and zero renderer errors."
+            }
+          }
+        },
+        {
+          "states": ["sidebar-v2-new-project-hover"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sidebar-new-project-tooltip-copy",
+              "source": "Both clients render New project."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 1.0625, 0],
+              "anchorScale": 87,
+              "confidence": 0.99,
+              "method": "current-sidebar-new-project-tooltip-geometry",
+              "source": "Both tooltips are at x251 y107 and 26px high; only platform font shaping changes width."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-browser-pointer-delay-dismiss",
+              "source": "Real pointer hover proves no early popup, opening after the 600ms authority delay, and dismissal on leave."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-shared-server-hover-runtime",
+              "source": "Same snapshot, thread, theme, viewport, exact bundles, matching identity, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

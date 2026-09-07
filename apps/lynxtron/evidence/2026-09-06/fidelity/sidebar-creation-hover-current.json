@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T19:48:31-04:00",
+  "stateIds": ["sidebar-v2-new-thread-hover", "sidebar-v2-new-project-hover"],
+  "productCommit": "42bcdc20a6e9b640db60e759868ece6e9ecc38da",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "252b766c87f3d8b4f7c1e8561d809d248a3d73cf2f4c04ace1de9032a8b57e40"
+  },
+  "captures": {
+    "newThread": {
+      "reportSha256": "363c7f94bac58e984c99afebd95c2449a68012c5146151031e9c889b83714670",
+      "webImageSha256": "e64d4a0cb8112f610b50c07eb1cab4b2d8d08a74f99af65b5f1d4b820fa26590",
+      "lynxImageSha256": "1a77f71a104dcb9ff634d507e6e43c6ee2a94de781b2fea9d19087cbb3d1015a",
+      "textWeb": "New thread (⇧⌘N)",
+      "textLynx": "New thread (⇧⌘N)",
+      "rectWeb": [251, 67, 125.140625, 26],
+      "rectLynx": [251, 67, 127.34375, 26],
+      "dismissElapsedMsWeb": 125,
+      "dismissElapsedMsLynx": 6
+    },
+    "newProject": {
+      "reportSha256": "401a9d56b18a2132a14b3971d9c4238b6b3315acbd2bbdd008abca4f224a7552",
+      "webImageSha256": "f167bac0113ecae74ba97eb48a8b5d39e2b7979f87181b789e0fbfc69f3df48e",
+      "lynxImageSha256": "2cad770b7aa42ae8a7140da4a5cb64b84f25c45f0d9e39973412fb0c5ef22923",
+      "textWeb": "New project",
+      "textLynx": "New project",
+      "rectWeb": [251, 107, 85.1875, 26],
+      "rectLynx": [251, 107, 86.25, 26],
+      "dismissElapsedMsWeb": 150,
+      "dismissElapsedMsLynx": 2
+    }
+  },
+  "result": {
+    "passed": true,
+    "stateIdentityMatch": true,
+    "openDelayMs": 600,
+    "closeDelayMs": 0,
+    "rendererErrors": 0
+  },
+  "classification": "Current measurement refresh. Tooltip copy, x/y/height, placement, delayed opening, and dismissal remain exact; width-only deltas are stable platform font shaping. No product change is credited and screenshots remain temporary."
+}
