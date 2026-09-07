@@ -29919,6 +29919,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-editor-detail-current-refresh-20260907",
+      "observedAt": "2026-09-07T12:25:00-04:00",
+      "commit": "b5f36a119",
+      "codeState": "commit",
+      "label": "File Editor Detail current refresh",
+      "narrative": "A current strict same-thread capture supersedes the old 9/3 editor residual after later shared editor work. Surface, editor, gutter and source origins match exactly; the editor body reaches 0.974879 SSIM and 1.523095 MAE. Remaining visible loss is concentrated in toolbar and explorer icon/font rasterization.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No new File Editor product code is credited. The current committed bundle uses the same snapshot, persisted thread, file, route, theme, viewport, switch interaction and zero-error runtime."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/file-editor-detail-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "5ba6ab11d24776fd0596f369ed12122c22af7c857372c2c5039916007adbf97e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-editor-detail"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-file-detail-content",
+              "source": "Both panes load the same PORT_WORKFLOW.md revision and retain the verified file-switch interaction."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "current-file-detail-geometry",
+              "source": "Surface, toolbar, editor, gutter and source origins match exactly; the explorer 1px box delta is border ownership."
+            },
+            "material": {
+              "residual": 0.118399,
+              "confidence": 0.99,
+              "method": "current-file-detail-surface-ssim",
+              "source": "1 - 539x776 surface SSIM 0.881601; editor body reaches 0.974879 while toolbar 0.645176 and explorer 0.802382 retain icon/font raster residual."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-file-detail-runtime",
+              "source": "Same snapshot, persisted thread, file, route, dark theme, viewport, exact committed bundles and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
