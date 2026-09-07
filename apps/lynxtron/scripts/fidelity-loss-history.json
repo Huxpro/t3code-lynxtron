@@ -29085,7 +29085,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/provider-dialog-light-card-content.json",
           "classification": "tracked-current",
-          "sha256": "ba0c38f501a0a2ee48c1d575ca5a0da32559b4709931f43f961cf831878a93ee"
+          "sha256": "60bdcfb1bd8fbeda04775c480a005cbe1ad28df0625810ee502ecb79a51366c7"
         }
       ],
       "updates": [
@@ -29110,6 +29110,54 @@
               "residual": 0,
               "confidence": 0.99,
               "method": "provider-card-content-current-runtime",
+              "source": "Same snapshot, route, Driver step, light theme, viewport, exact post-fix bundle, strict gates, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "provider-dialog-light-step-rings-current",
+      "observedAt": "2026-09-07T03:30:00-04:00",
+      "commit": "b8cb05f6b",
+      "codeCommit": "b8cb05f6b",
+      "codeState": "commit",
+      "label": "Provider dialog light step ring parity",
+      "narrative": "Light active and inactive step numbers retained a physical border underneath the already aligned Web-style ring. Removing only that duplicate border preserves exact 20x20 geometry and improves step-rail SSIM from 0.946155 to 0.954184 and dialog SSIM from 0.904212 to 0.904829.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share immutable Web pixels, snapshot, Driver step, theme, viewport, step geometry, and zero errors; the only change removes the duplicate light indicator border."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/provider-dialog-light-step-rings.json",
+          "classification": "tracked-current",
+          "sha256": "263a6f077188bacbfcca8d8abe05e8cc01c34197536a50f4f09184c22921ba8f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 526,
+              "confidence": 0.99,
+              "method": "provider-step-ring-geometry",
+              "source": "Rail, steps, and all three 20x20 number indicators retain exact geometry."
+            },
+            "material": {
+              "residual": 0.095171,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-step-ring-ssim",
+              "source": "1 - exact dialog SSIM 0.904829; step-rail SSIM improves from 0.946155 to 0.954184."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-step-ring-current-runtime",
               "source": "Same snapshot, route, Driver step, light theme, viewport, exact post-fix bundle, strict gates, and zero renderer errors."
             }
           }
