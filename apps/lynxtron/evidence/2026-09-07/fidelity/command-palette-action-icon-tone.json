@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T07:32:00-04:00",
+  "stateId": "command-palette-navigation",
+  "harnessCommit": "681ae89b8",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "2a011b9354145035b00670962a7fd54d0f50c1ba011e2218826bd97304318de3",
+    "webImageSha256": "398831e071a24e7370d54f8fa9784ffa17b0623bb089a937bfb6b67ef258bd92",
+    "lynxImageSha256": "effdc8528959d85ba6c514cd2ba53bafcfd5924a8c810e333d6d4f90ee733800",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "iconOpacity": 0.8,
+    "panelSsimNormalized": 0.913189,
+    "panelMaeNormalized": 4.210764,
+    "panelSignificantShareNormalized": 0.045605,
+    "actionsSsim": 0.944596,
+    "actionsMaeNormalized": 4.21907,
+    "actionsSignificantShareNormalized": 0.042052
+  },
+  "after": {
+    "iconOpacity": 0.64,
+    "panelSsim": 0.913597,
+    "panelMae": 4.172988,
+    "panelSignificantShare": 0.043724,
+    "actionsSsim": 0.945531,
+    "actionsMae": 4.133771,
+    "actionsSignificantShare": 0.037806
+  },
+  "normalization": "The before panel is recomputed against the after capture's byte-identical Web authority image, excluding the prior capture's 18-pixel blinking caret variance.",
+  "classification": "Lynx action icons used white raster assets at 0.8 opacity while Web used muted-foreground at 0.8 alpha. Scoping Lynx action icon opacity to 0.64 matches the effective authority tone. Under one Web authority, action-row and full-panel SSIM, MAE, and significant-pixel share all improve."
+}

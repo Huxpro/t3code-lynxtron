@@ -29433,6 +29433,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-action-icon-tone-current",
+      "observedAt": "2026-09-07T07:32:00-04:00",
+      "commit": "681ae89b8",
+      "codeCommit": "681ae89b8",
+      "codeState": "commit",
+      "label": "Command Palette action icon tone parity",
+      "narrative": "Lynx action icons used white raster assets at 0.8 opacity while Web used muted-foreground at 0.8 alpha. A scoped 0.64 Lynx opacity matches the effective authority tone. Against one byte-identical Web authority, action-row SSIM improves 0.944596 to 0.945531 and panel SSIM improves 0.913189 to 0.913597, with lower MAE and significant-pixel share in both regions.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same snapshot, thread, route, theme, viewport, Web authority and interaction chain. The only product change is action-row icon opacity; normalized action and panel SSIM, MAE and significant-pixel share all improve."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/command-palette-action-icon-tone.json",
+          "classification": "tracked-current",
+          "sha256": "7568b366fc52690a1971b130ca09149cf2b28892f057b4a126690d9dbc8824a1"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.086403,
+              "confidence": 0.99,
+              "method": "command-palette-action-icon-tone-ssim",
+              "source": "1 - current panel SSIM 0.913597 versus normalized before 0.913189; action rows improve 0.944596 to 0.945531, MAE 4.219070 to 4.133771, and significant share 0.042052 to 0.037806."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-action-icon-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundle, complete interaction timeline and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
