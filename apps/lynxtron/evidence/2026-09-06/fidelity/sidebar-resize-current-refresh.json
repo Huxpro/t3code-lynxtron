@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T20:51:00-04:00",
+  "stateId": "sidebar-resize",
+  "productCommit": "5dd8c4114",
+  "captureCommit": "c5f7ac47f9e4e08fe7e6aaa73ee8ccc8c8b83a55",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "sidebarWidth": 320,
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "before": {
+    "reportSha256": "bfbddd176c319ac193f93712c76e644470cd8cb664befc9691d9d8d20a0c9b8e",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "c00d60b3b072922195e5d2901a1ebb9d3e9ca62a22c103e18bfc952312d3ce5b",
+    "passed": false,
+    "webBranchLabel": "main",
+    "lynxBranchLabel": "No branch",
+    "stateIdentityMatch": true,
+    "sidebarGeometryMatch": true,
+    "rendererErrors": 0
+  },
+  "after": {
+    "reportSha256": "16ee105691ac394e7e8173e3c0689b6a2fd43206cc4a19013114391523f254d8",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "ee7d4e7fa54870980ba2c11381e4059a71649e601f1e7ca6b36b4eea7621bf03",
+    "passed": true,
+    "webBranchLabel": "main",
+    "lynxBranchLabel": "main",
+    "stateIdentityMatch": true,
+    "sidebarGeometryMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "sidebarWeb": [0, 0, 320, 820],
+    "sidebarLynx": [0, 0, 320, 820],
+    "activeThreadWeb": [8, 144, 303, 82],
+    "activeThreadLynx": [8, 144, 303, 82],
+    "lynxResizeRail": [309, 0, 10, 820],
+    "settingsAuthorityWeb": null,
+    "settingsAuthorityLynx": null
+  },
+  "classification": "The Sidebar geometry remained converged. The strict current-state gate exposed a separate product mismatch in the Composer context strip: Lynx issued a redundant local branch lookup and rendered No branch while the existing cwd-scoped VCS projection already held main. Reusing that shared projection removes the race and makes the complete state pass without claiming additional Sidebar pixel credit. Screenshots remain temporary."
+}
