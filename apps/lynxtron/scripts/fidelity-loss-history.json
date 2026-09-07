@@ -28317,7 +28317,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-creation-hover-current.json",
           "classification": "tracked-current",
-          "sha256": "17fde49fbeedac138175a41d792af932054f53bea1a21fb5bad74fc087032203"
+          "sha256": "f2d4b2dfc5f8adf5438d00b588db48a5b8a99d2814da26f6d21a771b1d08e6a8"
         }
       ],
       "updates": [
@@ -28380,6 +28380,54 @@
               "confidence": 0.99,
               "method": "current-shared-server-hover-runtime",
               "source": "Same snapshot, thread, theme, viewport, exact bundles, matching identity, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-inline-search-current-geometry",
+      "observedAt": "2026-09-06T20:20:00-04:00",
+      "commit": "4d5f011fd",
+      "codeCommit": "4d5f011fd",
+      "codeState": "commit",
+      "label": "Sidebar inline search input geometry",
+      "narrative": "A fresh same-snapshot dark 1280 by 820 capture uses the stable query thread and finds the same two ordered rows in both renderers. The outer 203x32 search allocation, both 239x36 result rows, 16x16 favicons, and x=44 title origins already match. Lynx had allocated an extra 8px to its inner input by combining flex growth with margin-left; moving that spacing to the parent gap makes both inner fields exactly 131x30 at x=40 y=65. Full-frame pixels remain byte-identical before and after because the overlap did not change paint.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The same snapshot, query, result order, route, theme, viewport, and Web bundle isolate the Lynx input box allocation change; no material improvement is claimed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-inline-search-current.json",
+          "classification": "tracked-current",
+          "sha256": "0e29abfa3920e62492d3a37ebd9851f57c1b12dc7cb223a5d33551d9781f0753"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-inline-search"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sidebar-search-query-results",
+              "source": "Both clients retain query thread and the same two ordered New thread results."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "current-sidebar-search-input-row-geometry",
+              "source": "Search row, primary allocation, inner input, both result rows, favicons, and title origins match exactly."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sidebar-search-shared-runtime",
+              "source": "Same snapshot, persisted thread, query, route, dark theme, 1280x820 viewport, exact bundles, matching identity, and zero renderer errors."
             }
           }
         }
