@@ -29044,7 +29044,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/provider-dialog-light-disabled-cards.json",
           "classification": "tracked-current",
-          "sha256": "6b9dfeac047976b8d3353d767f88653bdafb00a63cfdcfd97e0b17c16ce03195"
+          "sha256": "a088cf0bb63af9a0572a9a94b480662c9843a8d875f55023fdf24a8b378ca2cb"
         }
       ],
       "updates": [
@@ -29063,6 +29063,54 @@
               "confidence": 0.99,
               "method": "provider-disabled-card-current-runtime",
               "source": "Same snapshot, route, Driver step, theme, viewport, exact post-fix bundle, strict gates, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "provider-dialog-light-card-content-current",
+      "observedAt": "2026-09-07T03:12:00-04:00",
+      "commit": "bcad4e240",
+      "codeCommit": "bcad4e240",
+      "codeState": "commit",
+      "label": "Provider dialog light card content parity",
+      "narrative": "The light Driver cards used an 11px Lynx icon-to-label gap against Web's 12px authority, shifting every label one pixel left. The shared 12px allocation now aligns provider-label origins exactly while preserving card geometry, rings, disabled material, and content. Driver-region SSIM improves from 0.893372 to 0.912699 and dialog SSIM reaches 0.904212.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share immutable Web pixels, snapshot, Driver step, theme, viewport, card geometry, and zero errors; the only change is the scoped one-pixel content gap."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/provider-dialog-light-card-content.json",
+          "classification": "tracked-current",
+          "sha256": "ba0c38f501a0a2ee48c1d575ca5a0da32559b4709931f43f961cf831878a93ee"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 526,
+              "confidence": 0.99,
+              "method": "provider-driver-card-content-geometry",
+              "source": "Card rectangles remain exact and provider label x origins now match Web after the one-pixel gap correction."
+            },
+            "material": {
+              "residual": 0.095788,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-card-content-ssim",
+              "source": "1 - exact dialog SSIM 0.904212; Driver-region SSIM improves from 0.893372 to 0.912699."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-card-content-current-runtime",
+              "source": "Same snapshot, route, Driver step, light theme, viewport, exact post-fix bundle, strict gates, and zero renderer errors."
             }
           }
         }
