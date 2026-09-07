@@ -29648,6 +29648,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-empty-current-refresh",
+      "observedAt": "2026-09-07T08:09:00-04:00",
+      "commit": "59cd57c6f",
+      "codeCommit": "1de6f5e44",
+      "codeState": "commit",
+      "label": "Quick Switch Empty current refresh",
+      "narrative": "A current strict persisted-thread capture refreshes the empty state after already-attributed shared search changes. Both panes retain query zzzz-no-result, identical no-results copy, zero rows, a 100px empty region and exact 576x190 panel bounds. Panel SSIM improves from the prior 0.939705 checkpoint to 0.947968.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This refresh records already-attributed shared fixes without duplicate code credit. Snapshot, thread, query, empty copy, geometry, route, theme, viewport and zero-error runtime match."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/quick-switch-empty-current.json",
+          "classification": "tracked-current",
+          "sha256": "f34629147939b9beea7ea92ace90ec7a5b8a24c4061cf0c132efef0bf09bc6bf"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-empty-content",
+              "source": "Both panes expose query zzzz-no-result, identical no-results copy and zero rows."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-empty-panel-geometry",
+              "source": "Both panels are exactly 576x190 at x352 y82 with matching 100px empty regions."
+            },
+            "material": {
+              "residual": 0.052032,
+              "confidence": 0.99,
+              "method": "current-empty-panel-ssim",
+              "source": "1 - exact 576x190 panel SSIM 0.947968, improved from prior current 0.939705."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-empty-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundles and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

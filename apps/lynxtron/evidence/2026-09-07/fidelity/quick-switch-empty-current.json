@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T08:09:00-04:00",
+  "stateId": "quick-switch-empty",
+  "harnessCommit": "59cd57c6f",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "query": "zzzz-no-result",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "2f6f1369202173f74c9cc6013b27979012dad050b7f306efc45bb32e476ff3c5",
+    "webImageSha256": "8391e9ee9ad548ff097ad2eb244e81242af0f90fa9db28f5d2a2701855fb5627",
+    "lynxImageSha256": "4f916a6219942d25094f8f8f49e16faa4a98cec894fd4e744dafa8c9e9cd3d46",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "queryWeb": "zzzz-no-result",
+    "queryLynx": "zzzz-no-result",
+    "rowCountWeb": 0,
+    "rowCountLynx": 0,
+    "emptyTextWeb": "No matching commands, projects, or threads.",
+    "emptyTextLynx": "No matching commands, projects, or threads."
+  },
+  "geometry": { "panelWeb": [352, 82, 576, 190], "panelLynx": [352, 82, 576, 190] },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM over the exact 576x190 empty-state panel",
+    "previousPanelSsim": 0.939705,
+    "currentPanelSsim": 0.947968
+  },
+  "classification": "A current strict persisted-thread capture refreshes the empty state after already-attributed shared search changes. Query, empty copy, zero rows, 100px empty region, panel geometry and runtime match. No duplicate product credit is assigned."
+}
