@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T01:34:43-04:00",
+  "stateId": "composer-working",
+  "harnessCommit": "439274c87",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "09c6de1ee5407af37b3f2f42221215b1470494406af88fb768f39dac7c686372",
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "turnId": "019f9b5e-c44d-7ac1-8d9a-6f4971770461"
+  },
+  "capture": {
+    "reportSha256": "ad7e0e590afa7ae8da388c0b9f5f11ac7186122a8b5918586c01b3cdebbdc772",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "0d53d75d49281ee4cc224b228f40595ef25fab1b1fac1a7438d9fa047e06674e",
+    "webImageSha256": "ef23215c54ca7c2f85fad1ead0c370f510c866c1e12b6651d03075f5736c61a7",
+    "lynxImageSha256": "04f8a56d7d29e494f9e8fd39f7be70f4f1d74b9abceab13f6b08a074dd0fd7d6",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "stopActionAndContextMatch": true,
+    "rendererErrors": 0
+  },
+  "session": {
+    "statusWeb": "running",
+    "statusLynx": "running",
+    "sidebarStatusWeb": "Working",
+    "sidebarStatusLynx": "Working",
+    "workingRowCountWeb": 1,
+    "workingRowCountLynx": 1,
+    "primaryStateWeb": "stop",
+    "primaryStateLynx": "stop"
+  },
+  "geometry": {
+    "frameWeb": [384, 628, 768, 140],
+    "frameLynx": [384, 628, 768, 140],
+    "editorWeb": [401, 645, 734, 70],
+    "editorLynx": [401, 645, 734, 70],
+    "stopActionWeb": [1107, 723, 32, 32],
+    "stopActionLynx": [1107, 723, 32, 32],
+    "contextWeb": [406, 752, 724, 48],
+    "contextLynx": [406, 752, 724, 48],
+    "visibleBackdropWeb": [406, 768, 724, 32],
+    "visibleBackdropLynx": [406, 768, 724, 32]
+  },
+  "classification": "A fresh current running-session capture requires the same thread, active turn, running status, Working Sidebar label, one Working transcript row, working Composer, and stop action in both renderers. Composer, editor, 32px Stop action, Context strip, and visible material rectangles match exactly with zero errors. Existing stop-glyph and clean-frame evidence already owns material credit, while Native Stop interaction remains separate; screenshots remain temporary."
+}

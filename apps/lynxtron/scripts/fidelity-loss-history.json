@@ -28882,6 +28882,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-working-action-current-refresh",
+      "observedAt": "2026-09-07T01:34:43-04:00",
+      "commit": "439274c87",
+      "codeCommit": "439274c87",
+      "codeState": "commit",
+      "label": "Composer Working action current refresh",
+      "narrative": "A fresh current dark 1280x820 paired capture uses one controlled running thread and active turn. Both renderers project running session status, Working in the Sidebar, one Working transcript row, working Composer state, Stop primary state, and exact Composer, editor, action, Context, and visible material geometry with zero renderer errors.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product UI changed. This refresh extends strict action and Context measurement to the running state without reassigning existing stop-glyph material or Native interaction credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/composer-working-action-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "5fde2000830cf461fdc7814c315c8db7f74f3cded0815853f3c3992f186fddb6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-working"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-working-session-content",
+              "source": "Both clients project the same running thread, user message, one Working row, Working label, and Stop primary state."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "current-working-action-context-geometry",
+              "source": "Composer, editor, Stop action, Context strip, and visible backdrop rectangles match exactly."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-working-strict-runtime",
+              "source": "Same prepared snapshot, thread, active turn, running session, route, theme, viewport, current bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
