@@ -1087,7 +1087,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".theme-dark .provider-instance-dialog__driver--selected {\n  border-color: var(--primary);\n  background-color: rgba(var(--primary-rgb), 0.15);\n  box-shadow: 0 0 0 2px var(--primary);",
     );
-    expect(overrides).toMatch(/\.provider-instance-dialog__driver \{[^}]*gap: 11px;/);
+    expect(overrides).toMatch(/\.provider-instance-dialog__driver \{[^}]*gap: 12px;/);
     expect(overrides).toMatch(
       /\.provider-instance-dialog__early-access,[^]*\.provider-instance-dialog__coming-soon \{[^}]*height: 16px;[^}]*padding: 0 3px;[^}]*border-width: 1px;[^}]*border-radius: 4px;[^}]*background-color: rgba\(var\(--warning-rgb\), 0\.16\);[^}]*box-sizing: border-box;/,
     );

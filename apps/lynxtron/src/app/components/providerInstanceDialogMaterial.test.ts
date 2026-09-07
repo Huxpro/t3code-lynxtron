@@ -73,6 +73,12 @@ describe("Provider instance dialog material", () => {
     expect(selectedDriver).toContain("box-shadow: 0 0 0 2px var(--primary);");
   });
 
+  it("matches the Web driver icon-to-label gap", () => {
+    const driver = rule(".provider-instance-dialog__driver");
+
+    expect(driver).toContain("gap: 12px;");
+  });
+
   it("matches the dark secondary footer action material", () => {
     const secondary = rule(".theme-dark .provider-instance-dialog__secondary.ui-button--outline");
 
