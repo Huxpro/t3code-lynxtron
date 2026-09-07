@@ -604259,7 +604259,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/quick-switch-query-light-current.json",
           "classification": "tracked-current",
-          "sha256": "391ce030973a5e5b51ad47fbea7ff5b79a2c2930c980189dfa6e7a22070632ee"
+          "sha256": "882fd18183371f10e9e21cb5733eb5358fb6cdecdcb09235a63c1de8ac90d9f7"
         }
       ],
       "confidence": 0.858405,
