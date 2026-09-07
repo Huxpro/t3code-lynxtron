@@ -28779,6 +28779,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-sendable-action-current-refresh",
+      "observedAt": "2026-09-07T01:08:00-04:00",
+      "commit": "07022ddd9",
+      "codeCommit": "07022ddd9",
+      "codeState": "commit",
+      "label": "Composer Sendable action current refresh",
+      "narrative": "A fresh same-snapshot dark 1280x820 run enters fidelity-sendable through both real Browser input paths. Both renderers normalize to the same unpersisted Hero identity, retain the exact input value, reach sendable/send, and match the editor, 32x32 primary action, 724x48 Context strip, and 724x32 visible material with zero renderer errors. The state-bearing Web action host supplies reliable geometry while its internal material remains encapsulated, so prior material and typography residuals and Native physical-input debt remain unchanged.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product UI changed. This refresh extends the strict action and visible-context measurement to the real sendable input state without assigning pixel-material or Native credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/composer-sendable-action-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "9a4be9f62c3092e8e2e10db0523b182b7330b2a70f79bf4332895d7db29d4d5d"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-sendable"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sendable-action-content",
+              "source": "Both clients retain fidelity-sendable and expose sendable Composer plus send primary state."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 734,
+              "confidence": 0.99,
+              "method": "current-sendable-action-context-geometry",
+              "source": "Editor, primary action, Context strip, and visible backdrop rectangles match exactly."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "dual-renderer-current-sendable-input",
+              "source": "Both renderer-specific real input paths reach the same rendered value and send postcondition."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sendable-strict-runtime",
+              "source": "Same prepared snapshot, project, route, theme, viewport, current bundles, strict unpersisted identity, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

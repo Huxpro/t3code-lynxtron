@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T01:08:00-04:00",
+  "stateId": "composer-sendable",
+  "harnessCommit": "07022ddd9",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "new-thread",
+    "snapshotSha256": "7d9accedb2b333b7421b6c58a5d096515d1de1e434b0774a203b72b37366b15a",
+    "project": "background-only",
+    "input": "fidelity-sendable"
+  },
+  "capture": {
+    "reportSha256": "b7c52f2f8ccd91c861ca3cc72be56c06ca1d212a0ffe034283569e970504cf5f",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "0d53d75d49281ee4cc224b228f40595ef25fab1b1fac1a7438d9fa047e06674e",
+    "webImageSha256": "369afb98b02fa867eef053e7f0222d7a58036344f70db6aab07fe1834df8a55f",
+    "lynxImageSha256": "1b9c935141b3e03920ca76f039b4821e776ed453970f5f50bf4a71bb9a26abe2",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "inputValueMatch": true,
+    "primaryActionAndContextMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "editorWeb": [401, 357, 734, 70],
+    "editorLynx": [401, 357, 734, 70],
+    "primaryActionWeb": [1107, 435, 32, 32],
+    "primaryActionLynx": [1107, 435, 32, 32],
+    "contextWeb": [406, 464, 724, 48],
+    "contextLynx": [406, 464, 724, 48],
+    "visibleBackdropWeb": [406, 480, 724, 32],
+    "visibleBackdropLynx": [406, 480, 724, 32]
+  },
+  "content": {
+    "editorValueWeb": "fidelity-sendable",
+    "editorValueLynx": "fidelity-sendable",
+    "composerStateWeb": "sendable",
+    "composerStateLynx": "sendable",
+    "primaryStateWeb": "send",
+    "primaryStateLynx": "send"
+  },
+  "classification": "A fresh current paired capture enters the same real value in both new-thread composers and requires sendable/send semantics plus non-null action, Context strip, and visible material geometry. Every measured box matches exactly and the blue send action is visually present in both frames. Web exposes action geometry through its unique state-bearing host container while its internal button material remains encapsulated, so no computed-style or pixel-material credit is claimed. Existing typography, material, and Native physical-input debt remain unchanged; screenshots remain temporary."
+}
