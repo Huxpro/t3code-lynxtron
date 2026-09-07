@@ -30025,6 +30025,58 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-thread-hover-preview-current-refresh-20260907",
+      "observedAt": "2026-09-07T13:10:00-04:00",
+      "commit": "65434c866",
+      "codeState": "commit",
+      "label": "Sidebar Thread Hover Preview current refresh",
+      "narrative": "A current strict same-thread capture refreshes the Sidebar hover preview after accumulated shared shell work. Both panes retain the same title, project, environment and model; the Web CDP pointer and Lynx main-thread probe complete the hover lifecycle with zero errors. Full-frame SSIM reaches 0.965068 and the fixed popup ROI reaches 0.591140 versus the stale 0.584493 checkpoint.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No new Sidebar hover product code is credited. Snapshot, persisted thread, route, theme, viewport, content, interaction lifecycle and zero-error runtime match; the current frame supersedes the stale residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/sidebar-thread-hover-preview-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "9d2179d7c2beab9e6a8e3356f43eeb22fe0f142d475371b97260f70d4f6ece77"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-thread-hover-preview"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sidebar-hover-content",
+              "source": "Both panes render New thread, t3code-lynxtron, MacBook Pro (3) and GPT-5.6-Sol."
+            },
+            "material": {
+              "residual": 0.034932,
+              "confidence": 0.99,
+              "method": "current-sidebar-hover-full-frame-ssim",
+              "source": "1 - strict full-frame SSIM 0.965068, improved from 0.961004; fixed popup ROI SSIM is 0.591140 with MAE 15.993194 and significant-pixel share 17.7604%."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sidebar-hover-lifecycle",
+              "source": "Web CDP pointer and Lynx main-thread probe both complete open and dismissal with matching final content."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-sidebar-hover-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundles, advancing connector and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
