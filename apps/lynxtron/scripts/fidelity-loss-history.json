@@ -28623,6 +28623,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "files-browser-current-refresh",
+      "observedAt": "2026-09-06T23:47:00-04:00",
+      "commit": "8ae3b7102",
+      "codeCommit": "fa782460a",
+      "codeState": "commit",
+      "label": "Files Browser composed-name current refresh",
+      "narrative": "A fresh same-snapshot dark 1280x820 capture opens both shipping Files surfaces on the same thread and matches the 540px panel, 539x40 toolbar, 495x28 search field, 539x736 browser viewport, 25 rows, row boxes, radii, and icon-tone mapping. The old gate inferred Web typography from the whole row because the third-party FileTree name lived in composed shadow descendants. The repaired reader resolves a real name leaf for every sampled row and the strict gate refuses null-name fallback. This confirms the existing 12px DM Sans authority in both renderers. A diagnostic 11px mono experiment based on incomplete measurement was fully reverted.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product CSS remains changed. This point strengthens current evidence and prevents a false typography pass without changing the modeled residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/files-browser-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "e04f9e1f3aec87a8cd704efae0a02078e95e11738203cec368cd12d75e30c696"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["files-browser"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-files-composed-name-content",
+              "source": "Both clients expose the same 25 rows and the same first eight names with matching icon-tone semantics."
+            },
+            "geometry": {
+              "anchorDeltas": [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 776,
+              "confidence": 0.99,
+              "method": "current-files-panel-toolbar-row-geometry",
+              "source": "Panel differs only by one-pixel host border quantization; surface, toolbar, search, browser, and sampled row boxes match."
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-files-composed-name-typography",
+              "source": "Real composed name leaves in both renderers resolve to the established 12px DM Sans contract."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-files-shared-runtime",
+              "source": "Same immutable snapshot, selected thread, route, theme, viewport, current bundles, real pointer-open flow, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
