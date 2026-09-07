@@ -29702,6 +29702,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-light-current-refresh",
+      "observedAt": "2026-09-07T08:17:00-04:00",
+      "commit": "042198dd4",
+      "codeCommit": "1de6f5e44",
+      "codeState": "commit",
+      "label": "Light Quick Switch Query current refresh",
+      "narrative": "A current strict light persisted-thread capture records the already-attributed shared search and icon changes. Both panes retain query settings, one Open settings row and exact 576x166 anatomy. Panel SSIM improves from 0.946632 to 0.948971; remaining pixels are light glass shadow composition and host rasterization.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This current-state refresh records already-attributed shared fixes without duplicate credit. Snapshot, persisted thread, light theme, query, row, all anatomy rectangles and zero-error runtime match."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/quick-switch-query-light-current.json",
+          "classification": "tracked-current",
+          "sha256": "391ce030973a5e5b51ad47fbea7ff5b79a2c2930c980189dfa6e7a22070632ee"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-query-content",
+              "source": "Both panes contain query settings, Actions section and one Open settings result."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-light-query-geometry",
+              "source": "Panel, search, results, section, row and footer rectangles match exactly."
+            },
+            "material": {
+              "residual": 0.051029,
+              "confidence": 0.99,
+              "method": "current-light-query-panel-ssim",
+              "source": "1 - exact 576x166 panel SSIM 0.948971, improved from prior strict current 0.946632."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-light-query-runtime",
+              "source": "Same snapshot, persisted thread, route, light theme, viewport, exact committed bundles and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

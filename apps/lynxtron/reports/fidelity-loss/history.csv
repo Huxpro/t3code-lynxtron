@@ -515,3 +515,4 @@ file-picker-search-geometry-current,2026-09-07T07:45:00-04:00,8c6eed99c,commit,F
 quick-switch-query-current-refresh,2026-09-07T07:52:00-04:00,4477b575b,commit,Quick Switch Query current refresh,0.169199,0.169199,0.032157,0.141595,0.858405,0.822691
 quick-switch-actions-only-current-refresh,2026-09-07T08:00:00-04:00,0f8d80aec,commit,Quick Switch Actions Only current refresh,0.169193,0.169193,0.032151,0.141595,0.858405,0.822697
 quick-switch-empty-current-refresh,2026-09-07T08:09:00-04:00,59cd57c6f,commit,Quick Switch Empty current refresh,0.169188,0.169188,0.032145,0.141595,0.858405,0.822702
+quick-switch-query-light-current-refresh,2026-09-07T08:17:00-04:00,042198dd4,commit,Light Quick Switch Query current refresh,0.169187,0.169187,0.032143,0.141595,0.858405,0.822703

@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T08:17:00-04:00",
+  "stateId": "quick-switch-query-light",
+  "harnessCommit": "042198dd4",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "existing-thread",
+    "query": "settings",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "8c11feef22a62b0c45a54cbb28eae838f0397333758b086e910ff03f5131b0c0",
+    "webImageSha256": "6e7ea8d234cec33f2d2ae6872c6483dbe4c1e021359d3052f8c8f603641ddd45",
+    "lynxImageSha256": "b9b5a8abbf567b017a52368f11b1ce68169171923beb1bbfd78bce054626d1ae",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "queryWeb": "settings",
+    "queryLynx": "settings",
+    "rowCountWeb": 1,
+    "rowCountLynx": 1,
+    "rowLabel": "Open settings"
+  },
+  "geometry": { "panelWeb": [352, 82, 576, 166], "panelLynx": [352, 82, 576, 166] },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM over the exact 576x166 light query panel",
+    "previousPanelSsim": 0.946632,
+    "currentPanelSsim": 0.948971
+  },
+  "classification": "A current strict light persisted-thread capture records the already-attributed shared search and icon changes. Content and all panel anatomy remain matched. Remaining pixels are light glass shadow composition and host text/icon rasterization, so no light-only compensation or duplicate product credit is introduced."
+}
