@@ -77,6 +77,7 @@ const directSettingsRoutes = new Set([
 ]);
 
 export function inferSemanticRoute(stateId) {
+  if (stateId === "components-lab") return stateId;
   const settingsRoute =
     settingsRouteByStateId.get(stateId) ??
     (stateId.endsWith("-light") ? stateId.slice(0, -"-light".length) : stateId);

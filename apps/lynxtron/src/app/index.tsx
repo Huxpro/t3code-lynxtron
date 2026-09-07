@@ -127,6 +127,9 @@ function useJetBrainsMonoReady(): boolean {
 function RootSwitch() {
   const pathname = usePathname();
   const { status } = useT3ClientState();
+  const [previewInitialRoute, setPreviewInitialRoute] = useState(
+    __T3_LYNXTRON_WEB_PREVIEW__ ? getPref<string>("initialRoute", "/") : "/",
+  );
 
   // Deterministic preview/harness entry: an isolated preview host may seed an
   // `initialRoute` pref (e.g. the dual-renderer workbench Settings scenario)
@@ -150,7 +153,7 @@ function RootSwitch() {
     }
   };
   useEffect(() => {
-    if (appliedInitialRoute.current || status !== "ready") return;
+    if (appliedInitialRoute.current || (status !== "ready" && !__T3_LYNXTRON_WEB_PREVIEW__)) return;
     void readPreviewInitialState()
       .then((value) => {
         if (appliedInitialRoute.current) return;
@@ -161,7 +164,10 @@ function RootSwitch() {
           theme?: "light" | "dark";
         };
         appliedInitialRoute.current = true;
-        if (initial.route && initial.route !== "/") navigate(initial.route);
+        if (initial.route && initial.route !== "/") {
+          setPreviewInitialRoute(initial.route);
+          navigate(initial.route);
+        }
         applyInitialOverlay(initial.overlay);
         if (initial.theme) setPref("themePreference", initial.theme);
       })
@@ -178,7 +184,10 @@ function RootSwitch() {
       }
       appliedInitialRoute.current = true;
       const initialRoute = getPref<string>("initialRoute", "/");
-      if (initialRoute !== "/") navigate(initialRoute);
+      if (initialRoute !== "/") {
+        setPreviewInitialRoute(initialRoute);
+        navigate(initialRoute);
+      }
       const initialOverlay = getPref<string>("initialOverlay", "");
       applyInitialOverlay(initialOverlay);
     };
@@ -188,7 +197,7 @@ function RootSwitch() {
     };
   }, [status]);
 
-  if (pathname === "/components-lab") {
+  if (pathname === "/components-lab" || previewInitialRoute === "/components-lab") {
     return <ComponentLabSurface />;
   }
 

@@ -4613,14 +4613,16 @@
     },
     {
       "authority": {
-        "line": 39,
-        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+        "line": 3,
+        "path": "apps/web/src/components/components-lab/ComponentLabStack.web.tsx"
       },
       "exported": true,
-      "id": "components-lab/ComponentLabSurface#ComponentLabSurface",
-      "implementation": "shared-source",
-      "lynx": null,
-      "name": "ComponentLabSurface",
+      "id": "components-lab/ComponentLabStack#ComponentLabStack",
+      "implementation": "platform-pair",
+      "lynx": {
+        "path": "apps/web/src/components/components-lab/ComponentLabStack.lynx.tsx"
+      },
+      "name": "ComponentLabStack",
       "reuse": {
         "authorityShared": false,
         "lynxUseSiteCount": 1,
@@ -4632,8 +4634,42 @@
       },
       "useSites": [
         {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        }
+      ]
+    },
+    {
+      "authority": {
+        "line": 45,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": true,
+      "id": "components-lab/ComponentLabSurface#ComponentLabSurface",
+      "implementation": "shared-source",
+      "lynx": null,
+      "name": "ComponentLabSurface",
+      "reuse": {
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": [
+        {
           "path": "apps/lynxtron/src/app/index.tsx",
           "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/main.tsx",
+          "platform": "web"
         },
         {
           "path": "apps/web/src/routes/components-lab.tsx",
@@ -4643,7 +4679,7 @@
     },
     {
       "authority": {
-        "line": 15,
+        "line": 16,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4664,7 +4700,7 @@
     },
     {
       "authority": {
-        "line": 35,
+        "line": 41,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -21333,11 +21369,11 @@
     }
   ],
   "counts": {
-    "components": 733,
+    "components": 734,
     "coveredStoriesMissingLynxUse": 0,
-    "exported": 524,
+    "exported": 525,
     "internal": 209,
-    "platformPairs": 214,
+    "platformPairs": 215,
     "sharedSource": 63,
     "stories": 8,
     "webOnly": 456

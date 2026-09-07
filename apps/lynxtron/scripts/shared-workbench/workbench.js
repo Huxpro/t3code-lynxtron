@@ -181,6 +181,28 @@ function readElementBox(element) {
   };
 }
 
+function readComponentLabMetrics(root) {
+  const lab = root?.querySelector('[data-component-lab="web-lynx-shared"]');
+  if (!lab) return null;
+  return {
+    lab: readElementBox(lab),
+    rail: readElementBox(lab.querySelector(".component-lab__rail")),
+    content: readElementBox(lab.querySelector(".component-lab__content")),
+    stories: [...lab.querySelectorAll("[data-component-story]")].map((story) => ({
+      id: story.getAttribute("data-component-story"),
+      states: (story.getAttribute("data-component-states") ?? "").split(",").filter(Boolean),
+      title: readComposedText(story.querySelector(".component-lab-story__title")),
+      box: readElementBox(story),
+      canvas: readElementBox(story.querySelector(".component-lab-story__canvas")),
+    })),
+    slots: [...lab.querySelectorAll("[data-slot]")].reduce((counts, element) => {
+      const slot = element.getAttribute("data-slot");
+      if (slot) counts[slot] = (counts[slot] ?? 0) + 1;
+      return counts;
+    }, {}),
+  };
+}
+
 function readPseudoElementBox(element, pseudoElement, visibleInsetTop = 0) {
   if (!element) return null;
   const rect = element.getBoundingClientRect();
@@ -2020,7 +2042,8 @@ for (const frame of [webPane, lynxPane]) {
 // Web pane: the real app served at the ROOT origin, entered through the pairing
 // URL so it authorizes against the shared server, then routed to the view.
 const webHash = pairingToken ? `#token=${encodeURIComponent(pairingToken)}` : "";
-const webEntry = pairingToken ? `/pair${webHash}` : `/`;
+const webEntry =
+  expectedSemanticRoute === "components-lab" ? webRoute : pairingToken ? `/pair${webHash}` : `/`;
 webPane.srcdoc = `<!doctype html><script>
 localStorage.setItem("t3code:theme", ${JSON.stringify(theme)});
 if (${JSON.stringify(requestedSidebarWidth)} !== null) {
@@ -2259,6 +2282,7 @@ function readLynxPane() {
       stageBackdropPresent: d.stageBackdropPresent === true,
       heroPresent,
       heroMetrics: readHeroMetrics(root),
+      componentLabMetrics: readComponentLabMetrics(root),
       providerStatusBannerMetrics: readProviderStatusBannerMetrics(root),
       threadErrorBannerMetrics: readThreadErrorBannerMetrics(root),
       activeThreadTitle: d.activeThreadTitle ?? null,
@@ -3384,6 +3408,7 @@ function readWebPane() {
       semanticReady: connected && !connecting,
       heroPresent,
       heroMetrics: readHeroMetrics(doc),
+      componentLabMetrics: readComponentLabMetrics(doc),
       providerStatusBannerMetrics: readProviderStatusBannerMetrics(doc),
       threadErrorBannerMetrics: readThreadErrorBannerMetrics(doc),
       literalRoute,

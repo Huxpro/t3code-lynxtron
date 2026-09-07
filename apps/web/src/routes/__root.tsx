@@ -56,6 +56,9 @@ import {
 
 export const Route = createRootRoute({
   beforeLoad: async ({ location }) => {
+    if (location.pathname === "/components-lab") {
+      return { authGateState: { status: "hosted-static" } as const };
+    }
     if (location.pathname === "/pair" && hasHostedPairingRequest(new URL(window.location.href))) {
       return {
         authGateState: {

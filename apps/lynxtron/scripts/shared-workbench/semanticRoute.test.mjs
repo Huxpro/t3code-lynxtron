@@ -15,6 +15,7 @@ describe("shared workbench semantic route inference", () => {
     ["right-panel-terminal-vertical-split", "existing-thread"],
     ["command-palette-navigation", "existing-thread"],
     ["model-picker-selected", "new-thread"],
+    ["components-lab", "components-lab"],
     ["project-scope-open", "project-scope-open"],
     ["settings-general", "settings-general"],
     ["settings-keybindings-mutation", "settings-keybindings"],

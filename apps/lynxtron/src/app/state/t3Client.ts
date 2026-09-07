@@ -587,10 +587,14 @@ function applyShellPayload(shell: ShellEventPayload): void {
   const latest = appAtomRegistry.get(t3ClientStateAtom);
   if (!latest.activeThreadId && threads.length > 0) {
     // Auto-select the first thread as the active thread, but do not yank the
-    // renderer off a non-chat route (e.g. Settings) to do it. Force-navigating
-    // here caused Settings to flash back to chat when the shell snapshot
-    // arrived. On the chat route this still navigates to the selected thread.
-    selectThread(threads[0].id, { navigate: getPathname().startsWith("/settings") === false });
+    // renderer off a non-chat route (Settings or Components Lab) to do it.
+    // Force-navigating here caused those surfaces to flash back to chat when
+    // the shell snapshot arrived. On the chat route this still navigates to
+    // the selected thread.
+    const pathname = getPathname();
+    selectThread(threads[0].id, {
+      navigate: pathname === "/",
+    });
   } else {
     refreshVcsStatusProjection();
   }

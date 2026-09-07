@@ -1,0 +1,28 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import { assert, describe, it } from "vite-plus/test";
+
+const captureSource = readFileSync(
+  resolve(import.meta.dirname, "capture-shared-workbench.mjs"),
+  "utf8",
+);
+const readerSource = readFileSync(
+  resolve(import.meta.dirname, "shared-workbench/workbench.js"),
+  "utf8",
+);
+
+describe("Components Lab paired workbench", () => {
+  it("reads the same shared story contract from both renderers", () => {
+    assert.include(readerSource, "function readComponentLabMetrics(root)");
+    assert.include(readerSource, '[data-component-lab="web-lynx-shared"]');
+    assert.include(readerSource, "data-component-states");
+    assert.include(captureSource, "const componentLabReady =");
+    assert.include(captureSource, 'semanticRoute === "components-lab"');
+    assert.include(captureSource, '? "/components-lab"');
+    assert.include(captureSource, "state.web.componentLabMetrics.stories.length === 8");
+    assert.include(captureSource, "const pass = isComponentsLabState");
+    assert.include(readerSource, 'expectedSemanticRoute === "components-lab"');
+    assert.include(captureSource, "isComponentsLabState && /HTTP Authentication failed");
+  });
+});

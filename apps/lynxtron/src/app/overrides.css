@@ -12204,7 +12204,10 @@
 .component-lab {
   display: flex;
   flex-direction: row;
+  width: 100vw;
+  max-width: 100vw;
   min-height: 100vh;
+  overflow-x: hidden;
   background-color: var(--background);
   color: var(--foreground);
 }
@@ -12258,17 +12261,29 @@
   opacity: 0.6;
 }
 .component-lab__content {
+  --lynx-linear-weight: 1;
+  --align-self-row: stretch;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  padding: 48px 64px 96px;
+  flex-shrink: 1;
+  width: calc(100vw - 240px);
+  max-width: calc(100vw - 240px);
+  padding: 48px 4vw 96px;
   gap: 24px;
   box-sizing: border-box;
 }
+.component-lab__stack {
+  --align-self-column: stretch;
+  width: 100%;
+  height: 100%;
+}
 .component-lab-story {
+  --align-self-column: stretch;
   display: flex;
   flex-direction: row;
   min-height: 128px;
+  width: 100%;
   padding-top: 20px;
   border-top-width: 1px;
   border-top-style: solid;
@@ -12276,7 +12291,13 @@
 }
 .component-lab-story__header {
   flex-shrink: 0;
-  width: 32%;
+  width: 24.2424%;
+}
+.component-lab-story__canvas {
+  --align-self-row: stretch;
+  flex-shrink: 0;
+  width: 75.7576%;
+  min-width: 0;
 }
 .component-lab-story__title {
   color: var(--foreground);
@@ -12300,8 +12321,8 @@
   gap: 12px;
 }
 .component-lab-specimen-stack {
-  display: flex;
-  flex-direction: column;
+  display: linear;
+  linear-orientation: vertical;
   width: 512px;
   gap: 8px;
 }
@@ -12342,4 +12363,8 @@
 }
 .viewport-compact .component-lab-story__header {
   width: 100%;
+}
+.viewport-compact .component-lab__content {
+  width: 100%;
+  padding: 32px 20px 64px;
 }

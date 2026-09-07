@@ -63,6 +63,7 @@ const manifestPath = process.argv.includes("--manifest")
   ? path.resolve(argValue("--manifest", ""))
   : null;
 const stateId = argValue("--state-id", "new-thread-hero");
+const isComponentsLabState = stateId === "components-lab";
 const nativeOnlyStateIds = new Set(["settings-archive-mutation"]);
 if (nativeOnlyStateIds.has(stateId)) {
   throw new Error(`${stateId} is not implemented by the Browser paired-capture harness.`);
@@ -78,12 +79,14 @@ const settingsWebRouteBySemanticRoute = {
 };
 const requestedWebRoute = argValue(
   "--web-route",
-  semanticRoute.startsWith("settings-")
-    ? (settingsWebRouteBySemanticRoute[semanticRoute] ??
+  semanticRoute === "components-lab"
+    ? "/components-lab"
+    : semanticRoute.startsWith("settings-")
+      ? (settingsWebRouteBySemanticRoute[semanticRoute] ??
         `/settings/${semanticRoute
           .replace(/^settings-/, "")
           .replace(/-(loading|error|mutation)$/, "")}`)
-    : "/",
+      : "/",
 );
 const theme =
   argValue("--theme", stateId.endsWith("-light") ? "light" : "dark") === "light" ? "light" : "dark";
@@ -7574,6 +7577,39 @@ async function captureCell({
       sessionId,
       `(() => { const w = window.__T3_WORKBENCH__; return w ? w.read() : null; })()`,
     ).catch(() => null);
+    if (isComponentsLabState) {
+      const labReady =
+        (state?.web?.componentLabMetrics?.stories?.length ?? 0) === 8 &&
+        JSON.stringify(
+          state.web.componentLabMetrics.stories.map(({ id, states, title }) => ({
+            id,
+            states,
+            title,
+          })),
+        ) ===
+          JSON.stringify(
+            state?.lynx?.componentLabMetrics?.stories?.map(({ id, states, title }) => ({
+              id,
+              states,
+              title,
+            })) ?? [],
+          );
+      if (labReady) break;
+      if (state?.web?.literalRoute !== webRoute) {
+        await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const frame = document.getElementById('web-pane');
+            if (!frame?.contentWindow) return false;
+            frame.contentWindow.location.assign(${JSON.stringify(webRoute)});
+            return true;
+          })()`,
+        ).catch(() => false);
+      }
+      await delay(100);
+      continue;
+    }
     if (
       isNewThreadHeroState &&
       !unpersistedHeroStateReady(state) &&
@@ -8234,7 +8270,7 @@ async function captureCell({
     }
     if (
       webRoute !== "/settings/general" &&
-      state?.web?.connected === true &&
+      (isComponentsLabState || state?.web?.connected === true) &&
       !(semanticRoute === "new-thread" && state?.web?.literalRoute?.startsWith("/draft/")) &&
       state?.web?.literalRoute !== webRoute
     ) {
@@ -11047,8 +11083,23 @@ async function captureCell({
     state?.lynx?.connected === false &&
     state?.web?.productState?.lifecycle === "connecting" &&
     state?.lynx?.productState?.lifecycle === "connecting";
+  const componentLabReady =
+    isComponentsLabState &&
+    (state?.web?.componentLabMetrics?.stories?.length ?? 0) > 0 &&
+    JSON.stringify(
+      state.web.componentLabMetrics.stories.map(({ id, states, title }) => ({ id, states, title })),
+    ) ===
+      JSON.stringify(
+        state?.lynx?.componentLabMetrics?.stories?.map(({ id, states, title }) => ({
+          id,
+          states,
+          title,
+        })) ?? [],
+      );
   const bothReady =
-    lifecycleFaultReady || Boolean(state?.web?.semanticReady && state?.lynx?.semanticReady);
+    componentLabReady ||
+    lifecycleFaultReady ||
+    Boolean(state?.web?.semanticReady && state?.lynx?.semanticReady);
   const finalOverlayReady =
     !overlay ||
     (state?.web?.productState?.overlay === overlay &&
@@ -13401,11 +13452,12 @@ async function captureCell({
   await browserCdp.send("Target.closeTarget", { targetId }).catch(() => undefined);
 
   // Shared-server identity gate: both panes rendered the seeded project.
-  const identityMatch =
-    stateIdentityMatch &&
-    (lifecycleFaultReady ||
-      (state?.web?.connected === true &&
-        (state?.lynx?.connected === true || state?.lynx?.semanticReady === true)));
+  const identityMatch = isComponentsLabState
+    ? componentLabReady
+    : stateIdentityMatch &&
+      (lifecycleFaultReady ||
+        (state?.web?.connected === true &&
+          (state?.lynx?.connected === true || state?.lynx?.semanticReady === true)));
 
   const consoleErrors = console_.filter(
     (e) =>
@@ -13415,6 +13467,10 @@ async function captureCell({
       !/Failed to load resource.*404/.test(e.text) &&
       !/favicon\.ico/.test(e.text) &&
       !(
+        isComponentsLabState &&
+        /HTTP Authentication failed; no valid credentials available/.test(e.text)
+      ) &&
+      !(
         isLifecycleFaultState &&
         (/WebSocket connection .* failed:/.test(e.text) ||
           /WebSocket is already in CLOSING or CLOSED state\./.test(e.text) ||
@@ -13422,6 +13478,7 @@ async function captureCell({
       ),
   );
   const confirmedTargetState =
+    componentLabReady ||
     reachedTargetState ||
     (semanticRoute.startsWith("settings-") &&
       bothReady &&
@@ -13434,89 +13491,101 @@ async function captureCell({
     (isFlatSidebarLayoutState && bothReady && finalFlatSidebarLayoutReady) ||
     (stateId === "sidebar-project-groups" && bothReady && finalSidebarProjectGroupsReady);
 
-  const pass =
-    confirmedTargetState &&
-    bothReady &&
+  const componentsLabPass =
+    componentLabReady &&
     identityMatch &&
-    (isRightPanelTerminalState || finalOverlayReady) &&
-    finalShortcutInputReady &&
-    finalSidebarSearchReady &&
-    finalSidebarStateReady &&
-    finalChangedFilesStateReady &&
-    finalCoreGeometryReady &&
-    finalHeroGeometryReady &&
-    finalComposerReady &&
-    finalPlanModeReady &&
-    finalSessionProjectionReady &&
-    finalStageIdentityReady &&
-    finalSidebarControlGeometryReady &&
-    finalSidebarProjectGroupsReady &&
-    finalFlatSidebarLayoutReady &&
-    finalAddProjectSourcesReady &&
-    finalNewThreadProjectsReady &&
-    finalSidebarFooterThemeReady &&
-    finalCompactControlsReady &&
-    finalProjectActionDialogReady &&
-    finalProjectSettingsReady &&
-    finalRightPanelAddMenuReady &&
-    rightPanelTerminalReady(state) &&
-    finalDiffScopeMenuReady &&
-    rightPanelAddMenuDismissed &&
-    rightPanelAddMenuTerminalSelected &&
-    diffScopeMenuDismissed &&
-    diffScopeWorkingTreeSelected &&
-    shortCompactControlsScrolled &&
-    shortCompactControlsDismissed &&
-    finalSidebarWorkingGeometryReady &&
-    finalHeaderGitActionReady &&
-    finalGitPublishDialogReady &&
-    finalFilesBrowserReady &&
-    finalSettledBannerInlineFilesReady &&
-    finalFileEditorReady &&
-    (!isOpenInMenuState || openInMenuEvidence?.match === true) &&
-    (!isNarrowChatThreadState || narrowChatHoverEvidence?.match === true) &&
-    (!isNarrowComposerExpandState || narrowComposerExpandEvidence?.match === true) &&
-    (!isModelPickerInteractionState || modelPickerInteractionEvidence?.match === true) &&
-    (!isFileEditingSaveState || fileEditingSaveEvidence !== null) &&
-    fileEditorSwitched &&
-    fileEditorReturnedToBrowser &&
-    gitPublishDismissed &&
-    finalReviewReady &&
-    finalSettingsAsyncReady &&
-    finalSettingsGeometryReady &&
-    finalSettingsNavigationReady &&
-    finalSettingsDesktopTopbarReady &&
-    finalAddProviderDialogReady &&
-    finalBetaMutationReady &&
-    finalBackgroundActivityMutationReady &&
-    finalSettingsModelMutationReady &&
-    finalConnectionsMutationReady &&
-    finalTranscriptReady &&
-    completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
-    completedProjectFaviconMatches(state) &&
-    completedHeaderOpenActionMatches(state) &&
-    finalProviderStatusBannerReady &&
-    finalFailedThreadDismissalReady &&
-    finalKeybindingsMutationReady &&
-    finalPendingRequestReady &&
-    (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
-    (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
-    (!isSidebarControlHoverState || sidebarControlHoverStage === "complete") &&
-    (!isSidebarThreadHoverPreviewState || sidebarThreadHoverPreviewStage === "complete") &&
-    (!isChatOutlineState ||
-      (chatOutlineEvidence?.web?.hovered?.preview &&
-        chatOutlineEvidence?.lynx?.hovered?.preview)) &&
-    (!isSidebarThreadShortcutState || sidebarThreadShortcutStage === "complete") &&
-    (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
-    (stateId !== "add-project-sources" || addProjectSourcesStage === "complete") &&
-    (!isModelPickerOverlay || (modelPickerSemanticMatch && overlayRowCountMatch)) &&
-    settingsContentMatch !== false &&
-    lynxStyled &&
+    state?.web?.productState?.theme === theme &&
+    state?.lynx?.productState?.theme === theme &&
+    state.web.componentLabMetrics.stories.length === 8 &&
+    state?.web?.componentLabMetrics?.lab?.rect?.width === width &&
+    state?.lynx?.componentLabMetrics?.lab?.rect?.width === width &&
     consoleErrors.length === 0 &&
     sameDims;
+  const pass = isComponentsLabState
+    ? componentsLabPass
+    : confirmedTargetState &&
+      bothReady &&
+      identityMatch &&
+      (isRightPanelTerminalState || finalOverlayReady) &&
+      finalShortcutInputReady &&
+      finalSidebarSearchReady &&
+      finalSidebarStateReady &&
+      finalChangedFilesStateReady &&
+      finalCoreGeometryReady &&
+      finalHeroGeometryReady &&
+      finalComposerReady &&
+      finalPlanModeReady &&
+      finalSessionProjectionReady &&
+      finalStageIdentityReady &&
+      finalSidebarControlGeometryReady &&
+      finalSidebarProjectGroupsReady &&
+      finalFlatSidebarLayoutReady &&
+      finalAddProjectSourcesReady &&
+      finalNewThreadProjectsReady &&
+      finalSidebarFooterThemeReady &&
+      finalCompactControlsReady &&
+      finalProjectActionDialogReady &&
+      finalProjectSettingsReady &&
+      finalRightPanelAddMenuReady &&
+      rightPanelTerminalReady(state) &&
+      finalDiffScopeMenuReady &&
+      rightPanelAddMenuDismissed &&
+      rightPanelAddMenuTerminalSelected &&
+      diffScopeMenuDismissed &&
+      diffScopeWorkingTreeSelected &&
+      shortCompactControlsScrolled &&
+      shortCompactControlsDismissed &&
+      finalSidebarWorkingGeometryReady &&
+      finalHeaderGitActionReady &&
+      finalGitPublishDialogReady &&
+      finalFilesBrowserReady &&
+      finalSettledBannerInlineFilesReady &&
+      finalFileEditorReady &&
+      (!isOpenInMenuState || openInMenuEvidence?.match === true) &&
+      (!isNarrowChatThreadState || narrowChatHoverEvidence?.match === true) &&
+      (!isNarrowComposerExpandState || narrowComposerExpandEvidence?.match === true) &&
+      (!isModelPickerInteractionState || modelPickerInteractionEvidence?.match === true) &&
+      (!isFileEditingSaveState || fileEditingSaveEvidence !== null) &&
+      fileEditorSwitched &&
+      fileEditorReturnedToBrowser &&
+      gitPublishDismissed &&
+      finalReviewReady &&
+      finalSettingsAsyncReady &&
+      finalSettingsGeometryReady &&
+      finalSettingsNavigationReady &&
+      finalSettingsDesktopTopbarReady &&
+      finalAddProviderDialogReady &&
+      finalBetaMutationReady &&
+      finalBackgroundActivityMutationReady &&
+      finalSettingsModelMutationReady &&
+      finalConnectionsMutationReady &&
+      finalTranscriptReady &&
+      completedNoDiffGeometryMatches(state?.web?.timelineMetrics, state?.lynx?.timelineMetrics) &&
+      completedProjectFaviconMatches(state) &&
+      completedHeaderOpenActionMatches(state) &&
+      finalProviderStatusBannerReady &&
+      finalFailedThreadDismissalReady &&
+      finalKeybindingsMutationReady &&
+      finalPendingRequestReady &&
+      (!isMultiStepQuestionState || multiStepQuestionStage === "complete") &&
+      (stateId !== "command-palette-navigation" || commandPaletteNavigationStage === "complete") &&
+      (!isSidebarControlHoverState || sidebarControlHoverStage === "complete") &&
+      (!isSidebarThreadHoverPreviewState || sidebarThreadHoverPreviewStage === "complete") &&
+      (!isChatOutlineState ||
+        (chatOutlineEvidence?.web?.hovered?.preview &&
+          chatOutlineEvidence?.lynx?.hovered?.preview)) &&
+      (!isSidebarThreadShortcutState || sidebarThreadShortcutStage === "complete") &&
+      (stateId !== "sidebar-v2-new-thread-projects" || newThreadProjectsStage === "complete") &&
+      (stateId !== "add-project-sources" || addProjectSourcesStage === "complete") &&
+      (!isModelPickerOverlay || (modelPickerSemanticMatch && overlayRowCountMatch)) &&
+      settingsContentMatch !== false &&
+      lynxStyled &&
+      consoleErrors.length === 0 &&
+      sameDims;
   if (!pass)
     failuresNote(viewport.label, {
       reachedTargetState: confirmedTargetState,
+      componentsLabPass,
       bothReady,
       identityMatch,
       finalOverlayReady,
