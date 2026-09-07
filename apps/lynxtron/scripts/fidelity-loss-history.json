@@ -28930,6 +28930,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-disabled-action-current-refresh",
+      "observedAt": "2026-09-07T01:40:00-04:00",
+      "commit": "3d56fd22d",
+      "codeCommit": "3d56fd22d",
+      "codeState": "commit",
+      "label": "Composer Disabled action current refresh",
+      "narrative": "A fresh current dark 1280x820 provider-fault capture waits for four stable paired Composer polls. Both renderers share the same thread, connecting lifecycle, disabled Composer/action, controls, and exact Composer, action, Context, and visible material geometry with zero renderer errors.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product UI changed. This refresh extends strict action and Context measurement to the stable disabled fault state without reassigning lifecycle material credit."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/composer-disabled-action-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "ab4f7138fb181de0ecd8103791563bdc3f37d37f24aaf51a1d70843bb72c9ef4"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-disabled"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-disabled-composer-content",
+              "source": "Both clients project connecting lifecycle with disabled Composer and disabled primary state."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "current-disabled-action-context-geometry",
+              "source": "Composer, disabled action, Context strip, and visible backdrop rectangles match exactly."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-disabled-stable-fault-runtime",
+              "source": "Same snapshot, thread, provider fault, route, theme, viewport, current bundles, four stable preflight polls, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
