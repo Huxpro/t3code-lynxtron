@@ -1005,7 +1005,7 @@ describe("desktop shell interaction contract", () => {
       ".diff-code-line {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  min-height: 20px;",
     );
     expect(overrides).toContain(
-      ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  color: var(--foreground);\n  font-size: 12px;\n  line-height: 20px;",
+      ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  padding: 0 8px;\n  box-sizing: border-box;\n  color: var(--foreground);\n  font-size: 13px;\n  line-height: 20px;",
     );
     expect(diffPanelSource).not.toContain("projectFileLineTokens");
     expect(diffPanelSource).toContain('{line.content || " "}');
