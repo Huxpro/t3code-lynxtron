@@ -605656,7 +605656,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/model-picker-empty-current.json",
           "classification": "tracked-current",
-          "sha256": "b5e89ff7117512620831ed0789a8f0dc47c1b30d3fa0eb7cbe9328b3d972d8cc"
+          "sha256": "089e1bab28574dbbf5d835e7b97497f7e6fbf33683186454981bade29bba5e37"
         }
       ],
       "confidence": 0.858405,
