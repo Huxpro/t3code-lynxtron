@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T20:20:00-04:00",
+  "stateId": "sidebar-inline-search",
+  "productCommit": "4d5f011fd",
+  "captureCommit": "15de2a9df0566400dbf1c8661664a2020314a3f9",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "query": "thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5"
+  },
+  "capture": {
+    "reportSha256": "7c26f90ccc931a3d8cae69887be984645384808018836f1a6f3b51aa7040acc9",
+    "webImageSha256": "597fdefe1457396358e5cbbd903148b100900a5b11418b813b48b2d83a6975fe",
+    "lynxImageSha256": "6d6f3ae134a94eb97d2900c65e949e88b2e6079a890f317483edeb72b4b4327c",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "252b766c87f3d8b4f7c1e8561d809d248a3d73cf2f4c04ace1de9032a8b57e40",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "searchRowWeb": [8, 64, 239, 32],
+    "searchRowLynx": [8, 64, 239, 32],
+    "searchPrimaryWeb": [8, 64, 203, 32],
+    "searchPrimaryLynx": [8, 64, 203, 32],
+    "inputBeforeLynx": [40, 65, 139, 30],
+    "inputAfterWeb": [40, 65, 131, 30],
+    "inputAfterLynx": [40, 65, 131, 30],
+    "resultRowsWeb": [
+      [8, 144, 239, 36],
+      [8, 181, 239, 36]
+    ],
+    "resultRowsLynx": [
+      [8, 144, 239, 36],
+      [8, 181, 239, 36]
+    ],
+    "faviconsWeb": [
+      [18, 154, 16, 16],
+      [18, 191, 16, 16]
+    ],
+    "faviconsLynx": [
+      [18, 154, 16, 16],
+      [18, 191, 16, 16]
+    ],
+    "titleXWeb": [44, 44],
+    "titleXLynx": [44, 44]
+  },
+  "content": {
+    "webQuery": "thread",
+    "lynxQuery": "thread",
+    "webResults": ["New thread", "New thread"],
+    "lynxResults": ["New thread", "New thread"]
+  },
+  "classification": "The Lynx input used width zero plus flex-grow and an 8px left margin, over-allocating the inner field by 8px when the clear button was visible. Moving spacing to the parent gap makes the input box exactly match Web while preserving the already matching result rows. Full-frame pixels are unchanged, so only geometry is credited and screenshots remain temporary."
+}
