@@ -8324,6 +8324,9 @@
   border-width: 0;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
+.theme-light .provider-instance-dialog__driver--disabled {
+  background-color: rgba(var(--background-rgb), 0.6);
+}
 .theme-light .provider-instance-dialog__driver--selected {
   background-color: rgba(var(--primary-rgb), 0.08);
   box-shadow: 0 0 0 2px var(--primary);

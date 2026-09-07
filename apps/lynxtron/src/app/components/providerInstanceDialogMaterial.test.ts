@@ -64,10 +64,12 @@ describe("Provider instance dialog material", () => {
 
   it("uses rings without a duplicate physical border for light driver cards", () => {
     const driver = rule(".theme-light .provider-instance-dialog__driver");
+    const disabledDriver = rule(".theme-light .provider-instance-dialog__driver--disabled");
     const selectedDriver = rule(".theme-light .provider-instance-dialog__driver--selected");
 
     expect(driver).toContain("border-width: 0;");
     expect(driver).toContain("box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);");
+    expect(disabledDriver).toContain("background-color: rgba(var(--background-rgb), 0.6);");
     expect(selectedDriver).toContain("box-shadow: 0 0 0 2px var(--primary);");
   });
 
