@@ -69,7 +69,7 @@ describe("Quick Switch material", () => {
 
   it("matches the authority muted icon alpha", () => {
     expect(rule(".qs-search__icon-img")).toContain("opacity: 0.8;");
-    expect(rule(".quick-switch-action-row > .qs-row__icon-img")).toContain("opacity: 0.8;");
+    expect(rule(".quick-switch-action-row > .qs-row__icon-img")).toContain("opacity: 0.64;");
   });
 
   it("matches the Web File Picker height without changing command modes", () => {
