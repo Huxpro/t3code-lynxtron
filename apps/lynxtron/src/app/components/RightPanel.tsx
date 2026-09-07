@@ -408,7 +408,7 @@ export function RightPanel({
                   >
                     <Icon
                       name={ADDABLE_ICONS[item.kind]}
-                      size={14}
+                      size={16}
                       color="#818181"
                       className="right-panel__add-item-icon"
                     />

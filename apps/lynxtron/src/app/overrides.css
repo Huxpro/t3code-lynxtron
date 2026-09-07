@@ -8778,6 +8778,7 @@
   height: 28px;
   padding: 4px 8px;
   border-radius: 6px;
+  gap: 8px;
   box-sizing: border-box;
 }
 .right-panel__add-item:hover {
@@ -8788,7 +8789,7 @@
 }
 
 .right-panel__add-item-icon {
-  margin-right: 8px;
+  opacity: 0.8;
 }
 
 .right-panel__add-item-label {
