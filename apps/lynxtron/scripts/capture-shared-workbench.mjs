@@ -2554,6 +2554,23 @@ function diffScopeMenuReady(state) {
   );
 }
 
+function rightPanelTerminalReady(state) {
+  if (!isRightPanelTerminalState) return true;
+  const webPanel = state?.web?.reviewMetrics?.panelRect;
+  const lynxPanel = state?.lynx?.reviewMetrics?.panelRect;
+  const webTerminal = state?.web?.reviewMetrics?.terminal;
+  const lynxTerminal = state?.lynx?.reviewMetrics?.terminal;
+  return (
+    webTerminal?.sessionId === "term-1" &&
+    lynxTerminal?.sessionId === "term-1" &&
+    webTerminal?.root?.rect?.width > 0 &&
+    webTerminal?.viewport?.rect?.height > 0 &&
+    lynxTerminal?.root?.rect?.width > 0 &&
+    lynxTerminal?.viewport?.rect?.height > 0 &&
+    Math.abs((webPanel?.rect?.width ?? 0) - (lynxPanel?.rect?.width ?? 0)) <= 1
+  );
+}
+
 function compactControlsContainment(state) {
   const read = (client) => {
     const context = client?.composerMetrics?.anatomy?.context?.rect;
@@ -11093,6 +11110,7 @@ async function captureCell({
   const finalProjectActionDialogReady = projectActionDialogReady(state);
   const finalProjectSettingsReady = projectSettingsReady(state, projectSettingsInteraction);
   const finalRightPanelAddMenuReady = rightPanelAddMenuReady(state);
+  let finalRightPanelTerminalReady = rightPanelTerminalReady(state);
   const finalDiffScopeMenuReady = diffScopeMenuReady(state);
   const finalSidebarWorkingGeometryReady = sidebarWorkingGeometryMatches(
     state,
@@ -12996,6 +13014,50 @@ async function captureCell({
             ...rightPanelTerminalCommand,
             resize: { before: beforeResize, after: afterResize },
           };
+          const committedResizeDelta = afterResize.panelWidth - beforeResize.panelWidth;
+          const restoreStartX = 640;
+          const restoreEndX = restoreStartX + committedResizeDelta;
+          const restoredResize = await evaluate(
+            cdp,
+            sessionId,
+            `document.getElementById('lynx-pane')?.contentWindow
+            ?.__T3_LYNX_WEB_PREVIEW__?.invokeResizeForHarness?.(
+              'right-panel',
+              ${restoreStartX},
+              ${restoreEndX}
+            ) ?? false`,
+          );
+          if (restoredResize !== true)
+            throw new Error("Lynx right-panel resize restore probe is unavailable.");
+          const restoreDeadline = Date.now() + 3_000;
+          while (Date.now() < restoreDeadline) {
+            state =
+              (await evaluate(
+                cdp,
+                sessionId,
+                `(() => window.__T3_WORKBENCH__?.read() ?? null)()`,
+              ).catch(() => null)) ?? state;
+            if (rightPanelTerminalReady(state)) break;
+            await delay(100);
+          }
+          if (!rightPanelTerminalReady(state)) {
+            throw new Error(
+              `Terminal visual authority was not restored after resize: ${JSON.stringify({
+                webPanel: state?.web?.reviewMetrics?.panelRect?.rect ?? null,
+                lynxPanel: state?.lynx?.reviewMetrics?.panelRect?.rect ?? null,
+                webTerminal: state?.web?.reviewMetrics?.terminal ?? null,
+                lynxTerminal: state?.lynx?.reviewMetrics?.terminal ?? null,
+              })}`,
+            );
+          }
+          rightPanelTerminalCommand = {
+            ...rightPanelTerminalCommand,
+            resize: {
+              ...rightPanelTerminalCommand.resize,
+              restored: true,
+              restorePointer: { startX: restoreStartX, endX: restoreEndX },
+            },
+          };
         }
         state =
           (await evaluate(
@@ -13003,6 +13065,7 @@ async function captureCell({
             sessionId,
             `(() => window.__T3_WORKBENCH__?.read() ?? null)()`,
           ).catch(() => null)) ?? state;
+        finalRightPanelTerminalReady = rightPanelTerminalReady(state);
         if (!rightPanelTerminalScreenshot) {
           rightPanelTerminalScreenshot = await capturePanePair({
             cdp,
@@ -13360,6 +13423,7 @@ async function captureCell({
     finalProjectActionDialogReady &&
     finalProjectSettingsReady &&
     finalRightPanelAddMenuReady &&
+    rightPanelTerminalReady(state) &&
     finalDiffScopeMenuReady &&
     rightPanelAddMenuDismissed &&
     rightPanelAddMenuTerminalSelected &&
@@ -13465,6 +13529,7 @@ async function captureCell({
       finalProjectActionDialogReady,
       finalProjectSettingsReady,
       finalRightPanelAddMenuReady,
+      finalRightPanelTerminalReady: rightPanelTerminalReady(state),
       finalDiffScopeMenuReady,
       rightPanelAddMenuDismissed,
       rightPanelAddMenuTerminalSelected,
@@ -14033,15 +14098,32 @@ async function captureCell({
       composerInputDiagnostics,
       reviewInteractionTimeline,
     },
-    images: {
-      web: terminalOnlyImages ? null : path.relative(repoRoot, webPath),
-      lynx: terminalOnlyImages ? null : path.relative(repoRoot, lynxPath),
-      sideBySide,
-      diff,
-      webDims,
-      lynxDims,
-      sameDimensions: sameDims,
-    },
+    images:
+      isRightPanelTerminalState && rightPanelTerminalScreenshot
+        ? {
+            web: rightPanelTerminalScreenshot.web.path,
+            lynx: rightPanelTerminalScreenshot.lynx.path,
+            sideBySide: rightPanelTerminalScreenshot.sideBySide ?? null,
+            diff: null,
+            webDims: rightPanelTerminalScreenshot.web.dimensions,
+            lynxDims: rightPanelTerminalScreenshot.lynx.dimensions,
+            sameDimensions:
+              rightPanelTerminalScreenshot.web.dimensions.width ===
+                rightPanelTerminalScreenshot.lynx.dimensions.width &&
+              rightPanelTerminalScreenshot.web.dimensions.height ===
+                rightPanelTerminalScreenshot.lynx.dimensions.height,
+            source: "validated-terminal-causal-frame",
+          }
+        : {
+            web: terminalOnlyImages ? null : path.relative(repoRoot, webPath),
+            lynx: terminalOnlyImages ? null : path.relative(repoRoot, lynxPath),
+            sideBySide,
+            diff,
+            webDims,
+            lynxDims,
+            sameDimensions: sameDims,
+            source: "final-workbench-frame",
+          },
     console: { errors: consoleErrors },
     assertions: {
       web: path.relative(repoRoot, webAssertionsPath),

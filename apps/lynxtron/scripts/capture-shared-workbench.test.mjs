@@ -520,6 +520,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'if (stateId === "right-panel-terminal") {');
     assert.include(source, "Terminal paired capture panel widths diverged");
     assert.include(source, "Terminal paired capture sessions diverged");
+    assert.include(source, "function rightPanelTerminalReady(state)");
+    assert.include(source, "finalRightPanelTerminalReady = rightPanelTerminalReady(state)");
+    assert.include(source, "rightPanelTerminalReady(state) &&");
     assert.include(source, "data-terminal-id");
     assert.include(source, "__T3_WORKBENCH_OPEN_TERMINAL__?.('term-1')");
     assert.include(source, "geometry: terminalCaptureGeometry");
@@ -532,6 +535,15 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "invokeResizeForHarness?.('right-panel', 740, 640)");
     assert.include(source, "afterGrid.cols > beforeGrid.cols");
     assert.include(source, "afterGrid.rows === beforeGrid.rows");
+    assert.include(
+      source,
+      "const committedResizeDelta = afterResize.panelWidth - beforeResize.panelWidth",
+    );
+    assert.include(source, "const restoreEndX = restoreStartX + committedResizeDelta");
+    assert.include(source, "Terminal visual authority was not restored after resize");
+    assert.include(source, "restorePointer: { startX: restoreStartX, endX: restoreEndX }");
+    assert.include(source, 'source: "validated-terminal-causal-frame"');
+    assert.include(source, "rightPanelTerminalScreenshot.web.path");
     assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
     assert.include(source, "web-terminal-row-pointer|lynx-terminal-row-pointer");
     assert.include(source, "lynx?.querySelector('.terminal-panel') !== null");

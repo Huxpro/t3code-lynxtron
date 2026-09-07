@@ -1552,7 +1552,9 @@ function readReviewMetrics(root) {
   );
   const checkpointCards = [...(root?.querySelectorAll("[data-review-checkpoint-card]") ?? [])];
   const trees = [...(root?.querySelectorAll("[data-review-tree]") ?? [])];
-  const terminal = root?.querySelector(".terminal-panel");
+  const terminal =
+    root?.querySelector(".terminal-panel") ?? root?.querySelector("[data-terminal-id]");
+  const terminalIsWebSurface = terminal?.matches?.("[data-terminal-id]") === true;
   return {
     panelOpen: Boolean(rightPanel),
     panelEmpty: Boolean(emptySurface),
@@ -1569,7 +1571,15 @@ function readReviewMetrics(root) {
     terminal: terminal
       ? {
           root: readElementBox(terminal),
-          viewport: readElementBox(terminal.querySelector(".terminal-panel__viewport")),
+          sessionId:
+            terminal.getAttribute("data-terminal-session-id") ??
+            terminal.getAttribute("data-terminal-id"),
+          status:
+            terminal.getAttribute("data-terminal-session-status") ??
+            terminal.getAttribute("data-terminal-status"),
+          viewport: readElementBox(
+            terminalIsWebSurface ? terminal : terminal.querySelector(".terminal-panel__viewport"),
+          ),
           commandRow: readElementBox(terminal.querySelector(".terminal-panel__command-row")),
         }
       : null,

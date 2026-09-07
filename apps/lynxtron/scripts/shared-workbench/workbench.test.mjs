@@ -58,6 +58,13 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "contextBands: []");
   });
 
+  it("reads terminal surfaces through each renderer's real root", () => {
+    assert.include(source, 'root?.querySelector("[data-terminal-id]")');
+    assert.include(source, 'terminal.getAttribute("data-terminal-session-id")');
+    assert.include(source, 'terminal.getAttribute("data-terminal-id")');
+    assert.include(source, "terminalIsWebSurface");
+  });
+
   it("records Workspace menu relation, rows, and material in both renderers", () => {
     assert.include(source, '\"workspace-menu\"');
     assert.include(source, '[data-floating-popup=\"composer-workspace-menu\"]');
