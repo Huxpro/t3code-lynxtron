@@ -23,6 +23,7 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "state.web.componentLabMetrics.stories.length === 8");
     assert.include(captureSource, "const pass = isComponentsLabState");
     assert.include(readerSource, 'expectedSemanticRoute === "components-lab"');
-    assert.include(captureSource, "isComponentsLabState && /HTTP Authentication failed");
+    assert.include(captureSource, "isComponentsLabState &&");
+    assert.include(captureSource, "HTTP Authentication failed; no valid credentials available");
   });
 });
