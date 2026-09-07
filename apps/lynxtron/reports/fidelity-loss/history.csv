@@ -490,3 +490,4 @@ right-panel-add-menu-current-authority,2026-09-06T18:08:00-04:00,2d07434cf,commi
 provider-dialog-light-complete-current,2026-09-06T18:30:55-04:00,675428b7e,commit,Provider dialog light complete lifecycle refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
 sidebar-creation-hover-current-refresh,2026-09-06T19:48:31-04:00,42bcdc20a,commit,Sidebar creation hover current refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
 sidebar-inline-search-current-geometry,2026-09-06T20:20:00-04:00,4d5f011fd,commit,Sidebar inline search input geometry,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
+sidebar-resize-current-refresh,2026-09-06T20:51:00-04:00,5dd8c4114,commit,Resized Sidebar and Composer branch refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391

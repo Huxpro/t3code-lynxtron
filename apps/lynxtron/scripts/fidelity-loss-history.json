@@ -28402,7 +28402,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-inline-search-current.json",
           "classification": "tracked-current",
-          "sha256": "0e29abfa3920e62492d3a37ebd9851f57c1b12dc7cb223a5d33551d9781f0753"
+          "sha256": "2dba8997b9fa492db02cbec6eb240be3f4732cc2918b076fe8e7d7ea9472db7d"
         }
       ],
       "updates": [
@@ -28428,6 +28428,54 @@
               "confidence": 0.99,
               "method": "current-sidebar-search-shared-runtime",
               "source": "Same snapshot, persisted thread, query, route, dark theme, 1280x820 viewport, exact bundles, matching identity, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "sidebar-resize-current-refresh",
+      "observedAt": "2026-09-06T20:51:00-04:00",
+      "commit": "5dd8c4114",
+      "codeCommit": "5dd8c4114",
+      "codeState": "commit",
+      "label": "Resized Sidebar and Composer branch refresh",
+      "narrative": "A fresh dark 1280 by 820 paired capture preserves the previously converged 320px Sidebar geometry: both sidebars are 320px wide and both active rows remain 303 by 82 at x=8 y=144. The strict whole-state gate exposed a separate Composer content race: Web showed Current checkout and main while Lynx showed Current checkout and No branch even though its cwd-scoped VCS projection had already returned refName main. Removing the duplicate local branch request makes both renderers use that shared projection and the complete current state passes with matching identity, session projection, Sidebar geometry, Composer anatomy, and zero renderer errors. No new Sidebar pixel improvement is claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The before and after runs share the same immutable snapshot, thread, route, theme, viewport, Sidebar width, and Web bundle. Only the Lynx bundle changes, and the fix deletes a redundant branch lookup in favor of the existing shared VCS projection."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/sidebar-resize-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "353285a12321a2802288de7b65f6399c67ebe77fc1484d3fe0025b897622b232"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-resize"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-shared-vcs-branch-label",
+              "source": "Both Composer context strips render Current checkout and main from the same cwd-scoped VCS projection."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 320,
+              "confidence": 0.99,
+              "method": "current-resized-sidebar-geometry-refresh",
+              "source": "Both sidebars remain 320 by 820 and both active rows remain 303 by 82 at x=8 y=144; no additional geometry credit is claimed."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-shared-vcs-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, 1280x820 viewport, exact bundles, matching identity and session projection, and zero renderer errors."
             }
           }
         }
