@@ -30,6 +30,11 @@ describe("Lynx pathname authority", () => {
     expect(getPathname()).toBe("/local/thread-42");
   });
 
+  it("exposes the shared Components Lab route", () => {
+    globalThis.__T3_LYNXTRON_NAVIGATE__?.("/components-lab");
+    expect(getPathname()).toBe("/components-lab");
+  });
+
   it("routes the DevTool writer through the same normalization boundary", () => {
     globalThis.__T3_LYNXTRON_NAVIGATE__?.("/settings");
     expect(getPathname()).toBe("/settings/general");

@@ -88,6 +88,7 @@ function RootRouteView() {
   const pathname = useLocation({ select: (location) => location.pathname });
   const { authGateState } = Route.useRouteContext();
   const primaryEnvironmentAuthenticated = authGateState.status === "authenticated";
+  const isComponentsLab = pathname === "/components-lab";
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -98,7 +99,12 @@ function RootRouteView() {
     };
   }, [pathname]);
 
-  if (pathname === "/pair" || pathname === "/connect" || pathname.startsWith("/connect/")) {
+  if (
+    isComponentsLab ||
+    pathname === "/pair" ||
+    pathname === "/connect" ||
+    pathname.startsWith("/connect/")
+  ) {
     return (
       <>
         <DocumentTitleSync />

@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "@lynx-js/react";
 import { viewportTier } from "@t3tools/client-runtime/platform";
 
 import { AppSidebarLayout } from "../../../web/src/components/AppSidebarLayout";
+import { ComponentLabSurface } from "../../../web/src/components/components-lab/ComponentLabSurface";
 import { ChatView } from "./components/ChatView";
 import { SettingsPage } from "./components/SettingsPage";
 import { GeneralSettings } from "./components/GeneralSettings";
@@ -186,6 +187,10 @@ function RootSwitch() {
       if (timer !== undefined) clearTimeout(timer);
     };
   }, [status]);
+
+  if (pathname === "/components-lab") {
+    return <ComponentLabSurface />;
+  }
 
   if (pathname.startsWith("/settings")) {
     const section = resolveLynxSettingsPanel(pathname);

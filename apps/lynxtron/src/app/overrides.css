@@ -12200,3 +12200,146 @@
 .project-settings-dialog__button-label--primary {
   color: var(--primary-foreground);
 }
+
+.component-lab {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+.component-lab__rail {
+  flex-shrink: 0;
+  width: 240px;
+  min-height: 100vh;
+  padding: 40px 20px;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-right-color: var(--border);
+  background-color: var(--sidebar);
+  box-sizing: border-box;
+}
+.component-lab__eyebrow {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+.component-lab__title {
+  margin-top: 6px;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 20px;
+  font-weight: 600;
+}
+.component-lab__summary {
+  margin-top: 12px;
+  margin-bottom: 32px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 18px;
+}
+.component-lab__index-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 32px;
+}
+.component-lab__index-title,
+.component-lab__index-count {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+}
+.component-lab__index-count {
+  opacity: 0.6;
+}
+.component-lab__content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 48px 64px 96px;
+  gap: 24px;
+  box-sizing: border-box;
+}
+.component-lab-story {
+  display: flex;
+  flex-direction: row;
+  min-height: 128px;
+  padding-top: 20px;
+  border-top-width: 1px;
+  border-top-style: solid;
+  border-top-color: var(--border);
+}
+.component-lab-story__header {
+  flex-shrink: 0;
+  width: 32%;
+}
+.component-lab-story__title {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+}
+.component-lab-story__id {
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+.component-lab-story__canvas,
+.component-lab-specimen-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  flex-grow: 1;
+  gap: 12px;
+}
+.component-lab-specimen-stack {
+  display: flex;
+  flex-direction: column;
+  width: 512px;
+  gap: 8px;
+}
+.component-lab-specimen__label {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+}
+.component-lab-separator-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 353px;
+  height: 64px;
+  gap: 32px;
+}
+.component-lab-separator-row > .ui-separator--horizontal {
+  width: 320px;
+}
+.component-lab-separator--vertical {
+  height: 64px;
+}
+.viewport-compact .component-lab {
+  flex-direction: column;
+}
+.viewport-compact .component-lab__rail {
+  width: 100%;
+  min-height: 0;
+  padding: 24px 20px;
+  border-right-width: 0;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--border);
+}
+.viewport-compact .component-lab-story {
+  flex-direction: column;
+  gap: 16px;
+}
+.viewport-compact .component-lab-story__header {
+  width: 100%;
+}

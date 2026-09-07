@@ -1792,3 +1792,134 @@ label:has(> select#reasoning-effort) select {
   opacity: 0.3;
   pointer-events: none;
 }
+
+/* Components Lab is an internal parity surface. It deliberately uses the
+   production component tokens rather than a separate documentation theme. */
+.component-lab {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  min-height: 100dvh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.component-lab__rail {
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  padding: 2.5rem 1.25rem;
+  border-right: 1px solid var(--border);
+  background: var(--sidebar);
+}
+
+.component-lab__eyebrow {
+  color: var(--muted-foreground);
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.component-lab__title {
+  margin-top: 0.4rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.component-lab__summary {
+  display: block;
+  margin: 0.75rem 0 2rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.component-lab__index-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 2rem;
+  color: var(--muted-foreground);
+  font-size: 0.75rem;
+}
+
+.component-lab__index-count {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.6;
+}
+
+.component-lab__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 3rem clamp(1.5rem, 4vw, 4rem) 6rem;
+}
+
+.component-lab-story {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.32fr) minmax(0, 1fr);
+  min-height: 8rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
+.component-lab-story__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.component-lab-story__id {
+  display: block;
+  margin-top: 0.25rem;
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.625rem;
+}
+
+.component-lab-story__canvas,
+.component-lab-specimen-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.component-lab-specimen-stack {
+  display: grid;
+  width: min(100%, 32rem);
+  gap: 0.5rem;
+}
+
+.component-lab-specimen__label {
+  color: var(--muted-foreground);
+  font-size: 0.6875rem;
+}
+
+.component-lab-separator-row {
+  display: grid;
+  grid-template-columns: minmax(0, 20rem) 1px;
+  align-items: center;
+  gap: 2rem;
+  height: 4rem;
+}
+
+.component-lab-separator--vertical {
+  height: 4rem;
+}
+
+@media (max-width: 720px) {
+  .component-lab {
+    grid-template-columns: 1fr;
+  }
+
+  .component-lab__rail {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .component-lab-story {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

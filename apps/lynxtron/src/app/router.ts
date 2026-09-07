@@ -40,7 +40,12 @@ function installDevToolNavigation(): void {
       __T3_LYNXTRON_ROUTE__?: () => string;
     }
   ).__T3_LYNXTRON_NAVIGATE__ = (to) => {
-    if (to === "/" || to === "/settings" || to.indexOf("/settings/") === 0) {
+    if (
+      to === "/" ||
+      to === "/components-lab" ||
+      to === "/settings" ||
+      to.indexOf("/settings/") === 0
+    ) {
       navigate(to);
     }
   };

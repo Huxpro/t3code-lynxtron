@@ -1,0 +1,50 @@
+[
+  {
+    "id": "ui/button#Button",
+    "category": "Actions",
+    "title": "Button",
+    "states": ["default", "secondary", "outline", "ghost", "destructive", "disabled"]
+  },
+  {
+    "id": "ui/badge#Badge",
+    "category": "Feedback",
+    "title": "Badge",
+    "states": ["default", "secondary", "outline", "success", "warning", "error"]
+  },
+  {
+    "id": "ui/input#Input",
+    "category": "Forms",
+    "title": "Input",
+    "states": ["empty", "value", "disabled"]
+  },
+  {
+    "id": "ui/textarea#Textarea",
+    "category": "Forms",
+    "title": "Textarea",
+    "states": ["empty", "value", "disabled"]
+  },
+  {
+    "id": "ui/switch#Switch",
+    "category": "Forms",
+    "title": "Switch",
+    "states": ["unchecked", "checked", "disabled"]
+  },
+  {
+    "id": "ui/kbd#Kbd",
+    "category": "Feedback",
+    "title": "Keyboard key",
+    "states": ["single"]
+  },
+  {
+    "id": "ui/kbd#KbdGroup",
+    "category": "Feedback",
+    "title": "Keyboard chord",
+    "states": ["modifier"]
+  },
+  {
+    "id": "ui/separator#Separator",
+    "category": "Layout",
+    "title": "Separator",
+    "states": ["horizontal", "vertical"]
+  }
+]
