@@ -181,6 +181,85 @@ function readElementBox(element) {
   };
 }
 
+function readPseudoElementBox(element, pseudoElement, visibleInsetTop = 0) {
+  if (!element) return null;
+  const rect = element.getBoundingClientRect();
+  const style = getComputedStyle(element, pseudoElement);
+  if (
+    style.display === "none" ||
+    style.visibility === "hidden" ||
+    style.content === "none" ||
+    rect.width <= 0 ||
+    rect.height <= 0
+  ) {
+    return null;
+  }
+  return {
+    tagName: `${element.tagName.toLowerCase()}${pseudoElement}`,
+    pseudoElement,
+    sourceRect: {
+      x: rect.x,
+      y: rect.y,
+      width: rect.width,
+      height: rect.height,
+    },
+    rect: {
+      x: rect.x,
+      y: rect.y + visibleInsetTop,
+      width: rect.width,
+      height: rect.height - visibleInsetTop,
+    },
+    style: {
+      position: style.position,
+      zIndex: style.zIndex,
+      backgroundColor: style.backgroundColor,
+      backgroundImage: style.backgroundImage,
+      borderTopWidth: style.borderTopWidth,
+      borderRightWidth: style.borderRightWidth,
+      borderBottomWidth: style.borderBottomWidth,
+      borderLeftWidth: style.borderLeftWidth,
+      borderTopColor: style.borderTopColor,
+      borderRightColor: style.borderRightColor,
+      borderBottomColor: style.borderBottomColor,
+      borderLeftColor: style.borderLeftColor,
+      borderBottomLeftRadius: style.borderBottomLeftRadius,
+      borderBottomRightRadius: style.borderBottomRightRadius,
+      boxShadow: style.boxShadow,
+      backdropFilter: style.backdropFilter,
+      webkitBackdropFilter: style.webkitBackdropFilter,
+      maskImage: style.maskImage,
+      webkitMaskImage: style.webkitMaskImage,
+    },
+  };
+}
+
+function findComposedElement(root, selector) {
+  if (!root) return null;
+  const direct = root.querySelector?.(selector) ?? null;
+  if (direct) return direct;
+  const visit = (node) => {
+    for (const child of node?.children ?? []) {
+      if (child.matches?.(selector)) return child;
+      const nested = visit(child) ?? visit(child.shadowRoot);
+      if (nested) return nested;
+    }
+    return null;
+  };
+  return visit(root.shadowRoot) ?? visit(root);
+}
+
+function readComposerPrimaryAction(primaryActions) {
+  if (!primaryActions) return null;
+  const action = findComposedElement(
+    primaryActions,
+    ".composer-primary-action, [data-composer-primary-state]",
+  );
+  return readElementBox(
+    action ??
+      (primaryActions.getAttribute("data-composer-primary-state") !== null ? primaryActions : null),
+  );
+}
+
 function readHeroMetrics(root) {
   return {
     root: readElementBox(root?.querySelector(".hero")),
@@ -2691,7 +2770,9 @@ function readLynxPane() {
                 root?.querySelector(".composer-primary-actions"),
               ),
               primaryActions: readElementBox(root?.querySelector(".composer-primary-actions")),
-              primaryAction: readElementBox(root?.querySelector(".composer-primary-action")),
+              primaryAction: readComposerPrimaryAction(
+                root?.querySelector(".composer-primary-actions"),
+              ),
               interactionSeparator: readComposerInteractionSeparator(
                 root,
                 composerInteractionControl,
@@ -3767,7 +3848,9 @@ function readWebPane() {
                 doc.querySelector(".composer-primary-actions"),
               ),
               primaryActions: readElementBox(doc.querySelector(".composer-primary-actions")),
-              primaryAction: readElementBox(doc.querySelector(".composer-primary-action")),
+              primaryAction: readComposerPrimaryAction(
+                doc.querySelector(".composer-primary-actions"),
+              ),
               interactionSeparator: readComposerInteractionSeparator(
                 doc,
                 composerInteractionControl,
@@ -3802,7 +3885,11 @@ function readWebPane() {
               contextIcons: [...doc.querySelectorAll(".composer-context-icon")].map((item) =>
                 readElementBox(item),
               ),
-              contextBackdrop: null,
+              contextBackdrop: readPseudoElementBox(
+                doc.querySelector(".chat-composer-context-strip"),
+                "::before",
+                16,
+              ),
               contextBands: [],
             },
           }

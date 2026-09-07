@@ -423,6 +423,36 @@ function composerToolbarAllocationMatches(webMetrics, lynxMetrics) {
   );
 }
 
+function composerPrimaryActionAndContextMatch(webMetrics, lynxMetrics) {
+  const webAnatomy = webMetrics?.anatomy;
+  const lynxAnatomy = lynxMetrics?.anatomy;
+  const webPrimary = webAnatomy?.primaryAction;
+  const lynxPrimary = lynxAnatomy?.primaryAction;
+  const webContext = webAnatomy?.context;
+  const lynxContext = lynxAnatomy?.context;
+  const webBackdrop = webAnatomy?.contextBackdrop;
+  const lynxBackdrop = lynxAnatomy?.contextBackdrop;
+  if (
+    !webPrimary?.rect ||
+    !lynxPrimary?.rect ||
+    !webContext?.rect ||
+    !lynxContext?.rect ||
+    !webBackdrop?.rect ||
+    !lynxBackdrop?.rect
+  ) {
+    return false;
+  }
+  return (
+    webPrimary.attributes?.["data-composer-primary-state"] ===
+      lynxPrimary.attributes?.["data-composer-primary-state"] &&
+    rectDeltaWithin(webPrimary, lynxPrimary, 1) &&
+    rectDeltaWithin(webContext, lynxContext, 1) &&
+    rectDeltaWithin(webBackdrop, lynxBackdrop, 1) &&
+    webBackdrop.style?.borderBottomLeftRadius === lynxBackdrop.style?.borderBottomLeftRadius &&
+    webBackdrop.style?.borderBottomRightRadius === lynxBackdrop.style?.borderBottomRightRadius
+  );
+}
+
 function unpersistedHeroStateReady(state) {
   const web = state?.web;
   const lynx = state?.lynx;
@@ -1788,6 +1818,7 @@ function composerPairMatches(webMetrics, lynxMetrics, expectation, viewportHeigh
   }
   if (!composerAnatomyMatches(webMetrics, lynxMetrics)) return false;
   if (!composerToolbarAllocationMatches(webMetrics, lynxMetrics)) return false;
+  if (!composerPrimaryActionAndContextMatch(webMetrics, lynxMetrics)) return false;
 
   const webRect = webMetrics?.rect?.rect;
   const lynxRect = lynxMetrics?.rect?.rect;

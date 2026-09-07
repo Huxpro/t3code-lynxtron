@@ -37,7 +37,10 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, "function readComposerToolbarAllocation");
     assert.include(source, "width: primaryActionsRect.x - firstControlRect.x");
     assert.include(source, "toolbarAllocation: readComposerToolbarAllocation");
-    assert.include(source, "primaryAction: readElementBox");
+    assert.include(source, "function findComposedElement");
+    assert.include(source, "function readComposerPrimaryAction");
+    assert.include(source, '".composer-primary-action, [data-composer-primary-state]"');
+    assert.include(source, 'primaryActions.getAttribute("data-composer-primary-state")');
   });
 
   it("records matching Context strip semantic leaves", () => {
@@ -48,7 +51,10 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'querySelectorAll(".composer-context-item")');
     assert.include(source, 'querySelectorAll(".composer-context-label")');
     assert.include(source, 'querySelectorAll(".composer-context-icon")');
-    assert.include(source, "contextBackdrop: null");
+    assert.include(source, "function readPseudoElementBox");
+    assert.include(source, 'doc.querySelector(".chat-composer-context-strip")');
+    assert.include(source, '"::before"');
+    assert.include(source, "height: rect.height - visibleInsetTop");
     assert.include(source, "contextBands: []");
   });
 
