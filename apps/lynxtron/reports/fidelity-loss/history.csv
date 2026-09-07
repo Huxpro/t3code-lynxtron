@@ -506,3 +506,4 @@ provider-dialog-light-disabled-cards-current,2026-09-07T02:52:00-04:00,428c6a167
 provider-dialog-light-card-content-current,2026-09-07T03:12:00-04:00,bcad4e240,commit,Provider dialog light card content parity,0.16943,0.16943,0.032427,0.141595,0.858405,0.82246
 provider-dialog-light-step-rings-current,2026-09-07T03:30:00-04:00,b8cb05f6b,commit,Provider dialog light step ring parity,0.16943,0.16943,0.032427,0.141595,0.858405,0.82246
 right-panel-terminal-single-session-current,2026-09-07T04:30:00-04:00,649ab48f3,commit,Right Panel Terminal single-session parity,0.169257,0.169257,0.032225,0.141595,0.858405,0.822633
+settings-keybindings-when-column-current,2026-09-07T05:20:00-04:00,1ea7e9e5f,commit,Settings Keybindings When-column parity,0.169252,0.169252,0.032219,0.141595,0.858405,0.822638

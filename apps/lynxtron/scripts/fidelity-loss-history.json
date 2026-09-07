@@ -29223,6 +29223,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "settings-keybindings-when-column-current",
+      "observedAt": "2026-09-07T05:20:00-04:00",
+      "commit": "1ea7e9e5f",
+      "codeCommit": "1ea7e9e5f",
+      "codeState": "commit",
+      "label": "Settings Keybindings When-column parity",
+      "narrative": "The Lynx Keybindings table rendered When as content-sized bare text, collapsing the intended 290px column and moving Status roughly 189px left. A native view trigger now restores the Web column, control chrome, label and chevron while using the existing edit state. All 45 row boxes and four columns pass the strict gate; conflict status remains measured rather than inferred. Table SSIM improves from 0.823224 to 0.902126 and the When/Status region from 0.688307 to 0.897124.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use byte-identical Web authority pixels, one snapshot, Keybindings route, theme and viewport. The product change is limited to the Lynx When column and the gate change only handles Web's zero-sized empty Status cell through the measured header projection."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/settings-keybindings-when-column.json",
+          "classification": "tracked-current",
+          "sha256": "71a2b7b61bf803bfc3da2543fff79c9b614a6a4cd1a26633a4b65cf292832d4c"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-keybindings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-keybindings-row-content",
+              "source": "All 45 rows retain matching commands, shortcuts, when clauses, sources and conflicts."
+            },
+            "geometry": {
+              "anchorDeltas": [0.171875, 0, 0.34375, 0, 0.171875, 0, 0.171875, 0],
+              "anchorScale": 948,
+              "confidence": 0.99,
+              "method": "current-keybindings-four-column-geometry",
+              "source": "Header and row shells match; Command, Keybinding, When and Status column origins and widths differ by at most 0.344px."
+            },
+            "material": {
+              "residual": 0.097874,
+              "confidence": 0.99,
+              "method": "keybindings-table-current-ssim",
+              "source": "1 - table SSIM 0.902126, improved from 0.823224; the When/Status region reaches 0.897124."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "keybindings-current-strict-runtime",
+              "source": "Same snapshot, route, dark theme, viewport, exact committed bundle and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
