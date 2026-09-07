@@ -29,6 +29,16 @@ describe("Quick Switch material", () => {
     );
   });
 
+  it("uses Web's overlaid search icon and padded input geometry", () => {
+    expect(rule(".palette-search")).toContain("position: relative;");
+    const icon = rule(".qs-search__icon-img");
+    expect(icon).toContain("position: absolute;");
+    expect(icon).toContain("left: 17px;");
+    const input = rule(".qs-search__input");
+    expect(input).toContain("margin-left: 0;");
+    expect(input).toContain("padding-left: 32px;");
+  });
+
   it("matches the light glass authority without changing dark material", () => {
     const lightPanel = rule(".theme-light .palette-panel");
     const lightFooter = rule(".theme-light .palette-footer");

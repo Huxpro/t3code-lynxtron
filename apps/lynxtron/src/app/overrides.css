@@ -10372,7 +10372,9 @@
 .qs-search__input {
   flex-grow: 1;
   height: 40px;
-  margin-left: 10px;
+  margin-left: 0;
+  padding-left: 32px;
+  box-sizing: border-box;
   color: var(--foreground);
   font-size: 14px;
   font-family: var(--font-sans);
@@ -11027,6 +11029,7 @@
   width: 574px;
 }
 .palette-search {
+  position: relative;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -11042,8 +11045,11 @@
   box-sizing: border-box;
 }
 .qs-search__icon-img {
-  margin-left: 9px;
+  position: absolute;
+  left: 17px;
+  top: 16px;
   opacity: 0.8;
+  z-index: 1;
 }
 .qs-search__back {
   display: flex;

@@ -700,7 +700,7 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       "x-input{display:contents!important;font-size:14px;}" +
       "x-input::part(form),x-textarea::part(form){display:contents;}" +
       "x-input.qs-search__input::part(input){" +
-      "flex:1 1 auto!important;width:auto!important;height:34px!important;margin-left:8px!important;" +
+      "flex:1 1 auto!important;width:100%!important;height:34px!important;margin:0!important;padding-left:32px!important;" +
       "font-size:14px!important;line-height:34px!important;}" +
       "x-input.picker-search__input::part(input){" +
       "flex:1 1 auto!important;width:auto!important;height:26px!important;margin-left:8px!important;" +
