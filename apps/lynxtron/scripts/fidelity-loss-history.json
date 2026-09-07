@@ -29528,6 +29528,66 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-query-current-refresh",
+      "observedAt": "2026-09-07T07:52:00-04:00",
+      "commit": "4477b575b",
+      "codeCommit": "681ae89b8",
+      "codeState": "commit",
+      "label": "Quick Switch Query current refresh",
+      "narrative": "A current strict persisted-thread capture refreshes Quick Switch Query after the already-attributed shared search-geometry and action-icon-tone fixes. Both panes retain query settings, the sole Open settings row, no active row, and exact 576x166 bounds. Panel SSIM rises from the stale 0.946267 checkpoint to 0.976763 and the search crop reaches 0.963251.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This refresh records already-attributed shared product fixes under the current strict state and does not duplicate code credit. Snapshot, persisted thread, query, row, route, theme, viewport and zero-error runtime match."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/quick-switch-query-current.json",
+          "classification": "tracked-current",
+          "sha256": "55e1258d3a5dac1008c37e20d3303add61367c9072e75215d0603a1bee878c49"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-quick-switch-query-content",
+              "source": "Both panes expose query settings, one Open settings row and no active row."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 1, 0, 2, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-quick-switch-query-geometry",
+              "source": "Panels match exactly at 352,82 576x166; Lynx input is 361,90 558x34 versus Web 362,90 556x34."
+            },
+            "material": {
+              "residual": 0.023237,
+              "confidence": 0.99,
+              "method": "current-quick-switch-query-panel-ssim",
+              "source": "1 - exact 576x166 panel SSIM 0.976763, improved from stale current 0.946267; search SSIM is 0.963251."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-query-unselected-navigation-contract",
+              "source": "Real input produces matching settings queries and leaves the sole result unselected in both panes."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-quick-switch-query-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundles and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

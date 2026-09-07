@@ -512,3 +512,4 @@ command-palette-thread-metadata-material-current,2026-09-07T06:49:00-04:00,808b3
 command-palette-search-geometry-current,2026-09-07T07:14:00-04:00,1de6f5e44,commit,Command Palette search geometry parity,0.169223,0.169223,0.032185,0.141595,0.858405,0.822667
 command-palette-action-icon-tone-current,2026-09-07T07:32:00-04:00,681ae89b8,commit,Command Palette action icon tone parity,0.169223,0.169223,0.032185,0.141595,0.858405,0.822667
 file-picker-search-geometry-current,2026-09-07T07:45:00-04:00,8c6eed99c,commit,File Picker shared search geometry parity,0.16922,0.16922,0.032182,0.141595,0.858405,0.82267
+quick-switch-query-current-refresh,2026-09-07T07:52:00-04:00,4477b575b,commit,Quick Switch Query current refresh,0.169199,0.169199,0.032157,0.141595,0.858405,0.822691
