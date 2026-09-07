@@ -2567,6 +2567,9 @@ function rightPanelTerminalReady(state) {
     webTerminal?.viewport?.rect?.height > 0 &&
     lynxTerminal?.root?.rect?.width > 0 &&
     lynxTerminal?.viewport?.rect?.height > 0 &&
+    webTerminal.viewport.rect.width >= (webPanel?.rect?.width ?? 0) - 10 &&
+    lynxTerminal.viewport.rect.width >= (lynxPanel?.rect?.width ?? 0) - 2 &&
+    lynxTerminal.outputText?.includes("\n") === true &&
     Math.abs((webPanel?.rect?.width ?? 0) - (lynxPanel?.rect?.width ?? 0)) <= 1
   );
 }

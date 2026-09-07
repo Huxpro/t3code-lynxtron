@@ -521,6 +521,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "Terminal paired capture panel widths diverged");
     assert.include(source, "Terminal paired capture sessions diverged");
     assert.include(source, "function rightPanelTerminalReady(state)");
+    assert.include(source, "lynxTerminal.viewport.rect.width");
+    assert.include(source, 'lynxTerminal.outputText?.includes("\\n") === true');
     assert.include(source, "finalRightPanelTerminalReady = rightPanelTerminalReady(state)");
     assert.include(source, "rightPanelTerminalReady(state) &&");
     assert.include(source, "data-terminal-id");

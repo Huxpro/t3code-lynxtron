@@ -63,6 +63,7 @@ describe("shared workbench Composer metrics", () => {
     assert.include(source, 'terminal.getAttribute("data-terminal-session-id")');
     assert.include(source, 'terminal.getAttribute("data-terminal-id")');
     assert.include(source, "terminalIsWebSurface");
+    assert.include(source, 'terminal.querySelector(".terminal-panel__output")?.textContent');
   });
 
   it("records Workspace menu relation, rows, and material in both renderers", () => {

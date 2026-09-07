@@ -1580,6 +1580,8 @@ function readReviewMetrics(root) {
           viewport: readElementBox(
             terminalIsWebSurface ? terminal : terminal.querySelector(".terminal-panel__viewport"),
           ),
+          outputText: terminal.querySelector(".terminal-panel__output")?.textContent ?? null,
+          output: readElementBox(terminal.querySelector(".terminal-panel__output")),
           commandRow: readElementBox(terminal.querySelector(".terminal-panel__command-row")),
         }
       : null,
