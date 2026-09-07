@@ -957,6 +957,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("font-family: var(--font-sans);");
     expect(overrides).toContain("font-size: 12px;");
     expect(overrides).toContain(".turn-diff-card .file-tree-row__name {");
+    expect(overrides).toContain(
+      ".files-panel .file-tree-row__name {\n  color: var(--muted-foreground);\n  font-family: var(--font-sans);\n  font-size: 12px;",
+    );
     expect(overrides).toContain(".turn-diff-card .file-tree-row__stat {");
     expect(overrides).toContain(".turn-diff-card__status {");
     expect(overrides).toContain(".turn-diff-card__hint {");

@@ -1701,7 +1701,6 @@ function readFilesBrowserMetrics(root) {
     browser: readElementBox(browser),
     rowCount: rows.length,
     rows: rows.slice(0, 8).map((row) => {
-      const name = row.querySelector?.(".file-tree-row__name") ?? null;
       const rowElements = [];
       const visitRow = (node) => {
         for (const child of node?.children ?? []) {
@@ -1711,6 +1710,23 @@ function readFilesBrowserMetrics(root) {
         }
       };
       visitRow(row);
+      const composedName = rowElements
+        .filter(
+          (element) =>
+            element.children.length === 0 &&
+            !/^[…▸◆]+$/u.test(element.textContent?.trim() ?? "") &&
+            element.getBoundingClientRect().width > 0,
+        )
+        .sort(
+          (left, right) =>
+            (right.textContent?.trim().length ?? 0) - (left.textContent?.trim().length ?? 0) ||
+            right.getBoundingClientRect().width - left.getBoundingClientRect().width,
+        )[0];
+      const name =
+        row.querySelector?.(".file-tree-row__name") ??
+        rowElements.find((element) => element.matches?.(".file-tree-row__name")) ??
+        composedName ??
+        null;
       const icon =
         rowElements.find((element) => element.getAttribute?.("data-pierre-icon")) ??
         rowElements.find((element) => element.getAttribute?.("data-file-icon-tone")) ??

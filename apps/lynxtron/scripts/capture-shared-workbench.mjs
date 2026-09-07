@@ -2643,6 +2643,8 @@ function filesBrowserReady(state) {
           "borderBottomRightRadius",
           "borderBottomLeftRadius",
         ].every((key) => row.box?.style?.[key] === "5px" && lynxRow?.box?.style?.[key] === "5px") &&
+        row.name !== null &&
+        lynxRow?.name !== null &&
         webTypography?.fontSize === "12px" &&
         lynxTypography?.fontSize === "12px" &&
         webTypography?.fontFamily?.includes("DM Sans") === true &&
