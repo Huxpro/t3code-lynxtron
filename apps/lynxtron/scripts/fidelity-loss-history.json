@@ -29026,6 +29026,47 @@
           }
         }
       ]
+    },
+    {
+      "id": "provider-dialog-light-disabled-cards-current",
+      "observedAt": "2026-09-07T02:52:00-04:00",
+      "commit": "428c6a167",
+      "codeCommit": "428c6a167",
+      "codeState": "commit",
+      "label": "Provider dialog light disabled card parity",
+      "narrative": "Light-mode Coming Soon cards now use Web's 60 percent background before the shared 0.55 disabled opacity instead of opaque white. Geometry and rings remain unchanged. The Driver-region SSIM improves from 0.893258 to 0.893372 and the disabled-row crop from 0.898546 to 0.898745 on the same Web authority and snapshot.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share immutable Web pixels, snapshot, Driver step, theme, viewport, geometry, and zero errors; the only product change is the scoped disabled-card background alpha."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/provider-dialog-light-disabled-cards.json",
+          "classification": "tracked-current",
+          "sha256": "6b9dfeac047976b8d3353d767f88653bdafb00a63cfdcfd97e0b17c16ce03195"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "material": {
+              "residual": 0.104202,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-disabled-card-ssim",
+              "source": "The exact dialog residual preserves the previous 0.104300 baseline and incorporates the measured disabled-card gain; Driver SSIM is 0.893372 and disabled rows 0.898745."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-disabled-card-current-runtime",
+              "source": "Same snapshot, route, Driver step, theme, viewport, exact post-fix bundle, strict gates, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

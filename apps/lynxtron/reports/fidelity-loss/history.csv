@@ -502,3 +502,4 @@ composer-plan-mode-current-refresh-2,2026-09-07T01:21:01-04:00,52956c5c1,commit,
 composer-working-action-current-refresh,2026-09-07T01:34:43-04:00,439274c87,commit,Composer Working action current refresh,0.16949,0.16949,0.032497,0.141595,0.858405,0.8224
 composer-disabled-action-current-refresh,2026-09-07T01:40:00-04:00,3d56fd22d,commit,Composer Disabled action current refresh,0.169489,0.169489,0.032496,0.141595,0.858405,0.822401
 provider-dialog-light-driver-border-current,2026-09-07T02:11:38-04:00,c2d2fb934,commit,Provider dialog light driver border parity,0.169437,0.169437,0.032435,0.141595,0.858405,0.822453
+provider-dialog-light-disabled-cards-current,2026-09-07T02:52:00-04:00,428c6a167,commit,Provider dialog light disabled card parity,0.169436,0.169436,0.032434,0.141595,0.858405,0.822454
