@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T12:32:00-04:00",
+  "stateId": "model-picker-query",
+  "harnessCommit": "a1223a621",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "query": "pickle",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "57bdc948bf3fac1e07471608f89b6fa7a49749dc3bff6f42ed7a30d91667d5b9",
+    "webImageSha256": "ea0a5173d64c717aa74a95f21068fab7c97851d10654b8fb612b439e6f9d4098",
+    "lynxImageSha256": "fead2b9344d646ab2a7fd75ef6eaa99b6268cccd044aa33a3e6251f7f9ae85b0",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "queryWeb": "pickle",
+    "queryLynx": "pickle",
+    "rowKeyWeb": "opencode:opencode/big-pickle",
+    "rowKeyLynx": "opencode:opencode/big-pickle",
+    "rowCountWeb": 1,
+    "rowCountLynx": 1
+  },
+  "geometry": { "panelWeb": [397, 375, 360, 346], "panelLynx": [397, 375, 360, 346] },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM over the exact 360x346 query panel",
+    "previousPanelSsim": 0.940604,
+    "currentPanelSsim": 0.966939
+  },
+  "classification": "A current strict same-thread capture refreshes Model Picker Query after accumulated shared picker work. Query, provider identity, Big Pickle row and geometry match. No new product code or duplicate credit is claimed."
+}

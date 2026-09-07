@@ -520,3 +520,4 @@ model-picker-empty-current-refresh,2026-09-07T08:24:00-04:00,7ad9e00ba,commit,Mo
 project-settings-remove-material-current,2026-09-07T11:21:00-04:00,aee1decdd,commit,Project Settings remove material parity,0.169172,0.169166,0.032126,0.141595,0.858405,0.822718
 project-settings-summary-layout-current,2026-09-07T12:12:00-04:00,c5f1cbe45,commit,Project Settings summary layout parity,0.169128,0.169128,0.032075,0.141595,0.858405,0.822762
 file-editor-detail-current-refresh-20260907,2026-09-07T12:25:00-04:00,b5f36a119,commit,File Editor Detail current refresh,0.168912,0.168912,0.031852,0.141569,0.858431,0.822978
+model-picker-query-current-refresh-20260907,2026-09-07T12:32:00-04:00,a1223a621,commit,Model Picker Query current refresh,0.168885,0.168885,0.031821,0.141569,0.858431,0.823005

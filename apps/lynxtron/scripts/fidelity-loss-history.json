@@ -29972,6 +29972,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-query-current-refresh-20260907",
+      "observedAt": "2026-09-07T12:32:00-04:00",
+      "commit": "a1223a621",
+      "codeState": "commit",
+      "label": "Model Picker Query current refresh",
+      "narrative": "A current strict same-thread capture refreshes Model Picker Query after accumulated shared picker work. Both panes retain query pickle, the OpenCode Big Pickle result and exact 360x346 geometry. Panel SSIM reaches 0.966939 versus the stale 0.940604 checkpoint.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No new product code is credited. Snapshot, persisted thread, query, provider/model identity, route, theme, viewport, exact geometry and zero-error runtime match."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/model-picker-query-current.json",
+          "classification": "tracked-current",
+          "sha256": "cdf4b9f02b59615f211921fe5b2cf6af5da2827b99e5fab09873f08995969dc9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-query"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-model-query-content",
+              "source": "Both panes expose query pickle and the single opencode:opencode/big-pickle result."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "current-model-query-geometry",
+              "source": "Both panels are exactly 360x346 at x397 y375."
+            },
+            "material": {
+              "residual": 0.033061,
+              "confidence": 0.99,
+              "method": "current-model-query-panel-ssim",
+              "source": "1 - exact 360x346 panel SSIM 0.966939, improved from stale current 0.940604."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-model-query-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundles and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
