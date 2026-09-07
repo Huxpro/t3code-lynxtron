@@ -282,7 +282,18 @@ export function KeybindingsSettings() {
                 bindinput={(event) => setEditingWhen(inputValue(event))}
               />
             ) : (
-              <text className="keybindings-table__when">{row.when || "Always"}</text>
+              <view
+                className="keybindings-table__when keybindings-table__when-trigger"
+                aria-label={`Edit when clause for ${commandLabel(row.command)}`}
+                bindtap={() => {
+                  setEditingRowId(row.id);
+                  setEditingShortcut(row.key);
+                  setEditingWhen(row.when);
+                }}
+              >
+                <text className="keybindings-table__when-label">{row.when || "Always"}</text>
+                <Icon name="chevron-down" size={14} color="#818181" />
+              </view>
             )}
             <view
               className={

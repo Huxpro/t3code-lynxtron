@@ -1815,6 +1815,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"settings-keybindings": "settings-general"');
     assert.include(source, "function keybindingsSettingsContentMatches");
     assert.include(source, "function keybindingsSettingsGeometryMatches");
+    assert.include(
+      source,
+      "const webHeaderRect = webMetrics?.keybindings?.headerColumns?.[3]?.box?.rect",
+    );
+    assert.include(source, "Math.abs(lynxStatusRect.x - lynxHeaderRect.x) <= 2");
     assert.include(source, "command, shortcut, when, source, conflicts, keycaps");
     assert.include(workbench, "keybindings-table__keycap");
     assert.include(source, "JSON.stringify(canonical(webRows))");
@@ -1822,7 +1827,11 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "const sharedColumnGeometry");
     assert.include(source, "Status is intentionally an empty structural cell");
     assert.include(source, "webRow.conflicts.length === 0");
-    assert.include(source, "!webColumn.box");
+    assert.include(
+      source,
+      "const webHeaderRect = webMetrics?.keybindings?.headerColumns?.[3]?.box?.rect",
+    );
+    assert.include(source, "const lynxStatusRect = lynxColumn?.box?.rect");
     assert.include(source, "if (columnIndex !== 3) return true");
     assert.include(source, '"settings-providers": "settings-general"');
     assert.include(source, '"settings-providers": "Providers"');

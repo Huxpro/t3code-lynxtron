@@ -1777,6 +1777,15 @@ describe("desktop shell interaction contract", () => {
     expect(keybindingsSettingsSource).toContain("shortcutParts(row.binding.shortcut, platform)");
     expect(keybindingsSettingsSource).toContain('className="keybindings-table__keycap"');
     expect(overrides).toContain(".keybindings-table__keycap {");
+    expect(keybindingsSettingsSource).toContain(
+      'className="keybindings-table__when keybindings-table__when-trigger"',
+    );
+    expect(keybindingsSettingsSource).toContain(
+      "aria-label={`Edit when clause for ${commandLabel(row.command)}`}",
+    );
+    expect(keybindingsSettingsSource).toContain('<Icon name="chevron-down" size={14}');
+    expect(overrides).toContain(".keybindings-table__when-trigger {");
+    expect(overrides).toContain("  justify-content: space-between;");
   });
 
   it("keeps Sidebar versions, project groups, and Add Project intents aligned with Web", () => {

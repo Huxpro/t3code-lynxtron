@@ -6114,6 +6114,30 @@
   font-family: var(--font-mono);
   padding-right: 16px;
 }
+.keybindings-table__when-trigger {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  padding: 0 10px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--input);
+  border-radius: 6px;
+  background-color: var(--background);
+  box-sizing: border-box;
+}
+.keybindings-table__when-label {
+  min-width: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .keybindings-table__edit-input {
   width: 231px;
   height: 28px;

@@ -1503,14 +1503,17 @@ function keybindingsSettingsGeometryMatches(webMetrics, lynxMetrics) {
       // Status is intentionally an empty structural cell on non-conflicting
       // bindings. Neither renderer has visible status content to measure in
       // that case; conflict rows still require a measured icon below.
-      if (
-        columnIndex === 3 &&
-        webRow.conflicts.length === 0 &&
-        lynxRow.conflicts.length === 0 &&
-        !webColumn.box &&
-        !lynxColumn?.box
-      ) {
-        return true;
+      if (columnIndex === 3 && webRow.conflicts.length === 0 && lynxRow.conflicts.length === 0) {
+        const webHeaderRect = webMetrics?.keybindings?.headerColumns?.[3]?.box?.rect;
+        const lynxHeaderRect = lynxMetrics?.keybindings?.headerColumns?.[3]?.box?.rect;
+        const lynxStatusRect = lynxColumn?.box?.rect;
+        return (
+          Boolean(webHeaderRect && lynxHeaderRect && lynxStatusRect) &&
+          Math.abs(webHeaderRect.x - lynxHeaderRect.x) <= 2 &&
+          Math.abs(webHeaderRect.width - lynxHeaderRect.width) <= 2 &&
+          Math.abs(lynxStatusRect.x - lynxHeaderRect.x) <= 2 &&
+          Math.abs(lynxStatusRect.width - lynxHeaderRect.width) <= 2
+        );
       }
       const webRect = webColumn.box?.rect;
       const lynxRect = lynxColumn?.box?.rect;
