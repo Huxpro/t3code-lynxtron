@@ -212,9 +212,10 @@ export function MenuPopup({
   const context = useContext(MenuContext);
   if (!context?.open) return null;
   const isSidebarScopePopup = className?.includes("sidebar-v2-scope-popup") ?? false;
+  const isAnchoredPopup = typeof relationId === "string";
   const sideClass = side === "top" ? "bottom-full mb-1" : "top-full mt-1";
   const alignClass = align === "end" ? "right-0" : align === "start" ? "left-0" : "left-0";
-  if (isSidebarScopePopup) {
+  if (isSidebarScopePopup || isAnchoredPopup) {
     if (!context.anchorRect) return null;
     const point = resolveFloatingAnchorPoint(context.anchorRect, {
       side,
@@ -234,7 +235,7 @@ export function MenuPopup({
           data-floating-align={align}
           data-floating-side-offset={String(sideOffset)}
           className={classes(
-            "lynx-menu-popup flex max-h-64 w-full flex-col overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
+            "lynx-menu-popup flex max-h-64 min-w-32 flex-col overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
             className,
           )}
           style={{
@@ -274,6 +275,10 @@ export function MenuPopup({
       />
       <view
         {...props}
+        data-floating-popup={relationId}
+        data-floating-side={side}
+        data-floating-align={align}
+        data-floating-side-offset={String(sideOffset)}
         className={classes(
           "lynx-menu-popup absolute z-50 flex max-h-64 w-full flex-col overflow-hidden rounded-lg border border-border bg-popover p-1 text-popover-foreground shadow-md",
           sideClass,
@@ -348,7 +353,38 @@ export const MenuGroup = ({ children, ...props }: ElementProps) => (
   <view {...props}>{children}</view>
 );
 export const MenuGroupLabel = MenuGroup;
-export const MenuItem = MenuGroup;
+export function MenuItem({
+  children,
+  className,
+  disabled = false,
+  onClick,
+  ...props
+}: ElementProps & {
+  readonly disabled?: boolean;
+  readonly onClick?: () => void;
+}) {
+  const menu = useContext(MenuContext);
+  const handleTap = useCallback(() => {
+    if (disabled) return;
+    onClick?.();
+    menu?.setOpen(false);
+  }, [disabled, menu, onClick]);
+  return (
+    <HostView
+      {...props}
+      aria-disabled={disabled ? "true" : undefined}
+      className={classes(
+        "lynx-menu-item flex min-h-8 w-full flex-row items-center gap-2 rounded-sm px-2 py-1 text-sm text-popover-foreground",
+        disabled ? "opacity-50" : undefined,
+        className,
+      )}
+      data-slot="menu-item"
+      onClick={handleTap}
+    >
+      {children}
+    </HostView>
+  );
+}
 export const MenuCheckboxItem = MenuGroup;
 export const MenuSeparator = MenuGroup;
 export const MenuShortcut = MenuGroup;

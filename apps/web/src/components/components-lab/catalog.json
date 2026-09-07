@@ -82,5 +82,23 @@
     "category": "Overlays",
     "title": "Tooltip popup",
     "states": ["default", "glass"]
+  },
+  {
+    "id": "ui/menu#Menu",
+    "category": "Overlays",
+    "title": "Menu",
+    "states": ["closed", "open"]
+  },
+  {
+    "id": "ui/menu#MenuTrigger",
+    "category": "Overlays",
+    "title": "Menu trigger",
+    "states": ["idle", "pressed"]
+  },
+  {
+    "id": "ui/menu#MenuPopup",
+    "category": "Overlays",
+    "title": "Menu popup",
+    "states": ["open", "item-highlighted"]
   }
 ]

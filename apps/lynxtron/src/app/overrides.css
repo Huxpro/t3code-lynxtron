@@ -1351,6 +1351,15 @@
   height: 100%;
   overflow: visible;
 }
+.lynx-menu-popup {
+  border: 1px solid rgba(var(--foreground-rgb), 0.1);
+  box-sizing: border-box;
+}
+.lynx-menu-item {
+  height: 28px;
+  min-height: 28px;
+  box-sizing: border-box;
+}
 .sidebar-v2-scope-popup {
   display: flex;
   flex-direction: column;

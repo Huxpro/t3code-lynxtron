@@ -191,6 +191,18 @@ function readComponentLabMetrics(root) {
       const popup = root.querySelector('[data-floating-popup="component-lab-tooltip"]');
       return popup ? { text: readComposedText(popup), box: readElementBox(popup) } : null;
     })(),
+    menu: (() => {
+      const popup = root.querySelector('[data-floating-popup="component-lab-menu"]');
+      return popup
+        ? {
+            text: readComposedText(popup),
+            box: readElementBox(popup),
+            items: [...popup.querySelectorAll("[data-component-lab-menu-item]")].map((item) =>
+              readComposedText(item),
+            ),
+          }
+        : null;
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),
@@ -4381,6 +4393,13 @@ const workbench = {
         .getElementById("lynx-pane")
         ?.contentWindow?.__T3_LYNX_WEB_PREVIEW__?.invokeTooltipForHarness?.(relationId, action) ===
       true
+    );
+  },
+  async invokeLynxMenu(relationId) {
+    return (
+      document
+        .getElementById("lynx-pane")
+        ?.contentWindow?.__T3_LYNX_WEB_PREVIEW__?.invokeMenuForHarness?.(relationId) === true
     );
   },
   webElementCenter(selector) {

@@ -83,6 +83,24 @@
       "id": "ui/tooltip#TooltipPopup",
       "states": ["default", "glass"],
       "title": "Tooltip popup"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/menu#Menu",
+      "states": ["closed", "open"],
+      "title": "Menu"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/menu#MenuTrigger",
+      "states": ["idle", "pressed"],
+      "title": "Menu trigger"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/menu#MenuPopup",
+      "states": ["open", "item-highlighted"],
+      "title": "Menu popup"
     }
   ],
   "components": [
@@ -4713,7 +4731,7 @@
     },
     {
       "authority": {
-        "line": 46,
+        "line": 47,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4747,7 +4765,7 @@
     },
     {
       "authority": {
-        "line": 17,
+        "line": 18,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4768,7 +4786,7 @@
     },
     {
       "authority": {
-        "line": 42,
+        "line": 43,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -17012,12 +17030,16 @@
       "name": "Menu",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 16
+        "webUseSiteCount": 17
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#Menu",
+        "states": ["closed", "open"],
+        "status": "covered",
+        "title": "Menu"
       },
       "useSites": [
         {
@@ -17051,6 +17073,14 @@
         {
           "path": "apps/web/src/components/ChatMarkdown.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -17230,9 +17260,9 @@
       "name": "MenuItem",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 12
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 13
       },
       "story": {
         "status": "uncovered"
@@ -17261,6 +17291,14 @@
         {
           "path": "apps/web/src/components/ChatMarkdown.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -17302,12 +17340,16 @@
       "name": "MenuPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 16
+        "webUseSiteCount": 17
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#MenuPopup",
+        "states": ["open", "item-highlighted"],
+        "status": "covered",
+        "title": "Menu popup"
       },
       "useSites": [
         {
@@ -17341,6 +17383,14 @@
         {
           "path": "apps/web/src/components/ChatMarkdown.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -17670,12 +17720,16 @@
       "name": "MenuTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 16
+        "webUseSiteCount": 17
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#MenuTrigger",
+        "states": ["idle", "pressed"],
+        "status": "covered",
+        "title": "Menu trigger"
       },
       "useSites": [
         {
@@ -17709,6 +17763,14 @@
         {
           "path": "apps/web/src/components/ChatMarkdown.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -21507,7 +21569,7 @@
     "internal": 209,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 14,
+    "stories": 17,
     "webOnly": 456
   },
   "generatedFrom": "apps/web/src/components",

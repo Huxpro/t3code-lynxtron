@@ -7,6 +7,7 @@ import { Badge } from "../ui/badge";
 import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements";
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
+import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../ui/menu";
 import { Separator } from "../ui/separator";
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
@@ -108,6 +109,34 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/tooltip#TooltipPopup" title="Tooltip popup">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Opened by the real Tooltip state machine in paired capture.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#Menu" title="Menu">
+            <Menu>
+              <MenuTrigger
+                data-component-lab-menu-trigger="default"
+                data-floating-anchor="component-lab-menu"
+                render={<Button variant="outline" />}
+              >
+                Open menu
+              </MenuTrigger>
+              <MenuPopup align="start" relationId="component-lab-menu">
+                <MenuItem data-component-lab-menu-item="open">Open in editor</MenuItem>
+                <MenuItem data-component-lab-menu-item="copy">Copy path</MenuItem>
+              </MenuPopup>
+            </Menu>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#MenuTrigger" title="Menu trigger">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Rendered by the Menu story through the real Button primitive.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#MenuPopup" title="Menu popup">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Opened by the real Menu state machine in its paired interaction capture.
             </HostText>
           </StoryFrame>
 

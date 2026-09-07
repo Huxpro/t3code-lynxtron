@@ -7574,6 +7574,8 @@ async function captureCell({
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
   let componentLabTooltipOpened = false;
+  let componentLabTooltipVerified = false;
+  let componentLabMenuOpened = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7614,8 +7616,36 @@ async function captureCell({
       if (
         labReady &&
         componentLabTooltipOpened &&
+        !componentLabTooltipVerified &&
         state?.web?.componentLabMetrics?.tooltip?.text === "Shared tooltip" &&
         state?.lynx?.componentLabMetrics?.tooltip?.text === "Shared tooltip"
+      ) {
+        componentLabTooltipVerified = true;
+        await invokeLynxTooltipProbe(cdp, sessionId, "component-lab-tooltip", "leave");
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.webElementCenter('[data-component-lab-menu-trigger="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) {
+          await dispatchPointerClickWithMove(cdp, sessionId, point);
+          const invoked = await evaluate(
+            cdp,
+            sessionId,
+            `globalThis.__T3_WORKBENCH__?.invokeLynxMenu?.("component-lab-menu") ?? false`,
+          ).catch(() => false);
+          if (!invoked) throw new Error("Lynx component lab menu probe is unavailable");
+          componentLabMenuOpened = true;
+        }
+        await delay(100);
+        continue;
+      }
+      if (
+        labReady &&
+        componentLabTooltipVerified &&
+        componentLabMenuOpened &&
+        state?.web?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
+        state?.lynx?.componentLabMetrics?.menu?.text?.includes("Open in editor")
       )
         break;
       if (state?.web?.literalRoute !== webRoute) {
@@ -11119,11 +11149,30 @@ async function captureCell({
           title,
         })) ?? [],
       );
-  const componentLabTooltipReady =
+  const componentLabTooltipReady = !isComponentsLabState || componentLabTooltipVerified;
+  const componentLabMenuReady =
     !isComponentsLabState ||
-    (componentLabTooltipOpened &&
-      state?.web?.componentLabMetrics?.tooltip?.text === "Shared tooltip" &&
-      state?.lynx?.componentLabMetrics?.tooltip?.text === "Shared tooltip");
+    (componentLabMenuOpened &&
+      state?.web?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
+      state?.lynx?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
+      state.web.componentLabMetrics.menu.items.length === 2 &&
+      state.lynx.componentLabMetrics.menu.items.length === 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.menu.box.rect.x -
+          state.lynx.componentLabMetrics.menu.box.rect.x,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.menu.box.rect.y -
+          state.lynx.componentLabMetrics.menu.box.rect.y,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.menu.box.rect.width -
+          state.lynx.componentLabMetrics.menu.box.rect.width,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.menu.box.rect.height -
+          state.lynx.componentLabMetrics.menu.box.rect.height,
+      ) <= 2);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -13548,6 +13597,7 @@ async function captureCell({
     componentLabReady &&
     componentLabGeometryReady &&
     componentLabTooltipReady &&
+    componentLabMenuReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -13643,6 +13693,7 @@ async function captureCell({
       componentsLabPass,
       componentLabGeometryReady,
       componentLabTooltipReady,
+      componentLabMenuReady,
       bothReady,
       identityMatch,
       finalOverlayReady,
