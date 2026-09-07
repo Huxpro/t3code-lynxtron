@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T01:21:01-04:00",
+  "stateId": "composer-plan-mode",
+  "harnessCommit": "52956c5c1",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "91a14e3aae415ea37278dbfc0e7313216fe26d0da875106ecb0f5aa2f4f4c76f",
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70"
+  },
+  "capture": {
+    "reportSha256": "d75037da25f6a31cb754147d0867a5da1d98c67c96827bc02b897f78e772164b",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "0d53d75d49281ee4cc224b228f40595ef25fab1b1fac1a7438d9fa047e06674e",
+    "webImageSha256": "a6550b8996be6d7d27051a3f11dff91d5efe1f78ef2680c0ff1c7f740ffe4721",
+    "lynxImageSha256": "2596f92e800946d7b01e7f43ad6a15d77ad21e1c82d2c4b803e882b5f4def943",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "planProjectionMatch": true,
+    "primaryActionAndContextMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "frameWeb": [384, 628, 768, 140],
+    "frameLynx": [384, 628, 768, 140],
+    "toolbarAllocationWeb": [397, 725, 710, 28],
+    "toolbarAllocationLynx": [397, 725, 710, 28],
+    "separatorWeb": [767.5, 731, 1, 16],
+    "separatorLynx": [768.53125, 731, 1, 16],
+    "planControlWeb": [774.5, 725, 71.625, 28],
+    "planControlLynx": [775.53125, 725, 72.5, 28],
+    "primaryActionWeb": [1107, 723, 32, 32],
+    "primaryActionLynx": [1107, 723, 32, 32],
+    "contextWeb": [406, 752, 724, 48],
+    "contextLynx": [406, 752, 724, 48],
+    "visibleBackdropWeb": [406, 768, 724, 32],
+    "visibleBackdropLynx": [406, 768, 724, 32]
+  },
+  "content": {
+    "interactionModeWeb": "plan",
+    "interactionModeLynx": "plan",
+    "controlsWeb": ["GPT-5.6-Sol", "Low", "Full access", "Plan"],
+    "controlsLynx": ["GPT-5.6-Sol", "Low", "Full access", "Plan"]
+  },
+  "classification": "The current same-thread Plan capture passes strict identity and proves exact Composer, toolbar allocation, primary action, Context, and visible material geometry. The Plan separator and control retain the already documented 1.03125px horizontal accumulation and 0.875px label-width difference from host text shaping; separator-to-control spacing remains exact. No new product, material, typography, or Native interaction credit is claimed; screenshots remain temporary."
+}

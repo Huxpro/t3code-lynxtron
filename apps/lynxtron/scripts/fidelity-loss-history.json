@@ -28833,6 +28833,55 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-plan-mode-current-refresh-2",
+      "observedAt": "2026-09-07T01:21:01-04:00",
+      "commit": "52956c5c1",
+      "codeCommit": "52956c5c1",
+      "codeState": "commit",
+      "label": "Composer Plan mode strict current refresh",
+      "narrative": "A fresh current dark 1280x820 paired capture uses one active non-settled thread with persisted Plan mode. Both renderers match the 768x140 Composer, total toolbar allocation, disabled primary action, Context strip, visible material, controls, and zero-error identity. The Plan separator and control retain only the already documented 1.03125px horizontal shaping accumulation and 0.875px label-width delta with exact separator gap.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product UI changed. This refresh extends the strict action and Context measurement to current persisted Plan mode while preserving all existing residuals and Native debt."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/composer-plan-mode-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "6381c694b6e78aaf66127ff9932d78fbf88f37ae2d760bf1aabdfdaaf0fd1c8e"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-plan-mode"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-plan-projection-content",
+              "source": "Both clients persist interactionMode plan and render GPT-5.6-Sol, Low, Full access, and Plan."
+            },
+            "geometry": {
+              "anchorDeltas": [1.03125, 0, 0, 0, 1.03125, 0, 0.875, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "relationResiduals": [0],
+              "anchorScale": 72,
+              "confidence": 0.99,
+              "method": "current-plan-action-context-geometry",
+              "source": "Plan separator and control retain the known subpixel shaping delta; total toolbar, Composer, primary action, Context, and visible backdrop boxes match exactly."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-plan-strict-runtime",
+              "source": "Same prepared snapshot, active thread, Plan mode, route, theme, viewport, current bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
