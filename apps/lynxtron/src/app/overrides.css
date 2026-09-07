@@ -12154,6 +12154,12 @@
 }
 .project-settings-dialog__footer--single .project-settings-dialog__button--danger {
   width: 148px;
+  padding-left: 11px;
+  padding-right: 11px;
+  border-color: rgba(var(--foreground-rgb), 0.08);
+  background-color: rgba(var(--foreground-rgb), 0.0256);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  gap: 8px;
 }
 .project-settings-dialog__button {
   display: flex;

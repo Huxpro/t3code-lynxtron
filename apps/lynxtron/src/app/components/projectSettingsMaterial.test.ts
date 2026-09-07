@@ -24,6 +24,16 @@ describe("Project Settings dialog material", () => {
     expect(dialog).toContain("0 24px 72px -20px rgba(0, 0, 0, 0.9);");
   });
 
+  it("matches the idle single-project destructive outline", () => {
+    const button = rule(
+      ".project-settings-dialog__footer--single .project-settings-dialog__button--danger",
+    );
+    expect(button).toContain("border-color: rgba(var(--foreground-rgb), 0.08);");
+    expect(button).toContain("background-color: rgba(var(--foreground-rgb), 0.0256);");
+    expect(button).toContain("box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);");
+    expect(button).toContain("gap: 8px;");
+  });
+
   it("matches light dialog glass without changing the authority width", () => {
     const dialog = rule(".project-settings-dialog");
     const lightDialog = rule(".theme-light .project-settings-dialog");
