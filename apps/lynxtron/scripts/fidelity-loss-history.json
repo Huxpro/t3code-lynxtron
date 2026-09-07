@@ -28480,6 +28480,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "settled-banner-inline-files-narrow-current-refresh",
+      "observedAt": "2026-09-06T22:00:00-04:00",
+      "commit": "d5e9d8c32",
+      "codeCommit": "539463ccf",
+      "codeState": "commit",
+      "label": "Narrow settled banner strict-state refresh",
+      "narrative": "The previous current-state gate had regressed and could accept an idle thread with no settled banner. The repaired harness now selects the explicit source thread 6fdec7ed, preserves active turn 019f9b5e, prepares a stopped session with a settled override, and requires the full title, description, Un-settle action, eight-pixel Composer gap, Files rows, and current responsive panel geometry. On the current Electron authority, a requested 540px panel clamps to 360px at 1024x820 rather than retaining the stale historical 540px width. Web and Lynx show the same 25 Files rows and banner copy; banner, action, Composer, and panel geometry agree within one pixel. A diagnostic 408x288 center crop measures 3.622376 MAE and 5.2756 percent significant pixels, but it is not used for material credit because it differs from the historical crop.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This point repairs fixture and gate validity and refreshes the responsive Electron authority. No product CSS changed and no cross-crop material improvement is claimed."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/settled-banner-inline-files-narrow-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "5bb6a25ae6d5072dd45374f8089857233b6a82890cbbca19156293b37a9bf991"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settled-banner-inline-files-narrow"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-strict-settled-banner-content",
+              "source": "Both clients show the full settled title, description, Un-settle action, Local checkout, main, and the same 25 Files rows."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 1, 0, 0, 0, 0.9375, 0, 0, 0, 0.9375, 0, 0, 0, 1, 0],
+              "anchorScale": 368,
+              "confidence": 0.99,
+              "method": "current-responsive-settled-banner-files-geometry",
+              "source": "Current Electron clamps the inline Files panel to 360px; banner, copy, action, Composer, gap, and panel align within one pixel."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-strict-settled-files-runtime",
+              "source": "Same prepared snapshot, explicit thread and active turn, stopped session, settled override, dark 1024x820 viewport, matching identity, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

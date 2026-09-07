@@ -491,3 +491,4 @@ provider-dialog-light-complete-current,2026-09-06T18:30:55-04:00,675428b7e,commi
 sidebar-creation-hover-current-refresh,2026-09-06T19:48:31-04:00,42bcdc20a,commit,Sidebar creation hover current refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
 sidebar-inline-search-current-geometry,2026-09-06T20:20:00-04:00,4d5f011fd,commit,Sidebar inline search input geometry,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
 sidebar-resize-current-refresh,2026-09-06T20:51:00-04:00,5dd8c4114,commit,Resized Sidebar and Composer branch refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
+settled-banner-inline-files-narrow-current-refresh,2026-09-06T22:00:00-04:00,d5e9d8c32,commit,Narrow settled banner strict-state refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
