@@ -12252,6 +12252,29 @@ async function captureCell({
           const scroll = root?.querySelector(
             '.composer-compact-controls-menu__scroll, [data-floating-popup="composer-compact-controls-menu"] > div'
           );
+  const componentLabGeometryReady = (() => {
+    if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
+    const webLab = state.web.componentLabMetrics;
+    const lynxLab = state.lynx.componentLabMetrics;
+    const widthsMatch =
+      Math.abs(webLab.content.rect.width - lynxLab.content.rect.width) <= 1 &&
+      webLab.stories.every((story, index) => {
+        const candidate = lynxLab.stories[index];
+        return (
+          story.box?.rect &&
+          story.canvas?.rect &&
+          candidate?.box?.rect &&
+          candidate.canvas?.rect &&
+          Math.abs(story.box.rect.x - candidate.box.rect.x) <= 1 &&
+          Math.abs(story.box.rect.width - candidate.box.rect.width) <= 1 &&
+          Math.abs(story.canvas.rect.x - candidate.canvas.rect.x) <= 1 &&
+          Math.abs(story.canvas.rect.width - candidate.canvas.rect.width) <= 1
+        );
+      });
+    const verticallyOrdered = (stories) =>
+      stories.every((story, index) => index === 0 || story.box.rect.y > stories[index - 1].box.rect.y);
+    return widthsMatch && verticallyOrdered(webLab.stories) && verticallyOrdered(lynxLab.stories);
+  })();
           if (!frame || !scroll) return null;
           const frameRect = frame.getBoundingClientRect();
           const rect = scroll.getBoundingClientRect();
@@ -13493,6 +13516,7 @@ async function captureCell({
 
   const componentsLabPass =
     componentLabReady &&
+    componentLabGeometryReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -13586,6 +13610,7 @@ async function captureCell({
     failuresNote(viewport.label, {
       reachedTargetState: confirmedTargetState,
       componentsLabPass,
+      componentLabGeometryReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

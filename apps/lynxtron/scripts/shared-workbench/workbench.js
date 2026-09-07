@@ -194,6 +194,10 @@ function readComponentLabMetrics(root) {
       title: readComposedText(story.querySelector(".component-lab-story__title")),
       box: readElementBox(story),
       canvas: readElementBox(story.querySelector(".component-lab-story__canvas")),
+      slots: [...story.querySelectorAll("[data-slot]")].map((element) => ({
+        slot: element.getAttribute("data-slot"),
+        box: readElementBox(element),
+      })),
     })),
     slots: [...lab.querySelectorAll("[data-slot]")].reduce((counts, element) => {
       const slot = element.getAttribute("data-slot");

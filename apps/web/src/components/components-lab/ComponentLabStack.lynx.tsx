@@ -7,3 +7,7 @@ export function ComponentLabStack({ children }: { readonly children: ReactNode }
     </scroll-view>
   );
 }
+
+export function ComponentLabColumn({ children }: { readonly children: ReactNode }) {
+  return <scroll-view className="component-lab-specimen-stack">{children}</scroll-view>;
+}

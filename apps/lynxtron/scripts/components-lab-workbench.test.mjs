@@ -17,7 +17,9 @@ describe("Components Lab paired workbench", () => {
     assert.include(readerSource, "function readComponentLabMetrics(root)");
     assert.include(readerSource, '[data-component-lab="web-lynx-shared"]');
     assert.include(readerSource, "data-component-states");
+    assert.include(readerSource, 'story.querySelectorAll("[data-slot]")');
     assert.include(captureSource, "const componentLabReady =");
+    assert.include(captureSource, "const componentLabGeometryReady =");
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "state.web.componentLabMetrics.stories.length === 8");

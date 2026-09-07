@@ -4613,6 +4613,38 @@
     },
     {
       "authority": {
+        "line": 7,
+        "path": "apps/web/src/components/components-lab/ComponentLabStack.web.tsx"
+      },
+      "exported": true,
+      "id": "components-lab/ComponentLabStack#ComponentLabColumn",
+      "implementation": "platform-pair",
+      "lynx": {
+        "path": "apps/web/src/components/components-lab/ComponentLabStack.lynx.tsx"
+      },
+      "name": "ComponentLabColumn",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 1
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        }
+      ]
+    },
+    {
+      "authority": {
         "line": 3,
         "path": "apps/web/src/components/components-lab/ComponentLabStack.web.tsx"
       },
@@ -21369,11 +21401,11 @@
     }
   ],
   "counts": {
-    "components": 734,
+    "components": 735,
     "coveredStoriesMissingLynxUse": 0,
-    "exported": 525,
+    "exported": 526,
     "internal": 209,
-    "platformPairs": 215,
+    "platformPairs": 216,
     "sharedSource": 63,
     "stories": 8,
     "webOnly": 456

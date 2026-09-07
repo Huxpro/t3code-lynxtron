@@ -1,6 +1,6 @@
 import catalog from "./catalog.json";
 import type { ReactNode } from "react";
-import { ComponentLabStack } from "./ComponentLabStack";
+import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
@@ -84,22 +84,22 @@ export function ComponentLabSurface() {
           </StoryFrame>
 
           <StoryFrame id="ui/input#Input" title="Input">
-            <HostView className="component-lab-specimen-stack">
+            <ComponentLabColumn>
               <StoryLabel>Empty</StoryLabel>
               <Input aria-label="Empty input" placeholder="Search projects" />
               <StoryLabel>Value</StoryLabel>
               <Input aria-label="Filled input" value="t3code-lynxtron" />
               <StoryLabel>Disabled</StoryLabel>
               <Input aria-label="Disabled input" disabled value="Unavailable" />
-            </HostView>
+            </ComponentLabColumn>
           </StoryFrame>
 
           <StoryFrame id="ui/textarea#Textarea" title="Textarea">
-            <HostView className="component-lab-specimen-stack">
+            <ComponentLabColumn>
               <Textarea aria-label="Empty textarea" placeholder="Describe the change" />
               <Textarea aria-label="Filled textarea" value="Keep the renderer contract explicit." />
               <Textarea aria-label="Disabled textarea" disabled value="Read only" />
-            </HostView>
+            </ComponentLabColumn>
           </StoryFrame>
 
           <StoryFrame id="ui/switch#Switch" title="Switch">
