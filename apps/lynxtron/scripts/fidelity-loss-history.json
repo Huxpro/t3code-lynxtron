@@ -29277,6 +29277,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-active-state-current",
+      "observedAt": "2026-09-07T06:12:00-04:00",
+      "commit": "d98fe0ed5",
+      "codeCommit": "d98fe0ed5",
+      "codeState": "commit",
+      "label": "Command Palette active-state current refresh",
+      "narrative": "The prior final navigation frame compared Web's Add project active row against Lynx's first action because browser-proxy CSS hover did not update main-thread selection state. The isolated preview now drives the existing component setActiveIndex path and its reset effect keys off stable item ids. The full hover, ArrowDown, ArrowUp, submenu, Backspace, Escape, dismiss, reopen and final-hover chain ends with Add project active in both 576x420 panels.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This changes only the isolated Browser test bridge and a state-reset dependency. It corrects compared UI state and raises panel SSIM from 0.871095 to 0.910867 without claiming a production visual repair."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/command-palette-active-state-current.json",
+          "classification": "tracked-current",
+          "sha256": "5c31519e082d4bfd39ea7f1f7587870a44d390ecb3d7ed3abd89fd7975ec776b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-command-palette-active-content",
+              "source": "Both final panes expose Add project as the sole active row after the same complete navigation sequence."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-command-palette-panel-geometry",
+              "source": "Both final command palette panels are exactly 576x420 at x352 y82."
+            },
+            "material": {
+              "residual": 0.089133,
+              "confidence": 0.99,
+              "method": "same-active-command-palette-panel-ssim",
+              "source": "1 - exact final panel SSIM 0.910867 after correcting the mismatched active row."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-active-state-runtime",
+              "source": "Same snapshot, persisted thread, route, theme, viewport, exact harness commit, complete interaction timeline, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
