@@ -2589,6 +2589,27 @@ function readLynxPane() {
               (item) => item.textContent?.trim() ?? "",
             ),
             anatomy: {
+              statusBannerText:
+                root
+                  ?.querySelector(
+                    "[data-connection-lifecycle-phase], .connection-lifecycle-banner-reference, [data-composer-settled-banner]",
+                  )
+                  ?.textContent?.trim() ?? null,
+              statusTitleText:
+                (
+                  root?.querySelector("[data-connection-lifecycle-title]") ??
+                  root?.querySelector(".composer-settled-banner__title")
+                )?.textContent?.trim() ?? null,
+              statusDescriptionText:
+                (
+                  root?.querySelector("[data-connection-lifecycle-description]") ??
+                  root?.querySelector(".composer-settled-banner__description")
+                )?.textContent?.trim() ?? null,
+              statusActionText:
+                (
+                  root?.querySelector("[data-connection-lifecycle-actions]") ??
+                  root?.querySelector(".composer-settled-banner__action")
+                )?.textContent?.trim() ?? null,
               statusBanner: readElementBox(
                 root?.querySelector(
                   "[data-connection-lifecycle-phase], .connection-lifecycle-banner-reference, [data-composer-settled-banner]",
@@ -3592,6 +3613,43 @@ function readWebPane() {
                 .filter(Boolean);
             })(),
             anatomy: {
+              statusBannerText:
+                (
+                  doc.querySelector("[data-connection-lifecycle-phase]") ??
+                  doc.querySelector(".connection-lifecycle-banner-reference") ??
+                  [...doc.querySelectorAll('[data-slot="alert"]')].find((item) =>
+                    /Failed to connect|Reconnecting|Connection failed|This thread is settled/.test(
+                      item.textContent ?? "",
+                    ),
+                  )
+                )?.textContent?.trim() ?? null,
+              statusTitleText:
+                (
+                  doc.querySelector("[data-connection-lifecycle-title]") ??
+                  [...doc.querySelectorAll('[data-slot="alert-title"]')].find((item) =>
+                    /Failed to connect|Reconnecting|Connection failed|This thread is settled/.test(
+                      item.textContent ?? "",
+                    ),
+                  )
+                )?.textContent?.trim() ?? null,
+              statusDescriptionText:
+                (
+                  doc.querySelector("[data-connection-lifecycle-description]") ??
+                  [...doc.querySelectorAll('[data-slot="alert-description"]')].find(
+                    (item) =>
+                      item.textContent?.includes("WebSocket connection") ||
+                      item.textContent?.includes(
+                        "Sending a message moves it back to Active in the sidebar.",
+                      ),
+                  )
+                )?.textContent?.trim() ?? null,
+              statusActionText:
+                (
+                  doc.querySelector("[data-connection-lifecycle-actions]") ??
+                  [...doc.querySelectorAll('[data-slot="alert-action"]')].find((item) =>
+                    /Connections|Un-settle/.test(item.textContent ?? ""),
+                  )
+                )?.textContent?.trim() ?? null,
               statusBanner: readElementBox(
                 doc.querySelector("[data-connection-lifecycle-phase]") ??
                   doc.querySelector(".connection-lifecycle-banner-reference") ??

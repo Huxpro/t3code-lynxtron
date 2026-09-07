@@ -652,6 +652,14 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "isFilesSurfaceState &&");
     assert.include(source, "webProviderNotificationCleared &&");
     assert.include(source, "threadReadyForReview(state, expectThread)");
+    assert.include(source, "function settledBannerInlineFilesReady(state)");
+    assert.include(source, 'kind: "settled-thread"');
+    assert.include(source, "settled_override = 'settled'");
+    assert.include(source, "status = 'stopped'");
+    assert.include(source, 'anatomy?.statusActionText === "Un-settle"');
+    assert.include(source, "finalSettledBannerInlineFilesReady");
+    assert.include(workbench, "statusBannerText:");
+    assert.include(workbench, "statusDescriptionText:");
   });
 
   it("opens one real file and verifies the detail surface and return paths", () => {

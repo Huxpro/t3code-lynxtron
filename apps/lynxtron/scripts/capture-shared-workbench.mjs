@@ -214,6 +214,7 @@ const isAddProviderDialogState =
 const isProvidersSettingsState = stateId === "settings-providers" || isAddProviderDialogState;
 const isFilesBrowserState =
   stateId === "files-browser" || stateId === "settled-banner-inline-files-narrow";
+const isSettledBannerInlineFilesState = stateId === "settled-banner-inline-files-narrow";
 const isFileEditingSaveState = stateId === "file-editor-editing-save";
 const isOpenInMenuState = stateId === "file-editor-open-in-menu";
 const isNarrowFileEditorState =
@@ -2712,6 +2713,47 @@ function filesBrowserSemanticReady(state) {
     state?.lynx?.filesBrowserMetrics?.present === true &&
     (state?.web?.filesBrowserMetrics?.rowCount ?? 0) > 0 &&
     state?.web?.filesBrowserMetrics?.rowCount === state?.lynx?.filesBrowserMetrics?.rowCount
+  );
+}
+
+function settledBannerInlineFilesReady(state) {
+  if (!isSettledBannerInlineFilesState) return true;
+  const ready = (client) => {
+    const anatomy = client?.composerMetrics?.anatomy;
+    const panel = client?.reviewMetrics?.panelRect;
+    const banner = anatomy?.statusBanner;
+    const composer = client?.composerMetrics?.rect;
+    return (
+      anatomy?.statusBannerText?.includes("This thread is settled") === true &&
+      anatomy?.statusTitleText === "This thread is settled" &&
+      anatomy?.statusDescriptionText ===
+        "Sending a message moves it back to Active in the sidebar." &&
+      anatomy?.statusActionText === "Un-settle" &&
+      panel?.attributes?.["data-preview-panel-mode"] !== "sheet" &&
+      panel?.attributes?.["data-right-panel-mode"] !== "sheet" &&
+      Math.abs(
+        (banner?.rect?.y ?? 0) + (banner?.rect?.height ?? 0) - (composer?.rect?.y ?? 0) + 8,
+      ) <= 1
+    );
+  };
+  const webPanel = state?.web?.reviewMetrics?.panelRect;
+  const lynxPanel = state?.lynx?.reviewMetrics?.panelRect;
+  return (
+    ready(state?.web) &&
+    ready(state?.lynx) &&
+    rectDeltaWithin(
+      state?.web?.composerMetrics?.anatomy?.statusBanner,
+      state?.lynx?.composerMetrics?.anatomy?.statusBanner,
+      1,
+    ) &&
+    rectDeltaWithin(
+      state?.web?.composerMetrics?.anatomy?.statusAction,
+      state?.lynx?.composerMetrics?.anatomy?.statusAction,
+      1,
+    ) &&
+    Math.abs((webPanel?.rect?.width ?? 0) - 360) <= 1 &&
+    Math.abs((lynxPanel?.rect?.width ?? 0) - 360) <= 1 &&
+    Math.abs((webPanel?.rect?.width ?? 0) - (lynxPanel?.rect?.width ?? 0)) <= 1
   );
 }
 
@@ -6378,6 +6420,46 @@ WHERE project_id = '${escapedProjectId}'`,
       await rm(mutationReport.backup, { force: true });
     }
   }
+  if (isSettledBannerInlineFilesState) {
+    const threadId = expectedThreadFixture?.id;
+    if (!threadId) throw new Error("Settled banner fixture requires a seeded thread.");
+    const databasePath = path.join(baseDir, "userdata", "state.sqlite");
+    const escapedThreadId = threadId.replaceAll("'", "''");
+    const settledAt = "2026-08-19T02:00:00.000Z";
+    const sqliteStateScript = path.join(repoRoot, "apps/server/scripts/t3-sqlite-state.ts");
+    const mutation = spawnSync(
+      process.env.T3_NODE_BIN?.trim() || "node",
+      [
+        sqliteStateScript,
+        "exec",
+        "--base-dir",
+        baseDir,
+        "--sql",
+        `UPDATE projection_thread_sessions SET status = 'stopped' WHERE thread_id = '${escapedThreadId}';
+UPDATE projection_threads SET settled_override = 'settled', settled_at = '${settledAt}' WHERE thread_id = '${escapedThreadId}';`,
+      ],
+      { encoding: "utf8", cwd: repoRoot },
+    );
+    if (mutation.status !== 0) {
+      throw new Error(
+        `Settled banner fixture preparation failed: ${mutation.stderr || mutation.stdout || "unknown"}`,
+      );
+    }
+    const mutationReport = JSON.parse(mutation.stdout);
+    await rm(mutationReport.backup, { force: true });
+    const prepared = await hashFile(databasePath);
+    return {
+      kind: "settled-thread",
+      sourceSha256: seed?.snapshotSha256 ?? null,
+      preparedSha256: prepared.sha256,
+      threadId,
+      activeTurnId: expectedThreadFixture.activeTurnId,
+      sessionStatus: "stopped",
+      settledOverride: "settled",
+      settledAt,
+      backupRemoved: true,
+    };
+  }
   if (!requiresRunningRuntime && !isComposerPlanModeState) {
     return {
       kind: "pristine-seed",
@@ -6664,7 +6746,9 @@ async function main() {
     ? seed?.dataset?.threads?.find((thread) => thread.id === explicitExpectedThreadId)
     : stateId === "composer-connecting"
       ? seed?.dataset?.startingThread
-      : stateId === "composer-working" || stateId === "existing-thread-working"
+      : stateId === "composer-working" ||
+          stateId === "existing-thread-working" ||
+          isSettledBannerInlineFilesState
         ? seed?.dataset?.workingThread
         : stateId === "composer-plan-mode"
           ? seed?.dataset?.canonicalThread
@@ -9531,6 +9615,7 @@ async function captureCell({
     const headerGitActionReady = isFlatSidebarLayoutState || headerGitActionMatches(state);
     const gitPublishDialogReady = gitPublishDialogMatches(state);
     const filesBrowserStateReady = filesBrowserSemanticReady(state);
+    const settledBannerInlineFilesStateReady = settledBannerInlineFilesReady(state);
     filesBrowserReadyPolls = filesBrowserStateReady
       ? filesBrowserReadyPolls + 1
       : isFileEditorState
@@ -9624,6 +9709,7 @@ async function captureCell({
       gitPublishDiscoveryReady &&
       gitPublishDialogReady &&
       filesBrowserReadyPolls >= (isFileEditorState ? 1 : 3) &&
+      settledBannerInlineFilesStateReady &&
       fileEditorReadyPolls >= (isNarrowFileEditorState ? 1 : 3) &&
       shortcutInputReady &&
       sidebarSearchReady &&
@@ -10944,6 +11030,7 @@ async function captureCell({
   const finalHeaderGitActionReady = isFlatSidebarLayoutState || headerGitActionMatches(state);
   const finalGitPublishDialogReady = gitPublishDialogMatches(state);
   let finalFilesBrowserReady = filesBrowserReady(state);
+  const finalSettledBannerInlineFilesReady = settledBannerInlineFilesReady(state);
   let finalFileEditorReady = fileEditorReady(state);
   let fileEditingSaveEvidence = null;
   if (isGitPublishDialogState && !finalGitPublishDialogReady) {
@@ -13204,6 +13291,7 @@ async function captureCell({
     finalHeaderGitActionReady &&
     finalGitPublishDialogReady &&
     finalFilesBrowserReady &&
+    finalSettledBannerInlineFilesReady &&
     finalFileEditorReady &&
     (!isOpenInMenuState || openInMenuEvidence?.match === true) &&
     (!isNarrowChatThreadState || narrowChatHoverEvidence?.match === true) &&
@@ -13308,6 +13396,7 @@ async function captureCell({
       finalHeaderGitActionReady,
       finalGitPublishDialogReady,
       finalFilesBrowserReady,
+      finalSettledBannerInlineFilesReady,
       finalFileEditorReady,
       fileEditingSaveEvidence: !isFileEditingSaveState || fileEditingSaveEvidence !== null,
       fileEditorSwitched,
@@ -13428,7 +13517,9 @@ async function captureCell({
       stateIdentityMatch,
       sessionProjection: {
         match: finalSessionProjectionReady,
-        expectedSessionStatus: expectedThreadFixture?.sessionStatus ?? null,
+        expectedSessionStatus: isSettledBannerInlineFilesState
+          ? "stopped"
+          : (expectedThreadFixture?.sessionStatus ?? null),
         expectedSidebarStatus:
           stateId === "composer-working" || stateId === "existing-thread-working"
             ? "Working"
