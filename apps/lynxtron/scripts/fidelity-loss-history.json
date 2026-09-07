@@ -29331,6 +29331,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-thread-metadata-material-current",
+      "observedAt": "2026-09-07T06:49:00-04:00",
+      "commit": "808b30e5a",
+      "codeCommit": "808b30e5a",
+      "codeState": "commit",
+      "label": "Command Palette thread metadata parity",
+      "narrative": "Lynx recent-thread descriptions and timestamps inherited foreground white instead of Web's muted-foreground/70 token. The shared timestamp now exposes a semantic class and Lynx applies the authority token to both metadata fields. With byte-identical Web pixels and every non-thread ROI unchanged, Recent Threads MAE drops 21.9% from 7.5572 to 5.8990 and panel SSIM improves from 0.910867 to 0.911692.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use byte-identical Web authority pixels, one snapshot, thread, route, theme and viewport. The product change is limited to semantic targeting of Lynx palette thread metadata; search, action, active-row and footer ROI measurements are unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/command-palette-thread-metadata.json",
+          "classification": "tracked-current",
+          "sha256": "1abd866e3f852958cf2132e82673ada0054192431e122da792fd288888cafbf6"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-command-palette-thread-content",
+              "source": "Both panes retain identical actions, recent-thread titles, project descriptions, timestamps and Add project active state."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-command-palette-panel-geometry",
+              "source": "Both final command palette panels remain exactly 576x420 at x352 y82; all row boxes are unchanged."
+            },
+            "material": {
+              "residual": 0.088308,
+              "confidence": 0.99,
+              "method": "command-palette-thread-metadata-ssim",
+              "source": "1 - panel SSIM 0.911692, improved from 0.910867; Recent Threads SSIM improves 0.852350 to 0.855193 and MAE falls 7.5572 to 5.8990."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-thread-metadata-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundle, complete interaction timeline and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
