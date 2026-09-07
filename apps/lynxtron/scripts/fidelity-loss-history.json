@@ -29863,6 +29863,62 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-settings-summary-layout-current",
+      "observedAt": "2026-09-07T12:12:00-04:00",
+      "commit": "c5f1cbe45",
+      "codeCommit": "c5f1cbe45",
+      "codeState": "commit",
+      "label": "Project Settings summary layout parity",
+      "narrative": "Lynx used different header insets and compact 12/18 summary metadata while Web uses a 20px title line, 16/24 summary metadata and a 24px copy affordance. The current layout aligns title exactly and path, copy, globe and environment anchors within 0.44px. Header SSIM improves 0.712645 to 0.907066 and dialog SSIM 0.786050 to 0.847009.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share byte-identical Web pixels, snapshot, thread, project, dialog, theme, viewport, interaction flow and zero-error runtime. Changes are scoped to Project Settings header and summary anatomy."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/project-settings-summary-layout.json",
+          "classification": "tracked-current",
+          "sha256": "d3af4945d4c32dbf061fe78107864daf3beea6259695ae293686ea1369df6427"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-summary-content",
+              "source": "Both dialogs retain the same project path, environment label and copy/environment affordances."
+            },
+            "geometry": {
+              "anchorDeltas": [
+                0, 0, 0, 0, 0, 0, 0.390625, 0, 0.390625, 0, 0.046875, 0, 0.4375, 0, 0.4375, 0
+              ],
+              "anchorScale": 526,
+              "confidence": 0.99,
+              "method": "project-settings-summary-anchors",
+              "source": "Title matches exactly; path, copy, environment icon and environment label origins and widths differ by at most 0.44px."
+            },
+            "material": {
+              "residual": 0.152991,
+              "confidence": 0.99,
+              "method": "project-settings-dialog-summary-ssim",
+              "source": "1 - dialog SSIM 0.847009, improved from 0.786050; header SSIM improves 0.712645 to 0.907066 and header MAE falls 11.930335 to 5.830952."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-summary-layout-runtime",
+              "source": "Same snapshot, persisted thread, project, route, dark theme, viewport, exact committed bundle, scope/action interaction and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
