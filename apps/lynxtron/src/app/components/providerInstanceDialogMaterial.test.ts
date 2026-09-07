@@ -62,6 +62,15 @@ describe("Provider instance dialog material", () => {
     expect(selectedDriver).toContain("background-color: rgba(var(--primary-rgb), 0.15);");
   });
 
+  it("uses rings without a duplicate physical border for light driver cards", () => {
+    const driver = rule(".theme-light .provider-instance-dialog__driver");
+    const selectedDriver = rule(".theme-light .provider-instance-dialog__driver--selected");
+
+    expect(driver).toContain("border-width: 0;");
+    expect(driver).toContain("box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);");
+    expect(selectedDriver).toContain("box-shadow: 0 0 0 2px var(--primary);");
+  });
+
   it("matches the dark secondary footer action material", () => {
     const secondary = rule(".theme-dark .provider-instance-dialog__secondary.ui-button--outline");
 

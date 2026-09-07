@@ -8321,6 +8321,7 @@
   background-color: rgba(59, 130, 246, 0.12);
 }
 .theme-light .provider-instance-dialog__driver {
+  border-width: 0;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 .theme-light .provider-instance-dialog__driver--selected {

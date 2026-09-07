@@ -1092,7 +1092,7 @@ describe("desktop shell interaction contract", () => {
       /\.provider-instance-dialog__early-access,[^]*\.provider-instance-dialog__coming-soon \{[^}]*height: 16px;[^}]*padding: 0 3px;[^}]*border-width: 1px;[^}]*border-radius: 4px;[^}]*background-color: rgba\(var\(--warning-rgb\), 0\.16\);[^}]*box-sizing: border-box;/,
     );
     expect(overrides).toContain(
-      ".theme-light .provider-instance-dialog__driver {\n  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);",
+      ".theme-light .provider-instance-dialog__driver {\n  border-width: 0;\n  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);",
     );
     expect(overrides).toContain(
       ".provider-instance-dialog__early-access {\n  position: absolute;\n  top: 13px;\n  right: 12px;",
