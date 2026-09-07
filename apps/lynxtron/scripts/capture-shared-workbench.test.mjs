@@ -115,10 +115,10 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "/SocketReadError: An error occurred during Read/");
   });
 
-  it("waits for connection-scoped branch discovery before injecting the disconnect", () => {
-    assert.include(source, 'method === "readProjectBranch"');
+  it("waits for the shared VCS projection before injecting the disconnect", () => {
+    assert.include(source, 'method === "readVcsStatus"');
     assert.include(source, "state?.lynx?.connectorDiagnostics?.commandResults?.some(");
-    assert.include(source, '({ method }) => method === "readProjectBranch"');
+    assert.include(source, '({ method }) => method === "readVcsStatus"');
     assert.notInclude(source, "!state?.lynx?.connectorDiagnostics?.commands?.some(");
   });
 

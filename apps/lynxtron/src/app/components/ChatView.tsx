@@ -135,11 +135,6 @@ export function ChatView({ threadId }: ChatViewProps) {
   >({});
   const [pendingUserInputQuestionIndexByRequestId, setPendingUserInputQuestionIndexByRequestId] =
     useState<Record<string, number>>({});
-  const [checkoutRepoContext, setCheckoutRepoContext] = useState<{
-    readonly cwd: string;
-    readonly isRepo: boolean;
-    readonly branch: string | null;
-  } | null>(null);
   const [centerPanelWidth, setCenterPanelWidth] = useState(1024);
   const [rightPanelMaximized, setRightPanelMaximized] = useState(false);
   const [gitMenuOpen, setGitMenuOpen] = useState(false);
@@ -147,7 +142,6 @@ export function ChatView({ threadId }: ChatViewProps) {
   const [startFromOrigin, setStartFromOrigin] = useState(false);
   const {
     interrupt,
-    readProjectBranch,
     reconnect,
     respondToApproval,
     respondToUserInput,
@@ -197,8 +191,8 @@ export function ChatView({ threadId }: ChatViewProps) {
     },
     [activeProject, activeThread?.worktreePath, activeThreadId, cwd],
   );
-  const currentRepoContext = checkoutRepoContext?.cwd === cwd ? checkoutRepoContext : null;
-  const checkoutBranch = currentRepoContext?.branch ?? null;
+  const currentRepoContext = vcsStatusCwd === cwd ? vcsStatus : null;
+  const checkoutBranch = currentRepoContext?.refName ?? null;
 
   const presentationModels = useMemo(
     () => availableThreadModels({ models, providerEntries }),
@@ -444,29 +438,6 @@ export function ChatView({ threadId }: ChatViewProps) {
     lastAutoOpenedPlanKey.current = autoOpenPlanKey;
     uiActions.openRightPanelSurface("plan");
   }, [autoOpenPlanKey, clientSettings.autoOpenPlanSidebar]);
-
-  useEffect(() => {
-    if (!cwd) {
-      setCheckoutRepoContext(null);
-      return;
-    }
-    if (!connectorCommandsReady) {
-      return;
-    }
-    let cancelled = false;
-    void readProjectBranch(cwd).then(
-      (context) => {
-        if (cancelled || !context) return;
-        setCheckoutRepoContext({ cwd, ...context });
-      },
-      () => {
-        if (!cancelled) setCheckoutRepoContext(null);
-      },
-    );
-    return () => {
-      cancelled = true;
-    };
-  }, [connectorCommandsReady, cwd, readProjectBranch]);
 
   const handleInteractionModeTap = useCallback(() => {
     setThreadInteractionMode(

@@ -8013,7 +8013,7 @@ async function captureCell({
       state?.web?.productState?.selectedProject === expectProject &&
       state?.lynx?.productState?.selectedProject === expectProject &&
       state?.lynx?.connectorDiagnostics?.commandResults?.some(
-        ({ method }) => method === "readProjectBranch",
+        ({ method }) => method === "readVcsStatus",
       ) === true &&
       (!expectThread ||
         (state?.web?.productState?.selectedThread === expectThread &&

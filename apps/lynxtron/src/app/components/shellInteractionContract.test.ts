@@ -1357,6 +1357,8 @@ describe("desktop shell interaction contract", () => {
     expect(client).toContain("function refreshVcsStatusProjection()");
     expect(client).toContain("bridge.readVcsStatus({ cwd })");
     expect(chatView).toContain("vcsStatusCwd === cwd ? vcsStatus : null");
+    expect(chatView).toContain("currentRepoContext?.refName ?? null");
+    expect(chatView).not.toContain("readProjectBranch(cwd)");
     expect(header).toContain("vcsStatusPending");
     expect(header).toContain("data-git-quick-action-kind");
     expect(header).toContain("data-git-quick-action-label");
