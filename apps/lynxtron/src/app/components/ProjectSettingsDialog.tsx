@@ -133,7 +133,7 @@ export function ProjectSettingsDialog({
               key={`summary:${member.id}`}
               className="project-settings-dialog__summary flex flex-row"
             >
-              <Icon name="folder" size={13} color="#818181" />
+              <Icon name="folder" size={14} color="#818181" />
               <text className="project-settings-path" data-project-settings-path text-maxline="1">
                 {member.workspaceRoot}
               </text>

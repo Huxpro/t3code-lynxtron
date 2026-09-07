@@ -34,6 +34,16 @@ describe("Project Settings dialog material", () => {
     expect(button).toContain("gap: 8px;");
   });
 
+  it("matches the Web header and summary rhythm", () => {
+    expect(rule(".project-settings-dialog__header")).toContain("padding: 24px 24px 4px;");
+    expect(rule(".project-settings-dialog__title")).toContain("line-height: 20px;");
+    const summary = rule(".project-settings-dialog__summary");
+    expect(summary).toContain("height: 24px;");
+    expect(summary).toContain("gap: 4px;");
+    expect(rule(".project-settings-path")).toContain("font-size: 16px;");
+    expect(rule(".project-settings-summary-action")).toContain("width: 24px;");
+  });
+
   it("matches light dialog glass without changing the authority width", () => {
     const dialog = rule(".project-settings-dialog");
     const lightDialog = rule(".theme-light .project-settings-dialog");

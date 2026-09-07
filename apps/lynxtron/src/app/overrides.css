@@ -11905,7 +11905,7 @@
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  padding: 20px 52px 8px 24px;
+  padding: 24px 24px 4px;
   box-sizing: border-box;
 }
 .project-settings-dialog__description {
@@ -11920,30 +11920,30 @@
   font-family: var(--font-sans);
   font-size: 20px;
   font-weight: 600;
-  line-height: 24px;
+  line-height: 20px;
 }
 .project-settings-dialog__description,
 .project-settings-environment {
   color: var(--muted-foreground);
   font-family: var(--font-sans);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 16px;
+  line-height: 24px;
 }
 .project-settings-dialog__summary {
   display: flex;
   flex-direction: row;
   align-items: center;
   min-width: 0;
-  height: 20px;
-  gap: 6px;
+  height: 24px;
+  gap: 4px;
 }
 .project-settings-path {
   flex-grow: 1;
   min-width: 0;
   color: var(--muted-foreground);
   font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 16px;
+  line-height: 24px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -11953,8 +11953,9 @@
   flex-shrink: 0;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
   border-radius: 4px;
 }
 .project-settings-environment-icon {
