@@ -1565,6 +1565,8 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, 'await cdp.send("Input.insertText", { text: sidebarQuery }, sessionId)');
     assert.include(source, "if (currentQuery === sidebarQuery) return true");
     assert.include(source, "sidebarDiagnostics?.search?.inputBox?.rect?.width > 0");
+    assert.include(source, "state?.web?.sidebarDiagnostics?.search?.inputBox");
+    assert.include(source, "state?.lynx?.sidebarDiagnostics?.search?.inputBox");
     assert.include(source, "inputBox?.style?.webkitTextFillColor");
     assert.include(workbench, "inputBox: readElementBox(input ?? host)");
     assert.include(workbench, "webkitTextFillColor: style.webkitTextFillColor");

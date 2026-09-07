@@ -9555,6 +9555,11 @@ async function captureCell({
         lynxSidebarSearchInputSent &&
         state?.web?.sidebarDiagnostics?.search?.value === sidebarQuery &&
         state?.lynx?.sidebarDiagnostics?.search?.value === sidebarQuery &&
+        rectDeltaWithin(
+          state?.web?.sidebarDiagnostics?.search?.inputBox,
+          state?.lynx?.sidebarDiagnostics?.search?.inputBox,
+          1,
+        ) &&
         (state?.web?.sidebarDiagnostics?.search?.resultTitles?.length ?? 0) > 0 &&
         JSON.stringify(state?.web?.sidebarDiagnostics?.search?.resultTitles ?? []) ===
           JSON.stringify(state?.lynx?.sidebarDiagnostics?.search?.resultTitles ?? []));
@@ -10857,6 +10862,11 @@ async function captureCell({
       state?.lynx?.sidebarDiagnostics?.search?.value === sidebarQuery &&
       state?.web?.sidebarDiagnostics?.search?.inputBox?.rect?.width > 0 &&
       state?.lynx?.sidebarDiagnostics?.search?.inputBox?.rect?.width > 0 &&
+      rectDeltaWithin(
+        state?.web?.sidebarDiagnostics?.search?.inputBox,
+        state?.lynx?.sidebarDiagnostics?.search?.inputBox,
+        1,
+      ) &&
       state?.lynx?.sidebarDiagnostics?.search?.inputBox?.style?.webkitTextFillColor !==
         "rgba(0, 0, 0, 0)" &&
       (state?.web?.sidebarDiagnostics?.search?.resultTitles?.length ?? 0) > 0 &&
