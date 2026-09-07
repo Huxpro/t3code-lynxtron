@@ -601163,7 +601163,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/quick-switch-query-current.json",
           "classification": "tracked-current",
-          "sha256": "55e1258d3a5dac1008c37e20d3303add61367c9072e75215d0603a1bee878c49"
+          "sha256": "3c73dd5f1b53fb7d02c4628a71fafa30ad533c8c793c7ce7e2448b9477d23d9d"
         }
       ],
       "confidence": 0.858405,
