@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T23:47:00-04:00",
+  "stateId": "files-browser",
+  "harnessCommit": "8ae3b7102",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "17782bb1167bb445efc20112adaf59de4e06e8b8d7de3ea9b71fc5b523fac628",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "0d53d75d49281ee4cc224b228f40595ef25fab1b1fac1a7438d9fa047e06674e",
+    "webImageSha256": "f1d472678ea354fff560ee898cd3c428a5262ce2494a2418283e3e792d779d55",
+    "lynxImageSha256": "9e1698a34c034e6caa3b66f3e8d0ba3c1ac047ef0fd8d74d8d516274ac325395",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "filesBrowserMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "panelWeb": [740, 0, 540, 820],
+    "panelLynx": [739, 0, 541, 820],
+    "surfaceWeb": [741, 44, 539, 776],
+    "surfaceLynx": [741, 44, 539, 776],
+    "toolbarWeb": [741, 44, 539, 40],
+    "toolbarLynx": [741, 44, 539, 40],
+    "searchWeb": [777, 49.5, 495, 28],
+    "searchLynx": [777, 49.5, 495, 28],
+    "browserWeb": [741, 84, 539, 736],
+    "browserLynx": [741, 84, 539, 736]
+  },
+  "content": {
+    "rowCountWeb": 25,
+    "rowCountLynx": 25,
+    "sampleRows": [
+      "docs",
+      "PORT_WORKFLOW.md",
+      "PORTING_STRATEGY.md",
+      "screenshot-model-picker.png",
+      "screenshot-picker.png",
+      "screenshot.png",
+      "public",
+      "dm-sans.ttf"
+    ],
+    "webNameTypography": {
+      "fontFamily": "DM Sans",
+      "fontSize": 12
+    },
+    "lynxNameTypography": {
+      "fontFamily": "DM Sans",
+      "fontSize": 12
+    },
+    "iconToneMappingPassed": true
+  },
+  "classification": "The previous strict gate inferred Web name typography from the row when third-party FileTree names lived in composed shadow descendants. The current harness resolves the real text leaf for every sampled row and refuses a null-name fallback. Web and Lynx retain the established 12px DM Sans contract, matching panel, toolbar, search, browser, row count, row boxes, corner radii, and icon-tone semantics. The discarded 11px mono experiment came from incomplete Web measurement and was fully reverted. No product or material credit is claimed. Screenshots remain temporary."
+}
