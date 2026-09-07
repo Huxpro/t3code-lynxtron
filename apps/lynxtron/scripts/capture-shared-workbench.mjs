@@ -11857,6 +11857,7 @@ async function captureCell({
     overlay &&
     !isModelPickerInteractionState &&
     !isRightPanelTerminalState &&
+    !isDiffScopeMenuState &&
     (state?.web?.productState?.overlay !== overlay ||
       state?.lynx?.productState?.overlay !== overlay)
   ) {
