@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T11:21:00-04:00",
+  "stateId": "sidebar-project-settings",
+  "harnessCommit": "aee1decdd",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "2c76e5e8dc62296743e1bb16e478f89ad32c25e58e42b88d87a4c2a56369e51c",
+    "webImageSha256": "08c57717efb4b81e6936e4025ffe83b56e2d0986bd118db9250e571be0000a71",
+    "lynxImageSha256": "23321f9c5e653aa95aee0eda9b9d861fb2dd25e63e9fac425dc907abd8fc4438",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "projectSettingsMatch": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "buttonBorder": "rgba(248, 113, 113, 0.36)",
+    "buttonBackground": "transparent",
+    "buttonShadow": "none",
+    "dialogSsim": 0.780804,
+    "dialogMae": 9.282675,
+    "dialogSignificantShare": 0.083497,
+    "buttonSsim": 0.62232,
+    "buttonMae": 17.954924,
+    "buttonSignificantShare": 0.137973
+  },
+  "after": {
+    "buttonBorder": "rgba(var(--foreground-rgb), 0.08)",
+    "buttonBackground": "rgba(var(--foreground-rgb), 0.0256)",
+    "buttonShadow": "0 1px 2px rgba(0, 0, 0, 0.05)",
+    "dialogSsim": 0.78605,
+    "dialogMae": 9.021075,
+    "dialogSignificantShare": 0.082183,
+    "buttonSsim": 0.734099,
+    "buttonMae": 12.732434,
+    "buttonSignificantShare": 0.111742
+  },
+  "classification": "Web's idle destructive-outline uses a neutral 8% input border, a 2.56% foreground fill and a subtle shadow while Lynx used a 36% red border, transparent fill and no shadow. The scoped single-member footer button now matches the authority material without changing destructive text, confirmation state or multi-member removal flows."
+}

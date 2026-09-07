@@ -29809,6 +29809,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "project-settings-remove-material-current",
+      "observedAt": "2026-09-07T11:21:00-04:00",
+      "commit": "aee1decdd",
+      "codeCommit": "aee1decdd",
+      "codeState": "commit",
+      "label": "Project Settings remove material parity",
+      "narrative": "Web's idle destructive-outline uses a neutral 8% border, 2.56% foreground fill and a subtle shadow; Lynx used a 36% red border, transparent fill and no shadow. The scoped single-member button now matches the authority material. Button SSIM improves 0.622320 to 0.734099 and dialog SSIM 0.780804 to 0.786050 with byte-identical Web pixels.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share byte-identical Web authority pixels, snapshot, thread, project, dialog, theme, viewport, interaction flow and zero-error runtime. Only the idle single-member destructive button material changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/project-settings-remove-material.json",
+          "classification": "tracked-current",
+          "sha256": "4b593ffa5c7a81ae998763b20a20c36235a69e392df3c7c9e2280770db25aaf5"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-project-settings"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-current-content",
+              "source": "Both dialogs retain matching summary, fields, grouping rule, Remove project and Close actions."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0.5, 0, 0.21875, 0, 0.21875, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "project-settings-current-geometry",
+              "source": "Dialog and footer bounds match; destructive and primary action geometry remain within 0.5px."
+            },
+            "material": {
+              "residual": 0.21395,
+              "confidence": 0.99,
+              "method": "project-settings-dialog-current-ssim",
+              "source": "1 - dialog SSIM 0.786050, improved from 0.780804; Remove button SSIM improves 0.622320 to 0.734099 and MAE falls 17.954924 to 12.732434."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "project-settings-remove-material-runtime",
+              "source": "Same snapshot, persisted thread, project, route, dark theme, viewport, exact committed bundle, scope/action interaction and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

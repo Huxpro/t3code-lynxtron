@@ -517,3 +517,4 @@ quick-switch-actions-only-current-refresh,2026-09-07T08:00:00-04:00,0f8d80aec,co
 quick-switch-empty-current-refresh,2026-09-07T08:09:00-04:00,59cd57c6f,commit,Quick Switch Empty current refresh,0.169188,0.169188,0.032145,0.141595,0.858405,0.822702
 quick-switch-query-light-current-refresh,2026-09-07T08:17:00-04:00,042198dd4,commit,Light Quick Switch Query current refresh,0.169187,0.169187,0.032143,0.141595,0.858405,0.822703
 model-picker-empty-current-refresh,2026-09-07T08:24:00-04:00,7ad9e00ba,commit,Model Picker Empty current refresh,0.169166,0.169166,0.032119,0.141595,0.858405,0.822724
+project-settings-remove-material-current,2026-09-07T11:21:00-04:00,aee1decdd,commit,Project Settings remove material parity,0.169172,0.169166,0.032126,0.141595,0.858405,0.822718
