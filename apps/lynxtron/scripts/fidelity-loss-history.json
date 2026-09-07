@@ -29474,6 +29474,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "file-picker-search-geometry-current",
+      "observedAt": "2026-09-07T07:45:00-04:00",
+      "commit": "8c6eed99c",
+      "codeCommit": "1de6f5e44",
+      "codeState": "commit",
+      "label": "File Picker shared search geometry parity",
+      "narrative": "The shared Command Palette search-geometry fix also applies to File Picker without state-specific product code. The current strict same-thread capture preserves all 65 files and exact panel, search, row and footer geometry. On the prior checkpoint's same 576x278 visible crop, SSIM improves from 0.938107 to 0.942688 and the search crop reaches 0.968284.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This checkpoint records cross-state reuse of the already-attributed shared search product fix; it does not assign the same code delta twice. Same snapshot, thread, route, theme, viewport, file order and zero-error runtime make the File Picker measurement current."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/file-picker-search-geometry-current.json",
+          "classification": "tracked-current",
+          "sha256": "84420078fe793b7c552e366e64c9c1990afdc3935f6f76f4988270c4d125cdb9"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["file-picker-default"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-file-picker-content",
+              "source": "Both panes retain the same 65 file rows in identical order with matching titles, descriptions, icons and footer actions."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 2, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-file-picker-search-geometry",
+              "source": "Panel and search shells match exactly; Lynx inner input is 361,90 558x34 versus Web 362,90 556x34."
+            },
+            "material": {
+              "residual": 0.057312,
+              "confidence": 0.99,
+              "method": "current-file-picker-visible-panel-ssim",
+              "source": "1 - exact 576x278 visible panel SSIM 0.942688, improved from 0.938107; the search crop reaches 0.968284."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "paired-file-picker-search-runtime",
+              "source": "Same snapshot, persisted thread, dark theme, viewport, exact committed bundle, focused native input and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

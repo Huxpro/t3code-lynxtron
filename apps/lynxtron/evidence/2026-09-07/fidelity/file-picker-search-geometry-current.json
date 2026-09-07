@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T07:45:00-04:00",
+  "stateId": "file-picker-default",
+  "harnessCommit": "8c6eed99c",
+  "codeCommit": "1de6f5e44",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "46687d475c73e8114e82b45be5fc29abd119565190b2e5ef61f6477491d21e29",
+    "webImageSha256": "c3124b194386a6ec64b63e3668f85ada093e79df850e433842a956aad48ff172",
+    "lynxImageSha256": "b6769fa5abb686f23f4749016ff9de9f96ce00ebab275a5fd4943240c5002018",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "content": { "rowCountWeb": 65, "rowCountLynx": 65, "rowOrderMatch": true },
+  "geometry": {
+    "panelWeb": [352, 82, 576, 420],
+    "panelLynx": [352, 82, 576, 420],
+    "searchWeb": [353, 83, 574, 48],
+    "searchLynx": [353, 83, 574, 48],
+    "inputWeb": [362, 90, 556, 34],
+    "inputLynx": [361, 90, 558, 34]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg SSIM on the same 576x278 visible File Picker crop used by the prior strict-thread checkpoint, plus the 576x49 search region",
+    "beforeVisiblePanelSsim": 0.938107,
+    "currentVisiblePanelSsim": 0.942688,
+    "currentSearchSsim": 0.968284,
+    "currentVisiblePanelMae": 2.705461,
+    "currentVisiblePanelSignificantShare": 0.032728,
+    "currentSearchMae": 0.929103,
+    "currentSearchSignificantShare": 0.016912
+  },
+  "classification": "The shared Command Palette search-geometry fix also applies to File Picker without state-specific product code. The current strict same-thread capture preserves all 65 files, panel/search/row/footer geometry, and zero-error runtime while the old 576x278 metric improves from 0.938107 to 0.942688 and the search crop reaches 0.968284."
+}
