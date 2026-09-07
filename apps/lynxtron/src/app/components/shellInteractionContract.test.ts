@@ -818,6 +818,13 @@ describe("desktop shell interaction contract", () => {
       /\.terminal-panel__viewports-horizontal,[\s\S]*top: 0;[\s\S]*bottom: 52px;/,
     );
     expect(overrides).toContain(".terminal-panel__viewports--multi {\n  top: 28px;");
+    expect(overrides).toContain(
+      ".terminal-panel__viewports--single .terminal-panel__viewport--horizontal {\n  width: 100%;",
+    );
+    expect(overrides).toContain(
+      ".terminal-panel__viewports--single .terminal-panel__viewport--active {\n  background-color: transparent;",
+    );
+    expect(overrides).toMatch(/\.terminal-panel__output \{[^}]*white-space: pre-wrap;/);
     expect(overrides).toMatch(
       /\.terminal-panel__command-row \{[\s\S]*position: absolute;[\s\S]*bottom: 0;/,
     );

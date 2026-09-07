@@ -9701,6 +9701,9 @@
   width: 50%;
   height: 100%;
 }
+.terminal-panel__viewports--single .terminal-panel__viewport--horizontal {
+  width: 100%;
+}
 .terminal-panel__viewport--vertical {
   position: absolute;
   top: 0;
@@ -9721,11 +9724,15 @@
 .terminal-panel__viewport--active {
   background-color: var(--muted);
 }
+.terminal-panel__viewports--single .terminal-panel__viewport--active {
+  background-color: transparent;
+}
 .terminal-panel__output {
   color: var(--foreground);
   font-family: var(--font-mono);
   font-size: 12px;
   line-height: 18px;
+  white-space: pre-wrap;
 }
 .terminal-panel__error {
   padding: 6px 12px;
