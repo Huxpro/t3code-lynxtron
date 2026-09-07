@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-06T22:00:00-04:00",
+  "stateId": "settled-banner-inline-files-narrow",
+  "productCommit": "539463ccf",
+  "harnessCommit": "d5e9d8c32",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1024x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "requestedRightPanelWidth": 540,
+    "authorityRightPanelWidth": 360,
+    "sourceSnapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "preparedSnapshotSha256": "941f2d8eca02edc3ac1f27039a81686bde3fa212a9880605ceda896b7c503924",
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "activeTurnId": "019f9b5e-c44d-7ac1-8d9a-6f4971770461",
+    "sessionStatus": "stopped",
+    "settledOverride": "settled"
+  },
+  "capture": {
+    "reportSha256": "fb68e2f868f4c9021c23d0a9a50b08247dcc96422d0407b9f3171d584b73df88",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "403cf426a403c86b106027d2538a7b45edfcd134e1415aa7a522893f21da4434",
+    "webImageSha256": "892271ee2d35094e33ffa202eb976472078007766324489bd9bc31e787e18939",
+    "lynxImageSha256": "49a02e2c0cd2cc1dd4925e80e60fc08b7f6fadd74a7f9d912a292cfa7ddec148",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "filesBrowserMatch": true,
+    "rendererErrors": 0
+  },
+  "content": {
+    "checkoutLabelsWeb": ["Local checkout", "main"],
+    "checkoutLabelsLynx": ["Local checkout", "main"],
+    "titleWeb": "This thread is settled",
+    "titleLynx": "This thread is settled",
+    "descriptionWeb": "Sending a message moves it back to Active in the sidebar.",
+    "descriptionLynx": "Sending a message moves it back to Active in the sidebar.",
+    "actionWeb": "Un-settle",
+    "actionLynx": "Un-settle",
+    "filesRowCountWeb": 25,
+    "filesRowCountLynx": 25
+  },
+  "geometry": {
+    "rightPanelWeb": [664, 0, 360, 820],
+    "rightPanelLynx": [663, 0, 361, 820],
+    "statusBannerWeb": [276, 532, 368, 88],
+    "statusBannerLynx": [276, 532, 367, 88],
+    "statusCopyWeb": [315, 545, 235.9375, 62],
+    "statusCopyLynx": [315, 545, 235, 62],
+    "statusActionWeb": [558.9375, 564, 70.0625, 24],
+    "statusActionLynx": [558, 564, 70, 24],
+    "composerWeb": [276, 628, 368, 140],
+    "composerLynx": [276, 628, 367, 140],
+    "composerGapWeb": 8,
+    "composerGapLynx": 8
+  },
+  "diagnosticPixelMetric": {
+    "crop": [256, 500, 408, 288],
+    "mae": 3.622376,
+    "significantShare": 0.052756,
+    "threshold": "max RGB channel delta >= 16",
+    "ledgerCredit": false,
+    "reason": "The crop width differs from the historical 228px center crop after the Electron authority changed its responsive panel width."
+  },
+  "classification": "The previous current-state gate had regressed and accepted an idle thread without a settled banner. The repaired harness selects the explicit source thread, prepares a stopped session with a settled override while preserving active-turn identity, asserts the full banner copy and action, and follows the current Electron authority's responsive 360px inline Files panel. Web and Lynx now match within one pixel; no product or material improvement is claimed. Screenshots remain temporary."
+}
