@@ -13254,19 +13254,6 @@ async function captureCell({
         }
         await delay(100);
       }
-      if (diffScopeWorkingTreeSelected) {
-        if (triggerPoints?.web)
-          await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.web);
-        if (triggerPoints?.lynx)
-          await dispatchPointerClickWithMove(cdp, sessionId, triggerPoints.lynx);
-        state = await waitForWorkbenchState(
-          cdp,
-          sessionId,
-          (next) => diffScopeMenuReady(next),
-          3_000,
-          "diff scope menu reopened for retained frame",
-        );
-      }
     }
   }
 
