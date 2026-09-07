@@ -20,6 +20,10 @@ describe("Quick Switch visual-state probe", () => {
     expect(source).toContain("if (!viewport.testResize) return;");
     expect(source).toContain("__T3_LYNXTRON_QUICK_SWITCH_QUERY__");
     expect(source).toContain("__T3_LYNXTRON_QUICK_SWITCH_STATE__");
+    expect(source).toContain('addListener?.("t3:quick-switch-active-test"');
+    expect(source).toContain("navigationItems.findIndex((item) => item.title === label)");
+    expect(source).toContain('navigationItems.map((item) => item.id).join("\\u0000")');
+    expect(source).toContain("[fileMode, navigationItemIds, query]");
     expect(source).toContain("actionLabels: filteredActions.map");
     expect(source).toContain("filePaths: filteredFiles.map");
     expect(source).toContain("filePending: filePicker.pending");

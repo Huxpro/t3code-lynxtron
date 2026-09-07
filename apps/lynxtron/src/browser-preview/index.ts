@@ -55,6 +55,7 @@ interface BrowserPreviewDiagnostics {
   openWorkspaceMenuForHarness(open: boolean): boolean;
   invokeTooltipForHarness(relationId: string, action: "hover" | "leave"): boolean;
   invokeMenuForHarness(relationId: string): boolean;
+  setQuickSwitchActiveForHarness(label: string): boolean;
   invokeResizeForHarness(target: "sidebar" | "right-panel", startX: number, endX: number): boolean;
 }
 
@@ -314,6 +315,10 @@ const diagnostics: BrowserPreviewDiagnostics = {
   },
   invokeMenuForHarness: (relationId) => {
     emitGlobalEvent("t3:menu-test", [{ relationId }]);
+    return true;
+  },
+  setQuickSwitchActiveForHarness: (label) => {
+    emitGlobalEvent("t3:quick-switch-active-test", [{ label }]);
     return true;
   },
   invokeResizeForHarness: (target, startX, endX) => {

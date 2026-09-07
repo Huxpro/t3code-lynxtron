@@ -3951,6 +3951,18 @@ async function hoverPaletteRow(cdp, sessionId, client, label) {
   return true;
 }
 
+async function setLynxPaletteActiveForHarness(cdp, sessionId, label) {
+  const updated = await evaluate(
+    cdp,
+    sessionId,
+    `document.getElementById('lynx-pane')?.contentWindow
+      ?.__T3_LYNX_WEB_PREVIEW__?.setQuickSwitchActiveForHarness?.(${JSON.stringify(label)}) ?? false`,
+  );
+  if (updated !== true) {
+    throw new Error(`Lynx Quick Switch active-row probe is unavailable for ${label}`);
+  }
+}
+
 async function clickPaletteRow(cdp, sessionId, client, label) {
   const point = await paletteRowPoint(cdp, sessionId, client, label);
   if (!point) return false;
@@ -5125,6 +5137,10 @@ async function runCommandPaletteNavigationFlow(cdp, sessionId) {
   timeline.push({ step: "hover-web", active: active(state, "web") });
 
   await hoverPaletteRow(cdp, sessionId, "lynx", "Add project");
+  await setLynxPaletteActiveForHarness(cdp, sessionId, "Add project");
+  state = await waitForWorkbenchState(cdp, sessionId, (next) =>
+    active(next, "lynx").includes("Add project"),
+  );
   await delay(100);
   const lynxHoverVisual = await paletteRowHoverVisual(cdp, sessionId, "lynx", "Add project");
   if (lynxHoverVisual?.hovered !== true) {
@@ -5134,8 +5150,9 @@ async function runCommandPaletteNavigationFlow(cdp, sessionId) {
   }
   timeline.push({
     step: "hover-lynx",
+    active: active(state, "lynx"),
     visual: lynxHoverVisual,
-    stateBridge: "browser-proxy-does-not-project-main-thread-hover",
+    stateBridge: "browser-preview-active-row-probe",
   });
 
   await dispatchPaletteKey(cdp, sessionId, "web", "ArrowDown", "ArrowDown", 40);
@@ -5233,6 +5250,10 @@ async function runCommandPaletteNavigationFlow(cdp, sessionId) {
     active(next, "web").includes("Add project"),
   );
   await hoverPaletteRow(cdp, sessionId, "lynx", "Add project");
+  await setLynxPaletteActiveForHarness(cdp, sessionId, "Add project");
+  state = await waitForWorkbenchState(cdp, sessionId, (next) =>
+    active(next, "lynx").includes("Add project"),
+  );
   await delay(100);
   const finalLynxHoverVisual = await paletteRowHoverVisual(cdp, sessionId, "lynx", "Add project");
   if (finalLynxHoverVisual?.hovered !== true) {
@@ -5244,8 +5265,17 @@ async function runCommandPaletteNavigationFlow(cdp, sessionId) {
   timeline.push({
     step: "final-hover",
     webActive: active(state, "web"),
+    lynxActive: active(state, "lynx"),
     lynxVisual: finalLynxHoverVisual,
   });
+  if (active(state, "web") !== active(state, "lynx")) {
+    throw new Error(
+      `Command Palette final active rows diverged: ${JSON.stringify({
+        web: active(state, "web"),
+        lynx: active(state, "lynx"),
+      })}`,
+    );
+  }
   return { state, timeline };
 }
 

@@ -1523,6 +1523,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, '"Enter", "Enter", 13');
     assert.include(source, '"Backspace", "Backspace", 8');
     assert.include(source, '"Escape", "Escape", 27');
+    assert.include(source, "setLynxPaletteActiveForHarness");
+    assert.include(source, "browser-preview-active-row-probe");
+    assert.include(source, "Command Palette final active rows diverged");
     assert.include(source, "nativePhysicalKeyboard:");
     assert.include(source, '"pending-user-session"');
   });

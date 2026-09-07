@@ -669,9 +669,23 @@ export function QuickSwitch({
     sourceItems,
     view,
   ]);
+  const navigationItemIds = navigationItems.map((item) => item.id).join("\u0000");
+  useEffect(() => {
+    if (!viewport.testResize) return;
+    const emitter = lynx.getJSModule?.("GlobalEventEmitter") as
+      | { addListener?: (eventName: string, listener: (value: unknown) => void) => void }
+      | undefined;
+    emitter?.addListener?.("t3:quick-switch-active-test", (value: unknown) => {
+      const label =
+        typeof value === "object" && value !== null && "label" in value ? value.label : null;
+      if (typeof label !== "string") return;
+      const index = navigationItems.findIndex((item) => item.title === label);
+      if (index >= 0) setActiveIndex(index);
+    });
+  }, [navigationItems, viewport.testResize]);
   useEffect(() => {
     setActiveIndex(initialQuickSwitchActiveIndex(navigationItems, { fileMode, query }));
-  }, [fileMode, navigationItems, query]);
+  }, [fileMode, navigationItemIds, query]);
   const handlePaletteKeyDown = useCallback(
     (event: unknown) => {
       const key =
