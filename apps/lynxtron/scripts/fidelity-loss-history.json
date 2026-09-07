@@ -29756,6 +29756,59 @@
           }
         }
       ]
+    },
+    {
+      "id": "model-picker-empty-current-refresh",
+      "observedAt": "2026-09-07T08:24:00-04:00",
+      "commit": "7ad9e00ba",
+      "codeState": "commit",
+      "label": "Model Picker Empty current refresh",
+      "narrative": "A current strict same-thread capture refreshes Model Picker Empty after accumulated shared picker fixes. Both panes retain query __t3_no_models__, zero rows, No models found copy, and exact 360x346 geometry. Panel SSIM reaches 0.965918 versus the stale visible-panel checkpoint 0.927462.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No new product code is credited. The refresh uses one snapshot, persisted thread, query, empty result, route, theme, viewport, exact geometry and zero-error runtime."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/model-picker-empty-current.json",
+          "classification": "tracked-current",
+          "sha256": "b5e89ff7117512620831ed0789a8f0dc47c1b30d3fa0eb7cbe9328b3d972d8cc"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["model-picker-empty"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-empty-model-content",
+              "source": "Both panes expose query __t3_no_models__, zero rows and No models found."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 360,
+              "confidence": 0.99,
+              "method": "current-empty-model-geometry",
+              "source": "Both panels are exactly 360x346 at x397 y375."
+            },
+            "material": {
+              "residual": 0.034082,
+              "confidence": 0.99,
+              "method": "current-empty-model-panel-ssim",
+              "source": "1 - exact 360x346 panel SSIM 0.965918, improved from stale visible-panel current 0.927462."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-empty-model-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundles and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
