@@ -29,6 +29,13 @@ describe("Quick Switch material", () => {
     );
   });
 
+  it("overlays the search input across the icon slot like Web", () => {
+    const input = rule(".qs-search__input");
+    expect(input).toContain("margin-left: -30px;");
+    expect(input).toContain("padding-left: 32px;");
+    expect(input).toContain("box-sizing: border-box;");
+  });
+
   it("matches the light glass authority without changing dark material", () => {
     const lightPanel = rule(".theme-light .palette-panel");
     const lightFooter = rule(".theme-light .palette-footer");

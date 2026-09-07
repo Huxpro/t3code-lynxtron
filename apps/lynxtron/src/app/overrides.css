@@ -10372,7 +10372,9 @@
 .qs-search__input {
   flex-grow: 1;
   height: 40px;
-  margin-left: 10px;
+  margin-left: -30px;
+  padding-left: 32px;
+  box-sizing: border-box;
   color: var(--foreground);
   font-size: 14px;
   font-family: var(--font-sans);
