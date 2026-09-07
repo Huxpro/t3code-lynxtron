@@ -7573,6 +7573,7 @@ async function captureCell({
   const fileEditorInteractionTimeline = [];
   const filesBrowserInteractionTimeline = [];
   let lastFilesBrowserTimelineKey = "";
+  let componentLabTooltipOpened = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7596,7 +7597,27 @@ async function captureCell({
               title,
             })) ?? [],
           );
-      if (labReady) break;
+      if (labReady && !componentLabTooltipOpened) {
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.webElementCenter('[data-component-lab-tooltip-trigger="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) {
+          await movePointer(cdp, sessionId, point);
+          await invokeLynxTooltipProbe(cdp, sessionId, "component-lab-tooltip", "hover");
+          componentLabTooltipOpened = true;
+          await delay(100);
+          continue;
+        }
+      }
+      if (
+        labReady &&
+        componentLabTooltipOpened &&
+        state?.web?.componentLabMetrics?.tooltip?.text === "Shared tooltip" &&
+        state?.lynx?.componentLabMetrics?.tooltip?.text === "Shared tooltip"
+      )
+        break;
       if (state?.web?.literalRoute !== webRoute) {
         await evaluate(
           cdp,
@@ -11098,6 +11119,11 @@ async function captureCell({
           title,
         })) ?? [],
       );
+  const componentLabTooltipReady =
+    !isComponentsLabState ||
+    (componentLabTooltipOpened &&
+      state?.web?.componentLabMetrics?.tooltip?.text === "Shared tooltip" &&
+      state?.lynx?.componentLabMetrics?.tooltip?.text === "Shared tooltip");
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -13521,6 +13547,7 @@ async function captureCell({
   const componentsLabPass =
     componentLabReady &&
     componentLabGeometryReady &&
+    componentLabTooltipReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -13615,6 +13642,7 @@ async function captureCell({
       reachedTargetState: confirmedTargetState,
       componentsLabPass,
       componentLabGeometryReady,
+      componentLabTooltipReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

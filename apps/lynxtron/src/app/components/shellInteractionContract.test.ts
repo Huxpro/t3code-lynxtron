@@ -387,6 +387,8 @@ describe("desktop shell interaction contract", () => {
     expect(button).toContain("aria-label={ariaLabel}");
     expect(button).toContain("flatten={false}");
     expect(button).toContain('aria-disabled={disabled ? "true" : undefined}');
+    expect(button).toContain("...props");
+    expect(button).toContain("<view\n      {...props}");
     expect(input).toContain("aria-label={ariaLabel}");
     expect(input).toContain('aria-disabled={disabled ? "true" : undefined}');
     expect(textarea).toContain("aria-label={ariaLabel}");

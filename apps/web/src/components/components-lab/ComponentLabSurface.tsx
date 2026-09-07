@@ -10,6 +10,7 @@ import { Kbd, KbdGroup } from "../ui/kbd";
 import { Separator } from "../ui/separator";
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
+import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -70,6 +71,44 @@ export function ComponentLabSurface() {
               <Button variant="destructive">Delete</Button>
               <Button disabled>Disabled</Button>
             </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="ui/tooltip#Tooltip" title="Tooltip">
+            <TooltipProvider delay={0}>
+              <Tooltip>
+                <TooltipTrigger
+                  data-component-lab-tooltip-trigger="default"
+                  data-floating-anchor="component-lab-tooltip"
+                  render={<Button variant="outline" />}
+                >
+                  Hover for details
+                </TooltipTrigger>
+                <TooltipPopup relationId="component-lab-tooltip">Shared tooltip</TooltipPopup>
+              </Tooltip>
+            </TooltipProvider>
+          </StoryFrame>
+
+          <StoryFrame id="ui/tooltip#TooltipTrigger" title="Tooltip trigger">
+            <TooltipProvider delay={0}>
+              <Tooltip>
+                <TooltipTrigger
+                  data-component-lab-tooltip-trigger="glass"
+                  data-floating-anchor="component-lab-tooltip-glass"
+                  render={<Button variant="ghost" />}
+                >
+                  Hover glass
+                </TooltipTrigger>
+                <TooltipPopup relationId="component-lab-tooltip-glass" variant="glass">
+                  Glass tooltip
+                </TooltipPopup>
+              </Tooltip>
+            </TooltipProvider>
+          </StoryFrame>
+
+          <StoryFrame id="ui/tooltip#TooltipPopup" title="Tooltip popup">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Opened by the real Tooltip state machine in paired capture.
+            </HostText>
           </StoryFrame>
 
           <StoryFrame id="ui/badge#Badge" title="Badge">

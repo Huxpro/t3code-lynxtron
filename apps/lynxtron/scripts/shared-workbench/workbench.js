@@ -187,6 +187,10 @@ function readComponentLabMetrics(root) {
   if (!lab) return null;
   return {
     expectedStoryCount: expectedComponentStoryCount,
+    tooltip: (() => {
+      const popup = root.querySelector('[data-floating-popup="component-lab-tooltip"]');
+      return popup ? { text: readComposedText(popup), box: readElementBox(popup) } : null;
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),
@@ -4378,6 +4382,14 @@ const workbench = {
         ?.contentWindow?.__T3_LYNX_WEB_PREVIEW__?.invokeTooltipForHarness?.(relationId, action) ===
       true
     );
+  },
+  webElementCenter(selector) {
+    const frame = document.getElementById("web-pane");
+    const element = frame?.contentWindow?.document?.querySelector(selector);
+    if (!frame || !element) return null;
+    const frameRect = frame.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
   },
 };
 window.__T3_WORKBENCH__ = workbench;

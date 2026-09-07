@@ -20,6 +20,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(readerSource, 'story.querySelectorAll("[data-slot]")');
     assert.include(captureSource, "const componentLabReady =");
     assert.include(captureSource, "const componentLabGeometryReady =");
+    assert.include(captureSource, "const componentLabTooltipReady =");
+    assert.include(captureSource, '"component-lab-tooltip", "hover"');
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");

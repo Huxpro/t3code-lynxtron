@@ -26,6 +26,7 @@ type ButtonSize =
   | "xs";
 
 export interface ButtonProps {
+  readonly [key: string]: unknown;
   readonly "aria-label"?: string;
   readonly children?: ReactNode;
   readonly className?: string;
@@ -54,6 +55,7 @@ export function Button({
   onClick,
   size = "default",
   variant = "default",
+  ...props
 }: ButtonProps) {
   const handleTap = useCallback(() => {
     if (!disabled) onClick?.();
@@ -68,6 +70,7 @@ export function Button({
 
   return (
     <view
+      {...props}
       flatten={false}
       aria-label={ariaLabel}
       aria-disabled={disabled ? "true" : undefined}

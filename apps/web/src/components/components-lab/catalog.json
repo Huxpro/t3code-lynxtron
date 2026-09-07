@@ -64,5 +64,23 @@
     "category": "Host primitives",
     "title": "Host button",
     "states": ["default", "disabled"]
+  },
+  {
+    "id": "ui/tooltip#Tooltip",
+    "category": "Overlays",
+    "title": "Tooltip",
+    "states": ["closed", "hover-open"]
+  },
+  {
+    "id": "ui/tooltip#TooltipTrigger",
+    "category": "Overlays",
+    "title": "Tooltip trigger",
+    "states": ["idle", "hover"]
+  },
+  {
+    "id": "ui/tooltip#TooltipPopup",
+    "category": "Overlays",
+    "title": "Tooltip popup",
+    "states": ["default", "glass"]
   }
 ]

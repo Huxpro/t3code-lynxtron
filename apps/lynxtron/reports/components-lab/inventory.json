@@ -65,6 +65,24 @@
       "id": "ui/hostElements#HostButton",
       "states": ["default", "disabled"],
       "title": "Host button"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/tooltip#Tooltip",
+      "states": ["closed", "hover-open"],
+      "title": "Tooltip"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/tooltip#TooltipTrigger",
+      "states": ["idle", "hover"],
+      "title": "Tooltip trigger"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/tooltip#TooltipPopup",
+      "states": ["default", "glass"],
+      "title": "Tooltip popup"
     }
   ],
   "components": [
@@ -4695,7 +4713,7 @@
     },
     {
       "authority": {
-        "line": 45,
+        "line": 46,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4729,7 +4747,7 @@
     },
     {
       "authority": {
-        "line": 16,
+        "line": 17,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4750,7 +4768,7 @@
     },
     {
       "authority": {
-        "line": 41,
+        "line": 42,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -20784,12 +20802,16 @@
       "name": "Tooltip",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 43
+        "webUseSiteCount": 44
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/tooltip#Tooltip",
+        "states": ["closed", "hover-open"],
+        "status": "covered",
+        "title": "Tooltip"
       },
       "useSites": [
         {
@@ -20863,6 +20885,14 @@
         {
           "path": "apps/web/src/components/CommandPalette.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ComposerPromptEditor.tsx",
@@ -21011,12 +21041,16 @@
       "name": "TooltipPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 42
+        "webUseSiteCount": 43
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/tooltip#TooltipPopup",
+        "states": ["default", "glass"],
+        "status": "covered",
+        "title": "Tooltip popup"
       },
       "useSites": [
         {
@@ -21090,6 +21124,14 @@
         {
           "path": "apps/web/src/components/CommandPalette.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ComposerPromptEditor.tsx",
@@ -21211,9 +21253,9 @@
       "name": "TooltipProvider",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 2
+        "webUseSiteCount": 3
       },
       "story": {
         "status": "uncovered"
@@ -21222,6 +21264,14 @@
         {
           "path": "apps/web/src/components/chat/ModelPickerContent.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/sidebar/SidebarV2CompositionSurface.tsx",
@@ -21247,12 +21297,16 @@
       "name": "TooltipTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 43
+        "webUseSiteCount": 44
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/tooltip#TooltipTrigger",
+        "states": ["idle", "hover"],
+        "status": "covered",
+        "title": "Tooltip trigger"
       },
       "useSites": [
         {
@@ -21326,6 +21380,14 @@
         {
           "path": "apps/web/src/components/CommandPalette.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ComposerPromptEditor.tsx",
@@ -21445,7 +21507,7 @@
     "internal": 209,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 11,
+    "stories": 14,
     "webOnly": 456
   },
   "generatedFrom": "apps/web/src/components",
