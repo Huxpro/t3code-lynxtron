@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T04:30:00-04:00",
+  "stateId": "right-panel-terminal",
+  "harnessCommit": "649ab48f3",
+  "productCommit": "d9f0aabba",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f",
+    "terminalId": "term-1"
+  },
+  "capture": {
+    "reportSha256": "8ef94f6f3329862ea556bccf1a6880e397db7a6936189ef35759b4df07ddf3c0",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "webImageSha256": "ab25c74884d2dd11900db946637adfe6267b230f93224bb83048b91822d3d55b",
+    "lynxImageSha256": "c29dff7b90b8a538e08fa334a5a0590a7270340bf23990d6984db77712884366",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "terminalSessionMatch": true,
+    "validatedTerminalCausalFrame": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "terminalPanelSsim": 0.870223,
+    "lynxViewportWidth": 293.5,
+    "singleSessionUsesHalfWidth": true,
+    "outputPreservesNewlines": false
+  },
+  "after": {
+    "terminalPanelSsim": 0.958657,
+    "webPanel": [740, 0, 540, 820],
+    "lynxPanel": [739, 0, 541, 820],
+    "webViewport": [745, 48, 531, 768],
+    "lynxViewport": [741, 44, 539, 744],
+    "lynxOutput": [753, 54, 515, 54],
+    "singleSessionUsesFullWidth": true,
+    "outputPreservesNewlines": true,
+    "singleViewportBackground": "transparent",
+    "resize": {
+      "beforeWidth": 541,
+      "afterWidth": 617,
+      "beforeCols": 71,
+      "afterCols": 82,
+      "rows": 35,
+      "restored": true
+    }
+  },
+  "classification": "The old terminal visual cell was not safe: the reader ignored Web's real data-terminal-id surface, the final pass cached an earlier terminal state, and the main image could be captured after a one-sided resize. The hardened harness now requires the same term-1 session, 540/541px panels, near-full-width viewports, multiline Lynx output, resize-grid growth, restoration, and a validated terminal causal frame. That valid frame exposed three product defects in the single-session Lynx surface: the horizontal class forced 50% width, PTY newlines were not explicitly preserved, and active-pane tint covered the whole single viewport. The scoped fixes restore full width, pre-wrapped output, and transparent single-pane background while retaining split-pane active highlighting."
+}

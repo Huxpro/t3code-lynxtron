@@ -29133,7 +29133,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/provider-dialog-light-step-rings.json",
           "classification": "tracked-current",
-          "sha256": "263a6f077188bacbfcca8d8abe05e8cc01c34197536a50f4f09184c22921ba8f"
+          "sha256": "670a57600ef746fa333006f6d2ca26df9a12f19712e782334957bbd5bf7925cf"
         }
       ],
       "updates": [
@@ -29159,6 +29159,66 @@
               "confidence": 0.99,
               "method": "provider-step-ring-current-runtime",
               "source": "Same snapshot, route, Driver step, light theme, viewport, exact post-fix bundle, strict gates, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "right-panel-terminal-single-session-current",
+      "observedAt": "2026-09-07T04:30:00-04:00",
+      "commit": "649ab48f3",
+      "codeCommit": "d9f0aabba",
+      "codeState": "commit",
+      "label": "Right Panel Terminal single-session parity",
+      "narrative": "The corrected harness now identifies Web's real terminal root, requires the same term-1 session and near-equal panel widths at final acceptance, verifies a near-full-width viewport and multiline output, restores the panel after the PTY resize probe, and retains the validated terminal causal frame as the report image. This exposed and fixed a real Lynx single-session bug: the only viewport inherited horizontal split width 50%, PTY newlines were not explicit, and active tint covered the whole pane. The valid same-authority terminal panel SSIM improves from 0.870223 to 0.958657.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "The before and after valid terminal frames use byte-identical Web authority pixels, one snapshot/thread/term-1 PTY, matching panel widths, the same pwd output and zero errors. Product changes are scoped to single-session width, output whitespace, and single-pane active material; split mode remains unchanged."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/right-panel-terminal-single-session.json",
+          "classification": "tracked-current",
+          "sha256": "5fa117dd360091cedc61b97f34eca04ab73a483a5182bcd810c948f8b24b481f"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["right-panel-terminal"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "same-terminal-multiline-output",
+              "source": "Both panes attach term-1 and show the pwd command and shared cwd; Lynx explicitly preserves PTY newline boundaries."
+            },
+            "geometry": {
+              "anchorDeltas": [1, 0, 1, 0, 4, 4, 8, 24],
+              "anchorScale": 820,
+              "confidence": 0.99,
+              "method": "single-terminal-panel-and-viewport-geometry",
+              "source": "Panel widths differ by one pixel; Lynx single viewport now spans all 539px instead of 293.5px. Remaining root/viewport insets represent Web Ghostty versus Lynx command-row chrome."
+            },
+            "typography": {
+              "residual": 0.12,
+              "confidence": 0.99,
+              "method": "same-pty-multiline-terminal-typography",
+              "source": "The same command, cwd, and prompt are readable on separate lines; residual preserves Ghostty canvas versus structured Lynx text shaping."
+            },
+            "material": {
+              "residual": 0.041343,
+              "confidence": 0.99,
+              "method": "same-pty-terminal-panel-ssim",
+              "source": "1 - valid 540x820 terminal panel SSIM 0.958657, improved from 0.870223 after full-width, multiline, and transparent single-pane fixes."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "strict-same-terminal-runtime",
+              "source": "Same server, snapshot, thread and term-1; pwd returns the shared cwd, PTY grid grows 71 to 82 columns on resize and restores, with zero renderer errors."
             }
           }
         }
