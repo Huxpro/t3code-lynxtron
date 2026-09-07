@@ -245,6 +245,11 @@ describe("transcript layout contract", () => {
     expect(fileBlock).toContain("border-radius: 0;");
     expect(headerBlock).toContain("height: 33px;");
     expect(fileBlock).toContain("border-left-width: 0;");
+    expect(overrides).toContain(".diff-code-line__number {\n  width: 20px;");
+    expect(overrides).toContain(".diff-code-line__marker {\n  width: 14px;");
+    expect(overrides).toContain(
+      ".diff-code-line__content {\n  flex-grow: 1;\n  min-width: 0;\n  padding: 0 8px;",
+    );
   });
 
   it("renders Markdown lists as vertical full-width text rows", () => {

@@ -1545,6 +1545,23 @@ function readReviewMetrics(root) {
           composedCodeGeometry: {
             headers: composedDiffHeaders.map(readElementBox).filter(Boolean),
             lines: composedDiffLines.map(readElementBox).filter(Boolean),
+            gutters: composedDiffElements
+              .filter((element) => element.matches?.("[data-column-number]"))
+              .map(readElementBox)
+              .filter(Boolean),
+            contents: composedDiffElements
+              .filter((element) => element.matches?.("[data-line]"))
+              .map(readElementBox)
+              .filter(Boolean),
+            lynxNumbers: [...diffSurface.querySelectorAll(".diff-code-line__number")].map(
+              readElementBox,
+            ),
+            lynxMarkers: [...diffSurface.querySelectorAll(".diff-code-line__marker")].map(
+              readElementBox,
+            ),
+            lynxContents: [...diffSurface.querySelectorAll(".diff-code-line__content")].map(
+              readElementBox,
+            ),
           },
           codeFiles: [...diffSurface.querySelectorAll("[data-review-code-file]")].map((item) => ({
             path: item.getAttribute("data-review-code-file"),

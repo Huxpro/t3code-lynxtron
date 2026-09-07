@@ -3408,6 +3408,11 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
     webMetrics.diff !== null &&
     lynxMetrics.diff !== null;
   const lynxCodeFiles = lynxMetrics.diff?.codeFiles ?? [];
+  const webGutters = webMetrics.diff?.composedCodeGeometry?.gutters ?? [];
+  const webContents = webMetrics.diff?.composedCodeGeometry?.contents ?? [];
+  const lynxNumbers = lynxMetrics.diff?.composedCodeGeometry?.lynxNumbers ?? [];
+  const lynxMarkers = lynxMetrics.diff?.composedCodeGeometry?.lynxMarkers ?? [];
+  const lynxContents = lynxMetrics.diff?.composedCodeGeometry?.lynxContents ?? [];
   const lynxFileHeaderAnatomyReady =
     expectation !== "diff" ||
     (lynxCodeFiles.length === lynxFilePaths.length &&
@@ -3419,9 +3424,29 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
           file.changeIconRect?.rect?.width === 14 &&
           file.changeIconRect?.rect?.height === 14,
       ));
+  const diffLineColumnsReady =
+    expectation !== "diff" ||
+    (webGutters.length === 2 &&
+      webContents.length === 2 &&
+      lynxNumbers.length === 2 &&
+      lynxMarkers.length === 2 &&
+      lynxContents.length === 2 &&
+      lynxContents.every(
+        (content, index) =>
+          Math.abs(
+            content.rect.x -
+              (lynxNumbers[index].rect.x +
+                lynxNumbers[index].rect.width +
+                lynxMarkers[index].rect.width),
+          ) <= 1 &&
+          Math.abs(content.rect.x - webContents[index].rect.x) <= 1 &&
+          content.style.fontSize === "13px" &&
+          content.style.fontFamily.includes("SF Mono"),
+      ));
   return (
     diffPairReady &&
     lynxFileHeaderAnatomyReady &&
+    diffLineColumnsReady &&
     webMetrics.diff.selectedTurn === lynxMetrics.diff.selectedTurn &&
     webFilePaths.length > 0 &&
     JSON.stringify(webFilePaths) === JSON.stringify(lynxFilePaths) &&

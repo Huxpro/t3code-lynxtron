@@ -9442,22 +9442,22 @@
   background-color: color-mix(in srgb, var(--background) 92%, var(--destructive));
 }
 .diff-code-line__number {
-  width: 34px;
-  flex-shrink: 0;
-  color: var(--muted-foreground);
-  font-size: 12px;
-  line-height: 20px;
-  text-align: right;
-  font-family: var(--font-mono);
-}
-.diff-code-line__marker {
   width: 20px;
   flex-shrink: 0;
   color: var(--muted-foreground);
-  font-size: 12px;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: right;
+  font-family: "SF Mono", SFMono-Regular, "JetBrains Mono", Consolas, monospace;
+}
+.diff-code-line__marker {
+  width: 14px;
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-size: 13px;
   line-height: 20px;
   text-align: center;
-  font-family: var(--font-mono);
+  font-family: "SF Mono", SFMono-Regular, "JetBrains Mono", Consolas, monospace;
 }
 .diff-code-line--addition .diff-code-line__marker {
   color: #2fbf71;
@@ -9468,10 +9468,12 @@
 .diff-code-line__content {
   flex-grow: 1;
   min-width: 0;
+  padding: 0 8px;
+  box-sizing: border-box;
   color: var(--foreground);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 20px;
-  font-family: var(--font-mono);
+  font-family: "SF Mono", SFMono-Regular, "JetBrains Mono", Consolas, monospace;
   white-space: pre;
 }
 .diff-code-token--muted {
