@@ -29385,6 +29385,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "command-palette-search-geometry-current",
+      "observedAt": "2026-09-07T07:14:00-04:00",
+      "commit": "1de6f5e44",
+      "codeCommit": "1de6f5e44",
+      "codeState": "commit",
+      "label": "Command Palette search geometry parity",
+      "narrative": "Lynx laid out its native input after the search icon and flex gap while Web overlays the icon inside a full-width input with 32px start padding. The Lynx icon now leaves flex flow and the native plus Browser-preview input primitives use the authority geometry. Inner input x/width improves from 402/517 to 361/558 against Web 362/556; search SSIM improves from 0.859685 to 0.878396 and panel SSIM from 0.911692 to 0.913671.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Same snapshot, thread, route, theme, viewport and full interaction chain. The two Web authority frames differ only at the 18-pixel blinking caret column; all non-caret Web pixels are identical, and the change is isolated to Lynx search icon/input geometry."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/command-palette-search-geometry.json",
+          "classification": "tracked-current",
+          "sha256": "12c5efaf6784c65ff335bb9aa59e5f273bc7f7a314fa9a9f3941e4275239566b"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["command-palette-navigation"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [1, 0, 2, 0],
+              "anchorScale": 558,
+              "confidence": 0.99,
+              "method": "current-command-palette-search-input-geometry",
+              "source": "Lynx inner input is 361,90 558x34 versus Web 362,90 556x34, improved from Lynx 402,90 517x34; panel, rows and footer remain unchanged."
+            },
+            "material": {
+              "residual": 0.086329,
+              "confidence": 0.99,
+              "method": "command-palette-search-geometry-ssim",
+              "source": "1 - panel SSIM 0.913671, improved from 0.911692; search SSIM improves 0.859685 to 0.878396 and search MAE falls 3.784262 to 3.403770."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "command-palette-search-geometry-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundle, complete interaction timeline and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
