@@ -11938,7 +11938,9 @@
   gap: 4px;
 }
 .project-settings-path {
-  flex-grow: 1;
+  flex-grow: 0;
+  flex-shrink: 1;
+  width: 328px;
   min-width: 0;
   color: var(--muted-foreground);
   font-family: var(--font-mono);
