@@ -30077,6 +30077,66 @@
           }
         }
       ]
+    },
+    {
+      "id": "sidebar-inline-search-row-material-current",
+      "observedAt": "2026-09-07T15:20:00-04:00",
+      "commit": "ea3bafc91",
+      "codeCommit": "ea3bafc91",
+      "codeState": "commit",
+      "label": "Sidebar inline search row material parity",
+      "narrative": "Web authority uses an 8px search-result radius and a 4% selected foreground fill while Lynx used 6px and 11%. Matching those tokens preserves the exact query, two ordered results, row geometry, favicon geometry and title origins. Full-frame SSIM improves 0.977005 to 0.977940, fixed result-crop SSIM 0.874961 to 0.916949, crop MAE 8.188789 to 4.204065, and significant-pixel share 35.1321% to 4.9774%.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use byte-identical Web authority pixels, snapshot, persisted thread, query, result order, route, theme, viewport and zero-error runtime. Only the Lynx result-row radius and selected fill change."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/sidebar-inline-search-row-material.json",
+          "classification": "tracked-current",
+          "sha256": "06e4a9f1467df03b4af3c95d4c82c51cc873e574072a2d148ab41887b8a6fcd7"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["sidebar-inline-search"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-search-current-query-results",
+              "source": "Both panes retain query thread and the same two ordered New thread results."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 239,
+              "confidence": 0.99,
+              "method": "sidebar-search-current-row-geometry",
+              "source": "Both result rows, favicons and title origins match exactly; the row corner radius now matches Web at 8px."
+            },
+            "material": {
+              "residual": 0.02206,
+              "confidence": 0.99,
+              "method": "sidebar-search-current-full-frame-ssim",
+              "source": "1 - strict full-frame SSIM 0.977940, improved from 0.977005; fixed result-crop SSIM improves 0.874961 to 0.916949."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-search-current-input-selection",
+              "source": "Both panes receive the query through their real Browser input channels and preserve the selected first result."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "sidebar-search-current-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact before/after bundles, matching identity and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

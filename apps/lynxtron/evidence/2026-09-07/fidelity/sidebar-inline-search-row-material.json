@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T15:20:00-04:00",
+  "stateId": "sidebar-inline-search",
+  "productCommit": "ea3bafc91",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "query": "thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "baselineReportSha256": "edc142105ca3c069ad1e5239a6e83efd2528ceb2fced8c33ce4a1de6325e188a",
+    "currentReportSha256": "53efbfde894b9f2c272231092354514ea13e36794f017b89feeac0a40fb1f10f",
+    "webImageSha256": "597fdefe1457396358e5cbbd903148b100900a5b11418b813b48b2d83a6975fe",
+    "baselineLynxImageSha256": "1ae0c34c429bc6007a9c8808d75f7b7c67fb584f7e9ae38d9b86d527b5d8de27",
+    "currentLynxImageSha256": "ecdb3fe0f3c4340bd3bbde1bd61a8bccf05ad169a77206d49a9eb55328415129",
+    "webBundleSha256": "5abc479c004b6d3683ecee38adf2f64135cd897e57a7f9f984f431816f5f7e85",
+    "baselineLynxBundleSha256": "ddd2373a6a7aa44af8fb57fbd1c6c2a35751315b5d2d1e9d17c98b0501962ed3",
+    "currentLynxBundleSha256": "8e52106d2d0234572d07b7da04e186db9183759773c189c801da764472ce87b9",
+    "bothPassed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0,
+    "inputChannel": "web-dom-focus+key-char|lynx-dom-focus+insert-text"
+  },
+  "contentAndGeometry": {
+    "query": "thread",
+    "resultTitles": ["New thread", "New thread"],
+    "resultRows": [
+      [8, 144, 239, 36],
+      [8, 181, 239, 36]
+    ],
+    "favicons": [
+      [18, 154, 16, 16],
+      [18, 191, 16, 16]
+    ],
+    "titleOrigins": [
+      [44, 152],
+      [44, 189]
+    ]
+  },
+  "pixelMetric": {
+    "definition": "FFmpeg full-frame and fixed Sidebar result crop x=0,y=132,256x97 SSIM, plus mean absolute RGB error and significant-pixel share over that crop; significant pixels use mean RGB difference greater than 12",
+    "baseline": {
+      "fullFrameSsim": 0.977005,
+      "resultCropSsim": 0.874961,
+      "resultCropMae": 8.188789,
+      "resultCropSignificantShare": 0.351321,
+      "rowRadius": 6,
+      "selectedBackgroundAlpha": 0.11
+    },
+    "current": {
+      "fullFrameSsim": 0.97794,
+      "resultCropSsim": 0.916949,
+      "resultCropMae": 4.204065,
+      "resultCropSignificantShare": 0.049774,
+      "rowRadius": 8,
+      "selectedBackgroundAlpha": 0.04
+    }
+  },
+  "classification": "Web authority uses an 8px result-row radius and 4% selected foreground fill while Lynx used 6px and 11%. Matching those two material tokens preserves exact content and geometry, raises fixed result-crop SSIM by 0.041988, halves crop MAE and removes 85.8% of significant mismatched pixels. Screenshots remain temporary because the tracked screenshot budget is full."
+}
