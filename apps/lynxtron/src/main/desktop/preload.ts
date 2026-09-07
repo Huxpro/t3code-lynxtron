@@ -67,6 +67,7 @@ function writePrefs(patch: Record<string, unknown>): Record<string, unknown> {
 }
 
 const READINESS_REPORT_PATH = process.env.T3_LYNXTRON_READINESS_REPORT?.trim();
+const BROWSER_PROBE_REPORT_PATH = process.env.T3_LYNXTRON_BROWSER_PROBE_REPORT?.trim();
 function writeAtomicReport(reportPath: string, value: Record<string, unknown>): boolean {
   try {
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
@@ -83,6 +84,10 @@ function reportReadiness(value: Record<string, unknown>): boolean {
   if (!READINESS_REPORT_PATH) return false;
   return writeAtomicReport(READINESS_REPORT_PATH, value);
 }
+function reportBrowserProbe(value: Record<string, unknown>): boolean {
+  if (!BROWSER_PROBE_REPORT_PATH) return false;
+  return writeAtomicReport(BROWSER_PROBE_REPORT_PATH, value);
+}
 
 contextBridge.exposeInLynxBTS({
   getAppBranding: () => resolveLynxtronAppBranding(process.env.T3_LYNXTRON_APP_STAGE_LABEL),
@@ -93,6 +98,15 @@ contextBridge.exposeInLynxBTS({
   getPrefs: () => readPrefs(),
   setPrefs: (patch: Record<string, unknown>) => writePrefs(patch ?? {}),
   ...(READINESS_REPORT_PATH ? { reportReadiness } : {}),
+  ...(BROWSER_PROBE_REPORT_PATH
+    ? {
+        getBrowserProbe: () => ({
+          failureUrl: "http://127.0.0.1:1/t3-cef-expected-failure",
+          successUrl: process.env.T3_LYNXTRON_BROWSER_PROBE_SUCCESS_URL ?? "",
+        }),
+        reportBrowserProbe,
+      }
+    : {}),
   writeClipboardText: (value: string) => clipboard.writeText(value),
   openExternal: async (url: string) => {
     await shell.openExternal(url);

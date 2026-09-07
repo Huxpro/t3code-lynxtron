@@ -21,6 +21,18 @@ interface PlatformBridge {
   openExternal?: (url: string) => Promise<void>;
   openPath?: (path: string) => Promise<void>;
   getBrowserCapabilities?: () => { readonly embedded?: boolean };
+  getBrowserProbe?: () => { readonly failureUrl?: string; readonly successUrl?: string };
+  reportBrowserProbe?: (value: Record<string, unknown>) => boolean;
+}
+
+export function getEmbeddedBrowserProbe() {
+  "background only";
+  return bridge()?.getBrowserProbe?.() ?? null;
+}
+
+export function reportEmbeddedBrowserProbe(value: Record<string, unknown>): boolean {
+  "background only";
+  return bridge()?.reportBrowserProbe?.(value) === true;
 }
 
 export function isEmbeddedBrowserAvailable(): boolean {

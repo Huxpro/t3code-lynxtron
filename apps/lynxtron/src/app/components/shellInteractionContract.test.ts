@@ -1359,6 +1359,10 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain("vcsStatusCwd === cwd ? vcsStatus : null");
     expect(chatView).toContain("currentRepoContext?.refName ?? null");
     expect(chatView).not.toContain("readProjectBranch(cwd)");
+    expect(componentSource("BrowserPanel.tsx")).toContain("getEmbeddedBrowserProbe");
+    expect(componentSource("BrowserPanel.tsx")).toContain("reportEmbeddedBrowserProbe");
+    expect(app).toContain('overlay === "browser"');
+    expect(uiState).not.toContain('action === "open-browser"');
     expect(header).toContain("vcsStatusPending");
     expect(header).toContain("data-git-quick-action-kind");
     expect(header).toContain("data-git-quick-action-label");

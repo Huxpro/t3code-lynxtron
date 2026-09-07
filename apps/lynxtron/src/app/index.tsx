@@ -142,6 +142,7 @@ function RootSwitch() {
     else if (overlay === "model-picker") uiActions.openModelPicker();
     else if (overlay === "add-provider") uiActions.openAddProviderDialog();
     else if (overlay === "terminal") uiActions.openRightPanelSurface("terminal");
+    else if (overlay === "browser") uiActions.openRightPanelSurface("browser");
     else if (overlay === "right-panel-tabs") {
       uiActions.openRightPanelSurface("diff");
       uiActions.openRightPanelSurface("files");

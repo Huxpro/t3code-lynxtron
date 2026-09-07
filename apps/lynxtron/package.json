@@ -47,6 +47,7 @@
     "visual:diff": "node scripts/visual-diff.mjs",
     "visual:assert-lifecycle-error": "node scripts/assert-lifecycle-error-baseline.mjs",
     "verify:packaged-readiness": "node scripts/verify-packaged-readiness.mjs",
+    "verify:packaged-cef-webview": "node scripts/verify-packaged-cef-webview.mjs",
     "verify:mts-product": "node scripts/verify-mts-product-controls.mjs",
     "verify:mts-runtime": "node scripts/verify-mts-runtime-contract.mjs",
     "verify:page-config": "node scripts/verify-page-config-capabilities.mjs",

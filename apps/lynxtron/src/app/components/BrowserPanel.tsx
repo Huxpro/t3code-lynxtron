@@ -9,7 +9,11 @@ import {
   type BrowserLoadFailure,
 } from "./browserPanel.logic";
 import { readBrowserTab, storeBrowserTab } from "./browserTabPersistence.lynx";
-import { clientCapabilities } from "../platform/clientCapabilities.lynx";
+import {
+  clientCapabilities,
+  getEmbeddedBrowserProbe,
+  reportEmbeddedBrowserProbe,
+} from "../platform/clientCapabilities.lynx";
 
 interface WebViewRef {
   invoke(input: {
@@ -42,6 +46,8 @@ export function BrowserPanel({
   );
   const [copied, setCopied] = useState(false);
   const webview = useRef<WebViewRef | null>(null);
+  const browserProbe = useRef(active ? getEmbeddedBrowserProbe() : null);
+  const browserProbeFailure = useRef<BrowserLoadFailure | null>(null);
 
   useEffect(() => {
     storeBrowserTab(
@@ -78,6 +84,19 @@ export function BrowserPanel({
     setDraft(result.url);
     setUrl(result.url);
   }, []);
+
+  useEffect(() => {
+    const probe = browserProbe.current;
+    if (!active || !probe?.failureUrl || !probe.successUrl) return;
+    reportEmbeddedBrowserProbe({ status: "running", stage: "mounted", tabId });
+    navigate(probe.failureUrl);
+    reportEmbeddedBrowserProbe({
+      status: "running",
+      stage: "navigation-requested",
+      tabId,
+      url: probe.failureUrl,
+    });
+  }, [active, navigate, tabId]);
 
   const actionUrl = browserActionUrl(url);
   const copyUrl = useCallback(() => {
@@ -169,12 +188,34 @@ export function BrowserPanel({
           bindload={() => {
             setLoading(false);
             setError(null);
+            const probe = browserProbe.current;
+            if (probe && url === probe.successUrl && browserProbeFailure.current) {
+              reportEmbeddedBrowserProbe({
+                status: "pass",
+                tabId,
+                failure: browserProbeFailure.current,
+                failureUrl: probe.failureUrl,
+                recoveredUrl: url,
+              });
+            }
           }}
           binderror={(event) => {
             const failure = browserEventFailure(event);
             if (!failure) return;
             setLoading(false);
             setError(failure);
+            const probe = browserProbe.current;
+            if (probe && url === probe.failureUrl) {
+              browserProbeFailure.current = failure;
+              reportEmbeddedBrowserProbe({
+                status: "running",
+                stage: "failed",
+                tabId,
+                failure,
+                failureUrl: probe.failureUrl,
+              });
+              navigate(probe.successUrl);
+            }
           }}
           bindlocationchange={(event) => {
             const nextUrl = browserEventUrl(event);
