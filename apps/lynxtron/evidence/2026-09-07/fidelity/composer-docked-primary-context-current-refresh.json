@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T00:22:59-04:00",
+  "stateId": "composer-docked",
+  "harnessCommit": "d79bfe8c6",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "semanticRoute": "existing-thread",
+    "snapshotSha256": "5572c031298d0676a888d8d9fd87679a1efc57caaf757645f9d2587f0984b0c5",
+    "threadId": "cf1b2820-913a-4745-a743-aeebccc15c6f"
+  },
+  "capture": {
+    "reportSha256": "c30559c940f2e16a469e6c96585b6ea05f801b2ded0f3a3d6df6f82b587754c3",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "0d53d75d49281ee4cc224b228f40595ef25fab1b1fac1a7438d9fa047e06674e",
+    "webImageSha256": "e5f89609e1f6785ac5861136d0ab9018c4af3537304c6dc39cb3d58dffbdfaea",
+    "lynxImageSha256": "a96ff3ac9ef13ece1eb677df7604ef0dc2a08d3d61c5b46fd88a15b500e7e67a",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "sessionProjectionMatch": true,
+    "composerPrimaryActionAndContextMatch": true,
+    "rendererErrors": 0
+  },
+  "geometry": {
+    "frameWeb": [384, 628, 768, 140],
+    "frameLynx": [384, 628, 768, 140],
+    "editorWeb": [401, 645, 734, 70],
+    "editorLynx": [401, 645, 734, 70],
+    "footerWeb": [385, 723, 766, 44],
+    "footerLynx": [385, 723, 766, 44],
+    "primaryActionWeb": [1107, 723, 32, 32],
+    "primaryActionLynx": [1107, 723, 32, 32],
+    "contextWeb": [406, 752, 724, 48],
+    "contextLynx": [406, 752, 724, 48],
+    "visibleBackdropWeb": [406, 768, 724, 32],
+    "visibleBackdropLynx": [406, 768, 724, 32]
+  },
+  "content": {
+    "primaryStateWeb": "disabled",
+    "primaryStateLynx": "disabled",
+    "controlsWeb": ["GPT-5.6-Sol", "Low", "Full access", "Build"],
+    "controlsLynx": ["GPT-5.6-Sol", "Low", "Full access", "Build"],
+    "contextWeb": ["Current checkout", "main"],
+    "contextLynx": ["Current checkout", "main"],
+    "backdropBottomRadiusWeb": "16px",
+    "backdropBottomRadiusLynx": "16px"
+  },
+  "classification": "The previous reader exposed the Web primary-actions container but not its encapsulated action geometry, and represented the masked Web context pseudo-element as no backdrop. The current renderer-neutral reader uses the unique state-bearing 32px action container as the Web action box and normalizes the pseudo-element to its 16px-inset visible material. A strict paired gate now requires non-null primary action, context strip, and visible backdrop metrics, matching primary state and bottom radii, and at most one-pixel geometry deltas. The current pair matches exactly. No product or material credit is claimed; screenshots remain temporary."
+}

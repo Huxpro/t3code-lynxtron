@@ -28677,6 +28677,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-docked-primary-context-current-refresh",
+      "observedAt": "2026-09-07T00:22:59-04:00",
+      "commit": "d79bfe8c6",
+      "codeCommit": "d79bfe8c6",
+      "codeState": "commit",
+      "label": "Composer Docked primary action and Context current refresh",
+      "narrative": "A fresh same-snapshot dark 1280x820 capture selects the same persisted thread and proves exact Web/Lynx geometry for the 768x140 Composer, 734x70 editor, 32x32 disabled primary action, 724x48 Context strip, and its 724x32 visible material. The previous reader could not expose the Web encapsulated action and hard-coded its pseudo-element material to null. The renderer-neutral reader now uses the unique state-bearing action container and normalizes the Web mask to its visible 16px-inset region. The strict gate requires non-null action, strip and backdrop metrics, matching state and radii, and at most one-pixel geometry deltas.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product UI changed. This point closes two measurement blind spots and strengthens the current Composer evidence without changing the modeled residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/composer-docked-primary-context-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "4e92a3d8378d7dd65ce6786a3548f57ae1ffbe663272f59575b0d9b259cc7762"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-docked"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-composer-primary-context-content",
+              "source": "Both clients expose disabled primary state, GPT-5.6-Sol, Low, Full access, Build, Current checkout, and main."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 768,
+              "confidence": 0.99,
+              "method": "current-composer-primary-context-geometry",
+              "source": "Frame, editor, footer, primary action, Context strip, and visible backdrop boxes match exactly."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-composer-primary-context-runtime",
+              "source": "Same immutable snapshot, selected thread, route, theme, viewport, current bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }

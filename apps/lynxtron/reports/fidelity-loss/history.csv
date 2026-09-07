@@ -495,3 +495,4 @@ settled-banner-inline-files-narrow-current-refresh,2026-09-06T22:00:00-04:00,d5e
 review-diff-file-header-current,2026-09-06T22:27:00-04:00,a706c2801,commit,Review Diff expanded file header parity,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
 review-diff-line-columns-current,2026-09-06T22:49:00-04:00,ea812a43a,commit,Review Diff patch line column parity,0.1695,0.169499,0.032509,0.141595,0.858405,0.82239
 files-browser-current-refresh,2026-09-06T23:47:00-04:00,8ae3b7102,commit,Files Browser composed-name current refresh,0.1695,0.169499,0.032509,0.141595,0.858405,0.82239
+composer-docked-primary-context-current-refresh,2026-09-07T00:22:59-04:00,d79bfe8c6,commit,Composer Docked primary action and Context current refresh,0.1695,0.169499,0.032509,0.141595,0.858405,0.82239
