@@ -42,6 +42,9 @@ describe("Project Settings dialog material", () => {
     expect(summary).toContain("gap: 4px;");
     expect(rule(".project-settings-path")).toContain("font-size: 16px;");
     expect(rule(".project-settings-summary-action")).toContain("width: 24px;");
+    expect(rule(".project-settings-dialog__summary .project-settings-environment")).toContain(
+      "width: 123px;",
+    );
   });
 
   it("matches light dialog glass without changing the authority width", () => {

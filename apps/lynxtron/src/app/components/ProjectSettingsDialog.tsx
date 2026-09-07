@@ -151,7 +151,11 @@ export function ProjectSettingsDialog({
                 color="#818181"
                 className="project-settings-environment-icon"
               />
-              <text className="project-settings-environment" data-project-settings-environment>
+              <text
+                className="project-settings-environment"
+                data-project-settings-environment
+                text-maxline="1"
+              >
                 {member.environmentLabel ?? "Current environment"}
               </text>
             </view>

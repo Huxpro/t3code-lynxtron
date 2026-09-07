@@ -11965,6 +11965,10 @@
 .project-settings-environment {
   flex-shrink: 0;
 }
+.project-settings-dialog__summary .project-settings-environment {
+  width: 123px;
+  height: 24px;
+}
 .project-settings-dialog__body {
   flex-grow: 1;
   flex-shrink: 1;
