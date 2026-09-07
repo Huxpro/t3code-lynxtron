@@ -28948,7 +28948,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/composer-disabled-action-current-refresh.json",
           "classification": "tracked-current",
-          "sha256": "ab4f7138fb181de0ecd8103791563bdc3f37d37f24aaf51a1d70843bb72c9ef4"
+          "sha256": "b51d2855fc3647d22fd66f5bb7f9c80f49dcf08a01698fbfb38ac16465c2e732"
         }
       ],
       "updates": [
@@ -28974,6 +28974,54 @@
               "confidence": 0.99,
               "method": "current-disabled-stable-fault-runtime",
               "source": "Same snapshot, thread, provider fault, route, theme, viewport, current bundles, four stable preflight polls, and zero renderer errors."
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "provider-dialog-light-driver-border-current",
+      "observedAt": "2026-09-07T02:11:38-04:00",
+      "commit": "c2d2fb934",
+      "codeCommit": "c2d2fb934",
+      "codeState": "commit",
+      "label": "Provider dialog light driver border parity",
+      "narrative": "The light Driver grid matched Web geometry but every Lynx provider card combined a one-pixel physical border with the intended shadow ring. Light mode now removes only the duplicate physical border while retaining the one-pixel default and two-pixel selected rings. With unchanged Web authority, snapshot, dialog geometry, content, and zero renderer errors, Driver-region SSIM improves from 0.740873 to 0.893258 and dialog SSIM from 0.829198 to 0.895700.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after share the same immutable snapshot, Providers route, Driver step, light theme, viewport, Web pixels, and exact geometry. The scoped product change removes only the duplicate light-card border."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/provider-dialog-light-driver-border.json",
+          "classification": "tracked-current",
+          "sha256": "ede5fbd7ef6053012257d30939df05951244398837457c5c5b7d9ff3c51237f8"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["settings-providers-add-dialog-light"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "provider-driver-card-current-geometry",
+              "source": "Dialog and nine Driver-card rectangles remain exact before and after the material-only change."
+            },
+            "material": {
+              "residual": 0.1043,
+              "confidence": 0.99,
+              "method": "provider-dialog-light-driver-border-ssim",
+              "source": "1 - exact dialog SSIM 0.895700; the 526x252 Driver region improves from 0.740873 to 0.893258."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "provider-driver-border-current-runtime",
+              "source": "Same snapshot, route, Driver step, light theme, viewport, exact post-fix bundle, strict gates, and zero renderer errors."
             }
           }
         }

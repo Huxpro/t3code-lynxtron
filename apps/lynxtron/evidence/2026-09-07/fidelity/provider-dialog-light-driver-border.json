@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-07T02:11:38-04:00",
+  "stateId": "settings-providers-add-dialog-light",
+  "harnessCommit": "c2d2fb934",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx",
+    "viewport": "1280x820",
+    "theme": "light",
+    "semanticRoute": "settings-providers",
+    "snapshotSha256": "72d45facd95e6aca769132605e29e1150545c40e4c3234a79d2b16c4fd71c7db",
+    "wizardStep": "Driver"
+  },
+  "capture": {
+    "reportSha256": "9f31309830e55b4fce9ddbc7f2e8ebfaa0f475f7c75d78697f23d47ca17f2549",
+    "webBundleSha256": "d2a5705a6af8998958a27604a8da4495fe0ecbc1ef9d2cc93fbdb9f0d9cf58e1",
+    "lynxBundleSha256": "20820f8730e1f3308e1988180246aa2611b4fb3b7b882b4b0de0c104b2a74c93",
+    "webImageSha256": "13c840c42fa3e7bd718376945706ec53886a206ee94757675640c9d3169ef204",
+    "lynxImageSha256": "0f333d0e768dd9fdae2ae4ab5ea3617c86bd5f9b72bd5f56b7300b87764e8e14",
+    "passed": true,
+    "stateIdentityMatch": true,
+    "rendererErrors": 0
+  },
+  "before": {
+    "dialogSsim": 0.829198,
+    "driversSsim": 0.740873,
+    "lynxDriverBorderWidth": "1px",
+    "lynxDriverRingWidth": "1px",
+    "lynxSelectedRingWidth": "2px"
+  },
+  "after": {
+    "dialogSsim": 0.8957,
+    "driversSsim": 0.893258,
+    "lynxDriverBorderWidth": "0px",
+    "lynxDriverRingWidth": "1px",
+    "lynxSelectedRingWidth": "2px",
+    "dialog": [352, 141, 576, 538],
+    "driverGrid": [377, 346, 526, 252]
+  },
+  "classification": "Web driver choices use shadow rings without physical borders. Lynx light mode previously combined a 1px physical border with the same ring, creating visibly harder double edges on all nine cards and the selected Codex card. Removing only the light-mode physical border preserves exact geometry and existing rings while improving Driver-region SSIM from 0.740873 to 0.893258 and dialog SSIM from 0.829198 to 0.895700. Dark mode is unchanged and screenshots remain temporary."
+}
