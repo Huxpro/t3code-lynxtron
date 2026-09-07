@@ -11284,6 +11284,17 @@ async function captureCell({
   let webState = state?.web?.productState ?? null;
   let lynxState = state?.lynx?.productState ?? null;
   const currentStateIdentityMatches = () => {
+    const normalizeUnpersistedHeroThread = (productState) =>
+      semanticRoute === "new-thread" &&
+      productState?.selectedThread === null &&
+      (productState.activeThreadKind === "draft" || productState.activeThreadKind === "none")
+        ? { activeThreadKind: "unpersisted", activeThreadId: null }
+        : {
+            activeThreadKind: productState?.activeThreadKind ?? null,
+            activeThreadId: productState?.activeThreadId ?? null,
+          };
+    const webThreadIdentity = normalizeUnpersistedHeroThread(webState);
+    const lynxThreadIdentity = normalizeUnpersistedHeroThread(lynxState);
     const projectSettingsSnapshotIdentityMatch =
       isProjectSettingsState &&
       JSON.stringify(projectSettingsInteraction.webScopeLabels) ===
@@ -11306,8 +11317,7 @@ async function captureCell({
         density: webState.density,
         selectedProject: webState.selectedProject,
         selectedThread: isFlatSidebarLayoutState ? null : webState.selectedThread,
-        activeThreadKind: webState.activeThreadKind,
-        activeThreadId: webState.activeThreadId,
+        ...webThreadIdentity,
         selectedModel: webState.selectedModel,
         interactionMode: webState.interactionMode,
         lifecycle: webState.lifecycle,
@@ -11320,8 +11330,7 @@ async function captureCell({
           density: lynxState.density,
           selectedProject: lynxState.selectedProject,
           selectedThread: isFlatSidebarLayoutState ? null : lynxState.selectedThread,
-          activeThreadKind: lynxState.activeThreadKind,
-          activeThreadId: lynxState.activeThreadId,
+          ...lynxThreadIdentity,
           selectedModel: lynxState.selectedModel,
           interactionMode: lynxState.interactionMode,
           lifecycle: lynxState.lifecycle,

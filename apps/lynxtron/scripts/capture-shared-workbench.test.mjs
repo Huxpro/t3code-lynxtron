@@ -955,12 +955,12 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "fileEditingSaveEvidence !== null");
     assert.include(source, "fileEditingSave: fileEditingSaveEvidence");
     assert.include(source, "const currentStateIdentityMatches = () =>");
+    assert.include(source, "const normalizeUnpersistedHeroThread = (productState) =>");
+    assert.include(source, 'activeThreadKind: "unpersisted", activeThreadId: null');
     assert.include(source, "selectedProject: webState.selectedProject");
     assert.include(source, "selectedProject: lynxState.selectedProject");
-    assert.include(source, "activeThreadKind: webState.activeThreadKind");
-    assert.include(source, "activeThreadKind: lynxState.activeThreadKind");
-    assert.include(source, "activeThreadId: webState.activeThreadId");
-    assert.include(source, "activeThreadId: lynxState.activeThreadId");
+    assert.include(source, "...webThreadIdentity");
+    assert.include(source, "...lynxThreadIdentity");
     assert.include(source, "JSON.stringify(webDialog?.environments ?? [])");
     assert.include(source, "JSON.stringify(lynxDialog?.environments ?? [])");
     assert.include(source, "webDialog?.summaryActions?.copyPath === true");
