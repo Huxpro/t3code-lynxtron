@@ -580,6 +580,19 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "finalProjectSettingsReady");
     assert.include(source, "projectSettings:");
     assert.include(workbench, "function readProjectSettingsDialog(root)");
+    assert.include(workbench, "summary: readElementBox(");
+    assert.include(
+      workbench,
+      'path: readElementBox(dialog.querySelector("[data-project-settings-path]"))',
+    );
+    assert.include(
+      workbench,
+      'copyPath: readElementBox(dialog.querySelector("[data-project-settings-copy-path]"))',
+    );
+    assert.include(
+      workbench,
+      'environment: readElementBox(dialog.querySelector("[data-project-settings-environment]"))',
+    );
     assert.include(workbench, '=== "Project settings"');
     assert.include(workbench, '"project-settings-dialog"');
     assert.include(workbench, "projectScopeOptions:");

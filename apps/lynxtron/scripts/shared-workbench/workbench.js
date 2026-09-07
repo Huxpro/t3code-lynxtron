@@ -1433,6 +1433,23 @@ function readProjectSettingsDialog(root) {
         dialog.querySelector("[data-slot='dialog-panel'], .project-settings-dialog__body"),
       ),
       footer: readElementBox(footer),
+      title: readElementBox(
+        dialog.querySelector("[data-slot='dialog-title'], .project-settings-dialog__title"),
+      ),
+      description: readElementBox(
+        dialog.querySelector(
+          "[data-slot='dialog-description'], .project-settings-dialog__description",
+        ),
+      ),
+      summary: readElementBox(dialog.querySelector("[data-project-settings-path]")?.parentElement),
+      path: readElementBox(dialog.querySelector("[data-project-settings-path]")),
+      copyPath: readElementBox(dialog.querySelector("[data-project-settings-copy-path]")),
+      environmentIcon: readElementBox(
+        dialog.querySelector(
+          "[data-project-settings-environment-icon], .project-settings-environment-icon",
+        ),
+      ),
+      environment: readElementBox(dialog.querySelector("[data-project-settings-environment]")),
       fields: readElementBox(dialog.querySelector(".project-settings-fields")),
       fieldColumns: [...dialog.querySelectorAll(".project-settings-field")].map((field) =>
         readElementBox(field),
