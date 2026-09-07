@@ -47,6 +47,24 @@
       "id": "ui/separator#Separator",
       "states": ["horizontal", "vertical"],
       "title": "Separator"
+    },
+    {
+      "category": "Host primitives",
+      "id": "ui/hostElements#HostView",
+      "states": ["surface", "nested"],
+      "title": "Host view"
+    },
+    {
+      "category": "Host primitives",
+      "id": "ui/hostElements#HostText",
+      "states": ["body", "muted"],
+      "title": "Host text"
+    },
+    {
+      "category": "Host primitives",
+      "id": "ui/hostElements#HostButton",
+      "states": ["default", "disabled"],
+      "title": "Host button"
     }
   ],
   "components": [
@@ -15795,12 +15813,16 @@
       "name": "HostButton",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 15,
+        "lynxUseSiteCount": 16,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 14
+        "webUseSiteCount": 15
       },
       "story": {
-        "status": "uncovered"
+        "category": "Host primitives",
+        "id": "ui/hostElements#HostButton",
+        "states": ["default", "disabled"],
+        "status": "covered",
+        "title": "Host button"
       },
       "useSites": [
         {
@@ -15873,6 +15895,14 @@
         },
         {
           "path": "apps/web/src/components/CommandPaletteSurface.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -16168,7 +16198,11 @@
         "webUseSiteCount": 20
       },
       "story": {
-        "status": "uncovered"
+        "category": "Host primitives",
+        "id": "ui/hostElements#HostText",
+        "states": ["body", "muted"],
+        "status": "covered",
+        "title": "Host text"
       },
       "useSites": [
         {
@@ -16372,7 +16406,11 @@
         "webUseSiteCount": 18
       },
       "story": {
-        "status": "uncovered"
+        "category": "Host primitives",
+        "id": "ui/hostElements#HostView",
+        "states": ["surface", "nested"],
+        "status": "covered",
+        "title": "Host view"
       },
       "useSites": [
         {
@@ -21407,7 +21445,7 @@
     "internal": 209,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 8,
+    "stories": 11,
     "webOnly": 456
   },
   "generatedFrom": "apps/web/src/components",

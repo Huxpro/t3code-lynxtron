@@ -46,5 +46,23 @@
     "category": "Layout",
     "title": "Separator",
     "states": ["horizontal", "vertical"]
+  },
+  {
+    "id": "ui/hostElements#HostView",
+    "category": "Host primitives",
+    "title": "Host view",
+    "states": ["surface", "nested"]
+  },
+  {
+    "id": "ui/hostElements#HostText",
+    "category": "Host primitives",
+    "title": "Host text",
+    "states": ["body", "muted"]
+  },
+  {
+    "id": "ui/hostElements#HostButton",
+    "category": "Host primitives",
+    "title": "Host button",
+    "states": ["default", "disabled"]
   }
 ]

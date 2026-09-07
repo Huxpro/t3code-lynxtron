@@ -25,6 +25,7 @@ const webRoute = url.searchParams.get("webRoute") ?? "/";
 const expectProject = url.searchParams.get("expectProject") ?? "";
 const expectThread = url.searchParams.get("expectThread") || null;
 const expectedSemanticRoute = url.searchParams.get("semanticRoute") ?? "new-thread";
+const expectedComponentStoryCount = Number(url.searchParams.get("componentStoryCount") ?? "0");
 const theme = url.searchParams.get("theme") === "light" ? "light" : "dark";
 const requestedModelSelection = (() => {
   const value = url.searchParams.get("modelSelection");
@@ -185,6 +186,7 @@ function readComponentLabMetrics(root) {
   const lab = root?.querySelector('[data-component-lab="web-lynx-shared"]');
   if (!lab) return null;
   return {
+    expectedStoryCount: expectedComponentStoryCount,
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),

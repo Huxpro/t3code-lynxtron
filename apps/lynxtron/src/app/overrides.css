@@ -12420,6 +12420,53 @@
 .component-lab-separator--vertical {
   height: 64px;
 }
+.component-lab-host-surface {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 192px;
+  height: 64px;
+  padding: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 8px;
+  background-color: var(--card);
+  box-sizing: border-box;
+}
+.component-lab-host-surface__nested {
+  width: 64px;
+  height: 46px;
+  border-radius: 6px;
+  background-color: var(--accent);
+}
+.component-lab-host-text {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+.component-lab-host-text--muted {
+  color: var(--muted-foreground);
+}
+.component-lab-host-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--input);
+  border-radius: var(--settings-control-radius);
+  background-color: var(--popover);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+}
+.component-lab-host-button--disabled {
+  opacity: 0.64;
+}
 .viewport-compact .component-lab {
   flex-direction: column;
 }

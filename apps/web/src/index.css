@@ -1906,6 +1906,48 @@ label:has(> select#reasoning-effort) select {
   height: 4rem;
 }
 
+.component-lab-host-surface {
+  display: flex;
+  align-items: center;
+  width: 12rem;
+  height: 4rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+
+.component-lab-host-surface__nested {
+  width: 4rem;
+  height: 100%;
+  border-radius: var(--radius-md);
+  background: var(--accent);
+}
+
+.component-lab-host-text {
+  color: var(--foreground);
+  font-size: 0.875rem;
+}
+
+.component-lab-host-text--muted {
+  color: var(--muted-foreground);
+}
+
+.component-lab-host-button {
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--input);
+  border-radius: var(--control-radius);
+  background: var(--popover);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.component-lab-host-button--disabled {
+  opacity: 0.64;
+}
+
 @media (max-width: 720px) {
   .component-lab {
     grid-template-columns: 1fr;

@@ -22,7 +22,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabGeometryReady =");
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
-    assert.include(captureSource, "state.web.componentLabMetrics.stories.length === 8");
+    assert.include(captureSource, "componentLabCatalog.length");
+    assert.include(readerSource, "expectedComponentStoryCount");
     assert.include(captureSource, "const pass = isComponentsLabState");
     assert.include(readerSource, 'expectedSemanticRoute === "components-lab"');
     assert.include(captureSource, "isComponentsLabState &&");

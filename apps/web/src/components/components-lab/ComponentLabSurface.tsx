@@ -4,7 +4,7 @@ import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { HostHeading, HostText, HostView } from "../ui/hostElements";
+import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements";
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Separator } from "../ui/separator";
@@ -128,6 +128,33 @@ export function ComponentLabSurface() {
             <HostView className="component-lab-separator-row">
               <Separator />
               <Separator className="component-lab-separator--vertical" orientation="vertical" />
+            </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="ui/hostElements#HostView" title="Host view">
+            <HostView className="component-lab-host-surface">
+              <HostView className="component-lab-host-surface__nested" />
+            </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="ui/hostElements#HostText" title="Host text">
+            <HostView className="component-lab-specimen-row">
+              <HostText className="component-lab-host-text">Primary text</HostText>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Muted text
+              </HostText>
+            </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="ui/hostElements#HostButton" title="Host button">
+            <HostView className="component-lab-specimen-row">
+              <HostButton className="component-lab-host-button">Host action</HostButton>
+              <HostButton
+                aria-disabled="true"
+                className="component-lab-host-button component-lab-host-button--disabled"
+              >
+                Disabled
+              </HostButton>
             </HostView>
           </StoryFrame>
         </ComponentLabStack>

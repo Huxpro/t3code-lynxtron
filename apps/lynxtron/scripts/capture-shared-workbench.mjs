@@ -38,6 +38,7 @@ import {
   sourceControlLoadingSettingsGeometryMatches,
 } from "./shared-workbench/settingsGates.mjs";
 import { inferSemanticRoute } from "./shared-workbench/semanticRoute.mjs";
+import componentLabCatalog from "../../web/src/components/components-lab/catalog.json" with { type: "json" };
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const lynxAppDir = path.resolve(scriptDir, "..");
@@ -7363,6 +7364,7 @@ async function captureCell({
     socket: lynxSocketUrl,
     scenario,
     semanticRoute,
+    ...(isComponentsLabState ? { componentStoryCount: String(componentLabCatalog.length) } : {}),
     webRoute,
     theme,
     legacySidebarEnabled: String(legacySidebarEnabled),
@@ -7579,7 +7581,7 @@ async function captureCell({
     ).catch(() => null);
     if (isComponentsLabState) {
       const labReady =
-        (state?.web?.componentLabMetrics?.stories?.length ?? 0) === 8 &&
+        (state?.web?.componentLabMetrics?.stories?.length ?? 0) === componentLabCatalog.length &&
         JSON.stringify(
           state.web.componentLabMetrics.stories.map(({ id, states, title }) => ({
             id,
@@ -11096,6 +11098,31 @@ async function captureCell({
           title,
         })) ?? [],
       );
+  const componentLabGeometryReady = (() => {
+    if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
+    const webLab = state.web.componentLabMetrics;
+    const lynxLab = state.lynx.componentLabMetrics;
+    const widthsMatch =
+      Math.abs(webLab.content.rect.width - lynxLab.content.rect.width) <= 1 &&
+      webLab.stories.every((story, index) => {
+        const candidate = lynxLab.stories[index];
+        return (
+          story.box?.rect &&
+          story.canvas?.rect &&
+          candidate?.box?.rect &&
+          candidate.canvas?.rect &&
+          Math.abs(story.box.rect.x - candidate.box.rect.x) <= 1 &&
+          Math.abs(story.box.rect.width - candidate.box.rect.width) <= 1 &&
+          Math.abs(story.canvas.rect.x - candidate.canvas.rect.x) <= 1 &&
+          Math.abs(story.canvas.rect.width - candidate.canvas.rect.width) <= 1
+        );
+      });
+    const verticallyOrdered = (stories) =>
+      stories.every(
+        (story, index) => index === 0 || story.box.rect.y > stories[index - 1].box.rect.y,
+      );
+    return widthsMatch && verticallyOrdered(webLab.stories) && verticallyOrdered(lynxLab.stories);
+  })();
   const bothReady =
     componentLabReady ||
     lifecycleFaultReady ||
@@ -12252,29 +12279,6 @@ async function captureCell({
           const scroll = root?.querySelector(
             '.composer-compact-controls-menu__scroll, [data-floating-popup="composer-compact-controls-menu"] > div'
           );
-  const componentLabGeometryReady = (() => {
-    if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
-    const webLab = state.web.componentLabMetrics;
-    const lynxLab = state.lynx.componentLabMetrics;
-    const widthsMatch =
-      Math.abs(webLab.content.rect.width - lynxLab.content.rect.width) <= 1 &&
-      webLab.stories.every((story, index) => {
-        const candidate = lynxLab.stories[index];
-        return (
-          story.box?.rect &&
-          story.canvas?.rect &&
-          candidate?.box?.rect &&
-          candidate.canvas?.rect &&
-          Math.abs(story.box.rect.x - candidate.box.rect.x) <= 1 &&
-          Math.abs(story.box.rect.width - candidate.box.rect.width) <= 1 &&
-          Math.abs(story.canvas.rect.x - candidate.canvas.rect.x) <= 1 &&
-          Math.abs(story.canvas.rect.width - candidate.canvas.rect.width) <= 1
-        );
-      });
-    const verticallyOrdered = (stories) =>
-      stories.every((story, index) => index === 0 || story.box.rect.y > stories[index - 1].box.rect.y);
-    return widthsMatch && verticallyOrdered(webLab.stories) && verticallyOrdered(lynxLab.stories);
-  })();
           if (!frame || !scroll) return null;
           const frameRect = frame.getBoundingClientRect();
           const rect = scroll.getBoundingClientRect();
@@ -13520,7 +13524,7 @@ async function captureCell({
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
-    state.web.componentLabMetrics.stories.length === 8 &&
+    state.web.componentLabMetrics.stories.length === componentLabCatalog.length &&
     state?.web?.componentLabMetrics?.lab?.rect?.width === width &&
     state?.lynx?.componentLabMetrics?.lab?.rect?.width === width &&
     consoleErrors.length === 0 &&
