@@ -49,6 +49,13 @@ describe("Provider instance dialog material", () => {
     expect(steps).toContain("flex-shrink: 0;");
   });
 
+  it("uses rings without duplicate borders for light step numbers", () => {
+    const number = rule(".theme-light .provider-instance-dialog__step-number");
+
+    expect(number).toContain("border-width: 0;");
+    expect(number).toContain("box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);");
+  });
+
   it("matches the dark wizard step and driver-card material", () => {
     const step = rule(".provider-instance-dialog__step");
     const driver = rule(".theme-dark .provider-instance-dialog__driver");

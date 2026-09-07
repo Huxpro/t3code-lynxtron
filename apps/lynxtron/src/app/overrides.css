@@ -8197,6 +8197,7 @@
   box-sizing: border-box;
 }
 .theme-light .provider-instance-dialog__step-number {
+  border-width: 0;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
 }
 .theme-dark .provider-instance-dialog__step-number {
