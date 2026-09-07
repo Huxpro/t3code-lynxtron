@@ -3407,8 +3407,21 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
     lynxMetrics.activeKind === "diff" &&
     webMetrics.diff !== null &&
     lynxMetrics.diff !== null;
+  const lynxCodeFiles = lynxMetrics.diff?.codeFiles ?? [];
+  const lynxFileHeaderAnatomyReady =
+    expectation !== "diff" ||
+    (lynxCodeFiles.length === lynxFilePaths.length &&
+      lynxCodeFiles.every(
+        (file) =>
+          file.expanded === "true" &&
+          file.chevronRect?.rect?.width === 14 &&
+          file.chevronRect?.rect?.height === 14 &&
+          file.changeIconRect?.rect?.width === 14 &&
+          file.changeIconRect?.rect?.height === 14,
+      ));
   return (
     diffPairReady &&
+    lynxFileHeaderAnatomyReady &&
     webMetrics.diff.selectedTurn === lynxMetrics.diff.selectedTurn &&
     webFilePaths.length > 0 &&
     JSON.stringify(webFilePaths) === JSON.stringify(lynxFilePaths) &&

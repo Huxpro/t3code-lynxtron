@@ -9399,9 +9399,10 @@
   align-items: center;
 }
 .diff-code-file__chevron {
-  color: var(--muted-foreground);
-  font-size: 12px;
-  margin-right: 8px;
+  flex-shrink: 0;
+}
+.diff-code-file__change-icon {
+  flex-shrink: 0;
 }
 .diff-code-file__path {
   min-width: 0;

@@ -1989,5 +1989,9 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, "visitDiffTree(child.shadowRoot)");
     assert.include(workbench, "composedDiffHeaders.map(readElementBox)");
     assert.include(workbench, "composedDiffLines.map(readElementBox)");
+    assert.include(source, "lynxFileHeaderAnatomyReady");
+    assert.include(source, 'file.expanded === "true"');
+    assert.include(workbench, 'item.getAttribute("data-review-file-expanded")');
+    assert.include(workbench, '".diff-code-file__change-icon, [data-change-icon]"');
   });
 });

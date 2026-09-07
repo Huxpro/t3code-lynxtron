@@ -427,14 +427,21 @@ function LynxCodeDiffFile({
       className={`diff-code-file${selected ? " diff-code-file--selected" : ""}`}
       data-review-code-file={file.path}
       data-review-file-path={file.path}
+      data-review-file-expanded={collapsed ? "false" : "true"}
     >
       <view className="diff-code-file__header" bindtap={onToggle}>
         <view className="diff-code-file__title">
           <Icon
-            name="chevron-right"
+            name={collapsed ? "chevron-right" : "chevron-down"}
             size={14}
             color="#818181"
-            className={collapsed ? undefined : "rotate-90"}
+            className="diff-code-file__chevron"
+          />
+          <Icon
+            name="file-diff"
+            size={14}
+            color="#3b82f6"
+            className="diff-code-file__change-icon"
           />
           <text className="diff-code-file__path">{file.path}</text>
         </view>

@@ -1215,6 +1215,9 @@ describe("desktop shell interaction contract", () => {
 
     expect(diff).toContain('data-diff-scope="working-tree"');
     expect(diff).toContain('data-diff-scope="branch"');
+    expect(diff).toContain('name={collapsed ? "chevron-right" : "chevron-down"}');
+    expect(diff).toContain('className="diff-code-file__change-icon"');
+    expect(diff).toContain('data-review-file-expanded={collapsed ? "false" : "true"}');
     expect(diff).toContain('data-diff-scope="latest-turn"');
     expect(diff).toContain('data-diff-scope="turn"');
     expect(diff).toContain(".getDiffPreview({");

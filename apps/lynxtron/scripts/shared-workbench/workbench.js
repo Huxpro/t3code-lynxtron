@@ -1548,9 +1548,14 @@ function readReviewMetrics(root) {
           },
           codeFiles: [...diffSurface.querySelectorAll("[data-review-code-file]")].map((item) => ({
             path: item.getAttribute("data-review-code-file"),
+            expanded: item.getAttribute("data-review-file-expanded"),
             rect: readElementBox(item),
             headerRect: readElementBox(
               item.querySelector(".diff-code-file__header, [data-diffs-header]"),
+            ),
+            chevronRect: readElementBox(item.querySelector(".diff-code-file__chevron")),
+            changeIconRect: readElementBox(
+              item.querySelector(".diff-code-file__change-icon, [data-change-icon]"),
             ),
             lineRects: [...item.querySelectorAll("[data-review-code-line]")].map((line) =>
               readElementBox(line),
