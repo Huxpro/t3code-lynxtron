@@ -28725,6 +28725,60 @@
           }
         }
       ]
+    },
+    {
+      "id": "composer-hero-unpersisted-identity-current-refresh",
+      "observedAt": "2026-09-07T00:55:14-04:00",
+      "commit": "6a856ceb0",
+      "codeCommit": "6a856ceb0",
+      "codeState": "commit",
+      "label": "Composer Hero unpersisted identity current refresh",
+      "narrative": "A fresh same-snapshot dark 1280x820 capture proves the renderer-neutral Hero identity that the existing readiness predicate already intended: Web may own a local draft id while Lynx owns no local draft object, but both select no persisted thread on the same new-thread route and project. The final identity gate now normalizes only that narrow pair to unpersisted/null while retaining every other product-state comparison. The strict pair matches headline center and typography, Composer, editor, disabled primary action, Context strip, visible material, controls, and zero renderer errors.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "No product UI changed. The harness now applies its existing renderer-neutral Hero semantics consistently at final admission, closing invalid identity failures without changing the modeled residual."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/composer-hero-unpersisted-identity-current-refresh.json",
+          "classification": "tracked-current",
+          "sha256": "5dc1d85349c55a660e3644caf91cc1b181d2ef538d9ea02089ae7edca2c66830"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["composer-hero"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-hero-renderer-neutral-content",
+              "source": "Both clients select background-only with no persisted thread and render Claude Fable 5, High · 1M, Full access, Build, Current checkout, and main."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              "anchorScale": 1280,
+              "confidence": 0.99,
+              "method": "current-hero-action-context-geometry",
+              "source": "Headline centers and y match; its host font box differs by one pixel, while Composer, editor, action, Context, and visible backdrop boxes match exactly."
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-hero-computed-typography",
+              "source": "Both headlines resolve to 30px size, weight 400, 36px line height, and -0.75px tracking."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-hero-unpersisted-identity-runtime",
+              "source": "Same immutable snapshot, project, route, theme, viewport, current bundles, narrow unpersisted identity normalization, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
