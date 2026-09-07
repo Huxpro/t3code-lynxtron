@@ -623,6 +623,7 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "finalDiffScopeMenuReady");
     assert.include(source, "diffScopeMenuDismissed");
     assert.include(source, "diffScopeWorkingTreeSelected");
+    assert.include(source, "diff scope menu reopened for retained frame");
     assert.include(source, "web-outside-pointer|lynx-dismiss-layer-pointer");
     assert.include(source, "web-working-tree-row-pointer|lynx-working-tree-row-pointer");
     assert.include(source, "data-diff-scope') === 'working-tree'");
