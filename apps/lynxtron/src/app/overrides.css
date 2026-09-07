@@ -11146,6 +11146,12 @@
   font-size: 12px;
   line-height: 16px;
 }
+.quick-switch-thread-row .palette-row__description {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+}
+.quick-switch-thread-row .palette-row__timestamp {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+}
 .palette-empty {
   display: flex;
   flex-direction: row;

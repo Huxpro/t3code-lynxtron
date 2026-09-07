@@ -53,6 +53,7 @@ describe("CommandPaletteSurface", () => {
     expect(markup).toContain("palette-row__title-line");
     expect(markup).toContain("palette-row__title");
     expect(markup).toContain("palette-row__description");
+    expect(markup).toContain("palette-row__timestamp");
   });
 
   it("marks the active row and disables interaction for disabled rows", () => {

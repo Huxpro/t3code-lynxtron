@@ -155,7 +155,7 @@ export function PaletteRowContent({
       )}
       {titleTrailing}
       {timestamp ? (
-        <HostText className="min-w-12 shrink-0 text-right text-xs tabular-nums text-muted-foreground/70">
+        <HostText className="palette-row__timestamp min-w-12 shrink-0 text-right text-xs tabular-nums text-muted-foreground/70">
           {timestamp}
         </HostText>
       ) : null}

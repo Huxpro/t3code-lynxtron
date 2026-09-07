@@ -20,6 +20,15 @@ describe("Quick Switch material", () => {
     expect(rule(".palette-panel")).toContain("border-radius: 18px;");
   });
 
+  it("keeps recent thread metadata at the Web muted intensity", () => {
+    expect(rule(".quick-switch-thread-row .palette-row__description")).toContain(
+      "color: rgba(var(--muted-foreground-rgb), 0.7);",
+    );
+    expect(rule(".quick-switch-thread-row .palette-row__timestamp")).toContain(
+      "color: rgba(var(--muted-foreground-rgb), 0.7);",
+    );
+  });
+
   it("matches the light glass authority without changing dark material", () => {
     const lightPanel = rule(".theme-light .palette-panel");
     const lightFooter = rule(".theme-light .palette-footer");
