@@ -28528,6 +28528,53 @@
           }
         }
       ]
+    },
+    {
+      "id": "review-diff-file-header-current",
+      "observedAt": "2026-09-06T22:27:00-04:00",
+      "commit": "a706c2801",
+      "codeCommit": "a706c2801",
+      "codeState": "commit",
+      "label": "Review Diff expanded file header parity",
+      "narrative": "A disposable clean Git workspace and projection fixture restore the exact review thread, turn, file, checkpoint refs, and patch without touching the active dirty worktree. The valid before frame exposed a Lynx header truth loss: review-fixture.txt was visibly expanded with both patch lines present, but its header still rendered a collapsed right-chevron and omitted Web's blue changed-file icon. Lynx now renders a 14px down-chevron and a 14px blue file-diff icon, exposes expanded=true to the strict gate, and keeps the two 539x20 patch lines visible. Web authority pixels are byte-identical. The fixed 540x73 crop moves from 14.922763 to 14.891984 MAE while significant pixels move from 14.3227 to 14.5358 percent, so no material credit is claimed.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use the same disposable review snapshot, explicit thread, turn, file, route, theme, viewport, interaction path, and byte-identical Web authority; only the Lynx file-header anatomy changes."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/review-diff-file-header-current.json",
+          "classification": "tracked-current",
+          "sha256": "0e0f84035557afc0849573d7afa53b15a6000a3317213d9acdfbcd908918cf77"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-review-expanded-file-header-content",
+              "source": "The expanded file shows the authority down-chevron, blue changed-file icon, review-fixture.txt, and both expected patch lines."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-review-file-disclosure-truth",
+              "source": "The visible disclosure affordance now agrees with expanded=true and the rendered patch body."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-review-disposable-fixture-runtime",
+              "source": "Same isolated snapshot, explicit thread, turn and file, matching checkpoint patch, current bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
