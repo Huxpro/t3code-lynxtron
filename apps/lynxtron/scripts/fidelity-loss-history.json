@@ -29588,6 +29588,66 @@
           }
         }
       ]
+    },
+    {
+      "id": "quick-switch-actions-only-current-refresh",
+      "observedAt": "2026-09-07T08:00:00-04:00",
+      "commit": "0f8d80aec",
+      "codeCommit": "681ae89b8",
+      "codeState": "commit",
+      "label": "Quick Switch Actions Only current refresh",
+      "narrative": "A current strict persisted-thread capture refreshes the six-row Actions Only state after the already-attributed shared search and action-icon fixes. Both panes retain query >, six action rows, no active row and exact 576x326 bounds. Panel SSIM improves from the prior 0.948450 checkpoint to 0.949930.",
+      "attribution": {
+        "allocation": "measurement-refinement",
+        "confidence": 0.99,
+        "reason": "This current-state refresh records already-attributed shared fixes without duplicate code credit. Snapshot, thread, query, six rows, route, theme, viewport and zero-error runtime match."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-07/fidelity/quick-switch-actions-only-current.json",
+          "classification": "tracked-current",
+          "sha256": "a35c25a14608447831d0956e0b40a5994185a2a9dfc9d0996fe303dd5efcfd34"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["quick-switch-actions-only"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "content": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-actions-only-content",
+              "source": "Both panes expose query >, six matching action rows and no active row."
+            },
+            "geometry": {
+              "anchorDeltas": [0, 0, 0, 0],
+              "anchorScale": 576,
+              "confidence": 0.99,
+              "method": "current-actions-only-panel-geometry",
+              "source": "Both panels are exactly 576x326 at x352 y82."
+            },
+            "material": {
+              "residual": 0.05007,
+              "confidence": 0.99,
+              "method": "current-actions-only-panel-ssim",
+              "source": "1 - exact 576x326 panel SSIM 0.949930, improved from prior current 0.948450."
+            },
+            "interaction": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-actions-only-query-contract",
+              "source": "Real input reaches matching > query postconditions and keeps both result sets unselected."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-actions-only-runtime",
+              "source": "Same snapshot, persisted thread, route, dark theme, viewport, exact committed bundles and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
