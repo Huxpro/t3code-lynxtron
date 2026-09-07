@@ -2321,5 +2321,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".sidebar-v2-search-result {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  width: 100%;\n  height: 36px;",
     );
+    expect(overrides).toContain(
+      ".sidebar-v2-search-result--highlighted {\n  color: var(--sidebar-foreground);\n  background-color: rgba(var(--sidebar-foreground-rgb), 0.04);",
+    );
+    expect(overrides).toMatch(/\.sidebar-v2-search-result \{[^}]*border-radius: 8px;/);
   });
 });

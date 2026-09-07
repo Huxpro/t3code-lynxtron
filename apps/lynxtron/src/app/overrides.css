@@ -1303,13 +1303,13 @@
   height: 36px;
   padding: 0 10px;
   gap: 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   color: rgba(var(--sidebar-muted-foreground-rgb), 0.75);
   box-sizing: border-box;
 }
 .sidebar-v2-search-result--highlighted {
   color: var(--sidebar-foreground);
-  background-color: var(--sidebar-row-active);
+  background-color: rgba(var(--sidebar-foreground-rgb), 0.04);
 }
 .sidebar-v2-search-result__favicon {
   flex-shrink: 0;
