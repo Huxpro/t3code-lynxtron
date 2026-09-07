@@ -493,3 +493,4 @@ sidebar-inline-search-current-geometry,2026-09-06T20:20:00-04:00,4d5f011fd,commi
 sidebar-resize-current-refresh,2026-09-06T20:51:00-04:00,5dd8c4114,commit,Resized Sidebar and Composer branch refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
 settled-banner-inline-files-narrow-current-refresh,2026-09-06T22:00:00-04:00,d5e9d8c32,commit,Narrow settled banner strict-state refresh,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
 review-diff-file-header-current,2026-09-06T22:27:00-04:00,a706c2801,commit,Review Diff expanded file header parity,0.169499,0.169499,0.032508,0.141595,0.858405,0.822391
+review-diff-line-columns-current,2026-09-06T22:49:00-04:00,ea812a43a,commit,Review Diff patch line column parity,0.1695,0.169499,0.032509,0.141595,0.858405,0.82239

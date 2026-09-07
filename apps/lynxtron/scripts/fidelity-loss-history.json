@@ -28575,6 +28575,54 @@
           }
         }
       ]
+    },
+    {
+      "id": "review-diff-line-columns-current",
+      "observedAt": "2026-09-06T22:49:00-04:00",
+      "commit": "ea812a43a",
+      "codeCommit": "ea812a43a",
+      "codeState": "commit",
+      "label": "Review Diff patch line column parity",
+      "narrative": "The valid disposable review fixture localized the next visible loss to patch-line internals. Web uses a 33.203125px gutter and starts code at x=774.203125 with 13px SF Mono. Lynx reserved 34px for the number plus another 20px for the marker, started content at x=795, and used 12px JetBrains Mono. The Lynx row now uses a 20px number, 14px marker, eight-pixel content padding, and 13px SF Mono-first typography. Its content starts at x=775, within 0.796875px of Web. The fixed 540x73 file crop improves from 14.891984 to 12.567005 MAE and from 14.5358 to 14.2618 percent significant pixels while Web authority pixels remain byte-identical.",
+      "attribution": {
+        "allocation": "measured-product-change",
+        "confidence": 0.99,
+        "reason": "Before and after use the same disposable snapshot, review thread, turn, file, route, theme, viewport, patch and byte-identical Web image. The changed Lynx pixels are confined to the file header and two patch rows."
+      },
+      "sources": [
+        {
+          "path": "apps/lynxtron/evidence/2026-09-06/fidelity/review-diff-line-columns-current.json",
+          "classification": "tracked-current",
+          "sha256": "d32e80545ff213ed979abfd7b822c7429547f3a55b5d700dc7de5c5cf1a607ec"
+        }
+      ],
+      "updates": [
+        {
+          "states": ["review-diff"],
+          "clients": ["lynx"],
+          "dimensions": {
+            "geometry": {
+              "anchorDeltas": [0.796875, 0, 0.796875, 0],
+              "anchorScale": 539,
+              "confidence": 0.99,
+              "method": "current-review-line-column-origins",
+              "source": "Both deletion and addition content origins are within 0.797px of the Web authority after reducing the combined Lynx gutter from 54px to 34px."
+            },
+            "typography": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-review-line-code-typography",
+              "source": "Lynx number, marker and content now use the Web authority's 13px, 20px-line-height, SF Mono-first contract."
+            },
+            "runtime": {
+              "residual": 0,
+              "confidence": 0.99,
+              "method": "current-review-line-columns-runtime",
+              "source": "Same isolated snapshot, explicit review thread, turn and file, complete patch, current bundles, and zero renderer errors."
+            }
+          }
+        }
+      ]
     }
   ]
 }
