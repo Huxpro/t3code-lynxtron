@@ -595715,7 +595715,7 @@
         {
           "path": "apps/lynxtron/evidence/2026-09-07/fidelity/command-palette-active-state-current.json",
           "classification": "tracked-current",
-          "sha256": "5c31519e082d4bfd39ea7f1f7587870a44d390ecb3d7ed3abd89fd7975ec776b"
+          "sha256": "d67d54ae540f078e966213ea2f15de0902bbdf4d3d93516b5993d082ce25815e"
         }
       ],
       "confidence": 0.858405,
