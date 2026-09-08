@@ -158,9 +158,11 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "settings/SettingsSurfaces#SourceControlMarkSurface");
     assert.include(captureSource, "settings/SettingsSurfaces#StatusDotSurface");
     assert.include(captureSource, "settings/SettingsSurfaces#SourceControlItemRowSurface");
+    assert.include(captureSource, "settings/SettingsSurfaces#AccessListRowSurface");
     assert.include(readerSource, "paletteSection: (() =>");
     assert.include(readerSource, "sourceControlMarks:");
     assert.include(readerSource, "isolatedSourceControlRows:");
+    assert.include(readerSource, "isolatedAccessRows:");
     assert.include(readerSource, 'url.searchParams.get("componentStory")');
     assert.include(readerSource, 'lynxQuery.set("componentStory", componentStory)');
     assert.include(captureSource, "components-lab-isolated.web.bundle");

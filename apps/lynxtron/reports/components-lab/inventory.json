@@ -761,6 +761,12 @@
       "id": "settings/SettingsSurfaces#SourceControlItemRowSurface",
       "states": ["complete"],
       "title": "Source control item row"
+    },
+    {
+      "category": "Settings",
+      "id": "settings/SettingsSurfaces#AccessListRowSurface",
+      "states": ["current-device"],
+      "title": "Access list row"
     }
   ],
   "components": [
@@ -5439,7 +5445,7 @@
     },
     {
       "authority": {
-        "line": 11,
+        "line": 12,
         "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
       },
       "exported": true,
@@ -11689,18 +11695,26 @@
       "lynx": null,
       "name": "AccessListRowSurface",
       "reuse": {
-        "authorityShared": false,
+        "authorityShared": true,
         "lynxUseSiteCount": 1,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Settings",
+        "id": "settings/SettingsSurfaces#AccessListRowSurface",
+        "states": ["current-device"],
+        "status": "covered",
+        "title": "Access list row"
       },
       "useSites": [
         {
           "path": "apps/lynxtron/src/app/components/OtherSettings.tsx",
           "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
         },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
@@ -24115,7 +24129,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 127,
+    "stories": 128,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",

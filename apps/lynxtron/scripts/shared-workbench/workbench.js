@@ -564,6 +564,13 @@ function readComponentLabMetrics(root) {
     isolatedSourceControlRows: readSourceControlRows(
       root.querySelector(".component-lab-source-control-rows"),
     ),
+    isolatedAccessRows: [
+      ...root.querySelectorAll(".component-lab-access-list-rows .access-list-row"),
+    ].map((row) => ({
+      box: readElementBox(row),
+      text: readComposedText(row),
+      layout: readElementBox(row.firstElementChild),
+    })),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

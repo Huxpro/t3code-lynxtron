@@ -13099,7 +13099,18 @@ async function captureCell({
                 state.lynx.componentLabMetrics.isolatedSourceControlRows.every(
                   ({ box }) => box.rect.width === 512 && box.rect.height > 0,
                 )
-              : false));
+              : componentStory === "settings/SettingsSurfaces#AccessListRowSurface"
+                ? state?.web?.componentLabMetrics?.isolatedAccessRows?.length === 1 &&
+                  state?.lynx?.componentLabMetrics?.isolatedAccessRows?.length === 1 &&
+                  state.web.componentLabMetrics.isolatedAccessRows[0].text ===
+                    "MacBook ProThis deviceConnected · macOS · 4 scopesRevoke" &&
+                  state.lynx.componentLabMetrics.isolatedAccessRows[0].text ===
+                    "MacBook ProThis deviceConnected · macOS · 4 scopesRevoke" &&
+                  state.web.componentLabMetrics.isolatedAccessRows[0].box.rect.width === 512 &&
+                  state.lynx.componentLabMetrics.isolatedAccessRows[0].box.rect.width === 512 &&
+                  state.web.componentLabMetrics.isolatedAccessRows[0].layout.rect.width === 480 &&
+                  state.lynx.componentLabMetrics.isolatedAccessRows[0].layout.rect.width === 480
+                : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&

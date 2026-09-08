@@ -28,5 +28,11 @@
     "category": "Settings",
     "title": "Source control item row",
     "states": ["complete"]
+  },
+  {
+    "id": "settings/SettingsSurfaces#AccessListRowSurface",
+    "category": "Settings",
+    "title": "Access list row",
+    "states": ["current-device"]
   }
 ]

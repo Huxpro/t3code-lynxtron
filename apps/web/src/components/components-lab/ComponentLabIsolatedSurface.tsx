@@ -3,6 +3,7 @@ import isolatedCatalog from "./isolatedCatalog.json";
 import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
 import {
+  AccessListRowSurface,
   SourceControlItemRowSurface,
   SourceControlMarkSurface,
 } from "../settings/SettingsSurfaces";
@@ -48,6 +49,19 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
             mark={<SourceControlMarkSurface tone="success" />}
             summary="Detected CLI"
             version="2.81.0"
+          />
+        </HostView>
+      );
+    }
+    if (storyId === "settings/SettingsSurfaces#AccessListRowSurface") {
+      return (
+        <HostView className="component-lab-access-list-rows component-lab-specimen-stack">
+          <AccessListRowSurface
+            control={<HostText>Revoke</HostText>}
+            description="Connected · macOS · 4 scopes"
+            primaryLabel="MacBook Pro"
+            primaryTrailing={<HostText>This device</HostText>}
+            statusDot={<SourceControlMarkSurface tone="success" />}
           />
         </HostView>
       );
