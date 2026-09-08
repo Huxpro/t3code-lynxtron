@@ -62,6 +62,21 @@ const baseProps: SidebarV2RowSurfaceProps = {
 };
 
 describe("SidebarV2RowSurface", () => {
+  it("accepts Web-only list virtualization hints without making them shared defaults", () => {
+    const nativeMarkup = renderToStaticMarkup(<SidebarV2RowSurface {...baseProps} />);
+    const webMarkup = renderToStaticMarkup(
+      <SidebarV2RowSurface
+        {...baseProps}
+        listPerformanceClassName="[content-visibility:auto] [contain-intrinsic-size:auto_96px]"
+      />,
+    );
+
+    expect(nativeMarkup).not.toContain("content-visibility");
+    expect(nativeMarkup).not.toContain("contain-intrinsic-size");
+    expect(webMarkup).toContain("content-visibility:auto");
+    expect(webMarkup).toContain("contain-intrinsic-size:auto_96px");
+  });
+
   it("keeps the Web card hierarchy and action placement in one shared composition", () => {
     const markup = renderToStaticMarkup(<SidebarV2RowSurface {...baseProps} />);
 

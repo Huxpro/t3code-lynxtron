@@ -786,6 +786,11 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
     <SidebarV2RowSurface
       threadId={thread.id}
       variant={variant}
+      listPerformanceClassName={
+        variant === "slim"
+          ? "[content-visibility:auto] [contain-intrinsic-size:auto_34px]"
+          : "[content-visibility:auto] [contain-intrinsic-size:auto_96px]"
+      }
       variantAction={variantAction}
       isActive={props.isActive}
       isSelected={isSelected}

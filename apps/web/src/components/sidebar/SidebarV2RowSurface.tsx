@@ -47,6 +47,8 @@ export interface SidebarV2RowSurfaceProps {
   readonly detailsTooltip: ReactNode;
   readonly detailsOverlay?: ReactNode;
   readonly detailsRelationId?: string;
+  /** Web host-only list virtualization hints; omitted by native list hosts. */
+  readonly listPerformanceClassName?: string;
   readonly cardActionControl: ReactNode;
   readonly settleIcon: ReactNode;
   readonly unsettleIcon: ReactNode;
@@ -102,7 +104,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
         data-thread-item
         data-thread-id={props.threadId}
         data-thread-active={props.isActive ? "true" : "false"}
-        className="list-none [content-visibility:auto] [contain-intrinsic-size:auto_34px]"
+        className={cn("list-none", props.listPerformanceClassName)}
       >
         <Tooltip>
           <TooltipTrigger
@@ -228,7 +230,8 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
       data-thread-id={props.threadId}
       data-thread-active={props.isActive ? "true" : "false"}
       className={cn(
-        "sidebar-v2-row-item relative list-none py-0.5 [content-visibility:auto] [contain-intrinsic-size:auto_96px]",
+        "sidebar-v2-row-item relative list-none py-0.5",
+        props.listPerformanceClassName,
         props.isActive && "sidebar-v2-row-item--active",
       )}
     >
