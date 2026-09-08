@@ -101,6 +101,12 @@
       "id": "ui/menu#MenuPopup",
       "states": ["open", "item-highlighted"],
       "title": "Menu popup"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/select#Select",
+      "states": ["closed", "open"],
+      "title": "Select"
     }
   ],
   "components": [
@@ -4731,7 +4737,28 @@
     },
     {
       "authority": {
-        "line": 47,
+        "line": 48,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabSelectStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabSelectStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 67,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4765,7 +4792,7 @@
     },
     {
       "authority": {
-        "line": 18,
+        "line": 19,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4786,7 +4813,7 @@
     },
     {
       "authority": {
-        "line": 43,
+        "line": 44,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -18597,12 +18624,16 @@
       "name": "Select",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 11
+        "webUseSiteCount": 12
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/select#Select",
+        "states": ["closed", "open"],
+        "status": "covered",
+        "title": "Select"
       },
       "useSites": [
         {
@@ -18624,6 +18655,14 @@
         {
           "path": "apps/web/src/components/chat/ChatComposer.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
@@ -18764,9 +18803,9 @@
       "name": "SelectItem",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 11
+        "webUseSiteCount": 12
       },
       "story": {
         "status": "uncovered"
@@ -18791,6 +18830,14 @@
         {
           "path": "apps/web/src/components/chat/ChatComposer.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
@@ -18836,9 +18883,9 @@
       "name": "SelectPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 10
+        "webUseSiteCount": 11
       },
       "story": {
         "status": "uncovered"
@@ -18863,6 +18910,14 @@
         {
           "path": "apps/web/src/components/chat/ChatComposer.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
@@ -18927,9 +18982,9 @@
       "name": "SelectTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 11
+        "webUseSiteCount": 12
       },
       "story": {
         "status": "uncovered"
@@ -18954,6 +19009,14 @@
         {
           "path": "apps/web/src/components/chat/ComposerControl.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
@@ -18999,9 +19062,9 @@
       "name": "SelectValue",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 11
+        "webUseSiteCount": 12
       },
       "story": {
         "status": "uncovered"
@@ -19026,6 +19089,14 @@
         {
           "path": "apps/web/src/components/chat/ChatComposer.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
@@ -21563,14 +21634,14 @@
     }
   ],
   "counts": {
-    "components": 735,
+    "components": 736,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 209,
+    "internal": 210,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 17,
-    "webOnly": 456
+    "stories": 18,
+    "webOnly": 457
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

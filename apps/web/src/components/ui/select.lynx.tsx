@@ -53,6 +53,7 @@ export function Select({ children, disabled = false, onValueChange, value }: Sel
 }
 
 export interface SelectTriggerProps {
+  readonly [key: string]: unknown;
   readonly "aria-label"?: string;
   readonly children?: ReactNode;
   readonly className?: string;
@@ -67,6 +68,7 @@ export function SelectTrigger({
   disabled = false,
   size = "default",
   variant = "default",
+  ...props
 }: SelectTriggerProps) {
   const context = useSelectContext();
   const handleTap = useCallback(() => {
@@ -75,6 +77,7 @@ export function SelectTrigger({
 
   return (
     <view
+      {...props}
       className={[
         "ui-select-trigger",
         `ui-select-trigger--${size}`,
@@ -108,6 +111,7 @@ export function SelectValue({
 }
 
 export interface SelectPopupProps {
+  readonly [key: string]: unknown;
   readonly align?: "start" | "center" | "end";
   readonly alignItemWithTrigger?: boolean;
   readonly children?: ReactNode;
@@ -118,18 +122,30 @@ export interface SelectPopupProps {
   readonly sideOffset?: number;
 }
 
-export function SelectPopup({ children, className, popupClassName }: SelectPopupProps) {
+export function SelectPopup({ children, className, popupClassName, ...props }: SelectPopupProps) {
   const { open } = useSelectContext();
-  if (!open) return null;
 
   return (
-    <view className={["ui-select-popup", popupClassName].filter(Boolean).join(" ")}>
-      <view className={["ui-select-list", className].filter(Boolean).join(" ")}>{children}</view>
+    <view
+      {...props}
+      aria-hidden={open ? undefined : "true"}
+      className={[
+        "ui-select-popup",
+        open ? "ui-select-popup--open" : "ui-select-popup--closed",
+        popupClassName,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <view className={["ui-select-list flex flex-col", className].filter(Boolean).join(" ")}>
+        {children}
+      </view>
     </view>
   );
 }
 
 export interface SelectItemProps {
+  readonly [key: string]: unknown;
   readonly children?: ReactNode;
   readonly className?: string;
   readonly disabled?: boolean;
@@ -137,7 +153,13 @@ export interface SelectItemProps {
   readonly value: string;
 }
 
-export function SelectItem({ children, className, disabled = false, value }: SelectItemProps) {
+export function SelectItem({
+  children,
+  className,
+  disabled = false,
+  value,
+  ...props
+}: SelectItemProps) {
   const context = useSelectContext();
   const selected = context.value === value;
   const handleTap = useCallback(() => {
@@ -146,6 +168,8 @@ export function SelectItem({ children, className, disabled = false, value }: Sel
 
   return (
     <view
+      {...props}
+      aria-disabled={disabled ? "true" : undefined}
       className={[
         "ui-select-item",
         selected ? "ui-select-item--selected" : undefined,

@@ -1,5 +1,5 @@
 import catalog from "./catalog.json";
-import type { ReactNode } from "react";
+import { type ReactNode, useState } from "react";
 import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 
 import { Button } from "../ui/button";
@@ -9,6 +9,7 @@ import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../ui/menu";
 import { Separator } from "../ui/separator";
+import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
@@ -44,6 +45,25 @@ function StoryLabel({ children }: { readonly children: ReactNode }) {
   return <HostText className="component-lab-specimen__label">{children}</HostText>;
 }
 
+function ComponentLabSelectStory() {
+  const [value, setValue] = useState("comfortable");
+  return (
+    <Select value={value} onValueChange={setValue}>
+      <SelectTrigger aria-label="Density" data-component-lab-select-trigger="default">
+        <SelectValue>{value === "compact" ? "Compact" : "Comfortable"}</SelectValue>
+      </SelectTrigger>
+      <SelectPopup alignItemWithTrigger={false} data-floating-popup="component-lab-select">
+        <SelectItem data-component-lab-select-item="comfortable" value="comfortable">
+          Comfortable
+        </SelectItem>
+        <SelectItem data-component-lab-select-item="compact" value="compact">
+          Compact
+        </SelectItem>
+      </SelectPopup>
+    </Select>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -72,6 +92,10 @@ export function ComponentLabSurface() {
               <Button variant="destructive">Delete</Button>
               <Button disabled>Disabled</Button>
             </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="ui/select#Select" title="Select">
+            <ComponentLabSelectStory />
           </StoryFrame>
 
           <StoryFrame id="ui/tooltip#Tooltip" title="Tooltip">
@@ -121,7 +145,7 @@ export function ComponentLabSurface() {
               >
                 Open menu
               </MenuTrigger>
-              <MenuPopup align="start" relationId="component-lab-menu">
+              <MenuPopup align="start" relationId="component-lab-menu" side="top">
                 <MenuItem data-component-lab-menu-item="open">Open in editor</MenuItem>
                 <MenuItem data-component-lab-menu-item="copy">Copy path</MenuItem>
               </MenuPopup>

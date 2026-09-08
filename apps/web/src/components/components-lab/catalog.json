@@ -100,5 +100,11 @@
     "category": "Overlays",
     "title": "Menu popup",
     "states": ["open", "item-highlighted"]
+  },
+  {
+    "id": "ui/select#Select",
+    "category": "Forms",
+    "title": "Select",
+    "states": ["closed", "open"]
   }
 ]

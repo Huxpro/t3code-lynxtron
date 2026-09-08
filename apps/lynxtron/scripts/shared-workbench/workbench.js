@@ -203,6 +203,34 @@ function readComponentLabMetrics(root) {
           }
         : null;
     })(),
+    select: (() => {
+      const trigger = root.querySelector('[data-component-lab-select-trigger="default"]');
+      const popup = root.querySelector(
+        '[data-floating-popup="component-lab-select"]:not(.ui-select-popup--closed)',
+      );
+      return {
+        value: readComposedText(
+          trigger?.querySelector('[data-slot="select-value"], .ui-select-value'),
+        ),
+        trigger: readElementBox(trigger),
+        popup: popup
+          ? {
+              text: readComposedText(popup),
+              box: readElementBox(popup),
+              items: [...popup.querySelectorAll("[data-component-lab-select-item]")].map(
+                (item) => ({
+                  box: readElementBox(item),
+                  id: item.getAttribute("data-component-lab-select-item"),
+                  selected:
+                    item.hasAttribute("data-selected") ||
+                    item.classList.contains("ui-select-item--selected"),
+                  text: readComposedText(item),
+                }),
+              ),
+            }
+          : null,
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),
@@ -4405,6 +4433,16 @@ const workbench = {
   webElementCenter(selector) {
     const frame = document.getElementById("web-pane");
     const element = frame?.contentWindow?.document?.querySelector(selector);
+    if (!frame || !element) return null;
+    const frameRect = frame.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+  },
+  elementCenter(client, selector) {
+    const frame = document.getElementById(`${client}-pane`);
+    const doc = frame?.contentWindow?.document;
+    const root = client === "lynx" ? doc?.getElementById("t3-lynx-preview")?.shadowRoot : doc;
+    const element = root?.querySelector(selector);
     if (!frame || !element) return null;
     const frameRect = frame.getBoundingClientRect();
     const rect = element.getBoundingClientRect();

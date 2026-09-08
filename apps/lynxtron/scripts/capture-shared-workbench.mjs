@@ -7576,6 +7576,10 @@ async function captureCell({
   let componentLabTooltipOpened = false;
   let componentLabTooltipVerified = false;
   let componentLabMenuOpened = false;
+  let componentLabMenuVerified = false;
+  let componentLabSelectOpened = false;
+  let componentLabSelectChanged = false;
+  let componentLabSelectReopened = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7644,8 +7648,126 @@ async function captureCell({
         labReady &&
         componentLabTooltipVerified &&
         componentLabMenuOpened &&
+        !componentLabMenuVerified &&
         state?.web?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
-        state?.lynx?.componentLabMetrics?.menu?.text?.includes("Open in editor")
+        state?.lynx?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
+        state.web.componentLabMetrics.menu.items.length === 2 &&
+        state.lynx.componentLabMetrics.menu.items.length === 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.menu.box.rect.x -
+            state.lynx.componentLabMetrics.menu.box.rect.x,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.menu.box.rect.y -
+            state.lynx.componentLabMetrics.menu.box.rect.y,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.menu.box.rect.width -
+            state.lynx.componentLabMetrics.menu.box.rect.width,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.menu.box.rect.height -
+            state.lynx.componentLabMetrics.menu.box.rect.height,
+        ) <= 2
+      ) {
+        componentLabMenuVerified = true;
+        const menuPoints = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-menu-trigger="default"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-menu-trigger="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (menuPoints?.web) await dispatchPointerClickWithMove(cdp, sessionId, menuPoints.web);
+        if (menuPoints?.lynx) {
+          const invoked = await evaluate(
+            cdp,
+            sessionId,
+            `globalThis.__T3_WORKBENCH__?.invokeLynxMenu?.("component-lab-menu") ?? false`,
+          ).catch(() => false);
+          if (!invoked) throw new Error("Lynx component lab menu close probe is unavailable");
+        }
+        await delay(100);
+        continue;
+      }
+      if (labReady && componentLabMenuVerified && !componentLabSelectOpened) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-select-trigger="default"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-select-trigger="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        await delay(100);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabSelectOpened = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        labReady &&
+        componentLabMenuVerified &&
+        componentLabSelectOpened &&
+        !componentLabSelectChanged &&
+        state?.web?.componentLabMetrics?.select?.popup?.text === "Comfortable Compact" &&
+        state?.lynx?.componentLabMetrics?.select?.popup?.text === "Comfortable Compact"
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-select-item="compact"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-select-item="compact"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        await delay(100);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabSelectChanged = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabSelectChanged &&
+        !componentLabSelectReopened &&
+        state?.web?.componentLabMetrics?.select?.value === "Compact" &&
+        state?.lynx?.componentLabMetrics?.select?.value === "Compact"
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-select-trigger="default"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-select-trigger="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        await delay(100);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabSelectReopened = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        labReady &&
+        componentLabSelectReopened &&
+        state?.web?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
+        state?.lynx?.componentLabMetrics?.select?.popup?.items?.length === 2
       )
         break;
       if (state?.web?.literalRoute !== webRoute) {
@@ -11150,28 +11272,29 @@ async function captureCell({
         })) ?? [],
       );
   const componentLabTooltipReady = !isComponentsLabState || componentLabTooltipVerified;
-  const componentLabMenuReady =
+  const componentLabMenuReady = !isComponentsLabState || componentLabMenuVerified;
+  const componentLabSelectReady =
     !isComponentsLabState ||
-    (componentLabMenuOpened &&
-      state?.web?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
-      state?.lynx?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
-      state.web.componentLabMetrics.menu.items.length === 2 &&
-      state.lynx.componentLabMetrics.menu.items.length === 2 &&
+    (componentLabSelectReopened &&
+      state?.web?.componentLabMetrics?.select?.value === "Compact" &&
+      state?.lynx?.componentLabMetrics?.select?.value === "Compact" &&
+      state.web.componentLabMetrics.select.popup.items.length === 2 &&
+      state.lynx.componentLabMetrics.select.popup.items.length === 2 &&
       Math.abs(
-        state.web.componentLabMetrics.menu.box.rect.x -
-          state.lynx.componentLabMetrics.menu.box.rect.x,
+        state.web.componentLabMetrics.select.popup.box.rect.x -
+          state.lynx.componentLabMetrics.select.popup.box.rect.x,
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.menu.box.rect.y -
-          state.lynx.componentLabMetrics.menu.box.rect.y,
+        state.web.componentLabMetrics.select.popup.box.rect.y -
+          state.lynx.componentLabMetrics.select.popup.box.rect.y,
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.menu.box.rect.width -
-          state.lynx.componentLabMetrics.menu.box.rect.width,
+        state.web.componentLabMetrics.select.popup.box.rect.width -
+          state.lynx.componentLabMetrics.select.popup.box.rect.width,
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.menu.box.rect.height -
-          state.lynx.componentLabMetrics.menu.box.rect.height,
+        state.web.componentLabMetrics.select.popup.box.rect.height -
+          state.lynx.componentLabMetrics.select.popup.box.rect.height,
       ) <= 2);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
@@ -13598,6 +13721,7 @@ async function captureCell({
     componentLabGeometryReady &&
     componentLabTooltipReady &&
     componentLabMenuReady &&
+    componentLabSelectReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -13694,6 +13818,7 @@ async function captureCell({
       componentLabGeometryReady,
       componentLabTooltipReady,
       componentLabMenuReady,
+      componentLabSelectReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

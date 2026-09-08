@@ -26,6 +26,11 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, 'invokeLynxMenu?.("component-lab-menu")');
     assert.include(captureSource, "state.web.componentLabMetrics.menu.items.length === 2");
     assert.include(readerSource, '[data-floating-popup="component-lab-menu"]');
+    assert.include(captureSource, "const componentLabSelectReady =");
+    assert.include(captureSource, '"Comfortable Compact"');
+    assert.include(captureSource, 'select?.value === "Compact"');
+    assert.include(captureSource, '[data-component-lab-select-item="compact"]');
+    assert.include(readerSource, '[data-floating-popup="component-lab-select"]');
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");
