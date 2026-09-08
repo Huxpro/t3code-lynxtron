@@ -16,6 +16,13 @@ import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements"
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../ui/menu";
+import {
+  NumberField,
+  NumberFieldDecrement,
+  NumberFieldGroup,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "../ui/number-field";
 import { Separator } from "../ui/separator";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
@@ -73,6 +80,39 @@ function ComponentLabSelectStory() {
   );
 }
 
+function ComponentLabNumberFieldStory() {
+  const [value, setValue] = useState(10);
+  return (
+    <NumberField
+      className="w-32"
+      data-component-lab-number-field="default"
+      max={20}
+      min={0}
+      onValueChange={setValue}
+      step={2}
+      value={value}
+    >
+      <NumberFieldGroup className="source-control-git-number-field">
+        <NumberFieldDecrement
+          aria-label="Decrease interval"
+          className="source-control-git-number-field__stepper"
+          data-component-lab-number-action="decrement"
+        />
+        <NumberFieldInput
+          aria-label="Interval seconds"
+          className="source-control-git-number-field__input"
+          data-component-lab-number-input="value"
+        />
+        <NumberFieldIncrement
+          aria-label="Increase interval"
+          className="source-control-git-number-field__stepper"
+          data-component-lab-number-action="increment"
+        />
+      </NumberFieldGroup>
+    </NumberField>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -107,6 +147,10 @@ export function ComponentLabSurface() {
             <ComponentLabSelectStory />
           </StoryFrame>
 
+          <StoryFrame id="ui/number-field#NumberField" title="Number field">
+            <ComponentLabNumberFieldStory />
+          </StoryFrame>
+
           <StoryFrame id="ui/tooltip#Tooltip" title="Tooltip">
             <TooltipProvider delay={0}>
               <Tooltip>
@@ -120,6 +164,22 @@ export function ComponentLabSurface() {
                 <TooltipPopup relationId="component-lab-tooltip">Shared tooltip</TooltipPopup>
               </Tooltip>
             </TooltipProvider>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#Menu" title="Menu">
+            <Menu>
+              <MenuTrigger
+                data-component-lab-menu-trigger="default"
+                data-floating-anchor="component-lab-menu"
+                render={<Button variant="outline" />}
+              >
+                Open menu
+              </MenuTrigger>
+              <MenuPopup align="start" relationId="component-lab-menu" side="top">
+                <MenuItem data-component-lab-menu-item="open">Open in editor</MenuItem>
+                <MenuItem data-component-lab-menu-item="copy">Copy path</MenuItem>
+              </MenuPopup>
+            </Menu>
           </StoryFrame>
 
           <StoryFrame id="ui/tooltip#TooltipTrigger" title="Tooltip trigger">
@@ -143,22 +203,6 @@ export function ComponentLabSurface() {
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Opened by the real Tooltip state machine in paired capture.
             </HostText>
-          </StoryFrame>
-
-          <StoryFrame id="ui/menu#Menu" title="Menu">
-            <Menu>
-              <MenuTrigger
-                data-component-lab-menu-trigger="default"
-                data-floating-anchor="component-lab-menu"
-                render={<Button variant="outline" />}
-              >
-                Open menu
-              </MenuTrigger>
-              <MenuPopup align="start" relationId="component-lab-menu" side="top">
-                <MenuItem data-component-lab-menu-item="open">Open in editor</MenuItem>
-                <MenuItem data-component-lab-menu-item="copy">Copy path</MenuItem>
-              </MenuPopup>
-            </Menu>
           </StoryFrame>
 
           <StoryFrame id="ui/menu#MenuTrigger" title="Menu trigger">
@@ -200,6 +244,30 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/select#SelectItem" title="Select item">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Comfortable and Compact use the same production SelectItem.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/number-field#NumberFieldGroup" title="Number field group">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared Number field fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/number-field#NumberFieldInput" title="Number field input">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Reflects each increment and decrement from the shared fixture.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/number-field#NumberFieldIncrement" title="Number increment">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Increments the shared value by two.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/number-field#NumberFieldDecrement" title="Number decrement">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Restores the shared value to its initial state.
             </HostText>
           </StoryFrame>
 

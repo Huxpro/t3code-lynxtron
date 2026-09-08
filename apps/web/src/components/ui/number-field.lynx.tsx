@@ -6,7 +6,7 @@ interface NumberFieldContextValue {
   readonly value: number;
 }
 
-interface NumberFieldProps {
+interface NumberFieldProps extends Record<string, unknown> {
   readonly children?: ReactNode;
   readonly className?: string;
   readonly max?: number;
@@ -18,7 +18,7 @@ interface NumberFieldProps {
   readonly "aria-label"?: string;
 }
 
-interface NumberFieldChildProps {
+interface NumberFieldChildProps extends Record<string, unknown> {
   readonly children?: ReactNode;
   readonly className?: string;
   readonly "aria-label"?: string;
@@ -40,6 +40,7 @@ export function NumberField({
   onValueChange,
   step = 1,
   value = 0,
+  ...props
 }: NumberFieldProps) {
   const numericValue = typeof value === "number" && Number.isFinite(value) ? value : 0;
   const setValue = useCallback(
@@ -60,22 +61,34 @@ export function NumberField({
 
   return (
     <NumberFieldContext.Provider value={context}>
-      <view className={className}>{children}</view>
+      <view {...props} className={className}>
+        {children}
+      </view>
     </NumberFieldContext.Provider>
   );
 }
 
-export function NumberFieldGroup({ children, className }: NumberFieldChildProps) {
-  return <view className={className}>{children}</view>;
+export function NumberFieldGroup({ children, className, ...props }: NumberFieldChildProps) {
+  return (
+    <view {...props} className={className}>
+      {children}
+    </view>
+  );
 }
 
 export function NumberFieldDecrement({
   className,
   "aria-label": accessibilityLabel,
+  ...props
 }: NumberFieldChildProps) {
   const { stepBy } = useNumberFieldContext();
   return (
-    <view className={className} accessibility-label={accessibilityLabel} bindtap={() => stepBy(-1)}>
+    <view
+      {...props}
+      className={className}
+      accessibility-label={accessibilityLabel}
+      bindtap={() => stepBy(-1)}
+    >
       <text>−</text>
     </view>
   );
@@ -84,10 +97,16 @@ export function NumberFieldDecrement({
 export function NumberFieldIncrement({
   className,
   "aria-label": accessibilityLabel,
+  ...props
 }: NumberFieldChildProps) {
   const { stepBy } = useNumberFieldContext();
   return (
-    <view className={className} accessibility-label={accessibilityLabel} bindtap={() => stepBy(1)}>
+    <view
+      {...props}
+      className={className}
+      accessibility-label={accessibilityLabel}
+      bindtap={() => stepBy(1)}
+    >
       <text>+</text>
     </view>
   );
@@ -96,12 +115,14 @@ export function NumberFieldIncrement({
 export function NumberFieldInput({
   className,
   "aria-label": accessibilityLabel,
+  ...props
 }: NumberFieldChildProps) {
   const { setValue, value } = useNumberFieldContext();
   return (
     <input
       className={className}
       accessibility-label={accessibilityLabel}
+      {...props}
       {...({ value: String(value) } as object)}
       bindinput={(event: { detail?: { value?: string } }) => {
         const nextValue = Number(event.detail?.value);

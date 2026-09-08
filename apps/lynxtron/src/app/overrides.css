@@ -12306,6 +12306,13 @@
   background-color: var(--background);
   color: var(--foreground);
 }
+.component-lab .source-control-git-number-field {
+  height: 32px;
+}
+.component-lab .source-control-git-number-field__stepper,
+.component-lab .source-control-git-number-field__input {
+  height: 30px;
+}
 .component-lab__rail {
   flex-shrink: 0;
   width: 240px;

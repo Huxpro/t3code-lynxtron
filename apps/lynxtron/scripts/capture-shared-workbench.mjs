@@ -7580,6 +7580,8 @@ async function captureCell({
   let componentLabSelectOpened = false;
   let componentLabSelectChanged = false;
   let componentLabSelectReopened = false;
+  let componentLabNumberIncremented = false;
+  let componentLabNumberDecremented = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7694,7 +7696,12 @@ async function captureCell({
         await delay(100);
         continue;
       }
-      if (labReady && componentLabMenuVerified && !componentLabSelectOpened) {
+      if (
+        labReady &&
+        componentLabMenuVerified &&
+        componentLabNumberDecremented &&
+        !componentLabSelectOpened
+      ) {
         const points = await evaluate(
           cdp,
           sessionId,
@@ -7765,9 +7772,59 @@ async function captureCell({
       }
       if (
         labReady &&
-        componentLabSelectReopened &&
-        state?.web?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
-        state?.lynx?.componentLabMetrics?.select?.popup?.items?.length === 2
+        componentLabMenuVerified &&
+        !componentLabSelectOpened &&
+        !componentLabNumberIncremented &&
+        String(state?.web?.componentLabMetrics?.numberField?.value) === "10" &&
+        String(state?.lynx?.componentLabMetrics?.numberField?.value) === "10"
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-number-action="increment"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-number-action="increment"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        await delay(100);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabNumberIncremented = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabNumberIncremented &&
+        !componentLabNumberDecremented &&
+        String(state?.web?.componentLabMetrics?.numberField?.value) === "12" &&
+        String(state?.lynx?.componentLabMetrics?.numberField?.value) === "12"
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-number-action="decrement"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-number-action="decrement"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        await delay(100);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabNumberDecremented = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        labReady &&
+        componentLabNumberDecremented &&
+        String(state?.web?.componentLabMetrics?.numberField?.value) === "10" &&
+        String(state?.lynx?.componentLabMetrics?.numberField?.value) === "10"
       )
         break;
       if (state?.web?.literalRoute !== webRoute) {
@@ -11278,23 +11335,39 @@ async function captureCell({
     (componentLabSelectReopened &&
       state?.web?.componentLabMetrics?.select?.value === "Compact" &&
       state?.lynx?.componentLabMetrics?.select?.value === "Compact" &&
-      state.web.componentLabMetrics.select.popup.items.length === 2 &&
-      state.lynx.componentLabMetrics.select.popup.items.length === 2 &&
+      state?.web?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
+      state?.lynx?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box.rect.x -
-          state.lynx.componentLabMetrics.select.popup.box.rect.x,
+        state.web.componentLabMetrics.select.popup.box?.rect?.x -
+          state.lynx.componentLabMetrics.select.popup.box?.rect?.x,
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box.rect.y -
-          state.lynx.componentLabMetrics.select.popup.box.rect.y,
+        state.web.componentLabMetrics.select.popup.box?.rect?.y -
+          state.lynx.componentLabMetrics.select.popup.box?.rect?.y,
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box.rect.width -
-          state.lynx.componentLabMetrics.select.popup.box.rect.width,
+        state.web.componentLabMetrics.select.popup.box?.rect?.width -
+          state.lynx.componentLabMetrics.select.popup.box?.rect?.width,
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box.rect.height -
-          state.lynx.componentLabMetrics.select.popup.box.rect.height,
+        state.web.componentLabMetrics.select.popup.box?.rect?.height -
+          state.lynx.componentLabMetrics.select.popup.box?.rect?.height,
+      ) <= 2);
+  const componentLabNumberReady =
+    !isComponentsLabState ||
+    (componentLabNumberIncremented &&
+      componentLabNumberDecremented &&
+      String(state?.web?.componentLabMetrics?.numberField?.value) === "10" &&
+      String(state?.lynx?.componentLabMetrics?.numberField?.value) === "10" &&
+      state?.web?.componentLabMetrics?.numberField?.root?.rect &&
+      state?.lynx?.componentLabMetrics?.numberField?.root?.rect &&
+      Math.abs(
+        state.web.componentLabMetrics.numberField.root.rect.width -
+          state.lynx.componentLabMetrics.numberField.root.rect.width,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.numberField.root.rect.height -
+          state.lynx.componentLabMetrics.numberField.root.rect.height,
       ) <= 2);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
@@ -13722,6 +13795,7 @@ async function captureCell({
     componentLabTooltipReady &&
     componentLabMenuReady &&
     componentLabSelectReady &&
+    componentLabNumberReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -13819,6 +13893,7 @@ async function captureCell({
       componentLabTooltipReady,
       componentLabMenuReady,
       componentLabSelectReady,
+      componentLabNumberReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

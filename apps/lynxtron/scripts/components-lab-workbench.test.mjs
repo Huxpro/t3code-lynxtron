@@ -31,6 +31,10 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, 'select?.value === "Compact"');
     assert.include(captureSource, '[data-component-lab-select-item="compact"]');
     assert.include(readerSource, '[data-floating-popup="component-lab-select"]');
+    assert.include(captureSource, "const componentLabNumberReady =");
+    assert.include(captureSource, '[data-component-lab-number-action="increment"]');
+    assert.include(captureSource, '[data-component-lab-number-action="decrement"]');
+    assert.include(readerSource, '[data-component-lab-number-input="value"]');
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");

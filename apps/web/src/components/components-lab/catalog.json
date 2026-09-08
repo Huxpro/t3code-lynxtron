@@ -138,6 +138,36 @@
     "states": ["default", "selected"]
   },
   {
+    "id": "ui/number-field#NumberField",
+    "category": "Forms",
+    "title": "Number field",
+    "states": ["initial-10", "incremented-12", "decremented-10"]
+  },
+  {
+    "id": "ui/number-field#NumberFieldGroup",
+    "category": "Forms",
+    "title": "Number field group",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/number-field#NumberFieldInput",
+    "category": "Forms",
+    "title": "Number field input",
+    "states": ["10", "12"]
+  },
+  {
+    "id": "ui/number-field#NumberFieldIncrement",
+    "category": "Forms",
+    "title": "Number increment",
+    "states": ["enabled", "activated"]
+  },
+  {
+    "id": "ui/number-field#NumberFieldDecrement",
+    "category": "Forms",
+    "title": "Number decrement",
+    "states": ["enabled", "activated"]
+  },
+  {
     "id": "settings/settingsLayout#SettingsSection",
     "category": "Settings",
     "title": "Settings section",

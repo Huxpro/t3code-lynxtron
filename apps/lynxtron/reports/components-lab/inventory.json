@@ -139,6 +139,36 @@
       "title": "Select item"
     },
     {
+      "category": "Forms",
+      "id": "ui/number-field#NumberField",
+      "states": ["initial-10", "incremented-12", "decremented-10"],
+      "title": "Number field"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/number-field#NumberFieldGroup",
+      "states": ["default"],
+      "title": "Number field group"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/number-field#NumberFieldInput",
+      "states": ["10", "12"],
+      "title": "Number field input"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/number-field#NumberFieldIncrement",
+      "states": ["enabled", "activated"],
+      "title": "Number increment"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/number-field#NumberFieldDecrement",
+      "states": ["enabled", "activated"],
+      "title": "Number decrement"
+    },
+    {
       "category": "Settings",
       "id": "settings/settingsLayout#SettingsSection",
       "states": ["title", "header-action", "body"],
@@ -4815,7 +4845,28 @@
     },
     {
       "authority": {
-        "line": 57,
+        "line": 83,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabNumberFieldStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabNumberFieldStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 64,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4836,7 +4887,7 @@
     },
     {
       "authority": {
-        "line": 76,
+        "line": 116,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4870,7 +4921,7 @@
     },
     {
       "authority": {
-        "line": 28,
+        "line": 35,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4891,7 +4942,7 @@
     },
     {
       "authority": {
-        "line": 53,
+        "line": 60,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -18052,12 +18103,16 @@
       "name": "NumberField",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/number-field#NumberField",
+        "states": ["initial-10", "incremented-12", "decremented-10"],
+        "status": "covered",
+        "title": "Number field"
       },
       "useSites": [
         {
@@ -18066,6 +18121,14 @@
         },
         {
           "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -18123,12 +18186,16 @@
       "name": "NumberFieldDecrement",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/number-field#NumberFieldDecrement",
+        "states": ["enabled", "activated"],
+        "status": "covered",
+        "title": "Number decrement"
       },
       "useSites": [
         {
@@ -18137,6 +18204,14 @@
         },
         {
           "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -18171,12 +18246,16 @@
       "name": "NumberFieldGroup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/number-field#NumberFieldGroup",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Number field group"
       },
       "useSites": [
         {
@@ -18185,6 +18264,14 @@
         },
         {
           "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -18219,12 +18306,16 @@
       "name": "NumberFieldIncrement",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/number-field#NumberFieldIncrement",
+        "states": ["enabled", "activated"],
+        "status": "covered",
+        "title": "Number increment"
       },
       "useSites": [
         {
@@ -18233,6 +18324,14 @@
         },
         {
           "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -18267,12 +18366,16 @@
       "name": "NumberFieldInput",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/number-field#NumberFieldInput",
+        "states": ["10", "12"],
+        "status": "covered",
+        "title": "Number field input"
       },
       "useSites": [
         {
@@ -18281,6 +18384,14 @@
         },
         {
           "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -21828,14 +21939,14 @@
     }
   ],
   "counts": {
-    "components": 736,
+    "components": 737,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 210,
+    "internal": 211,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 31,
-    "webOnly": 457
+    "stories": 36,
+    "webOnly": 458
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

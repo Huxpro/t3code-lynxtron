@@ -231,6 +231,15 @@ function readComponentLabMetrics(root) {
           : null,
       };
     })(),
+    numberField: (() => {
+      const rootField = root.querySelector('[data-component-lab-number-field="default"]');
+      const input = root.querySelector('[data-component-lab-number-input="value"]');
+      return {
+        root: readElementBox(rootField),
+        input: readElementBox(input),
+        value: input?.value ?? input?.getAttribute("value") ?? null,
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),
