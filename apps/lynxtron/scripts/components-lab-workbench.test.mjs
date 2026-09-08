@@ -67,6 +67,10 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabSidebarReady =");
     assert.include(captureSource, '[data-component-lab-sidebar-menu-button=\"default\"]');
     assert.include(readerSource, "sidebarPrimitive: (() =>");
+    assert.include(captureSource, "const componentLabDraftInputReady =");
+    assert.include(captureSource, "Could not focus Web component lab DraftInput");
+    assert.include(captureSource, "Could not focus Lynx component lab DraftInput");
+    assert.include(readerSource, "draftInput: (() =>");
     assert.include(captureSource, "componentLabSidebarToggled");
     assert.include(captureSource, '"collapsed"');
     assert.include(captureSource, 'semanticRoute === "components-lab"');

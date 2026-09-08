@@ -16,6 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import { DraftInput } from "../ui/draft-input";
 import {
   Empty,
   EmptyContent,
@@ -308,6 +309,28 @@ function ComponentLabSidebarStory() {
   );
 }
 
+function ComponentLabDraftInputStory() {
+  const [committed, setCommitted] = useState("alpha");
+  return (
+    <HostView className="component-lab-draft-input">
+      <HostView className="component-lab-draft-input__frame">
+        <DraftInput
+          aria-label="Component lab draft input"
+          className="component-lab-draft-input__control"
+          onCommit={setCommitted}
+          value={committed}
+        />
+      </HostView>
+      <HostText
+        className="component-lab-host-text component-lab-host-text--muted"
+        data-component-lab-draft-committed="value"
+      >
+        Committed {committed}
+      </HostText>
+    </HostView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -351,6 +374,10 @@ export function ComponentLabSurface() {
 
           <StoryFrame id="ui/sidebar#SidebarMenuButton" title="Sidebar menu button">
             <ComponentLabSidebarStory />
+          </StoryFrame>
+
+          <StoryFrame id="ui/draft-input#DraftInput" title="Draft input">
+            <ComponentLabDraftInputStory />
           </StoryFrame>
 
           {(

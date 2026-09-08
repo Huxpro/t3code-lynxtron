@@ -7596,6 +7596,10 @@ async function captureCell({
   let componentLabSettingResetClicked = false;
   let componentLabSidebarClicked = false;
   let componentLabSidebarToggled = false;
+  let componentLabDraftWebTyped = false;
+  let componentLabDraftWebCommitted = false;
+  let componentLabDraftLynxTyped = false;
+  let componentLabDraftLynxCommitted = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7747,6 +7751,8 @@ async function captureCell({
         componentLabSettingResetClicked &&
         componentLabSidebarClicked &&
         componentLabSidebarToggled &&
+        componentLabDraftWebCommitted &&
+        componentLabDraftLynxCommitted &&
         !componentLabSelectOpened
       ) {
         const points = await evaluate(
@@ -8127,6 +8133,87 @@ async function captureCell({
         if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
         if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
         componentLabSidebarToggled = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabSidebarToggled &&
+        !componentLabDraftWebTyped &&
+        state?.web?.componentLabMetrics?.draftInput?.value === "alpha" &&
+        state?.web?.componentLabMetrics?.draftInput?.committed === "Committed alpha"
+      ) {
+        const focused = await focusRemoteElement(
+          cdp,
+          sessionId,
+          `(() => {
+            const input = document.getElementById('web-pane')?.contentWindow?.document
+              ?.querySelector('[aria-label="Component lab draft input"]');
+            input?.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+            input?.select?.();
+            return input ?? null;
+          })()`,
+        );
+        if (!focused) throw new Error("Could not focus Web component lab DraftInput");
+        await cdp.send("Input.insertText", { text: "beta" }, sessionId);
+        componentLabDraftWebTyped = true;
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabDraftWebTyped &&
+        !componentLabDraftWebCommitted &&
+        state?.web?.componentLabMetrics?.draftInput?.value === "beta" &&
+        state?.web?.componentLabMetrics?.draftInput?.committed === "Committed alpha"
+      ) {
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenterVisible("web", '[data-component-story="ui/draft-input#DraftInput"] .component-lab-story__title') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabDraftWebCommitted = Boolean(point);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabDraftWebCommitted &&
+        !componentLabDraftLynxTyped &&
+        state?.web?.componentLabMetrics?.draftInput?.committed === "Committed beta" &&
+        state?.lynx?.componentLabMetrics?.draftInput?.value === "alpha" &&
+        state?.lynx?.componentLabMetrics?.draftInput?.committed === "Committed alpha"
+      ) {
+        const focused = await focusRemoteElement(
+          cdp,
+          sessionId,
+          `(() => {
+            const root = document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            const host = root?.querySelector('[aria-label="Component lab draft input"]');
+            host?.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+            const input = host?.shadowRoot?.querySelector('input') ?? host ?? null;
+            input?.select?.();
+            return input;
+          })()`,
+        );
+        if (!focused) throw new Error("Could not focus Lynx component lab DraftInput");
+        await cdp.send("Input.insertText", { text: "beta" }, sessionId);
+        componentLabDraftLynxTyped = true;
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabDraftLynxTyped &&
+        !componentLabDraftLynxCommitted &&
+        state?.lynx?.componentLabMetrics?.draftInput?.value === "beta" &&
+        state?.lynx?.componentLabMetrics?.draftInput?.committed === "Committed alpha"
+      ) {
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenterVisible("lynx", '[data-component-story="ui/draft-input#DraftInput"] .component-lab-story__title') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabDraftLynxCommitted = Boolean(point);
         await delay(100);
         continue;
       }
@@ -11778,6 +11865,26 @@ async function captureCell({
         state.web.componentLabMetrics.sidebarPrimitive.trigger.rect.height -
           state.lynx.componentLabMetrics.sidebarPrimitive.trigger.rect.height,
       ) <= 1);
+  const componentLabDraftInputReady =
+    !isComponentsLabState ||
+    (componentLabDraftWebTyped &&
+      componentLabDraftWebCommitted &&
+      componentLabDraftLynxTyped &&
+      componentLabDraftLynxCommitted &&
+      state?.web?.componentLabMetrics?.draftInput?.value === "beta" &&
+      state?.lynx?.componentLabMetrics?.draftInput?.value === "beta" &&
+      state?.web?.componentLabMetrics?.draftInput?.committed === "Committed beta" &&
+      state?.lynx?.componentLabMetrics?.draftInput?.committed === "Committed beta" &&
+      state?.web?.componentLabMetrics?.draftInput?.box?.rect &&
+      state?.lynx?.componentLabMetrics?.draftInput?.box?.rect &&
+      Math.abs(
+        state.web.componentLabMetrics.draftInput.box.rect.width -
+          state.lynx.componentLabMetrics.draftInput.box.rect.width,
+      ) <= 1 &&
+      Math.abs(
+        state.web.componentLabMetrics.draftInput.box.rect.height -
+          state.lynx.componentLabMetrics.draftInput.box.rect.height,
+      ) <= 1);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -14211,6 +14318,7 @@ async function captureCell({
     componentLabProjectFaviconReady &&
     componentLabSettingResetReady &&
     componentLabSidebarReady &&
+    componentLabDraftInputReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -14315,6 +14423,7 @@ async function captureCell({
       componentLabProjectFaviconReady,
       componentLabSettingResetReady,
       componentLabSidebarReady,
+      componentLabDraftInputReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

@@ -325,6 +325,21 @@ function readComponentLabMetrics(root) {
         trigger: readElementBox(root.querySelector(".component-lab-sidebar-trigger")),
       };
     })(),
+    draftInput: (() => {
+      const committed = root.querySelector('[data-component-lab-draft-committed="value"]');
+      const control = root.querySelector(".component-lab-draft-input__control");
+      const frame = root.querySelector(".component-lab-draft-input__frame");
+      const host =
+        root.querySelector('[aria-label="Component lab draft input"]') ??
+        control?.querySelector?.("input, x-input") ??
+        control;
+      const input = host?.shadowRoot?.querySelector("input") ?? host;
+      return {
+        box: readElementBox(frame),
+        committed: readComposedText(committed),
+        value: input?.value ?? input?.getAttribute("value") ?? null,
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),

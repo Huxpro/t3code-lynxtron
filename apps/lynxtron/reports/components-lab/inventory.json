@@ -43,6 +43,12 @@
       "title": "Sidebar menu item"
     },
     {
+      "category": "Forms",
+      "id": "ui/draft-input#DraftInput",
+      "states": ["committed-alpha", "draft-beta", "committed-beta"],
+      "title": "Draft input"
+    },
+    {
       "category": "Navigation",
       "id": "ui/sidebar#SidebarContent",
       "states": ["scroll-container"],
@@ -5045,7 +5051,7 @@
     },
     {
       "authority": {
-        "line": 176,
+        "line": 177,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5066,7 +5072,28 @@
     },
     {
       "authority": {
-        "line": 127,
+        "line": 312,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabDraftInputStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabDraftInputStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 128,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5087,7 +5114,7 @@
     },
     {
       "authority": {
-        "line": 213,
+        "line": 214,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5108,7 +5135,7 @@
     },
     {
       "authority": {
-        "line": 162,
+        "line": 163,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5129,7 +5156,7 @@
     },
     {
       "authority": {
-        "line": 105,
+        "line": 106,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5150,7 +5177,7 @@
     },
     {
       "authority": {
-        "line": 240,
+        "line": 241,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5171,7 +5198,7 @@
     },
     {
       "authority": {
-        "line": 275,
+        "line": 276,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5192,7 +5219,7 @@
     },
     {
       "authority": {
-        "line": 311,
+        "line": 334,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5226,7 +5253,7 @@
     },
     {
       "authority": {
-        "line": 76,
+        "line": 77,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5247,7 +5274,7 @@
     },
     {
       "authority": {
-        "line": 101,
+        "line": 102,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -15863,16 +15890,28 @@
       "name": "DraftInput",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 2
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/draft-input#DraftInput",
+        "states": ["committed-alpha", "draft-beta", "committed-beta"],
+        "status": "covered",
+        "title": "Draft input"
       },
       "useSites": [
         {
           "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -22597,14 +22636,14 @@
     }
   ],
   "counts": {
-    "components": 742,
+    "components": 743,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 216,
+    "internal": 217,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 68,
-    "webOnly": 463
+    "stories": 69,
+    "webOnly": 464
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

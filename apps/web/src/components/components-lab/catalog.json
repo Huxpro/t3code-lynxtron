@@ -42,6 +42,12 @@
     "states": ["default"]
   },
   {
+    "id": "ui/draft-input#DraftInput",
+    "category": "Forms",
+    "title": "Draft input",
+    "states": ["committed-alpha", "draft-beta", "committed-beta"]
+  },
+  {
     "id": "ui/sidebar#SidebarContent",
     "category": "Navigation",
     "title": "Sidebar content",

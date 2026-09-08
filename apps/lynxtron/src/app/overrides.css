@@ -12590,6 +12590,20 @@
   border-radius: 8px;
   box-sizing: border-box;
 }
+.component-lab-draft-input {
+  display: linear;
+  linear-orientation: vertical;
+  width: 320px;
+  gap: 8px;
+}
+.component-lab-draft-input__control {
+  width: 320px;
+}
+.component-lab-draft-input__frame {
+  flex-shrink: 0;
+  width: 320px;
+  height: 32px;
+}
 .component-lab-settings-reset {
   display: flex;
   flex-direction: row;
