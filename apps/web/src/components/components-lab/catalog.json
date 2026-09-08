@@ -142,5 +142,11 @@
     "category": "Settings",
     "title": "Settings section",
     "states": ["title", "header-action", "body"]
+  },
+  {
+    "id": "settings/settingsLayout#SettingsRow",
+    "category": "Settings",
+    "title": "Settings row",
+    "states": ["default", "status", "control", "unavailable"]
   }
 ]

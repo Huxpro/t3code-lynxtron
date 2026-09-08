@@ -13,7 +13,7 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import { SettingsSection } from "../settings/settingsLayout";
+import { SettingsRow, SettingsSection } from "../settings/settingsLayout";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -204,13 +204,24 @@ export function ComponentLabSurface() {
               }
               title="Appearance"
             >
-              <HostView className="component-lab-host-surface">
-                <HostText className="component-lab-host-text">Theme</HostText>
-                <HostText className="component-lab-host-text component-lab-host-text--muted">
-                  Choose how T3 Code looks across the app.
-                </HostText>
-              </HostView>
+              <SettingsRow
+                control={<Switch aria-label="Use system theme" checked />}
+                description="Choose how T3 Code looks across the app."
+                status="System"
+                title="Theme"
+              />
+              <SettingsRow
+                description="This setting is managed by the current environment."
+                title="Environment theme"
+                unavailable
+              />
             </SettingsSection>
+          </StoryFrame>
+
+          <StoryFrame id="settings/settingsLayout#SettingsRow" title="Settings row">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Rendered by the shared Settings section fixture above.
+            </HostText>
           </StoryFrame>
 
           <StoryFrame id="ui/badge#Badge" title="Badge">
