@@ -2336,6 +2336,8 @@ describe("desktop shell interaction contract", () => {
   it("scans the Lynx Sidebar primitive instead of its Web-only counterpart", () => {
     expect(tailwindConfigSource).toContain('"../web/src/components/ui/sidebar.lynx.tsx"');
     expect(tailwindConfigSource).not.toContain('"../web/src/components/ui/sidebar.tsx"');
+    expect(tailwindConfigSource).toContain('"../web/src/components/Sidebar.lynx.tsx"');
+    expect(tailwindConfigSource).not.toContain('"../web/src/components/Sidebar.tsx"');
   });
 
   it("uses compact dedicated rows for Lynx Sidebar search results", () => {

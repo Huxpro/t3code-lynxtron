@@ -126,7 +126,7 @@ export default {
     "../web/src/components/PlanSurface.tsx",
     "../web/src/components/RightPanelSurface.tsx",
     "../web/src/components/AppSidebarLayout.lynx.tsx",
-    "../web/src/components/Sidebar.tsx",
+    "../web/src/components/Sidebar.lynx.tsx",
     "../web/src/components/Sidebar.logic.ts",
     "../web/src/components/SidebarV2.lynx.tsx",
     "../web/src/components/ProjectFavicon.lynx.tsx",
