@@ -7633,6 +7633,9 @@ async function captureCell({
   let componentLabFileTreeEvidence = null;
   let componentLabHostListScrolled = false;
   let componentLabHostListEvidence = null;
+  let componentLabUpdatePillCaptured = false;
+  let componentLabUpdatePillDismissed = false;
+  let componentLabUpdatePillEvidence = null;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -8879,6 +8882,55 @@ async function captureCell({
             lynx: state.lynx.componentLabMetrics.hostList,
           },
         };
+        continue;
+      }
+      if (
+        componentLabHostListEvidence?.scrolled &&
+        !componentLabUpdatePillCaptured &&
+        state?.web?.componentLabMetrics?.updatePills?.length === 2 &&
+        state?.lynx?.componentLabMetrics?.updatePills?.length === 2
+      ) {
+        componentLabUpdatePillEvidence = {
+          inputChannel: "dual-cdp-pointer",
+          initial: {
+            web: state.web.componentLabMetrics.updatePills,
+            lynx: state.lynx.componentLabMetrics.updatePills,
+          },
+          dismissed: null,
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[aria-label="Dismiss provider update notice"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[aria-label="Dismiss provider update notice"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabUpdatePillCaptured = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabUpdatePillCaptured &&
+        !componentLabUpdatePillDismissed &&
+        state?.web?.componentLabMetrics?.updateDismissed === true &&
+        state?.lynx?.componentLabMetrics?.updateDismissed === true &&
+        state?.web?.componentLabMetrics?.updatePills?.length === 1 &&
+        state?.lynx?.componentLabMetrics?.updatePills?.length === 1
+      ) {
+        componentLabUpdatePillDismissed = true;
+        componentLabUpdatePillEvidence = {
+          ...componentLabUpdatePillEvidence,
+          dismissed: {
+            web: state.web.componentLabMetrics.updatePills,
+            lynx: state.lynx.componentLabMetrics.updatePills,
+          },
+        };
       }
       if (
         labReady &&
@@ -8894,6 +8946,7 @@ async function captureCell({
         componentLabThreadErrorDismissed &&
         componentLabFileTreeCollapsed &&
         componentLabHostListEvidence?.scrolled &&
+        componentLabUpdatePillDismissed &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
@@ -12806,6 +12859,34 @@ async function captureCell({
           mark?.rect?.width > 0 &&
           mark?.rect?.height === 10,
       ));
+  const componentLabUpdatePillReady =
+    !isComponentsLabState ||
+    (componentLabUpdatePillCaptured &&
+      componentLabUpdatePillDismissed &&
+      componentLabUpdatePillEvidence?.initial?.web?.length === 2 &&
+      componentLabUpdatePillEvidence?.initial?.lynx?.length === 2 &&
+      JSON.stringify(
+        componentLabUpdatePillEvidence.initial.web.map(({ tone, title }) => ({ tone, title })),
+      ) ===
+        JSON.stringify([
+          { tone: "warning", title: "Claude update available" },
+          { tone: "loading", title: "Updating provider" },
+        ]) &&
+      JSON.stringify(
+        componentLabUpdatePillEvidence.initial.lynx.map(({ tone, title }) => ({ tone, title })),
+      ) ===
+        JSON.stringify([
+          { tone: "warning", title: "Claude update available" },
+          { tone: "loading", title: "Updating provider" },
+        ]) &&
+      componentLabUpdatePillEvidence.initial.web.every(({ box }) => box.rect.height === 28) &&
+      componentLabUpdatePillEvidence.initial.lynx.every(({ box }) => box.rect.height === 28) &&
+      componentLabUpdatePillEvidence.initial.web[0].dismiss.rect.width === 20 &&
+      componentLabUpdatePillEvidence.initial.lynx[0].dismiss.rect.width === 20 &&
+      componentLabUpdatePillEvidence.initial.web[0].hasProgress === true &&
+      componentLabUpdatePillEvidence.initial.lynx[0].hasProgress === true &&
+      componentLabUpdatePillEvidence.dismissed.web.length === 1 &&
+      componentLabUpdatePillEvidence.dismissed.lynx.length === 1);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -15261,6 +15342,7 @@ async function captureCell({
     componentLabHostListReady &&
     componentLabHostLayoutReady &&
     componentLabT3WordmarkReady &&
+    componentLabUpdatePillReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15379,6 +15461,7 @@ async function captureCell({
       componentLabHostListReady,
       componentLabHostLayoutReady,
       componentLabT3WordmarkReady,
+      componentLabUpdatePillReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,
@@ -15566,6 +15649,7 @@ async function captureCell({
           threadErrorBanner: componentLabThreadErrorEvidence,
           fileTree: componentLabFileTreeEvidence,
           hostList: componentLabHostListEvidence,
+          updatePill: componentLabUpdatePillEvidence,
           select: componentLabSelectEvidence,
           menu: componentLabMenuEvidence,
           popover: componentLabPopoverEvidence,

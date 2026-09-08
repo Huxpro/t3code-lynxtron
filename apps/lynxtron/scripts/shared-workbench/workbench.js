@@ -488,6 +488,16 @@ function readComponentLabMetrics(root) {
         host.querySelector('svg, image, x-image, [class*="lynx-sidebar-wordmark"]'),
       ),
     })),
+    updatePills: [...root.querySelectorAll(".sidebar-update-pill-surface")].map((pill) => ({
+      box: readElementBox(pill),
+      tone: pill.getAttribute("data-update-tone"),
+      title: pill.getAttribute("data-update-title"),
+      hasProgress: pill.getAttribute("data-has-progress") === "true",
+      main: readElementBox(pill.querySelector(".sidebar-update-pill-surface__main")),
+      dismiss: readElementBox(pill.querySelector(".sidebar-update-pill-surface__dismiss")),
+      progress: readElementBox(pill.querySelector(".sidebar-update-pill-surface__progress")),
+    })),
+    updateDismissed: root.querySelector('[data-component-lab-update-dismissed="true"]') !== null,
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

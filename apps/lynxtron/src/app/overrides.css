@@ -12905,6 +12905,43 @@
   background-color: #202020;
   color: #ffffff;
 }
+.component-lab-update-pills {
+  --flex-direction: column;
+  --lynx-linear-orientation: vertical;
+  display: block;
+  width: 320px;
+}
+.component-lab-update-pills > * + * {
+  margin-top: 8px;
+}
+.sidebar-update-pill-surface {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  overflow: hidden;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.sidebar-update-pill-surface__main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  height: 28px;
+  padding: 0 8px;
+  gap: 8px;
+}
+.sidebar-update-pill-surface__dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

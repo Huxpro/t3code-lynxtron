@@ -254,6 +254,12 @@
     },
     {
       "category": "Feedback",
+      "id": "sidebar/SidebarUpdatePillSurface#SidebarUpdatePillSurface",
+      "states": ["warning", "loading", "dismissed"],
+      "title": "Sidebar update pill surface"
+    },
+    {
+      "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
       "title": "Badge"
@@ -5357,7 +5363,7 @@
     },
     {
       "authority": {
-        "line": 616,
+        "line": 617,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5378,7 +5384,7 @@
     },
     {
       "authority": {
-        "line": 474,
+        "line": 475,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5399,7 +5405,7 @@
     },
     {
       "authority": {
-        "line": 415,
+        "line": 416,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5420,7 +5426,7 @@
     },
     {
       "authority": {
-        "line": 236,
+        "line": 237,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5441,7 +5447,7 @@
     },
     {
       "authority": {
-        "line": 517,
+        "line": 518,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5462,7 +5468,7 @@
     },
     {
       "authority": {
-        "line": 671,
+        "line": 672,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5483,7 +5489,7 @@
     },
     {
       "authority": {
-        "line": 718,
+        "line": 719,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5504,7 +5510,7 @@
     },
     {
       "authority": {
-        "line": 704,
+        "line": 705,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5525,7 +5531,7 @@
     },
     {
       "authority": {
-        "line": 187,
+        "line": 188,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5546,7 +5552,7 @@
     },
     {
       "authority": {
-        "line": 310,
+        "line": 311,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5567,7 +5573,7 @@
     },
     {
       "authority": {
-        "line": 222,
+        "line": 223,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5588,7 +5594,7 @@
     },
     {
       "authority": {
-        "line": 165,
+        "line": 166,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5609,7 +5615,7 @@
     },
     {
       "authority": {
-        "line": 337,
+        "line": 338,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5630,7 +5636,7 @@
     },
     {
       "authority": {
-        "line": 273,
+        "line": 274,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5651,7 +5657,7 @@
     },
     {
       "authority": {
-        "line": 654,
+        "line": 655,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5672,7 +5678,7 @@
     },
     {
       "authority": {
-        "line": 372,
+        "line": 373,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5693,7 +5699,7 @@
     },
     {
       "authority": {
-        "line": 729,
+        "line": 760,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5727,7 +5733,7 @@
     },
     {
       "authority": {
-        "line": 539,
+        "line": 540,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5748,7 +5754,7 @@
     },
     {
       "authority": {
-        "line": 564,
+        "line": 565,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5769,7 +5775,28 @@
     },
     {
       "authority": {
-        "line": 640,
+        "line": 730,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabUpdatePillStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabUpdatePillStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 641,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5790,7 +5817,7 @@
     },
     {
       "authority": {
-        "line": 136,
+        "line": 137,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5811,7 +5838,7 @@
     },
     {
       "authority": {
-        "line": 161,
+        "line": 162,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -12253,7 +12280,7 @@
     },
     {
       "authority": {
-        "line": 41,
+        "line": 24,
         "path": "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx"
       },
       "exported": true,
@@ -12337,6 +12364,44 @@
         "status": "uncovered"
       },
       "useSites": []
+    },
+    {
+      "authority": {
+        "line": 22,
+        "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx"
+      },
+      "exported": true,
+      "id": "sidebar/SidebarUpdatePillSurface#SidebarUpdatePillSurface",
+      "implementation": "shared-source",
+      "lynx": null,
+      "name": "SidebarUpdatePillSurface",
+      "reuse": {
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
+      },
+      "story": {
+        "category": "Feedback",
+        "id": "sidebar/SidebarUpdatePillSurface#SidebarUpdatePillSurface",
+        "states": ["warning", "loading", "dismissed"],
+        "status": "covered",
+        "title": "Sidebar update pill surface"
+      },
+      "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
+          "platform": "web"
+        }
+      ]
     },
     {
       "authority": {
@@ -17387,9 +17452,9 @@
       "name": "HostButton",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 16,
+        "lynxUseSiteCount": 17,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 15
+        "webUseSiteCount": 16
       },
       "story": {
         "category": "Host primitives",
@@ -17506,6 +17571,14 @@
         {
           "path": "apps/web/src/components/Sidebar.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
@@ -17831,9 +17904,9 @@
       "name": "HostText",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 25,
+        "lynxUseSiteCount": 26,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 20
+        "webUseSiteCount": 21
       },
       "story": {
         "category": "Host primitives",
@@ -18004,6 +18077,14 @@
           "platform": "lynx"
         },
         {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "lynx"
+        },
+        {
           "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
           "platform": "web"
         },
@@ -18039,9 +18120,9 @@
       "name": "HostView",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 27,
+        "lynxUseSiteCount": 28,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 18
+        "webUseSiteCount": 19
       },
       "story": {
         "category": "Host primitives",
@@ -18209,6 +18290,14 @@
         },
         {
           "path": "apps/web/src/components/sidebar/SidebarProjectsSurface.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -22951,7 +23040,7 @@
       "name": "Tooltip",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 3,
+        "lynxUseSiteCount": 4,
         "lynxUsesLogicalComponent": true,
         "webUseSiteCount": 44
       },
@@ -23112,12 +23201,16 @@
           "platform": "web"
         },
         {
-          "path": "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
           "platform": "web"
         },
         {
-          "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
@@ -23190,7 +23283,7 @@
       "name": "TooltipPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 3,
+        "lynxUseSiteCount": 4,
         "lynxUsesLogicalComponent": true,
         "webUseSiteCount": 43
       },
@@ -23351,12 +23444,16 @@
           "platform": "web"
         },
         {
-          "path": "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
           "platform": "web"
         },
         {
-          "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
@@ -23450,7 +23547,7 @@
       "name": "TooltipTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 3,
+        "lynxUseSiteCount": 4,
         "lynxUsesLogicalComponent": true,
         "webUseSiteCount": 44
       },
@@ -23611,12 +23708,16 @@
           "platform": "web"
         },
         {
-          "path": "apps/web/src/components/sidebar/SidebarProviderUpdatePill.tsx",
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
           "platform": "web"
         },
         {
-          "path": "apps/web/src/components/sidebar/SidebarUpdatePill.tsx",
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/sidebar/SidebarUpdatePillSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
@@ -23654,14 +23755,14 @@
     }
   ],
   "counts": {
-    "components": 754,
+    "components": 756,
     "coveredStoriesMissingLynxUse": 0,
-    "exported": 526,
-    "internal": 228,
+    "exported": 527,
+    "internal": 229,
     "platformPairs": 216,
-    "sharedSource": 63,
-    "stories": 112,
-    "webOnly": 475
+    "sharedSource": 64,
+    "stories": 113,
+    "webOnly": 476
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

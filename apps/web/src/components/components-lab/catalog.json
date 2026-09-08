@@ -252,6 +252,12 @@
     "states": ["default", "backdrop"]
   },
   {
+    "id": "sidebar/SidebarUpdatePillSurface#SidebarUpdatePillSurface",
+    "category": "Feedback",
+    "title": "Sidebar update pill surface",
+    "states": ["warning", "loading", "dismissed"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

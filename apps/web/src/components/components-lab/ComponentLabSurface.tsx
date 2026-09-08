@@ -130,6 +130,7 @@ import {
   SidebarChromeHeaderSurface,
 } from "../sidebar/SidebarChromeSurface";
 import { T3Wordmark } from "../sidebar/T3Wordmark";
+import { SidebarUpdatePillSurface } from "../sidebar/SidebarUpdatePillSurface";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -726,6 +727,36 @@ function ComponentLabHostLayoutStory() {
   );
 }
 
+function ComponentLabUpdatePillStory() {
+  const [visible, setVisible] = useState(true);
+  return (
+    <HostView className="component-lab-update-pills">
+      {visible ? (
+        <SidebarUpdatePillSurface
+          description="Claude can be updated from provider settings."
+          dismissIcon={<HostText>×</HostText>}
+          dismissLabel="Dismiss provider update notice"
+          icon={<HostText>!</HostText>}
+          onActivate={() => {}}
+          onDismiss={() => setVisible(false)}
+          progressDurationMs={3000}
+          title="Claude update available"
+          tone="warning"
+        />
+      ) : (
+        <HostText data-component-lab-update-dismissed="true">Update dismissed</HostText>
+      )}
+      <SidebarUpdatePillSurface
+        description="Running provider update command."
+        icon={<HostText>↻</HostText>}
+        onActivate={() => {}}
+        title="Updating provider"
+        tone="loading"
+      />
+    </HostView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -881,6 +912,13 @@ export function ComponentLabSurface() {
                 <T3Wordmark onBackdrop />
               </HostView>
             </HostView>
+          </StoryFrame>
+
+          <StoryFrame
+            id="sidebar/SidebarUpdatePillSurface#SidebarUpdatePillSurface"
+            title="Sidebar update pill surface"
+          >
+            <ComponentLabUpdatePillStory />
           </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">
