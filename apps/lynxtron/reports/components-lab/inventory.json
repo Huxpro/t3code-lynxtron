@@ -247,6 +247,12 @@
       "title": "Host headline"
     },
     {
+      "category": "Brand",
+      "id": "sidebar/T3Wordmark#T3Wordmark",
+      "states": ["default", "backdrop"],
+      "title": "T3 wordmark"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5351,7 +5357,7 @@
     },
     {
       "authority": {
-        "line": 615,
+        "line": 616,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5372,7 +5378,7 @@
     },
     {
       "authority": {
-        "line": 473,
+        "line": 474,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5393,7 +5399,7 @@
     },
     {
       "authority": {
-        "line": 414,
+        "line": 415,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5414,7 +5420,7 @@
     },
     {
       "authority": {
-        "line": 235,
+        "line": 236,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5435,7 +5441,7 @@
     },
     {
       "authority": {
-        "line": 516,
+        "line": 517,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5456,7 +5462,7 @@
     },
     {
       "authority": {
-        "line": 670,
+        "line": 671,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5477,7 +5483,7 @@
     },
     {
       "authority": {
-        "line": 717,
+        "line": 718,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5498,7 +5504,7 @@
     },
     {
       "authority": {
-        "line": 703,
+        "line": 704,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5519,7 +5525,7 @@
     },
     {
       "authority": {
-        "line": 186,
+        "line": 187,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5540,7 +5546,7 @@
     },
     {
       "authority": {
-        "line": 309,
+        "line": 310,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5561,7 +5567,7 @@
     },
     {
       "authority": {
-        "line": 221,
+        "line": 222,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5582,7 +5588,7 @@
     },
     {
       "authority": {
-        "line": 164,
+        "line": 165,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5603,7 +5609,7 @@
     },
     {
       "authority": {
-        "line": 336,
+        "line": 337,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5624,7 +5630,7 @@
     },
     {
       "authority": {
-        "line": 272,
+        "line": 273,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5645,7 +5651,7 @@
     },
     {
       "authority": {
-        "line": 653,
+        "line": 654,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5666,7 +5672,7 @@
     },
     {
       "authority": {
-        "line": 371,
+        "line": 372,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5687,7 +5693,7 @@
     },
     {
       "authority": {
-        "line": 728,
+        "line": 729,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5721,7 +5727,7 @@
     },
     {
       "authority": {
-        "line": 538,
+        "line": 539,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5742,7 +5748,7 @@
     },
     {
       "authority": {
-        "line": 563,
+        "line": 564,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5763,7 +5769,7 @@
     },
     {
       "authority": {
-        "line": 639,
+        "line": 640,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5784,7 +5790,7 @@
     },
     {
       "authority": {
-        "line": 135,
+        "line": 136,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5805,7 +5811,7 @@
     },
     {
       "authority": {
-        "line": 160,
+        "line": 161,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -12486,15 +12492,27 @@
       },
       "name": "T3Wordmark",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Brand",
+        "id": "sidebar/T3Wordmark#T3Wordmark",
+        "states": ["default", "backdrop"],
+        "status": "covered",
+        "title": "T3 wordmark"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/sidebar/SidebarChrome.tsx",
           "platform": "web"
@@ -23642,7 +23660,7 @@
     "internal": 228,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 111,
+    "stories": 112,
     "webOnly": 475
   },
   "generatedFrom": "apps/web/src/components",

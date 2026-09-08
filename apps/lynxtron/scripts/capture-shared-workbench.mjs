@@ -12788,6 +12788,24 @@ async function captureCell({
       state.lynx.componentLabMetrics.hostLayout.headline.style.fontSize === "24px" &&
       state.web.componentLabMetrics.hostLayout.headline.style.lineHeight === "32px" &&
       state.lynx.componentLabMetrics.hostLayout.headline.style.lineHeight === "32px");
+  const componentLabT3WordmarkReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.t3Wordmarks?.length === 2 &&
+      state?.lynx?.componentLabMetrics?.t3Wordmarks?.length === 2 &&
+      state.web.componentLabMetrics.t3Wordmarks.every(
+        ({ host, mark }) =>
+          host.rect.width === 64 &&
+          host.rect.height === 32 &&
+          mark?.rect?.width > 0 &&
+          mark?.rect?.height === 10,
+      ) &&
+      state.lynx.componentLabMetrics.t3Wordmarks.every(
+        ({ host, mark }) =>
+          host.rect.width === 64 &&
+          host.rect.height === 32 &&
+          mark?.rect?.width > 0 &&
+          mark?.rect?.height === 10,
+      ));
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -15242,6 +15260,7 @@ async function captureCell({
     componentLabFileTreeReady &&
     componentLabHostListReady &&
     componentLabHostLayoutReady &&
+    componentLabT3WordmarkReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15359,6 +15378,7 @@ async function captureCell({
       componentLabFileTreeReady,
       componentLabHostListReady,
       componentLabHostLayoutReady,
+      componentLabT3WordmarkReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,

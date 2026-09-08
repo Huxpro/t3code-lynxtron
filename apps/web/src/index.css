@@ -2192,6 +2192,27 @@ label:has(> select#reasoning-effort) select {
   line-height: 2rem;
 }
 
+.component-lab-t3-wordmarks {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.component-lab-t3-wordmark {
+  display: flex;
+  width: 4rem;
+  height: 2rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  color: var(--foreground);
+}
+
+.component-lab-t3-wordmark--backdrop {
+  background: #202020;
+  color: white;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

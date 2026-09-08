@@ -12885,6 +12885,26 @@
   font-weight: 400;
   line-height: 32px;
 }
+.component-lab-t3-wordmarks {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+.component-lab-t3-wordmark {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 32px;
+  border-radius: 6px;
+  color: var(--foreground);
+}
+.component-lab-t3-wordmark--backdrop {
+  background-color: #202020;
+  color: #ffffff;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

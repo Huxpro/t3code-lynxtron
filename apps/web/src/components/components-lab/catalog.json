@@ -246,6 +246,12 @@
     "states": ["default"]
   },
   {
+    "id": "sidebar/T3Wordmark#T3Wordmark",
+    "category": "Brand",
+    "title": "T3 wordmark",
+    "states": ["default", "backdrop"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

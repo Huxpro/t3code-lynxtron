@@ -482,6 +482,12 @@ function readComponentLabMetrics(root) {
         headlineText: readComposedText(headline),
       };
     })(),
+    t3Wordmarks: [...root.querySelectorAll(".component-lab-t3-wordmark")].map((host) => ({
+      host: readElementBox(host),
+      mark: readElementBox(
+        host.querySelector('svg, image, x-image, [class*="lynx-sidebar-wordmark"]'),
+      ),
+    })),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

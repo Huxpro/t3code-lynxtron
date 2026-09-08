@@ -129,6 +129,7 @@ import {
   SidebarChromeFooterSurface,
   SidebarChromeHeaderSurface,
 } from "../sidebar/SidebarChromeSurface";
+import { T3Wordmark } from "../sidebar/T3Wordmark";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -869,6 +870,17 @@ export function ComponentLabSurface() {
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Exercised by the shared Host layout composition above.
             </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="sidebar/T3Wordmark#T3Wordmark" title="T3 wordmark">
+            <HostView className="component-lab-t3-wordmarks">
+              <HostView className="component-lab-t3-wordmark">
+                <T3Wordmark />
+              </HostView>
+              <HostView className="component-lab-t3-wordmark component-lab-t3-wordmark--backdrop">
+                <T3Wordmark onBackdrop />
+              </HostView>
+            </HostView>
           </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">

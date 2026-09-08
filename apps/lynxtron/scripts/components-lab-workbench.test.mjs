@@ -124,6 +124,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabHostListReady =");
     assert.include(readerSource, "hostLayout: (() =>");
     assert.include(captureSource, "const componentLabHostLayoutReady =");
+    assert.include(readerSource, "t3Wordmarks:");
+    assert.include(captureSource, "const componentLabT3WordmarkReady =");
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");
