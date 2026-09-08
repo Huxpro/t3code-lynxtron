@@ -114,6 +114,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabThreadStatusReady =");
     assert.include(readerSource, "changeRequests:");
     assert.include(captureSource, "const componentLabChangeRequestReady =");
+    assert.include(readerSource, "worktreeIndicator: (() =>");
+    assert.include(captureSource, "const componentLabWorktreeReady =");
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");

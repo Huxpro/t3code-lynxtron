@@ -12795,6 +12795,12 @@
   width: 12px;
   height: 12px;
 }
+.component-lab-worktree-indicator {
+  display: flex;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

@@ -428,6 +428,15 @@ function readComponentLabMetrics(root) {
       icon: readElementBox(element.querySelector(".component-lab-change-request__icon")),
       text: readComposedText(element),
     })),
+    worktreeIndicator: (() => {
+      const host = root.querySelector(".component-lab-worktree-indicator [aria-label]");
+      const icon = host?.querySelector("svg, image, x-image") ?? host?.firstElementChild;
+      return {
+        host: readElementBox(host),
+        icon: readElementBox(icon),
+        label: host?.getAttribute("aria-label") ?? null,
+      };
+    })(),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

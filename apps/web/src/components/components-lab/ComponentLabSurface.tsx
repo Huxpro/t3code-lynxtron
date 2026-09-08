@@ -106,6 +106,7 @@ import {
   ChangeRequestStatusIcon,
   PrStatusTooltipContent,
   ThreadStatusLabel,
+  ThreadWorktreeIndicator,
   prStatusIndicator,
 } from "../ThreadStatusIndicators";
 import { resolveThreadStatusPill } from "../Sidebar.logic";
@@ -616,6 +617,20 @@ function ComponentLabChangeRequestStory() {
   );
 }
 
+function ComponentLabWorktreeStory() {
+  return (
+    <HostView className="component-lab-worktree-indicator">
+      <ThreadWorktreeIndicator
+        thread={{
+          branch: "feature/error-fidelity",
+          id: "component-lab-thread" as never,
+          worktreePath: "/Users/bytedance/github/t3code-worktrees/error-fidelity",
+        }}
+      />
+    </HostView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -690,6 +705,13 @@ export function ComponentLabSurface() {
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Exercised by the shared production change request composition above.
             </HostText>
+          </StoryFrame>
+
+          <StoryFrame
+            id="ThreadStatusIndicators#ThreadWorktreeIndicator"
+            title="Thread worktree indicator"
+          >
+            <ComponentLabWorktreeStory />
           </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">

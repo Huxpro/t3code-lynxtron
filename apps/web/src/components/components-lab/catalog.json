@@ -180,6 +180,12 @@
     "states": ["open", "merged", "closed"]
   },
   {
+    "id": "ThreadStatusIndicators#ThreadWorktreeIndicator",
+    "category": "Feedback",
+    "title": "Thread worktree indicator",
+    "states": ["branch-worktree"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

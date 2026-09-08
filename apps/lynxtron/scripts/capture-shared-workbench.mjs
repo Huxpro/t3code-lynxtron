@@ -12539,6 +12539,16 @@ async function captureCell({
       state.lynx.componentLabMetrics.changeRequests.every(
         ({ icon }) => Math.abs(icon.rect.width - 12) <= 1 && Math.abs(icon.rect.height - 12) <= 1,
       ));
+  const componentLabWorktreeReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.worktreeIndicator?.label ===
+      "Worktree: error-fidelity (feature/error-fidelity)" &&
+      state?.lynx?.componentLabMetrics?.worktreeIndicator?.label ===
+        "Worktree: error-fidelity (feature/error-fidelity)" &&
+      Math.abs(state.web.componentLabMetrics.worktreeIndicator.icon.rect.width - 12) <= 1 &&
+      Math.abs(state.web.componentLabMetrics.worktreeIndicator.icon.rect.height - 12) <= 1 &&
+      Math.abs(state.lynx.componentLabMetrics.worktreeIndicator.icon.rect.width - 12) <= 1 &&
+      Math.abs(state.lynx.componentLabMetrics.worktreeIndicator.icon.rect.height - 12) <= 1);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14988,6 +14998,7 @@ async function captureCell({
     componentLabThreadErrorReady &&
     componentLabThreadStatusReady &&
     componentLabChangeRequestReady &&
+    componentLabWorktreeReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15100,6 +15111,7 @@ async function captureCell({
       componentLabThreadErrorReady,
       componentLabThreadStatusReady,
       componentLabChangeRequestReady,
+      componentLabWorktreeReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,
