@@ -41,6 +41,9 @@ export function unsupportedDeclaration(property, value) {
 }
 
 export function declarationReplacement(property, value) {
+  if (property === "font-variant-numeric" && value.trim() === "tabular-nums") {
+    return [{ prop: "font-feature-settings", value: '"tnum"' }];
+  }
   if (property === "--skeleton-highlight") {
     const alphaMatch = /^var\(--alpha\(var\(--color-white\)\/(4|64)%\)\)$/u.exec(value.trim());
     if (alphaMatch?.[1]) {
