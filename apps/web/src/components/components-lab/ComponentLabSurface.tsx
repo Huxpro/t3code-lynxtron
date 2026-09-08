@@ -13,6 +13,7 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
+import { SettingsSection } from "../settings/settingsLayout";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -192,6 +193,24 @@ export function ComponentLabSurface() {
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Comfortable and Compact use the same production SelectItem.
             </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="settings/settingsLayout#SettingsSection" title="Settings section">
+            <SettingsSection
+              headerAction={
+                <Button size="sm" variant="ghost">
+                  Reset
+                </Button>
+              }
+              title="Appearance"
+            >
+              <HostView className="component-lab-host-surface">
+                <HostText className="component-lab-host-text">Theme</HostText>
+                <HostText className="component-lab-host-text component-lab-host-text--muted">
+                  Choose how T3 Code looks across the app.
+                </HostText>
+              </HostView>
+            </SettingsSection>
           </StoryFrame>
 
           <StoryFrame id="ui/badge#Badge" title="Badge">

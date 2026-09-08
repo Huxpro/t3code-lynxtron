@@ -137,6 +137,12 @@
       "id": "ui/select#SelectItem",
       "states": ["default", "selected"],
       "title": "Select item"
+    },
+    {
+      "category": "Settings",
+      "id": "settings/settingsLayout#SettingsSection",
+      "states": ["title", "header-action", "body"],
+      "title": "Settings section"
     }
   ],
   "components": [
@@ -4767,7 +4773,7 @@
     },
     {
       "authority": {
-        "line": 48,
+        "line": 49,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4788,7 +4794,7 @@
     },
     {
       "authority": {
-        "line": 67,
+        "line": 68,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4822,7 +4828,7 @@
     },
     {
       "authority": {
-        "line": 19,
+        "line": 20,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4843,7 +4849,7 @@
     },
     {
       "authority": {
-        "line": 44,
+        "line": 45,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -9998,14 +10004,26 @@
       "name": "SettingsSection",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 8
+        "webUseSiteCount": 9
       },
       "story": {
-        "status": "uncovered"
+        "category": "Settings",
+        "id": "settings/settingsLayout#SettingsSection",
+        "states": ["title", "header-action", "body"],
+        "status": "covered",
+        "title": "Settings section"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
           "platform": "web"
@@ -21690,7 +21708,7 @@
     "internal": 210,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 23,
+    "stories": 24,
     "webOnly": 457
   },
   "generatedFrom": "apps/web/src/components",
