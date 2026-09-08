@@ -426,6 +426,12 @@
     "states": ["open"]
   },
   {
+    "id": "ui/popover#PopoverClose",
+    "category": "Overlays",
+    "title": "Popover close",
+    "states": ["idle", "activated"]
+  },
+  {
     "id": "settings/settingsLayout#SettingsSection",
     "category": "Settings",
     "title": "Settings section",

@@ -427,6 +427,12 @@
       "title": "Popover popup"
     },
     {
+      "category": "Overlays",
+      "id": "ui/popover#PopoverClose",
+      "states": ["idle", "activated"],
+      "title": "Popover close"
+    },
+    {
       "category": "Settings",
       "id": "settings/settingsLayout#SettingsSection",
       "states": ["title", "header-action", "body"],
@@ -19157,7 +19163,11 @@
         "webUseSiteCount": 1
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/popover#PopoverClose",
+        "states": ["idle", "activated"],
+        "status": "covered",
+        "title": "Popover close"
       },
       "useSites": [
         {
@@ -22869,7 +22879,7 @@
     "internal": 218,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 80,
+    "stories": 81,
     "webOnly": 465
   },
   "generatedFrom": "apps/web/src/components",

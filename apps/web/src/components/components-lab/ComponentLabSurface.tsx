@@ -505,6 +505,7 @@ export function ComponentLabSurface() {
             [
               ["ui/popover#PopoverTrigger", "Popover trigger"],
               ["ui/popover#PopoverPopup", "Popover popup"],
+              ["ui/popover#PopoverClose", "Popover close"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>
