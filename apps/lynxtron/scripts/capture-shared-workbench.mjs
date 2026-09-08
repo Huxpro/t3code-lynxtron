@@ -13012,6 +13012,14 @@ async function captureCell({
       state.lynx.componentLabMetrics.paletteEmpty.box.rect.width === 318 &&
       state.web.componentLabMetrics.paletteEmpty.box.rect.height === 100 &&
       state.lynx.componentLabMetrics.paletteEmpty.box.rect.height === 100);
+  const componentLabModelPickerEmptyReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.modelPickerEmpty?.text === "No models found" &&
+      state?.lynx?.componentLabMetrics?.modelPickerEmpty?.text === "No models found" &&
+      state.web.componentLabMetrics.modelPickerEmpty.box.rect.width === 318 &&
+      state.lynx.componentLabMetrics.modelPickerEmpty.box.rect.width === 318 &&
+      state.web.componentLabMetrics.modelPickerEmpty.box.rect.height === 68 &&
+      state.lynx.componentLabMetrics.modelPickerEmpty.box.rect.height === 68);
   const componentLabHostListReady =
     !isComponentsLabState ||
     (componentLabHostListScrolled &&
@@ -15566,6 +15574,7 @@ async function captureCell({
     componentLabPlanReady &&
     componentLabRightPanelReady &&
     componentLabPaletteEmptyReady &&
+    componentLabModelPickerEmptyReady &&
     componentLabHostListReady &&
     componentLabHostLayoutReady &&
     componentLabT3WordmarkReady &&
@@ -15690,6 +15699,7 @@ async function captureCell({
       componentLabPlanReady,
       componentLabRightPanelReady,
       componentLabPaletteEmptyReady,
+      componentLabModelPickerEmptyReady,
       componentLabHostListReady,
       componentLabHostLayoutReady,
       componentLabT3WordmarkReady,

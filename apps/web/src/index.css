@@ -2197,6 +2197,12 @@ label:has(> select#reasoning-effort) select {
   border-radius: var(--radius-lg);
 }
 
+.component-lab-model-picker-empty {
+  width: 20rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
 .component-lab-file-tree__icon {
   display: inline-flex;
   width: 1rem;

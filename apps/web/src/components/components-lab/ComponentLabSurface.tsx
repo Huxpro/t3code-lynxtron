@@ -135,6 +135,7 @@ import { T3Wordmark } from "../sidebar/T3Wordmark";
 import { SidebarUpdatePillSurface } from "../sidebar/SidebarUpdatePillSurface";
 import { RightPanelEmptySurface } from "../RightPanelSurface";
 import { PaletteEmptySurface } from "../CommandPaletteSurface";
+import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";
 import {
   PlanEmptySurface,
   PlanExplanationSurface,
@@ -1577,6 +1578,15 @@ export function ComponentLabSurface() {
               <HostText className="component-lab-host-text">First row</HostText>
               <HostText className="component-lab-host-text">Second row</HostText>
             </ComponentLabColumn>
+          </StoryFrame>
+
+          <StoryFrame
+            id="chat/ModelPickerSurface#ModelPickerEmptySurface"
+            title="Model picker empty state"
+          >
+            <HostView className="component-lab-model-picker-empty">
+              <ModelPickerEmptySurface message="No models found" />
+            </HostView>
           </StoryFrame>
         </ComponentLabStack>
       </HostView>

@@ -538,6 +538,13 @@ function readComponentLabMetrics(root) {
         text: readComposedText(empty?.querySelector(".palette-empty-text")),
       };
     })(),
+    modelPickerEmpty: (() => {
+      const empty = root.querySelector(".component-lab-model-picker-empty .model-picker-empty");
+      return {
+        box: readElementBox(empty),
+        text: readComposedText(empty?.querySelector(".model-picker-empty-text")),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

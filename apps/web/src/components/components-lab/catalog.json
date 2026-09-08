@@ -730,5 +730,11 @@
     "category": "Feedback",
     "title": "Empty content",
     "states": ["action"]
+  },
+  {
+    "id": "chat/ModelPickerSurface#ModelPickerEmptySurface",
+    "category": "Empty States",
+    "title": "Model picker empty surface",
+    "states": ["no-models"]
   }
 ]
