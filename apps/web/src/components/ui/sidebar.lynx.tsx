@@ -303,6 +303,18 @@ export function SidebarRail({ className, ...props }: ElementProps) {
     onResize: setSidebarWidth,
     testProbe: viewport.testResize,
   });
+  const handleMouseEnter = (event: {
+    currentTarget: { setAttribute(name: string, value: unknown): void };
+  }) => {
+    "main thread";
+    event.currentTarget.setAttribute("data-lynx-hover", "true");
+  };
+  const handleMouseLeave = (event: {
+    currentTarget: { setAttribute(name: string, value: unknown): void };
+  }) => {
+    "main thread";
+    event.currentTarget.setAttribute("data-lynx-hover", "false");
+  };
 
   if (isMobile || !open) return null;
   return (
@@ -311,11 +323,16 @@ export function SidebarRail({ className, ...props }: ElementProps) {
         {...props}
         {...resize.handlers}
         {...resize.dragHandlers}
+        main-thread:bindmouseenter={handleMouseEnter}
+        main-thread:bindmousemove={handleMouseEnter}
+        main-thread:bindmouseleave={handleMouseLeave}
         main-thread:ref={resize.handleRef}
         className={cn("sidebar-resize-rail", className)}
         data-sidebar="rail"
         data-slot="sidebar-rail"
-      />
+      >
+        <view className="sidebar-resize-rail__line" />
+      </view>
     </>
   );
 }

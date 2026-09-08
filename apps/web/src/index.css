@@ -1300,6 +1300,19 @@ label:has(> select#reasoning-effort) select {
   height: 100%;
 }
 
+.sidebar-resize-rail__line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: transparent;
+}
+
+.sidebar-resize-rail:hover .sidebar-resize-rail__line {
+  background: var(--sidebar-border);
+}
+
 /* Chat markdown rendering */
 .chat-markdown {
   min-width: 0;

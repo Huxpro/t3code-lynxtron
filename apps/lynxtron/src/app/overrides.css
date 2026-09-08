@@ -1110,14 +1110,16 @@
   background-color: rgba(128, 128, 128, 0.02);
   cursor: col-resize;
 }
-.sidebar-resize-rail::after {
+.sidebar-resize-rail__line {
   position: absolute;
   top: 0;
-  right: 0;
-  width: 1px;
-  height: 100%;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
   background-color: transparent;
-  content: "";
+}
+.sidebar-resize-rail[data-lynx-hover="true"] .sidebar-resize-rail__line {
+  background-color: var(--sidebar-border);
 }
 .lynx-sidebar-global-control {
   position: absolute;
@@ -1268,7 +1270,7 @@
   font-size: 14px;
   background-color: transparent;
 }
-.sidebar-resize-rail--dragging::after {
+.sidebar-resize-rail--dragging .sidebar-resize-rail__line {
   background-color: var(--primary);
 }
 .resize-capture-overlay {
