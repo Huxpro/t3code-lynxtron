@@ -35,6 +35,7 @@ import {
   NumberFieldInput,
 } from "../ui/number-field";
 import { ScrollArea } from "../ui/scroll-area";
+import { Popover, PopoverClose, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
@@ -178,6 +179,33 @@ function ComponentLabDialogStory() {
   );
 }
 
+function ComponentLabPopoverStory() {
+  return (
+    <Popover>
+      <PopoverTrigger
+        data-component-lab-popover-trigger="default"
+        render={<Button variant="outline" />}
+      >
+        Open popover
+      </PopoverTrigger>
+      <PopoverPopup
+        align="start"
+        className="component-lab-popover"
+        data-component-lab-popover-popup="default"
+        viewportClassName="component-lab-popover__viewport"
+      >
+        <HostText className="component-lab-host-text">Popover details</HostText>
+        <PopoverClose
+          data-component-lab-popover-close="default"
+          render={<Button size="sm" variant="outline" />}
+        >
+          Done
+        </PopoverClose>
+      </PopoverPopup>
+    </Popover>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -223,6 +251,23 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/dialog#Dialog" title="Dialog">
             <ComponentLabDialogStory />
           </StoryFrame>
+
+          <StoryFrame id="ui/popover#Popover" title="Popover">
+            <ComponentLabPopoverStory />
+          </StoryFrame>
+
+          {(
+            [
+              ["ui/popover#PopoverTrigger", "Popover trigger"],
+              ["ui/popover#PopoverPopup", "Popover popup"],
+            ] as const
+          ).map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared production Popover composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
 
           {(
             [

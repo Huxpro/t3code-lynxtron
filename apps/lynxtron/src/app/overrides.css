@@ -12602,6 +12602,22 @@
   padding: 16px 24px;
   box-sizing: border-box;
 }
+.lynx-popover-popup {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 256px;
+  height: 66px;
+  padding: 16px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(var(--foreground-rgb), 0.1);
+  border-radius: 10px;
+  background-color: var(--popover);
+  box-shadow: 0 18px 44px -18px rgba(0, 0, 0, 0.8);
+  box-sizing: border-box;
+}
 .viewport-compact .component-lab {
   flex-direction: column;
 }

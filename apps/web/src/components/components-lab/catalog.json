@@ -216,6 +216,24 @@
     "states": ["default"]
   },
   {
+    "id": "ui/popover#Popover",
+    "category": "Overlays",
+    "title": "Popover",
+    "states": ["closed", "open", "closed-again"]
+  },
+  {
+    "id": "ui/popover#PopoverTrigger",
+    "category": "Overlays",
+    "title": "Popover trigger",
+    "states": ["idle", "pressed"]
+  },
+  {
+    "id": "ui/popover#PopoverPopup",
+    "category": "Overlays",
+    "title": "Popover popup",
+    "states": ["open"]
+  },
+  {
     "id": "settings/settingsLayout#SettingsSection",
     "category": "Settings",
     "title": "Settings section",

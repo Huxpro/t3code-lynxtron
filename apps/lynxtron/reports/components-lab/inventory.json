@@ -217,6 +217,24 @@
       "title": "Dialog description"
     },
     {
+      "category": "Overlays",
+      "id": "ui/popover#Popover",
+      "states": ["closed", "open", "closed-again"],
+      "title": "Popover"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/popover#PopoverTrigger",
+      "states": ["idle", "pressed"],
+      "title": "Popover trigger"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/popover#PopoverPopup",
+      "states": ["open"],
+      "title": "Popover popup"
+    },
+    {
       "category": "Settings",
       "id": "settings/settingsLayout#SettingsSection",
       "states": ["title", "header-action", "body"],
@@ -4893,7 +4911,7 @@
     },
     {
       "authority": {
-        "line": 144,
+        "line": 145,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4914,7 +4932,7 @@
     },
     {
       "authority": {
-        "line": 95,
+        "line": 96,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4935,7 +4953,28 @@
     },
     {
       "authority": {
-        "line": 130,
+        "line": 182,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabPopoverStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabPopoverStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 131,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4956,7 +4995,7 @@
     },
     {
       "authority": {
-        "line": 76,
+        "line": 77,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4977,7 +5016,7 @@
     },
     {
       "authority": {
-        "line": 181,
+        "line": 209,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5011,7 +5050,7 @@
     },
     {
       "authority": {
-        "line": 47,
+        "line": 48,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5032,7 +5071,7 @@
     },
     {
       "authority": {
-        "line": 72,
+        "line": 73,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -18639,12 +18678,16 @@
       "name": "Popover",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 10
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 11
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/popover#Popover",
+        "states": ["closed", "open", "closed-again"],
+        "status": "covered",
+        "title": "Popover"
       },
       "useSites": [
         {
@@ -18654,6 +18697,14 @@
         {
           "path": "apps/web/src/components/chat/ProviderModelPicker.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -18703,14 +18754,23 @@
       "name": "PopoverClose",
       "reuse": {
         "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 0
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 1
       },
       "story": {
         "status": "uncovered"
       },
-      "useSites": []
+      "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        }
+      ]
     },
     {
       "authority": {
@@ -18772,12 +18832,16 @@
       "name": "PopoverPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 9
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 10
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/popover#PopoverPopup",
+        "states": ["open"],
+        "status": "covered",
+        "title": "Popover popup"
       },
       "useSites": [
         {
@@ -18787,6 +18851,14 @@
         {
           "path": "apps/web/src/components/chat/ProviderModelPicker.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -18855,12 +18927,16 @@
       "name": "PopoverTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 10
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 11
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/popover#PopoverTrigger",
+        "states": ["idle", "pressed"],
+        "status": "covered",
+        "title": "Popover trigger"
       },
       "useSites": [
         {
@@ -18870,6 +18946,14 @@
         {
           "path": "apps/web/src/components/chat/ProviderModelPicker.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -22141,14 +22225,14 @@
     }
   ],
   "counts": {
-    "components": 739,
+    "components": 740,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 213,
+    "internal": 214,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 44,
-    "webOnly": 460
+    "stories": 47,
+    "webOnly": 461
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

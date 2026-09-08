@@ -7588,6 +7588,10 @@ async function captureCell({
   let componentLabDialogClosed = false;
   let componentLabDialogGeometryVerified = false;
   let componentLabDialogEvidence = null;
+  let componentLabPopoverOpened = false;
+  let componentLabPopoverVerified = false;
+  let componentLabPopoverClosed = false;
+  let componentLabPopoverEvidence = null;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7722,6 +7726,7 @@ async function captureCell({
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         componentLabDialogClosed &&
+        componentLabPopoverClosed &&
         !componentLabSelectOpened
       ) {
         const points = await evaluate(
@@ -7956,6 +7961,76 @@ async function captureCell({
         state?.lynx?.componentLabMetrics?.dialog === null
       ) {
         componentLabDialogClosed = true;
+        continue;
+      }
+      if (
+        componentLabDialogClosed &&
+        !componentLabPopoverOpened &&
+        state?.web?.componentLabMetrics?.popover === null &&
+        state?.lynx?.componentLabMetrics?.popover === null
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[data-component-lab-popover-trigger="default"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-component-lab-popover-trigger="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabPopoverOpened = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabPopoverOpened &&
+        !componentLabPopoverVerified &&
+        state?.web?.componentLabMetrics?.popover?.text === "Popover details Done" &&
+        state?.lynx?.componentLabMetrics?.popover?.text === "Popover details Done" &&
+        state?.web?.componentLabMetrics?.popover?.popup?.rect &&
+        state?.lynx?.componentLabMetrics?.popover?.popup?.rect &&
+        Math.abs(
+          state.web.componentLabMetrics.popover.popup.rect.width -
+            state.lynx.componentLabMetrics.popover.popup.rect.width,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.popover.popup.rect.height -
+            state.lynx.componentLabMetrics.popover.popup.rect.height,
+        ) <= 2
+      ) {
+        componentLabPopoverVerified = true;
+        componentLabPopoverEvidence = {
+          inputChannel: "dual-cdp-pointer",
+          web: state.web.componentLabMetrics.popover,
+          lynx: state.lynx.componentLabMetrics.popover,
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-popover-close="default"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-popover-close="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabPopoverVerified &&
+        !componentLabPopoverClosed &&
+        state?.web?.componentLabMetrics?.popover === null &&
+        state?.lynx?.componentLabMetrics?.popover === null
+      ) {
+        componentLabPopoverClosed = true;
         continue;
       }
       if (
@@ -11535,6 +11610,13 @@ async function captureCell({
       componentLabDialogClosed &&
       state?.web?.componentLabMetrics?.dialog === null &&
       state?.lynx?.componentLabMetrics?.dialog === null);
+  const componentLabPopoverReady =
+    !isComponentsLabState ||
+    (componentLabPopoverOpened &&
+      componentLabPopoverVerified &&
+      componentLabPopoverClosed &&
+      state?.web?.componentLabMetrics?.popover === null &&
+      state?.lynx?.componentLabMetrics?.popover === null);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -13964,6 +14046,7 @@ async function captureCell({
     componentLabNumberReady &&
     componentLabScrollReady &&
     componentLabDialogReady &&
+    componentLabPopoverReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -14064,6 +14147,7 @@ async function captureCell({
       componentLabNumberReady,
       componentLabScrollReady,
       componentLabDialogReady,
+      componentLabPopoverReady,
       bothReady,
       identityMatch,
       finalOverlayReady,
@@ -14240,7 +14324,9 @@ async function captureCell({
     readyMs,
     lynxStyled,
     readiness: { bothReady, web: state?.web ?? null, lynx: state?.lynx ?? null },
-    componentLabEvidence: isComponentsLabState ? { dialog: componentLabDialogEvidence } : null,
+    componentLabEvidence: isComponentsLabState
+      ? { dialog: componentLabDialogEvidence, popover: componentLabPopoverEvidence }
+      : null,
     identity: {
       match: identityMatch,
       stateIdentityMatch,

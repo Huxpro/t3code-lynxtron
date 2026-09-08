@@ -1976,6 +1976,22 @@ label:has(> select#reasoning-effort) select {
   min-height: 4rem;
 }
 
+.component-lab-popover {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 16rem;
+  height: 4.125rem;
+  padding: 0;
+}
+
+.component-lab-popover__viewport {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+}
+
 @media (max-width: 720px) {
   .component-lab {
     grid-template-columns: 1fr;

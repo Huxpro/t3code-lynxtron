@@ -269,6 +269,15 @@ function readComponentLabMetrics(root) {
           }
         : null;
     })(),
+    popover: (() => {
+      const popup = root.querySelector('[data-component-lab-popover-popup="default"]');
+      return popup
+        ? {
+            popup: readElementBox(popup),
+            text: readComposedText(popup),
+          }
+        : null;
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),
