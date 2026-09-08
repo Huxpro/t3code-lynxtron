@@ -2167,6 +2167,22 @@ label:has(> select#reasoning-effort) select {
   height: 3.25rem;
 }
 
+.component-lab-plan,
+.component-lab-plan-empty {
+  display: grid;
+  width: 20rem;
+  gap: 1rem;
+}
+
+.component-lab-plan__status {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .component-lab-file-tree__icon {
   display: inline-flex;
   width: 1rem;

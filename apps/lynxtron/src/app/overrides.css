@@ -12845,6 +12845,35 @@
 .component-lab-chat-header > * + * {
   margin-top: 8px;
 }
+.component-lab-plan,
+.component-lab-plan-empty {
+  --flex-direction: column;
+  --lynx-linear-orientation: vertical;
+  display: block;
+  width: 320px;
+}
+.component-lab-plan > * + * {
+  margin-top: 16px;
+}
+.component-lab-plan__status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+.component-lab-plan .plan-disclosure-toggle {
+  padding-top: 3px;
+  padding-bottom: 3px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.component-lab-plan__disclosure--expanded .rounded-lg.border {
+  height: 74px;
+  padding: 12px;
+  box-sizing: border-box;
+}
 .component-lab-file-tree__icon {
   display: flex;
   align-items: center;

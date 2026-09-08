@@ -91,7 +91,8 @@ export function ProposedPlanSectionSurface({
     <HostView className="flex flex-col gap-2">
       <HostButton
         type="button"
-        className="group flex w-full items-center gap-1.5 text-left"
+        data-plan-disclosure="toggle"
+        className="plan-disclosure-toggle group flex w-full items-center gap-1.5 text-left"
         onClick={onToggle}
         aria-expanded={expanded}
       >

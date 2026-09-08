@@ -9077,6 +9077,7 @@ async function captureCell({
         componentLabFileTreeCollapsed &&
         componentLabChangedFilesCollapsed &&
         componentLabChatHeaderEvidence?.clicked &&
+        componentLabChatHeaderEvidence?.clicked &&
         componentLabHostListEvidence?.scrolled &&
         componentLabUpdatePillDismissed &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
@@ -12959,6 +12960,40 @@ async function captureCell({
         componentLabChatHeaderEvidence.initial.lynx.title.rect.height &&
       componentLabChatHeaderEvidence.clicked.web.count === "New thread 1" &&
       componentLabChatHeaderEvidence.clicked.lynx.count === "New thread 1");
+  const componentLabPlanReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.plan?.explanation ===
+      "Restore fidelity without duplicating product components." &&
+      state?.lynx?.componentLabMetrics?.plan?.explanation ===
+        "Restore fidelity without duplicating product components." &&
+      JSON.stringify(state.web.componentLabMetrics.plan.stepRows.map(({ status }) => status)) ===
+        JSON.stringify(["completed", "inProgress", "pending"]) &&
+      JSON.stringify(state.lynx.componentLabMetrics.plan.stepRows.map(({ status }) => status)) ===
+        JSON.stringify(["completed", "inProgress", "pending"]) &&
+      state.web.componentLabMetrics.plan.collapsedToggle !== null &&
+      state.lynx.componentLabMetrics.plan.collapsedToggle !== null &&
+      state.web.componentLabMetrics.plan.collapsedBody === null &&
+      state.lynx.componentLabMetrics.plan.collapsedBody === null &&
+      state.web.componentLabMetrics.plan.expandedToggle !== null &&
+      state.lynx.componentLabMetrics.plan.expandedToggle !== null &&
+      state.web.componentLabMetrics.plan.expandedBody !== null &&
+      state.lynx.componentLabMetrics.plan.expandedBody !== null &&
+      state.web.componentLabMetrics.plan.collapsedToggle.rect.height === 24 &&
+      state.lynx.componentLabMetrics.plan.collapsedToggle.rect.height === 24 &&
+      state.web.componentLabMetrics.plan.expandedToggle.rect.height === 24 &&
+      state.lynx.componentLabMetrics.plan.expandedToggle.rect.height === 24 &&
+      state.web.componentLabMetrics.plan.expandedBody.rect.height === 74 &&
+      state.lynx.componentLabMetrics.plan.expandedBody.rect.height === 74 &&
+      state.web.componentLabMetrics.plan.expandedText.includes(
+        "Preserve shared component identity",
+      ) &&
+      state.lynx.componentLabMetrics.plan.expandedText.includes(
+        "Preserve shared component identity",
+      ) &&
+      state.web.componentLabMetrics.plan.empty ===
+        "No active plan yet. Plans will appear here when generated." &&
+      state.lynx.componentLabMetrics.plan.empty ===
+        "No active plan yet. Plans will appear here when generated.");
   const componentLabHostListReady =
     !isComponentsLabState ||
     (componentLabHostListScrolled &&
@@ -15510,6 +15545,7 @@ async function captureCell({
     componentLabFileTreeReady &&
     componentLabChangedFilesCardReady &&
     componentLabChatHeaderReady &&
+    componentLabPlanReady &&
     componentLabHostListReady &&
     componentLabHostLayoutReady &&
     componentLabT3WordmarkReady &&
@@ -15631,6 +15667,7 @@ async function captureCell({
       componentLabFileTreeReady,
       componentLabChangedFilesCardReady,
       componentLabChatHeaderReady,
+      componentLabPlanReady,
       componentLabHostListReady,
       componentLabHostLayoutReady,
       componentLabT3WordmarkReady,
@@ -15823,6 +15860,14 @@ async function captureCell({
           fileTree: componentLabFileTreeEvidence,
           changedFilesCard: componentLabChangedFilesEvidence,
           chatHeader: componentLabChatHeaderEvidence,
+          plan:
+            state?.web?.componentLabMetrics?.plan && state?.lynx?.componentLabMetrics?.plan
+              ? {
+                  inputChannel: "rendered-static-states",
+                  web: state.web.componentLabMetrics.plan,
+                  lynx: state.lynx.componentLabMetrics.plan,
+                }
+              : null,
           hostList: componentLabHostListEvidence,
           updatePill: componentLabUpdatePillEvidence,
           select: componentLabSelectEvidence,

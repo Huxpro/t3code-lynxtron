@@ -222,6 +222,30 @@
     "states": ["default"]
   },
   {
+    "id": "PlanSurface#PlanExplanationSurface",
+    "category": "Planning",
+    "title": "Plan explanation",
+    "states": ["default"]
+  },
+  {
+    "id": "PlanSurface#PlanStepsSurface",
+    "category": "Planning",
+    "title": "Plan steps",
+    "states": ["completed", "in-progress", "pending"]
+  },
+  {
+    "id": "PlanSurface#ProposedPlanSectionSurface",
+    "category": "Planning",
+    "title": "Proposed plan section",
+    "states": ["rendered-collapsed", "rendered-expanded"]
+  },
+  {
+    "id": "PlanSurface#PlanEmptySurface",
+    "category": "Planning",
+    "title": "Plan empty state",
+    "states": ["empty"]
+  },
+  {
     "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
     "category": "Data Display",
     "title": "File tree file row",

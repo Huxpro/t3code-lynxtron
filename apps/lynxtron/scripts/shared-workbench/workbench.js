@@ -492,6 +492,32 @@ function readComponentLabMetrics(root) {
         ),
       };
     })(),
+    plan: (() => {
+      const plan = root.querySelector(".component-lab-plan");
+      const collapsed = plan?.querySelector(".component-lab-plan__disclosure--collapsed");
+      const expanded = plan?.querySelector(".component-lab-plan__disclosure--expanded");
+      const stepRows = [...(plan?.querySelectorAll(".component-lab-plan__status") ?? [])].map(
+        (status) => ({
+          status:
+            [...status.classList]
+              .find((name) => name.startsWith("component-lab-plan__status--"))
+              ?.replace("component-lab-plan__status--", "") ?? null,
+          box: readElementBox(status.parentElement),
+          text: readComposedText(status.parentElement),
+        }),
+      );
+      return {
+        root: readElementBox(plan),
+        explanation: readComposedText(plan?.firstElementChild),
+        stepRows,
+        collapsedToggle: readElementBox(collapsed?.querySelector(".plan-disclosure-toggle")),
+        collapsedBody: readElementBox(collapsed?.querySelector(".rounded-lg.border")),
+        expandedToggle: readElementBox(expanded?.querySelector(".plan-disclosure-toggle")),
+        expandedBody: readElementBox(expanded?.querySelector(".rounded-lg.border")),
+        expandedText: readComposedText(expanded),
+        empty: readComposedText(root.querySelector(".component-lab-plan-empty")),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

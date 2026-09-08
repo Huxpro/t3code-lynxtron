@@ -133,6 +133,12 @@ import {
 } from "../sidebar/SidebarChromeSurface";
 import { T3Wordmark } from "../sidebar/T3Wordmark";
 import { SidebarUpdatePillSurface } from "../sidebar/SidebarUpdatePillSurface";
+import {
+  PlanEmptySurface,
+  PlanExplanationSurface,
+  PlanStepsSurface,
+  ProposedPlanSectionSurface,
+} from "../PlanSurface";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -767,6 +773,47 @@ function ComponentLabChatHeaderStory() {
   );
 }
 
+function ComponentLabPlanStory() {
+  const steps = [
+    { key: "audit", status: "completed", text: "Audit CSS generation" },
+    { key: "adapt", status: "inProgress", text: "Restore supported selectors" },
+    { key: "verify", status: "pending", text: "Verify both renderers" },
+  ];
+  return (
+    <HostView className="component-lab-plan">
+      <PlanExplanationSurface>
+        Restore fidelity without duplicating product components.
+      </PlanExplanationSurface>
+      <PlanStepsSurface
+        steps={steps}
+        renderIcon={(status) => (
+          <HostText className={`component-lab-plan__status component-lab-plan__status--${status}`}>
+            {status === "completed" ? "✓" : status === "inProgress" ? "•" : "○"}
+          </HostText>
+        )}
+      />
+      <HostView className="component-lab-plan__disclosure component-lab-plan__disclosure--collapsed">
+        <ProposedPlanSectionSurface
+          chevron={<HostText>›</HostText>}
+          expanded={false}
+          onToggle={() => {}}
+          title="Full Plan"
+        />
+      </HostView>
+      <HostView className="component-lab-plan__disclosure component-lab-plan__disclosure--expanded">
+        <ProposedPlanSectionSurface
+          chevron={<HostText className="rotate-90">›</HostText>}
+          expanded
+          onToggle={() => {}}
+          title="Full Plan"
+        >
+          <HostText>Preserve shared component identity across renderers.</HostText>
+        </ProposedPlanSectionSurface>
+      </HostView>
+    </HostView>
+  );
+}
+
 function ComponentLabHostListStory() {
   return (
     <HostScrollView className="component-lab-host-scroll">
@@ -943,6 +990,29 @@ export function ComponentLabSurface() {
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Exercised by the shared production Chat header composition above.
             </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="PlanSurface#PlanExplanationSurface" title="Plan surface">
+            <ComponentLabPlanStory />
+          </StoryFrame>
+
+          {(
+            [
+              ["PlanSurface#PlanStepsSurface", "Plan steps"],
+              ["PlanSurface#ProposedPlanSectionSurface", "Proposed plan section"],
+            ] as const
+          ).map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared production Plan composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
+
+          <StoryFrame id="PlanSurface#PlanEmptySurface" title="Plan empty state">
+            <HostView className="component-lab-plan-empty">
+              <PlanEmptySurface />
+            </HostView>
           </StoryFrame>
 
           {(
