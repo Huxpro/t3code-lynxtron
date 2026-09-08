@@ -168,7 +168,7 @@ export default {
     "../web/src/components/ui/select.lynx.tsx",
     "../web/src/components/ui/separator.lynx.tsx",
     "../web/src/components/ui/sheet.lynx.tsx",
-    "../web/src/components/ui/sidebar.tsx",
+    "../web/src/components/ui/sidebar.lynx.tsx",
     "../web/src/components/ui/skeleton.tsx",
     "../web/src/components/ui/switch.lynx.tsx",
     "../web/src/components/ui/toast.lynx.tsx",

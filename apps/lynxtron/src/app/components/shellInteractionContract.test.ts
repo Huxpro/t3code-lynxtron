@@ -43,6 +43,10 @@ const webMenuSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.tsx"),
   "utf8",
 );
+const tailwindConfigSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../tailwind.config.mjs"),
+  "utf8",
+);
 const rightPanelSurfaceSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/RightPanelSurface.tsx"),
   "utf8",
@@ -2327,6 +2331,11 @@ describe("desktop shell interaction contract", () => {
       'className="ui-menu-radio-item__content flex min-w-0 flex-1 flex-row items-center gap-2"',
     );
     expect(sidebarControlsSource).not.toContain("[&>span:last-child]");
+  });
+
+  it("scans the Lynx Sidebar primitive instead of its Web-only counterpart", () => {
+    expect(tailwindConfigSource).toContain('"../web/src/components/ui/sidebar.lynx.tsx"');
+    expect(tailwindConfigSource).not.toContain('"../web/src/components/ui/sidebar.tsx"');
   });
 
   it("uses compact dedicated rows for Lynx Sidebar search results", () => {
