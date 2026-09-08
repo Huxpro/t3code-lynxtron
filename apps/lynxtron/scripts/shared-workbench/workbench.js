@@ -571,6 +571,21 @@ function readComponentLabMetrics(root) {
       text: readComposedText(row),
       layout: readElementBox(row.firstElementChild),
     })),
+    isolatedComposerToolbar: (() => {
+      const toolbar = root.querySelector(".component-lab-composer-toolbar .composer-toolbar-row");
+      return {
+        box: readElementBox(toolbar),
+        items: [...(toolbar?.querySelectorAll("[data-component-lab-toolbar-item]") ?? [])].map(
+          (item) => ({
+            key: item.getAttribute("data-component-lab-toolbar-item"),
+            box: readElementBox(item),
+          }),
+        ),
+        separators: [...(toolbar?.querySelectorAll(".composer-toolbar-sep") ?? [])].map(
+          readElementBox,
+        ),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

@@ -767,6 +767,12 @@
       "id": "settings/SettingsSurfaces#AccessListRowSurface",
       "states": ["current-device"],
       "title": "Access list row"
+    },
+    {
+      "category": "Composer",
+      "id": "chat/ComposerSurface#ComposerToolbarRow",
+      "states": ["three-controls", "separators"],
+      "title": "Composer toolbar row"
     }
   ],
   "components": [
@@ -2293,13 +2299,17 @@
       "lynx": null,
       "name": "ComposerToolbarRow",
       "reuse": {
-        "authorityShared": false,
+        "authorityShared": true,
         "lynxUseSiteCount": 1,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Composer",
+        "id": "chat/ComposerSurface#ComposerToolbarRow",
+        "states": ["three-controls", "separators"],
+        "status": "covered",
+        "title": "Composer toolbar row"
       },
       "useSites": [
         {
@@ -2308,6 +2318,10 @@
         },
         {
           "path": "apps/web/src/components/chat/ChatComposer.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
           "platform": "web"
         }
       ]
@@ -5445,7 +5459,7 @@
     },
     {
       "authority": {
-        "line": 12,
+        "line": 13,
         "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
       },
       "exported": true,
@@ -24129,7 +24143,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 128,
+    "stories": 129,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",

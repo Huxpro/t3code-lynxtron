@@ -1,6 +1,7 @@
 import isolatedCatalog from "./isolatedCatalog.json";
 
 import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";
+import { ComposerToolbarRow } from "../chat/ComposerSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
 import {
   AccessListRowSurface,
@@ -62,6 +63,19 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
             primaryLabel="MacBook Pro"
             primaryTrailing={<HostText>This device</HostText>}
             statusDot={<SourceControlMarkSurface tone="success" />}
+          />
+        </HostView>
+      );
+    }
+    if (storyId === "chat/ComposerSurface#ComposerToolbarRow") {
+      return (
+        <HostView className="component-lab-composer-toolbar" style={{ width: "320px" }}>
+          <ComposerToolbarRow
+            items={[
+              <HostText data-component-lab-toolbar-item="model">Model</HostText>,
+              <HostText data-component-lab-toolbar-item="runtime">Runtime</HostText>,
+              <HostText data-component-lab-toolbar-item="mode">Mode</HostText>,
+            ]}
           />
         </HostView>
       );

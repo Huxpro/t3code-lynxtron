@@ -13110,7 +13110,31 @@ async function captureCell({
                   state.lynx.componentLabMetrics.isolatedAccessRows[0].box.rect.width === 512 &&
                   state.web.componentLabMetrics.isolatedAccessRows[0].layout.rect.width === 480 &&
                   state.lynx.componentLabMetrics.isolatedAccessRows[0].layout.rect.width === 480
-                : false));
+                : componentStory === "chat/ComposerSurface#ComposerToolbarRow"
+                  ? state?.web?.componentLabMetrics?.isolatedComposerToolbar?.box?.rect?.width ===
+                      328 &&
+                    state?.lynx?.componentLabMetrics?.isolatedComposerToolbar?.box?.rect?.width ===
+                      328 &&
+                    JSON.stringify(
+                      state.web.componentLabMetrics.isolatedComposerToolbar.items.map(
+                        ({ key }) => key,
+                      ),
+                    ) === JSON.stringify(["model", "runtime", "mode"]) &&
+                    JSON.stringify(
+                      state.lynx.componentLabMetrics.isolatedComposerToolbar.items.map(
+                        ({ key }) => key,
+                      ),
+                    ) === JSON.stringify(["model", "runtime", "mode"]) &&
+                    state.web.componentLabMetrics.isolatedComposerToolbar.separators.length === 2 &&
+                    state.lynx.componentLabMetrics.isolatedComposerToolbar.separators.length ===
+                      2 &&
+                    state.web.componentLabMetrics.isolatedComposerToolbar.separators.every(
+                      ({ rect }) => rect.width === 1 && rect.height === 16,
+                    ) &&
+                    state.lynx.componentLabMetrics.isolatedComposerToolbar.separators.every(
+                      ({ rect }) => rect.width === 1 && rect.height === 16,
+                    )
+                  : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&
