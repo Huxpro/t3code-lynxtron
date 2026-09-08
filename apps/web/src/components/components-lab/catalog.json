@@ -126,6 +126,12 @@
     "states": ["placeholder", "query", "filtered-results"]
   },
   {
+    "id": "ui/command#CommandCollection",
+    "category": "Navigation",
+    "title": "Command collection",
+    "states": ["items", "filtered-items"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

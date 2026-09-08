@@ -25,6 +25,7 @@ interface CommandContextValue {
 }
 
 const CommandContext = createContext<CommandContextValue | null>(null);
+const CommandGroupItemsContext = createContext<readonly unknown[]>([]);
 
 export function CommandDialog({
   children,
@@ -73,7 +74,14 @@ export function Command({
     </CommandContext.Provider>
   );
 }
-export const CommandCollection = Container;
+export function CommandCollection({
+  children,
+}: {
+  readonly children: (item: unknown, index: number) => ReactNode;
+}) {
+  const items = useContext(CommandGroupItemsContext);
+  return <>{items.map((item, index) => children(item, index))}</>;
+}
 export const CommandEmpty = Container;
 export function CommandFooter({ children, className, ...props }: ElementProps) {
   return (
@@ -86,17 +94,24 @@ export function CommandFooter({ children, className, ...props }: ElementProps) {
     </view>
   );
 }
-export function CommandGroup({ children, className, ...props }: ElementProps) {
+export function CommandGroup({
+  children,
+  className,
+  items = [],
+  ...props
+}: ElementProps & { readonly items?: readonly unknown[] }) {
   return (
-    <scroll-view
-      {...props}
-      className={["ui-command-group", className].filter(Boolean).join(" ")}
-      data-slot="command-group"
-      enable-scroll={false}
-      scroll-y
-    >
-      {children}
-    </scroll-view>
+    <CommandGroupItemsContext.Provider value={items}>
+      <scroll-view
+        {...props}
+        className={["ui-command-group", className].filter(Boolean).join(" ")}
+        data-slot="command-group"
+        enable-scroll={false}
+        scroll-y
+      >
+        {children}
+      </scroll-view>
+    </CommandGroupItemsContext.Provider>
   );
 }
 export function CommandGroupLabel({ children, className, ...props }: ElementProps) {

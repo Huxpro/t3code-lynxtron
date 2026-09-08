@@ -7,6 +7,7 @@ import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import {
   Command,
+  CommandCollection,
   CommandFooter,
   CommandGroup,
   CommandGroupLabel,
@@ -380,8 +381,10 @@ function ComponentLabSidebarStory() {
 
 function ComponentLabCommandStory() {
   const [query, setQuery] = useState("");
-  const showOpenProject = "open project".includes(query.toLowerCase());
-  const showNewThread = "new thread".includes(query.toLowerCase());
+  const items = [
+    { label: "Open project", shortcut: "⌘O", value: "open-project" },
+    { label: "New thread", shortcut: null, value: "new-thread" },
+  ].filter((item) => item.label.toLowerCase().includes(query.toLowerCase()));
   return (
     <HostView className="component-lab-command">
       <Command autoHighlight={false} mode="none" onValueChange={setQuery} value={query}>
@@ -392,24 +395,29 @@ function ComponentLabCommandStory() {
         />
         <CommandPanel className="component-lab-command__panel">
           <CommandList className="component-lab-command__list">
-            <CommandGroup className="component-lab-command__group">
+            <CommandGroup className="component-lab-command__group" items={items}>
               <CommandGroupLabel className="component-lab-command__label">
                 Workspace
               </CommandGroupLabel>
-              {showOpenProject ? (
-                <CommandItem className="component-lab-command__item" value="open-project">
-                  <HostText className="component-lab-command__item-label">Open project</HostText>
-                  <CommandShortcut className="component-lab-command__shortcut">⌘O</CommandShortcut>
-                </CommandItem>
-              ) : null}
-              {showOpenProject && showNewThread ? (
-                <CommandSeparator className="component-lab-command__separator" />
-              ) : null}
-              {showNewThread ? (
-                <CommandItem className="component-lab-command__item" value="new-thread">
-                  <HostText className="component-lab-command__item-label">New thread</HostText>
-                </CommandItem>
-              ) : null}
+              <CommandCollection>
+                {(item: (typeof items)[number], index) => (
+                  <CommandItem
+                    className="component-lab-command__item"
+                    key={item.value}
+                    value={item.value}
+                  >
+                    <HostText className="component-lab-command__item-label">{item.label}</HostText>
+                    {item.shortcut ? (
+                      <CommandShortcut className="component-lab-command__shortcut">
+                        {item.shortcut}
+                      </CommandShortcut>
+                    ) : null}
+                    {index < items.length - 1 ? (
+                      <CommandSeparator className="component-lab-command__separator" />
+                    ) : null}
+                  </CommandItem>
+                )}
+              </CommandCollection>
             </CommandGroup>
           </CommandList>
         </CommandPanel>
@@ -507,6 +515,7 @@ export function ComponentLabSurface() {
               ["ui/command#CommandShortcut", "Command shortcut"],
               ["ui/command#CommandFooter", "Command footer"],
               ["ui/command#CommandInput", "Command input"],
+              ["ui/command#CommandCollection", "Command collection"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>

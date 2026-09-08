@@ -127,6 +127,12 @@
       "title": "Command input"
     },
     {
+      "category": "Navigation",
+      "id": "ui/command#CommandCollection",
+      "states": ["items", "filtered-items"],
+      "title": "Command collection"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5183,7 +5189,7 @@
     },
     {
       "authority": {
-        "line": 381,
+        "line": 382,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5204,7 +5210,7 @@
     },
     {
       "authority": {
-        "line": 202,
+        "line": 203,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5225,7 +5231,7 @@
     },
     {
       "authority": {
-        "line": 424,
+        "line": 434,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5246,7 +5252,7 @@
     },
     {
       "authority": {
-        "line": 153,
+        "line": 154,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5267,7 +5273,7 @@
     },
     {
       "authority": {
-        "line": 276,
+        "line": 277,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5288,7 +5294,7 @@
     },
     {
       "authority": {
-        "line": 188,
+        "line": 189,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5309,7 +5315,7 @@
     },
     {
       "authority": {
-        "line": 131,
+        "line": 132,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5330,7 +5336,7 @@
     },
     {
       "authority": {
-        "line": 303,
+        "line": 304,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5351,7 +5357,7 @@
     },
     {
       "authority": {
-        "line": 239,
+        "line": 240,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5372,7 +5378,7 @@
     },
     {
       "authority": {
-        "line": 338,
+        "line": 339,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5393,7 +5399,7 @@
     },
     {
       "authority": {
-        "line": 446,
+        "line": 456,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5427,7 +5433,7 @@
     },
     {
       "authority": {
-        "line": 102,
+        "line": 103,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5448,7 +5454,7 @@
     },
     {
       "authority": {
-        "line": 127,
+        "line": 128,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -14823,18 +14829,30 @@
       },
       "name": "CommandCollection",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/command#CommandCollection",
+        "states": ["items", "filtered-items"],
+        "status": "covered",
+        "title": "Command collection"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -23084,7 +23102,7 @@
     "internal": 219,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 91,
+    "stories": 92,
     "webOnly": 466
   },
   "generatedFrom": "apps/web/src/components",
