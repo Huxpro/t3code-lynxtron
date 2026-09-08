@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  normalizeSupportedSelector,
   unsupportedDeclaration,
   unsupportedPseudoSelectors,
 } from "./postcss-lynx-tailwind-compat.mjs";
@@ -16,6 +17,24 @@ describe("Lynx Tailwind compatibility", () => {
   it("continues to classify pseudo selectors that need state adapters", () => {
     expect(unsupportedPseudoSelectors(".button:hover")).toEqual([":hover"]);
     expect(unsupportedPseudoSelectors(".button:focus-visible")).toEqual([":focus-visible"]);
+  });
+
+  it("rewrites supported state and theme selectors to Lynx-safe equivalents", () => {
+    expect(normalizeSupportedSelector(".disabled\\:opacity-50:disabled")).toEqual({
+      selector: ".disabled\\:opacity-50[disabled]",
+      transformations: ["disabled-to-attribute"],
+    });
+    expect(normalizeSupportedSelector(".dark\\:text-red-400:is(.dark *)")).toEqual({
+      selector: ".dark .dark\\:text-red-400",
+      transformations: ["dark-is-to-descendant"],
+    });
+  });
+
+  it("keeps selector rewrites observable when selector counts do not change", () => {
+    const original = [".dark\\:text-red-400:is(.dark *)"];
+    const normalized = original.map((selector) => normalizeSupportedSelector(selector).selector);
+    expect(normalized).toHaveLength(original.length);
+    expect(normalized).not.toEqual(original);
   });
 
   it("preserves supported grid declarations", () => {

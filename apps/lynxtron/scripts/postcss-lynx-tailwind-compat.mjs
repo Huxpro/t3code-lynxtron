@@ -50,6 +50,24 @@ function pseudoSelectors(selector) {
   return [...syntaxOnly.matchAll(/::?[a-z-]+/giu)].map(([pseudo]) => pseudo.toLowerCase());
 }
 
+export function normalizeSupportedSelector(selector) {
+  let normalized = selector;
+  const transformations = [];
+
+  if (normalized.includes(":disabled")) {
+    normalized = normalized.replace(/(?<!\\):disabled\b/gu, "[disabled]");
+    transformations.push("disabled-to-attribute");
+  }
+
+  const darkVariant = /^(.*):is\(\.dark \*\)$/u.exec(normalized);
+  if (darkVariant?.[1]) {
+    normalized = `.dark ${darkVariant[1]}`;
+    transformations.push("dark-is-to-descendant");
+  }
+
+  return { selector: normalized, transformations };
+}
+
 export function unsupportedPseudoSelectors(selector) {
   // Remove escaped class-name characters before inspecting selector syntax.
   // Lynx CSS Selector NG supports :active, :not(), :root and ::selection; the
@@ -64,6 +82,7 @@ export function lynxTailwindCompatibility() {
   const removedSelectorDetails = new Set();
   const retainedDeclarationDetails = new Map();
   const retainedSelectorDetails = new Set();
+  const transformedSelectorDetails = new Map();
 
   return {
     postcssPlugin: "t3code-lynx-tailwind-compatibility",
@@ -74,6 +93,7 @@ export function lynxTailwindCompatibility() {
       removedSelectorDetails.clear();
       retainedDeclarationDetails.clear();
       retainedSelectorDetails.clear();
+      transformedSelectorDetails.clear();
     },
     Rule(rule) {
       if (!comesFromTailwindEntry(rule)) return;
@@ -81,21 +101,32 @@ export function lynxTailwindCompatibility() {
       const selectors = rule.selectors;
       if (!selectors) return;
 
-      const supported = selectors.filter((selector) => {
+      const supported = selectors.flatMap((originalSelector) => {
+        const { selector, transformations } = normalizeSupportedSelector(originalSelector);
         const pseudos = pseudoSelectors(selector);
         const remove = pseudos.some((pseudo) => !SUPPORTED_PSEUDO_SELECTORS.has(pseudo));
         if (remove) {
           removedSelectors += 1;
-          removedSelectorDetails.add(selector);
+          removedSelectorDetails.add(originalSelector);
         } else if (pseudos.length > 0) {
           retainedSelectorDetails.add(selector);
         }
-        return !remove;
+        if (!remove && transformations.length > 0) {
+          transformedSelectorDetails.set(originalSelector, {
+            from: originalSelector,
+            to: selector,
+            transformations,
+          });
+        }
+        return remove ? [] : [selector];
       });
 
       if (supported.length === 0) {
         rule.remove();
-      } else if (supported.length !== selectors.length) {
+      } else if (
+        supported.length !== selectors.length ||
+        supported.some((selector, index) => selector !== selectors[index])
+      ) {
         rule.selectors = supported;
       }
     },
@@ -149,6 +180,10 @@ export function lynxTailwindCompatibility() {
         removedDeclarationCount: removedDeclarations,
         retainedSupportedSelectorCount: retainedSelectorDetails.size,
         retainedSupportedDeclarationCount: retainedDeclarationDetails.size,
+        transformedSelectorCount: transformedSelectorDetails.size,
+        transformedSelectors: [...transformedSelectorDetails.values()].sort((left, right) =>
+          left.from.localeCompare(right.from),
+        ),
         retainedSupportedSelectors: [...retainedSelectorDetails].sort(),
         retainedSupportedDeclarations: [...retainedDeclarationDetails.values()].sort(
           (left, right) =>
