@@ -96,6 +96,30 @@
     "states": ["default", "second-item"]
   },
   {
+    "id": "ui/command#CommandPanel",
+    "category": "Navigation",
+    "title": "Command panel",
+    "states": ["results"]
+  },
+  {
+    "id": "ui/command#CommandSeparator",
+    "category": "Navigation",
+    "title": "Command separator",
+    "states": ["between-items"]
+  },
+  {
+    "id": "ui/command#CommandShortcut",
+    "category": "Navigation",
+    "title": "Command shortcut",
+    "states": ["keyboard-hint"]
+  },
+  {
+    "id": "ui/command#CommandFooter",
+    "category": "Navigation",
+    "title": "Command footer",
+    "states": ["hint"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

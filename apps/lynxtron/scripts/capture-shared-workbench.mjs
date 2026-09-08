@@ -12070,11 +12070,33 @@ async function captureCell({
     (state?.web?.componentLabMetrics?.command?.labelText === "Workspace" &&
       state?.lynx?.componentLabMetrics?.command?.labelText === "Workspace" &&
       JSON.stringify(state?.web?.componentLabMetrics?.command?.itemTexts) ===
-        JSON.stringify(["Open project", "New thread"]) &&
+        JSON.stringify(["Open project ⌘O", "New thread"]) &&
       JSON.stringify(state?.lynx?.componentLabMetrics?.command?.itemTexts) ===
-        JSON.stringify(["Open project", "New thread"]) &&
+        JSON.stringify(["Open project ⌘O", "New thread"]) &&
+      state?.web?.componentLabMetrics?.command?.separatorCount === 1 &&
+      state?.lynx?.componentLabMetrics?.command?.separatorCount === 1 &&
+      state?.web?.componentLabMetrics?.command?.shortcutText === "⌘O" &&
+      state?.lynx?.componentLabMetrics?.command?.shortcutText === "⌘O" &&
+      state?.web?.componentLabMetrics?.command?.footerText === "Choose an action" &&
+      state?.lynx?.componentLabMetrics?.command?.footerText === "Choose an action" &&
       state?.web?.componentLabMetrics?.command?.root?.rect?.width === 320 &&
       state?.lynx?.componentLabMetrics?.command?.root?.rect?.width === 320 &&
+      Math.abs(
+        state.web.componentLabMetrics.command.panel.rect.width -
+          state.lynx.componentLabMetrics.command.panel.rect.width,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.command.panel.rect.height -
+          state.lynx.componentLabMetrics.command.panel.rect.height,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.command.footer.rect.width -
+          state.lynx.componentLabMetrics.command.footer.rect.width,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.command.footer.rect.height -
+          state.lynx.componentLabMetrics.command.footer.rect.height,
+      ) <= 2 &&
       state?.web?.componentLabMetrics?.command?.itemBoxes?.length === 2 &&
       state?.lynx?.componentLabMetrics?.command?.itemBoxes?.length === 2 &&
       state.web.componentLabMetrics.command.itemBoxes.every(

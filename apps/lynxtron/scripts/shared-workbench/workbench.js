@@ -355,12 +355,23 @@ function readComponentLabMetrics(root) {
         root: readElementBox(rootCommand),
         list: readElementBox(rootCommand?.querySelector('[data-slot="command-list"]')),
         group: readElementBox(rootCommand?.querySelector('[data-slot="command-group"]')),
+        panel: readElementBox(
+          rootCommand?.querySelector('[data-slot="command-panel"]') ??
+            rootCommand?.querySelector(".component-lab-command__panel"),
+        ),
+        footer: readElementBox(rootCommand?.querySelector('[data-slot="command-footer"]')),
         label: readElementBox(rootCommand?.querySelector('[data-slot="command-group-label"]')),
         labelText: readComposedText(
           rootCommand?.querySelector('[data-slot="command-group-label"]'),
         ),
         itemBoxes: items.map(readElementBox),
         itemTexts: items.map(readComposedText),
+        separatorCount:
+          rootCommand?.querySelectorAll('[data-slot="command-separator"]').length ?? 0,
+        shortcutText: readComposedText(
+          rootCommand?.querySelector('[data-slot="command-shortcut"]'),
+        ),
+        footerText: readComposedText(rootCommand?.querySelector('[data-slot="command-footer"]')),
       };
     })(),
     draftInput: (() => {

@@ -5,7 +5,17 @@ import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-import { Command, CommandGroup, CommandGroupLabel, CommandItem, CommandList } from "../ui/command";
+import {
+  Command,
+  CommandFooter,
+  CommandGroup,
+  CommandGroupLabel,
+  CommandItem,
+  CommandList,
+  CommandPanel,
+  CommandSeparator,
+  CommandShortcut,
+} from "../ui/command";
 import {
   Dialog,
   DialogClose,
@@ -371,19 +381,26 @@ function ComponentLabCommandStory() {
   return (
     <HostView className="component-lab-command">
       <Command autoHighlight={false} mode="none">
-        <CommandList className="component-lab-command__list">
-          <CommandGroup className="component-lab-command__group">
-            <CommandGroupLabel className="component-lab-command__label">
-              Workspace
-            </CommandGroupLabel>
-            <CommandItem className="component-lab-command__item" value="open-project">
-              <HostText className="component-lab-command__item-label">Open project</HostText>
-            </CommandItem>
-            <CommandItem className="component-lab-command__item" value="new-thread">
-              <HostText className="component-lab-command__item-label">New thread</HostText>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
+        <CommandPanel className="component-lab-command__panel">
+          <CommandList className="component-lab-command__list">
+            <CommandGroup className="component-lab-command__group">
+              <CommandGroupLabel className="component-lab-command__label">
+                Workspace
+              </CommandGroupLabel>
+              <CommandItem className="component-lab-command__item" value="open-project">
+                <HostText className="component-lab-command__item-label">Open project</HostText>
+                <CommandShortcut className="component-lab-command__shortcut">⌘O</CommandShortcut>
+              </CommandItem>
+              <CommandSeparator className="component-lab-command__separator" />
+              <CommandItem className="component-lab-command__item" value="new-thread">
+                <HostText className="component-lab-command__item-label">New thread</HostText>
+              </CommandItem>
+            </CommandGroup>
+          </CommandList>
+        </CommandPanel>
+        <CommandFooter className="component-lab-command__footer">
+          <HostText className="component-lab-command__footer-label">Choose an action</HostText>
+        </CommandFooter>
       </Command>
     </HostView>
   );
@@ -470,6 +487,10 @@ export function ComponentLabSurface() {
               ["ui/command#CommandGroup", "Command group"],
               ["ui/command#CommandGroupLabel", "Command group label"],
               ["ui/command#CommandItem", "Command item"],
+              ["ui/command#CommandPanel", "Command panel"],
+              ["ui/command#CommandSeparator", "Command separator"],
+              ["ui/command#CommandShortcut", "Command shortcut"],
+              ["ui/command#CommandFooter", "Command footer"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>
