@@ -42,7 +42,7 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import { SettingsRow, SettingsSection } from "../settings/settingsLayout";
+import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/settingsLayout";
 import { ProjectFavicon } from "../ProjectFavicon";
 
 type StoryId = (typeof catalog)[number]["id"];
@@ -205,6 +205,41 @@ function ComponentLabPopoverStory() {
         </PopoverClose>
       </PopoverPopup>
     </Popover>
+  );
+}
+
+function ComponentLabSettingsStory() {
+  const [resetCount, setResetCount] = useState(0);
+  return (
+    <SettingsSection
+      headerAction={
+        <HostView className="component-lab-settings-reset">
+          <HostText
+            className="component-lab-host-text component-lab-host-text--muted"
+            data-component-lab-reset-count="value"
+          >
+            Reset {resetCount}
+          </HostText>
+          <SettingResetButton
+            label="appearance"
+            onClick={() => setResetCount((count) => count + 1)}
+          />
+        </HostView>
+      }
+      title="Appearance"
+    >
+      <SettingsRow
+        control={<Switch aria-label="Use system theme" checked />}
+        description="Choose how T3 Code looks across the app."
+        status="System"
+        title="Theme"
+      />
+      <SettingsRow
+        description="This setting is managed by the current environment."
+        title="Environment theme"
+        unavailable
+      />
+    </SettingsSection>
   );
 }
 
@@ -435,31 +470,18 @@ export function ComponentLabSurface() {
           </StoryFrame>
 
           <StoryFrame id="settings/settingsLayout#SettingsSection" title="Settings section">
-            <SettingsSection
-              headerAction={
-                <Button size="sm" variant="ghost">
-                  Reset
-                </Button>
-              }
-              title="Appearance"
-            >
-              <SettingsRow
-                control={<Switch aria-label="Use system theme" checked />}
-                description="Choose how T3 Code looks across the app."
-                status="System"
-                title="Theme"
-              />
-              <SettingsRow
-                description="This setting is managed by the current environment."
-                title="Environment theme"
-                unavailable
-              />
-            </SettingsSection>
+            <ComponentLabSettingsStory />
           </StoryFrame>
 
           <StoryFrame id="settings/settingsLayout#SettingsRow" title="Settings row">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Rendered by the shared Settings section fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="settings/settingsLayout#SettingResetButton" title="Setting reset button">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared Settings section header action above.
             </HostText>
           </StoryFrame>
 

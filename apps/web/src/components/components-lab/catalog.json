@@ -264,6 +264,12 @@
     "states": ["default", "status", "control", "unavailable"]
   },
   {
+    "id": "settings/settingsLayout#SettingResetButton",
+    "category": "Settings",
+    "title": "Setting reset button",
+    "states": ["idle", "activated"]
+  },
+  {
     "id": "ui/empty#Empty",
     "category": "Feedback",
     "title": "Empty state",

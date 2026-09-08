@@ -296,6 +296,13 @@ function readComponentLabMetrics(root) {
         tagName,
       };
     })(),
+    settingReset: (() => {
+      const button = root.querySelector('[aria-label="Reset appearance to default"]');
+      return {
+        button: readElementBox(button),
+        count: readComposedText(root.querySelector('[data-component-lab-reset-count="value"]')),
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),

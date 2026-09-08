@@ -56,6 +56,9 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabProjectFaviconReady =");
     assert.include(readerSource, "projectFavicon: (() =>");
     assert.include(readerSource, '".component-lab-project-favicon"');
+    assert.include(captureSource, "const componentLabSettingResetReady =");
+    assert.include(captureSource, '[aria-label=\"Reset appearance to default\"]');
+    assert.include(readerSource, "settingReset: (() =>");
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");

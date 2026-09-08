@@ -7593,6 +7593,7 @@ async function captureCell({
   let componentLabPopoverVerified = false;
   let componentLabPopoverClosed = false;
   let componentLabPopoverEvidence = null;
+  let componentLabSettingResetClicked = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7737,6 +7738,7 @@ async function captureCell({
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         componentLabDialogClosed &&
         componentLabPopoverClosed &&
+        componentLabSettingResetClicked &&
         !componentLabSelectOpened
       ) {
         const points = await evaluate(
@@ -8041,6 +8043,29 @@ async function captureCell({
         state?.lynx?.componentLabMetrics?.popover === null
       ) {
         componentLabPopoverClosed = true;
+        continue;
+      }
+      if (
+        componentLabPopoverClosed &&
+        !componentLabSettingResetClicked &&
+        state?.web?.componentLabMetrics?.settingReset?.count === "Reset 0" &&
+        state?.lynx?.componentLabMetrics?.settingReset?.count === "Reset 0"
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[aria-label="Reset appearance to default"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[aria-label="Reset appearance to default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabSettingResetClicked = Boolean(points?.web && points?.lynx);
+        await delay(100);
         continue;
       }
       if (
@@ -11642,6 +11667,21 @@ async function captureCell({
         state.web.componentLabMetrics.projectFavicon.box.rect.height -
           state.lynx.componentLabMetrics.projectFavicon.box.rect.height,
       ) <= 1);
+  const componentLabSettingResetReady =
+    !isComponentsLabState ||
+    (componentLabSettingResetClicked &&
+      state?.web?.componentLabMetrics?.settingReset?.count === "Reset 1" &&
+      state?.lynx?.componentLabMetrics?.settingReset?.count === "Reset 1" &&
+      state?.web?.componentLabMetrics?.settingReset?.button?.rect &&
+      state?.lynx?.componentLabMetrics?.settingReset?.button?.rect &&
+      Math.abs(
+        state.web.componentLabMetrics.settingReset.button.rect.width -
+          state.lynx.componentLabMetrics.settingReset.button.rect.width,
+      ) <= 1 &&
+      Math.abs(
+        state.web.componentLabMetrics.settingReset.button.rect.height -
+          state.lynx.componentLabMetrics.settingReset.button.rect.height,
+      ) <= 1);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -14073,6 +14113,7 @@ async function captureCell({
     componentLabDialogReady &&
     componentLabPopoverReady &&
     componentLabProjectFaviconReady &&
+    componentLabSettingResetReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -14175,6 +14216,7 @@ async function captureCell({
       componentLabDialogReady,
       componentLabPopoverReady,
       componentLabProjectFaviconReady,
+      componentLabSettingResetReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

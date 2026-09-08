@@ -7286,6 +7286,14 @@
 .ui-button--icon-xs .ui-button__label {
   font-size: 12px;
 }
+.settings-reset-button.ui-button--icon-xs {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  padding: 0;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
 
 .ui-input,
 .ui-textarea {
@@ -12516,6 +12524,12 @@
   flex-shrink: 0;
   width: 14px;
   height: 14px;
+}
+.component-lab-settings-reset {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 .component-lab-scroll-area {
   flex-shrink: 0;

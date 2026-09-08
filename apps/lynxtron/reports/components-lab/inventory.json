@@ -265,6 +265,12 @@
       "title": "Settings row"
     },
     {
+      "category": "Settings",
+      "id": "settings/settingsLayout#SettingResetButton",
+      "states": ["idle", "activated"],
+      "title": "Setting reset button"
+    },
+    {
       "category": "Feedback",
       "id": "ui/empty#Empty",
       "states": ["icon", "title", "description", "action"],
@@ -5035,6 +5041,27 @@
     {
       "authority": {
         "line": 211,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabSettingsStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabSettingsStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 246,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -10093,16 +10120,28 @@
       "name": "SettingResetButton",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Settings",
+        "id": "settings/settingsLayout#SettingResetButton",
+        "states": ["idle", "activated"],
+        "status": "covered",
+        "title": "Setting reset button"
       },
       "useSites": [
         {
           "path": "apps/lynxtron/src/app/components/AppearanceSettings.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -22279,14 +22318,14 @@
     }
   ],
   "counts": {
-    "components": 740,
+    "components": 741,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 214,
+    "internal": 215,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 50,
-    "webOnly": 461
+    "stories": 51,
+    "webOnly": 462
   },
   "generatedFrom": "apps/web/src/components",
   "method": {
