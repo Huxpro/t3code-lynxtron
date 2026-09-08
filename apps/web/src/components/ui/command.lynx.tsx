@@ -10,6 +10,7 @@ import {
   useState,
 } from "@lynx-js/react";
 import { Input } from "./input";
+import { Dialog, DialogPopup, DialogTrigger } from "./dialog";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -28,23 +29,35 @@ interface CommandContextValue {
 const CommandContext = createContext<CommandContextValue | null>(null);
 const CommandGroupItemsContext = createContext<readonly unknown[]>([]);
 
-export function CommandDialog({
-  children,
-  open = false,
-}: ElementProps & { readonly open?: boolean }) {
-  return open ? <>{children}</> : null;
-}
+export const CommandDialog = Dialog;
 
 export function CommandDialogTrigger({ children, render, ...props }: ElementProps) {
-  if (isValidElement(render)) {
-    return cloneElement(render, { ...props, children });
-  }
-  return <view {...props}>{children}</view>;
+  return (
+    <DialogTrigger {...props} render={render}>
+      {children}
+    </DialogTrigger>
+  );
 }
 
 const Container = ({ children, ...props }: ElementProps) => <view {...props}>{children}</view>;
 
-export const CommandDialogPopup = Container;
+export function CommandDialogPopup({
+  children,
+  className,
+  onBackdropPointerDown: _onBackdropPointerDown,
+  ...props
+}: ElementProps & { readonly onBackdropPointerDown?: () => void }) {
+  return (
+    <DialogPopup
+      {...props}
+      className={["ui-command-dialog-popup", className].filter(Boolean).join(" ")}
+      data-command-dialog-popup="component-lab"
+      showCloseButton={false}
+    >
+      {children}
+    </DialogPopup>
+  );
+}
 export function Command({
   children,
   className,

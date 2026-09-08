@@ -8,6 +8,9 @@ import { Badge } from "../ui/badge";
 import {
   Command,
   CommandCollection,
+  CommandDialog,
+  CommandDialogPopup,
+  CommandDialogTrigger,
   CommandEmpty,
   CommandFooter,
   CommandGroup,
@@ -439,6 +442,49 @@ function ComponentLabCommandStory() {
   );
 }
 
+function ComponentLabCommandDialogStory() {
+  const [open, setOpen] = useState(false);
+  return (
+    <CommandDialog
+      disablePointerDismissal
+      open={open}
+      onOpenChange={setOpen}
+      triggerId="component-lab-command-dialog-trigger"
+    >
+      <CommandDialogTrigger
+        className="component-lab-command-dialog-trigger"
+        data-component-lab-command-dialog-trigger="default"
+        id="component-lab-command-dialog-trigger"
+        onClick={() => setOpen(true)}
+      >
+        Open command dialog
+      </CommandDialogTrigger>
+      <Button data-component-lab-command-dialog-open="default" onClick={() => setOpen(true)}>
+        Show command dialog
+      </Button>
+      <CommandDialogPopup
+        aria-label="Component lab command dialog"
+        className="component-lab-command-dialog"
+        data-component-lab-command-dialog-popup="default"
+        onBackdropPointerDown={() => setOpen(false)}
+      >
+        <HostView className="component-lab-command-dialog__body">
+          <HostHeading className="component-lab-command-dialog__title">Quick actions</HostHeading>
+          <HostText className="component-lab-host-text component-lab-host-text--muted">
+            Search projects and commands.
+          </HostText>
+          <DialogClose
+            data-component-lab-command-dialog-close="default"
+            render={<Button variant="outline" />}
+          >
+            Done
+          </DialogClose>
+        </HostView>
+      </CommandDialogPopup>
+    </CommandDialog>
+  );
+}
+
 function ComponentLabDraftInputStory() {
   const [committed, setCommitted] = useState("alpha");
   return (
@@ -514,6 +560,10 @@ export function ComponentLabSurface() {
             <ComponentLabCommandStory />
           </StoryFrame>
 
+          <StoryFrame id="ui/command#CommandDialog" title="Command dialog">
+            <ComponentLabCommandDialogStory />
+          </StoryFrame>
+
           {(
             [
               ["ui/command#CommandList", "Command list"],
@@ -527,6 +577,8 @@ export function ComponentLabSurface() {
               ["ui/command#CommandInput", "Command input"],
               ["ui/command#CommandCollection", "Command collection"],
               ["ui/command#CommandEmpty", "Command empty"],
+              ["ui/command#CommandDialogTrigger", "Command dialog trigger"],
+              ["ui/command#CommandDialogPopup", "Command dialog popup"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>

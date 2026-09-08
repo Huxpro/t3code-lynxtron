@@ -381,6 +381,31 @@ function readComponentLabMetrics(root) {
         emptyText: readComposedText(rootCommand?.querySelector('[data-slot="command-empty"]')),
       };
     })(),
+    commandDialog: (() => {
+      const popup = root.querySelector('[data-component-lab-command-dialog-popup="default"]');
+      return popup
+        ? {
+            popup: readElementBox(popup),
+            text: readComposedText(popup),
+            backdropCount: root.querySelectorAll(
+              '[data-slot="dialog-backdrop"], [data-slot="command-dialog-backdrop"]',
+            ).length,
+            viewportCount: root.querySelectorAll(
+              '[data-slot="dialog-viewport"], [data-slot="command-dialog-viewport"]',
+            ).length,
+          }
+        : null;
+    })(),
+    commandDialogTrigger: readElementBox(
+      root.querySelector('[data-component-lab-command-dialog-trigger="default"]'),
+    ),
+    commandDialogBackdropCount: root.querySelectorAll(
+      '[data-slot="dialog-backdrop"], [data-slot="command-dialog-backdrop"]',
+    ).length,
+    commandDialogViewportCount: root.querySelectorAll(
+      '[data-slot="dialog-viewport"], [data-slot="command-dialog-viewport"]',
+    ).length,
+    baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');
       const control = root.querySelector(".component-lab-draft-input__control");

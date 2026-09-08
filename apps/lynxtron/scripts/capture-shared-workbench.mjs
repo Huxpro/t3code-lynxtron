@@ -7582,6 +7582,7 @@ async function captureCell({
   let componentLabSelectChanged = false;
   let componentLabSelectReopened = false;
   let componentLabSelectEvidence = null;
+  let componentLabSelectClosedAfterEvidence = false;
   let componentLabNumberIncremented = false;
   let componentLabNumberDecremented = false;
   let componentLabScrollDispatched = false;
@@ -7615,6 +7616,14 @@ async function captureCell({
   let componentLabCommandEvidence = null;
   let componentLabCommandWebEmptied = false;
   let componentLabCommandLynxEmptied = false;
+  let componentLabCommandDialogWebOpened = false;
+  let componentLabCommandDialogWebCaptured = false;
+  let componentLabCommandDialogWebClosed = false;
+  let componentLabCommandDialogLynxOpened = false;
+  let componentLabCommandDialogVerified = false;
+  let componentLabCommandDialogClosed = false;
+  let componentLabCommandDialogEvidence = null;
+  const componentLabCommandDialogTimeline = [];
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7850,6 +7859,29 @@ async function captureCell({
           web: state.web.componentLabMetrics.select,
           lynx: state.lynx.componentLabMetrics.select,
         };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-select-trigger="default"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-select-trigger="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        await delay(100);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        continue;
+      }
+      if (
+        componentLabSelectEvidence &&
+        !componentLabSelectClosedAfterEvidence &&
+        state?.web?.componentLabMetrics?.select?.popup?.box === null &&
+        state?.lynx?.componentLabMetrics?.select?.popup === null
+      ) {
+        componentLabSelectClosedAfterEvidence = true;
         continue;
       }
       if (
@@ -8405,6 +8437,7 @@ async function captureCell({
       if (
         componentLabDraftLynxCommitted &&
         componentLabSelectEvidence &&
+        componentLabSelectClosedAfterEvidence &&
         !componentLabCommandInitialVerified &&
         state?.web?.componentLabMetrics?.command?.inputValue === "" &&
         state?.lynx?.componentLabMetrics?.command?.inputValue === "" &&
@@ -8542,6 +8575,122 @@ async function captureCell({
             lynx: state.lynx.componentLabMetrics.command,
           },
         };
+        continue;
+      }
+      if (
+        componentLabCommandEvidence?.empty &&
+        !componentLabCommandDialogWebOpened &&
+        state?.web?.componentLabMetrics?.commandDialog === null &&
+        state?.lynx?.componentLabMetrics?.commandDialog === null
+      ) {
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenterVisible("web", '[data-component-lab-command-dialog-open="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabCommandDialogWebOpened = Boolean(point);
+        componentLabCommandDialogTimeline.push({
+          stage: "web-open-control",
+          input: "pointer",
+        });
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandDialogWebOpened &&
+        !componentLabCommandDialogWebCaptured &&
+        state?.web?.componentLabMetrics?.commandDialog?.text ===
+          "Quick actions Search projects and commands. Done" &&
+        state?.web?.componentLabMetrics?.commandDialog?.backdropCount === 1 &&
+        state?.web?.componentLabMetrics?.commandDialog?.viewportCount === 1 &&
+        Number(state.web.componentLabMetrics.commandDialog.popup.style?.opacity) >= 0.99
+      ) {
+        componentLabCommandDialogEvidence = {
+          inputChannel: "sequential-dual-cdp-pointer",
+          web: state.web.componentLabMetrics.commandDialog,
+          lynx: null,
+        };
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenter("web", '[data-component-lab-command-dialog-close="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabCommandDialogWebCaptured = Boolean(point);
+        componentLabCommandDialogTimeline.push({ stage: "web-open", point });
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandDialogWebCaptured &&
+        !componentLabCommandDialogWebClosed &&
+        state?.web?.componentLabMetrics?.commandDialog === null &&
+        state?.web?.componentLabMetrics?.commandDialogBackdropCount === 0 &&
+        state?.web?.componentLabMetrics?.commandDialogViewportCount === 0
+      ) {
+        componentLabCommandDialogWebClosed = true;
+        componentLabCommandDialogTimeline.push({ stage: "web-closed" });
+        continue;
+      }
+      if (
+        componentLabCommandDialogWebClosed &&
+        !componentLabCommandDialogLynxOpened &&
+        state?.lynx?.componentLabMetrics?.commandDialog === null
+      ) {
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenterVisible("lynx", '[data-component-lab-command-dialog-open="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabCommandDialogLynxOpened = Boolean(point);
+        componentLabCommandDialogTimeline.push({ stage: "lynx-trigger", point });
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandDialogLynxOpened &&
+        !componentLabCommandDialogVerified &&
+        state?.lynx?.componentLabMetrics?.commandDialog?.text ===
+          "Quick actions Search projects and commands. Done" &&
+        state?.lynx?.componentLabMetrics?.commandDialog?.backdropCount === 1 &&
+        state?.lynx?.componentLabMetrics?.commandDialog?.viewportCount === 1 &&
+        componentLabCommandDialogEvidence?.web?.popup?.rect &&
+        Math.abs(
+          componentLabCommandDialogEvidence.web.popup.rect.width -
+            state.lynx.componentLabMetrics.commandDialog.popup.rect.width,
+        ) <= 2 &&
+        Math.abs(
+          componentLabCommandDialogEvidence.web.popup.rect.height -
+            state.lynx.componentLabMetrics.commandDialog.popup.rect.height,
+        ) <= 2
+      ) {
+        componentLabCommandDialogVerified = true;
+        componentLabCommandDialogEvidence = {
+          ...componentLabCommandDialogEvidence,
+          lynx: state.lynx.componentLabMetrics.commandDialog,
+        };
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenter("lynx", '[data-component-lab-command-dialog-close="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabCommandDialogTimeline.push({ stage: "lynx-open", point });
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandDialogVerified &&
+        !componentLabCommandDialogClosed &&
+        state?.web?.componentLabMetrics?.commandDialog === null &&
+        state?.lynx?.componentLabMetrics?.commandDialog === null &&
+        state?.lynx?.componentLabMetrics?.commandDialogBackdropCount === 0 &&
+        state?.lynx?.componentLabMetrics?.commandDialogViewportCount === 0
+      ) {
+        componentLabCommandDialogClosed = true;
+        componentLabCommandDialogTimeline.push({ stage: "lynx-closed" });
       }
       if (
         labReady &&
@@ -8553,6 +8702,7 @@ async function captureCell({
         componentLabCommandWebEmptied &&
         componentLabCommandLynxEmptied &&
         componentLabCommandEvidence?.empty &&
+        componentLabCommandDialogClosed &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
@@ -12282,6 +12432,16 @@ async function captureCell({
       componentLabCommandEvidence.filtered.lynx.itemTexts.length === 1 &&
       componentLabCommandEvidence.initial.web.itemBoxes.length === 2 &&
       componentLabCommandEvidence.initial.lynx.itemBoxes.length === 2);
+  const componentLabCommandDialogReady =
+    !isComponentsLabState ||
+    (componentLabCommandDialogWebOpened &&
+      componentLabCommandDialogWebCaptured &&
+      componentLabCommandDialogWebClosed &&
+      componentLabCommandDialogLynxOpened &&
+      componentLabCommandDialogVerified &&
+      componentLabCommandDialogClosed &&
+      state?.web?.componentLabMetrics?.commandDialog === null &&
+      state?.lynx?.componentLabMetrics?.commandDialog === null);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14727,6 +14887,7 @@ async function captureCell({
     componentLabSettingResetReady &&
     componentLabSidebarReady &&
     componentLabCommandReady &&
+    componentLabCommandDialogReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -14835,6 +14996,7 @@ async function captureCell({
       componentLabSettingResetReady,
       componentLabSidebarReady,
       componentLabCommandReady,
+      componentLabCommandDialogReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,
@@ -15017,6 +15179,8 @@ async function captureCell({
       ? {
           dialog: componentLabDialogEvidence,
           command: componentLabCommandEvidence,
+          commandDialog: componentLabCommandDialogEvidence,
+          commandDialogTimeline: componentLabCommandDialogTimeline,
           select: componentLabSelectEvidence,
           menu: componentLabMenuEvidence,
           popover: componentLabPopoverEvidence,

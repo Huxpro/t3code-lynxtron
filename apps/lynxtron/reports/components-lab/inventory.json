@@ -139,6 +139,24 @@
       "title": "Command empty"
     },
     {
+      "category": "Overlays",
+      "id": "ui/command#CommandDialog",
+      "states": ["closed", "open", "closed-again"],
+      "title": "Command dialog"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/command#CommandDialogTrigger",
+      "states": ["rendered"],
+      "title": "Command dialog trigger"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/command#CommandDialogPopup",
+      "states": ["open"],
+      "title": "Command dialog popup"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5195,7 +5213,28 @@
     },
     {
       "authority": {
-        "line": 383,
+        "line": 445,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabCommandDialogStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabCommandDialogStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 386,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5216,7 +5255,7 @@
     },
     {
       "authority": {
-        "line": 204,
+        "line": 207,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5237,7 +5276,7 @@
     },
     {
       "authority": {
-        "line": 442,
+        "line": 491,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5258,7 +5297,7 @@
     },
     {
       "authority": {
-        "line": 155,
+        "line": 158,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5279,7 +5318,7 @@
     },
     {
       "authority": {
-        "line": 278,
+        "line": 281,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5300,7 +5339,7 @@
     },
     {
       "authority": {
-        "line": 190,
+        "line": 193,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5321,7 +5360,7 @@
     },
     {
       "authority": {
-        "line": 133,
+        "line": 136,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5342,7 +5381,7 @@
     },
     {
       "authority": {
-        "line": 305,
+        "line": 308,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5363,7 +5402,7 @@
     },
     {
       "authority": {
-        "line": 241,
+        "line": 244,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5384,7 +5423,7 @@
     },
     {
       "authority": {
-        "line": 340,
+        "line": 343,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5405,7 +5444,7 @@
     },
     {
       "authority": {
-        "line": 464,
+        "line": 513,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5439,7 +5478,7 @@
     },
     {
       "authority": {
-        "line": 104,
+        "line": 107,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5460,7 +5499,7 @@
     },
     {
       "authority": {
-        "line": 129,
+        "line": 132,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -14898,18 +14937,30 @@
       },
       "name": "CommandDialog",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/command#CommandDialog",
+        "states": ["closed", "open", "closed-again"],
+        "status": "covered",
+        "title": "Command dialog"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/CommandPalette.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -14949,18 +15000,30 @@
       },
       "name": "CommandDialogPopup",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/command#CommandDialogPopup",
+        "states": ["open"],
+        "status": "covered",
+        "title": "Command dialog popup"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/CommandPalette.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -14978,14 +15041,26 @@
       "name": "CommandDialogTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 2
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/command#CommandDialogTrigger",
+        "states": ["rendered"],
+        "status": "covered",
+        "title": "Command dialog trigger"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/Sidebar.tsx",
           "platform": "web"
@@ -15967,7 +16042,7 @@
       "name": "DialogPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
         "webUseSiteCount": 13
       },
@@ -16034,6 +16109,10 @@
         {
           "path": "apps/web/src/components/SidebarV2.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/ui/command.lynx.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -16158,7 +16237,7 @@
       "name": "DialogTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
         "webUseSiteCount": 2
       },
@@ -16181,6 +16260,10 @@
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/ui/command.lynx.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -23115,14 +23198,14 @@
     }
   ],
   "counts": {
-    "components": 745,
+    "components": 746,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 219,
+    "internal": 220,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 93,
-    "webOnly": 466
+    "stories": 96,
+    "webOnly": 467
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

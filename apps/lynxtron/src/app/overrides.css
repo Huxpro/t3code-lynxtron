@@ -12729,6 +12729,37 @@
   font-size: 14px;
   text-align: center;
 }
+.component-lab-command-dialog {
+  width: 448px;
+  height: 143px;
+}
+.component-lab-command-dialog-trigger {
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: var(--settings-control-radius);
+  background-color: var(--popover);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+}
+.component-lab-command-dialog__body {
+  display: linear;
+  linear-orientation: vertical;
+  gap: 8px;
+  padding: 24px;
+}
+.component-lab-command-dialog__title {
+  color: var(--foreground);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 20px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

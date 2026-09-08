@@ -138,6 +138,24 @@
     "states": ["no-results"]
   },
   {
+    "id": "ui/command#CommandDialog",
+    "category": "Overlays",
+    "title": "Command dialog",
+    "states": ["closed", "open", "closed-again"]
+  },
+  {
+    "id": "ui/command#CommandDialogTrigger",
+    "category": "Overlays",
+    "title": "Command dialog trigger",
+    "states": ["rendered"]
+  },
+  {
+    "id": "ui/command#CommandDialogPopup",
+    "category": "Overlays",
+    "title": "Command dialog popup",
+    "states": ["open"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

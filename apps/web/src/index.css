@@ -2051,6 +2051,28 @@ label:has(> select#reasoning-effort) select {
   min-height: 4rem;
 }
 
+.component-lab-command-dialog {
+  width: min(calc(100vw - 2rem), 28rem);
+}
+
+.component-lab-command-dialog-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding-inline: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--control-radius);
+  background: var(--popover);
+}
+
+.component-lab-command-dialog__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

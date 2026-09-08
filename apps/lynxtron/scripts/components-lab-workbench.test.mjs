@@ -100,7 +100,14 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "Could not clear Web component lab CommandInput");
     assert.include(captureSource, "Could not clear Lynx component lab CommandInput");
     assert.include(captureSource, '"No matching commands."');
+    assert.include(captureSource, "const componentLabCommandDialogReady =");
+    assert.include(readerSource, '[data-component-lab-command-dialog-trigger="default"]');
+    assert.include(captureSource, '[data-component-lab-command-dialog-open="default"]');
+    assert.include(captureSource, '[data-component-lab-command-dialog-close="default"]');
+    assert.include(readerSource, '[data-component-lab-command-dialog-popup="default"]');
     assert.include(captureSource, "componentLabSelectEvidence");
+    assert.include(captureSource, "componentLabSelectClosedAfterEvidence");
+    assert.include(readerSource, "baseUiInertCount");
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");
