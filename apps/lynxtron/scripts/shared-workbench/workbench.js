@@ -405,6 +405,18 @@ function readComponentLabMetrics(root) {
     commandDialogViewportCount: root.querySelectorAll(
       '[data-slot="dialog-viewport"], [data-slot="command-dialog-viewport"]',
     ).length,
+    threadErrorBanner: (() => {
+      const banner = root.querySelector(".thread-error-banner");
+      return banner
+        ? {
+            banner: readElementBox(banner),
+            alert: readElementBox(banner.querySelector(".thread-error-alert")),
+            title: readComposedText(banner.querySelector(".thread-error-title")),
+            description: readComposedText(banner.querySelector(".thread-error-description")),
+            action: readElementBox(banner.querySelector(".thread-error-action")),
+          }
+        : null;
+    })(),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

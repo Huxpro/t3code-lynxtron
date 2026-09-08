@@ -12760,6 +12760,19 @@
   font-weight: 600;
   line-height: 20px;
 }
+.component-lab-thread-error__icon {
+  color: var(--destructive);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 700;
+}
+.component-lab-thread-error {
+  width: 432px;
+}
+.component-lab-thread-error .thread-error-banner,
+.component-lab-thread-error .thread-error-alert {
+  width: 400px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

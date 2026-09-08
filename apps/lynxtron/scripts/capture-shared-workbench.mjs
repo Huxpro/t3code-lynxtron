@@ -7624,6 +7624,9 @@ async function captureCell({
   let componentLabCommandDialogClosed = false;
   let componentLabCommandDialogEvidence = null;
   const componentLabCommandDialogTimeline = [];
+  let componentLabThreadErrorCaptured = false;
+  let componentLabThreadErrorDismissed = false;
+  let componentLabThreadErrorEvidence = null;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -8693,6 +8696,56 @@ async function captureCell({
         componentLabCommandDialogTimeline.push({ stage: "lynx-closed" });
       }
       if (
+        componentLabCommandDialogClosed &&
+        !componentLabThreadErrorCaptured &&
+        state?.web?.componentLabMetrics?.threadErrorBanner?.title === "Provider unavailable" &&
+        state?.lynx?.componentLabMetrics?.threadErrorBanner?.title === "Provider unavailable" &&
+        state?.web?.componentLabMetrics?.threadErrorBanner?.description ===
+          "The selected model could not be loaded." &&
+        state?.lynx?.componentLabMetrics?.threadErrorBanner?.description ===
+          "The selected model could not be loaded." &&
+        state?.web?.componentLabMetrics?.threadErrorBanner?.alert?.rect &&
+        state?.lynx?.componentLabMetrics?.threadErrorBanner?.alert?.rect &&
+        Math.abs(
+          state.web.componentLabMetrics.threadErrorBanner.alert.rect.width -
+            state.lynx.componentLabMetrics.threadErrorBanner.alert.rect.width,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.threadErrorBanner.alert.rect.height -
+            state.lynx.componentLabMetrics.threadErrorBanner.alert.rect.height,
+        ) <= 2
+      ) {
+        componentLabThreadErrorEvidence = {
+          inputChannel: "dual-cdp-pointer",
+          web: state.web.componentLabMetrics.threadErrorBanner,
+          lynx: state.lynx.componentLabMetrics.threadErrorBanner,
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[data-component-lab-thread-error-dismiss="default"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-component-lab-thread-error-dismiss="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabThreadErrorCaptured = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabThreadErrorCaptured &&
+        !componentLabThreadErrorDismissed &&
+        state?.web?.componentLabMetrics?.threadErrorBanner === null &&
+        state?.lynx?.componentLabMetrics?.threadErrorBanner === null
+      ) {
+        componentLabThreadErrorDismissed = true;
+      }
+      if (
         labReady &&
         componentLabSelectReopened &&
         componentLabScrollDispatched &&
@@ -8703,6 +8756,7 @@ async function captureCell({
         componentLabCommandLynxEmptied &&
         componentLabCommandEvidence?.empty &&
         componentLabCommandDialogClosed &&
+        componentLabThreadErrorDismissed &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
@@ -12442,6 +12496,14 @@ async function captureCell({
       componentLabCommandDialogClosed &&
       state?.web?.componentLabMetrics?.commandDialog === null &&
       state?.lynx?.componentLabMetrics?.commandDialog === null);
+  const componentLabThreadErrorReady =
+    !isComponentsLabState ||
+    (componentLabThreadErrorCaptured &&
+      componentLabThreadErrorDismissed &&
+      componentLabThreadErrorEvidence?.web?.action?.rect?.width > 0 &&
+      componentLabThreadErrorEvidence?.lynx?.action?.rect?.width > 0 &&
+      state?.web?.componentLabMetrics?.threadErrorBanner === null &&
+      state?.lynx?.componentLabMetrics?.threadErrorBanner === null);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14888,6 +14950,7 @@ async function captureCell({
     componentLabSidebarReady &&
     componentLabCommandReady &&
     componentLabCommandDialogReady &&
+    componentLabThreadErrorReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -14997,6 +15060,7 @@ async function captureCell({
       componentLabSidebarReady,
       componentLabCommandReady,
       componentLabCommandDialogReady,
+      componentLabThreadErrorReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,
@@ -15181,6 +15245,7 @@ async function captureCell({
           command: componentLabCommandEvidence,
           commandDialog: componentLabCommandDialogEvidence,
           commandDialogTimeline: componentLabCommandDialogTimeline,
+          threadErrorBanner: componentLabThreadErrorEvidence,
           select: componentLabSelectEvidence,
           menu: componentLabMenuEvidence,
           popover: componentLabPopoverEvidence,

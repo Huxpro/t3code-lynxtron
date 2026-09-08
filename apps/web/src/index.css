@@ -2073,6 +2073,21 @@ label:has(> select#reasoning-effort) select {
   padding: 1.5rem;
 }
 
+.component-lab-thread-error__icon {
+  color: var(--destructive);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.component-lab-thread-error {
+  width: 27rem;
+}
+
+.component-lab-thread-error .thread-error-banner,
+.component-lab-thread-error .thread-error-alert {
+  width: 25rem;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

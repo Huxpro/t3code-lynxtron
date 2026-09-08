@@ -156,6 +156,12 @@
     "states": ["open"]
   },
   {
+    "id": "chat/ThreadErrorBannerSurface#ThreadErrorBannerSurface",
+    "category": "Feedback",
+    "title": "Thread error banner",
+    "states": ["visible", "dismissed"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

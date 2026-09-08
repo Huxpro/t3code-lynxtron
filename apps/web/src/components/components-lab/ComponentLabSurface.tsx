@@ -101,6 +101,7 @@ import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/settingsLayout";
 import { ProjectFavicon } from "../ProjectFavicon";
+import { ThreadErrorBannerSurface } from "../chat/ThreadErrorBannerSurface";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -507,6 +508,31 @@ function ComponentLabDraftInputStory() {
   );
 }
 
+function ComponentLabThreadErrorStory() {
+  const [visible, setVisible] = useState(true);
+  return visible ? (
+    <HostView className="component-lab-thread-error">
+      <ThreadErrorBannerSurface
+        icon={<HostText className="component-lab-thread-error__icon">!</HostText>}
+        title="Provider unavailable"
+        description="The selected model could not be loaded."
+        action={
+          <Button
+            aria-label="Dismiss component lab error"
+            className="thread-error-dismiss"
+            data-component-lab-thread-error-dismiss="default"
+            onClick={() => setVisible(false)}
+            size="icon-xs"
+            variant="ghost"
+          >
+            ×
+          </Button>
+        }
+      />
+    </HostView>
+  ) : null;
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -554,6 +580,13 @@ export function ComponentLabSurface() {
 
           <StoryFrame id="ui/draft-input#DraftInput" title="Draft input">
             <ComponentLabDraftInputStory />
+          </StoryFrame>
+
+          <StoryFrame
+            id="chat/ThreadErrorBannerSurface#ThreadErrorBannerSurface"
+            title="Thread error banner"
+          >
+            <ComponentLabThreadErrorStory />
           </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">
