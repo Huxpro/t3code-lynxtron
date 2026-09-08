@@ -343,7 +343,9 @@ export function MenuRadioItem({
       onClick={handleTap}
       onContextMenu={onContextMenu}
     >
-      {children}
+      <HostView className="ui-menu-radio-item__content flex min-w-0 flex-1 flex-row items-center gap-2">
+        {children}
+      </HostView>
     </HostView>
   );
 }

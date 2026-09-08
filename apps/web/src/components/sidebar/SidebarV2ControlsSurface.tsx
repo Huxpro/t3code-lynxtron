@@ -178,7 +178,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                     <MenuRadioItem
                       value="all"
                       closeOnClick
-                      className="sidebar-v2-scope-option--all h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
+                      className="sidebar-v2-scope-option--all h-8 min-h-8 px-1 py-0 text-sm font-medium"
                     >
                       <FolderIcon className="size-4 shrink-0" />
                       <HostText className="min-w-0 truncate text-sm">All projects</HostText>
@@ -189,7 +189,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
                         value={option.scopeKey}
                         closeOnClick
                         data-sidebar-project-scope-option={option.scopeKey}
-                        className="sidebar-v2-scope-option h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
+                        className="sidebar-v2-scope-option h-8 min-h-8 px-1 py-0 text-sm font-medium"
                         onContextMenu={option.onContextMenu}
                       >
                         {option.favicon}

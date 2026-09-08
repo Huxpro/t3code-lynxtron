@@ -167,7 +167,9 @@ function MenuRadioItem({
       data-slot="menu-radio-item"
       {...props}
     >
-      <span className="min-w-0 flex-1">{children}</span>
+      <span className="ui-menu-radio-item__content flex min-w-0 flex-1 items-center gap-2 truncate">
+        {children}
+      </span>
     </MenuPrimitive.RadioItem>
   );
 }

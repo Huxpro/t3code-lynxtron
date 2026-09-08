@@ -39,6 +39,10 @@ const menuSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
   "utf8",
 );
+const webMenuSource = readFileSync(
+  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.tsx"),
+  "utf8",
+);
 const rightPanelSurfaceSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/RightPanelSurface.tsx"),
   "utf8",
@@ -2313,6 +2317,16 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarControlsSource).not.toContain('top: "140px"');
     expect(sidebarControlsSource).not.toContain('left: "8px"');
     expect(sidebarControlsSource).toContain('relationId="sidebar-project-scope"');
+  });
+
+  it("owns project-scope radio content layout inside both menu primitives", () => {
+    expect(webMenuSource).toContain(
+      'className="ui-menu-radio-item__content flex min-w-0 flex-1 items-center gap-2 truncate"',
+    );
+    expect(menuSource).toContain(
+      'className="ui-menu-radio-item__content flex min-w-0 flex-1 flex-row items-center gap-2"',
+    );
+    expect(sidebarControlsSource).not.toContain("[&>span:last-child]");
   });
 
   it("uses compact dedicated rows for Lynx Sidebar search results", () => {
