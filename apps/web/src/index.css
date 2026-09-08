@@ -1968,6 +1968,14 @@ label:has(> select#reasoning-effort) select {
   line-height: 1.25rem;
 }
 
+.component-lab-dialog {
+  width: min(calc(100vw - 2rem), 28rem);
+}
+
+.component-lab-dialog__panel {
+  min-height: 4rem;
+}
+
 @media (max-width: 720px) {
   .component-lab {
     grid-template-columns: 1fr;

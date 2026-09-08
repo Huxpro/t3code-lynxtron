@@ -40,6 +40,12 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "dispatchMouseWheel");
     assert.include(readerSource, "scrollArea: (() =>");
     assert.include(readerSource, "scrollHeight");
+    assert.include(captureSource, "const componentLabDialogReady =");
+    assert.include(captureSource, '[data-component-lab-dialog-trigger=\"default\"]');
+    assert.include(captureSource, '[data-component-lab-dialog-close=\"default\"]');
+    assert.include(readerSource, '[data-component-lab-dialog-popup="default"]');
+    assert.include(captureSource, "componentLabDialogEvidence");
+    assert.include(captureSource, 'inputChannel: "dual-cdp-pointer"');
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");

@@ -175,6 +175,48 @@
       "title": "Scroll area"
     },
     {
+      "category": "Overlays",
+      "id": "ui/dialog#Dialog",
+      "states": ["closed", "open", "closed-again"],
+      "title": "Dialog"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/dialog#DialogPopup",
+      "states": ["open"],
+      "title": "Dialog popup"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/dialog#DialogPanel",
+      "states": ["body"],
+      "title": "Dialog panel"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/dialog#DialogHeader",
+      "states": ["title-description"],
+      "title": "Dialog header"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/dialog#DialogFooter",
+      "states": ["actions"],
+      "title": "Dialog footer"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/dialog#DialogTitle",
+      "states": ["default"],
+      "title": "Dialog title"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/dialog#DialogDescription",
+      "states": ["default"],
+      "title": "Dialog description"
+    },
+    {
       "category": "Settings",
       "id": "settings/settingsLayout#SettingsSection",
       "states": ["title", "header-action", "body"],
@@ -4851,7 +4893,28 @@
     },
     {
       "authority": {
-        "line": 84,
+        "line": 144,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabDialogStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabDialogStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 95,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4872,7 +4935,7 @@
     },
     {
       "authority": {
-        "line": 119,
+        "line": 130,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4893,7 +4956,7 @@
     },
     {
       "authority": {
-        "line": 65,
+        "line": 76,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4914,7 +4977,7 @@
     },
     {
       "authority": {
-        "line": 133,
+        "line": 181,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4948,7 +5011,7 @@
     },
     {
       "authority": {
-        "line": 36,
+        "line": 47,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4969,7 +5032,7 @@
     },
     {
       "authority": {
-        "line": 61,
+        "line": 72,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -14805,12 +14868,16 @@
       "name": "Dialog",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 12
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 13
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#Dialog",
+        "states": ["closed", "open", "closed-again"],
+        "status": "covered",
+        "title": "Dialog"
       },
       "useSites": [
         {
@@ -14824,6 +14891,14 @@
         {
           "path": "apps/web/src/components/cloud/RelayClientInstallDialog.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
@@ -14899,15 +14974,23 @@
       },
       "name": "DialogClose",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
         "status": "uncovered"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
           "platform": "web"
@@ -14951,12 +15034,16 @@
       "name": "DialogDescription",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 12
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 13
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogDescription",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Dialog description"
       },
       "useSites": [
         {
@@ -14970,6 +15057,14 @@
         {
           "path": "apps/web/src/components/cloud/RelayClientInstallDialog.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
@@ -15023,12 +15118,16 @@
       "name": "DialogFooter",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 12
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 13
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogFooter",
+        "states": ["actions"],
+        "status": "covered",
+        "title": "Dialog footer"
       },
       "useSites": [
         {
@@ -15042,6 +15141,14 @@
         {
           "path": "apps/web/src/components/cloud/RelayClientInstallDialog.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
@@ -15095,12 +15202,16 @@
       "name": "DialogHeader",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 12
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 13
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogHeader",
+        "states": ["title-description"],
+        "status": "covered",
+        "title": "Dialog header"
       },
       "useSites": [
         {
@@ -15114,6 +15225,14 @@
         {
           "path": "apps/web/src/components/cloud/RelayClientInstallDialog.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
@@ -15167,12 +15286,16 @@
       "name": "DialogPanel",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 11
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 12
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogPanel",
+        "states": ["body"],
+        "status": "covered",
+        "title": "Dialog panel"
       },
       "useSites": [
         {
@@ -15186,6 +15309,14 @@
         {
           "path": "apps/web/src/components/cloud/RelayClientInstallDialog.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
@@ -15235,12 +15366,16 @@
       "name": "DialogPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 12
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 13
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogPopup",
+        "states": ["open"],
+        "status": "covered",
+        "title": "Dialog popup"
       },
       "useSites": [
         {
@@ -15254,6 +15389,14 @@
         {
           "path": "apps/web/src/components/cloud/RelayClientInstallDialog.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
@@ -15330,12 +15473,16 @@
       "name": "DialogTitle",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 12
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 13
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogTitle",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Dialog title"
       },
       "useSites": [
         {
@@ -15349,6 +15496,14 @@
         {
           "path": "apps/web/src/components/cloud/RelayClientInstallDialog.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/desktop/SshPasswordPromptDialog.tsx",
@@ -15401,15 +15556,23 @@
       },
       "name": "DialogTrigger",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
         "status": "uncovered"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/settings/ConnectionsSettings.tsx",
           "platform": "web"
@@ -21978,14 +22141,14 @@
     }
   ],
   "counts": {
-    "components": 738,
+    "components": 739,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 212,
+    "internal": 213,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 37,
-    "webOnly": 459
+    "stories": 44,
+    "webOnly": 460
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

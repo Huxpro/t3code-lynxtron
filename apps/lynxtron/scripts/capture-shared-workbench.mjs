@@ -7583,6 +7583,11 @@ async function captureCell({
   let componentLabNumberIncremented = false;
   let componentLabNumberDecremented = false;
   let componentLabScrollDispatched = false;
+  let componentLabDialogOpened = false;
+  let componentLabDialogVerified = false;
+  let componentLabDialogClosed = false;
+  let componentLabDialogGeometryVerified = false;
+  let componentLabDialogEvidence = null;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7607,13 +7612,19 @@ async function captureCell({
             })) ?? [],
           );
       if (labReady && !componentLabTooltipOpened) {
-        const point = await evaluate(
+        const points = await evaluate(
           cdp,
           sessionId,
-          `globalThis.__T3_WORKBENCH__?.webElementCenter('[data-component-lab-tooltip-trigger="default"]') ?? null`,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[data-component-lab-tooltip-trigger="default"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-component-lab-tooltip-trigger="default"]') ?? null,
+            };
+          })()`,
         ).catch(() => null);
-        if (point) {
-          await movePointer(cdp, sessionId, point);
+        if (points?.web && points?.lynx) {
+          await movePointer(cdp, sessionId, points.web);
           await invokeLynxTooltipProbe(cdp, sessionId, "component-lab-tooltip", "hover");
           componentLabTooltipOpened = true;
           await delay(100);
@@ -7629,13 +7640,19 @@ async function captureCell({
       ) {
         componentLabTooltipVerified = true;
         await invokeLynxTooltipProbe(cdp, sessionId, "component-lab-tooltip", "leave");
-        const point = await evaluate(
+        const points = await evaluate(
           cdp,
           sessionId,
-          `globalThis.__T3_WORKBENCH__?.webElementCenter('[data-component-lab-menu-trigger="default"]') ?? null`,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[data-component-lab-menu-trigger="default"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-component-lab-menu-trigger="default"]') ?? null,
+            };
+          })()`,
         ).catch(() => null);
-        if (point) {
-          await dispatchPointerClickWithMove(cdp, sessionId, point);
+        if (points?.web && points?.lynx) {
+          await dispatchPointerClickWithMove(cdp, sessionId, points.web);
           const invoked = await evaluate(
             cdp,
             sessionId,
@@ -7704,6 +7721,7 @@ async function captureCell({
         componentLabScrollDispatched &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
+        componentLabDialogClosed &&
         !componentLabSelectOpened
       ) {
         const points = await evaluate(
@@ -7712,8 +7730,8 @@ async function captureCell({
           `(() => {
             const w = globalThis.__T3_WORKBENCH__;
             return {
-              web: w?.elementCenter("web", '[data-component-lab-select-trigger="default"]') ?? null,
-              lynx: w?.elementCenter("lynx", '[data-component-lab-select-trigger="default"]') ?? null,
+              web: w?.elementCenterVisible("web", '[data-component-lab-select-trigger="default"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-component-lab-select-trigger="default"]') ?? null,
             };
           })()`,
         ).catch(() => null);
@@ -7788,8 +7806,8 @@ async function captureCell({
           `(() => {
             const w = globalThis.__T3_WORKBENCH__;
             return {
-              web: w?.elementCenter("web", '[data-component-lab-number-action="increment"]') ?? null,
-              lynx: w?.elementCenter("lynx", '[data-component-lab-number-action="increment"]') ?? null,
+              web: w?.elementCenterVisible("web", '[data-component-lab-number-action="increment"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-component-lab-number-action="increment"]') ?? null,
             };
           })()`,
         ).catch(() => null);
@@ -7837,8 +7855,8 @@ async function captureCell({
           `(() => {
             const w = globalThis.__T3_WORKBENCH__;
             return {
-              web: w?.elementCenter("web", ".component-lab-scroll-area") ?? null,
-              lynx: w?.elementCenter("lynx", ".component-lab-scroll-area") ?? null,
+              web: w?.elementCenterVisible("web", ".component-lab-scroll-area") ?? null,
+              lynx: w?.elementCenterVisible("lynx", ".component-lab-scroll-area") ?? null,
             };
           })()`,
         ).catch(() => null);
@@ -7846,6 +7864,98 @@ async function captureCell({
         if (points?.lynx) await dispatchMouseWheel(cdp, sessionId, points.lynx, 48);
         componentLabScrollDispatched = Boolean(points?.web && points?.lynx);
         await delay(100);
+        continue;
+      }
+      if (
+        labReady &&
+        componentLabScrollDispatched &&
+        !componentLabDialogOpened &&
+        (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
+        (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[data-component-lab-dialog-trigger="default"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-component-lab-dialog-trigger="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabDialogOpened = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabDialogOpened &&
+        !componentLabDialogVerified &&
+        state?.web?.componentLabMetrics?.dialog?.title === "Add environment" &&
+        state?.lynx?.componentLabMetrics?.dialog?.title === "Add environment" &&
+        state?.web?.componentLabMetrics?.dialog?.description ===
+          "Connect another machine to this T3 Code workspace." &&
+        state?.lynx?.componentLabMetrics?.dialog?.description ===
+          "Connect another machine to this T3 Code workspace." &&
+        state?.web?.componentLabMetrics?.dialog?.popup?.rect &&
+        state?.lynx?.componentLabMetrics?.dialog?.popup?.rect &&
+        Math.abs(
+          state.web.componentLabMetrics.dialog.popup.rect.width -
+            state.lynx.componentLabMetrics.dialog.popup.rect.width,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.dialog.popup.rect.height -
+            state.lynx.componentLabMetrics.dialog.popup.rect.height,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.dialog.panel.rect.x -
+            state.lynx.componentLabMetrics.dialog.panel.rect.x,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.dialog.panel.rect.width -
+            state.lynx.componentLabMetrics.dialog.panel.rect.width,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.dialog.footer.rect.x -
+            state.lynx.componentLabMetrics.dialog.footer.rect.x,
+        ) <= 2 &&
+        Math.abs(
+          state.web.componentLabMetrics.dialog.footer.rect.width -
+            state.lynx.componentLabMetrics.dialog.footer.rect.width,
+        ) <= 2
+      ) {
+        componentLabDialogVerified = true;
+        componentLabDialogGeometryVerified = true;
+        componentLabDialogEvidence = {
+          inputChannel: "dual-cdp-pointer",
+          web: state.web.componentLabMetrics.dialog,
+          lynx: state.lynx.componentLabMetrics.dialog,
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", '[data-component-lab-dialog-close="default"]') ?? null,
+              lynx: w?.elementCenter("lynx", '[data-component-lab-dialog-close="default"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabDialogVerified &&
+        !componentLabDialogClosed &&
+        state?.web?.componentLabMetrics?.dialog === null &&
+        state?.lynx?.componentLabMetrics?.dialog === null
+      ) {
+        componentLabDialogClosed = true;
         continue;
       }
       if (
@@ -11417,6 +11527,14 @@ async function captureCell({
         state.web.componentLabMetrics.scrollArea.host.rect.height -
           state.lynx.componentLabMetrics.scrollArea.host.rect.height,
       ) <= 2);
+  const componentLabDialogReady =
+    !isComponentsLabState ||
+    (componentLabDialogOpened &&
+      componentLabDialogVerified &&
+      componentLabDialogGeometryVerified &&
+      componentLabDialogClosed &&
+      state?.web?.componentLabMetrics?.dialog === null &&
+      state?.lynx?.componentLabMetrics?.dialog === null);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -13845,6 +13963,7 @@ async function captureCell({
     componentLabSelectReady &&
     componentLabNumberReady &&
     componentLabScrollReady &&
+    componentLabDialogReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -13944,6 +14063,7 @@ async function captureCell({
       componentLabSelectReady,
       componentLabNumberReady,
       componentLabScrollReady,
+      componentLabDialogReady,
       bothReady,
       identityMatch,
       finalOverlayReady,
@@ -14120,6 +14240,7 @@ async function captureCell({
     readyMs,
     lynxStyled,
     readiness: { bothReady, web: state?.web ?? null, lynx: state?.lynx ?? null },
+    componentLabEvidence: isComponentsLabState ? { dialog: componentLabDialogEvidence } : null,
     identity: {
       match: identityMatch,
       stateIdentityMatch,

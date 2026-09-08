@@ -257,6 +257,18 @@ function readComponentLabMetrics(root) {
         clientHeight: typeof viewport?.clientHeight === "number" ? viewport.clientHeight : null,
       };
     })(),
+    dialog: (() => {
+      const popup = root.querySelector('[data-component-lab-dialog-popup="default"]');
+      return popup
+        ? {
+            popup: readElementBox(popup),
+            title: readComposedText(popup.querySelector('[data-slot="dialog-title"]')),
+            description: readComposedText(popup.querySelector('[data-slot="dialog-description"]')),
+            panel: readElementBox(popup.querySelector('[data-slot="dialog-panel"]')),
+            footer: readElementBox(popup.querySelector('[data-slot="dialog-footer"]')),
+          }
+        : null;
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),
@@ -4464,12 +4476,32 @@ const workbench = {
     const rect = element.getBoundingClientRect();
     return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
   },
+  webElementCenterVisible(selector) {
+    const frame = document.getElementById("web-pane");
+    const element = frame?.contentWindow?.document?.querySelector(selector);
+    if (!frame || !element) return null;
+    element.scrollIntoView({ block: "center", inline: "nearest" });
+    const frameRect = frame.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+  },
   elementCenter(client, selector) {
     const frame = document.getElementById(`${client}-pane`);
     const doc = frame?.contentWindow?.document;
     const root = client === "lynx" ? doc?.getElementById("t3-lynx-preview")?.shadowRoot : doc;
     const element = root?.querySelector(selector);
     if (!frame || !element) return null;
+    const frameRect = frame.getBoundingClientRect();
+    const rect = element.getBoundingClientRect();
+    return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };
+  },
+  elementCenterVisible(client, selector) {
+    const frame = document.getElementById(`${client}-pane`);
+    const doc = frame?.contentWindow?.document;
+    const root = client === "lynx" ? doc?.getElementById("t3-lynx-preview")?.shadowRoot : doc;
+    const element = root?.querySelector(selector);
+    if (!frame || !element) return null;
+    element.scrollIntoView({ block: "center", inline: "nearest" });
     const frameRect = frame.getBoundingClientRect();
     const rect = element.getBoundingClientRect();
     return { x: frameRect.x + rect.x + rect.width / 2, y: frameRect.y + rect.y + rect.height / 2 };

@@ -12526,6 +12526,82 @@
   line-height: 20px;
   box-sizing: border-box;
 }
+.ui-dialog-backdrop {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.56);
+}
+.ui-dialog-viewport {
+  position: fixed;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 16px;
+  z-index: 51;
+  box-sizing: border-box;
+}
+.ui-dialog-popup {
+  width: 448px;
+  min-height: 0;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 16px;
+  background-color: var(--popover);
+  color: var(--popover-foreground);
+  box-sizing: border-box;
+}
+.component-lab-dialog__header {
+  --lynx-linear-weight: 0;
+  flex-shrink: 0;
+  width: 100%;
+  height: 84px;
+  gap: 8px;
+  padding: 24px 24px 12px;
+  box-sizing: border-box;
+}
+.component-lab-dialog__title {
+  color: var(--foreground);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 20px;
+}
+.component-lab-dialog__description {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+}
+.component-lab-dialog__panel {
+  --lynx-linear-weight: 0;
+  flex-shrink: 0;
+  width: 100%;
+  height: 64px;
+  min-height: 64px;
+  padding: 4px 24px;
+  box-sizing: border-box;
+}
+.component-lab-dialog__footer {
+  --lynx-linear-weight: 0;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  width: 100%;
+  height: 64px;
+  gap: 8px;
+  padding: 16px 24px;
+  box-sizing: border-box;
+}
 .viewport-compact .component-lab {
   flex-direction: column;
 }

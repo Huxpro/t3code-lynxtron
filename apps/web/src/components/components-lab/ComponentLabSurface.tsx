@@ -5,6 +5,17 @@ import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import {
+  Dialog,
+  DialogClose,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogPanel,
+  DialogPopup,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
+import {
   Empty,
   EmptyContent,
   EmptyDescription,
@@ -130,6 +141,43 @@ function ComponentLabScrollAreaStory() {
   );
 }
 
+function ComponentLabDialogStory() {
+  return (
+    <Dialog>
+      <DialogTrigger
+        data-component-lab-dialog-trigger="default"
+        render={<Button variant="outline" />}
+      >
+        Open dialog
+      </DialogTrigger>
+      <DialogPopup
+        className="component-lab-dialog"
+        data-component-lab-dialog-popup="default"
+        showCloseButton={false}
+      >
+        <DialogHeader className="component-lab-dialog__header">
+          <DialogTitle className="component-lab-dialog__title">Add environment</DialogTitle>
+          <DialogDescription className="component-lab-dialog__description">
+            Connect another machine to this T3 Code workspace.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogPanel className="component-lab-dialog__panel" scrollFade={false}>
+          <HostText className="component-lab-host-text">Environment details</HostText>
+        </DialogPanel>
+        <DialogFooter className="component-lab-dialog__footer" variant="bare">
+          <DialogClose
+            data-component-lab-dialog-close="default"
+            render={<Button variant="outline" />}
+          >
+            Cancel
+          </DialogClose>
+          <Button>Continue</Button>
+        </DialogFooter>
+      </DialogPopup>
+    </Dialog>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -171,6 +219,27 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/scroll-area#ScrollArea" title="Scroll area">
             <ComponentLabScrollAreaStory />
           </StoryFrame>
+
+          <StoryFrame id="ui/dialog#Dialog" title="Dialog">
+            <ComponentLabDialogStory />
+          </StoryFrame>
+
+          {(
+            [
+              ["ui/dialog#DialogPopup", "Dialog popup"],
+              ["ui/dialog#DialogPanel", "Dialog panel"],
+              ["ui/dialog#DialogHeader", "Dialog header"],
+              ["ui/dialog#DialogFooter", "Dialog footer"],
+              ["ui/dialog#DialogTitle", "Dialog title"],
+              ["ui/dialog#DialogDescription", "Dialog description"],
+            ] as const
+          ).map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared production Dialog composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
 
           <StoryFrame id="ui/tooltip#Tooltip" title="Tooltip">
             <TooltipProvider delay={0}>
