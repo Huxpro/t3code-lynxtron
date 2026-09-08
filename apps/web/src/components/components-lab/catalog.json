@@ -72,6 +72,12 @@
     "states": ["empty", "value", "disabled"]
   },
   {
+    "id": "ui/label#Label",
+    "category": "Forms",
+    "title": "Label",
+    "states": ["linked-input"]
+  },
+  {
     "id": "ui/textarea#Textarea",
     "category": "Forms",
     "title": "Textarea",

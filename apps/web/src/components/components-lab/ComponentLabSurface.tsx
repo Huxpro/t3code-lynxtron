@@ -28,6 +28,7 @@ import {
 import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements";
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
+import { Label } from "../ui/label";
 import {
   Menu,
   MenuGroup,
@@ -707,6 +708,15 @@ export function ComponentLabSurface() {
               <Input aria-label="Filled input" value="t3code-lynxtron" />
               <StoryLabel>Disabled</StoryLabel>
               <Input aria-label="Disabled input" disabled value="Unavailable" />
+            </ComponentLabColumn>
+          </StoryFrame>
+
+          <StoryFrame id="ui/label#Label" title="Label">
+            <ComponentLabColumn>
+              <Label data-component-lab-label="project-name" htmlFor="component-lab-project-name">
+                Project name
+              </Label>
+              <Input aria-label="Project name" id="component-lab-project-name" value="t3code" />
             </ComponentLabColumn>
           </StoryFrame>
 

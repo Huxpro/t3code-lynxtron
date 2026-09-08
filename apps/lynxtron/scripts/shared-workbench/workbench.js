@@ -340,6 +340,16 @@ function readComponentLabMetrics(root) {
         value: input?.value ?? input?.getAttribute("value") ?? null,
       };
     })(),
+    label: (() => {
+      const label = root.querySelector('[data-component-lab-label="project-name"]');
+      const input = root.querySelector("#component-lab-project-name");
+      return {
+        box: readElementBox(label),
+        htmlFor: label?.getAttribute("for") ?? label?.getAttribute("htmlFor") ?? null,
+        inputId: input?.getAttribute("id") ?? null,
+        text: readComposedText(label),
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),

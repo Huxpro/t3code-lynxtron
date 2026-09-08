@@ -74,6 +74,12 @@
     },
     {
       "category": "Forms",
+      "id": "ui/label#Label",
+      "states": ["linked-input"],
+      "title": "Label"
+    },
+    {
+      "category": "Forms",
       "id": "ui/textarea#Textarea",
       "states": ["empty", "value", "disabled"],
       "title": "Textarea"
@@ -5051,7 +5057,7 @@
     },
     {
       "authority": {
-        "line": 177,
+        "line": 178,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5072,7 +5078,7 @@
     },
     {
       "authority": {
-        "line": 312,
+        "line": 313,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5093,7 +5099,7 @@
     },
     {
       "authority": {
-        "line": 128,
+        "line": 129,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5114,7 +5120,7 @@
     },
     {
       "authority": {
-        "line": 214,
+        "line": 215,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5135,7 +5141,7 @@
     },
     {
       "authority": {
-        "line": 163,
+        "line": 164,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5156,7 +5162,7 @@
     },
     {
       "authority": {
-        "line": 106,
+        "line": 107,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5177,7 +5183,7 @@
     },
     {
       "authority": {
-        "line": 241,
+        "line": 242,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5198,7 +5204,7 @@
     },
     {
       "authority": {
-        "line": 276,
+        "line": 277,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5219,7 +5225,7 @@
     },
     {
       "authority": {
-        "line": 334,
+        "line": 335,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5253,7 +5259,7 @@
     },
     {
       "authority": {
-        "line": 77,
+        "line": 78,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5274,7 +5280,7 @@
     },
     {
       "authority": {
-        "line": 102,
+        "line": 103,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -17730,14 +17736,26 @@
       "name": "Label",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 2
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/label#Label",
+        "states": ["linked-input"],
+        "status": "covered",
+        "title": "Label"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/ProjectScriptsControl.tsx",
           "platform": "web"
@@ -22642,7 +22660,7 @@
     "internal": 217,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 69,
+    "stories": 70,
     "webOnly": 464
   },
   "generatedFrom": "apps/web/src/components",

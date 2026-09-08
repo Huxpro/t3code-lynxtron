@@ -71,6 +71,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");
     assert.include(readerSource, "draftInput: (() =>");
+    assert.include(captureSource, "const componentLabLabelReady =");
+    assert.include(readerSource, '[data-component-lab-label="project-name"]');
     assert.include(captureSource, "componentLabSidebarToggled");
     assert.include(captureSource, '"collapsed"');
     assert.include(captureSource, 'semanticRoute === "components-lab"');

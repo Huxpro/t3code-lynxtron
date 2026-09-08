@@ -11885,6 +11885,16 @@ async function captureCell({
         state.web.componentLabMetrics.draftInput.box.rect.height -
           state.lynx.componentLabMetrics.draftInput.box.rect.height,
       ) <= 1);
+  const componentLabLabelReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
+      state?.lynx?.componentLabMetrics?.label?.text === "Project name" &&
+      state?.web?.componentLabMetrics?.label?.htmlFor === "component-lab-project-name" &&
+      state?.web?.componentLabMetrics?.label?.inputId === "component-lab-project-name" &&
+      state?.web?.componentLabMetrics?.label?.box?.style?.fontSize === "14px" &&
+      state?.lynx?.componentLabMetrics?.label?.box?.style?.fontSize === "14px" &&
+      state?.web?.componentLabMetrics?.label?.box?.style?.lineHeight === "16px" &&
+      state?.lynx?.componentLabMetrics?.label?.box?.style?.lineHeight === "16px");
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -14319,6 +14329,7 @@ async function captureCell({
     componentLabSettingResetReady &&
     componentLabSidebarReady &&
     componentLabDraftInputReady &&
+    componentLabLabelReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -14424,6 +14435,7 @@ async function captureCell({
       componentLabSettingResetReady,
       componentLabSidebarReady,
       componentLabDraftInputReady,
+      componentLabLabelReady,
       bothReady,
       identityMatch,
       finalOverlayReady,
