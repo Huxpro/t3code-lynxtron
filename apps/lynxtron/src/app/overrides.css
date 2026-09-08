@@ -88,6 +88,8 @@
   flex-direction: column;
   width: 100%;
   min-height: 0;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 .sidebar-content-scroll {
   flex: 1;
@@ -12496,6 +12498,33 @@
 }
 .component-lab-host-button--disabled {
   opacity: 0.64;
+}
+.component-lab-scroll-area {
+  flex-shrink: 0;
+  width: 320px;
+  height: 80px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.component-lab-scroll-area__content {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100%;
+  height: 192px;
+}
+.component-lab-scroll-area__row {
+  flex-shrink: 0;
+  height: 32px;
+  padding: 6px 12px;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 20px;
+  box-sizing: border-box;
 }
 .viewport-compact .component-lab {
   flex-direction: column;

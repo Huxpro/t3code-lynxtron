@@ -35,6 +35,11 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, '[data-component-lab-number-action="increment"]');
     assert.include(captureSource, '[data-component-lab-number-action="decrement"]');
     assert.include(readerSource, '[data-component-lab-number-input="value"]');
+    assert.include(captureSource, "const componentLabScrollReady =");
+    assert.include(captureSource, '".component-lab-scroll-area"');
+    assert.include(captureSource, "dispatchMouseWheel");
+    assert.include(readerSource, "scrollArea: (() =>");
+    assert.include(readerSource, "scrollHeight");
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");

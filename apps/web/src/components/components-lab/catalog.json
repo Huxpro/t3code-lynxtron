@@ -168,6 +168,12 @@
     "states": ["enabled", "activated"]
   },
   {
+    "id": "ui/scroll-area#ScrollArea",
+    "category": "Layout",
+    "title": "Scroll area",
+    "states": ["top", "scrolled"]
+  },
+  {
     "id": "settings/settingsLayout#SettingsSection",
     "category": "Settings",
     "title": "Settings section",

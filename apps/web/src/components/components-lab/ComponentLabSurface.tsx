@@ -23,6 +23,7 @@ import {
   NumberFieldIncrement,
   NumberFieldInput,
 } from "../ui/number-field";
+import { ScrollArea } from "../ui/scroll-area";
 import { Separator } from "../ui/separator";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
@@ -113,6 +114,22 @@ function ComponentLabNumberFieldStory() {
   );
 }
 
+const scrollAreaRows = ["Alpha", "Bravo", "Charlie", "Delta", "Echo", "Foxtrot"];
+
+function ComponentLabScrollAreaStory() {
+  return (
+    <ScrollArea className="component-lab-scroll-area">
+      <HostView className="component-lab-scroll-area__content">
+        {scrollAreaRows.map((label) => (
+          <HostText className="component-lab-scroll-area__row" key={label}>
+            {label}
+          </HostText>
+        ))}
+      </HostView>
+    </ScrollArea>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -149,6 +166,10 @@ export function ComponentLabSurface() {
 
           <StoryFrame id="ui/number-field#NumberField" title="Number field">
             <ComponentLabNumberFieldStory />
+          </StoryFrame>
+
+          <StoryFrame id="ui/scroll-area#ScrollArea" title="Scroll area">
+            <ComponentLabScrollAreaStory />
           </StoryFrame>
 
           <StoryFrame id="ui/tooltip#Tooltip" title="Tooltip">

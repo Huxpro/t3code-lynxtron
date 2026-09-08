@@ -169,6 +169,12 @@
       "title": "Number decrement"
     },
     {
+      "category": "Layout",
+      "id": "ui/scroll-area#ScrollArea",
+      "states": ["top", "scrolled"],
+      "title": "Scroll area"
+    },
+    {
       "category": "Settings",
       "id": "settings/settingsLayout#SettingsSection",
       "states": ["title", "header-action", "body"],
@@ -4845,7 +4851,7 @@
     },
     {
       "authority": {
-        "line": 83,
+        "line": 84,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4866,7 +4872,28 @@
     },
     {
       "authority": {
-        "line": 64,
+        "line": 119,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabScrollAreaStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabScrollAreaStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 65,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4887,7 +4914,7 @@
     },
     {
       "authority": {
-        "line": 116,
+        "line": 133,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4921,7 +4948,7 @@
     },
     {
       "authority": {
-        "line": 35,
+        "line": 36,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4942,7 +4969,7 @@
     },
     {
       "authority": {
-        "line": 60,
+        "line": 61,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -18806,17 +18833,29 @@
       "name": "ScrollArea",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 15
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 16
       },
       "story": {
-        "status": "uncovered"
+        "category": "Layout",
+        "id": "ui/scroll-area#ScrollArea",
+        "states": ["top", "scrolled"],
+        "status": "covered",
+        "title": "Scroll area"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/ChatMarkdown.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/GitActionsControl.tsx",
@@ -21939,14 +21978,14 @@
     }
   ],
   "counts": {
-    "components": 737,
+    "components": 738,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 211,
+    "internal": 212,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 36,
-    "webOnly": 458
+    "stories": 37,
+    "webOnly": 459
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

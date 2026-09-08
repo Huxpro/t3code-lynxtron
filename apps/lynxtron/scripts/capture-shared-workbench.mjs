@@ -7582,6 +7582,7 @@ async function captureCell({
   let componentLabSelectReopened = false;
   let componentLabNumberIncremented = false;
   let componentLabNumberDecremented = false;
+  let componentLabScrollDispatched = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7700,6 +7701,9 @@ async function captureCell({
         labReady &&
         componentLabMenuVerified &&
         componentLabNumberDecremented &&
+        componentLabScrollDispatched &&
+        (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
+        (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         !componentLabSelectOpened
       ) {
         const points = await evaluate(
@@ -7823,8 +7827,33 @@ async function captureCell({
       if (
         labReady &&
         componentLabNumberDecremented &&
+        !componentLabScrollDispatched &&
         String(state?.web?.componentLabMetrics?.numberField?.value) === "10" &&
         String(state?.lynx?.componentLabMetrics?.numberField?.value) === "10"
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenter("web", ".component-lab-scroll-area") ?? null,
+              lynx: w?.elementCenter("lynx", ".component-lab-scroll-area") ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchMouseWheel(cdp, sessionId, points.web, 48);
+        if (points?.lynx) await dispatchMouseWheel(cdp, sessionId, points.lynx, 48);
+        componentLabScrollDispatched = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        labReady &&
+        componentLabSelectReopened &&
+        componentLabScrollDispatched &&
+        (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
+        (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
         break;
       if (state?.web?.literalRoute !== webRoute) {
@@ -11369,6 +11398,25 @@ async function captureCell({
         state.web.componentLabMetrics.numberField.root.rect.height -
           state.lynx.componentLabMetrics.numberField.root.rect.height,
       ) <= 2);
+  const componentLabScrollReady =
+    !isComponentsLabState ||
+    (componentLabScrollDispatched &&
+      (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
+      (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
+      (state?.web?.componentLabMetrics?.scrollArea?.scrollHeight ?? 0) >
+        (state?.web?.componentLabMetrics?.scrollArea?.clientHeight ?? 0) &&
+      (state?.lynx?.componentLabMetrics?.scrollArea?.scrollHeight ?? 0) >
+        (state?.lynx?.componentLabMetrics?.scrollArea?.clientHeight ?? 0) &&
+      state?.web?.componentLabMetrics?.scrollArea?.host?.rect &&
+      state?.lynx?.componentLabMetrics?.scrollArea?.host?.rect &&
+      Math.abs(
+        state.web.componentLabMetrics.scrollArea.host.rect.width -
+          state.lynx.componentLabMetrics.scrollArea.host.rect.width,
+      ) <= 2 &&
+      Math.abs(
+        state.web.componentLabMetrics.scrollArea.host.rect.height -
+          state.lynx.componentLabMetrics.scrollArea.host.rect.height,
+      ) <= 2);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -13796,6 +13844,7 @@ async function captureCell({
     componentLabMenuReady &&
     componentLabSelectReady &&
     componentLabNumberReady &&
+    componentLabScrollReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -13894,6 +13943,7 @@ async function captureCell({
       componentLabMenuReady,
       componentLabSelectReady,
       componentLabNumberReady,
+      componentLabScrollReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

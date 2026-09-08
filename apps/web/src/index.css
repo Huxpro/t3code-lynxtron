@@ -1948,6 +1948,26 @@ label:has(> select#reasoning-effort) select {
   opacity: 0.64;
 }
 
+.component-lab-scroll-area {
+  width: min(100%, 20rem);
+  height: 5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.component-lab-scroll-area__content {
+  display: grid;
+}
+
+.component-lab-scroll-area__row {
+  display: block;
+  height: 2rem;
+  padding: 0.375rem 0.75rem;
+  color: var(--foreground);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+}
+
 @media (max-width: 720px) {
   .component-lab {
     grid-template-columns: 1fr;

@@ -240,6 +240,23 @@ function readComponentLabMetrics(root) {
         value: input?.value ?? input?.getAttribute("value") ?? null,
       };
     })(),
+    scrollArea: (() => {
+      const host = root.querySelector(".component-lab-scroll-area");
+      const shadowScroller = [...(host?.shadowRoot?.querySelectorAll("*") ?? [])].find(
+        (candidate) => candidate.scrollHeight > candidate.clientHeight,
+      );
+      const viewport =
+        host?.querySelector('[data-slot="scroll-area-viewport"]') ?? shadowScroller ?? host;
+      const content = host?.querySelector(".component-lab-scroll-area__content");
+      return {
+        host: readElementBox(host),
+        viewport: readElementBox(viewport),
+        content: readElementBox(content),
+        scrollTop: typeof viewport?.scrollTop === "number" ? viewport.scrollTop : null,
+        scrollHeight: typeof viewport?.scrollHeight === "number" ? viewport.scrollHeight : null,
+        clientHeight: typeof viewport?.clientHeight === "number" ? viewport.clientHeight : null,
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),
