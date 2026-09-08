@@ -618,6 +618,16 @@ function readComponentLabMetrics(root) {
         }),
       };
     })(),
+    isolatedPendingApproval: (() => {
+      const host = root.querySelector(".component-lab-pending-approval");
+      const panel = host?.querySelector("[data-composer-pending-kind='approval']");
+      return {
+        host: readElementBox(host),
+        panel: readElementBox(panel),
+        text: readComposedText(panel),
+        detail: readElementBox(panel?.querySelector("[data-approval-detail='complete']")),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

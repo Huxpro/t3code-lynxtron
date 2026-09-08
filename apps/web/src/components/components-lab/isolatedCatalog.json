@@ -58,5 +58,11 @@
     "category": "Settings",
     "title": "Appearance settings surface",
     "states": ["four-canonical-rows"]
+  },
+  {
+    "id": "chat/ComposerPendingSurface#ComposerPendingApprovalSurface",
+    "category": "Composer",
+    "title": "Composer pending approval",
+    "states": ["detail", "multiple-pending"]
   }
 ]

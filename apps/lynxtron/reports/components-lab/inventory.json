@@ -791,6 +791,12 @@
       "id": "settings/SettingsSurfaces#AppearanceSettingsSurface",
       "states": ["four-canonical-rows"],
       "title": "Appearance settings surface"
+    },
+    {
+      "category": "Composer",
+      "id": "chat/ComposerPendingSurface#ComposerPendingApprovalSurface",
+      "states": ["detail", "multiple-pending"],
+      "title": "Composer pending approval"
     }
   ],
   "components": [
@@ -1882,13 +1888,17 @@
       "lynx": null,
       "name": "ComposerPendingApprovalSurface",
       "reuse": {
-        "authorityShared": false,
+        "authorityShared": true,
         "lynxUseSiteCount": 1,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Composer",
+        "id": "chat/ComposerPendingSurface#ComposerPendingApprovalSurface",
+        "states": ["detail", "multiple-pending"],
+        "status": "covered",
+        "title": "Composer pending approval"
       },
       "useSites": [
         {
@@ -1897,6 +1907,10 @@
         },
         {
           "path": "apps/web/src/components/chat/ComposerPendingApprovalPanel.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
           "platform": "web"
         }
       ]
@@ -5485,7 +5499,7 @@
     },
     {
       "authority": {
-        "line": 16,
+        "line": 17,
         "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
       },
       "exported": true,
@@ -24185,7 +24199,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 132,
+    "stories": 133,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",

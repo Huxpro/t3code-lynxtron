@@ -3,6 +3,7 @@ import isolatedCatalog from "./isolatedCatalog.json";
 import { AppShellSurface } from "../AppShellSurface";
 import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";
 import { ComposerToolbarRow } from "../chat/ComposerSurface";
+import { ComposerPendingApprovalSurface } from "../chat/ComposerPendingSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
 import {
   AccessListRowSurface,
@@ -127,6 +128,18 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
             showEnvironmentIdentification
             themeControl={<HostText>Dark</HostText>}
             wordWrapControl={<HostText>On</HostText>}
+          />
+        </HostView>
+      );
+    }
+    if (storyId === "chat/ComposerPendingSurface#ComposerPendingApprovalSurface") {
+      return (
+        <HostView className="component-lab-pending-approval" style={{ width: "512px" }}>
+          <ComposerPendingApprovalSurface
+            approvalSummary="Run workspace command"
+            detail="pnpm test --filter web"
+            detailLabel="Command"
+            pendingCount={2}
           />
         </HostView>
       );

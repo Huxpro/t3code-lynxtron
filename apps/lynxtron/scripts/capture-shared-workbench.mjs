@@ -13210,7 +13210,25 @@ async function captureCell({
                           state.lynx.componentLabMetrics.isolatedAppearanceSettings.rows.every(
                             ({ box }) => box?.rect?.width === 512 && box.rect.height > 0,
                           )
-                        : false));
+                        : componentStory ===
+                            "chat/ComposerPendingSurface#ComposerPendingApprovalSurface"
+                          ? state?.web?.componentLabMetrics?.isolatedPendingApproval?.text ===
+                              "PENDING APPROVAL Run workspace command 1/ 2 Command pnpm test --filter web" &&
+                            state?.lynx?.componentLabMetrics?.isolatedPendingApproval?.text ===
+                              "PENDING APPROVAL Run workspace command 1/ 2 Command pnpm test --filter web" &&
+                            state.web.componentLabMetrics.isolatedPendingApproval.host.rect
+                              .width === 512 &&
+                            state.lynx.componentLabMetrics.isolatedPendingApproval.host.rect
+                              .width === 512 &&
+                            state.web.componentLabMetrics.isolatedPendingApproval.panel.rect
+                              .width === 512 &&
+                            state.lynx.componentLabMetrics.isolatedPendingApproval.panel.rect
+                              .width === 512 &&
+                            state.web.componentLabMetrics.isolatedPendingApproval.detail.rect
+                              .width > 0 &&
+                            state.lynx.componentLabMetrics.isolatedPendingApproval.detail.rect
+                              .width > 0
+                          : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&
