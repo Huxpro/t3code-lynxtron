@@ -198,6 +198,24 @@
     "states": ["settings"]
   },
   {
+    "id": "chat/FileTreeSurface#FileTreeDirectoryRowSurface",
+    "category": "Data Display",
+    "title": "File tree directory row",
+    "states": ["expanded", "collapsed"]
+  },
+  {
+    "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
+    "category": "Data Display",
+    "title": "File tree file row",
+    "states": ["default", "selected"]
+  },
+  {
+    "id": "chat/FileTreeSurface#FileTreeChildrenSurface",
+    "category": "Data Display",
+    "title": "File tree children",
+    "states": ["expanded"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

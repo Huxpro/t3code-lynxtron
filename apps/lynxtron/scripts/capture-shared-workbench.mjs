@@ -7627,6 +7627,10 @@ async function captureCell({
   let componentLabThreadErrorCaptured = false;
   let componentLabThreadErrorDismissed = false;
   let componentLabThreadErrorEvidence = null;
+  let componentLabFileTreeInitialCaptured = false;
+  let componentLabFileTreeSelected = false;
+  let componentLabFileTreeCollapsed = false;
+  let componentLabFileTreeEvidence = null;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -8746,6 +8750,87 @@ async function captureCell({
         componentLabThreadErrorDismissed = true;
       }
       if (
+        componentLabThreadErrorDismissed &&
+        !componentLabFileTreeInitialCaptured &&
+        state?.web?.componentLabMetrics?.fileTree?.expanded === true &&
+        state?.lynx?.componentLabMetrics?.fileTree?.expanded === true &&
+        state?.web?.componentLabMetrics?.fileTree?.file &&
+        state?.lynx?.componentLabMetrics?.fileTree?.file
+      ) {
+        componentLabFileTreeEvidence = {
+          inputChannel: "dual-cdp-pointer",
+          initial: {
+            web: state.web.componentLabMetrics.fileTree,
+            lynx: state.lynx.componentLabMetrics.fileTree,
+          },
+          selected: null,
+          collapsed: null,
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[data-item-path="src/index.ts"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-item-path="src/index.ts"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabFileTreeInitialCaptured = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabFileTreeInitialCaptured &&
+        !componentLabFileTreeSelected &&
+        state?.web?.componentLabMetrics?.fileTree?.selected === true &&
+        state?.lynx?.componentLabMetrics?.fileTree?.selected === true
+      ) {
+        componentLabFileTreeEvidence = {
+          ...componentLabFileTreeEvidence,
+          selected: {
+            web: state.web.componentLabMetrics.fileTree,
+            lynx: state.lynx.componentLabMetrics.fileTree,
+          },
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", '[data-item-path="src"]') ?? null,
+              lynx: w?.elementCenterVisible("lynx", '[data-item-path="src"]') ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabFileTreeSelected = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabFileTreeSelected &&
+        !componentLabFileTreeCollapsed &&
+        state?.web?.componentLabMetrics?.fileTree?.expanded === false &&
+        state?.lynx?.componentLabMetrics?.fileTree?.expanded === false &&
+        state?.web?.componentLabMetrics?.fileTree?.file === null &&
+        state?.lynx?.componentLabMetrics?.fileTree?.file === null
+      ) {
+        componentLabFileTreeCollapsed = true;
+        componentLabFileTreeEvidence = {
+          ...componentLabFileTreeEvidence,
+          collapsed: {
+            web: state.web.componentLabMetrics.fileTree,
+            lynx: state.lynx.componentLabMetrics.fileTree,
+          },
+        };
+      }
+      if (
         labReady &&
         componentLabSelectReopened &&
         componentLabScrollDispatched &&
@@ -8757,6 +8842,7 @@ async function captureCell({
         componentLabCommandEvidence?.empty &&
         componentLabCommandDialogClosed &&
         componentLabThreadErrorDismissed &&
+        componentLabFileTreeCollapsed &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
@@ -12567,6 +12653,39 @@ async function captureCell({
       state.lynx.componentLabMetrics.sidebarChrome.footer.rect.width === 253 &&
       state.web.componentLabMetrics.sidebarChrome.footer.rect.height === 44 &&
       state.lynx.componentLabMetrics.sidebarChrome.footer.rect.height === 44);
+  const componentLabFileTreeReady =
+    !isComponentsLabState ||
+    (componentLabFileTreeInitialCaptured &&
+      componentLabFileTreeSelected &&
+      componentLabFileTreeCollapsed &&
+      componentLabFileTreeEvidence?.initial?.web?.directoryText?.includes("src") &&
+      componentLabFileTreeEvidence?.initial?.lynx?.directoryText?.includes("src") &&
+      componentLabFileTreeEvidence?.initial?.web?.fileText?.includes("index.ts") &&
+      componentLabFileTreeEvidence?.initial?.lynx?.fileText?.includes("index.ts") &&
+      componentLabFileTreeEvidence?.selected?.web?.selected === true &&
+      componentLabFileTreeEvidence?.selected?.lynx?.selected === true &&
+      componentLabFileTreeEvidence?.collapsed?.web?.expanded === false &&
+      componentLabFileTreeEvidence?.collapsed?.lynx?.expanded === false &&
+      componentLabFileTreeEvidence?.collapsed?.web?.file === null &&
+      componentLabFileTreeEvidence?.collapsed?.lynx?.file === null &&
+      componentLabFileTreeEvidence.initial.web.root.rect.width === 320 &&
+      componentLabFileTreeEvidence.initial.lynx.root.rect.width === 320 &&
+      Math.abs(
+        componentLabFileTreeEvidence.initial.web.directory.rect.width -
+          componentLabFileTreeEvidence.initial.lynx.directory.rect.width,
+      ) <= 2 &&
+      Math.abs(
+        componentLabFileTreeEvidence.initial.web.directory.rect.height -
+          componentLabFileTreeEvidence.initial.lynx.directory.rect.height,
+      ) <= 2 &&
+      Math.abs(
+        componentLabFileTreeEvidence.initial.web.file.rect.width -
+          componentLabFileTreeEvidence.initial.lynx.file.rect.width,
+      ) <= 2 &&
+      Math.abs(
+        componentLabFileTreeEvidence.initial.web.file.rect.height -
+          componentLabFileTreeEvidence.initial.lynx.file.rect.height,
+      ) <= 2);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -15018,6 +15137,7 @@ async function captureCell({
     componentLabChangeRequestReady &&
     componentLabWorktreeReady &&
     componentLabSidebarChromeReady &&
+    componentLabFileTreeReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15132,6 +15252,7 @@ async function captureCell({
       componentLabChangeRequestReady,
       componentLabWorktreeReady,
       componentLabSidebarChromeReady,
+      componentLabFileTreeReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,
@@ -15317,6 +15438,7 @@ async function captureCell({
           commandDialog: componentLabCommandDialogEvidence,
           commandDialogTimeline: componentLabCommandDialogTimeline,
           threadErrorBanner: componentLabThreadErrorEvidence,
+          fileTree: componentLabFileTreeEvidence,
           select: componentLabSelectEvidence,
           menu: componentLabMenuEvidence,
           popover: componentLabPopoverEvidence,

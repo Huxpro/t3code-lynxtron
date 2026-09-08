@@ -118,6 +118,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabWorktreeReady =");
     assert.include(readerSource, "sidebarChrome: (() =>");
     assert.include(captureSource, "const componentLabSidebarChromeReady =");
+    assert.include(readerSource, "fileTree: (() =>");
+    assert.include(captureSource, "const componentLabFileTreeReady =");
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");

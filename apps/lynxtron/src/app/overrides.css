@@ -12824,6 +12824,27 @@
 .component-lab-sidebar-chrome .sidebar-brand-host {
   position: static;
 }
+.component-lab-file-tree {
+  width: 320px;
+}
+.component-lab-file-tree__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  font-size: 8px;
+  line-height: 16px;
+}
+.component-lab-file-tree .file-tree-row--directory {
+  min-height: 24px;
+  height: 24px;
+}
+.component-lab-file-tree .file-tree-row--file {
+  min-height: 32px;
+  height: 32px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

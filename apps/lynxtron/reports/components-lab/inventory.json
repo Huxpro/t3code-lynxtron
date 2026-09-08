@@ -199,6 +199,24 @@
       "title": "Sidebar chrome footer surface"
     },
     {
+      "category": "Data Display",
+      "id": "chat/FileTreeSurface#FileTreeDirectoryRowSurface",
+      "states": ["expanded", "collapsed"],
+      "title": "File tree directory row"
+    },
+    {
+      "category": "Data Display",
+      "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
+      "states": ["default", "selected"],
+      "title": "File tree file row"
+    },
+    {
+      "category": "Data Display",
+      "id": "chat/FileTreeSurface#FileTreeChildrenSurface",
+      "states": ["expanded"],
+      "title": "File tree children"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -2305,13 +2323,17 @@
       "lynx": null,
       "name": "FileTreeChildrenSurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 2,
+        "authorityShared": true,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Data Display",
+        "id": "chat/FileTreeSurface#FileTreeChildrenSurface",
+        "states": ["expanded"],
+        "status": "covered",
+        "title": "File tree children"
       },
       "useSites": [
         {
@@ -2325,6 +2347,14 @@
         {
           "path": "apps/web/src/components/chat/ChangedFilesTree.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -2339,13 +2369,17 @@
       "lynx": null,
       "name": "FileTreeDirectoryRowSurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 2,
+        "authorityShared": true,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Data Display",
+        "id": "chat/FileTreeSurface#FileTreeDirectoryRowSurface",
+        "states": ["expanded", "collapsed"],
+        "status": "covered",
+        "title": "File tree directory row"
       },
       "useSites": [
         {
@@ -2359,6 +2393,14 @@
         {
           "path": "apps/web/src/components/chat/ChangedFilesTree.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -2373,13 +2415,17 @@
       "lynx": null,
       "name": "FileTreeFileRowSurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 2,
+        "authorityShared": true,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Data Display",
+        "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
+        "states": ["default", "selected"],
+        "status": "covered",
+        "title": "File tree file row"
       },
       "useSites": [
         {
@@ -2393,6 +2439,14 @@
         {
           "path": "apps/web/src/components/chat/ChangedFilesTree.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -5267,7 +5321,7 @@
     },
     {
       "authority": {
-        "line": 600,
+        "line": 605,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5288,7 +5342,7 @@
     },
     {
       "authority": {
-        "line": 458,
+        "line": 463,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5309,7 +5363,7 @@
     },
     {
       "authority": {
-        "line": 399,
+        "line": 404,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5330,7 +5384,7 @@
     },
     {
       "authority": {
-        "line": 220,
+        "line": 225,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5351,7 +5405,7 @@
     },
     {
       "authority": {
-        "line": 501,
+        "line": 506,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5372,7 +5426,28 @@
     },
     {
       "authority": {
-        "line": 171,
+        "line": 660,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabFileTreeStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabFileTreeStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 176,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5393,7 +5468,7 @@
     },
     {
       "authority": {
-        "line": 294,
+        "line": 299,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5414,7 +5489,7 @@
     },
     {
       "authority": {
-        "line": 206,
+        "line": 211,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5435,7 +5510,7 @@
     },
     {
       "authority": {
-        "line": 149,
+        "line": 154,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5456,7 +5531,7 @@
     },
     {
       "authority": {
-        "line": 321,
+        "line": 326,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5477,7 +5552,7 @@
     },
     {
       "authority": {
-        "line": 257,
+        "line": 262,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5498,7 +5573,7 @@
     },
     {
       "authority": {
-        "line": 638,
+        "line": 643,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5519,7 +5594,7 @@
     },
     {
       "authority": {
-        "line": 356,
+        "line": 361,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5540,7 +5615,7 @@
     },
     {
       "authority": {
-        "line": 655,
+        "line": 693,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5574,7 +5649,7 @@
     },
     {
       "authority": {
-        "line": 523,
+        "line": 528,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5595,7 +5670,7 @@
     },
     {
       "authority": {
-        "line": 548,
+        "line": 553,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5616,7 +5691,7 @@
     },
     {
       "authority": {
-        "line": 624,
+        "line": 629,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5637,7 +5712,7 @@
     },
     {
       "authority": {
-        "line": 120,
+        "line": 125,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5658,7 +5733,7 @@
     },
     {
       "authority": {
-        "line": 145,
+        "line": 150,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -23429,14 +23504,14 @@
     }
   ],
   "counts": {
-    "components": 751,
+    "components": 752,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 225,
+    "internal": 226,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 103,
-    "webOnly": 472
+    "stories": 106,
+    "webOnly": 473
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

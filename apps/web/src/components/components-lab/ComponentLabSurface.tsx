@@ -103,6 +103,11 @@ import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/se
 import { ProjectFavicon } from "../ProjectFavicon";
 import { ThreadErrorBannerSurface } from "../chat/ThreadErrorBannerSurface";
 import {
+  FileTreeChildrenSurface,
+  FileTreeDirectoryRowSurface,
+  FileTreeFileRowSurface,
+} from "../chat/FileTreeSurface";
+import {
   ChangeRequestStatusIcon,
   PrStatusTooltipContent,
   ThreadStatusLabel,
@@ -652,6 +657,39 @@ function ComponentLabSidebarChromeStory() {
   );
 }
 
+function ComponentLabFileTreeStory() {
+  const [expanded, setExpanded] = useState(true);
+  const [selected, setSelected] = useState(false);
+  return (
+    <HostView className="component-lab-file-tree">
+      <FileTreeDirectoryRowSurface
+        chevron={<HostText>›</HostText>}
+        depth={0}
+        expanded={expanded}
+        folderIcon={<HostText className="component-lab-file-tree__icon">D</HostText>}
+        itemPath="src"
+        name="src"
+        onToggle={() => setExpanded((value) => !value)}
+        trailing={<HostText>+12 -3</HostText>}
+      />
+      {expanded ? (
+        <FileTreeChildrenSurface>
+          <FileTreeFileRowSurface
+            depth={1}
+            fileIcon={<HostText className="component-lab-file-tree__icon">TS</HostText>}
+            itemPath="src/index.ts"
+            name="index.ts"
+            onSelect={() => setSelected((value) => !value)}
+            selected={selected}
+            showLeadingSpacer
+            trailing={<HostText>+8 -1</HostText>}
+          />
+        </FileTreeChildrenSurface>
+      ) : null}
+    </HostView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -750,6 +788,26 @@ export function ComponentLabSurface() {
               Exercised by the shared production Sidebar chrome composition above.
             </HostText>
           </StoryFrame>
+
+          <StoryFrame
+            id="chat/FileTreeSurface#FileTreeDirectoryRowSurface"
+            title="File tree directory row"
+          >
+            <ComponentLabFileTreeStory />
+          </StoryFrame>
+
+          {(
+            [
+              ["chat/FileTreeSurface#FileTreeFileRowSurface", "File tree file row"],
+              ["chat/FileTreeSurface#FileTreeChildrenSurface", "File tree children"],
+            ] as const
+          ).map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared production File tree composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
 
           <StoryFrame id="ui/command#Command" title="Command">
             <ComponentLabCommandStory />

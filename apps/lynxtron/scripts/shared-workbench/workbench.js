@@ -447,6 +447,21 @@ function readComponentLabMetrics(root) {
         settingsText: readComposedText(rootChrome?.querySelector(".sidebar-settings-row")),
       };
     })(),
+    fileTree: (() => {
+      const tree = root.querySelector(".component-lab-file-tree");
+      const directory = tree?.querySelector('[data-item-path="src"]');
+      const file = tree?.querySelector('[data-item-path="src/index.ts"]');
+      return {
+        root: readElementBox(tree),
+        directory: readElementBox(directory),
+        directoryText: readComposedText(directory),
+        expanded: directory?.getAttribute("aria-expanded") === "true",
+        children: readElementBox(tree?.querySelector(".file-tree-children")),
+        file: readElementBox(file),
+        fileText: readComposedText(file),
+        selected: file?.classList?.contains("file-tree-row--selected") ?? false,
+      };
+    })(),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');
