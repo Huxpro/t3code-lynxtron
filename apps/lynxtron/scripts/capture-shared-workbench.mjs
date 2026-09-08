@@ -12065,6 +12065,28 @@ async function captureCell({
         state.web.componentLabMetrics.draftInput.box.rect.height -
           state.lynx.componentLabMetrics.draftInput.box.rect.height,
       ) <= 1);
+  const componentLabCommandReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.command?.labelText === "Workspace" &&
+      state?.lynx?.componentLabMetrics?.command?.labelText === "Workspace" &&
+      JSON.stringify(state?.web?.componentLabMetrics?.command?.itemTexts) ===
+        JSON.stringify(["Open project", "New thread"]) &&
+      JSON.stringify(state?.lynx?.componentLabMetrics?.command?.itemTexts) ===
+        JSON.stringify(["Open project", "New thread"]) &&
+      state?.web?.componentLabMetrics?.command?.root?.rect?.width === 320 &&
+      state?.lynx?.componentLabMetrics?.command?.root?.rect?.width === 320 &&
+      state?.web?.componentLabMetrics?.command?.itemBoxes?.length === 2 &&
+      state?.lynx?.componentLabMetrics?.command?.itemBoxes?.length === 2 &&
+      state.web.componentLabMetrics.command.itemBoxes.every(
+        (item) => Math.abs(item.rect.height - 32) <= 1 && item.rect.width >= 300,
+      ) &&
+      state.lynx.componentLabMetrics.command.itemBoxes.every(
+        (item) => Math.abs(item.rect.height - 32) <= 1 && item.rect.width >= 300,
+      ) &&
+      state.web.componentLabMetrics.command.itemBoxes[1].rect.y >
+        state.web.componentLabMetrics.command.itemBoxes[0].rect.y &&
+      state.lynx.componentLabMetrics.command.itemBoxes[1].rect.y >
+        state.lynx.componentLabMetrics.command.itemBoxes[0].rect.y);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14509,6 +14531,7 @@ async function captureCell({
     componentLabProjectFaviconReady &&
     componentLabSettingResetReady &&
     componentLabSidebarReady &&
+    componentLabCommandReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -14616,6 +14639,7 @@ async function captureCell({
       componentLabProjectFaviconReady,
       componentLabSettingResetReady,
       componentLabSidebarReady,
+      componentLabCommandReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,

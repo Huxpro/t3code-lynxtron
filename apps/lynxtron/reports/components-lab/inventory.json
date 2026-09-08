@@ -67,6 +67,36 @@
       "title": "Sidebar inset"
     },
     {
+      "category": "Navigation",
+      "id": "ui/command#Command",
+      "states": ["static-results"],
+      "title": "Command"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/command#CommandList",
+      "states": ["two-items"],
+      "title": "Command list"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/command#CommandGroup",
+      "states": ["workspace"],
+      "title": "Command group"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/command#CommandGroupLabel",
+      "states": ["default"],
+      "title": "Command group label"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/command#CommandItem",
+      "states": ["default", "second-item"],
+      "title": "Command item"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5123,7 +5153,28 @@
     },
     {
       "authority": {
-        "line": 190,
+        "line": 370,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabCommandStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabCommandStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 191,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5144,7 +5195,7 @@
     },
     {
       "authority": {
-        "line": 369,
+        "line": 392,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5165,7 +5216,7 @@
     },
     {
       "authority": {
-        "line": 141,
+        "line": 142,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5186,7 +5237,7 @@
     },
     {
       "authority": {
-        "line": 264,
+        "line": 265,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5207,7 +5258,7 @@
     },
     {
       "authority": {
-        "line": 176,
+        "line": 177,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5228,7 +5279,7 @@
     },
     {
       "authority": {
-        "line": 119,
+        "line": 120,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5249,7 +5300,7 @@
     },
     {
       "authority": {
-        "line": 291,
+        "line": 292,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5270,7 +5321,7 @@
     },
     {
       "authority": {
-        "line": 227,
+        "line": 228,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5291,7 +5342,7 @@
     },
     {
       "authority": {
-        "line": 326,
+        "line": 327,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5312,7 +5363,7 @@
     },
     {
       "authority": {
-        "line": 391,
+        "line": 414,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5346,7 +5397,7 @@
     },
     {
       "authority": {
-        "line": 90,
+        "line": 91,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5367,7 +5418,7 @@
     },
     {
       "authority": {
-        "line": 115,
+        "line": 116,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -14695,12 +14746,16 @@
       "name": "Command",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/command#Command",
+        "states": ["static-results"],
+        "status": "covered",
+        "title": "Command"
       },
       "useSites": [
         {
@@ -14714,6 +14769,14 @@
         {
           "path": "apps/web/src/components/CommandPaletteContent.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -14971,12 +15034,16 @@
       "name": "CommandGroup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/command#CommandGroup",
+        "states": ["workspace"],
+        "status": "covered",
+        "title": "Command group"
       },
       "useSites": [
         {
@@ -14990,6 +15057,14 @@
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -15007,12 +15082,16 @@
       "name": "CommandGroupLabel",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/command#CommandGroupLabel",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Command group label"
       },
       "useSites": [
         {
@@ -15026,6 +15105,14 @@
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -15071,12 +15158,16 @@
       "name": "CommandItem",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/command#CommandItem",
+        "states": ["default", "second-item"],
+        "status": "covered",
+        "title": "Command item"
       },
       "useSites": [
         {
@@ -15090,6 +15181,14 @@
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -15107,12 +15206,16 @@
       "name": "CommandList",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/command#CommandList",
+        "states": ["two-items"],
+        "status": "covered",
+        "title": "Command list"
       },
       "useSites": [
         {
@@ -15126,6 +15229,14 @@
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -22873,14 +22984,14 @@
     }
   ],
   "counts": {
-    "components": 744,
+    "components": 745,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 218,
+    "internal": 219,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 81,
-    "webOnly": 465
+    "stories": 86,
+    "webOnly": 466
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

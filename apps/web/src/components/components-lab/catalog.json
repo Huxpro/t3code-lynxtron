@@ -66,6 +66,36 @@
     "states": ["main-surface"]
   },
   {
+    "id": "ui/command#Command",
+    "category": "Navigation",
+    "title": "Command",
+    "states": ["static-results"]
+  },
+  {
+    "id": "ui/command#CommandList",
+    "category": "Navigation",
+    "title": "Command list",
+    "states": ["two-items"]
+  },
+  {
+    "id": "ui/command#CommandGroup",
+    "category": "Navigation",
+    "title": "Command group",
+    "states": ["workspace"]
+  },
+  {
+    "id": "ui/command#CommandGroupLabel",
+    "category": "Navigation",
+    "title": "Command group label",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/command#CommandItem",
+    "category": "Navigation",
+    "title": "Command item",
+    "states": ["default", "second-item"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

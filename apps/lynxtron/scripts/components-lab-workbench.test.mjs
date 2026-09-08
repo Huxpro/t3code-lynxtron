@@ -83,6 +83,10 @@ describe("Components Lab paired workbench", () => {
     assert.include(readerSource, "sidebarPrimitive: (() =>");
     assert.include(readerSource, '".component-lab-sidebar-inset"');
     assert.include(captureSource, "sidebarPrimitive?.inset?.rect?.width === 216");
+    assert.include(readerSource, "command: (() =>");
+    assert.include(readerSource, '[data-slot="command-item"]');
+    assert.include(captureSource, "const componentLabCommandReady =");
+    assert.include(captureSource, 'JSON.stringify(["Open project", "New thread"])');
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");

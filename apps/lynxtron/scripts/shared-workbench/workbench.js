@@ -348,6 +348,21 @@ function readComponentLabMetrics(root) {
         trigger: readElementBox(root.querySelector(".component-lab-sidebar-trigger")),
       };
     })(),
+    command: (() => {
+      const rootCommand = root.querySelector(".component-lab-command");
+      const items = [...(rootCommand?.querySelectorAll('[data-slot="command-item"]') ?? [])];
+      return {
+        root: readElementBox(rootCommand),
+        list: readElementBox(rootCommand?.querySelector('[data-slot="command-list"]')),
+        group: readElementBox(rootCommand?.querySelector('[data-slot="command-group"]')),
+        label: readElementBox(rootCommand?.querySelector('[data-slot="command-group-label"]')),
+        labelText: readComposedText(
+          rootCommand?.querySelector('[data-slot="command-group-label"]'),
+        ),
+        itemBoxes: items.map(readElementBox),
+        itemTexts: items.map(readComposedText),
+      };
+    })(),
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');
       const control = root.querySelector(".component-lab-draft-input__control");

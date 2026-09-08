@@ -5,6 +5,7 @@ import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { Command, CommandGroup, CommandGroupLabel, CommandItem, CommandList } from "../ui/command";
 import {
   Dialog,
   DialogClose,
@@ -366,6 +367,28 @@ function ComponentLabSidebarStory() {
   );
 }
 
+function ComponentLabCommandStory() {
+  return (
+    <HostView className="component-lab-command">
+      <Command autoHighlight={false} mode="none">
+        <CommandList className="component-lab-command__list">
+          <CommandGroup className="component-lab-command__group">
+            <CommandGroupLabel className="component-lab-command__label">
+              Workspace
+            </CommandGroupLabel>
+            <CommandItem className="component-lab-command__item" value="open-project">
+              <HostText className="component-lab-command__item-label">Open project</HostText>
+            </CommandItem>
+            <CommandItem className="component-lab-command__item" value="new-thread">
+              <HostText className="component-lab-command__item-label">New thread</HostText>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </Command>
+    </HostView>
+  );
+}
+
 function ComponentLabDraftInputStory() {
   const [committed, setCommitted] = useState("alpha");
   return (
@@ -436,6 +459,25 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/draft-input#DraftInput" title="Draft input">
             <ComponentLabDraftInputStory />
           </StoryFrame>
+
+          <StoryFrame id="ui/command#Command" title="Command">
+            <ComponentLabCommandStory />
+          </StoryFrame>
+
+          {(
+            [
+              ["ui/command#CommandList", "Command list"],
+              ["ui/command#CommandGroup", "Command group"],
+              ["ui/command#CommandGroupLabel", "Command group label"],
+              ["ui/command#CommandItem", "Command item"],
+            ] as const
+          ).map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared production Command composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
 
           {(
             [
