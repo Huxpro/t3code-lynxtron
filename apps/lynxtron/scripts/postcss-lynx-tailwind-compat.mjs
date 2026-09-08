@@ -22,8 +22,6 @@ const UNSUPPORTED_PROPERTIES = new Set([
   "grid-row",
   "grid-row-end",
   "grid-row-start",
-  "grid-template-columns",
-  "grid-template-rows",
   "overflow-anchor",
   "scrollbar-gutter",
   "scrollbar-width",
@@ -32,15 +30,31 @@ const UNSUPPORTED_PROPERTIES = new Set([
 
 const UNSUPPORTED_VALUE = /--alpha\(|--spacing\(|color-mix\(/;
 
+export function unsupportedDeclaration(property, value) {
+  return UNSUPPORTED_PROPERTIES.has(property) || UNSUPPORTED_VALUE.test(value);
+}
+
 function comesFromTailwindEntry(node) {
   return node.source?.input.file?.endsWith("/src/app/tailwind.css") ?? false;
 }
 
-function hasUnsupportedPseudoSelector(selector) {
-  // Escaped colons belong to the generated utility class name. Any remaining
-  // colon introduces a pseudo selector, which the current Lynx CSS encoder
-  // rejects (R6).
-  return selector.replace(/\\./g, "").includes(":");
+const SUPPORTED_PSEUDO_SELECTORS = new Set([":active", ":not", ":root", "::selection"]);
+const RETAINED_SUPPORTED_PROPERTIES = new Set([
+  "display",
+  "grid-template-columns",
+  "grid-template-rows",
+]);
+
+function pseudoSelectors(selector) {
+  const syntaxOnly = selector.replace(/\\./g, "");
+  return [...syntaxOnly.matchAll(/::?[a-z-]+/giu)].map(([pseudo]) => pseudo.toLowerCase());
+}
+
+export function unsupportedPseudoSelectors(selector) {
+  // Remove escaped class-name characters before inspecting selector syntax.
+  // Lynx CSS Selector NG supports :active, :not(), :root and ::selection; the
+  // old blanket colon check incorrectly discarded those standard selectors.
+  return pseudoSelectors(selector).filter((pseudo) => !SUPPORTED_PSEUDO_SELECTORS.has(pseudo));
 }
 
 export function lynxTailwindCompatibility() {
@@ -48,6 +62,8 @@ export function lynxTailwindCompatibility() {
   let removedSelectors = 0;
   const removedDeclarationDetails = new Map();
   const removedSelectorDetails = new Set();
+  const retainedDeclarationDetails = new Map();
+  const retainedSelectorDetails = new Set();
 
   return {
     postcssPlugin: "t3code-lynx-tailwind-compatibility",
@@ -56,6 +72,8 @@ export function lynxTailwindCompatibility() {
       removedSelectors = 0;
       removedDeclarationDetails.clear();
       removedSelectorDetails.clear();
+      retainedDeclarationDetails.clear();
+      retainedSelectorDetails.clear();
     },
     Rule(rule) {
       if (!comesFromTailwindEntry(rule)) return;
@@ -64,10 +82,13 @@ export function lynxTailwindCompatibility() {
       if (!selectors) return;
 
       const supported = selectors.filter((selector) => {
-        const remove = hasUnsupportedPseudoSelector(selector);
+        const pseudos = pseudoSelectors(selector);
+        const remove = pseudos.some((pseudo) => !SUPPORTED_PSEUDO_SELECTORS.has(pseudo));
         if (remove) {
           removedSelectors += 1;
           removedSelectorDetails.add(selector);
+        } else if (pseudos.length > 0) {
+          retainedSelectorDetails.add(selector);
         }
         return !remove;
       });
@@ -81,13 +102,7 @@ export function lynxTailwindCompatibility() {
     Declaration(declaration) {
       if (!comesFromTailwindEntry(declaration)) return;
 
-      const unsupportedDisplay =
-        declaration.prop === "display" && declaration.value.trim().toLowerCase() === "grid";
-      if (
-        unsupportedDisplay ||
-        UNSUPPORTED_PROPERTIES.has(declaration.prop) ||
-        UNSUPPORTED_VALUE.test(declaration.value)
-      ) {
+      if (unsupportedDeclaration(declaration.prop, declaration.value)) {
         removedDeclarations += 1;
         const selector = declaration.parent?.selector ?? null;
         const key = JSON.stringify({
@@ -101,6 +116,21 @@ export function lynxTailwindCompatibility() {
           selector,
         });
         declaration.remove();
+      } else if (
+        RETAINED_SUPPORTED_PROPERTIES.has(declaration.prop) &&
+        (declaration.prop !== "display" || declaration.value.trim().toLowerCase() === "grid")
+      ) {
+        const selector = declaration.parent?.selector ?? null;
+        const key = JSON.stringify({
+          property: declaration.prop,
+          value: declaration.value,
+          selector,
+        });
+        retainedDeclarationDetails.set(key, {
+          property: declaration.prop,
+          value: declaration.value,
+          selector,
+        });
       }
     },
     OnceExit() {
@@ -117,6 +147,15 @@ export function lynxTailwindCompatibility() {
         compatibilityItems: ["R6", "R7", "R9"],
         removedSelectorCount: removedSelectors,
         removedDeclarationCount: removedDeclarations,
+        retainedSupportedSelectorCount: retainedSelectorDetails.size,
+        retainedSupportedDeclarationCount: retainedDeclarationDetails.size,
+        retainedSupportedSelectors: [...retainedSelectorDetails].sort(),
+        retainedSupportedDeclarations: [...retainedDeclarationDetails.values()].sort(
+          (left, right) =>
+            `${left.property}\u0000${left.value}\u0000${left.selector ?? ""}`.localeCompare(
+              `${right.property}\u0000${right.value}\u0000${right.selector ?? ""}`,
+            ),
+        ),
         removedSelectors: [...removedSelectorDetails].sort(),
         removedDeclarations: [...removedDeclarationDetails.values()].sort((left, right) =>
           `${left.property}\u0000${left.value}\u0000${left.selector ?? ""}`.localeCompare(

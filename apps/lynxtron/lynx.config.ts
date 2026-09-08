@@ -29,6 +29,9 @@ const parsedProbePageConfig =
     : (JSON.parse(probePageConfig) as Record<string, unknown>);
 const pageConfig = {
   alignMouseEventWithW3C: true,
+  enableCSSInvalidation: true,
+  enableCSSSelector: true,
+  enableRemoveCSSScope: true,
   ...parsedProbePageConfig,
 };
 const pageConfigKeys = Object.keys(pageConfig);

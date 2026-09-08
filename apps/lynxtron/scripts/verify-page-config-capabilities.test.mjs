@@ -16,6 +16,9 @@ describe("pageConfig capability probe", () => {
     assert.include(config, "T3_LYNXTRON_PROBE_PAGE_CONFIG");
     assert.include(config, "T3_LYNXTRON_PROBE_PAGE_CONFIG requires an env-gated probe entry.");
     assert.include(config, "alignMouseEventWithW3C: true");
+    assert.include(config, "enableCSSInvalidation: true");
+    assert.include(config, "enableCSSSelector: true");
+    assert.include(config, "enableRemoveCSSScope: true");
     assert.include(config, "...parsedProbePageConfig");
     assert.include(config, "pluginLynxConfig(pageConfig");
   });
