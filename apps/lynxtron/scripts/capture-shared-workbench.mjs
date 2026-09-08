@@ -7595,6 +7595,7 @@ async function captureCell({
   let componentLabPopoverEvidence = null;
   let componentLabSettingResetClicked = false;
   let componentLabSidebarClicked = false;
+  let componentLabSidebarToggled = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7741,6 +7742,7 @@ async function captureCell({
         componentLabPopoverClosed &&
         componentLabSettingResetClicked &&
         componentLabSidebarClicked &&
+        componentLabSidebarToggled &&
         !componentLabSelectOpened
       ) {
         const points = await evaluate(
@@ -8096,6 +8098,31 @@ async function captureCell({
         if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
         if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
         componentLabSidebarClicked = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabSidebarClicked &&
+        !componentLabSidebarToggled &&
+        state?.web?.componentLabMetrics?.sidebarPrimitive?.count === "Selected 1" &&
+        state?.lynx?.componentLabMetrics?.sidebarPrimitive?.count === "Selected 1" &&
+        state?.web?.componentLabMetrics?.sidebarPrimitive?.providerState === "expanded" &&
+        state?.lynx?.componentLabMetrics?.sidebarPrimitive?.providerState === "expanded"
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", ".component-lab-sidebar-trigger") ?? null,
+              lynx: w?.elementCenterVisible("lynx", ".component-lab-sidebar-trigger") ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabSidebarToggled = Boolean(points?.web && points?.lynx);
         await delay(100);
         continue;
       }
@@ -11716,8 +11743,13 @@ async function captureCell({
   const componentLabSidebarReady =
     !isComponentsLabState ||
     (componentLabSidebarClicked &&
+      componentLabSidebarToggled &&
       state?.web?.componentLabMetrics?.sidebarPrimitive?.count === "Selected 1" &&
       state?.lynx?.componentLabMetrics?.sidebarPrimitive?.count === "Selected 1" &&
+      state?.web?.componentLabMetrics?.sidebarPrimitive?.providerState === "collapsed" &&
+      state?.lynx?.componentLabMetrics?.sidebarPrimitive?.providerState === "collapsed" &&
+      state?.web?.componentLabMetrics?.sidebarPrimitive?.content?.rect &&
+      state?.lynx?.componentLabMetrics?.sidebarPrimitive?.content?.rect &&
       state?.web?.componentLabMetrics?.sidebarPrimitive?.button?.rect &&
       state?.lynx?.componentLabMetrics?.sidebarPrimitive?.button?.rect &&
       Math.abs(
@@ -11727,6 +11759,16 @@ async function captureCell({
       Math.abs(
         state.web.componentLabMetrics.sidebarPrimitive.button.rect.height -
           state.lynx.componentLabMetrics.sidebarPrimitive.button.rect.height,
+      ) <= 1 &&
+      state?.web?.componentLabMetrics?.sidebarPrimitive?.trigger?.rect &&
+      state?.lynx?.componentLabMetrics?.sidebarPrimitive?.trigger?.rect &&
+      Math.abs(
+        state.web.componentLabMetrics.sidebarPrimitive.trigger.rect.width -
+          state.lynx.componentLabMetrics.sidebarPrimitive.trigger.rect.width,
+      ) <= 1 &&
+      Math.abs(
+        state.web.componentLabMetrics.sidebarPrimitive.trigger.rect.height -
+          state.lynx.componentLabMetrics.sidebarPrimitive.trigger.rect.height,
       ) <= 1);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;

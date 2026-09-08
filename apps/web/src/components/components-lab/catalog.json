@@ -42,6 +42,18 @@
     "states": ["default"]
   },
   {
+    "id": "ui/sidebar#SidebarContent",
+    "category": "Navigation",
+    "title": "Sidebar content",
+    "states": ["scroll-container"]
+  },
+  {
+    "id": "ui/sidebar#SidebarTrigger",
+    "category": "Navigation",
+    "title": "Sidebar trigger",
+    "states": ["expanded", "collapsed"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

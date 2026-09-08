@@ -310,6 +310,12 @@ function readComponentLabMetrics(root) {
       return {
         button: readElementBox(button),
         count: readComposedText(root.querySelector('[data-component-lab-sidebar-count="value"]')),
+        content: readElementBox(root.querySelector(".component-lab-sidebar-content")),
+        providerState:
+          root
+            .querySelector(".component-lab-sidebar-provider")
+            ?.getAttribute("data-sidebar-state") ?? null,
+        trigger: readElementBox(root.querySelector(".component-lab-sidebar-trigger")),
       };
     })(),
     lab: readElementBox(lab),

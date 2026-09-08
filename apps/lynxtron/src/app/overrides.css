@@ -12526,8 +12526,26 @@
   height: 14px;
 }
 .component-lab-sidebar-provider {
+  flex-direction: column;
+  gap: 8px;
   min-height: 0;
   width: 216px;
+}
+.component-lab-sidebar-trigger {
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+.component-lab-sidebar-trigger__label {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+.component-lab-sidebar-content {
+  max-height: 48px;
 }
 .component-lab-sidebar-group {
   width: 216px;

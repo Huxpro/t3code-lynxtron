@@ -64,6 +64,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabSidebarReady =");
     assert.include(captureSource, '[data-component-lab-sidebar-menu-button=\"default\"]');
     assert.include(readerSource, "sidebarPrimitive: (() =>");
+    assert.include(captureSource, "componentLabSidebarToggled");
+    assert.include(captureSource, '"collapsed"');
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");

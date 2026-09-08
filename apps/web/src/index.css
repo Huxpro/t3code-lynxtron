@@ -1960,8 +1960,26 @@ label:has(> select#reasoning-effort) select {
 }
 
 .component-lab-sidebar-provider {
+  flex-direction: column;
+  gap: 0.5rem;
   min-height: 0;
   width: 13.5rem;
+}
+
+.component-lab-sidebar-trigger {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.component-lab-sidebar-trigger__label {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.component-lab-sidebar-content {
+  max-height: 3rem;
 }
 
 .component-lab-sidebar-group {

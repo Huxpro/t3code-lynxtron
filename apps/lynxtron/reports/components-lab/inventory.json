@@ -43,6 +43,18 @@
       "title": "Sidebar menu item"
     },
     {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarContent",
+      "states": ["scroll-container"],
+      "title": "Sidebar content"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarTrigger",
+      "states": ["expanded", "collapsed"],
+      "title": "Sidebar trigger"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5009,7 +5021,7 @@
     },
     {
       "authority": {
-        "line": 154,
+        "line": 156,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5030,7 +5042,7 @@
     },
     {
       "authority": {
-        "line": 105,
+        "line": 107,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5051,7 +5063,7 @@
     },
     {
       "authority": {
-        "line": 191,
+        "line": 193,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5072,7 +5084,7 @@
     },
     {
       "authority": {
-        "line": 140,
+        "line": 142,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5093,7 +5105,7 @@
     },
     {
       "authority": {
-        "line": 86,
+        "line": 88,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5114,7 +5126,7 @@
     },
     {
       "authority": {
-        "line": 218,
+        "line": 220,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5135,7 +5147,7 @@
     },
     {
       "authority": {
-        "line": 253,
+        "line": 255,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5156,7 +5168,7 @@
     },
     {
       "authority": {
-        "line": 280,
+        "line": 291,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5190,7 +5202,7 @@
     },
     {
       "authority": {
-        "line": 57,
+        "line": 59,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5211,7 +5223,7 @@
     },
     {
       "authority": {
-        "line": 82,
+        "line": 84,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -20330,14 +20342,26 @@
       "name": "SidebarContent",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 2
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarContent",
+        "states": ["scroll-container"],
+        "status": "covered",
+        "title": "Sidebar content"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
           "platform": "web"
@@ -21041,12 +21065,16 @@
       "name": "SidebarTrigger",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 2
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarTrigger",
+        "states": ["expanded", "collapsed"],
+        "status": "covered",
+        "title": "Sidebar trigger"
       },
       "useSites": [
         {
@@ -21056,6 +21084,14 @@
         {
           "path": "apps/web/src/components/AppSidebarLayout.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/sidebar/SidebarChrome.tsx",
@@ -22495,7 +22531,7 @@
     "internal": 216,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 62,
+    "stories": 64,
     "webOnly": 463
   },
   "generatedFrom": "apps/web/src/components",
