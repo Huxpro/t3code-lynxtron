@@ -12779,6 +12779,22 @@
   align-items: center;
   gap: 16px;
 }
+.component-lab-change-requests {
+  display: linear;
+  linear-orientation: vertical;
+  gap: 8px;
+}
+.component-lab-change-request {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 24px;
+  gap: 8px;
+}
+.component-lab-change-request__icon {
+  width: 12px;
+  height: 12px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

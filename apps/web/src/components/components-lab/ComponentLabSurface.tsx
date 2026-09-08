@@ -102,7 +102,12 @@ import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/to
 import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/settingsLayout";
 import { ProjectFavicon } from "../ProjectFavicon";
 import { ThreadErrorBannerSurface } from "../chat/ThreadErrorBannerSurface";
-import { ThreadStatusLabel } from "../ThreadStatusIndicators";
+import {
+  ChangeRequestStatusIcon,
+  PrStatusTooltipContent,
+  ThreadStatusLabel,
+  prStatusIndicator,
+} from "../ThreadStatusIndicators";
 import { resolveThreadStatusPill } from "../Sidebar.logic";
 
 type StoryId = (typeof catalog)[number]["id"];
@@ -587,6 +592,30 @@ function ComponentLabThreadStatusStory() {
   );
 }
 
+function ComponentLabChangeRequestStory() {
+  const basePr = {
+    baseRef: "main",
+    headRef: "feature/error-fidelity",
+    number: 42,
+    state: "open",
+    title: "Fix error banner fidelity",
+    url: "https://github.com/pingdotgg/t3code/pull/42",
+  } as const;
+  const statuses = (["open", "merged", "closed"] as const)
+    .map((state) => prStatusIndicator({ ...basePr, state }, undefined))
+    .filter((status) => status !== null);
+  return (
+    <HostView className="component-lab-change-requests">
+      {statuses.map((status) => (
+        <HostView className="component-lab-change-request" key={status.tooltipLead}>
+          <ChangeRequestStatusIcon className="component-lab-change-request__icon" />
+          <PrStatusTooltipContent status={status} />
+        </HostView>
+      ))}
+    </HostView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -645,6 +674,22 @@ export function ComponentLabSurface() {
 
           <StoryFrame id="ThreadStatusIndicators#ThreadStatusLabel" title="Thread status label">
             <ComponentLabThreadStatusStory />
+          </StoryFrame>
+
+          <StoryFrame
+            id="ThreadStatusIndicators#ChangeRequestStatusIcon"
+            title="Change request status icon"
+          >
+            <ComponentLabChangeRequestStory />
+          </StoryFrame>
+
+          <StoryFrame
+            id="ThreadStatusIndicators#PrStatusTooltipContent"
+            title="Change request tooltip"
+          >
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared production change request composition above.
+            </HostText>
           </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">

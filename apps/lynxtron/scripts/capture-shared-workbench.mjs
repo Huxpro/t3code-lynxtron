@@ -12519,6 +12519,26 @@ async function captureCell({
               state.lynx.componentLabMetrics.threadStatusLabels[index].box.rect.height,
           ) <= 1,
       ));
+  const componentLabChangeRequestReady =
+    !isComponentsLabState ||
+    (JSON.stringify(state?.web?.componentLabMetrics?.changeRequests?.map(({ text }) => text)) ===
+      JSON.stringify([
+        "PR #42 - Open Fix error banner fidelity",
+        "PR #42 - Merged Fix error banner fidelity",
+        "PR #42 - Closed Fix error banner fidelity",
+      ]) &&
+      JSON.stringify(state?.lynx?.componentLabMetrics?.changeRequests?.map(({ text }) => text)) ===
+        JSON.stringify([
+          "PR #42 - Open Fix error banner fidelity",
+          "PR #42 - Merged Fix error banner fidelity",
+          "PR #42 - Closed Fix error banner fidelity",
+        ]) &&
+      state.web.componentLabMetrics.changeRequests.every(
+        ({ icon }) => Math.abs(icon.rect.width - 12) <= 1 && Math.abs(icon.rect.height - 12) <= 1,
+      ) &&
+      state.lynx.componentLabMetrics.changeRequests.every(
+        ({ icon }) => Math.abs(icon.rect.width - 12) <= 1 && Math.abs(icon.rect.height - 12) <= 1,
+      ));
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14967,6 +14987,7 @@ async function captureCell({
     componentLabCommandDialogReady &&
     componentLabThreadErrorReady &&
     componentLabThreadStatusReady &&
+    componentLabChangeRequestReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15078,6 +15099,7 @@ async function captureCell({
       componentLabCommandDialogReady,
       componentLabThreadErrorReady,
       componentLabThreadStatusReady,
+      componentLabChangeRequestReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,

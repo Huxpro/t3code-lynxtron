@@ -170,6 +170,18 @@
     },
     {
       "category": "Feedback",
+      "id": "ThreadStatusIndicators#ChangeRequestStatusIcon",
+      "states": ["open", "merged", "closed"],
+      "title": "Change request status icon"
+    },
+    {
+      "category": "Feedback",
+      "id": "ThreadStatusIndicators#PrStatusTooltipContent",
+      "states": ["open", "merged", "closed"],
+      "title": "Change request tooltip"
+    },
+    {
+      "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
       "title": "Badge"
@@ -5237,7 +5249,28 @@
     },
     {
       "authority": {
-        "line": 448,
+        "line": 595,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabChangeRequestStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabChangeRequestStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 453,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5258,7 +5291,7 @@
     },
     {
       "authority": {
-        "line": 389,
+        "line": 394,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5279,7 +5312,7 @@
     },
     {
       "authority": {
-        "line": 210,
+        "line": 215,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5300,7 +5333,7 @@
     },
     {
       "authority": {
-        "line": 491,
+        "line": 496,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5321,7 +5354,7 @@
     },
     {
       "authority": {
-        "line": 161,
+        "line": 166,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5342,7 +5375,7 @@
     },
     {
       "authority": {
-        "line": 284,
+        "line": 289,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5363,7 +5396,7 @@
     },
     {
       "authority": {
-        "line": 196,
+        "line": 201,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5384,7 +5417,7 @@
     },
     {
       "authority": {
-        "line": 139,
+        "line": 144,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5405,7 +5438,7 @@
     },
     {
       "authority": {
-        "line": 311,
+        "line": 316,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5426,7 +5459,7 @@
     },
     {
       "authority": {
-        "line": 247,
+        "line": 252,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5447,7 +5480,7 @@
     },
     {
       "authority": {
-        "line": 346,
+        "line": 351,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5468,7 +5501,7 @@
     },
     {
       "authority": {
-        "line": 590,
+        "line": 619,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5502,7 +5535,7 @@
     },
     {
       "authority": {
-        "line": 513,
+        "line": 518,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5523,7 +5556,7 @@
     },
     {
       "authority": {
-        "line": 538,
+        "line": 543,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5544,7 +5577,7 @@
     },
     {
       "authority": {
-        "line": 110,
+        "line": 115,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5565,7 +5598,7 @@
     },
     {
       "authority": {
-        "line": 135,
+        "line": 140,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -12595,17 +12628,29 @@
       "name": "ChangeRequestStatusIcon",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 2
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ThreadStatusIndicators#ChangeRequestStatusIcon",
+        "states": ["open", "merged", "closed"],
+        "status": "covered",
+        "title": "Change request status icon"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/BranchToolbarBranchSelector.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/Sidebar.tsx",
@@ -12626,15 +12671,27 @@
       },
       "name": "PrStatusTooltipContent",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ThreadStatusIndicators#PrStatusTooltipContent",
+        "states": ["open", "merged", "closed"],
+        "status": "covered",
+        "title": "Change request tooltip"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/Sidebar.tsx",
           "platform": "web"
@@ -23276,14 +23333,14 @@
     }
   ],
   "counts": {
-    "components": 748,
+    "components": 749,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 222,
+    "internal": 223,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 98,
-    "webOnly": 469
+    "stories": 100,
+    "webOnly": 470
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

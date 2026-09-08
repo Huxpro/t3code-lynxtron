@@ -168,6 +168,18 @@
     "states": ["working", "awaiting-input", "completed", "plan-ready"]
   },
   {
+    "id": "ThreadStatusIndicators#ChangeRequestStatusIcon",
+    "category": "Feedback",
+    "title": "Change request status icon",
+    "states": ["open", "merged", "closed"]
+  },
+  {
+    "id": "ThreadStatusIndicators#PrStatusTooltipContent",
+    "category": "Feedback",
+    "title": "Change request tooltip",
+    "states": ["open", "merged", "closed"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

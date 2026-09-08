@@ -2094,6 +2094,24 @@ label:has(> select#reasoning-effort) select {
   gap: 1rem;
 }
 
+.component-lab-change-requests {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.component-lab-change-request {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 1.5rem;
+}
+
+.component-lab-change-request__icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

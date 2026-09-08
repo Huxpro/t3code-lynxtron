@@ -423,6 +423,11 @@ function readComponentLabMetrics(root) {
       label: element.getAttribute("aria-label"),
       box: readElementBox(element),
     })),
+    changeRequests: [...root.querySelectorAll(".component-lab-change-request")].map((element) => ({
+      box: readElementBox(element),
+      icon: readElementBox(element.querySelector(".component-lab-change-request__icon")),
+      text: readComposedText(element),
+    })),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');
