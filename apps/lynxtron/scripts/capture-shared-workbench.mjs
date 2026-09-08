@@ -13134,7 +13134,20 @@ async function captureCell({
                     state.lynx.componentLabMetrics.isolatedComposerToolbar.separators.every(
                       ({ rect }) => rect.width === 1 && rect.height === 16,
                     )
-                  : false));
+                  : componentStory === "AppShellSurface#AppShellSurface"
+                    ? JSON.stringify(
+                        state?.web?.componentLabMetrics?.isolatedAppShell?.slots?.map(
+                          ({ key }) => key,
+                        ),
+                      ) === JSON.stringify(["sidebar", "main", "global"]) &&
+                      JSON.stringify(
+                        state?.lynx?.componentLabMetrics?.isolatedAppShell?.slots?.map(
+                          ({ key }) => key,
+                        ),
+                      ) === JSON.stringify(["sidebar", "main", "global"]) &&
+                      state.web.componentLabMetrics.isolatedAppShell.box.rect.width > 0 &&
+                      state.lynx.componentLabMetrics.isolatedAppShell.box.rect.width > 0
+                    : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&

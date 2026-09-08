@@ -586,6 +586,18 @@ function readComponentLabMetrics(root) {
         ),
       };
     })(),
+    isolatedAppShell: (() => {
+      const shell = root.querySelector(".component-lab-app-shell");
+      return {
+        box: readElementBox(shell),
+        slots: [...(shell?.querySelectorAll("[data-component-lab-app-shell-slot]") ?? [])].map(
+          (slot) => ({
+            key: slot.getAttribute("data-component-lab-app-shell-slot"),
+            box: readElementBox(slot),
+          }),
+        ),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

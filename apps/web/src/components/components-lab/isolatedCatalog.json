@@ -40,5 +40,11 @@
     "category": "Composer",
     "title": "Composer toolbar row",
     "states": ["three-controls", "separators"]
+  },
+  {
+    "id": "AppShellSurface#AppShellSurface",
+    "category": "Layout",
+    "title": "Application shell ordering",
+    "states": ["sidebar-main-global"]
   }
 ]

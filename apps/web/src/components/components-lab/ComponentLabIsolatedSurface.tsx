@@ -1,5 +1,6 @@
 import isolatedCatalog from "./isolatedCatalog.json";
 
+import { AppShellSurface } from "../AppShellSurface";
 import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";
 import { ComposerToolbarRow } from "../chat/ComposerSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
@@ -76,6 +77,17 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
               <HostText data-component-lab-toolbar-item="runtime">Runtime</HostText>,
               <HostText data-component-lab-toolbar-item="mode">Mode</HostText>,
             ]}
+          />
+        </HostView>
+      );
+    }
+    if (storyId === "AppShellSurface#AppShellSurface") {
+      return (
+        <HostView className="component-lab-app-shell">
+          <AppShellSurface
+            globalControl={<HostText data-component-lab-app-shell-slot="global">Global</HostText>}
+            main={<HostText data-component-lab-app-shell-slot="main">Main</HostText>}
+            sidebar={<HostText data-component-lab-app-shell-slot="sidebar">Sidebar</HostText>}
           />
         </HostView>
       );

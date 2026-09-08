@@ -773,6 +773,12 @@
       "id": "chat/ComposerSurface#ComposerToolbarRow",
       "states": ["three-controls", "separators"],
       "title": "Composer toolbar row"
+    },
+    {
+      "category": "Layout",
+      "id": "AppShellSurface#AppShellSurface",
+      "states": ["sidebar-main-global"],
+      "title": "Application shell ordering"
     }
   ],
   "components": [
@@ -821,13 +827,17 @@
       "lynx": null,
       "name": "AppShellSurface",
       "reuse": {
-        "authorityShared": false,
+        "authorityShared": true,
         "lynxUseSiteCount": 1,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Layout",
+        "id": "AppShellSurface#AppShellSurface",
+        "states": ["sidebar-main-global"],
+        "status": "covered",
+        "title": "Application shell ordering"
       },
       "useSites": [
         {
@@ -837,6 +847,10 @@
         {
           "path": "apps/web/src/components/AppSidebarComposition.tsx",
           "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
         }
       ]
     },
@@ -5459,7 +5473,7 @@
     },
     {
       "authority": {
-        "line": 13,
+        "line": 14,
         "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
       },
       "exported": true,
@@ -24143,7 +24157,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 129,
+    "stories": 130,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",
