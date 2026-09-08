@@ -61,6 +61,12 @@
       "title": "Sidebar trigger"
     },
     {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarInset",
+      "states": ["main-surface"],
+      "title": "Sidebar inset"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5111,7 +5117,7 @@
     },
     {
       "authority": {
-        "line": 189,
+        "line": 190,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5132,7 +5138,7 @@
     },
     {
       "authority": {
-        "line": 361,
+        "line": 369,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5153,7 +5159,7 @@
     },
     {
       "authority": {
-        "line": 140,
+        "line": 141,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5174,7 +5180,7 @@
     },
     {
       "authority": {
-        "line": 263,
+        "line": 264,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5195,7 +5201,7 @@
     },
     {
       "authority": {
-        "line": 175,
+        "line": 176,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5216,7 +5222,7 @@
     },
     {
       "authority": {
-        "line": 118,
+        "line": 119,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5237,7 +5243,7 @@
     },
     {
       "authority": {
-        "line": 290,
+        "line": 291,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5258,7 +5264,7 @@
     },
     {
       "authority": {
-        "line": 226,
+        "line": 227,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5279,7 +5285,7 @@
     },
     {
       "authority": {
-        "line": 325,
+        "line": 326,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5300,7 +5306,7 @@
     },
     {
       "authority": {
-        "line": 383,
+        "line": 391,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5334,7 +5340,7 @@
     },
     {
       "authority": {
-        "line": 89,
+        "line": 90,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5355,7 +5361,7 @@
     },
     {
       "authority": {
-        "line": 114,
+        "line": 115,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -20913,14 +20919,26 @@
       "name": "SidebarInset",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 4
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarInset",
+        "states": ["main-surface"],
+        "status": "covered",
+        "title": "Sidebar inset"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/NoActiveThreadState.tsx",
           "platform": "web"
@@ -22851,7 +22869,7 @@
     "internal": 218,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 79,
+    "stories": 80,
     "webOnly": 465
   },
   "generatedFrom": "apps/web/src/components",

@@ -1964,10 +1964,13 @@ label:has(> select#reasoning-effort) select {
 }
 
 .component-lab-sidebar-provider {
-  flex-direction: column;
-  gap: 0.5rem;
   min-height: 0;
   width: 13.5rem;
+}
+
+.component-lab-sidebar-stack {
+  width: 13.5rem;
+  gap: 0.5rem;
 }
 
 .component-lab-sidebar-trigger {
@@ -1984,6 +1987,15 @@ label:has(> select#reasoning-effort) select {
 
 .component-lab-sidebar-content {
   max-height: 3rem;
+}
+
+.component-lab-sidebar-inset {
+  flex: none;
+  width: 13.5rem;
+  height: 2.5rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
 }
 
 .component-lab-sidebar-group {

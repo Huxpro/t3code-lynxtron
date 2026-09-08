@@ -370,7 +370,13 @@ export const SidebarGroupAction = Container;
 export const SidebarGroupContent = Container;
 export const SidebarGroupLabel = Container;
 export const SidebarHeader = Container;
-export const SidebarInset = Container;
+export function SidebarInset({ children, className, ...props }: ElementProps) {
+  return (
+    <view {...props} className={cn("sidebar-inset", className)} data-slot="sidebar-inset">
+      {children}
+    </view>
+  );
+}
 export const SidebarInput = Container;
 export const SidebarMenu = Container;
 export const SidebarMenuAction = Container;

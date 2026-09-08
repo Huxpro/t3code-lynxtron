@@ -73,6 +73,7 @@ import { Switch } from "../ui/switch";
 import {
   SidebarContent,
   SidebarGroup,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -326,34 +327,41 @@ function ComponentLabSidebarStory() {
   const [selected, setSelected] = useState(0);
   return (
     <SidebarProvider className="component-lab-sidebar-provider" defaultOpen>
-      <SidebarTrigger
-        aria-label="Toggle lab sidebar"
-        className="component-lab-sidebar-trigger"
-        data-component-lab-sidebar-trigger="default"
-      >
-        <HostText className="component-lab-sidebar-trigger__label">Toggle</HostText>
-      </SidebarTrigger>
-      <SidebarContent className="component-lab-sidebar-content">
-        <SidebarGroup className="component-lab-sidebar-group">
-          <SidebarMenu className="component-lab-sidebar-menu">
-            <SidebarMenuItem className="component-lab-sidebar-menu-item">
-              <SidebarMenuButton
-                className="component-lab-sidebar-menu-button"
-                data-component-lab-sidebar-menu-button="default"
-                onClick={() => setSelected((count) => count + 1)}
-              >
-                <HostText className="component-lab-host-text">Project settings</HostText>
-                <HostText
-                  className="component-lab-host-text component-lab-host-text--muted"
-                  data-component-lab-sidebar-count="value"
+      <ComponentLabColumn className="component-lab-sidebar-stack">
+        <SidebarTrigger
+          aria-label="Toggle lab sidebar"
+          className="component-lab-sidebar-trigger"
+          data-component-lab-sidebar-trigger="default"
+        >
+          <HostText className="component-lab-sidebar-trigger__label">Toggle</HostText>
+        </SidebarTrigger>
+        <SidebarContent className="component-lab-sidebar-content">
+          <SidebarGroup className="component-lab-sidebar-group">
+            <SidebarMenu className="component-lab-sidebar-menu">
+              <SidebarMenuItem className="component-lab-sidebar-menu-item">
+                <SidebarMenuButton
+                  className="component-lab-sidebar-menu-button"
+                  data-component-lab-sidebar-menu-button="default"
+                  onClick={() => setSelected((count) => count + 1)}
                 >
-                  Selected {selected}
-                </HostText>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarGroup>
-      </SidebarContent>
+                  <HostText className="component-lab-host-text">Project settings</HostText>
+                  <HostText
+                    className="component-lab-host-text component-lab-host-text--muted"
+                    data-component-lab-sidebar-count="value"
+                  >
+                    Selected {selected}
+                  </HostText>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroup>
+        </SidebarContent>
+        <SidebarInset className="component-lab-sidebar-inset">
+          <HostText className="component-lab-host-text component-lab-host-text--muted">
+            Main surface
+          </HostText>
+        </SidebarInset>
+      </ComponentLabColumn>
     </SidebarProvider>
   );
 }
@@ -437,6 +445,7 @@ export function ComponentLabSurface() {
               ["ui/sidebar#SidebarMenuItem", "Sidebar menu item"],
               ["ui/sidebar#SidebarContent", "Sidebar content"],
               ["ui/sidebar#SidebarTrigger", "Sidebar trigger"],
+              ["ui/sidebar#SidebarInset", "Sidebar inset"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>

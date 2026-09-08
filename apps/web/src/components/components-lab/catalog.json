@@ -60,6 +60,12 @@
     "states": ["expanded", "collapsed"]
   },
   {
+    "id": "ui/sidebar#SidebarInset",
+    "category": "Navigation",
+    "title": "Sidebar inset",
+    "states": ["main-surface"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

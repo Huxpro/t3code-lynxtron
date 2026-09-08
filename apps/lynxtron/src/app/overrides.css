@@ -12553,10 +12553,12 @@
   height: 14px;
 }
 .component-lab-sidebar-provider {
-  flex-direction: column;
-  gap: 8px;
   min-height: 0;
   width: 216px;
+}
+.component-lab-sidebar-stack {
+  width: 216px;
+  gap: 8px;
 }
 .component-lab-sidebar-trigger {
   align-items: center;
@@ -12573,6 +12575,25 @@
 }
 .component-lab-sidebar-content {
   max-height: 48px;
+}
+.component-lab-sidebar-inset {
+  --lynx-linear-weight: 0;
+  flex-grow: 0;
+  flex-shrink: 0;
+  width: 216px;
+  height: 40px;
+  padding: 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+.sidebar-inset {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--background);
 }
 .component-lab-sidebar-group {
   width: 216px;

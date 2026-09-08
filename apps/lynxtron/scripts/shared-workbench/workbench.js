@@ -340,6 +340,7 @@ function readComponentLabMetrics(root) {
         button: readElementBox(button),
         count: readComposedText(root.querySelector('[data-component-lab-sidebar-count="value"]')),
         content: readElementBox(root.querySelector(".component-lab-sidebar-content")),
+        inset: readElementBox(root.querySelector(".component-lab-sidebar-inset")),
         providerState:
           root
             .querySelector(".component-lab-sidebar-provider")

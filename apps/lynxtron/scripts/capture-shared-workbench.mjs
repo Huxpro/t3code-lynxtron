@@ -12021,6 +12021,10 @@ async function captureCell({
       state?.lynx?.componentLabMetrics?.sidebarPrimitive?.providerState === "collapsed" &&
       state?.web?.componentLabMetrics?.sidebarPrimitive?.content?.rect &&
       state?.lynx?.componentLabMetrics?.sidebarPrimitive?.content?.rect &&
+      state?.web?.componentLabMetrics?.sidebarPrimitive?.inset?.rect?.width === 216 &&
+      state?.web?.componentLabMetrics?.sidebarPrimitive?.inset?.rect?.height === 40 &&
+      state?.lynx?.componentLabMetrics?.sidebarPrimitive?.inset?.rect?.width === 216 &&
+      state?.lynx?.componentLabMetrics?.sidebarPrimitive?.inset?.rect?.height === 40 &&
       state?.web?.componentLabMetrics?.sidebarPrimitive?.button?.rect &&
       state?.lynx?.componentLabMetrics?.sidebarPrimitive?.button?.rect &&
       Math.abs(
