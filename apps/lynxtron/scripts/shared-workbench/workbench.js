@@ -598,6 +598,14 @@ function readComponentLabMetrics(root) {
         ),
       };
     })(),
+    isolatedArchivedThreads: (() => {
+      const host = root.querySelector(".component-lab-archived-threads");
+      return {
+        box: readElementBox(host),
+        text: readComposedText(host),
+        section: readElementBox(host?.firstElementChild),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

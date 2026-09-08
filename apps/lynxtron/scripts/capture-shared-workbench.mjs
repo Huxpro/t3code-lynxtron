@@ -13147,7 +13147,26 @@ async function captureCell({
                       ) === JSON.stringify(["sidebar", "main", "global"]) &&
                       state.web.componentLabMetrics.isolatedAppShell.box.rect.width > 0 &&
                       state.lynx.componentLabMetrics.isolatedAppShell.box.rect.width > 0
-                    : false));
+                    : componentStory === "settings/SettingsSurfaces#ArchivedThreadsSurface"
+                      ? state?.web?.componentLabMetrics?.isolatedArchivedThreads?.text ===
+                          "t3code Investigate scroll anchor Archived 2h · Created 5h Unarchive" &&
+                        state?.lynx?.componentLabMetrics?.isolatedArchivedThreads?.text ===
+                          "t3code Investigate scroll anchor Archived 2h · Created 5h Unarchive" &&
+                        state.web.componentLabMetrics.isolatedArchivedThreads.box.rect.width ===
+                          512 &&
+                        state.lynx.componentLabMetrics.isolatedArchivedThreads.box.rect.width ===
+                          512 &&
+                        state.web.componentLabMetrics.isolatedArchivedThreads.section.rect.width ===
+                          512 &&
+                        state.lynx.componentLabMetrics.isolatedArchivedThreads.section.rect
+                          .width === 512 &&
+                        Math.abs(
+                          state.web.componentLabMetrics.isolatedArchivedThreads.section.rect
+                            .height -
+                            state.lynx.componentLabMetrics.isolatedArchivedThreads.section.rect
+                              .height,
+                        ) <= 1
+                      : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&

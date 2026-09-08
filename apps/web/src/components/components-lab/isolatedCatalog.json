@@ -46,5 +46,11 @@
     "category": "Layout",
     "title": "Application shell ordering",
     "states": ["sidebar-main-global"]
+  },
+  {
+    "id": "settings/SettingsSurfaces#ArchivedThreadsSurface",
+    "category": "Settings",
+    "title": "Archived threads surface",
+    "states": ["one-project-one-thread"]
   }
 ]

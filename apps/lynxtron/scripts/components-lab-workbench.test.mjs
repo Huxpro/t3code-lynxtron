@@ -161,12 +161,14 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "settings/SettingsSurfaces#AccessListRowSurface");
     assert.include(captureSource, "chat/ComposerSurface#ComposerToolbarRow");
     assert.include(captureSource, "AppShellSurface#AppShellSurface");
+    assert.include(captureSource, "settings/SettingsSurfaces#ArchivedThreadsSurface");
     assert.include(readerSource, "paletteSection: (() =>");
     assert.include(readerSource, "sourceControlMarks:");
     assert.include(readerSource, "isolatedSourceControlRows:");
     assert.include(readerSource, "isolatedAccessRows:");
     assert.include(readerSource, "isolatedComposerToolbar:");
     assert.include(readerSource, "isolatedAppShell:");
+    assert.include(readerSource, "isolatedArchivedThreads:");
     assert.include(readerSource, 'url.searchParams.get("componentStory")');
     assert.include(readerSource, 'lynxQuery.set("componentStory", componentStory)');
     assert.include(captureSource, "components-lab-isolated.web.bundle");

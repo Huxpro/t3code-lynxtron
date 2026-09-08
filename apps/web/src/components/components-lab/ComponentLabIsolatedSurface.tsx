@@ -6,6 +6,7 @@ import { ComposerToolbarRow } from "../chat/ComposerSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
 import {
   AccessListRowSurface,
+  ArchivedThreadsSurface,
   SourceControlItemRowSurface,
   SourceControlMarkSurface,
 } from "../settings/SettingsSurfaces";
@@ -88,6 +89,30 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
             globalControl={<HostText data-component-lab-app-shell-slot="global">Global</HostText>}
             main={<HostText data-component-lab-app-shell-slot="main">Main</HostText>}
             sidebar={<HostText data-component-lab-app-shell-slot="sidebar">Sidebar</HostText>}
+          />
+        </HostView>
+      );
+    }
+    if (storyId === "settings/SettingsSurfaces#ArchivedThreadsSurface") {
+      return (
+        <HostView className="component-lab-archived-threads" style={{ width: "512px" }}>
+          <ArchivedThreadsSurface
+            emptyDescription="Archived threads will appear here."
+            emptyTitle="No archived threads"
+            groups={[
+              {
+                key: "t3code",
+                title: "t3code",
+                threads: [
+                  {
+                    id: "thread-1",
+                    title: "Investigate scroll anchor",
+                    description: "Archived 2h · Created 5h",
+                    action: <HostText>Unarchive</HostText>,
+                  },
+                ],
+              },
+            ]}
           />
         </HostView>
       );
