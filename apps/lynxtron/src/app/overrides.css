@@ -1362,6 +1362,13 @@
   min-height: 28px;
   box-sizing: border-box;
 }
+.lynx-menu-separator {
+  flex-shrink: 0;
+  width: calc(100% - 16px);
+  height: 1px;
+  margin: 4px 8px;
+  background-color: var(--border);
+}
 .sidebar-v2-scope-popup {
   display: flex;
   flex-direction: column;

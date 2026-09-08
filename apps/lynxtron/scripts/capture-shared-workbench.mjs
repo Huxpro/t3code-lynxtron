@@ -7577,6 +7577,7 @@ async function captureCell({
   let componentLabTooltipVerified = false;
   let componentLabMenuOpened = false;
   let componentLabMenuVerified = false;
+  let componentLabMenuEvidence = null;
   let componentLabSelectOpened = false;
   let componentLabSelectChanged = false;
   let componentLabSelectReopened = false;
@@ -7677,6 +7678,10 @@ async function captureCell({
         state?.lynx?.componentLabMetrics?.menu?.text?.includes("Open in editor") &&
         state.web.componentLabMetrics.menu.items.length === 2 &&
         state.lynx.componentLabMetrics.menu.items.length === 2 &&
+        state.web.componentLabMetrics.menu.groupCount === 1 &&
+        state.lynx.componentLabMetrics.menu.groupCount === 1 &&
+        state.web.componentLabMetrics.menu.separatorCount === 1 &&
+        state.lynx.componentLabMetrics.menu.separatorCount === 1 &&
         Math.abs(
           state.web.componentLabMetrics.menu.box.rect.x -
             state.lynx.componentLabMetrics.menu.box.rect.x,
@@ -7695,6 +7700,11 @@ async function captureCell({
         ) <= 2
       ) {
         componentLabMenuVerified = true;
+        componentLabMenuEvidence = {
+          inputChannel: "web-cdp-pointer|lynx-menu-probe",
+          web: state.web.componentLabMetrics.menu,
+          lynx: state.lynx.componentLabMetrics.menu,
+        };
         const menuPoints = await evaluate(
           cdp,
           sessionId,
@@ -14325,7 +14335,11 @@ async function captureCell({
     lynxStyled,
     readiness: { bothReady, web: state?.web ?? null, lynx: state?.lynx ?? null },
     componentLabEvidence: isComponentsLabState
-      ? { dialog: componentLabDialogEvidence, popover: componentLabPopoverEvidence }
+      ? {
+          dialog: componentLabDialogEvidence,
+          menu: componentLabMenuEvidence,
+          popover: componentLabPopoverEvidence,
+        }
       : null,
     identity: {
       match: identityMatch,

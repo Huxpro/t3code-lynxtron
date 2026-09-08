@@ -349,8 +349,14 @@ export function MenuRadioItem({
 }
 
 export const MenuPortal = ({ children }: ElementProps) => <>{children}</>;
-export const MenuGroup = ({ children, ...props }: ElementProps) => (
-  <view {...props}>{children}</view>
+export const MenuGroup = ({ children, className, ...props }: ElementProps) => (
+  <view
+    {...props}
+    className={classes("lynx-menu-group flex w-full flex-col", className)}
+    data-slot="menu-group"
+  >
+    {children}
+  </view>
 );
 export const MenuGroupLabel = MenuGroup;
 export function MenuItem({
@@ -386,7 +392,13 @@ export function MenuItem({
   );
 }
 export const MenuCheckboxItem = MenuGroup;
-export const MenuSeparator = MenuGroup;
+export const MenuSeparator = ({ className, ...props }: ElementProps) => (
+  <view
+    {...props}
+    className={classes("lynx-menu-separator", className)}
+    data-slot="menu-separator"
+  />
+);
 export const MenuShortcut = MenuGroup;
 export const MenuSub = Menu;
 export const MenuSubTrigger = MenuTrigger;

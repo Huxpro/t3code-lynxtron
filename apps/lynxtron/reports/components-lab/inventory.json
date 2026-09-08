@@ -109,6 +109,18 @@
       "title": "Menu item"
     },
     {
+      "category": "Overlays",
+      "id": "ui/menu#MenuGroup",
+      "states": ["actions"],
+      "title": "Menu group"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/menu#MenuSeparator",
+      "states": ["default"],
+      "title": "Menu separator"
+    },
+    {
       "category": "Forms",
       "id": "ui/select#Select",
       "states": ["closed", "open"],
@@ -17661,12 +17673,16 @@
       "name": "MenuGroup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 5
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 6
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#MenuGroup",
+        "states": ["actions"],
+        "status": "covered",
+        "title": "Menu group"
       },
       "useSites": [
         {
@@ -17676,6 +17692,14 @@
         {
           "path": "apps/web/src/components/chat/TraitsPicker.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ProjectScriptsControl.tsx",
@@ -18056,12 +18080,16 @@
       "name": "MenuSeparator",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 6
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 7
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#MenuSeparator",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Menu separator"
       },
       "useSites": [
         {
@@ -18079,6 +18107,14 @@
         {
           "path": "apps/web/src/components/chat/TraitsPicker.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ProjectScriptsControl.tsx",
@@ -22231,7 +22267,7 @@
     "internal": 214,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 47,
+    "stories": 49,
     "webOnly": 461
   },
   "generatedFrom": "apps/web/src/components",

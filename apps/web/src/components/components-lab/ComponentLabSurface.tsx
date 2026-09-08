@@ -26,7 +26,7 @@ import {
 import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements";
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
-import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../ui/menu";
+import { Menu, MenuGroup, MenuItem, MenuPopup, MenuSeparator, MenuTrigger } from "../ui/menu";
 import {
   NumberField,
   NumberFieldDecrement,
@@ -311,8 +311,11 @@ export function ComponentLabSurface() {
                 Open menu
               </MenuTrigger>
               <MenuPopup align="start" relationId="component-lab-menu" side="top">
-                <MenuItem data-component-lab-menu-item="open">Open in editor</MenuItem>
-                <MenuItem data-component-lab-menu-item="copy">Copy path</MenuItem>
+                <MenuGroup data-component-lab-menu-group="actions">
+                  <MenuItem data-component-lab-menu-item="open">Open in editor</MenuItem>
+                  <MenuSeparator data-component-lab-menu-separator="default" />
+                  <MenuItem data-component-lab-menu-item="copy">Copy path</MenuItem>
+                </MenuGroup>
               </MenuPopup>
             </Menu>
           </StoryFrame>
@@ -355,6 +358,18 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/menu#MenuItem" title="Menu item">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Open in editor and Copy path use the same production MenuItem.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#MenuGroup" title="Menu group">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Both actions share the production MenuGroup in the Menu fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#MenuSeparator" title="Menu separator">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Separates the two production MenuItem instances above.
             </HostText>
           </StoryFrame>
 

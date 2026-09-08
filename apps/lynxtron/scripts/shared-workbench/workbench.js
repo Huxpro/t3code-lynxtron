@@ -200,6 +200,8 @@ function readComponentLabMetrics(root) {
             items: [...popup.querySelectorAll("[data-component-lab-menu-item]")].map((item) =>
               readComposedText(item),
             ),
+            groupCount: popup.querySelectorAll('[data-slot="menu-group"]').length,
+            separatorCount: popup.querySelectorAll('[data-slot="menu-separator"]').length,
           }
         : null;
     })(),

@@ -108,6 +108,18 @@
     "states": ["default", "activated"]
   },
   {
+    "id": "ui/menu#MenuGroup",
+    "category": "Overlays",
+    "title": "Menu group",
+    "states": ["actions"]
+  },
+  {
+    "id": "ui/menu#MenuSeparator",
+    "category": "Overlays",
+    "title": "Menu separator",
+    "states": ["default"]
+  },
+  {
     "id": "ui/select#Select",
     "category": "Forms",
     "title": "Select",
