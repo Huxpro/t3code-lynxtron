@@ -791,6 +791,7 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
           ? "[content-visibility:auto] [contain-intrinsic-size:auto_34px]"
           : "[content-visibility:auto] [contain-intrinsic-size:auto_96px]"
       }
+      cardActionsFocusClassName="focus-within:opacity-100"
       variantAction={variantAction}
       isActive={props.isActive}
       isSelected={isSelected}

@@ -77,6 +77,16 @@ describe("SidebarV2RowSurface", () => {
     expect(webMarkup).toContain("contain-intrinsic-size:auto_96px");
   });
 
+  it("accepts Web-only DOM focus visibility without making it a shared default", () => {
+    const nativeMarkup = renderToStaticMarkup(<SidebarV2RowSurface {...baseProps} />);
+    const webMarkup = renderToStaticMarkup(
+      <SidebarV2RowSurface {...baseProps} cardActionsFocusClassName="focus-within:opacity-100" />,
+    );
+
+    expect(nativeMarkup).not.toContain("focus-within:opacity-100");
+    expect(webMarkup).toContain("focus-within:opacity-100");
+  });
+
   it("keeps the Web card hierarchy and action placement in one shared composition", () => {
     const markup = renderToStaticMarkup(<SidebarV2RowSurface {...baseProps} />);
 

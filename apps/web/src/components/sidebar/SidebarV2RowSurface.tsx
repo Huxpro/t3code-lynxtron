@@ -27,6 +27,8 @@ export interface SidebarV2RowSurfaceProps {
   readonly settlementSupported: boolean;
   readonly snoozeSupported: boolean;
   readonly cardActionsVisible?: boolean;
+  /** Web host-only DOM focus visibility; native hosts provide cardActionsVisible. */
+  readonly cardActionsFocusClassName?: string;
   readonly snoozeMenuOpen: boolean;
   readonly snoozeWakeLabelText: string | null;
   readonly projectTitle: string | null;
@@ -304,7 +306,8 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   <HostView
                     stopTapPropagation
                     className={cn(
-                      "sidebar-v2-row-actions absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity focus-within:opacity-100 group-hover/v2-row:opacity-100",
+                      "sidebar-v2-row-actions absolute inset-y-0 right-0 flex items-stretch gap-0.5 opacity-0 transition-opacity group-hover/v2-row:opacity-100",
+                      props.cardActionsFocusClassName,
                       props.snoozeMenuOpen && "opacity-100",
                       props.cardActionsVisible && "opacity-100",
                     )}
