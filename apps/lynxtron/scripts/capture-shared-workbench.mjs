@@ -12768,6 +12768,7 @@ async function captureCell({
       componentLabFileTreeEvidence?.initial?.lynx?.fileText?.includes("index.ts") &&
       componentLabFileTreeEvidence?.selected?.web?.selected === true &&
       componentLabFileTreeEvidence?.selected?.lynx?.selected === true &&
+      componentLabFileTreeEvidence?.selected?.lynx?.lynxHovered === "true" &&
       componentLabFileTreeEvidence?.collapsed?.web?.expanded === false &&
       componentLabFileTreeEvidence?.collapsed?.lynx?.expanded === false &&
       componentLabFileTreeEvidence?.collapsed?.web?.file === null &&

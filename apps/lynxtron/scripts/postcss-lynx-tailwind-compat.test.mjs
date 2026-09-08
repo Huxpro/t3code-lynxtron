@@ -15,8 +15,7 @@ describe("Lynx Tailwind compatibility", () => {
     expect(unsupportedPseudoSelectors(".label::selection")).toEqual([]);
   });
 
-  it("continues to classify pseudo selectors that need state adapters", () => {
-    expect(unsupportedPseudoSelectors(".button:hover")).toEqual([":hover"]);
+  it("continues to classify focus selectors that need state adapters", () => {
     expect(unsupportedPseudoSelectors(".button:focus-visible")).toEqual([":focus-visible"]);
   });
 
@@ -28,6 +27,10 @@ describe("Lynx Tailwind compatibility", () => {
     expect(normalizeSupportedSelector(".dark\\:text-red-400:is(.dark *)")).toEqual({
       selector: ".dark .dark\\:text-red-400",
       transformations: ["dark-is-to-descendant"],
+    });
+    expect(normalizeSupportedSelector(".group:hover .group-hover\\:opacity-100")).toEqual({
+      selector: '.group[data-lynx-hover="true"] .group-hover\\:opacity-100',
+      transformations: ["hover-to-state-attribute"],
     });
   });
 

@@ -86,6 +86,11 @@ export function normalizeSupportedSelector(selector) {
     transformations.push("disabled-to-attribute");
   }
 
+  if (normalized.includes(":hover") && !normalized.includes("::")) {
+    normalized = normalized.replace(/(?<!\\):hover\b/gu, '[data-lynx-hover="true"]');
+    transformations.push("hover-to-state-attribute");
+  }
+
   const darkVariant = /^(.*):is\(\.dark \*\)$/u.exec(normalized);
   if (darkVariant?.[1]) {
     normalized = `.dark ${darkVariant[1]}`;

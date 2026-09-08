@@ -460,6 +460,7 @@ function readComponentLabMetrics(root) {
         file: readElementBox(file),
         fileText: readComposedText(file),
         selected: file?.classList?.contains("file-tree-row--selected") ?? false,
+        lynxHovered: file?.getAttribute("data-lynx-hover") ?? null,
       };
     })(),
     hostList: (() => {
