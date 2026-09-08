@@ -8,6 +8,7 @@ import { Badge } from "../ui/badge";
 import {
   Command,
   CommandCollection,
+  CommandEmpty,
   CommandFooter,
   CommandGroup,
   CommandGroupLabel,
@@ -387,7 +388,13 @@ function ComponentLabCommandStory() {
   ].filter((item) => item.label.toLowerCase().includes(query.toLowerCase()));
   return (
     <HostView className="component-lab-command">
-      <Command autoHighlight={false} mode="none" onValueChange={setQuery} value={query}>
+      <Command
+        autoHighlight={false}
+        items={items}
+        mode="none"
+        onValueChange={setQuery}
+        value={query}
+      >
         <CommandInput
           aria-label="Component lab command input"
           className="component-lab-command__input"
@@ -395,6 +402,9 @@ function ComponentLabCommandStory() {
         />
         <CommandPanel className="component-lab-command__panel">
           <CommandList className="component-lab-command__list">
+            <CommandEmpty className="component-lab-command__empty">
+              No matching commands.
+            </CommandEmpty>
             <CommandGroup className="component-lab-command__group" items={items}>
               <CommandGroupLabel className="component-lab-command__label">
                 Workspace
@@ -516,6 +526,7 @@ export function ComponentLabSurface() {
               ["ui/command#CommandFooter", "Command footer"],
               ["ui/command#CommandInput", "Command input"],
               ["ui/command#CommandCollection", "Command collection"],
+              ["ui/command#CommandEmpty", "Command empty"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>

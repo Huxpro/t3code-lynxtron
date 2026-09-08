@@ -91,11 +91,15 @@ describe("Components Lab paired workbench", () => {
     assert.include(readerSource, '[data-slot="command-footer"]');
     assert.include(readerSource, "separatorCount");
     assert.include(readerSource, "shortcutText");
+    assert.include(readerSource, '[data-slot="command-empty"]');
     assert.include(captureSource, "const componentLabCommandReady =");
     assert.include(captureSource, 'JSON.stringify(["Open project ⌘O", "New thread"])');
     assert.include(captureSource, "Could not focus Web component lab CommandInput");
     assert.include(captureSource, "Could not focus Lynx component lab CommandInput");
     assert.include(captureSource, "componentLabCommandEvidence");
+    assert.include(captureSource, "Could not clear Web component lab CommandInput");
+    assert.include(captureSource, "Could not clear Lynx component lab CommandInput");
+    assert.include(captureSource, '"No matching commands."');
     assert.include(captureSource, "componentLabSelectEvidence");
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");

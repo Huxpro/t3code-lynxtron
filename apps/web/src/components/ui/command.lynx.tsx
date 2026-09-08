@@ -20,6 +20,7 @@ type ElementProps = Record<string, unknown> & {
 export const CommandCreateHandle = () => ({});
 
 interface CommandContextValue {
+  readonly itemCount: number;
   readonly query: string;
   readonly setQuery: (query: string) => void;
 }
@@ -49,10 +50,12 @@ export function Command({
   className,
   value: controlledValue,
   defaultValue = "",
+  items = [],
   onValueChange,
   ...props
 }: ElementProps & {
   readonly defaultValue?: string;
+  readonly items?: readonly unknown[];
   readonly onValueChange?: (value: string) => void;
   readonly value?: string;
 }) {
@@ -65,7 +68,10 @@ export function Command({
     },
     [controlledValue, onValueChange],
   );
-  const context = useMemo(() => ({ query, setQuery }), [query, setQuery]);
+  const context = useMemo(
+    () => ({ itemCount: items.length, query, setQuery }),
+    [items.length, query, setQuery],
+  );
   return (
     <CommandContext.Provider value={context}>
       <view {...props} className={["ui-command", className].filter(Boolean).join(" ")}>
@@ -82,7 +88,19 @@ export function CommandCollection({
   const items = useContext(CommandGroupItemsContext);
   return <>{items.map((item, index) => children(item, index))}</>;
 }
-export const CommandEmpty = Container;
+export function CommandEmpty({ children, className, ...props }: ElementProps) {
+  const context = useContext(CommandContext);
+  if ((context?.itemCount ?? 0) > 0) return null;
+  return (
+    <view
+      {...props}
+      className={["ui-command-empty", className].filter(Boolean).join(" ")}
+      data-slot="command-empty"
+    >
+      {children}
+    </view>
+  );
+}
 export function CommandFooter({ children, className, ...props }: ElementProps) {
   return (
     <view

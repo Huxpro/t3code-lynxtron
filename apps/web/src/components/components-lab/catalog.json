@@ -132,6 +132,12 @@
     "states": ["items", "filtered-items"]
   },
   {
+    "id": "ui/command#CommandEmpty",
+    "category": "Navigation",
+    "title": "Command empty",
+    "states": ["no-results"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

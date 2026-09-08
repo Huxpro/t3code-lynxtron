@@ -7613,6 +7613,8 @@ async function captureCell({
   let componentLabCommandLynxTyped = false;
   let componentLabCommandInitialVerified = false;
   let componentLabCommandEvidence = null;
+  let componentLabCommandWebEmptied = false;
+  let componentLabCommandLynxEmptied = false;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -8470,6 +8472,7 @@ async function captureCell({
       }
       if (
         componentLabCommandLynxTyped &&
+        !componentLabCommandEvidence?.filtered &&
         state?.lynx?.componentLabMetrics?.command?.inputValue === "project" &&
         JSON.stringify(state?.lynx?.componentLabMetrics?.command?.itemTexts) ===
           JSON.stringify(["Open project ⌘O"])
@@ -8477,6 +8480,64 @@ async function captureCell({
         componentLabCommandEvidence = {
           ...componentLabCommandEvidence,
           filtered: {
+            web: state.web.componentLabMetrics.command,
+            lynx: state.lynx.componentLabMetrics.command,
+          },
+        };
+        continue;
+      }
+      if (componentLabCommandEvidence?.filtered && !componentLabCommandWebEmptied) {
+        const focused = await focusRemoteElement(
+          cdp,
+          sessionId,
+          `(() => {
+            const input = document.getElementById('web-pane')?.contentWindow?.document
+              ?.querySelector('[aria-label="Component lab command input"]');
+            input?.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+            input?.select?.();
+            return input ?? null;
+          })()`,
+        );
+        if (!focused) throw new Error("Could not clear Web component lab CommandInput");
+        await cdp.send("Input.insertText", { text: "zzz" }, sessionId);
+        componentLabCommandWebEmptied = true;
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandWebEmptied &&
+        !componentLabCommandLynxEmptied &&
+        state?.web?.componentLabMetrics?.command?.inputValue === "zzz" &&
+        state?.web?.componentLabMetrics?.command?.emptyText === "No matching commands."
+      ) {
+        const focused = await focusRemoteElement(
+          cdp,
+          sessionId,
+          `(() => {
+            const root = document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            const host = root?.querySelector('[aria-label="Component lab command input"]');
+            host?.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+            const input = host?.shadowRoot?.querySelector('input') ?? host ?? null;
+            input?.select?.();
+            return input;
+          })()`,
+        );
+        if (!focused) throw new Error("Could not clear Lynx component lab CommandInput");
+        await cdp.send("Input.insertText", { text: "zzz" }, sessionId);
+        componentLabCommandLynxEmptied = true;
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandLynxEmptied &&
+        !componentLabCommandEvidence?.empty &&
+        state?.lynx?.componentLabMetrics?.command?.inputValue === "zzz" &&
+        state?.lynx?.componentLabMetrics?.command?.emptyText === "No matching commands."
+      ) {
+        componentLabCommandEvidence = {
+          ...componentLabCommandEvidence,
+          empty: {
             web: state.web.componentLabMetrics.command,
             lynx: state.lynx.componentLabMetrics.command,
           },
@@ -8489,6 +8550,9 @@ async function captureCell({
         componentLabCommandWebTyped &&
         componentLabCommandLynxTyped &&
         componentLabCommandEvidence?.filtered &&
+        componentLabCommandWebEmptied &&
+        componentLabCommandLynxEmptied &&
+        componentLabCommandEvidence?.empty &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
@@ -12177,20 +12241,23 @@ async function captureCell({
     (componentLabCommandInitialVerified &&
       componentLabCommandWebTyped &&
       componentLabCommandLynxTyped &&
-      state?.web?.componentLabMetrics?.command?.inputValue === "project" &&
-      state?.lynx?.componentLabMetrics?.command?.inputValue === "project" &&
+      componentLabCommandWebEmptied &&
+      componentLabCommandLynxEmptied &&
+      componentLabCommandEvidence?.empty &&
+      state?.web?.componentLabMetrics?.command?.inputValue === "zzz" &&
+      state?.lynx?.componentLabMetrics?.command?.inputValue === "zzz" &&
       state?.web?.componentLabMetrics?.command?.inputPlaceholder === "Search commands" &&
       state?.lynx?.componentLabMetrics?.command?.inputPlaceholder === "Search commands" &&
       state?.web?.componentLabMetrics?.command?.labelText === "Workspace" &&
       state?.lynx?.componentLabMetrics?.command?.labelText === "Workspace" &&
-      JSON.stringify(state?.web?.componentLabMetrics?.command?.itemTexts) ===
-        JSON.stringify(["Open project ⌘O"]) &&
-      JSON.stringify(state?.lynx?.componentLabMetrics?.command?.itemTexts) ===
-        JSON.stringify(["Open project ⌘O"]) &&
+      state?.web?.componentLabMetrics?.command?.itemTexts?.length === 0 &&
+      state?.lynx?.componentLabMetrics?.command?.itemTexts?.length === 0 &&
       state?.web?.componentLabMetrics?.command?.separatorCount === 0 &&
       state?.lynx?.componentLabMetrics?.command?.separatorCount === 0 &&
-      state?.web?.componentLabMetrics?.command?.shortcutText === "⌘O" &&
-      state?.lynx?.componentLabMetrics?.command?.shortcutText === "⌘O" &&
+      state?.web?.componentLabMetrics?.command?.emptyText === "No matching commands." &&
+      state?.lynx?.componentLabMetrics?.command?.emptyText === "No matching commands." &&
+      Math.abs(state.web.componentLabMetrics.command.empty.rect.height - 68) <= 1 &&
+      Math.abs(state.lynx.componentLabMetrics.command.empty.rect.height - 68) <= 1 &&
       state?.web?.componentLabMetrics?.command?.footerText === "Choose an action" &&
       state?.lynx?.componentLabMetrics?.command?.footerText === "Choose an action" &&
       state?.web?.componentLabMetrics?.command?.root?.rect?.width === 320 &&
@@ -12211,14 +12278,10 @@ async function captureCell({
         state.web.componentLabMetrics.command.footer.rect.height -
           state.lynx.componentLabMetrics.command.footer.rect.height,
       ) <= 2 &&
-      state?.web?.componentLabMetrics?.command?.itemBoxes?.length === 1 &&
-      state?.lynx?.componentLabMetrics?.command?.itemBoxes?.length === 1 &&
-      state.web.componentLabMetrics.command.itemBoxes.every(
-        (item) => Math.abs(item.rect.height - 32) <= 1 && item.rect.width >= 300,
-      ) &&
-      state.lynx.componentLabMetrics.command.itemBoxes.every(
-        (item) => Math.abs(item.rect.height - 32) <= 1 && item.rect.width >= 300,
-      ));
+      componentLabCommandEvidence.filtered.web.itemTexts.length === 1 &&
+      componentLabCommandEvidence.filtered.lynx.itemTexts.length === 1 &&
+      componentLabCommandEvidence.initial.web.itemBoxes.length === 2 &&
+      componentLabCommandEvidence.initial.lynx.itemBoxes.length === 2);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&

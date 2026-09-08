@@ -2047,6 +2047,10 @@ label:has(> select#reasoning-effort) select {
   min-height: 2.375rem;
 }
 
+.component-lab-command__empty {
+  min-height: 4rem;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

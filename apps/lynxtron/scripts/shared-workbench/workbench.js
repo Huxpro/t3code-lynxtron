@@ -377,6 +377,8 @@ function readComponentLabMetrics(root) {
           rootCommand?.querySelector('[data-slot="command-shortcut"]'),
         ),
         footerText: readComposedText(rootCommand?.querySelector('[data-slot="command-footer"]')),
+        empty: readElementBox(rootCommand?.querySelector('[data-slot="command-empty"]')),
+        emptyText: readComposedText(rootCommand?.querySelector('[data-slot="command-empty"]')),
       };
     })(),
     draftInput: (() => {
