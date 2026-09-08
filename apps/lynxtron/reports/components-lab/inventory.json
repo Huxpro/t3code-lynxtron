@@ -187,6 +187,18 @@
       "title": "Thread worktree indicator"
     },
     {
+      "category": "Navigation",
+      "id": "sidebar/SidebarChromeSurface#SidebarChromeHeaderSurface",
+      "states": ["default"],
+      "title": "Sidebar chrome header surface"
+    },
+    {
+      "category": "Navigation",
+      "id": "sidebar/SidebarChromeSurface#SidebarChromeFooterSurface",
+      "states": ["settings"],
+      "title": "Sidebar chrome footer surface"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5255,7 +5267,7 @@
     },
     {
       "authority": {
-        "line": 596,
+        "line": 600,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5276,7 +5288,7 @@
     },
     {
       "authority": {
-        "line": 454,
+        "line": 458,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5297,7 +5309,7 @@
     },
     {
       "authority": {
-        "line": 395,
+        "line": 399,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5318,7 +5330,7 @@
     },
     {
       "authority": {
-        "line": 216,
+        "line": 220,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5339,7 +5351,7 @@
     },
     {
       "authority": {
-        "line": 497,
+        "line": 501,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5360,7 +5372,7 @@
     },
     {
       "authority": {
-        "line": 167,
+        "line": 171,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5381,7 +5393,7 @@
     },
     {
       "authority": {
-        "line": 290,
+        "line": 294,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5402,7 +5414,7 @@
     },
     {
       "authority": {
-        "line": 202,
+        "line": 206,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5423,7 +5435,7 @@
     },
     {
       "authority": {
-        "line": 145,
+        "line": 149,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5444,7 +5456,7 @@
     },
     {
       "authority": {
-        "line": 317,
+        "line": 321,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5465,7 +5477,7 @@
     },
     {
       "authority": {
-        "line": 253,
+        "line": 257,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5486,7 +5498,28 @@
     },
     {
       "authority": {
-        "line": 352,
+        "line": 638,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabSidebarChromeStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabSidebarChromeStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 356,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5507,7 +5540,7 @@
     },
     {
       "authority": {
-        "line": 634,
+        "line": 655,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5541,7 +5574,7 @@
     },
     {
       "authority": {
-        "line": 519,
+        "line": 523,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5562,7 +5595,7 @@
     },
     {
       "authority": {
-        "line": 544,
+        "line": 548,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5583,7 +5616,7 @@
     },
     {
       "authority": {
-        "line": 620,
+        "line": 624,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5604,7 +5637,7 @@
     },
     {
       "authority": {
-        "line": 116,
+        "line": 120,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5625,7 +5658,7 @@
     },
     {
       "authority": {
-        "line": 141,
+        "line": 145,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -11930,15 +11963,27 @@
       "lynx": null,
       "name": "SidebarChromeFooterSurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "sidebar/SidebarChromeSurface#SidebarChromeFooterSurface",
+        "states": ["settings"],
+        "status": "covered",
+        "title": "Sidebar chrome footer surface"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/sidebar/SidebarChrome.tsx",
           "platform": "web"
@@ -11960,15 +12005,27 @@
       "lynx": null,
       "name": "SidebarChromeHeaderSurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "sidebar/SidebarChromeSurface#SidebarChromeHeaderSurface",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Sidebar chrome header surface"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/sidebar/SidebarChrome.tsx",
           "platform": "web"
@@ -23372,14 +23429,14 @@
     }
   ],
   "counts": {
-    "components": 750,
+    "components": 751,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 224,
+    "internal": 225,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 101,
-    "webOnly": 471
+    "stories": 103,
+    "webOnly": 472
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

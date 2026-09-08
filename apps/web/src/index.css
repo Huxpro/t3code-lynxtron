@@ -2119,6 +2119,22 @@ label:has(> select#reasoning-effort) select {
   height: 1.5rem;
 }
 
+.component-lab-sidebar-chrome-provider,
+.component-lab-sidebar-chrome {
+  width: 15.9375rem;
+}
+
+.component-lab-sidebar-chrome {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--sidebar);
+}
+
+.component-lab-sidebar-chrome .sidebar-brand-host {
+  position: static;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

@@ -437,6 +437,16 @@ function readComponentLabMetrics(root) {
         label: host?.getAttribute("aria-label") ?? null,
       };
     })(),
+    sidebarChrome: (() => {
+      const rootChrome = root.querySelector(".component-lab-sidebar-chrome");
+      return {
+        root: readElementBox(rootChrome),
+        header: readElementBox(rootChrome?.querySelector('[data-slot="sidebar-header"]')),
+        footer: readElementBox(rootChrome?.querySelector('[data-slot="sidebar-footer"]')),
+        brandText: readComposedText(rootChrome?.querySelector(".sidebar-brand-host")),
+        settingsText: readComposedText(rootChrome?.querySelector(".sidebar-settings-row")),
+      };
+    })(),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

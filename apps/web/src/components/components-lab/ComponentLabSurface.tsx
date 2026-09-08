@@ -110,6 +110,10 @@ import {
   prStatusIndicator,
 } from "../ThreadStatusIndicators";
 import { resolveThreadStatusPill } from "../Sidebar.logic";
+import {
+  SidebarChromeFooterSurface,
+  SidebarChromeHeaderSurface,
+} from "../sidebar/SidebarChromeSurface";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -631,6 +635,23 @@ function ComponentLabWorktreeStory() {
   );
 }
 
+function ComponentLabSidebarChromeStory() {
+  return (
+    <HostView className="component-lab-sidebar-chrome">
+      <SidebarChromeHeaderSurface
+        brand={<HostText className="component-lab-sidebar-chrome__brand">T3 Code</HostText>}
+        isElectron={false}
+        trigger={<Button size="icon-xs">≡</Button>}
+      />
+      <SidebarChromeFooterSurface>
+        <Button className="sidebar-settings-row" size="sm" variant="ghost">
+          Settings
+        </Button>
+      </SidebarChromeFooterSurface>
+    </HostView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -712,6 +733,22 @@ export function ComponentLabSurface() {
             title="Thread worktree indicator"
           >
             <ComponentLabWorktreeStory />
+          </StoryFrame>
+
+          <StoryFrame
+            id="sidebar/SidebarChromeSurface#SidebarChromeHeaderSurface"
+            title="Sidebar chrome header surface"
+          >
+            <ComponentLabSidebarChromeStory />
+          </StoryFrame>
+
+          <StoryFrame
+            id="sidebar/SidebarChromeSurface#SidebarChromeFooterSurface"
+            title="Sidebar chrome footer surface"
+          >
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared production Sidebar chrome composition above.
+            </HostText>
           </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">

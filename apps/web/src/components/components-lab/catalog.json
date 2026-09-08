@@ -186,6 +186,18 @@
     "states": ["branch-worktree"]
   },
   {
+    "id": "sidebar/SidebarChromeSurface#SidebarChromeHeaderSurface",
+    "category": "Navigation",
+    "title": "Sidebar chrome header surface",
+    "states": ["default"]
+  },
+  {
+    "id": "sidebar/SidebarChromeSurface#SidebarChromeFooterSurface",
+    "category": "Navigation",
+    "title": "Sidebar chrome footer surface",
+    "states": ["settings"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

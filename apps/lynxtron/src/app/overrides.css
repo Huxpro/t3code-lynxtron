@@ -12801,6 +12801,29 @@
   width: 24px;
   height: 24px;
 }
+.component-lab-sidebar-chrome-provider,
+.component-lab-sidebar-chrome {
+  width: 255px;
+}
+.component-lab-sidebar-chrome {
+  box-sizing: border-box;
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 8px;
+  background-color: var(--sidebar);
+}
+.component-lab-sidebar-chrome .sidebar-header,
+.component-lab-sidebar-chrome .sidebar-footer {
+  width: 100%;
+}
+.component-lab-sidebar-chrome .sidebar-footer {
+  height: 44px;
+}
+.component-lab-sidebar-chrome .sidebar-brand-host {
+  position: static;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

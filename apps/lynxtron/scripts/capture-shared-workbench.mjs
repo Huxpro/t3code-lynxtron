@@ -12549,6 +12549,24 @@ async function captureCell({
       Math.abs(state.web.componentLabMetrics.worktreeIndicator.icon.rect.height - 12) <= 1 &&
       Math.abs(state.lynx.componentLabMetrics.worktreeIndicator.icon.rect.width - 12) <= 1 &&
       Math.abs(state.lynx.componentLabMetrics.worktreeIndicator.icon.rect.height - 12) <= 1);
+  const componentLabSidebarChromeReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.sidebarChrome?.brandText === "T3 Code" &&
+      state?.lynx?.componentLabMetrics?.sidebarChrome?.brandText === "T3 Code" &&
+      state?.web?.componentLabMetrics?.sidebarChrome?.settingsText === "Settings" &&
+      state?.lynx?.componentLabMetrics?.sidebarChrome?.settingsText === "Settings" &&
+      state.web.componentLabMetrics.sidebarChrome.root.rect.width === 255 &&
+      state.lynx.componentLabMetrics.sidebarChrome.root.rect.width === 255 &&
+      state.web.componentLabMetrics.sidebarChrome.root.rect.height === 98 &&
+      state.lynx.componentLabMetrics.sidebarChrome.root.rect.height === 98 &&
+      state.web.componentLabMetrics.sidebarChrome.header.rect.width === 253 &&
+      state.lynx.componentLabMetrics.sidebarChrome.header.rect.width === 253 &&
+      state.web.componentLabMetrics.sidebarChrome.header.rect.height === 52 &&
+      state.lynx.componentLabMetrics.sidebarChrome.header.rect.height === 52 &&
+      state.web.componentLabMetrics.sidebarChrome.footer.rect.width === 253 &&
+      state.lynx.componentLabMetrics.sidebarChrome.footer.rect.width === 253 &&
+      state.web.componentLabMetrics.sidebarChrome.footer.rect.height === 44 &&
+      state.lynx.componentLabMetrics.sidebarChrome.footer.rect.height === 44);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14999,6 +15017,7 @@ async function captureCell({
     componentLabThreadStatusReady &&
     componentLabChangeRequestReady &&
     componentLabWorktreeReady &&
+    componentLabSidebarChromeReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15112,6 +15131,7 @@ async function captureCell({
       componentLabThreadStatusReady,
       componentLabChangeRequestReady,
       componentLabWorktreeReady,
+      componentLabSidebarChromeReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,
