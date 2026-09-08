@@ -60,6 +60,9 @@ describe("Lynx Tailwind compatibility", () => {
   });
 
   it("provides Lynx-safe replacements for equivalent declarations", () => {
+    expect(
+      declarationReplacement("--skeleton-highlight", "var(--alpha(var(--color-white)/64%))"),
+    ).toEqual([{ prop: "--skeleton-highlight", value: "rgba(255, 255, 255, 0.64)" }]);
     expect(declarationReplacement("inset", "4px 8px")).toEqual([
       { prop: "top", value: "4px" },
       { prop: "right", value: "8px" },

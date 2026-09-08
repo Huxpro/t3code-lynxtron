@@ -41,6 +41,17 @@ export function unsupportedDeclaration(property, value) {
 }
 
 export function declarationReplacement(property, value) {
+  if (property === "--skeleton-highlight") {
+    const alphaMatch = /^var\(--alpha\(var\(--color-white\)\/(4|64)%\)\)$/u.exec(value.trim());
+    if (alphaMatch?.[1]) {
+      return [
+        {
+          prop: property,
+          value: `rgba(255, 255, 255, ${Number(alphaMatch[1]) / 100})`,
+        },
+      ];
+    }
+  }
   if (property === "inset") {
     const values = value.trim().split(/\s+/u);
     if (values.length < 1 || values.length > 4) return null;
