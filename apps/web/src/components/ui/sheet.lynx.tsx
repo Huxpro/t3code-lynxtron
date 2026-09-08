@@ -9,6 +9,7 @@ import {
   useMemo,
   useState,
 } from "@lynx-js/react";
+import { ScrollArea } from "./scroll-area";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -125,19 +126,43 @@ export function SheetPopup({
   );
 }
 
-function Container({ children, ...props }: ElementProps) {
-  return <view {...props}>{children}</view>;
-}
-
 export const SheetPortal = ({ children }: ElementProps) => <>{children}</>;
 export const SheetOverlay = SheetBackdrop;
 export const SheetContent = SheetPopup;
-export const SheetHeader = Container;
-export const SheetFooter = Container;
-export const SheetTitle = ({ children, ...props }: ElementProps) => (
-  <text {...props}>{children}</text>
-);
-export const SheetDescription = ({ children, ...props }: ElementProps) => (
-  <text {...props}>{children}</text>
-);
-export const SheetPanel = Container;
+export function SheetHeader({ children, ...props }: ElementProps) {
+  return (
+    <view {...props} data-slot="sheet-header">
+      {children}
+    </view>
+  );
+}
+export function SheetFooter({ children, variant: _variant, ...props }: ElementProps) {
+  return (
+    <view {...props} data-slot="sheet-footer">
+      {children}
+    </view>
+  );
+}
+export function SheetTitle({ children, ...props }: ElementProps) {
+  return (
+    <text {...props} data-slot="sheet-title">
+      {children}
+    </text>
+  );
+}
+export function SheetDescription({ children, ...props }: ElementProps) {
+  return (
+    <text {...props} data-slot="sheet-description">
+      {children}
+    </text>
+  );
+}
+export function SheetPanel({ children, scrollFade: _scrollFade, ...props }: ElementProps) {
+  return (
+    <ScrollArea className="ui-sheet-panel-scroll" scrollFade={false}>
+      <view {...props} data-slot="sheet-panel">
+        {children}
+      </view>
+    </ScrollArea>
+  );
+}

@@ -287,6 +287,15 @@ function readComponentLabMetrics(root) {
         ? {
             popup: readElementBox(popup),
             viewport: readElementBox(viewport),
+            header: readElementBox(popup.querySelector('[data-slot="sheet-header"]')),
+            panelScroll: readElementBox(
+              popup.querySelector('[data-slot="sheet-panel-scroll"]') ??
+                popup.querySelector(".ui-sheet-panel-scroll"),
+            ),
+            panel: readElementBox(popup.querySelector('[data-slot="sheet-panel"]')),
+            footer: readElementBox(popup.querySelector('[data-slot="sheet-footer"]')),
+            title: readComposedText(popup.querySelector('[data-slot="sheet-title"]')),
+            description: readComposedText(popup.querySelector('[data-slot="sheet-description"]')),
             text: readComposedText(popup),
           }
         : null;

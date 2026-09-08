@@ -57,6 +57,11 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, '[data-component-lab-sheet-trigger=\"default\"]');
     assert.include(captureSource, '[data-component-lab-sheet-close=\"default\"]');
     assert.include(readerSource, '[data-component-lab-sheet-popup="default"]');
+    assert.include(readerSource, '[data-slot="sheet-header"]');
+    assert.include(readerSource, '[data-slot="sheet-panel"]');
+    assert.include(readerSource, '[data-slot="sheet-footer"]');
+    assert.include(readerSource, '[data-slot="sheet-title"]');
+    assert.include(readerSource, '[data-slot="sheet-description"]');
     assert.include(readerSource, "sheetViewportCount");
     assert.include(readerSource, "sheetBackdropCount");
     assert.include(captureSource, "componentLabMetrics?.sheetViewportCount === 0");

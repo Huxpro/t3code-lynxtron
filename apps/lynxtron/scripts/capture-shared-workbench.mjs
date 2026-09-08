@@ -8024,8 +8024,11 @@ async function captureCell({
       if (
         componentLabSheetWebOpened &&
         !componentLabSheetWebCaptured &&
+        state?.web?.componentLabMetrics?.sheet?.title === "Review changes" &&
+        state?.web?.componentLabMetrics?.sheet?.description ===
+          "Inspect the latest workspace changes." &&
         state?.web?.componentLabMetrics?.sheet?.text ===
-          "Review changes Inspect the latest workspace changes. Done" &&
+          "Review changes Inspect the latest workspace changes. Workspace details Done" &&
         state?.web?.componentLabMetrics?.sheet?.popup?.rect &&
         Number(state.web.componentLabMetrics.sheet.popup.style?.opacity) >= 0.99 &&
         Math.abs(
@@ -8090,10 +8093,28 @@ async function captureCell({
       if (
         componentLabSheetLynxOpened &&
         !componentLabSheetVerified &&
+        state?.lynx?.componentLabMetrics?.sheet?.title === "Review changes" &&
+        state?.lynx?.componentLabMetrics?.sheet?.description ===
+          "Inspect the latest workspace changes." &&
         state?.lynx?.componentLabMetrics?.sheet?.text ===
-          "Review changes Inspect the latest workspace changes. Done" &&
+          "Review changes Inspect the latest workspace changes. Workspace details Done" &&
         state?.lynx?.componentLabMetrics?.sheet?.popup?.rect &&
         componentLabSheetEvidence?.web?.popup?.rect &&
+        rectDeltaWithin(
+          componentLabSheetEvidence.web.header,
+          state.lynx.componentLabMetrics.sheet.header,
+          2,
+        ) &&
+        rectDeltaWithin(
+          componentLabSheetEvidence.web.panel,
+          state.lynx.componentLabMetrics.sheet.panel,
+          2,
+        ) &&
+        rectDeltaWithin(
+          componentLabSheetEvidence.web.footer,
+          state.lynx.componentLabMetrics.sheet.footer,
+          2,
+        ) &&
         Math.abs(
           componentLabSheetEvidence.web.popup.rect.width -
             state.lynx.componentLabMetrics.sheet.popup.rect.width,

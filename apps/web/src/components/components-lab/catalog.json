@@ -348,6 +348,48 @@
     "states": ["right"]
   },
   {
+    "id": "ui/sheet#SheetTrigger",
+    "category": "Overlays",
+    "title": "Sheet trigger",
+    "states": ["idle", "activated"]
+  },
+  {
+    "id": "ui/sheet#SheetClose",
+    "category": "Overlays",
+    "title": "Sheet close",
+    "states": ["idle", "activated"]
+  },
+  {
+    "id": "ui/sheet#SheetHeader",
+    "category": "Overlays",
+    "title": "Sheet header",
+    "states": ["title-description"]
+  },
+  {
+    "id": "ui/sheet#SheetPanel",
+    "category": "Overlays",
+    "title": "Sheet panel",
+    "states": ["content"]
+  },
+  {
+    "id": "ui/sheet#SheetFooter",
+    "category": "Overlays",
+    "title": "Sheet footer",
+    "states": ["actions"]
+  },
+  {
+    "id": "ui/sheet#SheetTitle",
+    "category": "Overlays",
+    "title": "Sheet title",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/sheet#SheetDescription",
+    "category": "Overlays",
+    "title": "Sheet description",
+    "states": ["default"]
+  },
+  {
     "id": "ui/dialog#DialogTrigger",
     "category": "Overlays",
     "title": "Dialog trigger",

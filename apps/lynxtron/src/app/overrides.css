@@ -12737,11 +12737,61 @@
   border-left-color: var(--border);
   box-sizing: border-box;
 }
-.component-lab-sheet__body {
+.component-lab-sheet__header {
+  --lynx-linear-weight: 0;
   display: linear;
   linear-orientation: vertical;
+  flex-shrink: 0;
+  gap: 8px;
+  width: 100%;
+  height: 84px;
+  padding: 24px 24px 12px;
+  box-sizing: border-box;
+}
+.component-lab-sheet__title {
+  color: var(--foreground);
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 20px;
+}
+.component-lab-sheet__description {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 20px;
+}
+.component-lab-sheet__panel {
+  --lynx-linear-weight: 0;
+  flex-shrink: 0;
+  width: 100%;
+  min-height: 64px;
+  padding: 12px 24px;
+  box-sizing: border-box;
+}
+.ui-sheet-panel-scroll {
+  --lynx-linear-weight: 1;
+  display: linear;
+  linear-orientation: vertical;
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 100%;
+  height: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.component-lab-sheet__footer {
+  --lynx-linear-weight: 0;
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  justify-content: flex-end;
+  width: 100%;
+  height: 80px;
   gap: 16px;
+  margin-top: auto;
   padding: 24px;
+  box-sizing: border-box;
 }
 .lynx-popover-popup {
   display: flex;

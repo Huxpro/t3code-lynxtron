@@ -49,7 +49,17 @@ import {
 import { ScrollArea } from "../ui/scroll-area";
 import { Popover, PopoverClose, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
-import { Sheet, SheetClose, SheetPopup, SheetTrigger } from "../ui/sheet";
+import {
+  Sheet,
+  SheetClose,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetPanel,
+  SheetPopup,
+  SheetTitle,
+  SheetTrigger,
+} from "../ui/sheet";
 import {
   Select,
   SelectGroup,
@@ -228,18 +238,23 @@ function ComponentLabSheetStory() {
         showCloseButton={false}
         side="right"
       >
-        <HostView className="component-lab-sheet__body">
-          <HostHeading className="component-lab-story__title">Review changes</HostHeading>
-          <HostText className="component-lab-host-text component-lab-host-text--muted">
+        <SheetHeader className="component-lab-sheet__header">
+          <SheetTitle className="component-lab-sheet__title">Review changes</SheetTitle>
+          <SheetDescription className="component-lab-sheet__description">
             Inspect the latest workspace changes.
-          </HostText>
+          </SheetDescription>
+        </SheetHeader>
+        <SheetPanel className="component-lab-sheet__panel" scrollFade={false}>
+          <HostText className="component-lab-host-text">Workspace details</HostText>
+        </SheetPanel>
+        <SheetFooter className="component-lab-sheet__footer" variant="bare">
           <SheetClose
             data-component-lab-sheet-close="default"
             render={<Button variant="outline" />}
           >
             Done
           </SheetClose>
-        </HostView>
+        </SheetFooter>
       </SheetPopup>
     </Sheet>
   );
@@ -456,6 +471,22 @@ export function ComponentLabSurface() {
               Exercised by the shared production Sheet composition above.
             </HostText>
           </StoryFrame>
+
+          {[
+            ["ui/sheet#SheetTrigger", "Sheet trigger"],
+            ["ui/sheet#SheetClose", "Sheet close"],
+            ["ui/sheet#SheetHeader", "Sheet header"],
+            ["ui/sheet#SheetPanel", "Sheet panel"],
+            ["ui/sheet#SheetFooter", "Sheet footer"],
+            ["ui/sheet#SheetTitle", "Sheet title"],
+            ["ui/sheet#SheetDescription", "Sheet description"],
+          ].map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared production Sheet composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
 
           <StoryFrame id="ui/popover#Popover" title="Popover">
             <ComponentLabPopoverStory />
