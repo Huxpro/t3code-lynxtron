@@ -2,7 +2,10 @@ import isolatedCatalog from "./isolatedCatalog.json";
 
 import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
-import { SourceControlMarkSurface } from "../settings/SettingsSurfaces";
+import {
+  SourceControlItemRowSurface,
+  SourceControlMarkSurface,
+} from "../settings/SettingsSurfaces";
 import { HostHeading, HostText, HostView } from "../ui/hostElements";
 
 export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: string }) {
@@ -32,6 +35,20 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
           <SourceControlMarkSurface tone="success" />
           <SourceControlMarkSurface tone="warning" />
           <SourceControlMarkSurface tone="muted" />
+        </HostView>
+      );
+    }
+    if (storyId === "settings/SettingsSurfaces#SourceControlItemRowSurface") {
+      return (
+        <HostView className="component-lab-source-control-rows component-lab-specimen-stack">
+          <SourceControlItemRowSurface
+            badge={<HostText>Authenticated</HostText>}
+            control={<HostText>Disable</HostText>}
+            label="GitHub"
+            mark={<SourceControlMarkSurface tone="success" />}
+            summary="Detected CLI"
+            version="2.81.0"
+          />
         </HostView>
       );
     }

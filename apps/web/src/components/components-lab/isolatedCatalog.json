@@ -22,5 +22,11 @@
     "category": "Settings",
     "title": "Status dot",
     "states": ["success", "warning", "muted"]
+  },
+  {
+    "id": "settings/SettingsSurfaces#SourceControlItemRowSurface",
+    "category": "Settings",
+    "title": "Source control item row",
+    "states": ["complete"]
   }
 ]

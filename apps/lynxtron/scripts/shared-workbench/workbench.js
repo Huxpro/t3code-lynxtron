@@ -561,6 +561,9 @@ function readComponentLabMetrics(root) {
       box: readElementBox(mark),
       classes: [...mark.classList],
     })),
+    isolatedSourceControlRows: readSourceControlRows(
+      root.querySelector(".component-lab-source-control-rows"),
+    ),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

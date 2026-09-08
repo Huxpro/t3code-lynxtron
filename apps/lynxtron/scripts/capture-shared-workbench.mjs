@@ -13084,7 +13084,22 @@ async function captureCell({
                 JSON.stringify(
                   state.lynx.componentLabMetrics.sourceControlMarks.map((mark) => mark.classes),
                 )
-            : false));
+            : componentStory === "settings/SettingsSurfaces#SourceControlItemRowSurface"
+              ? state?.web?.componentLabMetrics?.isolatedSourceControlRows?.length === 1 &&
+                state?.lynx?.componentLabMetrics?.isolatedSourceControlRows?.length === 1 &&
+                JSON.stringify(
+                  state.web.componentLabMetrics.isolatedSourceControlRows.map(({ text }) => text),
+                ) === JSON.stringify(["GitHub2.81.0AuthenticatedDetected CLIDisable"]) &&
+                JSON.stringify(
+                  state.lynx.componentLabMetrics.isolatedSourceControlRows.map(({ text }) => text),
+                ) === JSON.stringify(["GitHub2.81.0AuthenticatedDetected CLIDisable"]) &&
+                state.web.componentLabMetrics.isolatedSourceControlRows.every(
+                  ({ box }) => box.rect.width === 512 && box.rect.height > 0,
+                ) &&
+                state.lynx.componentLabMetrics.isolatedSourceControlRows.every(
+                  ({ box }) => box.rect.width === 512 && box.rect.height > 0,
+                )
+              : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&
