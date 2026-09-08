@@ -47,6 +47,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, '[data-component-lab-dialog-trigger=\"default\"]');
     assert.include(captureSource, '[data-component-lab-dialog-close=\"default\"]');
     assert.include(readerSource, '[data-component-lab-dialog-popup="default"]');
+    assert.include(readerSource, "backdropCount");
+    assert.include(readerSource, "viewportCount");
     assert.include(captureSource, "componentLabDialogEvidence");
     assert.include(captureSource, 'inputChannel: "dual-cdp-pointer"');
     assert.include(captureSource, "const componentLabPopoverReady =");

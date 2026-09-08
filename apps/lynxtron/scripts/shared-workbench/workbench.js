@@ -268,6 +268,8 @@ function readComponentLabMetrics(root) {
             description: readComposedText(popup.querySelector('[data-slot="dialog-description"]')),
             panel: readElementBox(popup.querySelector('[data-slot="dialog-panel"]')),
             footer: readElementBox(popup.querySelector('[data-slot="dialog-footer"]')),
+            backdropCount: root.querySelectorAll('[data-slot="dialog-backdrop"]').length,
+            viewportCount: root.querySelectorAll('[data-slot="dialog-viewport"]').length,
           }
         : null;
     })(),

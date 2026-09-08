@@ -236,6 +236,18 @@
     },
     {
       "category": "Overlays",
+      "id": "ui/dialog#DialogTrigger",
+      "states": ["idle", "activated"],
+      "title": "Dialog trigger"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/dialog#DialogClose",
+      "states": ["idle", "activated"],
+      "title": "Dialog close"
+    },
+    {
+      "category": "Overlays",
       "id": "ui/popover#Popover",
       "states": ["closed", "open", "closed-again"],
       "title": "Popover"
@@ -15088,7 +15100,11 @@
         "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogClose",
+        "states": ["idle", "activated"],
+        "status": "covered",
+        "title": "Dialog close"
       },
       "useSites": [
         {
@@ -15670,7 +15686,11 @@
         "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/dialog#DialogTrigger",
+        "states": ["idle", "activated"],
+        "status": "covered",
+        "title": "Dialog trigger"
       },
       "useSites": [
         {
@@ -22324,7 +22344,7 @@
     "internal": 215,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 51,
+    "stories": 53,
     "webOnly": 462
   },
   "generatedFrom": "apps/web/src/components",

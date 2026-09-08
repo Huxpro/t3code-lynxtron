@@ -234,6 +234,18 @@
     "states": ["default"]
   },
   {
+    "id": "ui/dialog#DialogTrigger",
+    "category": "Overlays",
+    "title": "Dialog trigger",
+    "states": ["idle", "activated"]
+  },
+  {
+    "id": "ui/dialog#DialogClose",
+    "category": "Overlays",
+    "title": "Dialog close",
+    "states": ["idle", "activated"]
+  },
+  {
     "id": "ui/popover#Popover",
     "category": "Overlays",
     "title": "Popover",

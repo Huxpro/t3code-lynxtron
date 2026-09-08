@@ -7916,6 +7916,10 @@ async function captureCell({
           "Connect another machine to this T3 Code workspace." &&
         state?.lynx?.componentLabMetrics?.dialog?.description ===
           "Connect another machine to this T3 Code workspace." &&
+        state?.web?.componentLabMetrics?.dialog?.backdropCount === 1 &&
+        state?.lynx?.componentLabMetrics?.dialog?.backdropCount === 1 &&
+        state?.web?.componentLabMetrics?.dialog?.viewportCount === 1 &&
+        state?.lynx?.componentLabMetrics?.dialog?.viewportCount === 1 &&
         state?.web?.componentLabMetrics?.dialog?.popup?.rect &&
         state?.lynx?.componentLabMetrics?.dialog?.popup?.rect &&
         Math.abs(

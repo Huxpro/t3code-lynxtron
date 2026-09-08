@@ -325,6 +325,8 @@ export function ComponentLabSurface() {
               ["ui/dialog#DialogFooter", "Dialog footer"],
               ["ui/dialog#DialogTitle", "Dialog title"],
               ["ui/dialog#DialogDescription", "Dialog description"],
+              ["ui/dialog#DialogTrigger", "Dialog trigger"],
+              ["ui/dialog#DialogClose", "Dialog close"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>
