@@ -52,5 +52,11 @@
     "category": "Settings",
     "title": "Archived threads surface",
     "states": ["one-project-one-thread"]
+  },
+  {
+    "id": "settings/SettingsSurfaces#AppearanceSettingsSurface",
+    "category": "Settings",
+    "title": "Appearance settings surface",
+    "states": ["four-canonical-rows"]
   }
 ]

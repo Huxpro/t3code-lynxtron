@@ -13166,7 +13166,51 @@ async function captureCell({
                             state.lynx.componentLabMetrics.isolatedArchivedThreads.section.rect
                               .height,
                         ) <= 1
-                      : false));
+                      : componentStory === "settings/SettingsSurfaces#AppearanceSettingsSurface"
+                        ? state?.web?.componentLabMetrics?.isolatedAppearanceSettings?.box?.rect
+                            ?.width === 512 &&
+                          state?.lynx?.componentLabMetrics?.isolatedAppearanceSettings?.box?.rect
+                            ?.width === 512 &&
+                          JSON.stringify(
+                            state.web.componentLabMetrics.isolatedAppearanceSettings.rows.map(
+                              ({ id, text }) => ({ id, text }),
+                            ),
+                          ) ===
+                            JSON.stringify([
+                              {
+                                id: "theme",
+                                text: "Theme Choose how T3 Code looks across the app. Dark",
+                              },
+                              {
+                                id: "setting-glass-opacity",
+                                text: "Glass opacity Control how transparent glass surfaces are. Higher values make menus, dialogs, and the composer more solid. 80%",
+                              },
+                              {
+                                id: "environment-identification",
+                                text: "Environment identification Choose how Dev and Nightly environments are identified. Artwork",
+                              },
+                              {
+                                id: "word-wrap",
+                                text: "Word wrap Wrap long lines in code blocks, tables, diffs, and file previews by default. On",
+                              },
+                            ]) &&
+                          JSON.stringify(
+                            state.lynx.componentLabMetrics.isolatedAppearanceSettings.rows.map(
+                              ({ id, text }) => ({ id, text }),
+                            ),
+                          ) ===
+                            JSON.stringify(
+                              state.web.componentLabMetrics.isolatedAppearanceSettings.rows.map(
+                                ({ id, text }) => ({ id, text }),
+                              ),
+                            ) &&
+                          state.web.componentLabMetrics.isolatedAppearanceSettings.rows.every(
+                            ({ box }) => box?.rect?.width === 512 && box.rect.height > 0,
+                          ) &&
+                          state.lynx.componentLabMetrics.isolatedAppearanceSettings.rows.every(
+                            ({ box }) => box?.rect?.width === 512 && box.rect.height > 0,
+                          )
+                        : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&

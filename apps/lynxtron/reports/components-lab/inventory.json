@@ -785,6 +785,12 @@
       "id": "settings/SettingsSurfaces#ArchivedThreadsSurface",
       "states": ["one-project-one-thread"],
       "title": "Archived threads surface"
+    },
+    {
+      "category": "Settings",
+      "id": "settings/SettingsSurfaces#AppearanceSettingsSurface",
+      "states": ["four-canonical-rows"],
+      "title": "Appearance settings surface"
     }
   ],
   "components": [
@@ -5479,7 +5485,7 @@
     },
     {
       "authority": {
-        "line": 15,
+        "line": 16,
         "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
       },
       "exported": true,
@@ -11767,18 +11773,26 @@
       "lynx": null,
       "name": "AppearanceSettingsSurface",
       "reuse": {
-        "authorityShared": false,
+        "authorityShared": true,
         "lynxUseSiteCount": 1,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Settings",
+        "id": "settings/SettingsSurfaces#AppearanceSettingsSurface",
+        "states": ["four-canonical-rows"],
+        "status": "covered",
+        "title": "Appearance settings surface"
       },
       "useSites": [
         {
           "path": "apps/lynxtron/src/app/components/AppearanceSettings.tsx",
           "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
         },
         {
           "path": "apps/web/src/components/settings/SettingsPanels.tsx",
@@ -24171,7 +24185,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 131,
+    "stories": 132,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",

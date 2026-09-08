@@ -6,6 +6,7 @@ import { ComposerToolbarRow } from "../chat/ComposerSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
 import {
   AccessListRowSurface,
+  AppearanceSettingsSurface,
   ArchivedThreadsSurface,
   SourceControlItemRowSurface,
   SourceControlMarkSurface,
@@ -113,6 +114,19 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
                 ],
               },
             ]}
+          />
+        </HostView>
+      );
+    }
+    if (storyId === "settings/SettingsSurfaces#AppearanceSettingsSurface") {
+      return (
+        <HostView className="component-lab-appearance-settings" style={{ width: "512px" }}>
+          <AppearanceSettingsSurface
+            environmentIdentificationControl={<HostText>Artwork</HostText>}
+            glassOpacityControl={<HostText>80%</HostText>}
+            showEnvironmentIdentification
+            themeControl={<HostText>Dark</HostText>}
+            wordWrapControl={<HostText>On</HostText>}
           />
         </HostView>
       );

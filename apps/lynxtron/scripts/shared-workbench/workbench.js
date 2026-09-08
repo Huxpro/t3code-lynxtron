@@ -606,6 +606,18 @@ function readComponentLabMetrics(root) {
         section: readElementBox(host?.firstElementChild),
       };
     })(),
+    isolatedAppearanceSettings: (() => {
+      const host = root.querySelector(".component-lab-appearance-settings");
+      const rowIds = ["theme", "setting-glass-opacity", "environment-identification", "word-wrap"];
+      return {
+        box: readElementBox(host),
+        section: readElementBox(host?.firstElementChild),
+        rows: rowIds.map((id) => {
+          const row = host?.querySelector(`#${id}`);
+          return { id, box: readElementBox(row), text: readComposedText(row) };
+        }),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");
