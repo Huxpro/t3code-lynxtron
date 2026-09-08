@@ -28,7 +28,7 @@ export function PlanExplanationSurface({ children }: { readonly children: ReactN
   );
 }
 
-/** Steps section: uppercase label plus one status row per step. */
+/** Steps section: emphasized label plus one status row per step. */
 export function PlanStepsSurface({
   steps,
   renderIcon,
@@ -39,8 +39,8 @@ export function PlanStepsSurface({
 }) {
   return (
     <HostView className="flex flex-col gap-1">
-      <HostText className="mb-2 block text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-        Steps
+      <HostText className="mb-2 block text-[10px] font-semibold tracking-widest text-muted-foreground/40">
+        STEPS
       </HostText>
       {steps.map((step) => (
         <HostView
@@ -97,8 +97,8 @@ export function ProposedPlanSectionSurface({
         aria-expanded={expanded}
       >
         {chevron}
-        <HostText className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40 group-hover:text-muted-foreground/60">
-          {title}
+        <HostText className="text-[10px] font-semibold tracking-widest text-muted-foreground/40 group-hover:text-muted-foreground/60">
+          {title.toUpperCase()}
         </HostText>
       </HostButton>
       {expanded && children ? (

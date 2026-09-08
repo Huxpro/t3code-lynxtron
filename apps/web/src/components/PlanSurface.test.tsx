@@ -19,7 +19,7 @@ describe("PlanStepsSurface", () => {
     const markup = renderToStaticMarkup(
       <PlanStepsSurface steps={steps} renderIcon={(status) => <span data-icon={status} />} />,
     );
-    expect(markup).toContain("Steps");
+    expect(markup).toContain("STEPS");
     expect(markup).toContain('data-icon="completed"');
     expect(markup).toContain('data-icon="inProgress"');
     expect(markup).toContain('data-icon="pending"');
@@ -51,7 +51,7 @@ describe("ProposedPlanSectionSurface", () => {
         <div data-body />
       </ProposedPlanSectionSurface>,
     );
-    expect(markup).toContain("Migration Plan");
+    expect(markup).toContain("MIGRATION PLAN");
     expect(markup).toContain('aria-expanded="false"');
     expect(markup).not.toContain("data-body");
   });

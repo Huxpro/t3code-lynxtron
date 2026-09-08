@@ -29,7 +29,7 @@ export function ComposerPendingApprovalSurface({
     >
       <HostView className="composer-pending-approval__heading flex flex-wrap items-center gap-2">
         <HostText
-          className={`composer-pending-approval__eyebrow uppercase text-sm tracking-[0.2em]${
+          className={`composer-pending-approval__eyebrow text-sm tracking-[0.2em]${
             eyebrowVisual ? " composer-pending-copy--authority-hidden" : ""
           }`}
         >
@@ -111,8 +111,8 @@ export function ComposerPendingQuestionSurface({
       className="composer-pending-question flex w-full flex-col px-4 py-3 sm:px-5"
     >
       <HostView className="composer-pending-question__heading mb-2 flex items-center gap-3">
-        <HostText className="composer-pending-question__header text-[11px] font-semibold tracking-widest text-muted-foreground/55 uppercase">
-          {header}
+        <HostText className="composer-pending-question__header text-[11px] font-semibold tracking-widest text-muted-foreground/55">
+          {header.toUpperCase()}
         </HostText>
         {questionCount > 1 ? (
           <HostText className="flex h-5 items-center rounded-md bg-muted/60 px-1.5 text-[10px] font-medium tabular-nums text-muted-foreground/60">

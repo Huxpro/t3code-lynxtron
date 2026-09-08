@@ -88,9 +88,9 @@ export function ModelPickerNewBadge() {
   return (
     <HostText
       aria-label="New model"
-      className="model-picker-new-badge shrink-0 rounded border border-amber-500/35 bg-amber-500/15 px-0.5 py-px text-[10px] font-bold uppercase leading-none tracking-wide text-amber-800 dark:border-amber-400/30 dark:bg-amber-400/12 dark:text-amber-200"
+      className="model-picker-new-badge shrink-0 rounded border border-amber-500/35 bg-amber-500/15 px-0.5 py-px text-[10px] font-bold leading-none tracking-wide text-amber-800 dark:border-amber-400/30 dark:bg-amber-400/12 dark:text-amber-200"
     >
-      New
+      NEW
     </HostText>
   );
 }
