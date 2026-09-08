@@ -737,6 +737,12 @@
       "id": "chat/ModelPickerSurface#ModelPickerEmptySurface",
       "states": ["no-models"],
       "title": "Model picker empty surface"
+    },
+    {
+      "category": "Navigation",
+      "id": "CommandPaletteSurface#PaletteSectionSurface",
+      "states": ["label"],
+      "title": "Palette section"
     }
   ],
   "components": [
@@ -5386,13 +5392,17 @@
       "lynx": null,
       "name": "PaletteSectionSurface",
       "reuse": {
-        "authorityShared": false,
+        "authorityShared": true,
         "lynxUseSiteCount": 1,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "CommandPaletteSurface#PaletteSectionSurface",
+        "states": ["label"],
+        "status": "covered",
+        "title": "Palette section"
       },
       "useSites": [
         {
@@ -5402,12 +5412,16 @@
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
         }
       ]
     },
     {
       "authority": {
-        "line": 6,
+        "line": 7,
         "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
       },
       "exported": true,
@@ -24063,7 +24077,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 123,
+    "stories": 124,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",

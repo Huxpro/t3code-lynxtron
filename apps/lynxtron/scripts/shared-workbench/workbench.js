@@ -546,6 +546,13 @@ function readComponentLabMetrics(root) {
         text: readComposedText(empty?.querySelector(".model-picker-empty-text")),
       };
     })(),
+    paletteSection: (() => {
+      const section = root.querySelector(".component-lab-palette-section .palette-section-label");
+      return {
+        box: readElementBox(section),
+        text: readComposedText(section),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

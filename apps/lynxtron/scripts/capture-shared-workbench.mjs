@@ -13045,8 +13045,30 @@ async function captureCell({
     !componentStory ||
     (state?.web?.componentLabMetrics?.stories?.[0]?.id === componentStory &&
       state?.lynx?.componentLabMetrics?.stories?.[0]?.id === componentStory &&
-      (componentStory !== "chat/ModelPickerSurface#ModelPickerEmptySurface" ||
-        componentLabModelPickerEmptyReady));
+      (componentStory === "chat/ModelPickerSurface#ModelPickerEmptySurface"
+        ? componentLabModelPickerEmptyReady
+        : componentStory === "CommandPaletteSurface#PaletteSectionSurface"
+          ? state?.web?.componentLabMetrics?.paletteSection?.text === "Recent Threads" &&
+            state?.lynx?.componentLabMetrics?.paletteSection?.text === "Recent Threads" &&
+            state.web.componentLabMetrics.paletteSection.box.rect.height === 28 &&
+            state.lynx.componentLabMetrics.paletteSection.box.rect.height === 28 &&
+            state.web.componentLabMetrics.paletteSection.box.style.fontSize === "12px" &&
+            state.lynx.componentLabMetrics.paletteSection.box.style.fontSize === "12px" &&
+            state.web.componentLabMetrics.paletteSection.box.style.lineHeight === "16px" &&
+            state.lynx.componentLabMetrics.paletteSection.box.style.lineHeight === "16px" &&
+            state.web.componentLabMetrics.paletteSection.box.style.fontWeight === "500" &&
+            state.lynx.componentLabMetrics.paletteSection.box.style.fontWeight === "500" &&
+            state.web.componentLabMetrics.paletteSection.box.style.paddingTop === "6px" &&
+            state.lynx.componentLabMetrics.paletteSection.box.style.paddingTop === "6px" &&
+            Math.abs(
+              Number.parseFloat(
+                state.web.componentLabMetrics.paletteSection.box.style.paddingLeft,
+              ) -
+                Number.parseFloat(
+                  state.lynx.componentLabMetrics.paletteSection.box.style.paddingLeft,
+                ),
+            ) <= 1
+          : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&

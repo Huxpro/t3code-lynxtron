@@ -154,6 +154,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, 'argValue("--component-story", "")');
     assert.include(captureSource, "expectedComponentLabStoryCount");
     assert.include(captureSource, "isolatedComponentStoryReady");
+    assert.include(captureSource, "CommandPaletteSurface#PaletteSectionSurface");
+    assert.include(readerSource, "paletteSection: (() =>");
     assert.include(readerSource, 'url.searchParams.get("componentStory")');
     assert.include(readerSource, 'lynxQuery.set("componentStory", componentStory)');
     assert.include(captureSource, "components-lab-isolated.web.bundle");

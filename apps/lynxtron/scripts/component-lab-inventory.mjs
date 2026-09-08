@@ -13,6 +13,7 @@ const WEB_SOURCE_ROOT = resolve(REPO_ROOT, "apps/web/src");
 const LYNX_SOURCE_ROOT = resolve(REPO_ROOT, "apps/lynxtron/src/app");
 const DEFAULT_OUTPUT = resolve(APP_ROOT, "reports/components-lab/inventory.json");
 const CATALOG_PATH = resolve(WEB_COMPONENT_ROOT, "components-lab/catalog.json");
+const ISOLATED_CATALOG_PATH = resolve(WEB_COMPONENT_ROOT, "components-lab/isolatedCatalog.json");
 const SOURCE_EXTENSIONS = [".web.tsx", ".lynx.tsx", ".tsx", ".web.ts", ".lynx.ts", ".ts"];
 
 function normalizePath(value) {
@@ -236,7 +237,11 @@ function platformFiles(module) {
 }
 
 export function generateComponentInventory() {
-  const catalog = JSON.parse(readFileSync(CATALOG_PATH, "utf8"));
+  const fullCatalog = JSON.parse(readFileSync(CATALOG_PATH, "utf8"));
+  const isolatedCatalog = JSON.parse(readFileSync(ISOLATED_CATALOG_PATH, "utf8"));
+  const catalog = [
+    ...new Map([...fullCatalog, ...isolatedCatalog].map((story) => [story.id, story])).values(),
+  ];
   const stories = new Map(catalog.map((story) => [story.id, story]));
   const componentFiles = sourceFiles(WEB_COMPONENT_ROOT);
   const authorityFiles = componentFiles.filter((path) => !path.endsWith(".lynx.tsx"));

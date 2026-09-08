@@ -1,0 +1,14 @@
+[
+  {
+    "id": "chat/ModelPickerSurface#ModelPickerEmptySurface",
+    "category": "Empty States",
+    "title": "Model picker empty surface",
+    "states": ["no-models"]
+  },
+  {
+    "id": "CommandPaletteSurface#PaletteSectionSurface",
+    "category": "Navigation",
+    "title": "Palette section",
+    "states": ["label"]
+  }
+]
