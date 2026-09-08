@@ -2088,6 +2088,12 @@ label:has(> select#reasoning-effort) select {
   width: 25rem;
 }
 
+.component-lab-thread-statuses {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

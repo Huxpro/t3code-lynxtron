@@ -12773,6 +12773,12 @@
 .component-lab-thread-error .thread-error-alert {
   width: 400px;
 }
+.component-lab-thread-statuses {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

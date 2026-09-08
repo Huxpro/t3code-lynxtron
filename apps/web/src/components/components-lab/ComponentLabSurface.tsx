@@ -102,6 +102,8 @@ import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/to
 import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/settingsLayout";
 import { ProjectFavicon } from "../ProjectFavicon";
 import { ThreadErrorBannerSurface } from "../chat/ThreadErrorBannerSurface";
+import { ThreadStatusLabel } from "../ThreadStatusIndicators";
+import { resolveThreadStatusPill } from "../Sidebar.logic";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -533,6 +535,58 @@ function ComponentLabThreadErrorStory() {
   ) : null;
 }
 
+function ComponentLabThreadStatusStory() {
+  type StatusThread = Parameters<typeof resolveThreadStatusPill>[0]["thread"];
+  const base = {
+    hasActionableProposedPlan: false,
+    hasPendingApprovals: false,
+    hasPendingUserInput: false,
+    interactionMode: "default",
+    latestTurn: null,
+    session: null,
+  } as StatusThread;
+  const states = [
+    resolveThreadStatusPill({
+      thread: {
+        ...base,
+        session: { status: "running" },
+      } as StatusThread,
+    }),
+    resolveThreadStatusPill({ thread: { ...base, hasPendingUserInput: true } }),
+    resolveThreadStatusPill({
+      thread: {
+        ...base,
+        latestTurn: {
+          completedAt: "2026-03-09T10:05:00.000Z",
+          startedAt: "2026-03-09T10:00:00.000Z",
+          state: "completed",
+        },
+        lastVisitedAt: "2026-03-09T10:04:00.000Z",
+      } as StatusThread,
+    }),
+    resolveThreadStatusPill({
+      thread: {
+        ...base,
+        hasActionableProposedPlan: true,
+        interactionMode: "plan",
+        latestTurn: {
+          completedAt: "2026-03-09T10:05:00.000Z",
+          startedAt: "2026-03-09T10:00:00.000Z",
+          state: "completed",
+        },
+        session: { activeTurnId: null, status: "ready" },
+      } as StatusThread,
+    }),
+  ].filter((status) => status !== null);
+  return (
+    <HostView className="component-lab-thread-statuses">
+      {states.map((status) => (
+        <ThreadStatusLabel key={status.label} status={status} />
+      ))}
+    </HostView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -587,6 +641,10 @@ export function ComponentLabSurface() {
             title="Thread error banner"
           >
             <ComponentLabThreadErrorStory />
+          </StoryFrame>
+
+          <StoryFrame id="ThreadStatusIndicators#ThreadStatusLabel" title="Thread status label">
+            <ComponentLabThreadStatusStory />
           </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">

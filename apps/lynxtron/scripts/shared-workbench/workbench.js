@@ -417,6 +417,12 @@ function readComponentLabMetrics(root) {
           }
         : null;
     })(),
+    threadStatusLabels: [
+      ...root.querySelectorAll(".component-lab-thread-statuses [aria-label]"),
+    ].map((element) => ({
+      label: element.getAttribute("aria-label"),
+      box: readElementBox(element),
+    })),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

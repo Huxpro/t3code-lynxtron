@@ -162,6 +162,12 @@
     "states": ["visible", "dismissed"]
   },
   {
+    "id": "ThreadStatusIndicators#ThreadStatusLabel",
+    "category": "Feedback",
+    "title": "Thread status label",
+    "states": ["working", "awaiting-input", "completed", "plan-ready"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

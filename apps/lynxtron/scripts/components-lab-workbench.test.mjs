@@ -110,6 +110,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(readerSource, "baseUiInertCount");
     assert.include(readerSource, "threadErrorBanner: (() =>");
     assert.include(captureSource, "componentLabThreadErrorEvidence");
+    assert.include(readerSource, "threadStatusLabels:");
+    assert.include(captureSource, "const componentLabThreadStatusReady =");
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");

@@ -12504,6 +12504,21 @@ async function captureCell({
       componentLabThreadErrorEvidence?.lynx?.action?.rect?.width > 0 &&
       state?.web?.componentLabMetrics?.threadErrorBanner === null &&
       state?.lynx?.componentLabMetrics?.threadErrorBanner === null);
+  const componentLabThreadStatusReady =
+    !isComponentsLabState ||
+    (JSON.stringify(
+      state?.web?.componentLabMetrics?.threadStatusLabels?.map(({ label }) => label),
+    ) === JSON.stringify(["Working", "Awaiting Input", "Completed", "Plan Ready"]) &&
+      JSON.stringify(
+        state?.lynx?.componentLabMetrics?.threadStatusLabels?.map(({ label }) => label),
+      ) === JSON.stringify(["Working", "Awaiting Input", "Completed", "Plan Ready"]) &&
+      state.web.componentLabMetrics.threadStatusLabels.every(
+        ({ box }, index) =>
+          Math.abs(
+            box.rect.height -
+              state.lynx.componentLabMetrics.threadStatusLabels[index].box.rect.height,
+          ) <= 1,
+      ));
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14951,6 +14966,7 @@ async function captureCell({
     componentLabCommandReady &&
     componentLabCommandDialogReady &&
     componentLabThreadErrorReady &&
+    componentLabThreadStatusReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15061,6 +15077,7 @@ async function captureCell({
       componentLabCommandReady,
       componentLabCommandDialogReady,
       componentLabThreadErrorReady,
+      componentLabThreadStatusReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,

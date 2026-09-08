@@ -164,6 +164,12 @@
     },
     {
       "category": "Feedback",
+      "id": "ThreadStatusIndicators#ThreadStatusLabel",
+      "states": ["working", "awaiting-input", "completed", "plan-ready"],
+      "title": "Thread status label"
+    },
+    {
+      "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
       "title": "Badge"
@@ -5231,7 +5237,7 @@
     },
     {
       "authority": {
-        "line": 446,
+        "line": 448,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5252,7 +5258,7 @@
     },
     {
       "authority": {
-        "line": 387,
+        "line": 389,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5273,7 +5279,7 @@
     },
     {
       "authority": {
-        "line": 208,
+        "line": 210,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5294,7 +5300,7 @@
     },
     {
       "authority": {
-        "line": 489,
+        "line": 491,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5315,7 +5321,7 @@
     },
     {
       "authority": {
-        "line": 159,
+        "line": 161,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5336,7 +5342,7 @@
     },
     {
       "authority": {
-        "line": 282,
+        "line": 284,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5357,7 +5363,7 @@
     },
     {
       "authority": {
-        "line": 194,
+        "line": 196,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5378,7 +5384,7 @@
     },
     {
       "authority": {
-        "line": 137,
+        "line": 139,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5399,7 +5405,7 @@
     },
     {
       "authority": {
-        "line": 309,
+        "line": 311,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5420,7 +5426,7 @@
     },
     {
       "authority": {
-        "line": 245,
+        "line": 247,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5441,7 +5447,7 @@
     },
     {
       "authority": {
-        "line": 344,
+        "line": 346,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5462,7 +5468,7 @@
     },
     {
       "authority": {
-        "line": 536,
+        "line": 590,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5496,7 +5502,7 @@
     },
     {
       "authority": {
-        "line": 511,
+        "line": 513,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5517,7 +5523,28 @@
     },
     {
       "authority": {
-        "line": 108,
+        "line": 538,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabThreadStatusStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabThreadStatusStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 110,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5538,7 +5565,7 @@
     },
     {
       "authority": {
-        "line": 133,
+        "line": 135,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -12683,15 +12710,27 @@
       },
       "name": "ThreadStatusLabel",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ThreadStatusIndicators#ThreadStatusLabel",
+        "states": ["working", "awaiting-input", "completed", "plan-ready"],
+        "status": "covered",
+        "title": "Thread status label"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/Sidebar.tsx",
           "platform": "web"
@@ -23237,14 +23276,14 @@
     }
   ],
   "counts": {
-    "components": 747,
+    "components": 748,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 221,
+    "internal": 222,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 97,
-    "webOnly": 468
+    "stories": 98,
+    "webOnly": 469
   },
   "generatedFrom": "apps/web/src/components",
   "method": {
