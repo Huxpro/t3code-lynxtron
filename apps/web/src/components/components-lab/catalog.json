@@ -148,5 +148,41 @@
     "category": "Settings",
     "title": "Settings row",
     "states": ["default", "status", "control", "unavailable"]
+  },
+  {
+    "id": "ui/empty#Empty",
+    "category": "Feedback",
+    "title": "Empty state",
+    "states": ["icon", "title", "description", "action"]
+  },
+  {
+    "id": "ui/empty#EmptyHeader",
+    "category": "Feedback",
+    "title": "Empty header",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/empty#EmptyMedia",
+    "category": "Feedback",
+    "title": "Empty media",
+    "states": ["default", "icon"]
+  },
+  {
+    "id": "ui/empty#EmptyTitle",
+    "category": "Feedback",
+    "title": "Empty title",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/empty#EmptyDescription",
+    "category": "Feedback",
+    "title": "Empty description",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/empty#EmptyContent",
+    "category": "Feedback",
+    "title": "Empty content",
+    "states": ["action"]
   }
 ]

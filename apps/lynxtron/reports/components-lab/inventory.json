@@ -149,6 +149,42 @@
       "id": "settings/settingsLayout#SettingsRow",
       "states": ["default", "status", "control", "unavailable"],
       "title": "Settings row"
+    },
+    {
+      "category": "Feedback",
+      "id": "ui/empty#Empty",
+      "states": ["icon", "title", "description", "action"],
+      "title": "Empty state"
+    },
+    {
+      "category": "Feedback",
+      "id": "ui/empty#EmptyHeader",
+      "states": ["default"],
+      "title": "Empty header"
+    },
+    {
+      "category": "Feedback",
+      "id": "ui/empty#EmptyMedia",
+      "states": ["default", "icon"],
+      "title": "Empty media"
+    },
+    {
+      "category": "Feedback",
+      "id": "ui/empty#EmptyTitle",
+      "states": ["default"],
+      "title": "Empty title"
+    },
+    {
+      "category": "Feedback",
+      "id": "ui/empty#EmptyDescription",
+      "states": ["default"],
+      "title": "Empty description"
+    },
+    {
+      "category": "Feedback",
+      "id": "ui/empty#EmptyContent",
+      "states": ["action"],
+      "title": "Empty content"
     }
   ],
   "components": [
@@ -4779,7 +4815,7 @@
     },
     {
       "authority": {
-        "line": 49,
+        "line": 57,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4800,7 +4836,7 @@
     },
     {
       "authority": {
-        "line": 68,
+        "line": 76,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -4834,7 +4870,7 @@
     },
     {
       "authority": {
-        "line": 20,
+        "line": 28,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4855,7 +4891,7 @@
     },
     {
       "authority": {
-        "line": 45,
+        "line": 53,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -15375,17 +15411,29 @@
       "name": "Empty",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 5
+        "webUseSiteCount": 6
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ui/empty#Empty",
+        "states": ["icon", "title", "description", "action"],
+        "status": "covered",
+        "title": "Empty state"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/MobileClientsUserProfilePage.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/NoActiveThreadState.tsx",
@@ -15422,15 +15470,27 @@
       },
       "name": "EmptyContent",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ui/empty#EmptyContent",
+        "states": ["action"],
+        "status": "covered",
+        "title": "Empty content"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/settings/SourceControlSettings.tsx",
           "platform": "web"
@@ -15451,17 +15511,29 @@
       "name": "EmptyDescription",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 5
+        "webUseSiteCount": 6
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ui/empty#EmptyDescription",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Empty description"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/MobileClientsUserProfilePage.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/NoActiveThreadState.tsx",
@@ -15499,17 +15571,29 @@
       "name": "EmptyHeader",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 5
+        "webUseSiteCount": 6
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ui/empty#EmptyHeader",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Empty header"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/MobileClientsUserProfilePage.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/NoActiveThreadState.tsx",
@@ -15547,17 +15631,29 @@
       "name": "EmptyMedia",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 3
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ui/empty#EmptyMedia",
+        "states": ["default", "icon"],
+        "status": "covered",
+        "title": "Empty media"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/MobileClientsUserProfilePage.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/SettingsSurfaces.tsx",
@@ -15587,17 +15683,29 @@
       "name": "EmptyTitle",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 5
+        "webUseSiteCount": 6
       },
       "story": {
-        "status": "uncovered"
+        "category": "Feedback",
+        "id": "ui/empty#EmptyTitle",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Empty title"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/MobileClientsUserProfilePage.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/NoActiveThreadState.tsx",
@@ -21726,7 +21834,7 @@
     "internal": 210,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 25,
+    "stories": 31,
     "webOnly": 457
   },
   "generatedFrom": "apps/web/src/components",

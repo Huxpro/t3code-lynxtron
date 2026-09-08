@@ -4,6 +4,14 @@ import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "../ui/empty";
 import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements";
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
@@ -221,6 +229,55 @@ export function ComponentLabSurface() {
           <StoryFrame id="settings/settingsLayout#SettingsRow" title="Settings row">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Rendered by the shared Settings section fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/empty#Empty" title="Empty state">
+            <Empty className="settings-remote-empty">
+              <EmptyMedia className="settings-remote-empty__media" variant="icon">
+                <HostText className="component-lab-host-text">◇</HostText>
+              </EmptyMedia>
+              <EmptyHeader className="settings-remote-empty__header">
+                <EmptyTitle className="settings-remote-empty__title">No environments</EmptyTitle>
+                <EmptyDescription className="settings-remote-empty__description">
+                  Add an environment to continue remotely.
+                </EmptyDescription>
+              </EmptyHeader>
+              <EmptyContent>
+                <Button size="sm" variant="outline">
+                  Add environment
+                </Button>
+              </EmptyContent>
+            </Empty>
+          </StoryFrame>
+
+          <StoryFrame id="ui/empty#EmptyHeader" title="Empty header">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Shared by the empty-state fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/empty#EmptyMedia" title="Empty media">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Uses the production icon media layers.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/empty#EmptyTitle" title="Empty title">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Uses the production empty-state heading.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/empty#EmptyDescription" title="Empty description">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Uses the production supporting copy.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/empty#EmptyContent" title="Empty content">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Uses the production action container.
             </HostText>
           </StoryFrame>
 
