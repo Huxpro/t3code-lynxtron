@@ -246,6 +246,12 @@
     "states": ["empty"]
   },
   {
+    "id": "RightPanelSurface#RightPanelEmptySurface",
+    "category": "Empty States",
+    "title": "Right panel empty surface",
+    "states": ["empty"]
+  },
+  {
     "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
     "category": "Data Display",
     "title": "File tree file row",

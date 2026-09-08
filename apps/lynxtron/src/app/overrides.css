@@ -12863,6 +12863,14 @@
   width: 16px;
   height: 16px;
 }
+.component-lab-right-panel-empty {
+  display: flex;
+  width: 640px;
+  height: 384px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
+}
 .component-lab-plan .plan-disclosure-toggle {
   padding-top: 3px;
   padding-bottom: 3px;

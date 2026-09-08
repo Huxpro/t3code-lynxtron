@@ -12958,8 +12958,8 @@ async function captureCell({
       componentLabChatHeaderEvidence.initial.lynx.root.rect.height === 52 &&
       componentLabChatHeaderEvidence.initial.web.title.rect.height ===
         componentLabChatHeaderEvidence.initial.lynx.title.rect.height &&
-      componentLabChatHeaderEvidence.clicked.web.count === "New thread 1" &&
-      componentLabChatHeaderEvidence.clicked.lynx.count === "New thread 1");
+      componentLabChatHeaderEvidence?.clicked?.web?.count === "New thread 1" &&
+      componentLabChatHeaderEvidence?.clicked?.lynx?.count === "New thread 1");
   const componentLabPlanReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.plan?.explanation ===
@@ -12994,6 +12994,16 @@ async function captureCell({
         "No active plan yet. Plans will appear here when generated." &&
       state.lynx.componentLabMetrics.plan.empty ===
         "No active plan yet. Plans will appear here when generated.");
+  const componentLabRightPanelReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.rightPanel?.empty.rect.width === 638 &&
+      state.lynx.componentLabMetrics.rightPanel.empty.rect.width === 638 &&
+      state.web.componentLabMetrics.rightPanel.empty.rect.height === 382 &&
+      state.lynx.componentLabMetrics.rightPanel.empty.rect.height === 382 &&
+      state.web.componentLabMetrics.rightPanel.emptyTitle === "Open a surface" &&
+      state.lynx.componentLabMetrics.rightPanel.emptyTitle === "Open a surface" &&
+      state.web.componentLabMetrics.rightPanel.cards.length === 0 &&
+      state.lynx.componentLabMetrics.rightPanel.cards.length === 0);
   const componentLabHostListReady =
     !isComponentsLabState ||
     (componentLabHostListScrolled &&
@@ -15546,6 +15556,7 @@ async function captureCell({
     componentLabChangedFilesCardReady &&
     componentLabChatHeaderReady &&
     componentLabPlanReady &&
+    componentLabRightPanelReady &&
     componentLabHostListReady &&
     componentLabHostLayoutReady &&
     componentLabT3WordmarkReady &&
@@ -15668,6 +15679,7 @@ async function captureCell({
       componentLabChangedFilesCardReady,
       componentLabChatHeaderReady,
       componentLabPlanReady,
+      componentLabRightPanelReady,
       componentLabHostListReady,
       componentLabHostLayoutReady,
       componentLabT3WordmarkReady,
@@ -15866,6 +15878,15 @@ async function captureCell({
                   inputChannel: "rendered-static-states",
                   web: state.web.componentLabMetrics.plan,
                   lynx: state.lynx.componentLabMetrics.plan,
+                }
+              : null,
+          rightPanel:
+            state?.web?.componentLabMetrics?.rightPanel &&
+            state?.lynx?.componentLabMetrics?.rightPanel
+              ? {
+                  inputChannel: "rendered-static-states",
+                  web: state.web.componentLabMetrics.rightPanel,
+                  lynx: state.lynx.componentLabMetrics.rightPanel,
                 }
               : null,
           hostList: componentLabHostListEvidence,

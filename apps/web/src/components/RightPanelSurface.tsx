@@ -127,7 +127,6 @@ export function RightPanelEmptySurface({
    */
   readonly renderDisabledWrapper?: (action: RightPanelActionItem, card: ReactNode) => ReactNode;
 }) {
-  const wrap = renderDisabledWrapper ?? ((_action, card) => card);
   const actionRows = Array.from({ length: Math.ceil(actions.length / 2) }, (_unused, index) =>
     actions.slice(index * 2, index * 2 + 2),
   );
@@ -177,7 +176,9 @@ export function RightPanelEmptySurface({
                 );
                 return (
                   <Fragment key={action.key}>
-                    {action.disabled ? wrap(action, card) : card}
+                    {action.disabled && renderDisabledWrapper
+                      ? renderDisabledWrapper(action, card)
+                      : card}
                   </Fragment>
                 );
               })}

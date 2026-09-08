@@ -247,6 +247,12 @@
       "title": "Plan empty state"
     },
     {
+      "category": "Empty States",
+      "id": "RightPanelSurface#RightPanelEmptySurface",
+      "states": ["empty"],
+      "title": "Right panel empty surface"
+    },
+    {
       "category": "Data Display",
       "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
       "states": ["default", "selected"],
@@ -5433,7 +5439,7 @@
     },
     {
       "authority": {
-        "line": 713,
+        "line": 714,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5454,7 +5460,7 @@
     },
     {
       "authority": {
-        "line": 625,
+        "line": 626,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5475,7 +5481,7 @@
     },
     {
       "authority": {
-        "line": 759,
+        "line": 760,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5496,7 +5502,7 @@
     },
     {
       "authority": {
-        "line": 483,
+        "line": 484,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5517,7 +5523,7 @@
     },
     {
       "authority": {
-        "line": 424,
+        "line": 425,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5538,7 +5544,7 @@
     },
     {
       "authority": {
-        "line": 245,
+        "line": 246,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5559,7 +5565,7 @@
     },
     {
       "authority": {
-        "line": 526,
+        "line": 527,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5580,7 +5586,7 @@
     },
     {
       "authority": {
-        "line": 680,
+        "line": 681,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5601,7 +5607,7 @@
     },
     {
       "authority": {
-        "line": 819,
+        "line": 840,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5622,7 +5628,7 @@
     },
     {
       "authority": {
-        "line": 805,
+        "line": 826,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5643,7 +5649,7 @@
     },
     {
       "authority": {
-        "line": 196,
+        "line": 197,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5664,7 +5670,7 @@
     },
     {
       "authority": {
-        "line": 776,
+        "line": 777,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5685,7 +5691,7 @@
     },
     {
       "authority": {
-        "line": 319,
+        "line": 320,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5706,7 +5712,28 @@
     },
     {
       "authority": {
-        "line": 231,
+        "line": 818,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabRightPanelEmptyStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabRightPanelEmptyStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 232,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5727,7 +5754,7 @@
     },
     {
       "authority": {
-        "line": 174,
+        "line": 175,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5748,7 +5775,7 @@
     },
     {
       "authority": {
-        "line": 346,
+        "line": 347,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5769,7 +5796,7 @@
     },
     {
       "authority": {
-        "line": 282,
+        "line": 283,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5790,7 +5817,7 @@
     },
     {
       "authority": {
-        "line": 663,
+        "line": 664,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5811,7 +5838,7 @@
     },
     {
       "authority": {
-        "line": 381,
+        "line": 382,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5832,7 +5859,7 @@
     },
     {
       "authority": {
-        "line": 860,
+        "line": 881,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5866,7 +5893,7 @@
     },
     {
       "authority": {
-        "line": 548,
+        "line": 549,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5887,7 +5914,7 @@
     },
     {
       "authority": {
-        "line": 573,
+        "line": 574,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5908,7 +5935,7 @@
     },
     {
       "authority": {
-        "line": 830,
+        "line": 851,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5929,7 +5956,7 @@
     },
     {
       "authority": {
-        "line": 649,
+        "line": 650,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5950,7 +5977,7 @@
     },
     {
       "authority": {
-        "line": 145,
+        "line": 146,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5971,7 +5998,7 @@
     },
     {
       "authority": {
-        "line": 170,
+        "line": 171,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -8441,17 +8468,29 @@
       "lynx": null,
       "name": "RightPanelEmptySurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Empty States",
+        "id": "RightPanelSurface#RightPanelEmptySurface",
+        "states": ["empty"],
+        "status": "covered",
+        "title": "Right panel empty surface"
       },
       "useSites": [
         {
           "path": "apps/lynxtron/src/app/components/RightPanel.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         },
         {
@@ -23936,14 +23975,14 @@
     }
   ],
   "counts": {
-    "components": 759,
+    "components": 760,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 527,
-    "internal": 232,
+    "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 120,
-    "webOnly": 479
+    "stories": 121,
+    "webOnly": 480
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

@@ -518,6 +518,19 @@ function readComponentLabMetrics(root) {
         empty: readComposedText(root.querySelector(".component-lab-plan-empty")),
       };
     })(),
+    rightPanel: (() => {
+      const emptyFixture = root.querySelector(".component-lab-right-panel-empty");
+      const empty = emptyFixture?.querySelector("[data-right-panel-empty-state]");
+      return {
+        empty: readElementBox(empty),
+        emptyTitle: readComposedText(empty?.querySelector(".right-panel-empty__title")),
+        cards: [...(empty?.querySelectorAll("[data-right-panel-action]") ?? [])].map((card) => ({
+          key: card.getAttribute("data-right-panel-action"),
+          box: readElementBox(card),
+          text: readComposedText(card),
+        })),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

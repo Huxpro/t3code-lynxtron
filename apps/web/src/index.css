@@ -2183,6 +2183,14 @@ label:has(> select#reasoning-effort) select {
   flex-shrink: 0;
 }
 
+.component-lab-right-panel-empty {
+  display: flex;
+  width: 40rem;
+  height: 24rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
 .component-lab-file-tree__icon {
   display: inline-flex;
   width: 1rem;

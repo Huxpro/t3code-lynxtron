@@ -133,6 +133,7 @@ import {
 } from "../sidebar/SidebarChromeSurface";
 import { T3Wordmark } from "../sidebar/T3Wordmark";
 import { SidebarUpdatePillSurface } from "../sidebar/SidebarUpdatePillSurface";
+import { RightPanelEmptySurface } from "../RightPanelSurface";
 import {
   PlanEmptySurface,
   PlanExplanationSurface,
@@ -814,6 +815,14 @@ function ComponentLabPlanStory() {
   );
 }
 
+function ComponentLabRightPanelEmptyStory() {
+  return (
+    <HostView className="component-lab-right-panel-empty">
+      <RightPanelEmptySurface actions={[]} />
+    </HostView>
+  );
+}
+
 function ComponentLabHostListStory() {
   return (
     <HostScrollView className="component-lab-host-scroll">
@@ -1013,6 +1022,10 @@ export function ComponentLabSurface() {
             <HostView className="component-lab-plan-empty">
               <PlanEmptySurface />
             </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="RightPanelSurface#RightPanelEmptySurface" title="Right panel empty state">
+            <ComponentLabRightPanelEmptyStory />
           </StoryFrame>
 
           {(
