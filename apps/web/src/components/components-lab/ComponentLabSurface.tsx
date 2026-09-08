@@ -42,7 +42,15 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "../ui/empty";
-import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements";
+import {
+  HostButton,
+  HostHeading,
+  HostList,
+  HostListItem,
+  HostScrollView,
+  HostText,
+  HostView,
+} from "../ui/hostElements";
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
 import { Label } from "../ui/label";
@@ -690,6 +698,20 @@ function ComponentLabFileTreeStory() {
   );
 }
 
+function ComponentLabHostListStory() {
+  return (
+    <HostScrollView className="component-lab-host-scroll">
+      <HostList className="component-lab-host-list">
+        {Array.from({ length: 6 }, (_, index) => (
+          <HostListItem className="component-lab-host-list__item" key={index}>
+            <HostText>Host row {index + 1}</HostText>
+          </HostListItem>
+        ))}
+      </HostList>
+    </HostScrollView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -805,6 +827,23 @@ export function ComponentLabSurface() {
             <StoryFrame id={id} key={id} title={title}>
               <HostText className="component-lab-host-text component-lab-host-text--muted">
                 Exercised by the shared production File tree composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
+
+          <StoryFrame id="ui/hostElements#HostScrollView" title="Host scroll view">
+            <ComponentLabHostListStory />
+          </StoryFrame>
+
+          {(
+            [
+              ["ui/hostElements#HostList", "Host list"],
+              ["ui/hostElements#HostListItem", "Host list item"],
+            ] as const
+          ).map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared Host scroll composition above.
               </HostText>
             </StoryFrame>
           ))}

@@ -7631,6 +7631,8 @@ async function captureCell({
   let componentLabFileTreeSelected = false;
   let componentLabFileTreeCollapsed = false;
   let componentLabFileTreeEvidence = null;
+  let componentLabHostListScrolled = false;
+  let componentLabHostListEvidence = null;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -8829,6 +8831,54 @@ async function captureCell({
             lynx: state.lynx.componentLabMetrics.fileTree,
           },
         };
+        continue;
+      }
+      if (
+        componentLabFileTreeCollapsed &&
+        !componentLabHostListScrolled &&
+        state?.web?.componentLabMetrics?.hostList?.items?.length === 6 &&
+        state?.lynx?.componentLabMetrics?.hostList?.items?.length === 6 &&
+        state?.web?.componentLabMetrics?.hostList?.scrollTop === 0 &&
+        state?.lynx?.componentLabMetrics?.hostList?.scrollTop === 0
+      ) {
+        componentLabHostListEvidence = {
+          inputChannel: "dual-cdp-wheel",
+          initial: {
+            web: state.web.componentLabMetrics.hostList,
+            lynx: state.lynx.componentLabMetrics.hostList,
+          },
+          scrolled: null,
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", ".component-lab-host-scroll") ?? null,
+              lynx: w?.elementCenterVisible("lynx", ".component-lab-host-scroll") ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchMouseWheel(cdp, sessionId, points.web, 48);
+        if (points?.lynx) await dispatchMouseWheel(cdp, sessionId, points.lynx, 48);
+        componentLabHostListScrolled = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabHostListScrolled &&
+        !componentLabHostListEvidence?.scrolled &&
+        (state?.web?.componentLabMetrics?.hostList?.scrollTop ?? 0) > 0 &&
+        (state?.lynx?.componentLabMetrics?.hostList?.scrollTop ?? 0) > 0
+      ) {
+        componentLabHostListEvidence = {
+          ...componentLabHostListEvidence,
+          scrolled: {
+            web: state.web.componentLabMetrics.hostList,
+            lynx: state.lynx.componentLabMetrics.hostList,
+          },
+        };
       }
       if (
         labReady &&
@@ -8843,6 +8893,7 @@ async function captureCell({
         componentLabCommandDialogClosed &&
         componentLabThreadErrorDismissed &&
         componentLabFileTreeCollapsed &&
+        componentLabHostListEvidence?.scrolled &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
@@ -12686,6 +12737,43 @@ async function captureCell({
         componentLabFileTreeEvidence.initial.web.file.rect.height -
           componentLabFileTreeEvidence.initial.lynx.file.rect.height,
       ) <= 2);
+  const componentLabHostListReady =
+    !isComponentsLabState ||
+    (componentLabHostListScrolled &&
+      componentLabHostListEvidence?.initial?.web?.items?.length === 6 &&
+      componentLabHostListEvidence?.initial?.lynx?.items?.length === 6 &&
+      JSON.stringify(componentLabHostListEvidence.initial.web.items.map(({ text }) => text)) ===
+        JSON.stringify([
+          "Host row 1",
+          "Host row 2",
+          "Host row 3",
+          "Host row 4",
+          "Host row 5",
+          "Host row 6",
+        ]) &&
+      JSON.stringify(componentLabHostListEvidence.initial.lynx.items.map(({ text }) => text)) ===
+        JSON.stringify([
+          "Host row 1",
+          "Host row 2",
+          "Host row 3",
+          "Host row 4",
+          "Host row 5",
+          "Host row 6",
+        ]) &&
+      componentLabHostListEvidence.initial.web.scroll.rect.width === 320 &&
+      componentLabHostListEvidence.initial.lynx.scroll.rect.width === 320 &&
+      componentLabHostListEvidence.initial.web.scroll.rect.height === 64 &&
+      componentLabHostListEvidence.initial.lynx.scroll.rect.height === 64 &&
+      componentLabHostListEvidence.initial.web.list.rect.height === 202 &&
+      componentLabHostListEvidence.initial.lynx.list.rect.height === 202 &&
+      componentLabHostListEvidence.initial.web.items.every(
+        ({ box }) => box.rect.width === 320 && box.rect.height === 32,
+      ) &&
+      componentLabHostListEvidence.initial.lynx.items.every(
+        ({ box }) => box.rect.width === 320 && box.rect.height === 32,
+      ) &&
+      componentLabHostListEvidence.scrolled.web.scrollTop > 0 &&
+      componentLabHostListEvidence.scrolled.lynx.scrollTop > 0);
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -15138,6 +15226,7 @@ async function captureCell({
     componentLabWorktreeReady &&
     componentLabSidebarChromeReady &&
     componentLabFileTreeReady &&
+    componentLabHostListReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15253,6 +15342,7 @@ async function captureCell({
       componentLabWorktreeReady,
       componentLabSidebarChromeReady,
       componentLabFileTreeReady,
+      componentLabHostListReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,
@@ -15439,6 +15529,7 @@ async function captureCell({
           commandDialogTimeline: componentLabCommandDialogTimeline,
           threadErrorBanner: componentLabThreadErrorEvidence,
           fileTree: componentLabFileTreeEvidence,
+          hostList: componentLabHostListEvidence,
           select: componentLabSelectEvidence,
           menu: componentLabMenuEvidence,
           popover: componentLabPopoverEvidence,

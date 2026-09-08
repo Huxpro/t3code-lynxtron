@@ -462,6 +462,17 @@ function readComponentLabMetrics(root) {
         selected: file?.classList?.contains("file-tree-row--selected") ?? false,
       };
     })(),
+    hostList: (() => {
+      const scroll = root.querySelector(".component-lab-host-scroll");
+      const list = scroll?.querySelector(".component-lab-host-list");
+      const items = [...(list?.querySelectorAll(".component-lab-host-list__item") ?? [])];
+      return {
+        scroll: readElementBox(scroll),
+        scrollTop: Number(scroll?.scrollTop ?? 0),
+        list: readElementBox(list),
+        items: items.map((item) => ({ box: readElementBox(item), text: readComposedText(item) })),
+      };
+    })(),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

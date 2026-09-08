@@ -216,6 +216,24 @@
     "states": ["expanded"]
   },
   {
+    "id": "ui/hostElements#HostScrollView",
+    "category": "Host Primitives",
+    "title": "Host scroll view",
+    "states": ["initial", "scrolled"]
+  },
+  {
+    "id": "ui/hostElements#HostList",
+    "category": "Host Primitives",
+    "title": "Host list",
+    "states": ["six-items"]
+  },
+  {
+    "id": "ui/hostElements#HostListItem",
+    "category": "Host Primitives",
+    "title": "Host list item",
+    "states": ["default"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

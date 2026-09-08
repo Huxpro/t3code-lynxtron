@@ -12845,6 +12845,32 @@
   min-height: 32px;
   height: 32px;
 }
+.component-lab-host-scroll {
+  width: 320px;
+  height: 64px;
+  overflow-y: scroll;
+}
+.component-lab-host-scroll .component-lab-host-list {
+  --flex-direction: column;
+  --lynx-linear-orientation: vertical;
+  display: block;
+  width: 100%;
+  gap: 2px;
+}
+.component-lab-host-list .component-lab-host-list__item {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  background-color: var(--muted);
+  box-sizing: border-box;
+}
+.component-lab-host-list__item + .component-lab-host-list__item {
+  margin-top: 2px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;
