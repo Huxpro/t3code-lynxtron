@@ -120,6 +120,12 @@
     "states": ["hint"]
   },
   {
+    "id": "ui/command#CommandInput",
+    "category": "Navigation",
+    "title": "Command input",
+    "states": ["placeholder", "query", "filtered-results"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

@@ -121,6 +121,12 @@
       "title": "Command footer"
     },
     {
+      "category": "Navigation",
+      "id": "ui/command#CommandInput",
+      "states": ["placeholder", "query", "filtered-results"],
+      "title": "Command input"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5177,7 +5183,7 @@
     },
     {
       "authority": {
-        "line": 380,
+        "line": 381,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5198,7 +5204,7 @@
     },
     {
       "authority": {
-        "line": 201,
+        "line": 202,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5219,7 +5225,7 @@
     },
     {
       "authority": {
-        "line": 409,
+        "line": 424,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5240,7 +5246,7 @@
     },
     {
       "authority": {
-        "line": 152,
+        "line": 153,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5261,7 +5267,7 @@
     },
     {
       "authority": {
-        "line": 275,
+        "line": 276,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5282,7 +5288,7 @@
     },
     {
       "authority": {
-        "line": 187,
+        "line": 188,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5303,7 +5309,7 @@
     },
     {
       "authority": {
-        "line": 130,
+        "line": 131,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5324,7 +5330,7 @@
     },
     {
       "authority": {
-        "line": 302,
+        "line": 303,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5345,7 +5351,7 @@
     },
     {
       "authority": {
-        "line": 238,
+        "line": 239,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5366,7 +5372,7 @@
     },
     {
       "authority": {
-        "line": 337,
+        "line": 338,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5387,7 +5393,7 @@
     },
     {
       "authority": {
-        "line": 431,
+        "line": 446,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5421,7 +5427,7 @@
     },
     {
       "authority": {
-        "line": 101,
+        "line": 102,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5442,7 +5448,7 @@
     },
     {
       "authority": {
-        "line": 126,
+        "line": 127,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -15165,18 +15171,30 @@
       },
       "name": "CommandInput",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 1
+        "authorityShared": true,
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/command#CommandInput",
+        "states": ["placeholder", "query", "filtered-results"],
+        "status": "covered",
+        "title": "Command input"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/CommandPaletteContent.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -17758,7 +17776,7 @@
       "name": "Input",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
         "webUseSiteCount": 20
       },
@@ -17845,6 +17863,10 @@
         {
           "path": "apps/web/src/components/ui/combobox.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/ui/command.lynx.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ui/draft-input.lynx.tsx",
@@ -23062,7 +23084,7 @@
     "internal": 219,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 90,
+    "stories": 91,
     "webOnly": 466
   },
   "generatedFrom": "apps/web/src/components",

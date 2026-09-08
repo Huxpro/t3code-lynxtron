@@ -34,6 +34,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, '"Density Comfortable Compact"');
     assert.include(captureSource, 'select?.value === "Compact"');
     assert.include(captureSource, '[data-component-lab-select-item="compact"]');
+    assert.include(captureSource, "componentLabSelectEvidence.web.popup.box.rect.x -");
+    assert.include(captureSource, "componentLabSelectEvidence.web.trigger.rect.x");
     assert.include(readerSource, '[data-floating-popup="component-lab-select"]');
     assert.include(readerSource, "groupCount");
     assert.include(readerSource, "labelCount");
@@ -91,6 +93,10 @@ describe("Components Lab paired workbench", () => {
     assert.include(readerSource, "shortcutText");
     assert.include(captureSource, "const componentLabCommandReady =");
     assert.include(captureSource, 'JSON.stringify(["Open project ⌘O", "New thread"])');
+    assert.include(captureSource, "Could not focus Web component lab CommandInput");
+    assert.include(captureSource, "Could not focus Lynx component lab CommandInput");
+    assert.include(captureSource, "componentLabCommandEvidence");
+    assert.include(captureSource, "componentLabSelectEvidence");
     assert.include(captureSource, "const componentLabDraftInputReady =");
     assert.include(captureSource, "Could not focus Web component lab DraftInput");
     assert.include(captureSource, "Could not focus Lynx component lab DraftInput");

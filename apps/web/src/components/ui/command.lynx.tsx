@@ -1,4 +1,15 @@
-import { cloneElement, isValidElement, type ReactElement, type ReactNode } from "@lynx-js/react";
+import {
+  cloneElement,
+  createContext,
+  isValidElement,
+  type ReactElement,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "@lynx-js/react";
+import { Input } from "./input";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -7,6 +18,13 @@ type ElementProps = Record<string, unknown> & {
 };
 
 export const CommandCreateHandle = () => ({});
+
+interface CommandContextValue {
+  readonly query: string;
+  readonly setQuery: (query: string) => void;
+}
+
+const CommandContext = createContext<CommandContextValue | null>(null);
 
 export function CommandDialog({
   children,
@@ -25,11 +43,34 @@ export function CommandDialogTrigger({ children, render, ...props }: ElementProp
 const Container = ({ children, ...props }: ElementProps) => <view {...props}>{children}</view>;
 
 export const CommandDialogPopup = Container;
-export function Command({ children, className, ...props }: ElementProps) {
+export function Command({
+  children,
+  className,
+  value: controlledValue,
+  defaultValue = "",
+  onValueChange,
+  ...props
+}: ElementProps & {
+  readonly defaultValue?: string;
+  readonly onValueChange?: (value: string) => void;
+  readonly value?: string;
+}) {
+  const [uncontrolledValue, setUncontrolledValue] = useState(defaultValue);
+  const query = typeof controlledValue === "string" ? controlledValue : uncontrolledValue;
+  const setQuery = useCallback(
+    (next: string) => {
+      if (controlledValue === undefined) setUncontrolledValue(next);
+      onValueChange?.(next);
+    },
+    [controlledValue, onValueChange],
+  );
+  const context = useMemo(() => ({ query, setQuery }), [query, setQuery]);
   return (
-    <view {...props} className={["ui-command", className].filter(Boolean).join(" ")}>
-      {children}
-    </view>
+    <CommandContext.Provider value={context}>
+      <view {...props} className={["ui-command", className].filter(Boolean).join(" ")}>
+        {children}
+      </view>
+    </CommandContext.Provider>
   );
 }
 export const CommandCollection = Container;
@@ -69,7 +110,23 @@ export function CommandGroupLabel({ children, className, ...props }: ElementProp
     </view>
   );
 }
-export const CommandInput = Container;
+export function CommandInput({ className, placeholder, ...props }: ElementProps) {
+  const context = useContext(CommandContext);
+  return (
+    <view className="ui-command-input-shell">
+      <Input
+        {...props}
+        className={["ui-command-input", className].filter(Boolean).join(" ")}
+        nativeInput
+        onValueChange={context?.setQuery}
+        placeholder={typeof placeholder === "string" ? placeholder : undefined}
+        size="lg"
+        unstyled
+        value={context?.query ?? ""}
+      />
+    </view>
+  );
+}
 export function CommandItem({ children, className, ...props }: ElementProps) {
   return (
     <view

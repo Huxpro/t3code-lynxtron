@@ -2000,10 +2000,14 @@ label:has(> select#reasoning-effort) select {
 
 .component-lab-command {
   width: 20rem;
-  height: 9.25rem;
+  height: 11.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--popover);
+}
+
+.component-lab-command__input {
+  width: 100%;
 }
 
 .component-lab-command__list {

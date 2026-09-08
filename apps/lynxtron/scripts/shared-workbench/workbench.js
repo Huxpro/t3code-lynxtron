@@ -350,9 +350,14 @@ function readComponentLabMetrics(root) {
     })(),
     command: (() => {
       const rootCommand = root.querySelector(".component-lab-command");
+      const inputHost = rootCommand?.querySelector('[aria-label="Component lab command input"]');
+      const input = inputHost?.shadowRoot?.querySelector("input") ?? inputHost;
       const items = [...(rootCommand?.querySelectorAll('[data-slot="command-item"]') ?? [])];
       return {
         root: readElementBox(rootCommand),
+        input: readElementBox(inputHost),
+        inputValue: input?.value ?? input?.getAttribute("value") ?? null,
+        inputPlaceholder: input?.placeholder ?? input?.getAttribute("placeholder") ?? null,
         list: readElementBox(rootCommand?.querySelector('[data-slot="command-list"]')),
         group: readElementBox(rootCommand?.querySelector('[data-slot="command-group"]')),
         panel: readElementBox(

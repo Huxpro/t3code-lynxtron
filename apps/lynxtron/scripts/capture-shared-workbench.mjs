@@ -7581,6 +7581,7 @@ async function captureCell({
   let componentLabSelectOpened = false;
   let componentLabSelectChanged = false;
   let componentLabSelectReopened = false;
+  let componentLabSelectEvidence = null;
   let componentLabNumberIncremented = false;
   let componentLabNumberDecremented = false;
   let componentLabScrollDispatched = false;
@@ -7608,6 +7609,10 @@ async function captureCell({
   let componentLabDraftWebCommitted = false;
   let componentLabDraftLynxTyped = false;
   let componentLabDraftLynxCommitted = false;
+  let componentLabCommandWebTyped = false;
+  let componentLabCommandLynxTyped = false;
+  let componentLabCommandInitialVerified = false;
+  let componentLabCommandEvidence = null;
   while (Date.now() < deadline) {
     state = await evaluate(
       cdp,
@@ -7830,6 +7835,19 @@ async function captureCell({
         if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
         componentLabSelectReopened = Boolean(points?.web && points?.lynx);
         await delay(100);
+        continue;
+      }
+      if (
+        componentLabSelectReopened &&
+        !componentLabSelectEvidence &&
+        state?.web?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
+        state?.lynx?.componentLabMetrics?.select?.popup?.items?.length === 2
+      ) {
+        componentLabSelectEvidence = {
+          inputChannel: "dual-cdp-pointer",
+          web: state.web.componentLabMetrics.select,
+          lynx: state.lynx.componentLabMetrics.select,
+        };
         continue;
       }
       if (
@@ -8383,9 +8401,94 @@ async function captureCell({
         continue;
       }
       if (
+        componentLabDraftLynxCommitted &&
+        componentLabSelectEvidence &&
+        !componentLabCommandInitialVerified &&
+        state?.web?.componentLabMetrics?.command?.inputValue === "" &&
+        state?.lynx?.componentLabMetrics?.command?.inputValue === "" &&
+        JSON.stringify(state?.web?.componentLabMetrics?.command?.itemTexts) ===
+          JSON.stringify(["Open project ⌘O", "New thread"]) &&
+        JSON.stringify(state?.lynx?.componentLabMetrics?.command?.itemTexts) ===
+          JSON.stringify(["Open project ⌘O", "New thread"]) &&
+        state?.web?.componentLabMetrics?.command?.separatorCount === 1 &&
+        state?.lynx?.componentLabMetrics?.command?.separatorCount === 1
+      ) {
+        componentLabCommandInitialVerified = true;
+        componentLabCommandEvidence = {
+          inputChannel: "sequential-dual-cdp-keyboard",
+          initial: {
+            web: state.web.componentLabMetrics.command,
+            lynx: state.lynx.componentLabMetrics.command,
+          },
+          filtered: null,
+        };
+        continue;
+      }
+      if (componentLabCommandInitialVerified && !componentLabCommandWebTyped) {
+        const focused = await focusRemoteElement(
+          cdp,
+          sessionId,
+          `(() => {
+            const input = document.getElementById('web-pane')?.contentWindow?.document
+              ?.querySelector('[aria-label="Component lab command input"]');
+            input?.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+            input?.select?.();
+            return input ?? null;
+          })()`,
+        );
+        if (!focused) throw new Error("Could not focus Web component lab CommandInput");
+        await cdp.send("Input.insertText", { text: "project" }, sessionId);
+        componentLabCommandWebTyped = true;
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandWebTyped &&
+        !componentLabCommandLynxTyped &&
+        state?.web?.componentLabMetrics?.command?.inputValue === "project" &&
+        JSON.stringify(state?.web?.componentLabMetrics?.command?.itemTexts) ===
+          JSON.stringify(["Open project ⌘O"])
+      ) {
+        const focused = await focusRemoteElement(
+          cdp,
+          sessionId,
+          `(() => {
+            const root = document.getElementById('lynx-pane')?.contentWindow?.document
+              ?.getElementById('t3-lynx-preview')?.shadowRoot;
+            const host = root?.querySelector('[aria-label="Component lab command input"]');
+            host?.scrollIntoView?.({ block: 'center', inline: 'nearest' });
+            const input = host?.shadowRoot?.querySelector('input') ?? host ?? null;
+            input?.select?.();
+            return input;
+          })()`,
+        );
+        if (!focused) throw new Error("Could not focus Lynx component lab CommandInput");
+        await cdp.send("Input.insertText", { text: "project" }, sessionId);
+        componentLabCommandLynxTyped = true;
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabCommandLynxTyped &&
+        state?.lynx?.componentLabMetrics?.command?.inputValue === "project" &&
+        JSON.stringify(state?.lynx?.componentLabMetrics?.command?.itemTexts) ===
+          JSON.stringify(["Open project ⌘O"])
+      ) {
+        componentLabCommandEvidence = {
+          ...componentLabCommandEvidence,
+          filtered: {
+            web: state.web.componentLabMetrics.command,
+            lynx: state.lynx.componentLabMetrics.command,
+          },
+        };
+      }
+      if (
         labReady &&
         componentLabSelectReopened &&
         componentLabScrollDispatched &&
+        componentLabCommandWebTyped &&
+        componentLabCommandLynxTyped &&
+        componentLabCommandEvidence?.filtered &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
@@ -11896,29 +11999,33 @@ async function captureCell({
   const componentLabSelectReady =
     !isComponentsLabState ||
     (componentLabSelectReopened &&
-      state?.web?.componentLabMetrics?.select?.value === "Compact" &&
-      state?.lynx?.componentLabMetrics?.select?.value === "Compact" &&
-      state?.web?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
-      state?.lynx?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
-      state?.web?.componentLabMetrics?.select?.popup?.groupCount === 1 &&
-      state?.lynx?.componentLabMetrics?.select?.popup?.groupCount === 1 &&
-      state?.web?.componentLabMetrics?.select?.popup?.labelCount === 1 &&
-      state?.lynx?.componentLabMetrics?.select?.popup?.labelCount === 1 &&
+      componentLabSelectEvidence?.web?.value === "Compact" &&
+      componentLabSelectEvidence?.lynx?.value === "Compact" &&
+      componentLabSelectEvidence.web.popup.items.length === 2 &&
+      componentLabSelectEvidence.lynx.popup.items.length === 2 &&
+      componentLabSelectEvidence.web.popup.groupCount === 1 &&
+      componentLabSelectEvidence.lynx.popup.groupCount === 1 &&
+      componentLabSelectEvidence.web.popup.labelCount === 1 &&
+      componentLabSelectEvidence.lynx.popup.labelCount === 1 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box?.rect?.x -
-          state.lynx.componentLabMetrics.select.popup.box?.rect?.x,
+        componentLabSelectEvidence.web.popup.box.rect.x -
+          componentLabSelectEvidence.web.trigger.rect.x -
+          (componentLabSelectEvidence.lynx.popup.box.rect.x -
+            componentLabSelectEvidence.lynx.trigger.rect.x),
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box?.rect?.y -
-          state.lynx.componentLabMetrics.select.popup.box?.rect?.y,
+        componentLabSelectEvidence.web.popup.box.rect.y -
+          componentLabSelectEvidence.web.trigger.rect.y -
+          (componentLabSelectEvidence.lynx.popup.box.rect.y -
+            componentLabSelectEvidence.lynx.trigger.rect.y),
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box?.rect?.width -
-          state.lynx.componentLabMetrics.select.popup.box?.rect?.width,
+        componentLabSelectEvidence.web.popup.box.rect.width -
+          componentLabSelectEvidence.lynx.popup.box.rect.width,
       ) <= 2 &&
       Math.abs(
-        state.web.componentLabMetrics.select.popup.box?.rect?.height -
-          state.lynx.componentLabMetrics.select.popup.box?.rect?.height,
+        componentLabSelectEvidence.web.popup.box.rect.height -
+          componentLabSelectEvidence.lynx.popup.box.rect.height,
       ) <= 2);
   const componentLabNumberReady =
     !isComponentsLabState ||
@@ -12067,14 +12174,21 @@ async function captureCell({
       ) <= 1);
   const componentLabCommandReady =
     !isComponentsLabState ||
-    (state?.web?.componentLabMetrics?.command?.labelText === "Workspace" &&
+    (componentLabCommandInitialVerified &&
+      componentLabCommandWebTyped &&
+      componentLabCommandLynxTyped &&
+      state?.web?.componentLabMetrics?.command?.inputValue === "project" &&
+      state?.lynx?.componentLabMetrics?.command?.inputValue === "project" &&
+      state?.web?.componentLabMetrics?.command?.inputPlaceholder === "Search commands" &&
+      state?.lynx?.componentLabMetrics?.command?.inputPlaceholder === "Search commands" &&
+      state?.web?.componentLabMetrics?.command?.labelText === "Workspace" &&
       state?.lynx?.componentLabMetrics?.command?.labelText === "Workspace" &&
       JSON.stringify(state?.web?.componentLabMetrics?.command?.itemTexts) ===
-        JSON.stringify(["Open project ⌘O", "New thread"]) &&
+        JSON.stringify(["Open project ⌘O"]) &&
       JSON.stringify(state?.lynx?.componentLabMetrics?.command?.itemTexts) ===
-        JSON.stringify(["Open project ⌘O", "New thread"]) &&
-      state?.web?.componentLabMetrics?.command?.separatorCount === 1 &&
-      state?.lynx?.componentLabMetrics?.command?.separatorCount === 1 &&
+        JSON.stringify(["Open project ⌘O"]) &&
+      state?.web?.componentLabMetrics?.command?.separatorCount === 0 &&
+      state?.lynx?.componentLabMetrics?.command?.separatorCount === 0 &&
       state?.web?.componentLabMetrics?.command?.shortcutText === "⌘O" &&
       state?.lynx?.componentLabMetrics?.command?.shortcutText === "⌘O" &&
       state?.web?.componentLabMetrics?.command?.footerText === "Choose an action" &&
@@ -12097,18 +12211,14 @@ async function captureCell({
         state.web.componentLabMetrics.command.footer.rect.height -
           state.lynx.componentLabMetrics.command.footer.rect.height,
       ) <= 2 &&
-      state?.web?.componentLabMetrics?.command?.itemBoxes?.length === 2 &&
-      state?.lynx?.componentLabMetrics?.command?.itemBoxes?.length === 2 &&
+      state?.web?.componentLabMetrics?.command?.itemBoxes?.length === 1 &&
+      state?.lynx?.componentLabMetrics?.command?.itemBoxes?.length === 1 &&
       state.web.componentLabMetrics.command.itemBoxes.every(
         (item) => Math.abs(item.rect.height - 32) <= 1 && item.rect.width >= 300,
       ) &&
       state.lynx.componentLabMetrics.command.itemBoxes.every(
         (item) => Math.abs(item.rect.height - 32) <= 1 && item.rect.width >= 300,
-      ) &&
-      state.web.componentLabMetrics.command.itemBoxes[1].rect.y >
-        state.web.componentLabMetrics.command.itemBoxes[0].rect.y &&
-      state.lynx.componentLabMetrics.command.itemBoxes[1].rect.y >
-        state.lynx.componentLabMetrics.command.itemBoxes[0].rect.y);
+      ));
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -14843,6 +14953,8 @@ async function captureCell({
     componentLabEvidence: isComponentsLabState
       ? {
           dialog: componentLabDialogEvidence,
+          command: componentLabCommandEvidence,
+          select: componentLabSelectEvidence,
           menu: componentLabMenuEvidence,
           popover: componentLabPopoverEvidence,
           sheet: componentLabSheetEvidence,

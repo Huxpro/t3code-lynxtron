@@ -10,6 +10,7 @@ import {
   CommandFooter,
   CommandGroup,
   CommandGroupLabel,
+  CommandInput,
   CommandItem,
   CommandList,
   CommandPanel,
@@ -378,23 +379,37 @@ function ComponentLabSidebarStory() {
 }
 
 function ComponentLabCommandStory() {
+  const [query, setQuery] = useState("");
+  const showOpenProject = "open project".includes(query.toLowerCase());
+  const showNewThread = "new thread".includes(query.toLowerCase());
   return (
     <HostView className="component-lab-command">
-      <Command autoHighlight={false} mode="none">
+      <Command autoHighlight={false} mode="none" onValueChange={setQuery} value={query}>
+        <CommandInput
+          aria-label="Component lab command input"
+          className="component-lab-command__input"
+          placeholder="Search commands"
+        />
         <CommandPanel className="component-lab-command__panel">
           <CommandList className="component-lab-command__list">
             <CommandGroup className="component-lab-command__group">
               <CommandGroupLabel className="component-lab-command__label">
                 Workspace
               </CommandGroupLabel>
-              <CommandItem className="component-lab-command__item" value="open-project">
-                <HostText className="component-lab-command__item-label">Open project</HostText>
-                <CommandShortcut className="component-lab-command__shortcut">⌘O</CommandShortcut>
-              </CommandItem>
-              <CommandSeparator className="component-lab-command__separator" />
-              <CommandItem className="component-lab-command__item" value="new-thread">
-                <HostText className="component-lab-command__item-label">New thread</HostText>
-              </CommandItem>
+              {showOpenProject ? (
+                <CommandItem className="component-lab-command__item" value="open-project">
+                  <HostText className="component-lab-command__item-label">Open project</HostText>
+                  <CommandShortcut className="component-lab-command__shortcut">⌘O</CommandShortcut>
+                </CommandItem>
+              ) : null}
+              {showOpenProject && showNewThread ? (
+                <CommandSeparator className="component-lab-command__separator" />
+              ) : null}
+              {showNewThread ? (
+                <CommandItem className="component-lab-command__item" value="new-thread">
+                  <HostText className="component-lab-command__item-label">New thread</HostText>
+                </CommandItem>
+              ) : null}
             </CommandGroup>
           </CommandList>
         </CommandPanel>
@@ -491,6 +506,7 @@ export function ComponentLabSurface() {
               ["ui/command#CommandSeparator", "Command separator"],
               ["ui/command#CommandShortcut", "Command shortcut"],
               ["ui/command#CommandFooter", "Command footer"],
+              ["ui/command#CommandInput", "Command input"],
             ] as const
           ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>
