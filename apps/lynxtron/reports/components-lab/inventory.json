@@ -224,6 +224,18 @@
     },
     {
       "category": "Forms",
+      "id": "ui/select#SelectGroup",
+      "states": ["default"],
+      "title": "Select group"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/select#SelectGroupLabel",
+      "states": ["default"],
+      "title": "Select group label"
+    },
+    {
+      "category": "Forms",
       "id": "ui/number-field#NumberField",
       "states": ["initial-10", "incremented-12", "decremented-10"],
       "title": "Number field"
@@ -5021,7 +5033,7 @@
     },
     {
       "authority": {
-        "line": 156,
+        "line": 167,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5042,7 +5054,7 @@
     },
     {
       "authority": {
-        "line": 107,
+        "line": 118,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5063,7 +5075,7 @@
     },
     {
       "authority": {
-        "line": 193,
+        "line": 204,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5084,7 +5096,7 @@
     },
     {
       "authority": {
-        "line": 142,
+        "line": 153,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5105,7 +5117,7 @@
     },
     {
       "authority": {
-        "line": 88,
+        "line": 96,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5126,7 +5138,7 @@
     },
     {
       "authority": {
-        "line": 220,
+        "line": 231,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5147,7 +5159,7 @@
     },
     {
       "authority": {
-        "line": 255,
+        "line": 266,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5168,7 +5180,7 @@
     },
     {
       "authority": {
-        "line": 291,
+        "line": 302,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5202,7 +5214,7 @@
     },
     {
       "authority": {
-        "line": 59,
+        "line": 67,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5223,7 +5235,7 @@
     },
     {
       "authority": {
-        "line": 84,
+        "line": 92,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -19518,12 +19530,16 @@
       "name": "SelectGroup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/select#SelectGroup",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Select group"
       },
       "useSites": [
         {
@@ -19537,6 +19553,14 @@
         {
           "path": "apps/web/src/components/BranchToolbarEnvModeSelector.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -19554,12 +19578,16 @@
       "name": "SelectGroupLabel",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/select#SelectGroupLabel",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Select group label"
       },
       "useSites": [
         {
@@ -19573,6 +19601,14 @@
         {
           "path": "apps/web/src/components/BranchToolbarEnvModeSelector.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -22531,7 +22567,7 @@
     "internal": 216,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 64,
+    "stories": 66,
     "webOnly": 463
   },
   "generatedFrom": "apps/web/src/components",

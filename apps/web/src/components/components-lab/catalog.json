@@ -222,6 +222,18 @@
     "states": ["default", "selected"]
   },
   {
+    "id": "ui/select#SelectGroup",
+    "category": "Forms",
+    "title": "Select group",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/select#SelectGroupLabel",
+    "category": "Forms",
+    "title": "Select group label",
+    "states": ["default"]
+  },
+  {
     "id": "ui/number-field#NumberField",
     "category": "Forms",
     "title": "Number field",

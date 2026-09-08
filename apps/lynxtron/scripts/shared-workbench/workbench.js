@@ -229,6 +229,11 @@ function readComponentLabMetrics(root) {
                   text: readComposedText(item),
                 }),
               ),
+              groupCount: popup.querySelectorAll('[data-slot="select-group"], .ui-select-group')
+                .length,
+              labelCount: popup.querySelectorAll(
+                '[data-slot="select-group-label"], .ui-select-group-label',
+              ).length,
             }
           : null,
       };

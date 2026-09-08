@@ -38,7 +38,15 @@ import {
 import { ScrollArea } from "../ui/scroll-area";
 import { Popover, PopoverClose, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
-import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
+import {
+  Select,
+  SelectGroup,
+  SelectGroupLabel,
+  SelectItem,
+  SelectPopup,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 import { Switch } from "../ui/switch";
 import {
   SidebarContent,
@@ -93,12 +101,15 @@ function ComponentLabSelectStory() {
         <SelectValue>{value === "compact" ? "Compact" : "Comfortable"}</SelectValue>
       </SelectTrigger>
       <SelectPopup alignItemWithTrigger={false} data-floating-popup="component-lab-select">
-        <SelectItem data-component-lab-select-item="comfortable" value="comfortable">
-          Comfortable
-        </SelectItem>
-        <SelectItem data-component-lab-select-item="compact" value="compact">
-          Compact
-        </SelectItem>
+        <SelectGroup>
+          <SelectGroupLabel>Density</SelectGroupLabel>
+          <SelectItem data-component-lab-select-item="comfortable" value="comfortable">
+            Comfortable
+          </SelectItem>
+          <SelectItem data-component-lab-select-item="compact" value="compact">
+            Compact
+          </SelectItem>
+        </SelectGroup>
       </SelectPopup>
     </Select>
   );
@@ -516,6 +527,18 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/select#SelectItem" title="Select item">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Comfortable and Compact use the same production SelectItem.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/select#SelectGroup" title="Select group">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Groups both density choices in the shared Select fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/select#SelectGroupLabel" title="Select group label">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Renders the Density label in the shared Select popup above.
             </HostText>
           </StoryFrame>
 

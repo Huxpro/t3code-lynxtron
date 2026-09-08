@@ -30,10 +30,12 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "componentLabMenuEvidence");
     assert.include(readerSource, 'story.querySelectorAll("[data-slot]")');
     assert.include(captureSource, "const componentLabSelectReady =");
-    assert.include(captureSource, '"Comfortable Compact"');
+    assert.include(captureSource, '"Density Comfortable Compact"');
     assert.include(captureSource, 'select?.value === "Compact"');
     assert.include(captureSource, '[data-component-lab-select-item="compact"]');
     assert.include(readerSource, '[data-floating-popup="component-lab-select"]');
+    assert.include(readerSource, "groupCount");
+    assert.include(readerSource, "labelCount");
     assert.include(captureSource, "const componentLabNumberReady =");
     assert.include(captureSource, '[data-component-lab-number-action="increment"]');
     assert.include(captureSource, '[data-component-lab-number-action="decrement"]');

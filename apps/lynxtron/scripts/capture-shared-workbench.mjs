@@ -7768,8 +7768,8 @@ async function captureCell({
         componentLabMenuVerified &&
         componentLabSelectOpened &&
         !componentLabSelectChanged &&
-        state?.web?.componentLabMetrics?.select?.popup?.text === "Comfortable Compact" &&
-        state?.lynx?.componentLabMetrics?.select?.popup?.text === "Comfortable Compact"
+        state?.web?.componentLabMetrics?.select?.popup?.text === "Density Comfortable Compact" &&
+        state?.lynx?.componentLabMetrics?.select?.popup?.text === "Density Comfortable Compact"
       ) {
         const points = await evaluate(
           cdp,
@@ -11644,6 +11644,10 @@ async function captureCell({
       state?.lynx?.componentLabMetrics?.select?.value === "Compact" &&
       state?.web?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
       state?.lynx?.componentLabMetrics?.select?.popup?.items?.length === 2 &&
+      state?.web?.componentLabMetrics?.select?.popup?.groupCount === 1 &&
+      state?.lynx?.componentLabMetrics?.select?.popup?.groupCount === 1 &&
+      state?.web?.componentLabMetrics?.select?.popup?.labelCount === 1 &&
+      state?.lynx?.componentLabMetrics?.select?.popup?.labelCount === 1 &&
       Math.abs(
         state.web.componentLabMetrics.select.popup.box?.rect?.x -
           state.lynx.componentLabMetrics.select.popup.box?.rect?.x,

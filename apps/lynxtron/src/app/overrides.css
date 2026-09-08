@@ -7477,11 +7477,15 @@
   margin: 4px 8px;
 }
 .ui-select-group-label {
+  flex-shrink: 0;
+  width: 100%;
+  height: 28px;
   color: var(--muted-foreground);
   font-size: 12px;
   font-weight: 500;
   font-family: var(--font-sans);
   padding: 6px 8px;
+  box-sizing: border-box;
 }
 .ui-separator--vertical {
   width: 1px;

@@ -190,7 +190,7 @@ export function SelectSeparator({ className }: { readonly className?: string }) 
 }
 
 export function SelectGroup({ children }: { readonly children?: ReactNode }) {
-  return <view className="ui-select-group">{children}</view>;
+  return <view className="ui-select-group flex w-full flex-col">{children}</view>;
 }
 
 export function SelectGroupLabel({
