@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  declarationReplacement,
   normalizeSupportedSelector,
   unsupportedDeclaration,
   unsupportedPseudoSelectors,
@@ -45,5 +46,17 @@ describe("Lynx Tailwind compatibility", () => {
   it("continues to reject unsupported declarations and values", () => {
     expect(unsupportedDeclaration("backdrop-filter", "blur(8px)")).toBe(true);
     expect(unsupportedDeclaration("color", "color-mix(in oklab, red 50%, blue)")).toBe(true);
+  });
+
+  it("provides Lynx-safe replacements for equivalent declarations", () => {
+    expect(declarationReplacement("inset", "4px 8px")).toEqual([
+      { prop: "top", value: "4px" },
+      { prop: "right", value: "8px" },
+      { prop: "bottom", value: "4px" },
+      { prop: "left", value: "8px" },
+    ]);
+    expect(declarationReplacement("overflow-wrap", "anywhere")).toEqual([
+      { prop: "word-break", value: "break-all" },
+    ]);
   });
 });

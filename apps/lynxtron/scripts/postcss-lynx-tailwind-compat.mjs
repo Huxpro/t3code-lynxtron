@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const reportPath = path.join(appRoot, "reports/tailwind-v3-compat.json");
 let lastReportedFingerprint = "";
+const reportsByInput = new Map();
 
 const UNSUPPORTED_PROPERTIES = new Set([
   "-moz-appearance",
@@ -22,16 +23,42 @@ const UNSUPPORTED_PROPERTIES = new Set([
   "grid-row",
   "grid-row-end",
   "grid-row-start",
+  "font-variant-numeric",
   "overflow-anchor",
+  "overflow-wrap",
   "scrollbar-gutter",
   "scrollbar-width",
+  "tab-size",
+  "text-transform",
   "touch-action",
+  "user-select",
 ]);
 
 const UNSUPPORTED_VALUE = /--alpha\(|--spacing\(|color-mix\(/;
 
 export function unsupportedDeclaration(property, value) {
   return UNSUPPORTED_PROPERTIES.has(property) || UNSUPPORTED_VALUE.test(value);
+}
+
+export function declarationReplacement(property, value) {
+  if (property === "inset") {
+    const values = value.trim().split(/\s+/u);
+    if (values.length < 1 || values.length > 4) return null;
+    const [top, second = top, third = top, fourth = second] = values;
+    const right = second;
+    const bottom = third;
+    const left = values.length === 1 ? top : values.length === 2 ? second : fourth;
+    return [
+      { prop: "top", value: top },
+      { prop: "right", value: right },
+      { prop: "bottom", value: bottom },
+      { prop: "left", value: left },
+    ];
+  }
+  if (property === "overflow-wrap" && /^(?:anywhere|break-word)$/u.test(value.trim())) {
+    return [{ prop: "word-break", value: "break-all" }];
+  }
+  return null;
 }
 
 function comesFromTailwindEntry(node) {
@@ -83,6 +110,7 @@ export function lynxTailwindCompatibility() {
   const retainedDeclarationDetails = new Map();
   const retainedSelectorDetails = new Set();
   const transformedSelectorDetails = new Map();
+  const transformedDeclarationDetails = new Map();
 
   return {
     postcssPlugin: "t3code-lynx-tailwind-compatibility",
@@ -94,6 +122,7 @@ export function lynxTailwindCompatibility() {
       retainedDeclarationDetails.clear();
       retainedSelectorDetails.clear();
       transformedSelectorDetails.clear();
+      transformedDeclarationDetails.clear();
     },
     Rule(rule) {
       if (!comesFromTailwindEntry(rule)) return;
@@ -131,7 +160,33 @@ export function lynxTailwindCompatibility() {
       }
     },
     Declaration(declaration) {
-      if (!comesFromTailwindEntry(declaration)) return;
+      const replacement = declarationReplacement(declaration.prop, declaration.value);
+      if (replacement) {
+        const selector = declaration.parent?.selector ?? null;
+        for (const next of replacement) {
+          const siblingExists = declaration.parent?.nodes?.some(
+            (node) => node !== declaration && node.type === "decl" && node.prop === next.prop,
+          );
+          if (!siblingExists) declaration.cloneBefore(next);
+        }
+        const key = JSON.stringify({
+          property: declaration.prop,
+          value: declaration.value,
+          selector,
+        });
+        transformedDeclarationDetails.set(key, {
+          property: declaration.prop,
+          value: declaration.value,
+          selector,
+          replacements: replacement,
+        });
+        declaration.remove();
+        return;
+      }
+
+      if (!comesFromTailwindEntry(declaration) && !UNSUPPORTED_PROPERTIES.has(declaration.prop)) {
+        return;
+      }
 
       if (unsupportedDeclaration(declaration.prop, declaration.value)) {
         removedDeclarations += 1;
@@ -164,10 +219,43 @@ export function lynxTailwindCompatibility() {
         });
       }
     },
-    OnceExit() {
-      if (removedSelectors === 0 && removedDeclarations === 0) {
-        return;
-      }
+    OnceExit(root) {
+      const input = root.source?.input.file
+        ? path.relative(appRoot, root.source.input.file)
+        : "unknown";
+      reportsByInput.set(input, {
+        removedSelectors: [...removedSelectorDetails],
+        removedDeclarations: [...removedDeclarationDetails.values()],
+        retainedSupportedSelectors: [...retainedSelectorDetails],
+        retainedSupportedDeclarations: [...retainedDeclarationDetails.values()],
+        transformedSelectors: [...transformedSelectorDetails.values()],
+        transformedDeclarations: [...transformedDeclarationDetails.values()],
+      });
+      const uniqueStrings = (key) =>
+        [...new Set([...reportsByInput.values()].flatMap((entry) => entry[key]))].sort();
+      const uniqueObjects = (key, identity) =>
+        [
+          ...new Map(
+            [...reportsByInput.values()]
+              .flatMap((entry) => entry[key])
+              .map((entry) => [identity(entry), entry]),
+          ).values(),
+        ].sort((left, right) => identity(left).localeCompare(identity(right)));
+      const allRemovedSelectors = uniqueStrings("removedSelectors");
+      const allRetainedSelectors = uniqueStrings("retainedSupportedSelectors");
+      const allRemovedDeclarations = uniqueObjects(
+        "removedDeclarations",
+        (entry) => `${entry.property}\u0000${entry.value}\u0000${entry.selector ?? ""}`,
+      );
+      const allRetainedDeclarations = uniqueObjects(
+        "retainedSupportedDeclarations",
+        (entry) => `${entry.property}\u0000${entry.value}\u0000${entry.selector ?? ""}`,
+      );
+      const allTransformedSelectors = uniqueObjects("transformedSelectors", (entry) => entry.from);
+      const allTransformedDeclarations = uniqueObjects(
+        "transformedDeclarations",
+        (entry) => `${entry.property}\u0000${entry.value}\u0000${entry.selector ?? ""}`,
+      );
       const report = {
         source: "apps/lynxtron/src/app/tailwind.css",
         pipeline: {
@@ -176,27 +264,19 @@ export function lynxTailwindCompatibility() {
           preset: "@lynx-js/tailwind-preset",
         },
         compatibilityItems: ["R6", "R7", "R9"],
-        removedSelectorCount: removedSelectors,
-        removedDeclarationCount: removedDeclarations,
-        retainedSupportedSelectorCount: retainedSelectorDetails.size,
-        retainedSupportedDeclarationCount: retainedDeclarationDetails.size,
-        transformedSelectorCount: transformedSelectorDetails.size,
-        transformedSelectors: [...transformedSelectorDetails.values()].sort((left, right) =>
-          left.from.localeCompare(right.from),
-        ),
-        retainedSupportedSelectors: [...retainedSelectorDetails].sort(),
-        retainedSupportedDeclarations: [...retainedDeclarationDetails.values()].sort(
-          (left, right) =>
-            `${left.property}\u0000${left.value}\u0000${left.selector ?? ""}`.localeCompare(
-              `${right.property}\u0000${right.value}\u0000${right.selector ?? ""}`,
-            ),
-        ),
-        removedSelectors: [...removedSelectorDetails].sort(),
-        removedDeclarations: [...removedDeclarationDetails.values()].sort((left, right) =>
-          `${left.property}\u0000${left.value}\u0000${left.selector ?? ""}`.localeCompare(
-            `${right.property}\u0000${right.value}\u0000${right.selector ?? ""}`,
-          ),
-        ),
+        processedInputs: [...reportsByInput.keys()].sort(),
+        removedSelectorCount: allRemovedSelectors.length,
+        removedDeclarationCount: allRemovedDeclarations.length,
+        retainedSupportedSelectorCount: allRetainedSelectors.length,
+        retainedSupportedDeclarationCount: allRetainedDeclarations.length,
+        transformedSelectorCount: allTransformedSelectors.length,
+        transformedDeclarationCount: allTransformedDeclarations.length,
+        transformedSelectors: allTransformedSelectors,
+        transformedDeclarations: allTransformedDeclarations,
+        retainedSupportedSelectors: allRetainedSelectors,
+        retainedSupportedDeclarations: allRetainedDeclarations,
+        removedSelectors: allRemovedSelectors,
+        removedDeclarations: allRemovedDeclarations,
       };
       const serialized = `${JSON.stringify(report, null, 2)}\n`;
       if (serialized === lastReportedFingerprint) {
@@ -206,7 +286,7 @@ export function lynxTailwindCompatibility() {
       mkdirSync(path.dirname(reportPath), { recursive: true });
       writeFileSync(reportPath, serialized);
       console.info(
-        `[lynx-tailwind-compat] removed ${removedSelectors} unsupported selectors and ${removedDeclarations} unsupported declarations (R6/R7/R9)`,
+        `[lynx-tailwind-compat] across ${reportsByInput.size} inputs removed ${allRemovedSelectors.length} unsupported selectors and ${allRemovedDeclarations.length} unsupported declarations (R6/R7/R9)`,
       );
     },
   };
