@@ -13004,6 +13004,14 @@ async function captureCell({
       state.lynx.componentLabMetrics.rightPanel.emptyTitle === "Open a surface" &&
       state.web.componentLabMetrics.rightPanel.cards.length === 0 &&
       state.lynx.componentLabMetrics.rightPanel.cards.length === 0);
+  const componentLabPaletteEmptyReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.paletteEmpty?.text === "No matching projects or actions." &&
+      state?.lynx?.componentLabMetrics?.paletteEmpty?.text === "No matching projects or actions." &&
+      state.web.componentLabMetrics.paletteEmpty.box.rect.width === 318 &&
+      state.lynx.componentLabMetrics.paletteEmpty.box.rect.width === 318 &&
+      state.web.componentLabMetrics.paletteEmpty.box.rect.height === 100 &&
+      state.lynx.componentLabMetrics.paletteEmpty.box.rect.height === 100);
   const componentLabHostListReady =
     !isComponentsLabState ||
     (componentLabHostListScrolled &&
@@ -15557,6 +15565,7 @@ async function captureCell({
     componentLabChatHeaderReady &&
     componentLabPlanReady &&
     componentLabRightPanelReady &&
+    componentLabPaletteEmptyReady &&
     componentLabHostListReady &&
     componentLabHostLayoutReady &&
     componentLabT3WordmarkReady &&
@@ -15680,6 +15689,7 @@ async function captureCell({
       componentLabChatHeaderReady,
       componentLabPlanReady,
       componentLabRightPanelReady,
+      componentLabPaletteEmptyReady,
       componentLabHostListReady,
       componentLabHostLayoutReady,
       componentLabT3WordmarkReady,

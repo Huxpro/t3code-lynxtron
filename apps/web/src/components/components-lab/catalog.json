@@ -252,6 +252,12 @@
     "states": ["empty"]
   },
   {
+    "id": "CommandPaletteSurface#PaletteEmptySurface",
+    "category": "Empty States",
+    "title": "Palette empty surface",
+    "states": ["no-results"]
+  },
+  {
     "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
     "category": "Data Display",
     "title": "File tree file row",

@@ -253,6 +253,12 @@
       "title": "Right panel empty surface"
     },
     {
+      "category": "Empty States",
+      "id": "CommandPaletteSurface#PaletteEmptySurface",
+      "states": ["no-results"],
+      "title": "Palette empty surface"
+    },
+    {
       "category": "Data Display",
       "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
       "states": ["default", "selected"],
@@ -5165,13 +5171,17 @@
       "lynx": null,
       "name": "PaletteEmptySurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Empty States",
+        "id": "CommandPaletteSurface#PaletteEmptySurface",
+        "states": ["no-results"],
+        "status": "covered",
+        "title": "Palette empty surface"
       },
       "useSites": [
         {
@@ -5181,6 +5191,14 @@
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -5439,7 +5457,7 @@
     },
     {
       "authority": {
-        "line": 714,
+        "line": 715,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5460,7 +5478,7 @@
     },
     {
       "authority": {
-        "line": 626,
+        "line": 627,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5481,7 +5499,7 @@
     },
     {
       "authority": {
-        "line": 760,
+        "line": 761,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5502,7 +5520,7 @@
     },
     {
       "authority": {
-        "line": 484,
+        "line": 485,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5523,7 +5541,7 @@
     },
     {
       "authority": {
-        "line": 425,
+        "line": 426,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5544,7 +5562,7 @@
     },
     {
       "authority": {
-        "line": 246,
+        "line": 247,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5565,7 +5583,7 @@
     },
     {
       "authority": {
-        "line": 527,
+        "line": 528,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5586,7 +5604,7 @@
     },
     {
       "authority": {
-        "line": 681,
+        "line": 682,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5607,7 +5625,7 @@
     },
     {
       "authority": {
-        "line": 840,
+        "line": 841,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5628,7 +5646,7 @@
     },
     {
       "authority": {
-        "line": 826,
+        "line": 827,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5649,7 +5667,7 @@
     },
     {
       "authority": {
-        "line": 197,
+        "line": 198,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5670,7 +5688,7 @@
     },
     {
       "authority": {
-        "line": 777,
+        "line": 778,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5691,7 +5709,7 @@
     },
     {
       "authority": {
-        "line": 320,
+        "line": 321,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5712,7 +5730,7 @@
     },
     {
       "authority": {
-        "line": 818,
+        "line": 819,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5733,7 +5751,7 @@
     },
     {
       "authority": {
-        "line": 232,
+        "line": 233,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5754,7 +5772,7 @@
     },
     {
       "authority": {
-        "line": 175,
+        "line": 176,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5775,7 +5793,7 @@
     },
     {
       "authority": {
-        "line": 347,
+        "line": 348,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5796,7 +5814,7 @@
     },
     {
       "authority": {
-        "line": 283,
+        "line": 284,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5817,7 +5835,7 @@
     },
     {
       "authority": {
-        "line": 664,
+        "line": 665,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5838,7 +5856,7 @@
     },
     {
       "authority": {
-        "line": 382,
+        "line": 383,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5859,7 +5877,7 @@
     },
     {
       "authority": {
-        "line": 881,
+        "line": 882,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5893,7 +5911,7 @@
     },
     {
       "authority": {
-        "line": 549,
+        "line": 550,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5914,7 +5932,7 @@
     },
     {
       "authority": {
-        "line": 574,
+        "line": 575,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5935,7 +5953,7 @@
     },
     {
       "authority": {
-        "line": 851,
+        "line": 852,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5956,7 +5974,7 @@
     },
     {
       "authority": {
-        "line": 650,
+        "line": 651,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5977,7 +5995,7 @@
     },
     {
       "authority": {
-        "line": 146,
+        "line": 147,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5998,7 +6016,7 @@
     },
     {
       "authority": {
-        "line": 171,
+        "line": 172,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -12715,7 +12733,7 @@
     },
     {
       "authority": {
-        "line": 66,
+        "line": 70,
         "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
       },
       "exported": false,
@@ -12736,7 +12754,7 @@
     },
     {
       "authority": {
-        "line": 83,
+        "line": 87,
         "path": "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx"
       },
       "exported": true,
@@ -12944,7 +12962,7 @@
     },
     {
       "authority": {
-        "line": 974,
+        "line": 980,
         "path": "apps/web/src/components/SidebarV2.tsx"
       },
       "exported": true,
@@ -12990,7 +13008,7 @@
     },
     {
       "authority": {
-        "line": 873,
+        "line": 879,
         "path": "apps/web/src/components/SidebarV2.tsx"
       },
       "exported": false,
@@ -19151,7 +19169,7 @@
     },
     {
       "authority": {
-        "line": 175,
+        "line": 177,
         "path": "apps/web/src/components/ui/menu.tsx"
       },
       "exported": true,
@@ -19514,7 +19532,7 @@
     },
     {
       "authority": {
-        "line": 195,
+        "line": 197,
         "path": "apps/web/src/components/ui/menu.tsx"
       },
       "exported": true,
@@ -19574,7 +19592,7 @@
     },
     {
       "authority": {
-        "line": 205,
+        "line": 207,
         "path": "apps/web/src/components/ui/menu.tsx"
       },
       "exported": true,
@@ -19618,7 +19636,7 @@
     },
     {
       "authority": {
-        "line": 218,
+        "line": 220,
         "path": "apps/web/src/components/ui/menu.tsx"
       },
       "exported": true,
@@ -19641,7 +19659,7 @@
     },
     {
       "authority": {
-        "line": 246,
+        "line": 248,
         "path": "apps/web/src/components/ui/menu.tsx"
       },
       "exported": true,
@@ -19664,7 +19682,7 @@
     },
     {
       "authority": {
-        "line": 222,
+        "line": 224,
         "path": "apps/web/src/components/ui/menu.tsx"
       },
       "exported": true,
@@ -23981,7 +23999,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 121,
+    "stories": 122,
     "webOnly": 480
   },
   "generatedFrom": "apps/web/src/components",

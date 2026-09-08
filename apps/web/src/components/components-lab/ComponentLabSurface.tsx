@@ -134,6 +134,7 @@ import {
 import { T3Wordmark } from "../sidebar/T3Wordmark";
 import { SidebarUpdatePillSurface } from "../sidebar/SidebarUpdatePillSurface";
 import { RightPanelEmptySurface } from "../RightPanelSurface";
+import { PaletteEmptySurface } from "../CommandPaletteSurface";
 import {
   PlanEmptySurface,
   PlanExplanationSurface,
@@ -1026,6 +1027,12 @@ export function ComponentLabSurface() {
 
           <StoryFrame id="RightPanelSurface#RightPanelEmptySurface" title="Right panel empty state">
             <ComponentLabRightPanelEmptyStory />
+          </StoryFrame>
+
+          <StoryFrame id="CommandPaletteSurface#PaletteEmptySurface" title="Palette empty state">
+            <HostView className="component-lab-palette-empty">
+              <PaletteEmptySurface message="No matching projects or actions." />
+            </HostView>
           </StoryFrame>
 
           {(

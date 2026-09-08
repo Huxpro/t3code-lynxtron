@@ -12870,6 +12870,12 @@
   border-radius: var(--radius-lg);
   box-sizing: border-box;
 }
+.component-lab-palette-empty {
+  width: 320px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-sizing: border-box;
+}
 .component-lab-plan .plan-disclosure-toggle {
   padding-top: 3px;
   padding-bottom: 3px;
