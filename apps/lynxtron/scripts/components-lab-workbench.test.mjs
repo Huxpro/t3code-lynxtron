@@ -53,6 +53,9 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, '[data-component-lab-popover-trigger=\"default\"]');
     assert.include(captureSource, '[data-component-lab-popover-close=\"default\"]');
     assert.include(readerSource, '[data-component-lab-popover-popup="default"]');
+    assert.include(captureSource, "const componentLabProjectFaviconReady =");
+    assert.include(readerSource, "projectFavicon: (() =>");
+    assert.include(readerSource, '".component-lab-project-favicon"');
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");

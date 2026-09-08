@@ -280,6 +280,22 @@ function readComponentLabMetrics(root) {
           }
         : null;
     })(),
+    projectFavicon: (() => {
+      const element = root.querySelector(".component-lab-project-favicon");
+      const tagName = element?.tagName?.toLowerCase() ?? null;
+      const src = element?.getAttribute("src") ?? null;
+      return {
+        box: readElementBox(element),
+        mode:
+          tagName === "svg" || (typeof src === "string" && src.startsWith("data:"))
+            ? "fallback"
+            : src
+              ? "asset"
+              : "unknown",
+        src,
+        tagName,
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),

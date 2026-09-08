@@ -12506,6 +12506,17 @@
 .component-lab-host-button--disabled {
   opacity: 0.64;
 }
+.component-lab-project-favicon-frame {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.component-lab-project-favicon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
 .component-lab-scroll-area {
   flex-shrink: 0;
   width: 320px;

@@ -11627,6 +11627,21 @@ async function captureCell({
       componentLabPopoverClosed &&
       state?.web?.componentLabMetrics?.popover === null &&
       state?.lynx?.componentLabMetrics?.popover === null);
+  const componentLabProjectFaviconReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.projectFavicon?.mode !== "unknown" &&
+      state?.web?.componentLabMetrics?.projectFavicon?.mode ===
+        state?.lynx?.componentLabMetrics?.projectFavicon?.mode &&
+      state?.web?.componentLabMetrics?.projectFavicon?.box?.rect &&
+      state?.lynx?.componentLabMetrics?.projectFavicon?.box?.rect &&
+      Math.abs(
+        state.web.componentLabMetrics.projectFavicon.box.rect.width -
+          state.lynx.componentLabMetrics.projectFavicon.box.rect.width,
+      ) <= 1 &&
+      Math.abs(
+        state.web.componentLabMetrics.projectFavicon.box.rect.height -
+          state.lynx.componentLabMetrics.projectFavicon.box.rect.height,
+      ) <= 1);
   const componentLabGeometryReady = (() => {
     if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
     const webLab = state.web.componentLabMetrics;
@@ -14057,6 +14072,7 @@ async function captureCell({
     componentLabScrollReady &&
     componentLabDialogReady &&
     componentLabPopoverReady &&
+    componentLabProjectFaviconReady &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
@@ -14158,6 +14174,7 @@ async function captureCell({
       componentLabScrollReady,
       componentLabDialogReady,
       componentLabPopoverReady,
+      componentLabProjectFaviconReady,
       bothReady,
       identityMatch,
       finalOverlayReady,

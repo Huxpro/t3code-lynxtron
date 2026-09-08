@@ -1948,6 +1948,17 @@ label:has(> select#reasoning-effort) select {
   opacity: 0.64;
 }
 
+.component-lab-project-favicon-frame {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.component-lab-project-favicon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
 .component-lab-scroll-area {
   width: min(100%, 20rem);
   height: 5rem;

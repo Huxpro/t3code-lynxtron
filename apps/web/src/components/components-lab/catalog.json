@@ -6,6 +6,12 @@
     "states": ["default", "secondary", "outline", "ghost", "destructive", "disabled"]
   },
   {
+    "id": "ProjectFavicon#ProjectFavicon",
+    "category": "Project",
+    "title": "Project favicon",
+    "states": ["asset-or-fallback"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",

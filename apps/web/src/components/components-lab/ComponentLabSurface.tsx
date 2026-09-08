@@ -1,4 +1,5 @@
 import catalog from "./catalog.json";
+import { PRIMARY_LOCAL_ENVIRONMENT_ID } from "@t3tools/contracts";
 import { type ReactNode, useState } from "react";
 import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";
 
@@ -42,6 +43,7 @@ import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { SettingsRow, SettingsSection } from "../settings/settingsLayout";
+import { ProjectFavicon } from "../ProjectFavicon";
 
 type StoryId = (typeof catalog)[number]["id"];
 
@@ -233,6 +235,17 @@ export function ComponentLabSurface() {
               <Button variant="ghost">Ghost</Button>
               <Button variant="destructive">Delete</Button>
               <Button disabled>Disabled</Button>
+            </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="ProjectFavicon#ProjectFavicon" title="Project favicon">
+            <HostView className="component-lab-project-favicon-frame">
+              <ProjectFavicon
+                className="component-lab-project-favicon"
+                cwd="/Users/bytedance/github/background-only"
+                environmentId={PRIMARY_LOCAL_ENVIRONMENT_ID}
+              />
+              <HostText className="component-lab-host-text">background-only</HostText>
             </HostView>
           </StoryFrame>
 

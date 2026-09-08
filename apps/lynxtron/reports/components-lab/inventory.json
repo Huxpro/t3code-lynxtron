@@ -7,6 +7,12 @@
       "title": "Button"
     },
     {
+      "category": "Project",
+      "id": "ProjectFavicon#ProjectFavicon",
+      "states": ["asset-or-fallback"],
+      "title": "Project favicon"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -4923,7 +4929,7 @@
     },
     {
       "authority": {
-        "line": 145,
+        "line": 147,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4944,7 +4950,7 @@
     },
     {
       "authority": {
-        "line": 96,
+        "line": 98,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4965,7 +4971,7 @@
     },
     {
       "authority": {
-        "line": 182,
+        "line": 184,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -4986,7 +4992,7 @@
     },
     {
       "authority": {
-        "line": 131,
+        "line": 133,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5007,7 +5013,7 @@
     },
     {
       "authority": {
-        "line": 77,
+        "line": 79,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5028,7 +5034,7 @@
     },
     {
       "authority": {
-        "line": 209,
+        "line": 211,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5062,7 +5068,7 @@
     },
     {
       "authority": {
-        "line": 48,
+        "line": 50,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5083,7 +5089,7 @@
     },
     {
       "authority": {
-        "line": 73,
+        "line": 75,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -7163,12 +7169,16 @@
       "name": "ProjectFavicon",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 5
+        "webUseSiteCount": 6
       },
       "story": {
-        "status": "uncovered"
+        "category": "Project",
+        "id": "ProjectFavicon#ProjectFavicon",
+        "states": ["asset-or-fallback"],
+        "status": "covered",
+        "title": "Project favicon"
       },
       "useSites": [
         {
@@ -7182,6 +7192,14 @@
         {
           "path": "apps/web/src/components/CommandPalette.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/SettingsPanels.tsx",
@@ -22267,7 +22285,7 @@
     "internal": 214,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 49,
+    "stories": 50,
     "webOnly": 461
   },
   "generatedFrom": "apps/web/src/components",
