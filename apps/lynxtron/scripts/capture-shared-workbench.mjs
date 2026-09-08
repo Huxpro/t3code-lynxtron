@@ -65,6 +65,9 @@ const manifestPath = process.argv.includes("--manifest")
   : null;
 const stateId = argValue("--state-id", "new-thread-hero");
 const isComponentsLabState = stateId === "components-lab";
+const componentStory = argValue("--component-story", "");
+const isFullComponentsLabState = isComponentsLabState && !componentStory;
+const expectedComponentLabStoryCount = componentStory ? 1 : componentLabCatalog.length;
 const nativeOnlyStateIds = new Set(["settings-archive-mutation"]);
 if (nativeOnlyStateIds.has(stateId)) {
   throw new Error(`${stateId} is not implemented by the Browser paired-capture harness.`);
@@ -6761,7 +6764,13 @@ async function main() {
   for (const [label, target] of [
     ["server bin", SERVER_BIN],
     ["web build", path.join(WEB_DIST, "index.html")],
-    ["lynx build", path.join(LYNX_BUILD_DIR, "lynx/main.web.bundle")],
+    [
+      "lynx build",
+      path.join(
+        LYNX_BUILD_DIR,
+        componentStory ? "lynx/components-lab-isolated.web.bundle" : "lynx/main.web.bundle",
+      ),
+    ],
   ]) {
     if (!existsSync(target)) {
       throw new Error(
@@ -6950,7 +6959,11 @@ async function main() {
         : null;
   let captureWebRoute = requestedWebRoute;
   const webBundle = await hashFile(await webEntryBundlePath());
-  const lynxBundle = await hashFile(path.join(LYNX_BUILD_DIR, "lynx/main.web.bundle"));
+  const lynxBundlePath = path.join(
+    LYNX_BUILD_DIR,
+    componentStory ? "lynx/components-lab-isolated.web.bundle" : "lynx/main.web.bundle",
+  );
+  const lynxBundle = await hashFile(lynxBundlePath);
 
   // --- launch the shared server ---
   const serverPort = await findFreePort();
@@ -7364,7 +7377,12 @@ async function captureCell({
     socket: lynxSocketUrl,
     scenario,
     semanticRoute,
-    ...(isComponentsLabState ? { componentStoryCount: String(componentLabCatalog.length) } : {}),
+    ...(isComponentsLabState
+      ? {
+          componentStoryCount: String(expectedComponentLabStoryCount),
+          ...(componentStory ? { componentStory } : {}),
+        }
+      : {}),
     webRoute,
     theme,
     legacySidebarEnabled: String(legacySidebarEnabled),
@@ -7650,7 +7668,8 @@ async function captureCell({
     ).catch(() => null);
     if (isComponentsLabState) {
       const labReady =
-        (state?.web?.componentLabMetrics?.stories?.length ?? 0) === componentLabCatalog.length &&
+        (state?.web?.componentLabMetrics?.stories?.length ?? 0) ===
+          expectedComponentLabStoryCount &&
         JSON.stringify(
           state.web.componentLabMetrics.stories.map(({ id, states, title }) => ({
             id,
@@ -7665,6 +7684,7 @@ async function captureCell({
               title,
             })) ?? [],
           );
+      if (labReady && componentStory) break;
       if (labReady && !componentLabTooltipOpened) {
         const points = await evaluate(
           cdp,
@@ -9084,7 +9104,7 @@ async function captureCell({
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0
       )
         break;
-      if (state?.web?.literalRoute !== webRoute) {
+      if (!componentStory && state?.web?.literalRoute !== webRoute) {
         await evaluate(
           cdp,
           sessionId,
@@ -9760,6 +9780,7 @@ async function captureCell({
     if (
       webRoute !== "/settings/general" &&
       (isComponentsLabState || state?.web?.connected === true) &&
+      !componentStory &&
       !(semanticRoute === "new-thread" && state?.web?.literalRoute?.startsWith("/draft/")) &&
       state?.web?.literalRoute !== webRoute
     ) {
@@ -12574,7 +12595,7 @@ async function captureCell({
     state?.lynx?.productState?.lifecycle === "connecting";
   const componentLabReady =
     isComponentsLabState &&
-    (state?.web?.componentLabMetrics?.stories?.length ?? 0) > 0 &&
+    (state?.web?.componentLabMetrics?.stories?.length ?? 0) === expectedComponentLabStoryCount &&
     JSON.stringify(
       state.web.componentLabMetrics.stories.map(({ id, states, title }) => ({ id, states, title })),
     ) ===
@@ -12585,10 +12606,10 @@ async function captureCell({
           title,
         })) ?? [],
       );
-  const componentLabTooltipReady = !isComponentsLabState || componentLabTooltipVerified;
-  const componentLabMenuReady = !isComponentsLabState || componentLabMenuVerified;
+  const componentLabTooltipReady = !isFullComponentsLabState || componentLabTooltipVerified;
+  const componentLabMenuReady = !isFullComponentsLabState || componentLabMenuVerified;
   const componentLabSelectReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabSelectReopened &&
       componentLabSelectEvidence?.web?.value === "Compact" &&
       componentLabSelectEvidence?.lynx?.value === "Compact" &&
@@ -12619,7 +12640,7 @@ async function captureCell({
           componentLabSelectEvidence.lynx.popup.box.rect.height,
       ) <= 2);
   const componentLabNumberReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabNumberIncremented &&
       componentLabNumberDecremented &&
       String(state?.web?.componentLabMetrics?.numberField?.value) === "10" &&
@@ -12635,7 +12656,7 @@ async function captureCell({
           state.lynx.componentLabMetrics.numberField.root.rect.height,
       ) <= 2);
   const componentLabScrollReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabScrollDispatched &&
       (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
       (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
@@ -12654,7 +12675,7 @@ async function captureCell({
           state.lynx.componentLabMetrics.scrollArea.host.rect.height,
       ) <= 2);
   const componentLabDialogReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabDialogOpened &&
       componentLabDialogVerified &&
       componentLabDialogGeometryVerified &&
@@ -12662,7 +12683,7 @@ async function captureCell({
       state?.web?.componentLabMetrics?.dialog === null &&
       state?.lynx?.componentLabMetrics?.dialog === null);
   const componentLabSheetReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabSheetWebOpened &&
       componentLabSheetWebCaptured &&
       componentLabSheetWebClosed &&
@@ -12673,14 +12694,14 @@ async function captureCell({
       state?.web?.componentLabMetrics?.sheet === null &&
       state?.lynx?.componentLabMetrics?.sheet === null);
   const componentLabPopoverReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabPopoverOpened &&
       componentLabPopoverVerified &&
       componentLabPopoverClosed &&
       state?.web?.componentLabMetrics?.popover === null &&
       state?.lynx?.componentLabMetrics?.popover === null);
   const componentLabProjectFaviconReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.projectFavicon?.mode !== "unknown" &&
       state?.web?.componentLabMetrics?.projectFavicon?.mode ===
         state?.lynx?.componentLabMetrics?.projectFavicon?.mode &&
@@ -12695,7 +12716,7 @@ async function captureCell({
           state.lynx.componentLabMetrics.projectFavicon.box.rect.height,
       ) <= 1);
   const componentLabSettingResetReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabSettingResetClicked &&
       state?.web?.componentLabMetrics?.settingReset?.count === "Reset 1" &&
       state?.lynx?.componentLabMetrics?.settingReset?.count === "Reset 1" &&
@@ -12710,7 +12731,7 @@ async function captureCell({
           state.lynx.componentLabMetrics.settingReset.button.rect.height,
       ) <= 1);
   const componentLabSidebarReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabSidebarClicked &&
       componentLabSidebarToggled &&
       state?.web?.componentLabMetrics?.sidebarPrimitive?.count === "Selected 1" &&
@@ -12744,7 +12765,7 @@ async function captureCell({
           state.lynx.componentLabMetrics.sidebarPrimitive.trigger.rect.height,
       ) <= 1);
   const componentLabDraftInputReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabDraftWebTyped &&
       componentLabDraftWebCommitted &&
       componentLabDraftLynxTyped &&
@@ -12764,7 +12785,7 @@ async function captureCell({
           state.lynx.componentLabMetrics.draftInput.box.rect.height,
       ) <= 1);
   const componentLabCommandReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabCommandInitialVerified &&
       componentLabCommandWebTyped &&
       componentLabCommandLynxTyped &&
@@ -12810,7 +12831,7 @@ async function captureCell({
       componentLabCommandEvidence.initial.web.itemBoxes.length === 2 &&
       componentLabCommandEvidence.initial.lynx.itemBoxes.length === 2);
   const componentLabCommandDialogReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabCommandDialogWebOpened &&
       componentLabCommandDialogWebCaptured &&
       componentLabCommandDialogWebClosed &&
@@ -12820,7 +12841,7 @@ async function captureCell({
       state?.web?.componentLabMetrics?.commandDialog === null &&
       state?.lynx?.componentLabMetrics?.commandDialog === null);
   const componentLabThreadErrorReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabThreadErrorCaptured &&
       componentLabThreadErrorDismissed &&
       componentLabThreadErrorEvidence?.web?.action?.rect?.width > 0 &&
@@ -12828,7 +12849,7 @@ async function captureCell({
       state?.web?.componentLabMetrics?.threadErrorBanner === null &&
       state?.lynx?.componentLabMetrics?.threadErrorBanner === null);
   const componentLabThreadStatusReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (JSON.stringify(
       state?.web?.componentLabMetrics?.threadStatusLabels?.map(({ label }) => label),
     ) === JSON.stringify(["Working", "Awaiting Input", "Completed", "Plan Ready"]) &&
@@ -12843,7 +12864,7 @@ async function captureCell({
           ) <= 1,
       ));
   const componentLabChangeRequestReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (JSON.stringify(state?.web?.componentLabMetrics?.changeRequests?.map(({ text }) => text)) ===
       JSON.stringify([
         "PR #42 - Open Fix error banner fidelity",
@@ -12863,7 +12884,7 @@ async function captureCell({
         ({ icon }) => Math.abs(icon.rect.width - 12) <= 1 && Math.abs(icon.rect.height - 12) <= 1,
       ));
   const componentLabWorktreeReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.worktreeIndicator?.label ===
       "Worktree: error-fidelity (feature/error-fidelity)" &&
       state?.lynx?.componentLabMetrics?.worktreeIndicator?.label ===
@@ -12873,7 +12894,7 @@ async function captureCell({
       Math.abs(state.lynx.componentLabMetrics.worktreeIndicator.icon.rect.width - 12) <= 1 &&
       Math.abs(state.lynx.componentLabMetrics.worktreeIndicator.icon.rect.height - 12) <= 1);
   const componentLabSidebarChromeReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.sidebarChrome?.brandText === "T3 Code" &&
       state?.lynx?.componentLabMetrics?.sidebarChrome?.brandText === "T3 Code" &&
       state?.web?.componentLabMetrics?.sidebarChrome?.settingsText === "Settings" &&
@@ -12891,7 +12912,7 @@ async function captureCell({
       state.web.componentLabMetrics.sidebarChrome.footer.rect.height === 44 &&
       state.lynx.componentLabMetrics.sidebarChrome.footer.rect.height === 44);
   const componentLabFileTreeReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabFileTreeInitialCaptured &&
       componentLabFileTreeSelected &&
       componentLabFileTreeCollapsed &&
@@ -12925,7 +12946,7 @@ async function captureCell({
           componentLabFileTreeEvidence.initial.lynx.file.rect.height,
       ) <= 2);
   const componentLabChangedFilesCardReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabChangedFilesInitialCaptured &&
       componentLabChangedFilesExpanded &&
       componentLabChangedFilesCollapsed &&
@@ -12944,7 +12965,7 @@ async function captureCell({
       componentLabChangedFilesEvidence.collapsed.web.expandedBody === null &&
       componentLabChangedFilesEvidence.collapsed.lynx.expandedBody === null);
   const componentLabChatHeaderReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabChatHeaderClicked &&
       componentLabChatHeaderEvidence?.initial?.web?.projectName === "t3code" &&
       componentLabChatHeaderEvidence?.initial?.lynx?.projectName === "t3code" &&
@@ -12961,7 +12982,7 @@ async function captureCell({
       componentLabChatHeaderEvidence?.clicked?.web?.count === "New thread 1" &&
       componentLabChatHeaderEvidence?.clicked?.lynx?.count === "New thread 1");
   const componentLabPlanReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.plan?.explanation ===
       "Restore fidelity without duplicating product components." &&
       state?.lynx?.componentLabMetrics?.plan?.explanation ===
@@ -12995,7 +13016,7 @@ async function captureCell({
       state.lynx.componentLabMetrics.plan.empty ===
         "No active plan yet. Plans will appear here when generated.");
   const componentLabRightPanelReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.rightPanel?.empty.rect.width === 638 &&
       state.lynx.componentLabMetrics.rightPanel.empty.rect.width === 638 &&
       state.web.componentLabMetrics.rightPanel.empty.rect.height === 382 &&
@@ -13005,7 +13026,7 @@ async function captureCell({
       state.web.componentLabMetrics.rightPanel.cards.length === 0 &&
       state.lynx.componentLabMetrics.rightPanel.cards.length === 0);
   const componentLabPaletteEmptyReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.paletteEmpty?.text === "No matching projects or actions." &&
       state?.lynx?.componentLabMetrics?.paletteEmpty?.text === "No matching projects or actions." &&
       state.web.componentLabMetrics.paletteEmpty.box.rect.width === 318 &&
@@ -13013,15 +13034,21 @@ async function captureCell({
       state.web.componentLabMetrics.paletteEmpty.box.rect.height === 100 &&
       state.lynx.componentLabMetrics.paletteEmpty.box.rect.height === 100);
   const componentLabModelPickerEmptyReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.modelPickerEmpty?.text === "No models found" &&
       state?.lynx?.componentLabMetrics?.modelPickerEmpty?.text === "No models found" &&
       state.web.componentLabMetrics.modelPickerEmpty.box.rect.width === 318 &&
       state.lynx.componentLabMetrics.modelPickerEmpty.box.rect.width === 318 &&
       state.web.componentLabMetrics.modelPickerEmpty.box.rect.height === 68 &&
       state.lynx.componentLabMetrics.modelPickerEmpty.box.rect.height === 68);
+  const isolatedComponentStoryReady =
+    !componentStory ||
+    (state?.web?.componentLabMetrics?.stories?.[0]?.id === componentStory &&
+      state?.lynx?.componentLabMetrics?.stories?.[0]?.id === componentStory &&
+      (componentStory !== "chat/ModelPickerSurface#ModelPickerEmptySurface" ||
+        componentLabModelPickerEmptyReady));
   const componentLabHostListReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabHostListScrolled &&
       componentLabHostListEvidence?.initial?.web?.items?.length === 6 &&
       componentLabHostListEvidence?.initial?.lynx?.items?.length === 6 &&
@@ -13058,7 +13085,7 @@ async function captureCell({
       componentLabHostListEvidence.scrolled.web.scrollTop > 0 &&
       componentLabHostListEvidence.scrolled.lynx.scrollTop > 0);
   const componentLabHostLayoutReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.hostLayout?.headlineText === "Build something great" &&
       state?.lynx?.componentLabMetrics?.hostLayout?.headlineText === "Build something great" &&
       state.web.componentLabMetrics.hostLayout.layout.rect.width === 320 &&
@@ -13072,7 +13099,7 @@ async function captureCell({
       state.web.componentLabMetrics.hostLayout.headline.style.lineHeight === "32px" &&
       state.lynx.componentLabMetrics.hostLayout.headline.style.lineHeight === "32px");
   const componentLabT3WordmarkReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.t3Wordmarks?.length === 2 &&
       state?.lynx?.componentLabMetrics?.t3Wordmarks?.length === 2 &&
       state.web.componentLabMetrics.t3Wordmarks.every(
@@ -13090,7 +13117,7 @@ async function captureCell({
           mark?.rect?.height === 10,
       ));
   const componentLabUpdatePillReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (componentLabUpdatePillCaptured &&
       componentLabUpdatePillDismissed &&
       componentLabUpdatePillEvidence?.initial?.web?.length === 2 &&
@@ -13118,7 +13145,7 @@ async function captureCell({
       componentLabUpdatePillEvidence.dismissed.web.length === 1 &&
       componentLabUpdatePillEvidence.dismissed.lynx.length === 1);
   const componentLabLabelReady =
-    !isComponentsLabState ||
+    !isFullComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
       state?.lynx?.componentLabMetrics?.label?.text === "Project name" &&
       state?.web?.componentLabMetrics?.label?.htmlFor === "component-lab-project-name" &&
@@ -13128,7 +13155,7 @@ async function captureCell({
       state?.web?.componentLabMetrics?.label?.box?.style?.lineHeight === "16px" &&
       state?.lynx?.componentLabMetrics?.label?.box?.style?.lineHeight === "16px");
   const componentLabGeometryReady = (() => {
-    if (!isComponentsLabState || !componentLabReady) return !isComponentsLabState;
+    if (!isFullComponentsLabState || !componentLabReady) return !isFullComponentsLabState;
     const webLab = state.web.componentLabMetrics;
     const lynxLab = state.lynx.componentLabMetrics;
     const widthsMatch =
@@ -15550,41 +15577,43 @@ async function captureCell({
   const componentsLabPass =
     componentLabReady &&
     componentLabGeometryReady &&
-    componentLabTooltipReady &&
-    componentLabMenuReady &&
-    componentLabSelectReady &&
-    componentLabNumberReady &&
-    componentLabScrollReady &&
-    componentLabDialogReady &&
-    componentLabSheetReady &&
-    componentLabPopoverReady &&
-    componentLabProjectFaviconReady &&
-    componentLabSettingResetReady &&
-    componentLabSidebarReady &&
-    componentLabCommandReady &&
-    componentLabCommandDialogReady &&
-    componentLabThreadErrorReady &&
-    componentLabThreadStatusReady &&
-    componentLabChangeRequestReady &&
-    componentLabWorktreeReady &&
-    componentLabSidebarChromeReady &&
-    componentLabFileTreeReady &&
-    componentLabChangedFilesCardReady &&
-    componentLabChatHeaderReady &&
-    componentLabPlanReady &&
-    componentLabRightPanelReady &&
-    componentLabPaletteEmptyReady &&
-    componentLabModelPickerEmptyReady &&
-    componentLabHostListReady &&
-    componentLabHostLayoutReady &&
-    componentLabT3WordmarkReady &&
-    componentLabUpdatePillReady &&
-    componentLabDraftInputReady &&
-    componentLabLabelReady &&
+    isolatedComponentStoryReady &&
+    (componentStory ||
+      (componentLabTooltipReady &&
+        componentLabMenuReady &&
+        componentLabSelectReady &&
+        componentLabNumberReady &&
+        componentLabScrollReady &&
+        componentLabDialogReady &&
+        componentLabSheetReady &&
+        componentLabPopoverReady &&
+        componentLabProjectFaviconReady &&
+        componentLabSettingResetReady &&
+        componentLabSidebarReady &&
+        componentLabCommandReady &&
+        componentLabCommandDialogReady &&
+        componentLabThreadErrorReady &&
+        componentLabThreadStatusReady &&
+        componentLabChangeRequestReady &&
+        componentLabWorktreeReady &&
+        componentLabSidebarChromeReady &&
+        componentLabFileTreeReady &&
+        componentLabChangedFilesCardReady &&
+        componentLabChatHeaderReady &&
+        componentLabPlanReady &&
+        componentLabRightPanelReady &&
+        componentLabPaletteEmptyReady &&
+        componentLabModelPickerEmptyReady &&
+        componentLabHostListReady &&
+        componentLabHostLayoutReady &&
+        componentLabT3WordmarkReady &&
+        componentLabUpdatePillReady &&
+        componentLabDraftInputReady &&
+        componentLabLabelReady)) &&
     identityMatch &&
     state?.web?.productState?.theme === theme &&
     state?.lynx?.productState?.theme === theme &&
-    state.web.componentLabMetrics.stories.length === componentLabCatalog.length &&
+    state.web.componentLabMetrics.stories.length === expectedComponentLabStoryCount &&
     state?.web?.componentLabMetrics?.lab?.rect?.width === width &&
     state?.lynx?.componentLabMetrics?.lab?.rect?.width === width &&
     consoleErrors.length === 0 &&

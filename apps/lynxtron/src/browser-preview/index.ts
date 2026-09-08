@@ -90,8 +90,12 @@ if (!view || !status) {
   throw new Error("Browser preview host is missing its lynx-view or status output.");
 }
 
-const bundleUrl = new URL("./lynx/main.web.bundle", window.location.href).href;
 const previewUrl = new URL(window.location.href);
+const requestedComponentStory = previewUrl.searchParams.get("componentStory");
+const bundleUrl = new URL(
+  requestedComponentStory ? "./lynx/components-lab-isolated.web.bundle" : "./lynx/main.web.bundle",
+  window.location.href,
+).href;
 let viewportContract = resolveBrowserPreviewViewportContract({
   innerWidth: window.innerWidth,
   innerHeight: window.innerHeight,
@@ -146,6 +150,7 @@ const themedScenario = {
     ...scenario.preferences,
     initialRoute: requestedRoute,
     ...(requestedInitialOverlay ? { initialOverlay: requestedInitialOverlay } : {}),
+    ...(requestedComponentStory ? { componentStory: requestedComponentStory } : {}),
     themePreference: requestedTheme,
     ...(requestedModelSelection ? { modelSelection: requestedModelSelection } : {}),
     ...(requestedSidebarWidth !== null ? { chat_thread_sidebar_width: requestedSidebarWidth } : {}),

@@ -26,6 +26,7 @@ const expectProject = url.searchParams.get("expectProject") ?? "";
 const expectThread = url.searchParams.get("expectThread") || null;
 const expectedSemanticRoute = url.searchParams.get("semanticRoute") ?? "new-thread";
 const expectedComponentStoryCount = Number(url.searchParams.get("componentStoryCount") ?? "0");
+const componentStory = url.searchParams.get("componentStory");
 const theme = url.searchParams.get("theme") === "light" ? "light" : "dark";
 const requestedModelSelection = (() => {
   const value = url.searchParams.get("modelSelection");
@@ -2469,7 +2470,13 @@ for (const frame of [webPane, lynxPane]) {
 // URL so it authorizes against the shared server, then routed to the view.
 const webHash = pairingToken ? `#token=${encodeURIComponent(pairingToken)}` : "";
 const webEntry =
-  expectedSemanticRoute === "components-lab" ? webRoute : pairingToken ? `/pair${webHash}` : `/`;
+  expectedSemanticRoute === "components-lab"
+    ? componentStory
+      ? `${webRoute}#story=${encodeURIComponent(componentStory)}`
+      : webRoute
+    : pairingToken
+      ? `/pair${webHash}`
+      : `/`;
 webPane.srcdoc = `<!doctype html><script>
 localStorage.setItem("t3code:theme", ${JSON.stringify(theme)});
 if (${JSON.stringify(requestedSidebarWidth)} !== null) {
@@ -2508,6 +2515,9 @@ const lynxQuery = new URLSearchParams({
   legacySidebarEnabled: String(legacySidebarEnabled),
   betaMutationEnabled: String(betaMutationEnabled),
 });
+if (componentStory) {
+  lynxQuery.set("componentStory", componentStory);
+}
 if (requestedModelSelection) {
   lynxQuery.set("modelSelection", JSON.stringify(requestedModelSelection));
 }

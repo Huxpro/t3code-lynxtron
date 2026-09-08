@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "pnpm run prepare:cef-runtime && pnpm run build:connector && cross-env TARGET_ENV=desktop NODE_ENV=development concurrently -k --raw \"rspeedy dev\" \"dev-ready-rspeedy && rspack watch\"",
     "build": "pnpm run prepare:cef-runtime && pnpm run generate:css && pnpm run build:icons && pnpm run format:generated && rspeedy build && rspack build && pnpm run build:connector",
-    "build:browser-preview": "cross-env T3_LYNXTRON_WEB_PREVIEW=1 rspeedy build && rspack build --config rspack.browser-preview.config.ts",
+    "build:browser-preview": "cross-env T3_LYNXTRON_WEB_PREVIEW=1 rspeedy build && cross-env T3_LYNXTRON_WEB_PREVIEW=1 T3_LYNXTRON_PROBE_ENTRY=./src/app/components-lab-isolated.tsx T3_LYNXTRON_PROBE_OUTPUT=./output/bundle/web-components-lab-isolated rspeedy build && rspack build --config rspack.browser-preview.config.ts",
     "build:workbench": "pnpm run build:browser-preview && pnpm --dir ../web exec vp build",
     "package:dir": "pnpm run build && lynxtron-builder --dir --publish never",
     "capture:workbench": "node scripts/capture-shared-workbench.mjs",

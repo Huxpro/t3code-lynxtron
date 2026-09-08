@@ -58,6 +58,10 @@ export default defineConfig({
           to: "lynx/main.web.bundle",
         },
         {
+          from: "./output/bundle/web-components-lab-isolated/main.web.bundle",
+          to: "lynx/components-lab-isolated.web.bundle",
+        },
+        {
           from: "./output/bundle/web/static",
           to: "static",
         },

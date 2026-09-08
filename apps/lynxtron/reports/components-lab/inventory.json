@@ -3154,7 +3154,7 @@
         "authorityShared": true,
         "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 2
+        "webUseSiteCount": 3
       },
       "story": {
         "category": "Empty States",
@@ -3170,6 +3170,10 @@
         },
         {
           "path": "apps/web/src/components/chat/ModelPickerContent.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
           "platform": "web"
         },
         {
@@ -5397,6 +5401,36 @@
         },
         {
           "path": "apps/web/src/components/CommandPaletteResults.tsx",
+          "platform": "web"
+        }
+      ]
+    },
+    {
+      "authority": {
+        "line": 6,
+        "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
+      },
+      "exported": true,
+      "id": "components-lab/ComponentLabIsolatedSurface#ComponentLabIsolatedSurface",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabIsolatedSurface",
+      "reuse": {
+        "authorityShared": true,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 2
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": [
+        {
+          "path": "apps/web/src/main.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/routes/components-lab.tsx",
           "platform": "web"
         }
       ]
@@ -17870,7 +17904,7 @@
         "authorityShared": true,
         "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 2
+        "webUseSiteCount": 3
       },
       "story": {
         "category": "Host primitives",
@@ -17887,6 +17921,10 @@
         {
           "path": "apps/web/src/components/chat/ChatHeaderTitle.tsx",
           "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
         },
         {
           "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
@@ -18162,7 +18200,7 @@
         "authorityShared": true,
         "lynxUseSiteCount": 26,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 21
+        "webUseSiteCount": 22
       },
       "story": {
         "category": "Host primitives",
@@ -18273,6 +18311,10 @@
           "platform": "lynx"
         },
         {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
+        },
+        {
           "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "web"
         },
@@ -18378,7 +18420,7 @@
         "authorityShared": true,
         "lynxUseSiteCount": 28,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 19
+        "webUseSiteCount": 20
       },
       "story": {
         "category": "Host primitives",
@@ -18487,6 +18529,10 @@
         {
           "path": "apps/web/src/components/CommandPaletteSurface.tsx",
           "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
         },
         {
           "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
@@ -24011,14 +24057,14 @@
     }
   ],
   "counts": {
-    "components": 760,
+    "components": 761,
     "coveredStoriesMissingLynxUse": 0,
-    "exported": 527,
+    "exported": 528,
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
     "stories": 123,
-    "webOnly": 480
+    "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

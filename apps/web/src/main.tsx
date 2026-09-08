@@ -20,6 +20,7 @@ import {
 } from "./lib/windowControlsOverlay";
 import { AppRoot } from "./AppRoot";
 import { ComponentLabSurface } from "./components/components-lab/ComponentLabSurface";
+import { ComponentLabIsolatedSurface } from "./components/components-lab/ComponentLabIsolatedSurface";
 
 // Electron loads the app from a file-backed shell, so hash history avoids path resolution issues.
 const history = isElectron ? createHashHistory() : createBrowserHistory();
@@ -32,10 +33,18 @@ if (isElectron) {
 }
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
+const componentLabUrl = new URL(window.location.href);
+const componentLabStoryId =
+  componentLabUrl.searchParams.get("story") ??
+  new URLSearchParams(componentLabUrl.hash.slice(1)).get("story");
 
 const app =
   window.location.pathname === "/components-lab" ? (
-    <ComponentLabSurface />
+    componentLabStoryId ? (
+      <ComponentLabIsolatedSurface storyId={componentLabStoryId} />
+    ) : (
+      <ComponentLabSurface />
+    )
   ) : (
     <AppRoot router={router} />
   );

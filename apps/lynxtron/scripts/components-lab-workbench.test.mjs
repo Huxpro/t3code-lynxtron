@@ -11,6 +11,11 @@ const readerSource = readFileSync(
   resolve(import.meta.dirname, "shared-workbench/workbench.js"),
   "utf8",
 );
+const appEntrySource = readFileSync(resolve(import.meta.dirname, "../src/app/index.tsx"), "utf8");
+const isolatedEntrySource = readFileSync(
+  resolve(import.meta.dirname, "../src/app/components-lab-isolated.tsx"),
+  "utf8",
+);
 
 describe("Components Lab paired workbench", () => {
   it("reads the same shared story contract from both renderers", () => {
@@ -146,6 +151,14 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, 'semanticRoute === "components-lab"');
     assert.include(captureSource, '? "/components-lab"');
     assert.include(captureSource, "componentLabCatalog.length");
+    assert.include(captureSource, 'argValue("--component-story", "")');
+    assert.include(captureSource, "expectedComponentLabStoryCount");
+    assert.include(captureSource, "isolatedComponentStoryReady");
+    assert.include(readerSource, 'url.searchParams.get("componentStory")');
+    assert.include(readerSource, 'lynxQuery.set("componentStory", componentStory)');
+    assert.include(captureSource, "components-lab-isolated.web.bundle");
+    assert.notInclude(appEntrySource, "ComponentLabIsolatedSurface");
+    assert.include(isolatedEntrySource, "ComponentLabIsolatedSurface");
     assert.include(readerSource, "expectedComponentStoryCount");
     assert.include(captureSource, "const pass = isComponentsLabState");
     assert.include(readerSource, 'expectedSemanticRoute === "components-lab"');
