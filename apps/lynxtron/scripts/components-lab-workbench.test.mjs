@@ -27,6 +27,7 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "state.web.componentLabMetrics.menu.items.length === 2");
     assert.include(readerSource, '[data-floating-popup="component-lab-menu"]');
     assert.include(readerSource, "separatorCount");
+    assert.include(readerSource, "shortcutCount");
     assert.include(captureSource, "componentLabMenuEvidence");
     assert.include(readerSource, 'story.querySelectorAll("[data-slot]")');
     assert.include(captureSource, "const componentLabSelectReady =");

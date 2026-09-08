@@ -201,7 +201,9 @@ function readComponentLabMetrics(root) {
               readComposedText(item),
             ),
             groupCount: popup.querySelectorAll('[data-slot="menu-group"]').length,
+            labelCount: popup.querySelectorAll('[data-slot="menu-label"]').length,
             separatorCount: popup.querySelectorAll('[data-slot="menu-separator"]').length,
+            shortcutCount: popup.querySelectorAll('[data-slot="menu-shortcut"]').length,
           }
         : null;
     })(),

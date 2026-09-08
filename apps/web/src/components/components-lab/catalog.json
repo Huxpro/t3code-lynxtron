@@ -192,6 +192,18 @@
     "states": ["default"]
   },
   {
+    "id": "ui/menu#MenuGroupLabel",
+    "category": "Overlays",
+    "title": "Menu group label",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/menu#MenuShortcut",
+    "category": "Overlays",
+    "title": "Menu shortcut",
+    "states": ["default"]
+  },
+  {
     "id": "ui/select#Select",
     "category": "Forms",
     "title": "Select",

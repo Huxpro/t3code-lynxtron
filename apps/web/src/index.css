@@ -1948,6 +1948,10 @@ label:has(> select#reasoning-effort) select {
   opacity: 0.64;
 }
 
+.component-lab-menu-popup {
+  width: 11.25rem;
+}
+
 .component-lab-project-favicon-frame {
   display: flex;
   align-items: center;

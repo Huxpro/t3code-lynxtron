@@ -7683,8 +7683,12 @@ async function captureCell({
         state.lynx.componentLabMetrics.menu.items.length === 2 &&
         state.web.componentLabMetrics.menu.groupCount === 1 &&
         state.lynx.componentLabMetrics.menu.groupCount === 1 &&
+        state.web.componentLabMetrics.menu.labelCount === 1 &&
+        state.lynx.componentLabMetrics.menu.labelCount === 1 &&
         state.web.componentLabMetrics.menu.separatorCount === 1 &&
         state.lynx.componentLabMetrics.menu.separatorCount === 1 &&
+        state.web.componentLabMetrics.menu.shortcutCount === 1 &&
+        state.lynx.componentLabMetrics.menu.shortcutCount === 1 &&
         Math.abs(
           state.web.componentLabMetrics.menu.box.rect.x -
             state.lynx.componentLabMetrics.menu.box.rect.x,

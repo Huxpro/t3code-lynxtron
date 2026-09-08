@@ -358,7 +358,11 @@ export const MenuGroup = ({ children, className, ...props }: ElementProps) => (
     {children}
   </view>
 );
-export const MenuGroupLabel = MenuGroup;
+export const MenuGroupLabel = ({ children, className, ...props }: ElementProps) => (
+  <text {...props} className={classes("lynx-menu-group-label", className)} data-slot="menu-label">
+    {children}
+  </text>
+);
 export function MenuItem({
   children,
   className,
@@ -399,7 +403,11 @@ export const MenuSeparator = ({ className, ...props }: ElementProps) => (
     data-slot="menu-separator"
   />
 );
-export const MenuShortcut = MenuGroup;
+export const MenuShortcut = ({ children, className, ...props }: ElementProps) => (
+  <text {...props} className={classes("lynx-menu-shortcut", className)} data-slot="menu-shortcut">
+    {children}
+  </text>
+);
 export const MenuSub = Menu;
 export const MenuSubTrigger = MenuTrigger;
 export const MenuSubPopup = MenuPopup;

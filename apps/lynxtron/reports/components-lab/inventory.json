@@ -193,6 +193,18 @@
       "title": "Menu separator"
     },
     {
+      "category": "Overlays",
+      "id": "ui/menu#MenuGroupLabel",
+      "states": ["default"],
+      "title": "Menu group label"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/menu#MenuShortcut",
+      "states": ["default"],
+      "title": "Menu shortcut"
+    },
+    {
       "category": "Forms",
       "id": "ui/select#Select",
       "states": ["closed", "open"],
@@ -5033,7 +5045,7 @@
     },
     {
       "authority": {
-        "line": 167,
+        "line": 176,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5054,7 +5066,7 @@
     },
     {
       "authority": {
-        "line": 118,
+        "line": 127,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5075,7 +5087,7 @@
     },
     {
       "authority": {
-        "line": 204,
+        "line": 213,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5096,7 +5108,7 @@
     },
     {
       "authority": {
-        "line": 153,
+        "line": 162,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5117,7 +5129,7 @@
     },
     {
       "authority": {
-        "line": 96,
+        "line": 105,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5138,7 +5150,7 @@
     },
     {
       "authority": {
-        "line": 231,
+        "line": 240,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5159,7 +5171,7 @@
     },
     {
       "authority": {
-        "line": 266,
+        "line": 275,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5180,7 +5192,7 @@
     },
     {
       "authority": {
-        "line": 302,
+        "line": 311,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5214,7 +5226,7 @@
     },
     {
       "authority": {
-        "line": 67,
+        "line": 76,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5235,7 +5247,7 @@
     },
     {
       "authority": {
-        "line": 92,
+        "line": 101,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -17917,17 +17929,29 @@
       "name": "MenuGroupLabel",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 3
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 4
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#MenuGroupLabel",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Menu group label"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/BranchToolbar.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ProjectScriptsControl.tsx",
@@ -18328,17 +18352,29 @@
       "name": "MenuShortcut",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 2
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#MenuShortcut",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Menu shortcut"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/chat/OpenInPicker.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/ProjectScriptsControl.tsx",
@@ -22567,7 +22603,7 @@
     "internal": 216,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 66,
+    "stories": 68,
     "webOnly": 463
   },
   "generatedFrom": "apps/web/src/components",

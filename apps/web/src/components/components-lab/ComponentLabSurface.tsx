@@ -27,7 +27,16 @@ import {
 import { HostButton, HostHeading, HostText, HostView } from "../ui/hostElements";
 import { Input } from "../ui/input";
 import { Kbd, KbdGroup } from "../ui/kbd";
-import { Menu, MenuGroup, MenuItem, MenuPopup, MenuSeparator, MenuTrigger } from "../ui/menu";
+import {
+  Menu,
+  MenuGroup,
+  MenuGroupLabel,
+  MenuItem,
+  MenuPopup,
+  MenuSeparator,
+  MenuShortcut,
+  MenuTrigger,
+} from "../ui/menu";
 import {
   NumberField,
   NumberFieldDecrement,
@@ -437,9 +446,18 @@ export function ComponentLabSurface() {
               >
                 Open menu
               </MenuTrigger>
-              <MenuPopup align="start" relationId="component-lab-menu" side="top">
+              <MenuPopup
+                align="start"
+                className="component-lab-menu-popup"
+                relationId="component-lab-menu"
+                side="top"
+              >
                 <MenuGroup data-component-lab-menu-group="actions">
-                  <MenuItem data-component-lab-menu-item="open">Open in editor</MenuItem>
+                  <MenuGroupLabel>File actions</MenuGroupLabel>
+                  <MenuItem data-component-lab-menu-item="open">
+                    Open in editor
+                    <MenuShortcut>⌘O</MenuShortcut>
+                  </MenuItem>
                   <MenuSeparator data-component-lab-menu-separator="default" />
                   <MenuItem data-component-lab-menu-item="copy">Copy path</MenuItem>
                 </MenuGroup>
@@ -503,6 +521,18 @@ export function ComponentLabSurface() {
           <StoryFrame id="ui/menu#MenuSeparator" title="Menu separator">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Separates the two production MenuItem instances above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#MenuGroupLabel" title="Menu group label">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Renders File actions in the shared Menu fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/menu#MenuShortcut" title="Menu shortcut">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Renders the ⌘O hint inside the shared production MenuItem above.
             </HostText>
           </StoryFrame>
 
