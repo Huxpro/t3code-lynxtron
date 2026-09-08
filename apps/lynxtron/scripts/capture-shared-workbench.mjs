@@ -13068,7 +13068,22 @@ async function captureCell({
                   state.lynx.componentLabMetrics.paletteSection.box.style.paddingLeft,
                 ),
             ) <= 1
-          : false));
+          : componentStory === "settings/SettingsSurfaces#SourceControlMarkSurface"
+            ? state?.web?.componentLabMetrics?.sourceControlMarks?.length === 3 &&
+              state?.lynx?.componentLabMetrics?.sourceControlMarks?.length === 3 &&
+              state.web.componentLabMetrics.sourceControlMarks.every(
+                (mark) => mark.box.rect.width === 8 && mark.box.rect.height === 8,
+              ) &&
+              state.lynx.componentLabMetrics.sourceControlMarks.every(
+                (mark) => mark.box.rect.width === 8 && mark.box.rect.height === 8,
+              ) &&
+              JSON.stringify(
+                state.web.componentLabMetrics.sourceControlMarks.map((mark) => mark.classes),
+              ) ===
+                JSON.stringify(
+                  state.lynx.componentLabMetrics.sourceControlMarks.map((mark) => mark.classes),
+                )
+            : false));
   const componentLabHostListReady =
     !isFullComponentsLabState ||
     (componentLabHostListScrolled &&

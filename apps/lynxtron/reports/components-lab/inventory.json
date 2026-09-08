@@ -743,6 +743,12 @@
       "id": "CommandPaletteSurface#PaletteSectionSurface",
       "states": ["label"],
       "title": "Palette section"
+    },
+    {
+      "category": "Settings",
+      "id": "settings/SettingsSurfaces#SourceControlMarkSurface",
+      "states": ["success", "warning", "muted"],
+      "title": "Source control status mark"
     }
   ],
   "components": [
@@ -5421,7 +5427,7 @@
     },
     {
       "authority": {
-        "line": 7,
+        "line": 8,
         "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx"
       },
       "exported": true,
@@ -11872,18 +11878,26 @@
       "lynx": null,
       "name": "SourceControlMarkSurface",
       "reuse": {
-        "authorityShared": false,
+        "authorityShared": true,
         "lynxUseSiteCount": 1,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Settings",
+        "id": "settings/SettingsSurfaces#SourceControlMarkSurface",
+        "states": ["success", "warning", "muted"],
+        "status": "covered",
+        "title": "Source control status mark"
       },
       "useSites": [
         {
           "path": "apps/lynxtron/src/app/components/OtherSettings.tsx",
           "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabIsolatedSurface.tsx",
+          "platform": "web"
         },
         {
           "path": "apps/web/src/components/settings/SourceControlSettings.tsx",
@@ -24077,7 +24091,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 124,
+    "stories": 125,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",

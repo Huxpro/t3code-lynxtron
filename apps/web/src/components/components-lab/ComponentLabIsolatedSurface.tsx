@@ -2,6 +2,7 @@ import isolatedCatalog from "./isolatedCatalog.json";
 
 import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";
 import { PaletteSectionSurface } from "../CommandPaletteSurface";
+import { SourceControlMarkSurface } from "../settings/SettingsSurfaces";
 import { HostHeading, HostText, HostView } from "../ui/hostElements";
 
 export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: string }) {
@@ -19,6 +20,15 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
       return (
         <HostView className="component-lab-palette-section">
           <PaletteSectionSurface label="Recent Threads" />
+        </HostView>
+      );
+    }
+    if (storyId === "settings/SettingsSurfaces#SourceControlMarkSurface") {
+      return (
+        <HostView className="component-lab-source-control-marks component-lab-specimen-row">
+          <SourceControlMarkSurface tone="success" />
+          <SourceControlMarkSurface tone="warning" />
+          <SourceControlMarkSurface tone="muted" />
         </HostView>
       );
     }

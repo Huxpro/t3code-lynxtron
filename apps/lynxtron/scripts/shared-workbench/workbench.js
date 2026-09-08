@@ -553,6 +553,14 @@ function readComponentLabMetrics(root) {
         text: readComposedText(section),
       };
     })(),
+    sourceControlMarks: [
+      ...root.querySelectorAll(
+        ".component-lab-source-control-marks > .bg-success, .component-lab-source-control-marks > .bg-warning, .component-lab-source-control-marks > .bg-muted-foreground\\/35",
+      ),
+    ].map((mark) => ({
+      box: readElementBox(mark),
+      classes: [...mark.classList],
+    })),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

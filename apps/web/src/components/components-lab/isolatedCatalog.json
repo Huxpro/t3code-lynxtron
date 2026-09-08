@@ -10,5 +10,11 @@
     "category": "Navigation",
     "title": "Palette section",
     "states": ["label"]
+  },
+  {
+    "id": "settings/SettingsSurfaces#SourceControlMarkSurface",
+    "category": "Settings",
+    "title": "Source control status mark",
+    "states": ["success", "warning", "muted"]
   }
 ]
