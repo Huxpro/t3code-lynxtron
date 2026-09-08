@@ -393,6 +393,12 @@ export function ComponentLabSurface() {
             </HostText>
           </StoryFrame>
 
+          <StoryFrame id="ui/tooltip#TooltipProvider" title="Tooltip provider">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Shared by both production Tooltip fixtures above.
+            </HostText>
+          </StoryFrame>
+
           <StoryFrame id="ui/menu#MenuTrigger" title="Menu trigger">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Rendered by the Menu story through the real Button primitive.
@@ -620,6 +626,29 @@ export function ComponentLabSurface() {
                 Disabled
               </HostButton>
             </HostView>
+          </StoryFrame>
+
+          <StoryFrame id="ui/hostElements#HostHeading" title="Host heading">
+            <HostHeading className="component-lab-story__title">Shared heading</HostHeading>
+          </StoryFrame>
+
+          <StoryFrame
+            id="components-lab/ComponentLabStack#ComponentLabStack"
+            title="Component lab stack"
+          >
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              This complete story list is rendered by the shared stack primitive.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame
+            id="components-lab/ComponentLabStack#ComponentLabColumn"
+            title="Component lab column"
+          >
+            <ComponentLabColumn>
+              <HostText className="component-lab-host-text">First row</HostText>
+              <HostText className="component-lab-host-text">Second row</HostText>
+            </ComponentLabColumn>
           </StoryFrame>
         </ComponentLabStack>
       </HostView>

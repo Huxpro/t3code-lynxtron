@@ -73,6 +73,24 @@
       "title": "Host button"
     },
     {
+      "category": "Host primitives",
+      "id": "ui/hostElements#HostHeading",
+      "states": ["story-title"],
+      "title": "Host heading"
+    },
+    {
+      "category": "Lab infrastructure",
+      "id": "components-lab/ComponentLabStack#ComponentLabStack",
+      "states": ["story-list"],
+      "title": "Component lab stack"
+    },
+    {
+      "category": "Lab infrastructure",
+      "id": "components-lab/ComponentLabStack#ComponentLabColumn",
+      "states": ["vertical-fixtures"],
+      "title": "Component lab column"
+    },
+    {
       "category": "Overlays",
       "id": "ui/tooltip#Tooltip",
       "states": ["closed", "hover-open"],
@@ -89,6 +107,12 @@
       "id": "ui/tooltip#TooltipPopup",
       "states": ["default", "glass"],
       "title": "Tooltip popup"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/tooltip#TooltipProvider",
+      "states": ["shared-delay"],
+      "title": "Tooltip provider"
     },
     {
       "category": "Overlays",
@@ -4900,7 +4924,11 @@
         "webUseSiteCount": 1
       },
       "story": {
-        "status": "uncovered"
+        "category": "Lab infrastructure",
+        "id": "components-lab/ComponentLabStack#ComponentLabColumn",
+        "states": ["vertical-fixtures"],
+        "status": "covered",
+        "title": "Component lab column"
       },
       "useSites": [
         {
@@ -4932,7 +4960,11 @@
         "webUseSiteCount": 1
       },
       "story": {
-        "status": "uncovered"
+        "category": "Lab infrastructure",
+        "id": "components-lab/ComponentLabStack#ComponentLabStack",
+        "states": ["story-list"],
+        "status": "covered",
+        "title": "Component lab stack"
       },
       "useSites": [
         {
@@ -16576,7 +16608,11 @@
         "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Host primitives",
+        "id": "ui/hostElements#HostHeading",
+        "states": ["story-title"],
+        "status": "covered",
+        "title": "Host heading"
       },
       "useSites": [
         {
@@ -22095,7 +22131,11 @@
         "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/tooltip#TooltipProvider",
+        "states": ["shared-delay"],
+        "status": "covered",
+        "title": "Tooltip provider"
       },
       "useSites": [
         {
@@ -22344,7 +22384,7 @@
     "internal": 215,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 53,
+    "stories": 57,
     "webOnly": 462
   },
   "generatedFrom": "apps/web/src/components",

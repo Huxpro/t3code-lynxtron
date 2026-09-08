@@ -72,6 +72,24 @@
     "states": ["default", "disabled"]
   },
   {
+    "id": "ui/hostElements#HostHeading",
+    "category": "Host primitives",
+    "title": "Host heading",
+    "states": ["story-title"]
+  },
+  {
+    "id": "components-lab/ComponentLabStack#ComponentLabStack",
+    "category": "Lab infrastructure",
+    "title": "Component lab stack",
+    "states": ["story-list"]
+  },
+  {
+    "id": "components-lab/ComponentLabStack#ComponentLabColumn",
+    "category": "Lab infrastructure",
+    "title": "Component lab column",
+    "states": ["vertical-fixtures"]
+  },
+  {
     "id": "ui/tooltip#Tooltip",
     "category": "Overlays",
     "title": "Tooltip",
@@ -88,6 +106,12 @@
     "category": "Overlays",
     "title": "Tooltip popup",
     "states": ["default", "glass"]
+  },
+  {
+    "id": "ui/tooltip#TooltipProvider",
+    "category": "Overlays",
+    "title": "Tooltip provider",
+    "states": ["shared-delay"]
   },
   {
     "id": "ui/menu#Menu",
