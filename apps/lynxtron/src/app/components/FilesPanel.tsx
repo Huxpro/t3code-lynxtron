@@ -1,5 +1,6 @@
 import {
   buildProjectEntryTree,
+  expandProjectFileTabsForDisplay,
   fileContentRevision,
   projectFileDetailLayout,
   projectFileLineTokens,
@@ -153,7 +154,9 @@ function EditableFilePreview({
         data-file-content-revision={fileContentRevision(result.contents)}
       >
         <scroll-view className="file-panel__source-scroll" scroll-orientation="vertical">
-          <text className="files-panel__preview-content">{result.contents}</text>
+          <text className="files-panel__preview-content">
+            {expandProjectFileTabsForDisplay(result.contents)}
+          </text>
         </scroll-view>
         <view className="file-panel__statusbar">
           <text className="files-panel__preview-status">
@@ -193,14 +196,16 @@ function EditableFilePreview({
               <view key={`${index}:${line}`} className="file-editor-line">
                 <text className="file-editor-line__number">{index + 1}</text>
                 <text className="file-editor-line__content">
-                  {projectFileLineTokens(path, line).map((token, tokenIndex) => (
-                    <text
-                      key={`${tokenIndex}:${token.tone}:${token.text}`}
-                      className={`file-editor-token file-editor-token--${token.tone}`}
-                    >
-                      {token.text}
-                    </text>
-                  ))}
+                  {projectFileLineTokens(path, expandProjectFileTabsForDisplay(line)).map(
+                    (token, tokenIndex) => (
+                      <text
+                        key={`${tokenIndex}:${token.tone}:${token.text}`}
+                        className={`file-editor-token file-editor-token--${token.tone}`}
+                      >
+                        {token.text}
+                      </text>
+                    ),
+                  )}
                 </text>
               </view>
             ))}

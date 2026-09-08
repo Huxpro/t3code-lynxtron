@@ -3,6 +3,7 @@ import { describe, expect, it } from "vite-plus/test";
 import {
   buildProjectEntryTree,
   fileContentRevision,
+  expandProjectFileTabsForDisplay,
   isMarkdownPreviewFile,
   projectFileDetailLayout,
   projectFileLineTokens,
@@ -219,6 +220,12 @@ describe("file preview presentation", () => {
       { text: "true", tone: "keyword" },
       { text: ",", tone: "plain" },
     ]);
+  });
+
+  it("expands tabs at two-column stops for native file display", () => {
+    expect(expandProjectFileTabsForDisplay("a\tb\n\tc")).toBe("a b\n  c");
+    expect(expandProjectFileTabsForDisplay("ab\tc")).toBe("ab  c");
+    expect(expandProjectFileTabsForDisplay("plain")).toBe("plain");
   });
 
   it("uses content, path, and workspace to produce stable editor revisions", () => {

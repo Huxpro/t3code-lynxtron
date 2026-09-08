@@ -1033,7 +1033,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(".diff-code-token--keyword {");
     expect(overrides).toContain('"SF Mono"');
     expect(overrides).not.toContain(".t3-jetbrains-mono-ready .files-panel__preview-content,");
-    expect(files).toContain("projectFileLineTokens(path, line)");
+    expect(files).toContain("expandProjectFileTabsForDisplay(result.contents)");
+    expect(files).toContain("projectFileLineTokens(path, expandProjectFileTabsForDisplay(line))");
+    expect(files).toContain("{...({ value: contents } as object)}");
     expect(overrides).toContain(
       ".file-panel__breadcrumb {\n  flex-shrink: 0;\n  white-space: nowrap;",
     );

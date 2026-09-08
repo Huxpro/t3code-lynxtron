@@ -323,6 +323,29 @@ export function projectFileLineTokens(path: string, line: string): ProjectFileLi
   return [{ text: line || " ", tone: "plain" }];
 }
 
+/** Expands tabs for renderers without CSS tab-size while preserving source bytes. */
+export function expandProjectFileTabsForDisplay(value: string, tabSize = 2): string {
+  if (!value.includes("\t") || !Number.isInteger(tabSize) || tabSize < 1) return value;
+  let column = 0;
+  let result = "";
+  for (const character of value) {
+    if (character === "\n" || character === "\r") {
+      result += character;
+      column = 0;
+      continue;
+    }
+    if (character === "\t") {
+      const spaces = tabSize - (column % tabSize);
+      result += " ".repeat(spaces);
+      column += spaces;
+      continue;
+    }
+    result += character;
+    column += 1;
+  }
+  return result;
+}
+
 export function setMarkdownTaskChecked(
   markdown: string,
   markerOffset: number,
