@@ -40,6 +40,13 @@ import { Popover, PopoverClose, PopoverPopup, PopoverTrigger } from "../ui/popov
 import { Separator } from "../ui/separator";
 import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../ui/select";
 import { Switch } from "../ui/switch";
+import {
+  SidebarGroup,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "../ui/sidebar";
 import { Textarea } from "../ui/textarea";
 import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/settingsLayout";
@@ -243,6 +250,33 @@ function ComponentLabSettingsStory() {
   );
 }
 
+function ComponentLabSidebarStory() {
+  const [selected, setSelected] = useState(0);
+  return (
+    <SidebarProvider className="component-lab-sidebar-provider" defaultOpen>
+      <SidebarGroup className="component-lab-sidebar-group">
+        <SidebarMenu className="component-lab-sidebar-menu">
+          <SidebarMenuItem className="component-lab-sidebar-menu-item">
+            <SidebarMenuButton
+              className="component-lab-sidebar-menu-button"
+              data-component-lab-sidebar-menu-button="default"
+              onClick={() => setSelected((count) => count + 1)}
+            >
+              <HostText className="component-lab-host-text">Project settings</HostText>
+              <HostText
+                className="component-lab-host-text component-lab-host-text--muted"
+                data-component-lab-sidebar-count="value"
+              >
+                Selected {selected}
+              </HostText>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroup>
+    </SidebarProvider>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -283,6 +317,25 @@ export function ComponentLabSurface() {
               <HostText className="component-lab-host-text">background-only</HostText>
             </HostView>
           </StoryFrame>
+
+          <StoryFrame id="ui/sidebar#SidebarMenuButton" title="Sidebar menu button">
+            <ComponentLabSidebarStory />
+          </StoryFrame>
+
+          {(
+            [
+              ["ui/sidebar#SidebarProvider", "Sidebar provider"],
+              ["ui/sidebar#SidebarGroup", "Sidebar group"],
+              ["ui/sidebar#SidebarMenu", "Sidebar menu"],
+              ["ui/sidebar#SidebarMenuItem", "Sidebar menu item"],
+            ] as const
+          ).map(([id, title]) => (
+            <StoryFrame id={id} key={id} title={title}>
+              <HostText className="component-lab-host-text component-lab-host-text--muted">
+                Exercised by the shared production Sidebar composition above.
+              </HostText>
+            </StoryFrame>
+          ))}
 
           <StoryFrame id="ui/select#Select" title="Select">
             <ComponentLabSelectStory />

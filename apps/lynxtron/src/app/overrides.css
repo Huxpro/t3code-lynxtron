@@ -12525,6 +12525,26 @@
   width: 14px;
   height: 14px;
 }
+.component-lab-sidebar-provider {
+  min-height: 0;
+  width: 216px;
+}
+.component-lab-sidebar-group {
+  width: 216px;
+  padding: 0;
+}
+.component-lab-sidebar-menu,
+.component-lab-sidebar-menu-item {
+  width: 200px;
+}
+.component-lab-sidebar-menu-button {
+  justify-content: space-between;
+  width: 200px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
 .component-lab-settings-reset {
   display: flex;
   flex-direction: row;

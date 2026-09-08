@@ -13,6 +13,36 @@
       "title": "Project favicon"
     },
     {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarMenuButton",
+      "states": ["idle", "activated"],
+      "title": "Sidebar menu button"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarProvider",
+      "states": ["expanded"],
+      "title": "Sidebar provider"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarGroup",
+      "states": ["default"],
+      "title": "Sidebar group"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarMenu",
+      "states": ["default"],
+      "title": "Sidebar menu"
+    },
+    {
+      "category": "Navigation",
+      "id": "ui/sidebar#SidebarMenuItem",
+      "states": ["default"],
+      "title": "Sidebar menu item"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -4979,7 +5009,7 @@
     },
     {
       "authority": {
-        "line": 147,
+        "line": 154,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5000,7 +5030,7 @@
     },
     {
       "authority": {
-        "line": 98,
+        "line": 105,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5021,7 +5051,7 @@
     },
     {
       "authority": {
-        "line": 184,
+        "line": 191,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5042,7 +5072,7 @@
     },
     {
       "authority": {
-        "line": 133,
+        "line": 140,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5063,7 +5093,7 @@
     },
     {
       "authority": {
-        "line": 79,
+        "line": 86,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5084,7 +5114,7 @@
     },
     {
       "authority": {
-        "line": 211,
+        "line": 218,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5105,7 +5135,28 @@
     },
     {
       "authority": {
-        "line": 246,
+        "line": 253,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabSidebarStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabSidebarStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 280,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5139,7 +5190,7 @@
     },
     {
       "authority": {
-        "line": 50,
+        "line": 57,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5160,7 +5211,7 @@
     },
     {
       "authority": {
-        "line": 75,
+        "line": 82,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -20343,14 +20394,26 @@
       "name": "SidebarGroup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 2,
+        "lynxUseSiteCount": 3,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarGroup",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Sidebar group"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
           "platform": "web"
@@ -20546,17 +20609,29 @@
       "name": "SidebarMenu",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarMenu",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Sidebar menu"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/T3ConnectSidebarSignIn.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
@@ -20636,17 +20711,29 @@
       "name": "SidebarMenuButton",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 3,
+        "lynxUseSiteCount": 4,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 5
+        "webUseSiteCount": 6
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarMenuButton",
+        "states": ["idle", "activated"],
+        "status": "covered",
+        "title": "Sidebar menu button"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/T3ConnectSidebarSignIn.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
@@ -20692,17 +20779,29 @@
       "name": "SidebarMenuItem",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 1,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 4
+        "webUseSiteCount": 5
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarMenuItem",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Sidebar menu item"
       },
       "useSites": [
         {
           "path": "apps/web/src/components/clerk/T3ConnectSidebarSignIn.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         },
         {
           "path": "apps/web/src/components/settings/SettingsSidebarNav.tsx",
@@ -20842,13 +20941,17 @@
       },
       "name": "SidebarProvider",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "ui/sidebar#SidebarProvider",
+        "states": ["expanded"],
+        "status": "covered",
+        "title": "Sidebar provider"
       },
       "useSites": [
         {
@@ -20857,6 +20960,14 @@
         },
         {
           "path": "apps/web/src/components/AppSidebarComposition.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         }
       ]
@@ -22378,14 +22489,14 @@
     }
   ],
   "counts": {
-    "components": 741,
+    "components": 742,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 215,
+    "internal": 216,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 57,
-    "webOnly": 462
+    "stories": 62,
+    "webOnly": 463
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

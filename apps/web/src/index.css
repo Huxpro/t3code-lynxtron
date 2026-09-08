@@ -1959,6 +1959,24 @@ label:has(> select#reasoning-effort) select {
   height: 0.875rem;
 }
 
+.component-lab-sidebar-provider {
+  min-height: 0;
+  width: 13.5rem;
+}
+
+.component-lab-sidebar-group {
+  padding: 0;
+}
+
+.component-lab-sidebar-menu {
+  width: 100%;
+}
+
+.component-lab-sidebar-menu-button {
+  width: 12.5rem;
+  height: 2rem;
+}
+
 .component-lab-settings-reset {
   display: flex;
   align-items: center;

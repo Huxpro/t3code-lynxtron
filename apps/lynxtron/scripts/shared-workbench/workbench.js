@@ -305,6 +305,13 @@ function readComponentLabMetrics(root) {
         count: readComposedText(root.querySelector('[data-component-lab-reset-count="value"]')),
       };
     })(),
+    sidebarPrimitive: (() => {
+      const button = root.querySelector('[data-component-lab-sidebar-menu-button="default"]');
+      return {
+        button: readElementBox(button),
+        count: readComposedText(root.querySelector('[data-component-lab-sidebar-count="value"]')),
+      };
+    })(),
     lab: readElementBox(lab),
     rail: readElementBox(lab.querySelector(".component-lab__rail")),
     content: readElementBox(lab.querySelector(".component-lab__content")),

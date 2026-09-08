@@ -12,6 +12,36 @@
     "states": ["asset-or-fallback"]
   },
   {
+    "id": "ui/sidebar#SidebarMenuButton",
+    "category": "Navigation",
+    "title": "Sidebar menu button",
+    "states": ["idle", "activated"]
+  },
+  {
+    "id": "ui/sidebar#SidebarProvider",
+    "category": "Navigation",
+    "title": "Sidebar provider",
+    "states": ["expanded"]
+  },
+  {
+    "id": "ui/sidebar#SidebarGroup",
+    "category": "Navigation",
+    "title": "Sidebar group",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/sidebar#SidebarMenu",
+    "category": "Navigation",
+    "title": "Sidebar menu",
+    "states": ["default"]
+  },
+  {
+    "id": "ui/sidebar#SidebarMenuItem",
+    "category": "Navigation",
+    "title": "Sidebar menu item",
+    "states": ["default"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",
