@@ -7635,6 +7635,8 @@ async function captureCell({
   let componentLabChangedFilesExpanded = false;
   let componentLabChangedFilesCollapsed = false;
   let componentLabChangedFilesEvidence = null;
+  let componentLabChatHeaderClicked = false;
+  let componentLabChatHeaderEvidence = null;
   let componentLabHostListScrolled = false;
   let componentLabHostListEvidence = null;
   let componentLabUpdatePillCaptured = false;
@@ -8920,6 +8922,52 @@ async function captureCell({
       }
       if (
         componentLabChangedFilesCollapsed &&
+        !componentLabChatHeaderClicked &&
+        state?.web?.componentLabMetrics?.chatHeader?.count === "New thread 0" &&
+        state?.lynx?.componentLabMetrics?.chatHeader?.count === "New thread 0"
+      ) {
+        componentLabChatHeaderEvidence = {
+          inputChannel: "dual-cdp-pointer",
+          initial: {
+            web: state.web.componentLabMetrics.chatHeader,
+            lynx: state.lynx.componentLabMetrics.chatHeader,
+          },
+          clicked: null,
+        };
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return {
+              web: w?.elementCenterVisible("web", ".component-lab-chat-header .chat-header-project-main") ?? null,
+              lynx: w?.elementCenterVisible("lynx", ".component-lab-chat-header .chat-header-project-main") ?? null,
+            };
+          })()`,
+        ).catch(() => null);
+        if (points?.web) await dispatchPointerClickWithMove(cdp, sessionId, points.web);
+        if (points?.lynx) await dispatchPointerClickWithMove(cdp, sessionId, points.lynx);
+        componentLabChatHeaderClicked = Boolean(points?.web && points?.lynx);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabChatHeaderClicked &&
+        !componentLabChatHeaderEvidence?.clicked &&
+        state?.web?.componentLabMetrics?.chatHeader?.count === "New thread 1" &&
+        state?.lynx?.componentLabMetrics?.chatHeader?.count === "New thread 1"
+      ) {
+        componentLabChatHeaderEvidence = {
+          ...componentLabChatHeaderEvidence,
+          clicked: {
+            web: state.web.componentLabMetrics.chatHeader,
+            lynx: state.lynx.componentLabMetrics.chatHeader,
+          },
+        };
+        continue;
+      }
+      if (
+        componentLabChatHeaderEvidence?.clicked &&
         !componentLabHostListScrolled &&
         state?.web?.componentLabMetrics?.hostList?.items?.length === 6 &&
         state?.lynx?.componentLabMetrics?.hostList?.items?.length === 6 &&
@@ -9028,6 +9076,7 @@ async function captureCell({
         componentLabThreadErrorDismissed &&
         componentLabFileTreeCollapsed &&
         componentLabChangedFilesCollapsed &&
+        componentLabChatHeaderEvidence?.clicked &&
         componentLabHostListEvidence?.scrolled &&
         componentLabUpdatePillDismissed &&
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
@@ -12893,6 +12942,23 @@ async function captureCell({
       componentLabChangedFilesEvidence.collapsed.lynx.preview === null &&
       componentLabChangedFilesEvidence.collapsed.web.expandedBody === null &&
       componentLabChangedFilesEvidence.collapsed.lynx.expandedBody === null);
+  const componentLabChatHeaderReady =
+    !isComponentsLabState ||
+    (componentLabChatHeaderClicked &&
+      componentLabChatHeaderEvidence?.initial?.web?.projectName === "t3code" &&
+      componentLabChatHeaderEvidence?.initial?.lynx?.projectName === "t3code" &&
+      componentLabChatHeaderEvidence?.initial?.web?.titleText === "Restore CSS fidelity" &&
+      componentLabChatHeaderEvidence?.initial?.lynx?.titleText === "Restore CSS fidelity" &&
+      componentLabChatHeaderEvidence?.initial?.web?.actionText === "Review" &&
+      componentLabChatHeaderEvidence?.initial?.lynx?.actionText === "Review" &&
+      componentLabChatHeaderEvidence.initial.web.root.rect.width === 640 &&
+      componentLabChatHeaderEvidence.initial.lynx.root.rect.width === 640 &&
+      componentLabChatHeaderEvidence.initial.web.root.rect.height === 52 &&
+      componentLabChatHeaderEvidence.initial.lynx.root.rect.height === 52 &&
+      componentLabChatHeaderEvidence.initial.web.title.rect.height ===
+        componentLabChatHeaderEvidence.initial.lynx.title.rect.height &&
+      componentLabChatHeaderEvidence.clicked.web.count === "New thread 1" &&
+      componentLabChatHeaderEvidence.clicked.lynx.count === "New thread 1");
   const componentLabHostListReady =
     !isComponentsLabState ||
     (componentLabHostListScrolled &&
@@ -15443,6 +15509,7 @@ async function captureCell({
     componentLabSidebarChromeReady &&
     componentLabFileTreeReady &&
     componentLabChangedFilesCardReady &&
+    componentLabChatHeaderReady &&
     componentLabHostListReady &&
     componentLabHostLayoutReady &&
     componentLabT3WordmarkReady &&
@@ -15563,6 +15630,7 @@ async function captureCell({
       componentLabSidebarChromeReady,
       componentLabFileTreeReady,
       componentLabChangedFilesCardReady,
+      componentLabChatHeaderReady,
       componentLabHostListReady,
       componentLabHostLayoutReady,
       componentLabT3WordmarkReady,
@@ -15754,6 +15822,7 @@ async function captureCell({
           threadErrorBanner: componentLabThreadErrorEvidence,
           fileTree: componentLabFileTreeEvidence,
           changedFilesCard: componentLabChangedFilesEvidence,
+          chatHeader: componentLabChatHeaderEvidence,
           hostList: componentLabHostListEvidence,
           updatePill: componentLabUpdatePillEvidence,
           select: componentLabSelectEvidence,

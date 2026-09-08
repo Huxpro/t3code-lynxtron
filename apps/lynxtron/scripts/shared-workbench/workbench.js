@@ -477,6 +477,21 @@ function readComponentLabMetrics(root) {
           }
         : null;
     })(),
+    chatHeader: (() => {
+      const rootHeader = root.querySelector(".component-lab-chat-header");
+      return {
+        root: readElementBox(rootHeader?.querySelector(".topbar__content")),
+        project: readElementBox(rootHeader?.querySelector(".chat-header-project-main")),
+        projectName: readComposedText(rootHeader?.querySelector(".topbar__proj-name")),
+        title: readElementBox(rootHeader?.querySelector(".topbar__thread")),
+        titleText: readComposedText(rootHeader?.querySelector(".topbar__thread")),
+        actions: readElementBox(rootHeader?.querySelector("[data-chat-header-actions]")),
+        actionText: readComposedText(rootHeader?.querySelector("[data-chat-header-actions]")),
+        count: readComposedText(
+          rootHeader?.querySelector('[data-component-lab-chat-header-count="value"]'),
+        ),
+      };
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

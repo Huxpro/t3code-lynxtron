@@ -12832,6 +12832,19 @@
 .component-lab-changed-files-card {
   width: 320px;
 }
+.component-lab-chat-header {
+  --flex-direction: column;
+  --lynx-linear-orientation: vertical;
+  display: block;
+  width: 640px;
+}
+.component-lab-chat-header > .topbar__content {
+  width: 640px;
+  height: 52px;
+}
+.component-lab-chat-header > * + * {
+  margin-top: 8px;
+}
 .component-lab-file-tree__icon {
   display: flex;
   align-items: center;

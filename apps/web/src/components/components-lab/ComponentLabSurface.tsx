@@ -113,6 +113,7 @@ import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/se
 import { ProjectFavicon } from "../ProjectFavicon";
 import { ThreadErrorBannerSurface } from "../chat/ThreadErrorBannerSurface";
 import { ChangedFilesCardSurface } from "../chat/ChangedFilesCardSurface";
+import { ChatHeaderSurface } from "../chat/ChatHeaderSurface";
 import {
   FileTreeChildrenSurface,
   FileTreeDirectoryRowSurface,
@@ -749,6 +750,23 @@ function ComponentLabChangedFilesCardStory() {
   );
 }
 
+function ComponentLabChatHeaderStory() {
+  const [newThreadCount, setNewThreadCount] = useState(0);
+  return (
+    <HostView className="component-lab-chat-header">
+      <ChatHeaderSurface
+        actions={<HostText className="component-lab-chat-header__action">Review</HostText>}
+        activeProjectName="t3code"
+        activeThreadTitle="Restore CSS fidelity"
+        onNewThreadInProject={() => setNewThreadCount((count) => count + 1)}
+        projectIcon={<HostText className="component-lab-chat-header__icon">T3</HostText>}
+        rightPanelOpen={false}
+      />
+      <HostText data-component-lab-chat-header-count="value">New thread {newThreadCount}</HostText>
+    </HostView>
+  );
+}
+
 function ComponentLabHostListStory() {
   return (
     <HostScrollView className="component-lab-host-scroll">
@@ -915,6 +933,16 @@ export function ComponentLabSurface() {
             title="Changed files card surface"
           >
             <ComponentLabChangedFilesCardStory />
+          </StoryFrame>
+
+          <StoryFrame id="chat/ChatHeaderSurface#ChatHeaderSurface" title="Chat header surface">
+            <ComponentLabChatHeaderStory />
+          </StoryFrame>
+
+          <StoryFrame id="chat/ChatHeaderTitle#ChatHeaderTitle" title="Chat header title">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared production Chat header composition above.
+            </HostText>
           </StoryFrame>
 
           {(

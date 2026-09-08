@@ -210,6 +210,18 @@
     "states": ["preview", "expanded", "collapsed"]
   },
   {
+    "id": "chat/ChatHeaderSurface#ChatHeaderSurface",
+    "category": "Navigation",
+    "title": "Chat header surface",
+    "states": ["project-thread", "action"]
+  },
+  {
+    "id": "chat/ChatHeaderTitle#ChatHeaderTitle",
+    "category": "Navigation",
+    "title": "Chat header title",
+    "states": ["default"]
+  },
+  {
     "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
     "category": "Data Display",
     "title": "File tree file row",

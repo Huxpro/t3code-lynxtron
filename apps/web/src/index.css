@@ -2156,6 +2156,17 @@ label:has(> select#reasoning-effort) select {
   width: 20rem;
 }
 
+.component-lab-chat-header {
+  display: grid;
+  width: 40rem;
+  gap: 0.5rem;
+}
+
+.component-lab-chat-header > .topbar__content {
+  width: 40rem;
+  height: 3.25rem;
+}
+
 .component-lab-file-tree__icon {
   display: inline-flex;
   width: 1rem;

@@ -211,6 +211,18 @@
       "title": "Changed files card surface"
     },
     {
+      "category": "Navigation",
+      "id": "chat/ChatHeaderSurface#ChatHeaderSurface",
+      "states": ["project-thread", "action"],
+      "title": "Chat header surface"
+    },
+    {
+      "category": "Navigation",
+      "id": "chat/ChatHeaderTitle#ChatHeaderTitle",
+      "states": ["default"],
+      "title": "Chat header title"
+    },
+    {
       "category": "Data Display",
       "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
       "states": ["default", "selected"],
@@ -1300,13 +1312,17 @@
       "lynx": null,
       "name": "ChatHeaderSurface",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "chat/ChatHeaderSurface#ChatHeaderSurface",
+        "states": ["project-thread", "action"],
+        "status": "covered",
+        "title": "Chat header surface"
       },
       "useSites": [
         {
@@ -1316,6 +1332,14 @@
         {
           "path": "apps/web/src/components/chat/ChatHeader.tsx",
           "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
         }
       ]
     },
@@ -1336,7 +1360,11 @@
         "webUseSiteCount": 1
       },
       "story": {
-        "status": "uncovered"
+        "category": "Navigation",
+        "id": "chat/ChatHeaderTitle#ChatHeaderTitle",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Chat header title"
       },
       "useSites": [
         {
@@ -5381,7 +5409,7 @@
     },
     {
       "authority": {
-        "line": 706,
+        "line": 707,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5402,7 +5430,7 @@
     },
     {
       "authority": {
-        "line": 618,
+        "line": 619,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5423,7 +5451,28 @@
     },
     {
       "authority": {
-        "line": 476,
+        "line": 753,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabChatHeaderStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabChatHeaderStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 477,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5444,7 +5493,7 @@
     },
     {
       "authority": {
-        "line": 417,
+        "line": 418,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5465,7 +5514,7 @@
     },
     {
       "authority": {
-        "line": 238,
+        "line": 239,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5486,7 +5535,7 @@
     },
     {
       "authority": {
-        "line": 519,
+        "line": 520,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5507,7 +5556,7 @@
     },
     {
       "authority": {
-        "line": 673,
+        "line": 674,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5528,7 +5577,7 @@
     },
     {
       "authority": {
-        "line": 766,
+        "line": 784,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5549,7 +5598,7 @@
     },
     {
       "authority": {
-        "line": 752,
+        "line": 770,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5570,7 +5619,7 @@
     },
     {
       "authority": {
-        "line": 189,
+        "line": 190,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5591,7 +5640,7 @@
     },
     {
       "authority": {
-        "line": 312,
+        "line": 313,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5612,7 +5661,7 @@
     },
     {
       "authority": {
-        "line": 224,
+        "line": 225,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5633,7 +5682,7 @@
     },
     {
       "authority": {
-        "line": 167,
+        "line": 168,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5654,7 +5703,7 @@
     },
     {
       "authority": {
-        "line": 339,
+        "line": 340,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5675,7 +5724,7 @@
     },
     {
       "authority": {
-        "line": 275,
+        "line": 276,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5696,7 +5745,7 @@
     },
     {
       "authority": {
-        "line": 656,
+        "line": 657,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5717,7 +5766,7 @@
     },
     {
       "authority": {
-        "line": 374,
+        "line": 375,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5738,7 +5787,7 @@
     },
     {
       "authority": {
-        "line": 807,
+        "line": 825,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5772,7 +5821,7 @@
     },
     {
       "authority": {
-        "line": 541,
+        "line": 542,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5793,7 +5842,7 @@
     },
     {
       "authority": {
-        "line": 566,
+        "line": 567,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5814,7 +5863,7 @@
     },
     {
       "authority": {
-        "line": 777,
+        "line": 795,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5835,7 +5884,7 @@
     },
     {
       "authority": {
-        "line": 642,
+        "line": 643,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5856,7 +5905,7 @@
     },
     {
       "authority": {
-        "line": 138,
+        "line": 139,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5877,7 +5926,7 @@
     },
     {
       "authority": {
-        "line": 163,
+        "line": 164,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -23794,14 +23843,14 @@
     }
   ],
   "counts": {
-    "components": 757,
+    "components": 758,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 527,
-    "internal": 230,
+    "internal": 231,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 114,
-    "webOnly": 477
+    "stories": 116,
+    "webOnly": 478
   },
   "generatedFrom": "apps/web/src/components",
   "method": {
