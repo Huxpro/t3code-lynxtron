@@ -13068,7 +13068,8 @@ async function captureCell({
                   state.lynx.componentLabMetrics.paletteSection.box.style.paddingLeft,
                 ),
             ) <= 1
-          : componentStory === "settings/SettingsSurfaces#SourceControlMarkSurface"
+          : componentStory === "settings/SettingsSurfaces#SourceControlMarkSurface" ||
+              componentStory === "settings/SettingsSurfaces#StatusDotSurface"
             ? state?.web?.componentLabMetrics?.sourceControlMarks?.length === 3 &&
               state?.lynx?.componentLabMetrics?.sourceControlMarks?.length === 3 &&
               state.web.componentLabMetrics.sourceControlMarks.every(

@@ -23,7 +23,10 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
         </HostView>
       );
     }
-    if (storyId === "settings/SettingsSurfaces#SourceControlMarkSurface") {
+    if (
+      storyId === "settings/SettingsSurfaces#SourceControlMarkSurface" ||
+      storyId === "settings/SettingsSurfaces#StatusDotSurface"
+    ) {
       return (
         <HostView className="component-lab-source-control-marks component-lab-specimen-row">
           <SourceControlMarkSurface tone="success" />

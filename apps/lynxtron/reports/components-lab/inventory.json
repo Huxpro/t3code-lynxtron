@@ -749,6 +749,12 @@
       "id": "settings/SettingsSurfaces#SourceControlMarkSurface",
       "states": ["success", "warning", "muted"],
       "title": "Source control status mark"
+    },
+    {
+      "category": "Settings",
+      "id": "settings/SettingsSurfaces#StatusDotSurface",
+      "states": ["success", "warning", "muted"],
+      "title": "Status dot"
     }
   ],
   "components": [
@@ -11922,7 +11928,11 @@
         "webUseSiteCount": 0
       },
       "story": {
-        "status": "uncovered"
+        "category": "Settings",
+        "id": "settings/SettingsSurfaces#StatusDotSurface",
+        "states": ["success", "warning", "muted"],
+        "status": "covered",
+        "title": "Status dot"
       },
       "useSites": [
         {
@@ -24091,7 +24101,7 @@
     "internal": 233,
     "platformPairs": 216,
     "sharedSource": 64,
-    "stories": 125,
+    "stories": 126,
     "webOnly": 481
   },
   "generatedFrom": "apps/web/src/components",

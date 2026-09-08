@@ -156,6 +156,7 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "isolatedComponentStoryReady");
     assert.include(captureSource, "CommandPaletteSurface#PaletteSectionSurface");
     assert.include(captureSource, "settings/SettingsSurfaces#SourceControlMarkSurface");
+    assert.include(captureSource, "settings/SettingsSurfaces#StatusDotSurface");
     assert.include(readerSource, "paletteSection: (() =>");
     assert.include(readerSource, "sourceControlMarks:");
     assert.include(readerSource, 'url.searchParams.get("componentStory")');

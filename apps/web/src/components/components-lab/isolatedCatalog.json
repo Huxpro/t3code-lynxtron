@@ -16,5 +16,11 @@
     "category": "Settings",
     "title": "Source control status mark",
     "states": ["success", "warning", "muted"]
+  },
+  {
+    "id": "settings/SettingsSurfaces#StatusDotSurface",
+    "category": "Settings",
+    "title": "Status dot",
+    "states": ["success", "warning", "muted"]
   }
 ]
