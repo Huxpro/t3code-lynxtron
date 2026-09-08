@@ -12829,6 +12829,9 @@
 .component-lab-file-tree {
   width: 320px;
 }
+.component-lab-changed-files-card {
+  width: 320px;
+}
 .component-lab-file-tree__icon {
   display: flex;
   align-items: center;

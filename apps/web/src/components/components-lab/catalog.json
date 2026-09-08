@@ -204,6 +204,12 @@
     "states": ["expanded", "collapsed"]
   },
   {
+    "id": "chat/ChangedFilesCardSurface#ChangedFilesCardSurface",
+    "category": "Data Display",
+    "title": "Changed files card surface",
+    "states": ["preview", "expanded", "collapsed"]
+  },
+  {
     "id": "chat/FileTreeSurface#FileTreeFileRowSurface",
     "category": "Data Display",
     "title": "File tree file row",

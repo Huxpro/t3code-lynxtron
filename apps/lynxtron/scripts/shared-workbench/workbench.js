@@ -463,6 +463,20 @@ function readComponentLabMetrics(root) {
         lynxHovered: file?.getAttribute("data-lynx-hover") ?? null,
       };
     })(),
+    changedFilesCard: (() => {
+      const card = root.querySelector(".component-lab-changed-files-card .turn-diff-card");
+      return card
+        ? {
+            box: readElementBox(card),
+            state: card.getAttribute("data-changed-files-state"),
+            header: readElementBox(card.querySelector(".turn-diff-card__header")),
+            toggle: readElementBox(card.querySelector(".turn-diff-card__toggle")),
+            preview: readElementBox(card.querySelector(".turn-diff-card__preview")),
+            expandedBody: readElementBox(card.querySelector(".file-tree-children")),
+            text: readComposedText(card),
+          }
+        : null;
+    })(),
     hostList: (() => {
       const scroll = root.querySelector(".component-lab-host-scroll");
       const list = scroll?.querySelector(".component-lab-host-list");

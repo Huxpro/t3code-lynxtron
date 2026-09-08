@@ -120,6 +120,8 @@ describe("Components Lab paired workbench", () => {
     assert.include(captureSource, "const componentLabSidebarChromeReady =");
     assert.include(readerSource, "fileTree: (() =>");
     assert.include(captureSource, "const componentLabFileTreeReady =");
+    assert.include(readerSource, "changedFilesCard: (() =>");
+    assert.include(captureSource, "const componentLabChangedFilesCardReady =");
     assert.include(captureSource, 'lynxHovered === "true"');
     assert.include(readerSource, "hostList: (() =>");
     assert.include(captureSource, "const componentLabHostListReady =");

@@ -2152,6 +2152,10 @@ label:has(> select#reasoning-effort) select {
   width: 20rem;
 }
 
+.component-lab-changed-files-card {
+  width: 20rem;
+}
+
 .component-lab-file-tree__icon {
   display: inline-flex;
   width: 1rem;

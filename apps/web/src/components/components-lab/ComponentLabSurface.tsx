@@ -112,6 +112,7 @@ import { Tooltip, TooltipPopup, TooltipProvider, TooltipTrigger } from "../ui/to
 import { SettingResetButton, SettingsRow, SettingsSection } from "../settings/settingsLayout";
 import { ProjectFavicon } from "../ProjectFavicon";
 import { ThreadErrorBannerSurface } from "../chat/ThreadErrorBannerSurface";
+import { ChangedFilesCardSurface } from "../chat/ChangedFilesCardSurface";
 import {
   FileTreeChildrenSurface,
   FileTreeDirectoryRowSurface,
@@ -702,6 +703,52 @@ function ComponentLabFileTreeStory() {
   );
 }
 
+function ComponentLabChangedFilesCardStory() {
+  const [expanded, setExpanded] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(true);
+  const setExpandedState = (next: boolean) => {
+    setExpanded(next);
+    if (!next) setPreviewVisible(false);
+  };
+  return (
+    <HostView className="component-lab-changed-files-card">
+      <ChangedFilesCardSurface
+        compactPreviewVisible={previewVisible && !expanded}
+        expanded={expanded}
+        expandedBody={
+          <FileTreeChildrenSurface>
+            <FileTreeFileRowSurface
+              depth={0}
+              fileIcon={<HostText className="component-lab-file-tree__icon">TS</HostText>}
+              name="src/index.ts"
+              trailing={<HostText>+8 -1</HostText>}
+            />
+          </FileTreeChildrenSurface>
+        }
+        fileCount={2}
+        onExpandedChange={setExpandedState}
+        onShowAll={() => {
+          setExpanded(true);
+          setPreviewVisible(false);
+        }}
+        openDiffControl={<HostButton className="turn-diff-card__open">Open diff</HostButton>}
+        previewFiles={[
+          {
+            key: "src/index.ts",
+            name: "index.ts",
+            icon: <HostText className="component-lab-file-tree__icon">TS</HostText>,
+            onSelect: () => setExpanded(true),
+          },
+        ]}
+        previewScopes={[{ key: "src", label: "src", fileCount: 2 }]}
+        stat={<HostText className="turn-diff-card__stat">+12 −3</HostText>}
+        toggleIcon={<HostText>›</HostText>}
+        turnId="component-lab-turn"
+      />
+    </HostView>
+  );
+}
+
 function ComponentLabHostListStory() {
   return (
     <HostScrollView className="component-lab-host-scroll">
@@ -861,6 +908,13 @@ export function ComponentLabSurface() {
             title="File tree directory row"
           >
             <ComponentLabFileTreeStory />
+          </StoryFrame>
+
+          <StoryFrame
+            id="chat/ChangedFilesCardSurface#ChangedFilesCardSurface"
+            title="Changed files card surface"
+          >
+            <ComponentLabChangedFilesCardStory />
           </StoryFrame>
 
           {(
