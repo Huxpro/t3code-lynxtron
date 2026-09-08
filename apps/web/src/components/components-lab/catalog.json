@@ -336,6 +336,18 @@
     "states": ["default"]
   },
   {
+    "id": "ui/sheet#Sheet",
+    "category": "Overlays",
+    "title": "Sheet",
+    "states": ["closed", "open", "closed-again"]
+  },
+  {
+    "id": "ui/sheet#SheetPopup",
+    "category": "Overlays",
+    "title": "Sheet popup",
+    "states": ["right"]
+  },
+  {
     "id": "ui/dialog#DialogTrigger",
     "category": "Overlays",
     "title": "Dialog trigger",

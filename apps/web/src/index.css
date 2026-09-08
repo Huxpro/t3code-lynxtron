@@ -2048,6 +2048,21 @@ label:has(> select#reasoning-effort) select {
   min-height: 4rem;
 }
 
+.component-lab-sheet {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(calc(100vw - 3rem), 28rem);
+}
+
+.component-lab-sheet__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.5rem;
+}
+
 .component-lab-popover {
   display: flex;
   align-items: center;

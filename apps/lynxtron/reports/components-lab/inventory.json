@@ -338,6 +338,18 @@
     },
     {
       "category": "Overlays",
+      "id": "ui/sheet#Sheet",
+      "states": ["closed", "open", "closed-again"],
+      "title": "Sheet"
+    },
+    {
+      "category": "Overlays",
+      "id": "ui/sheet#SheetPopup",
+      "states": ["right"],
+      "title": "Sheet popup"
+    },
+    {
+      "category": "Overlays",
       "id": "ui/dialog#DialogTrigger",
       "states": ["idle", "activated"],
       "title": "Dialog trigger"
@@ -5057,7 +5069,7 @@
     },
     {
       "authority": {
-        "line": 178,
+        "line": 179,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5078,7 +5090,7 @@
     },
     {
       "authority": {
-        "line": 313,
+        "line": 346,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5099,7 +5111,7 @@
     },
     {
       "authority": {
-        "line": 129,
+        "line": 130,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5120,7 +5132,7 @@
     },
     {
       "authority": {
-        "line": 215,
+        "line": 248,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5141,7 +5153,7 @@
     },
     {
       "authority": {
-        "line": 164,
+        "line": 165,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5162,7 +5174,7 @@
     },
     {
       "authority": {
-        "line": 107,
+        "line": 108,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5183,7 +5195,7 @@
     },
     {
       "authority": {
-        "line": 242,
+        "line": 275,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5204,7 +5216,28 @@
     },
     {
       "authority": {
-        "line": 277,
+        "line": 216,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabSheetStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabSheetStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 310,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5225,7 +5258,7 @@
     },
     {
       "authority": {
-        "line": 335,
+        "line": 368,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5259,7 +5292,7 @@
     },
     {
       "authority": {
-        "line": 78,
+        "line": 79,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5280,7 +5313,7 @@
     },
     {
       "authority": {
-        "line": 103,
+        "line": 104,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -20130,14 +20163,26 @@
       "name": "Sheet",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 2
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/sheet#Sheet",
+        "states": ["closed", "open", "closed-again"],
+        "status": "covered",
+        "title": "Sheet"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/RightPanelSheet.tsx",
           "platform": "web"
@@ -20185,14 +20230,23 @@
       "name": "SheetClose",
       "reuse": {
         "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 0
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 1
       },
       "story": {
         "status": "uncovered"
       },
-      "useSites": []
+      "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        }
+      ]
     },
     {
       "authority": {
@@ -20310,14 +20364,26 @@
       "name": "SheetPopup",
       "reuse": {
         "authorityShared": true,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 2
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 3
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/sheet#SheetPopup",
+        "states": ["right"],
+        "status": "covered",
+        "title": "Sheet popup"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/RightPanelSheet.tsx",
           "platform": "web"
@@ -20393,14 +20459,23 @@
       "name": "SheetTrigger",
       "reuse": {
         "authorityShared": false,
-        "lynxUseSiteCount": 0,
-        "lynxUsesLogicalComponent": false,
-        "webUseSiteCount": 0
+        "lynxUseSiteCount": 1,
+        "lynxUsesLogicalComponent": true,
+        "webUseSiteCount": 1
       },
       "story": {
         "status": "uncovered"
       },
-      "useSites": []
+      "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        }
+      ]
     },
     {
       "authority": {
@@ -22654,14 +22729,14 @@
     }
   ],
   "counts": {
-    "components": 743,
+    "components": 744,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 217,
+    "internal": 218,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 70,
-    "webOnly": 464
+    "stories": 72,
+    "webOnly": 465
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

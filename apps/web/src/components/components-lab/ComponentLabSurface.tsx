@@ -49,6 +49,7 @@ import {
 import { ScrollArea } from "../ui/scroll-area";
 import { Popover, PopoverClose, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { Separator } from "../ui/separator";
+import { Sheet, SheetClose, SheetPopup, SheetTrigger } from "../ui/sheet";
 import {
   Select,
   SelectGroup,
@@ -209,6 +210,38 @@ function ComponentLabDialogStory() {
         </DialogFooter>
       </DialogPopup>
     </Dialog>
+  );
+}
+
+function ComponentLabSheetStory() {
+  return (
+    <Sheet>
+      <SheetTrigger
+        data-component-lab-sheet-trigger="default"
+        render={<Button variant="outline" />}
+      >
+        Open sheet
+      </SheetTrigger>
+      <SheetPopup
+        className="component-lab-sheet"
+        data-component-lab-sheet-popup="default"
+        showCloseButton={false}
+        side="right"
+      >
+        <HostView className="component-lab-sheet__body">
+          <HostHeading className="component-lab-story__title">Review changes</HostHeading>
+          <HostText className="component-lab-host-text component-lab-host-text--muted">
+            Inspect the latest workspace changes.
+          </HostText>
+          <SheetClose
+            data-component-lab-sheet-close="default"
+            render={<Button variant="outline" />}
+          >
+            Done
+          </SheetClose>
+        </HostView>
+      </SheetPopup>
+    </Sheet>
   );
 }
 
@@ -412,6 +445,16 @@ export function ComponentLabSurface() {
 
           <StoryFrame id="ui/dialog#Dialog" title="Dialog">
             <ComponentLabDialogStory />
+          </StoryFrame>
+
+          <StoryFrame id="ui/sheet#Sheet" title="Sheet">
+            <ComponentLabSheetStory />
+          </StoryFrame>
+
+          <StoryFrame id="ui/sheet#SheetPopup" title="Sheet popup">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared production Sheet composition above.
+            </HostText>
           </StoryFrame>
 
           <StoryFrame id="ui/popover#Popover" title="Popover">

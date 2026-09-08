@@ -280,6 +280,19 @@ function readComponentLabMetrics(root) {
           }
         : null;
     })(),
+    sheet: (() => {
+      const popup = root.querySelector('[data-component-lab-sheet-popup="default"]');
+      const viewport = root.querySelector('[data-slot="sheet-viewport"]');
+      return popup
+        ? {
+            popup: readElementBox(popup),
+            viewport: readElementBox(viewport),
+            text: readComposedText(popup),
+          }
+        : null;
+    })(),
+    sheetViewportCount: root.querySelectorAll('[data-slot="sheet-viewport"]').length,
+    sheetBackdropCount: root.querySelectorAll('[data-slot="sheet-backdrop"]').length,
     popover: (() => {
       const popup = root.querySelector('[data-component-lab-popover-popup="default"]');
       return popup

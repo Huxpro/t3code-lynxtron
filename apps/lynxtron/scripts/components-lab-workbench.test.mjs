@@ -53,7 +53,16 @@ describe("Components Lab paired workbench", () => {
     assert.include(readerSource, "backdropCount");
     assert.include(readerSource, "viewportCount");
     assert.include(captureSource, "componentLabDialogEvidence");
-    assert.include(captureSource, 'inputChannel: "dual-cdp-pointer"');
+    assert.include(captureSource, "const componentLabSheetReady =");
+    assert.include(captureSource, '[data-component-lab-sheet-trigger=\"default\"]');
+    assert.include(captureSource, '[data-component-lab-sheet-close=\"default\"]');
+    assert.include(readerSource, '[data-component-lab-sheet-popup="default"]');
+    assert.include(readerSource, "sheetViewportCount");
+    assert.include(readerSource, "sheetBackdropCount");
+    assert.include(captureSource, "componentLabMetrics?.sheetViewportCount === 0");
+    assert.include(captureSource, "componentLabMetrics?.sheetBackdropCount === 0");
+    assert.include(captureSource, "sheet.popup.style?.opacity");
+    assert.include(captureSource, 'inputChannel: "sequential-dual-cdp-pointer"');
     assert.include(captureSource, "const componentLabPopoverReady =");
     assert.include(captureSource, '[data-component-lab-popover-trigger=\"default\"]');
     assert.include(captureSource, '[data-component-lab-popover-close=\"default\"]');

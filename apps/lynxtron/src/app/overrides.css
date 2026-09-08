@@ -12713,6 +12713,36 @@
   padding: 16px 24px;
   box-sizing: border-box;
 }
+.ui-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(var(--background-rgb), 0.6);
+}
+.ui-sheet-viewport {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  z-index: 51;
+}
+.ui-sheet-viewport--right {
+  justify-content: flex-end;
+}
+.ui-sheet-popup {
+  width: 448px;
+  height: 100vh;
+  background-color: var(--popover);
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: var(--border);
+  box-sizing: border-box;
+}
+.component-lab-sheet__body {
+  display: linear;
+  linear-orientation: vertical;
+  gap: 16px;
+  padding: 24px;
+}
 .lynx-popover-popup {
   display: flex;
   flex-direction: row;

@@ -7589,6 +7589,14 @@ async function captureCell({
   let componentLabDialogClosed = false;
   let componentLabDialogGeometryVerified = false;
   let componentLabDialogEvidence = null;
+  let componentLabSheetWebOpened = false;
+  let componentLabSheetWebCaptured = false;
+  let componentLabSheetWebClosed = false;
+  let componentLabSheetLynxDispatched = false;
+  let componentLabSheetLynxOpened = false;
+  let componentLabSheetVerified = false;
+  let componentLabSheetClosed = false;
+  let componentLabSheetEvidence = null;
   let componentLabPopoverOpened = false;
   let componentLabPopoverVerified = false;
   let componentLabPopoverClosed = false;
@@ -7747,6 +7755,7 @@ async function captureCell({
         (state?.web?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         (state?.lynx?.componentLabMetrics?.scrollArea?.scrollTop ?? 0) > 0 &&
         componentLabDialogClosed &&
+        componentLabSheetClosed &&
         componentLabPopoverClosed &&
         componentLabSettingResetClicked &&
         componentLabSidebarClicked &&
@@ -7995,6 +8004,141 @@ async function captureCell({
       }
       if (
         componentLabDialogClosed &&
+        !componentLabSheetWebOpened &&
+        state?.web?.componentLabMetrics?.sheet === null &&
+        state?.lynx?.componentLabMetrics?.sheet === null
+      ) {
+        const points = await evaluate(
+          cdp,
+          sessionId,
+          `(() => {
+            const w = globalThis.__T3_WORKBENCH__;
+            return w?.elementCenterVisible("web", '[data-component-lab-sheet-trigger="default"]') ?? null;
+          })()`,
+        ).catch(() => null);
+        if (points) await dispatchPointerClickWithMove(cdp, sessionId, points);
+        componentLabSheetWebOpened = Boolean(points);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabSheetWebOpened &&
+        !componentLabSheetWebCaptured &&
+        state?.web?.componentLabMetrics?.sheet?.text ===
+          "Review changes Inspect the latest workspace changes. Done" &&
+        state?.web?.componentLabMetrics?.sheet?.popup?.rect &&
+        Number(state.web.componentLabMetrics.sheet.popup.style?.opacity) >= 0.99 &&
+        Math.abs(
+          state.web.componentLabMetrics.sheet.viewport.rect.x +
+            state.web.componentLabMetrics.sheet.viewport.rect.width -
+            state.web.componentLabMetrics.sheet.popup.rect.x -
+            state.web.componentLabMetrics.sheet.popup.rect.width,
+        ) <= 2
+      ) {
+        componentLabSheetEvidence = {
+          inputChannel: "sequential-dual-cdp-pointer",
+          web: state.web.componentLabMetrics.sheet,
+          lynx: null,
+        };
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenter("web", '[data-component-lab-sheet-close="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabSheetWebCaptured = Boolean(point);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabSheetWebCaptured &&
+        !componentLabSheetWebClosed &&
+        state?.web?.componentLabMetrics?.sheet === null &&
+        state?.web?.componentLabMetrics?.sheetViewportCount === 0 &&
+        state?.web?.componentLabMetrics?.sheetBackdropCount === 0
+      ) {
+        componentLabSheetWebClosed = true;
+        continue;
+      }
+      if (
+        componentLabSheetWebClosed &&
+        !componentLabSheetLynxDispatched &&
+        state?.web?.componentLabMetrics?.sheetViewportCount === 0 &&
+        state?.web?.componentLabMetrics?.sheetBackdropCount === 0 &&
+        state?.lynx?.componentLabMetrics?.sheet === null &&
+        state?.lynx?.componentLabMetrics?.sheetViewportCount === 0 &&
+        state?.lynx?.componentLabMetrics?.sheetBackdropCount === 0
+      ) {
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenterVisible("lynx", '[data-component-lab-sheet-trigger="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        componentLabSheetLynxDispatched = Boolean(point);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabSheetLynxDispatched &&
+        !componentLabSheetLynxOpened &&
+        state?.lynx?.componentLabMetrics?.sheet?.popup?.rect
+      ) {
+        componentLabSheetLynxOpened = true;
+        continue;
+      }
+      if (
+        componentLabSheetLynxOpened &&
+        !componentLabSheetVerified &&
+        state?.lynx?.componentLabMetrics?.sheet?.text ===
+          "Review changes Inspect the latest workspace changes. Done" &&
+        state?.lynx?.componentLabMetrics?.sheet?.popup?.rect &&
+        componentLabSheetEvidence?.web?.popup?.rect &&
+        Math.abs(
+          componentLabSheetEvidence.web.popup.rect.width -
+            state.lynx.componentLabMetrics.sheet.popup.rect.width,
+        ) <= 2 &&
+        Math.abs(
+          componentLabSheetEvidence.web.popup.rect.height -
+            state.lynx.componentLabMetrics.sheet.popup.rect.height,
+        ) <= 2 &&
+        Math.abs(
+          componentLabSheetEvidence.web.viewport.rect.x +
+            componentLabSheetEvidence.web.viewport.rect.width -
+            componentLabSheetEvidence.web.popup.rect.x -
+            componentLabSheetEvidence.web.popup.rect.width -
+            (state.lynx.componentLabMetrics.sheet.viewport.rect.x +
+              state.lynx.componentLabMetrics.sheet.viewport.rect.width -
+              state.lynx.componentLabMetrics.sheet.popup.rect.x -
+              state.lynx.componentLabMetrics.sheet.popup.rect.width),
+        ) <= 2
+      ) {
+        componentLabSheetVerified = true;
+        componentLabSheetEvidence = {
+          ...componentLabSheetEvidence,
+          lynx: state.lynx.componentLabMetrics.sheet,
+        };
+        const point = await evaluate(
+          cdp,
+          sessionId,
+          `globalThis.__T3_WORKBENCH__?.elementCenter("lynx", '[data-component-lab-sheet-close="default"]') ?? null`,
+        ).catch(() => null);
+        if (point) await dispatchPointerClickWithMove(cdp, sessionId, point);
+        await delay(100);
+        continue;
+      }
+      if (
+        componentLabSheetVerified &&
+        !componentLabSheetClosed &&
+        state?.web?.componentLabMetrics?.sheet === null &&
+        state?.lynx?.componentLabMetrics?.sheet === null
+      ) {
+        componentLabSheetClosed = true;
+        continue;
+      }
+      if (
+        componentLabDialogClosed &&
+        componentLabSheetClosed &&
         !componentLabPopoverOpened &&
         state?.web?.componentLabMetrics?.popover === null &&
         state?.lynx?.componentLabMetrics?.popover === null
@@ -11798,6 +11942,17 @@ async function captureCell({
       componentLabDialogClosed &&
       state?.web?.componentLabMetrics?.dialog === null &&
       state?.lynx?.componentLabMetrics?.dialog === null);
+  const componentLabSheetReady =
+    !isComponentsLabState ||
+    (componentLabSheetWebOpened &&
+      componentLabSheetWebCaptured &&
+      componentLabSheetWebClosed &&
+      componentLabSheetLynxDispatched &&
+      componentLabSheetLynxOpened &&
+      componentLabSheetVerified &&
+      componentLabSheetClosed &&
+      state?.web?.componentLabMetrics?.sheet === null &&
+      state?.lynx?.componentLabMetrics?.sheet === null);
   const componentLabPopoverReady =
     !isComponentsLabState ||
     (componentLabPopoverOpened &&
@@ -14324,6 +14479,7 @@ async function captureCell({
     componentLabNumberReady &&
     componentLabScrollReady &&
     componentLabDialogReady &&
+    componentLabSheetReady &&
     componentLabPopoverReady &&
     componentLabProjectFaviconReady &&
     componentLabSettingResetReady &&
@@ -14430,6 +14586,7 @@ async function captureCell({
       componentLabNumberReady,
       componentLabScrollReady,
       componentLabDialogReady,
+      componentLabSheetReady,
       componentLabPopoverReady,
       componentLabProjectFaviconReady,
       componentLabSettingResetReady,
@@ -14617,6 +14774,7 @@ async function captureCell({
           dialog: componentLabDialogEvidence,
           menu: componentLabMenuEvidence,
           popover: componentLabPopoverEvidence,
+          sheet: componentLabSheetEvidence,
         }
       : null,
     identity: {
