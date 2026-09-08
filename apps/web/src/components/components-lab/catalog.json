@@ -106,5 +106,29 @@
     "category": "Forms",
     "title": "Select",
     "states": ["closed", "open"]
+  },
+  {
+    "id": "ui/select#SelectTrigger",
+    "category": "Forms",
+    "title": "Select trigger",
+    "states": ["idle", "pressed"]
+  },
+  {
+    "id": "ui/select#SelectValue",
+    "category": "Forms",
+    "title": "Select value",
+    "states": ["comfortable", "compact"]
+  },
+  {
+    "id": "ui/select#SelectPopup",
+    "category": "Forms",
+    "title": "Select popup",
+    "states": ["closed", "open"]
+  },
+  {
+    "id": "ui/select#SelectItem",
+    "category": "Forms",
+    "title": "Select item",
+    "states": ["default", "selected"]
   }
 ]

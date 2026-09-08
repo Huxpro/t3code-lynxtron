@@ -107,6 +107,30 @@
       "id": "ui/select#Select",
       "states": ["closed", "open"],
       "title": "Select"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/select#SelectTrigger",
+      "states": ["idle", "pressed"],
+      "title": "Select trigger"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/select#SelectValue",
+      "states": ["comfortable", "compact"],
+      "title": "Select value"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/select#SelectPopup",
+      "states": ["closed", "open"],
+      "title": "Select popup"
+    },
+    {
+      "category": "Forms",
+      "id": "ui/select#SelectItem",
+      "states": ["default", "selected"],
+      "title": "Select item"
     }
   ],
   "components": [
@@ -18808,7 +18832,11 @@
         "webUseSiteCount": 12
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/select#SelectItem",
+        "states": ["default", "selected"],
+        "status": "covered",
+        "title": "Select item"
       },
       "useSites": [
         {
@@ -18888,7 +18916,11 @@
         "webUseSiteCount": 11
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/select#SelectPopup",
+        "states": ["closed", "open"],
+        "status": "covered",
+        "title": "Select popup"
       },
       "useSites": [
         {
@@ -18987,7 +19019,11 @@
         "webUseSiteCount": 12
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/select#SelectTrigger",
+        "states": ["idle", "pressed"],
+        "status": "covered",
+        "title": "Select trigger"
       },
       "useSites": [
         {
@@ -19067,7 +19103,11 @@
         "webUseSiteCount": 12
       },
       "story": {
-        "status": "uncovered"
+        "category": "Forms",
+        "id": "ui/select#SelectValue",
+        "states": ["comfortable", "compact"],
+        "status": "covered",
+        "title": "Select value"
       },
       "useSites": [
         {
@@ -21640,7 +21680,7 @@
     "internal": 210,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 18,
+    "stories": 22,
     "webOnly": 457
   },
   "generatedFrom": "apps/web/src/components",

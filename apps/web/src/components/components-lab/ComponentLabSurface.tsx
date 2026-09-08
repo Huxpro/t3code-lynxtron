@@ -164,6 +164,30 @@ export function ComponentLabSurface() {
             </HostText>
           </StoryFrame>
 
+          <StoryFrame id="ui/select#SelectTrigger" title="Select trigger">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared Select fixture above.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/select#SelectValue" title="Select value">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Verified as Comfortable, then Compact after selection.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/select#SelectPopup" title="Select popup">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              The shared fixture retains this subtree across closed and open states.
+            </HostText>
+          </StoryFrame>
+
+          <StoryFrame id="ui/select#SelectItem" title="Select item">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Comfortable and Compact use the same production SelectItem.
+            </HostText>
+          </StoryFrame>
+
           <StoryFrame id="ui/badge#Badge" title="Badge">
             <HostView className="component-lab-specimen-row">
               <Badge>Default</Badge>
