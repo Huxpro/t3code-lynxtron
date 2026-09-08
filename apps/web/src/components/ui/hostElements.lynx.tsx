@@ -26,7 +26,9 @@ function needsHoverState(className: unknown): boolean {
 function needsFocusState(className: unknown): boolean {
   return (
     typeof className === "string" &&
-    className.split(/\s+/u).some((token) => token.startsWith("focus:"))
+    className
+      .split(/\s+/u)
+      .some((token) => token.startsWith("focus:") || token.startsWith("focus-visible:"))
   );
 }
 

@@ -99,6 +99,11 @@ export function normalizeSupportedSelector(selector) {
     transformations.push("focus-to-state-attribute");
   }
 
+  if (normalized.includes(":focus-visible")) {
+    normalized = normalized.replace(/(?<!\\):focus-visible\b/gu, '[data-lynx-focus="true"]');
+    transformations.push("focus-visible-to-state-attribute");
+  }
+
   const darkVariant = /^(.*):is\(\.dark \*\)$/u.exec(normalized);
   if (darkVariant?.[1]) {
     normalized = `.dark ${darkVariant[1]}`;

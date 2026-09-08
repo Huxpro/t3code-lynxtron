@@ -15,10 +15,6 @@ describe("Lynx Tailwind compatibility", () => {
     expect(unsupportedPseudoSelectors(".label::selection")).toEqual([]);
   });
 
-  it("continues to classify focus selectors that need state adapters", () => {
-    expect(unsupportedPseudoSelectors(".button:focus-visible")).toEqual([":focus-visible"]);
-  });
-
   it("rewrites supported state and theme selectors to Lynx-safe equivalents", () => {
     expect(normalizeSupportedSelector(".disabled\\:opacity-50:disabled")).toEqual({
       selector: ".disabled\\:opacity-50[disabled]",
@@ -35,6 +31,10 @@ describe("Lynx Tailwind compatibility", () => {
     expect(normalizeSupportedSelector(".focus\\:opacity-100:focus")).toEqual({
       selector: '.focus\\:opacity-100[data-lynx-focus="true"]',
       transformations: ["focus-to-state-attribute"],
+    });
+    expect(normalizeSupportedSelector(".focus-visible\\:ring-1:focus-visible")).toEqual({
+      selector: '.focus-visible\\:ring-1[data-lynx-focus="true"]',
+      transformations: ["focus-visible-to-state-attribute"],
     });
     expect(normalizeSupportedSelector(".focus-within\\:opacity-100:focus-within")).toEqual({
       selector: ".focus-within\\:opacity-100:focus-within",
