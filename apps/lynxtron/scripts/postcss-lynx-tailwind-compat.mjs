@@ -91,6 +91,14 @@ export function normalizeSupportedSelector(selector) {
     transformations.push("hover-to-state-attribute");
   }
 
+  if (/((?<!\\):focus)(?!-visible|-within)\b/u.test(normalized)) {
+    normalized = normalized.replace(
+      /(?<!\\):focus(?!-visible|-within)\b/gu,
+      '[data-lynx-focus="true"]',
+    );
+    transformations.push("focus-to-state-attribute");
+  }
+
   const darkVariant = /^(.*):is\(\.dark \*\)$/u.exec(normalized);
   if (darkVariant?.[1]) {
     normalized = `.dark ${darkVariant[1]}`;

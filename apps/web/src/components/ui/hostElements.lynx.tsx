@@ -23,6 +23,13 @@ function needsHoverState(className: unknown): boolean {
   );
 }
 
+function needsFocusState(className: unknown): boolean {
+  return (
+    typeof className === "string" &&
+    className.split(/\s+/u).some((token) => token.startsWith("focus:"))
+  );
+}
+
 interface MainThreadElement {
   animate(keyframes: ReadonlyArray<Record<string, number | string>>, options?: unknown): never;
   getAttribute(attributeName: string): unknown;
@@ -75,6 +82,15 @@ export function HostView({
     | ((event: MainThreadMouseEvent) => void)
     | undefined;
   const trackHoverState = needsHoverState(className);
+  const trackFocusState = needsFocusState(className);
+  const handleFocus = (event: MainThreadMouseEvent) => {
+    "main thread";
+    event.currentTarget.setAttribute("data-lynx-focus", "true");
+  };
+  const handleBlur = (event: MainThreadMouseEvent) => {
+    "main thread";
+    event.currentTarget.setAttribute("data-lynx-focus", "false");
+  };
   const handleKeyDown = (event: MainThreadKeyEvent) => {
     "main thread";
     if (!onKeyDown) return;
@@ -132,6 +148,8 @@ export function HostView({
       event-through={eventThrough}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
+      {...(trackFocusState ? { "main-thread:bindfocus": handleFocus } : {})}
+      {...(trackFocusState ? { "main-thread:bindblur": handleBlur } : {})}
       {...(onMouseEnter || hoverRevealSelector || injectedMouseEnter || trackHoverState
         ? { "main-thread:bindmouseenter": handleMouseEnter }
         : {})}
@@ -292,6 +310,15 @@ export function HostButton({
   readonly onMouseLeave?: (event: unknown) => void;
 }) {
   const trackHoverState = needsHoverState(className);
+  const trackFocusState = needsFocusState(className);
+  const handleFocus = (event: MainThreadMouseEvent) => {
+    "main thread";
+    event.currentTarget.setAttribute("data-lynx-focus", "true");
+  };
+  const handleBlur = (event: MainThreadMouseEvent) => {
+    "main thread";
+    event.currentTarget.setAttribute("data-lynx-focus", "false");
+  };
   const handleKeyDown = (event: MainThreadKeyEvent) => {
     "main thread";
     if (!onKeyDown) return;
@@ -326,6 +353,8 @@ export function HostButton({
       aria-expanded={ariaExpanded}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
+      {...(trackFocusState ? { "main-thread:bindfocus": handleFocus } : {})}
+      {...(trackFocusState ? { "main-thread:bindblur": handleBlur } : {})}
       {...(onMouseEnter || trackHoverState
         ? { "main-thread:bindmouseenter": handleMouseEnter }
         : {})}

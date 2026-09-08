@@ -32,6 +32,14 @@ describe("Lynx Tailwind compatibility", () => {
       selector: '.group[data-lynx-hover="true"] .group-hover\\:opacity-100',
       transformations: ["hover-to-state-attribute"],
     });
+    expect(normalizeSupportedSelector(".focus\\:opacity-100:focus")).toEqual({
+      selector: '.focus\\:opacity-100[data-lynx-focus="true"]',
+      transformations: ["focus-to-state-attribute"],
+    });
+    expect(normalizeSupportedSelector(".focus-within\\:opacity-100:focus-within")).toEqual({
+      selector: ".focus-within\\:opacity-100:focus-within",
+      transformations: [],
+    });
   });
 
   it("keeps selector rewrites observable when selector counts do not change", () => {
