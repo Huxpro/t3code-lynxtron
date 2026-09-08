@@ -235,6 +235,18 @@
       "title": "Host list item"
     },
     {
+      "category": "Host Primitives",
+      "id": "ui/hostElements#HostLayoutView",
+      "states": ["vertical"],
+      "title": "Host layout view"
+    },
+    {
+      "category": "Host Primitives",
+      "id": "ui/hostElements#HostHeadline",
+      "states": ["default"],
+      "title": "Host headline"
+    },
+    {
       "category": "Feedback",
       "id": "ui/badge#Badge",
       "states": ["default", "secondary", "outline", "success", "warning", "error"],
@@ -5339,7 +5351,7 @@
     },
     {
       "authority": {
-        "line": 613,
+        "line": 615,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5360,7 +5372,7 @@
     },
     {
       "authority": {
-        "line": 471,
+        "line": 473,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5381,7 +5393,7 @@
     },
     {
       "authority": {
-        "line": 412,
+        "line": 414,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5402,7 +5414,7 @@
     },
     {
       "authority": {
-        "line": 233,
+        "line": 235,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5423,7 +5435,7 @@
     },
     {
       "authority": {
-        "line": 514,
+        "line": 516,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5444,7 +5456,7 @@
     },
     {
       "authority": {
-        "line": 668,
+        "line": 670,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5465,7 +5477,28 @@
     },
     {
       "authority": {
-        "line": 701,
+        "line": 717,
+        "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
+      },
+      "exported": false,
+      "id": "components-lab/ComponentLabSurface#ComponentLabHostLayoutStory",
+      "implementation": "web-only",
+      "lynx": null,
+      "name": "ComponentLabHostLayoutStory",
+      "reuse": {
+        "authorityShared": false,
+        "lynxUseSiteCount": 0,
+        "lynxUsesLogicalComponent": false,
+        "webUseSiteCount": 0
+      },
+      "story": {
+        "status": "uncovered"
+      },
+      "useSites": []
+    },
+    {
+      "authority": {
+        "line": 703,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5486,7 +5519,7 @@
     },
     {
       "authority": {
-        "line": 184,
+        "line": 186,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5507,7 +5540,7 @@
     },
     {
       "authority": {
-        "line": 307,
+        "line": 309,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5528,7 +5561,7 @@
     },
     {
       "authority": {
-        "line": 219,
+        "line": 221,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5549,7 +5582,7 @@
     },
     {
       "authority": {
-        "line": 162,
+        "line": 164,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5570,7 +5603,7 @@
     },
     {
       "authority": {
-        "line": 334,
+        "line": 336,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5591,7 +5624,7 @@
     },
     {
       "authority": {
-        "line": 270,
+        "line": 272,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5612,7 +5645,7 @@
     },
     {
       "authority": {
-        "line": 651,
+        "line": 653,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5633,7 +5666,7 @@
     },
     {
       "authority": {
-        "line": 369,
+        "line": 371,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5654,7 +5687,7 @@
     },
     {
       "authority": {
-        "line": 715,
+        "line": 728,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": true,
@@ -5688,7 +5721,7 @@
     },
     {
       "authority": {
-        "line": 536,
+        "line": 538,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5709,7 +5742,7 @@
     },
     {
       "authority": {
-        "line": 561,
+        "line": 563,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5730,7 +5763,7 @@
     },
     {
       "authority": {
-        "line": 637,
+        "line": 639,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5751,7 +5784,7 @@
     },
     {
       "authority": {
-        "line": 133,
+        "line": 135,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -5772,7 +5805,7 @@
     },
     {
       "authority": {
-        "line": 158,
+        "line": 160,
         "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx"
       },
       "exported": false,
@@ -17531,13 +17564,17 @@
       },
       "name": "HostHeadline",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Host Primitives",
+        "id": "ui/hostElements#HostHeadline",
+        "states": ["default"],
+        "status": "covered",
+        "title": "Host headline"
       },
       "useSites": [
         {
@@ -17546,6 +17583,14 @@
         },
         {
           "path": "apps/web/src/components/chat/ComposerSurface.tsx",
+          "platform": "lynx"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
           "platform": "lynx"
         }
       ]
@@ -17591,15 +17636,27 @@
       },
       "name": "HostLayoutView",
       "reuse": {
-        "authorityShared": false,
-        "lynxUseSiteCount": 1,
+        "authorityShared": true,
+        "lynxUseSiteCount": 2,
         "lynxUsesLogicalComponent": true,
-        "webUseSiteCount": 1
+        "webUseSiteCount": 2
       },
       "story": {
-        "status": "uncovered"
+        "category": "Host Primitives",
+        "id": "ui/hostElements#HostLayoutView",
+        "states": ["vertical"],
+        "status": "covered",
+        "title": "Host layout view"
       },
       "useSites": [
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "web"
+        },
+        {
+          "path": "apps/web/src/components/components-lab/ComponentLabSurface.tsx",
+          "platform": "lynx"
+        },
         {
           "path": "apps/web/src/components/settings/SettingsSurfaces.tsx",
           "platform": "web"
@@ -23579,14 +23636,14 @@
     }
   ],
   "counts": {
-    "components": 753,
+    "components": 754,
     "coveredStoriesMissingLynxUse": 0,
     "exported": 526,
-    "internal": 227,
+    "internal": 228,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 109,
-    "webOnly": 474
+    "stories": 111,
+    "webOnly": 475
   },
   "generatedFrom": "apps/web/src/components",
   "method": {

@@ -12774,6 +12774,20 @@ async function captureCell({
       ) &&
       componentLabHostListEvidence.scrolled.web.scrollTop > 0 &&
       componentLabHostListEvidence.scrolled.lynx.scrollTop > 0);
+  const componentLabHostLayoutReady =
+    !isComponentsLabState ||
+    (state?.web?.componentLabMetrics?.hostLayout?.headlineText === "Build something great" &&
+      state?.lynx?.componentLabMetrics?.hostLayout?.headlineText === "Build something great" &&
+      state.web.componentLabMetrics.hostLayout.layout.rect.width === 320 &&
+      state.lynx.componentLabMetrics.hostLayout.layout.rect.width === 320 &&
+      state.web.componentLabMetrics.hostLayout.headline.rect.width === 320 &&
+      state.lynx.componentLabMetrics.hostLayout.headline.rect.width === 320 &&
+      state.web.componentLabMetrics.hostLayout.headline.rect.height === 32 &&
+      state.lynx.componentLabMetrics.hostLayout.headline.rect.height === 32 &&
+      state.web.componentLabMetrics.hostLayout.headline.style.fontSize === "24px" &&
+      state.lynx.componentLabMetrics.hostLayout.headline.style.fontSize === "24px" &&
+      state.web.componentLabMetrics.hostLayout.headline.style.lineHeight === "32px" &&
+      state.lynx.componentLabMetrics.hostLayout.headline.style.lineHeight === "32px");
   const componentLabLabelReady =
     !isComponentsLabState ||
     (state?.web?.componentLabMetrics?.label?.text === "Project name" &&
@@ -15227,6 +15241,7 @@ async function captureCell({
     componentLabSidebarChromeReady &&
     componentLabFileTreeReady &&
     componentLabHostListReady &&
+    componentLabHostLayoutReady &&
     componentLabDraftInputReady &&
     componentLabLabelReady &&
     identityMatch &&
@@ -15343,6 +15358,7 @@ async function captureCell({
       componentLabSidebarChromeReady,
       componentLabFileTreeReady,
       componentLabHostListReady,
+      componentLabHostLayoutReady,
       componentLabDraftInputReady,
       componentLabLabelReady,
       bothReady,

@@ -473,6 +473,15 @@ function readComponentLabMetrics(root) {
         items: items.map((item) => ({ box: readElementBox(item), text: readComposedText(item) })),
       };
     })(),
+    hostLayout: (() => {
+      const layout = root.querySelector(".component-lab-host-layout");
+      const headline = layout?.querySelector(".component-lab-host-headline");
+      return {
+        layout: readElementBox(layout),
+        headline: readElementBox(headline),
+        headlineText: readComposedText(headline),
+      };
+    })(),
     baseUiInertCount: root.querySelectorAll("[data-base-ui-inert]").length,
     draftInput: (() => {
       const committed = root.querySelector('[data-component-lab-draft-committed="value"]');

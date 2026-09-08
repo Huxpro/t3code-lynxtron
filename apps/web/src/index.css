@@ -2178,6 +2178,20 @@ label:has(> select#reasoning-effort) select {
   box-sizing: border-box;
 }
 
+.component-lab-host-layout {
+  display: flex;
+  width: 20rem;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.component-lab-host-headline {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 2rem;
+}
+
 .component-lab-sidebar-group {
   padding: 0;
 }

@@ -45,6 +45,8 @@ import {
 import {
   HostButton,
   HostHeading,
+  HostHeadline,
+  HostLayoutView,
   HostList,
   HostListItem,
   HostScrollView,
@@ -712,6 +714,17 @@ function ComponentLabHostListStory() {
   );
 }
 
+function ComponentLabHostLayoutStory() {
+  return (
+    <HostLayoutView className="component-lab-host-layout">
+      <HostHeadline className="component-lab-host-headline">Build something great</HostHeadline>
+      <HostText className="component-lab-host-text component-lab-host-text--muted">
+        Shared renderer-neutral layout anatomy.
+      </HostText>
+    </HostLayoutView>
+  );
+}
+
 export function ComponentLabSurface() {
   return (
     <HostView className="component-lab" data-component-lab="web-lynx-shared">
@@ -847,6 +860,16 @@ export function ComponentLabSurface() {
               </HostText>
             </StoryFrame>
           ))}
+
+          <StoryFrame id="ui/hostElements#HostLayoutView" title="Host layout view">
+            <ComponentLabHostLayoutStory />
+          </StoryFrame>
+
+          <StoryFrame id="ui/hostElements#HostHeadline" title="Host headline">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Exercised by the shared Host layout composition above.
+            </HostText>
+          </StoryFrame>
 
           <StoryFrame id="ui/command#Command" title="Command">
             <ComponentLabCommandStory />

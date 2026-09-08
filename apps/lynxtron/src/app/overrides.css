@@ -12871,6 +12871,20 @@
 .component-lab-host-list__item + .component-lab-host-list__item {
   margin-top: 2px;
 }
+.component-lab-host-layout {
+  --flex-direction: column;
+  --lynx-linear-orientation: vertical;
+  display: block;
+  width: 320px;
+}
+.component-lab-host-layout > * + * {
+  margin-top: 8px;
+}
+.component-lab-host-headline {
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+}
 .component-lab-sidebar-group {
   width: 216px;
   padding: 0;

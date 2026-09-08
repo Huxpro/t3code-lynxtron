@@ -234,6 +234,18 @@
     "states": ["default"]
   },
   {
+    "id": "ui/hostElements#HostLayoutView",
+    "category": "Host Primitives",
+    "title": "Host layout view",
+    "states": ["vertical"]
+  },
+  {
+    "id": "ui/hostElements#HostHeadline",
+    "category": "Host Primitives",
+    "title": "Host headline",
+    "states": ["default"]
+  },
+  {
     "id": "ui/badge#Badge",
     "category": "Feedback",
     "title": "Badge",
