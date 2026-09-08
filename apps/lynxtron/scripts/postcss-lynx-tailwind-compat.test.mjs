@@ -60,6 +60,7 @@ describe("Lynx Tailwind compatibility", () => {
   });
 
   it("provides Lynx-safe replacements for equivalent declarations", () => {
+    expect(declarationReplacement("user-select", "none")).toEqual([]);
     expect(declarationReplacement("font-variant-numeric", "tabular-nums")).toEqual([
       { prop: "font-feature-settings", value: '"tnum"' },
     ]);

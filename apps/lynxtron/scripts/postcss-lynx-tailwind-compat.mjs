@@ -41,6 +41,12 @@ export function unsupportedDeclaration(property, value) {
 }
 
 export function declarationReplacement(property, value) {
+  if (property === "user-select" && value.trim() === "none") {
+    // Lynx text selection is opt-in through the text-selection element prop;
+    // views also have no browser-style selectable text behavior. The Web
+    // declaration is therefore an explicit native semantic no-op.
+    return [];
+  }
   if (property === "font-variant-numeric" && value.trim() === "tabular-nums") {
     return [{ prop: "font-feature-settings", value: '"tnum"' }];
   }
@@ -211,6 +217,9 @@ export function lynxTailwindCompatibility() {
           value: declaration.value,
           selector,
           replacements: replacement,
+          ...(replacement.length === 0
+            ? { semanticEquivalent: "lynx-text-selection-disabled-by-default" }
+            : {}),
         });
         declaration.remove();
         return;
