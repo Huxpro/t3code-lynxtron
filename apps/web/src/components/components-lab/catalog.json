@@ -102,6 +102,12 @@
     "states": ["open", "item-highlighted"]
   },
   {
+    "id": "ui/menu#MenuItem",
+    "category": "Overlays",
+    "title": "Menu item",
+    "states": ["default", "activated"]
+  },
+  {
     "id": "ui/select#Select",
     "category": "Forms",
     "title": "Select",

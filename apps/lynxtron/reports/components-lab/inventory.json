@@ -103,6 +103,12 @@
       "title": "Menu popup"
     },
     {
+      "category": "Overlays",
+      "id": "ui/menu#MenuItem",
+      "states": ["default", "activated"],
+      "title": "Menu item"
+    },
+    {
       "category": "Forms",
       "id": "ui/select#Select",
       "states": ["closed", "open"],
@@ -17316,7 +17322,11 @@
         "webUseSiteCount": 13
       },
       "story": {
-        "status": "uncovered"
+        "category": "Overlays",
+        "id": "ui/menu#MenuItem",
+        "states": ["default", "activated"],
+        "status": "covered",
+        "title": "Menu item"
       },
       "useSites": [
         {
@@ -21680,7 +21690,7 @@
     "internal": 210,
     "platformPairs": 216,
     "sharedSource": 63,
-    "stories": 22,
+    "stories": 23,
     "webOnly": 457
   },
   "generatedFrom": "apps/web/src/components",

@@ -164,6 +164,12 @@ export function ComponentLabSurface() {
             </HostText>
           </StoryFrame>
 
+          <StoryFrame id="ui/menu#MenuItem" title="Menu item">
+            <HostText className="component-lab-host-text component-lab-host-text--muted">
+              Open in editor and Copy path use the same production MenuItem.
+            </HostText>
+          </StoryFrame>
+
           <StoryFrame id="ui/select#SelectTrigger" title="Select trigger">
             <HostText className="component-lab-host-text component-lab-host-text--muted">
               Exercised by the shared Select fixture above.
