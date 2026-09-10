@@ -76,6 +76,8 @@ export interface MarkdownTablePresentation {
   readonly rows: ReadonlyArray<ReadonlyArray<string>>;
 }
 
+export type MarkdownTableCopyFormat = "markdown" | "csv";
+
 export interface MarkdownInlinePresentation {
   readonly text: string;
   readonly bold: boolean;
@@ -279,6 +281,46 @@ export function parseMarkdownTable(lines: ReadonlyArray<string>): MarkdownTableP
     rows.push(headers.map((_, index) => cells[index] ?? ""));
   }
   return { headers, alignments, rows };
+}
+
+function markdownTableVisibleCell(value: string): string {
+  return parseMarkdownInline(value)
+    .map((span) => span.text)
+    .join("")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function markdownTableRows(table: MarkdownTablePresentation): ReadonlyArray<ReadonlyArray<string>> {
+  return [
+    table.headers,
+    ...table.rows.map((row) => table.headers.map((_, column) => row[column] ?? "")),
+  ];
+}
+
+/** Serialize the renderer-neutral table projection for the platform clipboard. */
+export function serializeMarkdownTable(
+  table: MarkdownTablePresentation,
+  format: MarkdownTableCopyFormat,
+): string {
+  const rows = markdownTableRows(table).map((row) => row.map(markdownTableVisibleCell));
+  if (format === "csv") {
+    return rows
+      .map((row) =>
+        row
+          .map((cell) => (/[",\n]/.test(cell) ? `"${cell.replaceAll('"', '""')}"` : cell))
+          .join(","),
+      )
+      .join("\n");
+  }
+
+  const header = rows[0] ?? [];
+  const separator = table.alignments.map((alignment) =>
+    alignment === "center" ? ":---:" : alignment === "right" ? "---:" : "---",
+  );
+  const line = (cells: ReadonlyArray<string>) =>
+    `| ${cells.map((cell) => cell.replaceAll("|", "\\|")).join(" | ")} |`;
+  return [line(header), line(separator), ...rows.slice(1).map(line)].join("\n");
 }
 
 export function findMarkdownTaskListMarkerOffset(

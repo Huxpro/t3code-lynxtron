@@ -221,6 +221,14 @@ describe("transcript layout contract", () => {
     expect(cell).toContain("min-width: 132px;");
   });
 
+  it("keeps table copy feedback inside the table block", () => {
+    expect(markdownSource).toContain("function MarkdownTableBlock");
+    expect(markdownSource).toContain('label: "Copy as Markdown"');
+    expect(markdownSource).toContain('label: "Copy as CSV"');
+    expect(markdownSource).toContain("serializeMarkdownTable(table, selection)");
+    expect(markdownSource).toContain('data-markdown-table-copy-state={copyStatus ?? "idle"}');
+  });
+
   it("keeps empty right-panel cards at the authority height", () => {
     const start = overrides.indexOf(".right-panel-empty-card {");
     const block = overrides.slice(start, overrides.indexOf("}", start));

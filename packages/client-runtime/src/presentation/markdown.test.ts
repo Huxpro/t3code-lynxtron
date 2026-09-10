@@ -16,6 +16,7 @@ import {
   resolveMarkdownFileLinkMeta,
   resolveMarkdownFileLinkTarget,
   resolveMarkdownCodeLanguage,
+  serializeMarkdownTable,
   rewriteMarkdownFileUriHref,
 } from "./markdown.ts";
 
@@ -166,6 +167,24 @@ describe("parseMarkdownTable", () => {
   it("rejects prose and malformed delimiters", () => {
     expect(parseMarkdownTable(["one | two", "not a delimiter"])).toBeNull();
     expect(parseMarkdownTable(["one | two", "--- | --"])).toBeNull();
+  });
+});
+
+describe("serializeMarkdownTable", () => {
+  const table = {
+    headers: ["**Name**", "Notes"],
+    alignments: ["left", "right"],
+    rows: [["[Lynx](https://lynxjs.org)", 'fast, "native" | UI']],
+  } as const;
+
+  it("copies rendered cell text as aligned Markdown", () => {
+    expect(serializeMarkdownTable(table, "markdown")).toBe(
+      '| Name | Notes |\n| --- | ---: |\n| Lynx | fast, "native" \\| UI |',
+    );
+  });
+
+  it("copies rendered cell text as quoted CSV", () => {
+    expect(serializeMarkdownTable(table, "csv")).toBe('Name,Notes\nLynx,"fast, ""native"" | UI"');
   });
 });
 

@@ -349,6 +349,11 @@ following-end` with the jump affordance visible only while detached. That gate
   from leaking between recycled transcript rows. Timeline-hosted details,
   including nested disclosures, also detach follow before changing row height;
   the standalone Plan panel keeps its own scrolling semantics.
+- Native Markdown tables now preserve readable minimum column widths behind a
+  horizontal viewport and expose Web-equivalent Markdown/CSV copy formats. The
+  renderer-neutral table projection owns visible-text normalization and
+  serialization, while pending/success/failure feedback stays inside the table
+  block so copying does not invalidate the parent transcript row.
 
 ## PF4: Complete remote and multi-environment operation
 

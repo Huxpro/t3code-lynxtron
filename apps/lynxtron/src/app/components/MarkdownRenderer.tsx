@@ -10,7 +10,9 @@ import {
 import {
   parseMarkdownInline,
   resolveMarkdownFileLinkMeta,
+  serializeMarkdownTable,
   type MarkdownInlinePresentation,
+  type MarkdownTablePresentation,
 } from "@t3tools/client-runtime/presentation/markdown";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { uiActions } from "../state/uiState";
@@ -316,6 +318,104 @@ function MarkdownDetailsBlock({
   );
 }
 
+function MarkdownTableBlock({
+  table,
+  blockKey,
+  cwd,
+}: {
+  readonly table: MarkdownTablePresentation;
+  readonly blockKey: string;
+  readonly cwd: string | undefined;
+}) {
+  const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    setCopyStatus(null);
+    if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    return () => {
+      if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    };
+  }, [blockKey, table]);
+  const handleCopy = useCallback(() => {
+    "background only";
+    if (copyStatus === "pending") return;
+    void (async () => {
+      try {
+        const selection = await showNativeContextMenu([
+          { id: "markdown", label: "Copy as Markdown" },
+          { id: "csv", label: "Copy as CSV" },
+        ]);
+        if (selection !== "markdown" && selection !== "csv") return;
+        setCopyStatus("pending");
+        const didCopy = await copyMarkdownCode(
+          serializeMarkdownTable(table, selection),
+          clientCapabilities.clipboard,
+        );
+        setCopyStatus(didCopy ? "copied" : "failed");
+      } catch {
+        setCopyStatus("failed");
+      }
+      resetTimerRef.current = setTimeout(() => {
+        setCopyStatus(null);
+        resetTimerRef.current = null;
+      }, 1_000);
+    })();
+  }, [copyStatus, table]);
+  const copyLabel =
+    copyStatus === "copied" ? "Copied" : copyStatus === "failed" ? "Copy failed" : "Copy table";
+
+  return (
+    <view className="md-table-container" data-markdown-table="true">
+      <scroll-view className="md-table-scroll" scroll-orientation="horizontal">
+        <view
+          className="md-table"
+          style={{ width: `${markdownTableContentWidth(table.headers.length)}px` }}
+        >
+          <view className="md-table-row md-table-row--header">
+            {table.headers.map((header, column) => (
+              <text
+                key={`${blockKey}-h${column}`}
+                className="md-table-cell md-table-cell--header"
+                style={{ textAlign: table.alignments[column] ?? "left" } as any}
+              >
+                {renderInline(parseMarkdownInline(header), `${blockKey}-h${column}`, cwd)}
+              </text>
+            ))}
+          </view>
+          {table.rows.map((row, rowIndex) => (
+            <view key={`${blockKey}-r${rowIndex}`} className="md-table-row">
+              {row.map((cell, column) => (
+                <text
+                  key={`${blockKey}-r${rowIndex}c${column}`}
+                  className="md-table-cell"
+                  style={{ textAlign: table.alignments[column] ?? "left" } as any}
+                >
+                  {renderInline(
+                    parseMarkdownInline(cell),
+                    `${blockKey}-r${rowIndex}c${column}`,
+                    cwd,
+                  )}
+                </text>
+              ))}
+            </view>
+          ))}
+        </view>
+      </scroll-view>
+      <view className="md-table-footer">
+        <view
+          className="md-table-copy"
+          data-markdown-table-copy-state={copyStatus ?? "idle"}
+          aria-label={copyLabel}
+          aria-disabled={copyStatus === "pending" ? "true" : "false"}
+          bindtap={copyStatus === "pending" ? undefined : handleCopy}
+        >
+          <text className="md-table-copy-label">{copyLabel}</text>
+        </view>
+      </view>
+    </view>
+  );
+}
+
 function renderBlock(
   block: ParsedMarkdownBlock,
   idx: number,
@@ -395,39 +495,7 @@ function renderBlock(
     case "table": {
       const table = block.table;
       if (!table) return <view key={key} />;
-      return (
-        <scroll-view key={key} className="md-table-scroll" scroll-orientation="horizontal">
-          <view
-            className="md-table"
-            style={{ width: `${markdownTableContentWidth(table.headers.length)}px` }}
-          >
-            <view className="md-table-row md-table-row--header">
-              {table.headers.map((header, column) => (
-                <text
-                  key={`${key}-h${column}`}
-                  className="md-table-cell md-table-cell--header"
-                  style={{ textAlign: table.alignments[column] ?? "left" } as any}
-                >
-                  {renderInline(parseMarkdownInline(header), `${key}-h${column}`, cwd)}
-                </text>
-              ))}
-            </view>
-            {table.rows.map((row, rowIndex) => (
-              <view key={`${key}-r${rowIndex}`} className="md-table-row">
-                {row.map((cell, column) => (
-                  <text
-                    key={`${key}-r${rowIndex}c${column}`}
-                    className="md-table-cell"
-                    style={{ textAlign: table.alignments[column] ?? "left" } as any}
-                  >
-                    {renderInline(parseMarkdownInline(cell), `${key}-r${rowIndex}c${column}`, cwd)}
-                  </text>
-                ))}
-              </view>
-            ))}
-          </view>
-        </scroll-view>
-      );
+      return <MarkdownTableBlock key={key} table={table} blockKey={key} cwd={cwd} />;
     }
 
     case "image": {
