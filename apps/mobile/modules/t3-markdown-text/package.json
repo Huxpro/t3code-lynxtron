@@ -25,6 +25,9 @@
     "./renderer": "./src/SelectableMarkdownText.ios.tsx",
     "./types": "./src/SelectableMarkdownText.types.ts"
   },
+  "dependencies": {
+    "@t3tools/client-runtime": "workspace:*"
+  },
   "peerDependencies": {
     "expo-asset": "*",
     "expo-clipboard": "*",

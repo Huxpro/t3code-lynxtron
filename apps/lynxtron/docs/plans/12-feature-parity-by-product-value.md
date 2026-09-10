@@ -282,6 +282,10 @@ following-end` with the jump affordance visible only while detached. That gate
   safe inline formatting tags (`kbd`, `mark`, `sub`, `sup`, `u`), `<br>` line
   breaks, and double-encoded entities. Unknown HTML remains literal rather than
   being treated as trusted markup.
+- Mobile's native Markdown module now imports that shared visible-text
+  normalization and deletes its local entity/tag decoder, leaving one tested
+  semantic source for Mobile and Lynx instead of two implementations that can
+  drift.
 - Native proposed-plan timeline cards now open the existing full Plan panel
   instead of ending at a static two-line title. The card reuses canonical plan
   state and the existing panel route; its real OS tap remains covered by the
