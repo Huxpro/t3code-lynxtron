@@ -2198,6 +2198,13 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("pointer-events: none;");
   });
 
+  it("opens the complete plan surface from a transcript plan card", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain('data-transcript-plan-open="true"');
+    expect(timelineSource).toContain('onClick={() => uiActions.openRightPanelSurface("plan")}');
+    expect(timelineSource).toContain("aria-label={`Open proposed plan: ${title}`}");
+  });
+
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
     const composer = componentSource("Composer.tsx");
     expect(clientSource).toContain("modelSelection: saved,");

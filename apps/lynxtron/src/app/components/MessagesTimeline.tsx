@@ -214,12 +214,17 @@ function LynxTurnDiffCard({
 function LynxProposedPlanCard({ plan }: { plan: OrchestrationProposedPlan }) {
   const title = proposedPlanTitle(plan.planMarkdown) ?? "Proposed plan";
   return (
-    <view className="plan-row">
+    <HostView
+      className="plan-row"
+      aria-label={`Open proposed plan: ${title}`}
+      data-transcript-plan-open="true"
+      onClick={() => uiActions.openRightPanelSurface("plan")}
+    >
       <text className="plan-row__eyebrow">Proposed plan</text>
       <text className="plan-row__title" text-maxline="2">
         {title}
       </text>
-    </view>
+    </HostView>
   );
 }
 

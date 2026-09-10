@@ -260,6 +260,11 @@ following-end` with the jump affordance visible only while detached. That gate
   Images embedded between paragraph text are projected in source order through
   the existing image/fallback renderer instead of leaking their Markdown syntax
   as ordinary prose.
+- Native proposed-plan timeline cards now open the existing full Plan panel
+  instead of ending at a static two-line title. The card reuses canonical plan
+  state and the existing panel route; its real OS tap remains covered by the
+  documented Lynxtron 0.0.21 native-tap blocker rather than being marked as
+  accepted from a source-level contract alone.
 
 ## PF4: Complete remote and multi-environment operation
 
