@@ -89,6 +89,24 @@ not expose the native image-picker affordance yet. Attachment DTO transport and
 preview/remove/send state remain implemented and testable without advertising an
 input path that fails acceptance.
 
+### Native tap attribute regression
+
+Real macOS pointer input can also raise the same native LogBox error during an
+otherwise successful Lynx `bindtap`. Two fresh owned 0.0.21 processes reproduced
+`FiberSetAttribute param 0 should be RefCounted`: one when the sidebar add-project
+control opened its overlay, and one when the sidebar new-thread control navigated
+to the local draft Hero. The postcondition completed in both cases, but the frame
+is invalid acceptance evidence because the runtime error appears immediately
+after the OS click. The exact app PID/window was selected through Computer Use,
+and each run used a fresh isolated state directory; this was not stale-window or
+DevTool tap injection.
+
+This broadens the known 0.0.21 regression beyond `dialog.showOpenDialog`. PF2
+real-input acceptance remains blocked on a clean native tap path even though the
+same Composer state transitions pass through the exact-bundle DevTool gate. Do
+not suppress the LogBox or accept the successful navigation as proof; rerun the
+OS-input gate after the runtime issue is fixed.
+
 ## Verification
 
 - connector transport tests: 30/30 passed;

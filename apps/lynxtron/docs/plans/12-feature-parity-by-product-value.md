@@ -194,6 +194,11 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   while disconnected and returns to sendable after the main sequence advances
   on the recovered server. PF2 remains open for final real-input closure and
   matched Web/Lynx attachment evidence.
+- Two fresh exact-owned Computer Use runs reached the expected add-project and
+  new-thread postconditions through real macOS clicks, but Lynxtron 0.0.21 raised
+  `FiberSetAttribute param 0 should be RefCounted` immediately after each tap.
+  Those frames are invalid acceptance evidence, so final real-input closure is
+  runtime-blocked rather than silently counted as passing.
 
 ## PF3: Complete transcript navigation and interaction
 

@@ -45,6 +45,18 @@
     "status": "resolved",
     "finding": "The prior 68-byte 1x1 PNG passed transport and persistence checks but OpenCode rejected it with ImageDecodeError. The final gate uses a 566-byte repository PNG that the real provider decodes."
   },
+  "realInputBlocker": {
+    "status": "blocked-runtime",
+    "channel": "Computer Use real macOS pointer input",
+    "runtime": "@lynx-js/lynxtron@0.0.21",
+    "error": "FiberSetAttribute param 0 should be RefCounted",
+    "freshOwnedRuns": 2,
+    "observedPostconditions": [
+      "add-project overlay opened",
+      "new-thread navigation reached the local draft Hero"
+    ],
+    "decision": "Both frames are invalid acceptance evidence despite their successful postconditions. No further Composer input was sent to the polluted processes."
+  },
   "artifacts": {
     "reportPath": "/tmp/t3code-pf2-composer-retry.3xmRzK/report-final.json",
     "reportSha256": "72f61d1e315364cc287f2f996365fafe6169abe3667728b84f5096e29f3d3f1d",
