@@ -316,7 +316,8 @@ following-end` with the jump affordance visible only while detached. That gate
 - Shared inline Markdown now decodes the common named and numeric HTML entities
   used by Web/Mobile text rendering while preserving unknown, null, surrogate,
   and out-of-range entities literally. Code spans remain byte-for-byte authored
-  text.
+  text. Intraword underscores in identifiers remain literal while authored
+  underscore emphasis continues to project into styled spans.
 - Shared visible-text normalization now also matches Mobile/Web semantics for
   safe inline formatting tags (`kbd`, `mark`, `sub`, `sup`, `u`), `<br>` line
   breaks, and double-encoded entities. Unknown HTML remains literal rather than

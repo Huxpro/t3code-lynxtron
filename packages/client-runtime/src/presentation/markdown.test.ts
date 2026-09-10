@@ -257,6 +257,30 @@ describe("parseMarkdownInline", () => {
     ]);
   });
 
+  it("keeps intraword underscores literal while preserving authored emphasis", () => {
+    expect(parseMarkdownInline("foo_bar_baz foo__bar__baz and _real emphasis_")).toEqual([
+      {
+        text: "foo_bar_baz foo__bar__baz and ",
+        bold: false,
+        italic: false,
+        code: false,
+        href: null,
+      },
+      {
+        text: "real emphasis",
+        bold: false,
+        italic: true,
+        code: false,
+        href: null,
+      },
+    ]);
+    expect(parseMarkdownInline("_foo_bar_ and __foo_bar__")).toEqual([
+      { text: "foo_bar", bold: false, italic: true, code: false, href: null },
+      { text: " and ", bold: false, italic: false, code: false, href: null },
+      { text: "foo_bar", bold: true, italic: false, code: false, href: null },
+    ]);
+  });
+
   it("preserves balanced and escaped parentheses in link destinations", () => {
     expect(
       parseMarkdownInline(

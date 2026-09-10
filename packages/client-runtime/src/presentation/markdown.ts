@@ -402,6 +402,43 @@ function findClosingDelimiter(text: string, delimiter: string, from: number): nu
   return -1;
 }
 
+function isMarkdownWordCharacter(character: string | undefined): boolean {
+  return character !== undefined && /[\p{L}\p{N}]/u.test(character);
+}
+
+function canOpenUnderscoreDelimiter(text: string, index: number, length: number): boolean {
+  const before = text[index - 1];
+  const after = text[index + length];
+  return (
+    after !== undefined &&
+    !/\s/u.test(after) &&
+    !(isMarkdownWordCharacter(before) && isMarkdownWordCharacter(after))
+  );
+}
+
+function canCloseUnderscoreDelimiter(text: string, index: number, length: number): boolean {
+  const before = text[index - 1];
+  const after = text[index + length];
+  return (
+    before !== undefined &&
+    !/\s/u.test(before) &&
+    !(isMarkdownWordCharacter(before) && isMarkdownWordCharacter(after))
+  );
+}
+
+function findClosingEmphasisDelimiter(text: string, delimiter: string, from: number): number {
+  let cursor = from;
+  while (cursor < text.length) {
+    const match = findClosingDelimiter(text, delimiter, cursor);
+    if (match === -1) return -1;
+    if (!delimiter.startsWith("_") || canCloseUnderscoreDelimiter(text, match, delimiter.length)) {
+      return match;
+    }
+    cursor = match + delimiter.length;
+  }
+  return -1;
+}
+
 function findClosingLinkDestination(text: string, from: number): number {
   let depth = 0;
   let escaped = false;
@@ -636,7 +673,15 @@ function parseMarkdownInlineWithStyle(
         ? text.slice(cursor, cursor + 2)
         : null;
     if (strongDelimiter) {
-      const end = findClosingDelimiter(text, strongDelimiter, cursor + 2);
+      const canOpen =
+        !strongDelimiter.startsWith("_") ||
+        canOpenUnderscoreDelimiter(text, cursor, strongDelimiter.length);
+      if (!canOpen) {
+        append(strongDelimiter);
+        cursor += strongDelimiter.length;
+        continue;
+      }
+      const end = canOpen ? findClosingEmphasisDelimiter(text, strongDelimiter, cursor + 2) : -1;
       if (end !== -1) {
         const parts = parseMarkdownInlineWithStyle(text.slice(cursor + 2, end), {
           ...style,
@@ -663,7 +708,8 @@ function parseMarkdownInlineWithStyle(
 
     const emphasisDelimiter = text[cursor] === "*" || text[cursor] === "_" ? text[cursor]! : null;
     if (emphasisDelimiter) {
-      const end = findClosingDelimiter(text, emphasisDelimiter, cursor + 1);
+      const canOpen = emphasisDelimiter !== "_" || canOpenUnderscoreDelimiter(text, cursor, 1);
+      const end = canOpen ? findClosingEmphasisDelimiter(text, emphasisDelimiter, cursor + 1) : -1;
       if (end !== -1) {
         const parts = parseMarkdownInlineWithStyle(text.slice(cursor + 1, end), {
           ...style,
