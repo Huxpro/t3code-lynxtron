@@ -1016,6 +1016,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "placeholderVisible: false");
     assert.include(source, "routeRoundTrip,");
     assert.include(source, "shouldVerifyNewThreadDraftLifecycle ||");
+    assert.include(source, "Native draft text did not persist before cold restart");
+    assert.include(source, "Composer draft cold restart did not return an owned process id");
+    assert.include(source, "__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
+    assert.include(source, "state?.composerDraftTextByScopeKey?.[draftScopeKey] === draftText");
+    assert.include(source, "coldRestart: {");
   });
 
   it("verifies idle from the canonical session projection rather than visual status", () => {

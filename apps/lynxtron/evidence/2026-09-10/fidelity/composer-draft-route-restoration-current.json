@@ -36,28 +36,37 @@
     "persistedThreadIdsAfter": ["fidelity-review-thread"],
     "mainTransportSequence": { "before": 18, "after": 22 },
     "rendererErrors": 0,
-    "isolatedStateDisposed": true
+    "isolatedStateDisposed": true,
+    "coldRestart": {
+      "status": "pass",
+      "draftScopeKey": "project:2e4cb40d-3a04-4002-82b5-c6d5526a5add",
+      "restoredText": "Native route-scoped draft",
+      "initialProcessId": 84026,
+      "restartedProcessId": 85030,
+      "transportKind": "main",
+      "lastSeq": 3
+    }
   },
   "artifacts": {
-    "reportPath": "/tmp/t3code-pf2-draft-proof.TFVlqx/report.json",
-    "reportSha256": "baeddb239928f64b7011cb597a3d47b077de6e76f91b94dc4d9db68781154342",
-    "logSha256": "8c75a1e01e16cda8d870f046eca94e60d02904e2825539e154adc5ba06f91895",
-    "bundleSha256": "d5f9dc62a4dd0a02cd990e2b576551385f82ddb38bfc928ea86bf0016079e7d5"
+    "reportPath": "/tmp/t3code-pf2-draft-restart.4dWjDZ/report.json",
+    "reportSha256": "1c4012cbcc49de58344bae3883f3b48879e9f2f19ba7235aa112746702da92bd",
+    "logSha256": "4a1390d8eaa436f71e242b1f42ba2ab6169ba411950759be178dd724e761e298",
+    "bundleSha256": "0ce2a8f9c2d7dff2d3e6769e1ad3809f332870cf1b606d3440cbc09a5ed41a72"
   },
   "evidenceBoundary": {
     "proved": [
       "one-process route change from a local draft to a canonical thread and back",
       "thread-scoped text identity and sendable presentation restoration",
       "native textarea host synchronization after remount",
-      "no accidental canonical empty-thread persistence"
+      "no accidental canonical empty-thread persistence",
+      "debounced preference persistence and restoration across an owned cold restart"
     ],
     "notYetProved": [
-      "draft persistence across process restart or disk reload",
       "draft restoration after connector disconnect and reconnect",
       "image and file attachment preview, removal, upload failure, retry, and send",
       "terminal and element context lifecycle",
       "physical keyboard focus, selection, paste, and IME"
     ]
   },
-  "classification": "The Web authority already preserves thread-scoped Composer drafts. Native previously discarded text when its keyed Composer unmounted and did not hydrate the host textarea from restored state. The current implementation moves text ownership into a thread-scoped client projection and keeps the Lynx textarea as a capability leaf. Exact-bundle Native leaves the draft for the same persisted canonical thread, returns to the same draft ID, restores send semantics with no placeholder, advances main transport, reports zero renderer errors, and disposes isolated state. This closes only route-scoped text restoration; PF2 remains in progress."
+  "classification": "The Web authority already preserves thread-scoped Composer drafts. Native previously discarded text when its keyed Composer unmounted and did not hydrate the host textarea from restored state. The current implementation moves text ownership into a stable thread-or-project scoped client projection, debounces it into isolated preferences, and keeps the Lynx textarea as a capability leaf. Exact-bundle Native leaves the draft for the same persisted canonical thread, returns to the same draft ID, then cold-restarts into a second owned PID and restores the project draft with send semantics. Both phases use main transport, report zero renderer errors, and dispose isolated state. Connector reconnect and attachment/context lifecycles remain open, so PF2 stays in progress."
 }

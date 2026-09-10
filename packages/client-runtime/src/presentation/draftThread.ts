@@ -19,20 +19,44 @@ export interface LocalDraftThread extends OrchestrationThreadShell {
 
 export type LocalDraftThreadsByProjectId = Readonly<Record<string, LocalDraftThread>>;
 
-export type ComposerDraftTextByThreadId = Readonly<Record<string, string>>;
+export type ComposerDraftTextByScopeKey = Readonly<Record<string, string>>;
+
+export function composerDraftScopeKey(input: {
+  readonly threadId?: string;
+  readonly projectId?: string;
+  readonly localDraft: boolean;
+}): string | null {
+  if (input.localDraft && input.projectId) return `project:${input.projectId}`;
+  if (input.threadId) return `thread:${input.threadId}`;
+  if (input.projectId) return `project:${input.projectId}`;
+  return null;
+}
+
+export function normalizeComposerDraftTextByScopeKey(value: unknown): ComposerDraftTextByScopeKey {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value).filter(
+      ([key, text]) =>
+        (key.startsWith("thread:") || key.startsWith("project:")) &&
+        key.length > key.indexOf(":") + 1 &&
+        typeof text === "string" &&
+        text.length > 0,
+    ),
+  );
+}
 
 export function projectComposerDraftText(
-  draftsByThreadId: ComposerDraftTextByThreadId,
-  threadId: string,
+  draftsByScopeKey: ComposerDraftTextByScopeKey,
+  scopeKey: string,
   text: string,
-): ComposerDraftTextByThreadId {
+): ComposerDraftTextByScopeKey {
   if (text.length === 0) {
-    if (!(threadId in draftsByThreadId)) return draftsByThreadId;
-    const { [threadId]: _cleared, ...remaining } = draftsByThreadId;
+    if (!(scopeKey in draftsByScopeKey)) return draftsByScopeKey;
+    const { [scopeKey]: _cleared, ...remaining } = draftsByScopeKey;
     return remaining;
   }
-  if (draftsByThreadId[threadId] === text) return draftsByThreadId;
-  return { ...draftsByThreadId, [threadId]: text };
+  if (draftsByScopeKey[scopeKey] === text) return draftsByScopeKey;
+  return { ...draftsByScopeKey, [scopeKey]: text };
 }
 
 export function readLocalDraftThreadForProject(

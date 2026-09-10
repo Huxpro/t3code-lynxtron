@@ -11,8 +11,10 @@ import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
 import {
   buildDraftThreadTurnBootstrap,
+  composerDraftScopeKey,
   createLocalDraftThread,
   forgetLocalDraftThread,
+  normalizeComposerDraftTextByScopeKey,
   projectDraftThreadInteractionMode,
   projectComposerDraftText,
   projectDraftThreadModelSelection,
@@ -24,7 +26,7 @@ import {
   type LocalDraftThread,
   type LocalDraftThreadEnvMode,
   type LocalDraftThreadsByProjectId,
-  type ComposerDraftTextByThreadId,
+  type ComposerDraftTextByScopeKey,
 } from "@t3tools/client-runtime/presentation/draft-thread";
 import {
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
@@ -178,7 +180,7 @@ export interface T3ClientState {
   readonly draftHeroThreadId?: string;
   readonly draftThread?: LocalDraftThread;
   readonly draftThreadsByProjectId: LocalDraftThreadsByProjectId;
-  readonly composerDraftTextByThreadId: ComposerDraftTextByThreadId;
+  readonly composerDraftTextByScopeKey: ComposerDraftTextByScopeKey;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -217,7 +219,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   threads: [],
   archivedThreads: [],
   draftThreadsByProjectId: {},
-  composerDraftTextByThreadId: {},
+  composerDraftTextByScopeKey: {},
   messages: [],
   checkpoints: [],
   sessionStatus: "idle",
@@ -764,6 +766,7 @@ function installTransportDevToolHook(): void {
       vcsStatusPending: boolean;
     };
     __T3_LYNXTRON_SELECT_THREAD__?: (threadId: string) => void;
+    __T3_LYNXTRON_CREATE_DRAFT_THREAD__?: (projectId: string) => Promise<boolean>;
     __T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?: (provider: ServerProvider) => boolean;
   };
   diagnosticsGlobal.__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
@@ -780,6 +783,12 @@ function installTransportDevToolHook(): void {
       state.threads.find((thread) => thread.id === state.activeThreadId) ??
       (state.draftThread?.id === state.activeThreadId ? state.draftThread : undefined);
     const activeProject = state.projects.find((project) => project.id === activeThread?.projectId);
+    const activeComposerDraftKey = composerDraftScopeKey({
+      threadId: state.activeThreadId,
+      projectId: activeProject?.id,
+      localDraft:
+        state.draftThread?.id === state.activeThreadId || state.activeThreadId === undefined,
+    });
     const selectedProvider = state.providerEntries.find(
       (entry) =>
         entry.instanceId === (state.selectedModel?.instanceId ?? state.modelSelection?.instanceId),
@@ -794,9 +803,10 @@ function installTransportDevToolHook(): void {
           draft.id,
         ]),
       ),
-      activeComposerDraftText: state.activeThreadId
-        ? (state.composerDraftTextByThreadId[state.activeThreadId] ?? "")
+      activeComposerDraftText: activeComposerDraftKey
+        ? (state.composerDraftTextByScopeKey[activeComposerDraftKey] ?? "")
         : "",
+      composerDraftTextByScopeKey: state.composerDraftTextByScopeKey,
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
@@ -897,6 +907,10 @@ function installTransportDevToolHook(): void {
       }
     ).__T3_LYNXTRON_VIEWPORT_PROBE__ === "function"
   ) {
+    diagnosticsGlobal.__T3_LYNXTRON_CREATE_DRAFT_THREAD__ = async (projectId) => {
+      await createThread(projectId);
+      return true;
+    };
     diagnosticsGlobal.__T3_LYNXTRON_MTS_PROVIDER_FIXTURE__ = (provider) => {
       const state = appAtomRegistry.get(t3ClientStateAtom);
       if (!state.serverConfig) return false;
@@ -927,8 +941,16 @@ async function bootstrapT3Client(): Promise<void> {
     eventRegistry = undefined;
   }
   const saved = getPref<ModelSelection | null>("modelSelection", null);
+  const savedComposerDraftText = normalizeComposerDraftTextByScopeKey(
+    getPref<unknown>("composerDraftTextByScopeKey", null),
+  );
   if (saved) {
-    patchState({ modelSelection: saved });
+    patchState({
+      modelSelection: saved,
+      composerDraftTextByScopeKey: savedComposerDraftText,
+    });
+  } else {
+    patchState({ composerDraftTextByScopeKey: savedComposerDraftText });
   }
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
@@ -1160,15 +1182,19 @@ function setDraftStartFromOrigin(startFromOrigin: boolean): void {
   });
 }
 
-function setComposerDraftText(threadId: string, text: string): void {
+let composerDraftPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
+
+function setComposerDraftText(scopeKey: string, text: string): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
+  const next = projectComposerDraftText(state.composerDraftTextByScopeKey, scopeKey, text);
   patchState({
-    composerDraftTextByThreadId: projectComposerDraftText(
-      state.composerDraftTextByThreadId,
-      threadId,
-      text,
-    ),
+    composerDraftTextByScopeKey: next,
   });
+  if (composerDraftPersistenceTimer) clearTimeout(composerDraftPersistenceTimer);
+  composerDraftPersistenceTimer = setTimeout(() => {
+    composerDraftPersistenceTimer = undefined;
+    setPref("composerDraftTextByScopeKey", next);
+  }, 300);
 }
 
 function sendPrompt(text: string, bootstrap?: ThreadTurnStartBootstrap): Promise<boolean> {

@@ -607,7 +607,7 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("nativeEditorValueRef.current");
     expect(composer).toContain('method: "setValue"');
     expect(composer).toContain("[editorKey, editorRevision, editorValue]");
-    expect(chatView).toContain("composerDraftTextByThreadId[composerDraftKey]");
+    expect(chatView).toContain("composerDraftTextByScopeKey[composerDraftKey]");
     expect(composer).toContain("responsiveMenuWheelDelta(");
     expect(modelPicker).toContain('className="picker-list"');
     expect(modelPicker).toContain("scroll-y");
@@ -2192,7 +2192,9 @@ describe("desktop shell interaction contract", () => {
   });
 
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
-    expect(clientSource).toContain("patchState({ modelSelection: saved })");
+    expect(clientSource).toContain("modelSelection: saved,");
+    expect(clientSource).toContain("composerDraftTextByScopeKey: savedComposerDraftText");
+    expect(clientSource).toContain("__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
     expect(clientSource).toContain(
       'transport.invokeSettled("setModelSelection", { selection: saved })',
     );

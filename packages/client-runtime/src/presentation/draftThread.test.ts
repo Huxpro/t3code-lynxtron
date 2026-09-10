@@ -9,10 +9,12 @@ import {
 
 import {
   buildDraftThreadTurnBootstrap,
+  composerDraftScopeKey,
   createLocalDraftThread,
   forgetLocalDraftThread,
   projectDraftThreadInteractionMode,
   projectComposerDraftText,
+  normalizeComposerDraftTextByScopeKey,
   projectDraftThreadModelSelection,
   projectDraftThreadRuntimeMode,
   projectDraftThreadWorkspace,
@@ -28,13 +30,39 @@ const selection = {
 
 describe("local draft thread", () => {
   it("keeps Composer text scoped to its thread and removes empty drafts", () => {
-    const first = projectComposerDraftText({}, "thread-a", "draft a");
-    const second = projectComposerDraftText(first, "thread-b", "draft b");
+    const first = projectComposerDraftText({}, "thread:thread-a", "draft a");
+    const second = projectComposerDraftText(first, "project:project-b", "draft b");
 
-    expect(second).toEqual({ "thread-a": "draft a", "thread-b": "draft b" });
-    expect(projectComposerDraftText(second, "thread-a", "draft a")).toBe(second);
-    expect(projectComposerDraftText(second, "thread-a", "")).toEqual({
-      "thread-b": "draft b",
+    expect(second).toEqual({
+      "thread:thread-a": "draft a",
+      "project:project-b": "draft b",
+    });
+    expect(projectComposerDraftText(second, "thread:thread-a", "draft a")).toBe(second);
+    expect(projectComposerDraftText(second, "thread:thread-a", "")).toEqual({
+      "project:project-b": "draft b",
+    });
+  });
+
+  it("uses stable project keys for local drafts and rejects malformed persisted entries", () => {
+    expect(
+      composerDraftScopeKey({ threadId: "random-draft", projectId: "project-a", localDraft: true }),
+    ).toBe("project:project-a");
+    expect(
+      composerDraftScopeKey({ threadId: "thread-a", projectId: "project-a", localDraft: false }),
+    ).toBe("thread:thread-a");
+    expect(composerDraftScopeKey({ localDraft: false })).toBeNull();
+    expect(
+      normalizeComposerDraftTextByScopeKey({
+        "project:project-a": "keep",
+        "thread:thread-a": "also keep",
+        "project:": "drop empty key",
+        legacy: "drop unknown key",
+        "thread:wrong-type": 42,
+        "thread:empty": "",
+      }),
+    ).toEqual({
+      "project:project-a": "keep",
+      "thread:thread-a": "also keep",
     });
   });
 

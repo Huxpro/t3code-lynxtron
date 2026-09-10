@@ -3266,12 +3266,19 @@ function readResolvedUserInputAnswers(baseDir, requestId) {
 
 async function verifyNewThreadDraftLifecycle({
   baseDir,
+  bundle,
   child,
   client,
+  desktopDir,
+  devToolCli,
+  executable,
+  height,
   initialPersistedThreadIds,
   projectId,
+  projectCwd,
   recoverableEmptyThreadIds,
   timeoutMs,
+  width,
 }) {
   const legacyRecovery =
     recoverableEmptyThreadIds.length === 0
@@ -3486,7 +3493,7 @@ async function verifyNewThreadDraftLifecycle({
       })}`,
     );
   }
-  return {
+  const outcome = {
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured New thread control",
     hero: hero.rect,
@@ -3508,6 +3515,117 @@ async function verifyNewThreadDraftLifecycle({
     serverSequenceBefore: beforeSequence.lastSeq,
     serverSequenceAfter: afterSequence.lastSeq,
   };
+  const draftScopeKey = `project:${projectId}`;
+  const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
+  const persistenceDeadline = Date.now() + timeoutMs;
+  let persistedDraftText = null;
+  while (Date.now() < persistenceDeadline) {
+    const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
+    persistedDraftText = prefs.composerDraftTextByScopeKey?.[draftScopeKey] ?? null;
+    if (persistedDraftText === draftText) break;
+    await waitForChildExit(child, 50);
+  }
+  if (persistedDraftText !== draftText) {
+    throw new Error(
+      `Native draft text did not persist before cold restart: ${JSON.stringify({
+        draftScopeKey,
+        persistedDraftText,
+      })}`,
+    );
+  }
+  const initialProcessId = child.pid;
+  const initialClient = client.identity;
+  await client.close();
+  await stopOwnedProcess(child);
+
+  const restartedChild = spawn(executable, [desktopDir], {
+    cwd: APP_ROOT,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      T3_LYNXTRON_BASE_DIR: baseDir,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
+      T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      T3_LYNXTRON_VIEWPORT_PROBE: "1",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!Number.isInteger(restartedChild.pid) || restartedChild.pid <= 0) {
+    throw new Error("Composer draft cold restart did not return an owned process id.");
+  }
+  const restartedLog = createLogCapture(restartedChild);
+  let restartedClient;
+  try {
+    restartedClient = await waitForOwnedSession({
+      child: restartedChild,
+      devToolCli,
+      expectedBundleUrl: pathToFileURL(bundle).href,
+      timeoutMs,
+    });
+    await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
+    const restartTransport = await waitForMainTransport({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) => state?.composerDraftTextByScopeKey?.[draftScopeKey] === draftText,
+    });
+    const createDraftResponse = await restartedClient.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_CREATE_DRAFT_THREAD__?.(${JSON.stringify(projectId)})`,
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (commandResult(createDraftResponse)?.value !== true) {
+      throw new Error(
+        `Composer draft cold restart could not create its local draft: ${JSON.stringify(
+          createDraftResponse,
+        )}`,
+      );
+    }
+    const restartedDraft = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        typeof state?.draftThreadId === "string" &&
+        state.activeThreadId === state.draftThreadId &&
+        state.activeComposerDraftText === draftText,
+    });
+    await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".composer-primary-action",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "send",
+    });
+    return {
+      outcome: {
+        ...outcome,
+        coldRestart: {
+          status: "pass",
+          draftScopeKey,
+          text: restartedDraft.activeComposerDraftText,
+          initialProcessId,
+          initialClient,
+          restartedProcessId: restartedChild.pid,
+          restartedClient: restartedClient.identity,
+          transport: restartTransport,
+        },
+      },
+      child: restartedChild,
+      client: restartedClient,
+      log: restartedLog,
+    };
+  } catch (error) {
+    await restartedClient?.close();
+    await stopOwnedProcess(restartedChild);
+    throw error;
+  }
 }
 
 async function verifyNewThreadProjects({
@@ -12588,17 +12706,29 @@ async function runOnce({
       : verifyComposerBranding
         ? await verifyComposerBehavior({ child, client, timeoutMs })
         : undefined;
-    const newThreadDraftLifecycle = shouldVerifyNewThreadDraftLifecycle
-      ? await verifyNewThreadDraftLifecycle({
-          baseDir,
-          child,
-          client,
-          initialPersistedThreadIds,
-          projectId: draftLifecycleProjectId,
-          recoverableEmptyThreadIds,
-          timeoutMs,
-        })
-      : undefined;
+    let newThreadDraftLifecycle;
+    if (shouldVerifyNewThreadDraftLifecycle) {
+      const draftLifecycleVerification = await verifyNewThreadDraftLifecycle({
+        baseDir,
+        bundle,
+        child,
+        client,
+        desktopDir,
+        devToolCli,
+        executable,
+        height,
+        initialPersistedThreadIds,
+        projectId: draftLifecycleProjectId,
+        projectCwd,
+        recoverableEmptyThreadIds,
+        timeoutMs,
+        width,
+      });
+      newThreadDraftLifecycle = draftLifecycleVerification.outcome;
+      child = draftLifecycleVerification.child;
+      client = draftLifecycleVerification.client;
+      log = draftLifecycleVerification.log;
+    }
     const modelPickerFidelity = shouldVerifyModelPickerFidelity
       ? await verifyModelPickerFidelity({
           baseDir,

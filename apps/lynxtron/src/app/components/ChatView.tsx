@@ -13,6 +13,7 @@ import {
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
 } from "@t3tools/client-runtime/presentation/composer";
+import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
 import { projectConnectionLifecycle } from "@t3tools/client-runtime/connection/presentation";
 import {
@@ -100,7 +101,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     activeThreadId,
     draftHeroThreadId,
     draftThread,
-    composerDraftTextByThreadId,
+    composerDraftTextByScopeKey,
     messages,
     sessionStatus,
     sessionError,
@@ -485,10 +486,18 @@ export function ChatView({ threadId }: ChatViewProps) {
       workspaceModeLocked,
     ],
   );
-  const composerDraftKey = activeThreadId ?? `project:${activeProject?.id ?? "none"}`;
-  const composerDraftText = composerDraftTextByThreadId[composerDraftKey] ?? "";
+  const composerDraftKey = composerDraftScopeKey({
+    threadId: activeThreadId,
+    projectId: activeProject?.id,
+    localDraft: activeDraftThread !== undefined || activeThreadId === undefined,
+  });
+  const composerDraftText = composerDraftKey
+    ? (composerDraftTextByScopeKey[composerDraftKey] ?? "")
+    : "";
   const handleComposerDraftTextChange = useCallback(
-    (text: string) => t3ClientActions.setComposerDraftText(composerDraftKey, text),
+    (text: string) => {
+      if (composerDraftKey) t3ClientActions.setComposerDraftText(composerDraftKey, text);
+    },
     [composerDraftKey],
   );
 

@@ -148,8 +148,11 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
 - The native textarea synchronizes restored controlled state through its
   capability leaf without taking focus or selection on ordinary keystroke
   renders.
-- Disk/restart persistence, connector reconnect restoration, attachments, and
-  terminal/element context lifecycles remain open; this checkpoint does not
+- Draft text uses stable canonical-thread or local-project scope keys, is
+  debounced into isolated preferences, strictly decoded, and survives an owned
+  cold restart into a second exact-bundle process.
+- Connector reconnect restoration, attachments, and terminal/element context
+  lifecycles remain open; this checkpoint does not
   satisfy the PF2 exit criteria by itself.
 
 ## PF3: Complete transcript navigation and interaction
