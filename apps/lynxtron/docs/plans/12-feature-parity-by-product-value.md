@@ -300,8 +300,10 @@ following-end` with the jump affordance visible only while detached. That gate
   routes through that block projection instead of the compact inline renderer.
 - Shared inline Markdown now matches GFM autolink meaning for bare
   `www.example.com` and email addresses, including canonical `https://` and
-  `mailto:` targets and trailing-punctuation boundaries. Code spans, embedded
-  `www` text, and hostless email-like text remain literal.
+  `mailto:` targets and trailing-punctuation boundaries. Unmatched closing
+  parentheses stay outside bare URL targets while balanced URL parentheses are
+  preserved. Code spans, embedded `www` text, and hostless email-like text remain
+  literal.
 - Shared GFM table parsing now renders escaped pipes as literal cell content and
   keeps pipes inside code spans in the same cell instead of splitting columns.
   Backslashes only escape pipe/backslash delimiters, so Windows-style or literal

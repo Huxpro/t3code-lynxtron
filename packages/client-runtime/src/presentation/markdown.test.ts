@@ -328,6 +328,40 @@ describe("parseMarkdownInline", () => {
     ]);
   });
 
+  it("excludes unmatched closing parentheses from GFM autolinks", () => {
+    expect(
+      parseMarkdownInline(
+        "See https://example.com/docs). Keep https://example.com/a_(b). Visit www.example.com/docs).",
+      ),
+    ).toEqual([
+      { text: "See ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "https://example.com/docs",
+        bold: false,
+        italic: false,
+        code: false,
+        href: "https://example.com/docs",
+      },
+      { text: "). Keep ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "https://example.com/a_(b)",
+        bold: false,
+        italic: false,
+        code: false,
+        href: "https://example.com/a_(b)",
+      },
+      { text: ". Visit ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "www.example.com/docs",
+        bold: false,
+        italic: false,
+        code: false,
+        href: "https://www.example.com/docs",
+      },
+      { text: ").", bold: false, italic: false, code: false, href: null },
+    ]);
+  });
+
   it("does not autolink www text inside words, code spans, or hostless email text", () => {
     expect(parseMarkdownInline("`www.example.com` prefixwww.example.com user@localhost")).toEqual([
       { text: "www.example.com", bold: false, italic: false, code: true, href: null },

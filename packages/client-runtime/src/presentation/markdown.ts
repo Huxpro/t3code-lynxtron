@@ -454,6 +454,21 @@ function parseMarkdownLinkDestinationParts(
   };
 }
 
+function trimMarkdownAutolink(value: string): string {
+  let trimmed = value.replace(/[.,;!?]+$/, "");
+  let openParentheses = 0;
+  let closeParentheses = 0;
+  for (const character of trimmed) {
+    if (character === "(") openParentheses += 1;
+    else if (character === ")") closeParentheses += 1;
+  }
+  while (trimmed.endsWith(")") && closeParentheses > openParentheses) {
+    trimmed = trimmed.slice(0, -1);
+    closeParentheses -= 1;
+  }
+  return trimmed;
+}
+
 export interface MarkdownImageToken {
   readonly alt: string;
   readonly end: number;
@@ -562,7 +577,7 @@ function parseMarkdownInlineWithStyle(
 
     const urlMatch = text.slice(cursor).match(/^https?:\/\/[^\s<]+/i);
     if (urlMatch?.[0]) {
-      const url = urlMatch[0].replace(/[.,;!?]+$/, "");
+      const url = trimMarkdownAutolink(urlMatch[0]);
       append(url, false, { href: url });
       cursor += url.length;
       continue;
@@ -572,7 +587,7 @@ function parseMarkdownInlineWithStyle(
     if (atAutolinkBoundary) {
       const wwwMatch = text.slice(cursor).match(/^www\.[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?:\/[^\s<]*)?/);
       if (wwwMatch?.[0]) {
-        const value = wwwMatch[0].replace(/[.,;!?]+$/, "");
+        const value = trimMarkdownAutolink(wwwMatch[0]);
         append(value, false, { href: `https://${value}` });
         cursor += value.length;
         continue;
