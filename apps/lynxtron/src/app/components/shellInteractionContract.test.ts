@@ -2229,6 +2229,13 @@ describe("desktop shell interaction contract", () => {
     );
   });
 
+  it("resets recycled checkpoint-card expansion for a new checkpoint identity", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain("setExpandedOverride(null);");
+    expect(timelineSource).toContain("setAllDirectoriesExpanded(autoExpanded);");
+    expect(timelineSource).toContain("}, [autoExpanded, summary.checkpointRef, summary.turnId]);");
+  });
+
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
     const composer = componentSource("Composer.tsx");
     expect(clientSource).toContain("modelSelection: saved,");

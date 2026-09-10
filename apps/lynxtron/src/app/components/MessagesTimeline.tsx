@@ -117,8 +117,15 @@ function LynxTurnDiffCard({
   compactActions: boolean;
 }) {
   const [expandedOverride, setExpandedOverride] = useState<boolean | null>(null);
-  const [autoExpanded] = useState(() => shouldAutoExpandChangedFiles(summary.files, isLatestTurn));
+  const autoExpanded = useMemo(
+    () => shouldAutoExpandChangedFiles(summary.files, isLatestTurn),
+    [isLatestTurn, summary.files],
+  );
   const [allDirectoriesExpanded, setAllDirectoriesExpanded] = useState(autoExpanded);
+  useEffect(() => {
+    setExpandedOverride(null);
+    setAllDirectoriesExpanded(autoExpanded);
+  }, [autoExpanded, summary.checkpointRef, summary.turnId]);
   const expanded = expandedOverride ?? (isLatestTurn && autoExpanded);
   const stat = summarizeChangedFiles(summary.files);
   const preview = selectChangedFilePreview(summary.files);
