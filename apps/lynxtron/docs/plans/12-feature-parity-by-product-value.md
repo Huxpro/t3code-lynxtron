@@ -266,6 +266,8 @@ following-end` with the jump affordance visible only while detached. That gate
   `www` text, and hostless email-like text remain literal.
 - Shared GFM table parsing now renders escaped pipes as literal cell content and
   keeps pipes inside code spans in the same cell instead of splitting columns.
+  Backslashes only escape pipe/backslash delimiters, so Windows-style or literal
+  trailing slashes are not silently dropped from cell content.
 - Native proposed-plan timeline cards now open the existing full Plan panel
   instead of ending at a static two-line title. The card reuses canonical plan
   state and the existing panel route; its real OS tap remains covered by the

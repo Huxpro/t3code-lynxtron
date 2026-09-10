@@ -177,8 +177,10 @@ function splitMarkdownTableRow(line: string): string[] {
     if (escaped) {
       cell += character;
       escaped = false;
-    } else if (character === "\\") {
+    } else if (character === "\\" && (trimmed[index + 1] === "|" || trimmed[index + 1] === "\\")) {
       escaped = true;
+    } else if (character === "\\") {
+      cell += character;
     } else if (character === "`") {
       let tickCount = 1;
       while (trimmed[index + tickCount] === "`") tickCount += 1;
@@ -193,7 +195,6 @@ function splitMarkdownTableRow(line: string): string[] {
       cell += character;
     }
   }
-  if (escaped) cell += "\\";
   cells.push(cell.trim());
   return cells;
 }

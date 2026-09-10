@@ -153,6 +153,14 @@ describe("parseMarkdownTable", () => {
     });
   });
 
+  it("preserves a trailing escape character in a table cell", () => {
+    expect(parseMarkdownTable(["| Path |", "| --- |", "| C:\\ |"])).toEqual({
+      headers: ["Path"],
+      alignments: [null],
+      rows: [["C:\\"]],
+    });
+  });
+
   it("rejects prose and malformed delimiters", () => {
     expect(parseMarkdownTable(["one | two", "not a delimiter"])).toBeNull();
     expect(parseMarkdownTable(["one | two", "--- | --"])).toBeNull();
