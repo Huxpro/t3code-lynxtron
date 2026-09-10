@@ -85,8 +85,17 @@ the 0.0.21 macOS arm64 asset is republished as a valid archive.
 - production build: passed;
 - CEF 0.0.18 frameworks: staged into the 0.0.21 devtool runtime by
   `prepare:cef-runtime`;
-- runtime launch and product-flow verification: pending the next migration
-  slice.
+- packaged runtime readiness: three of three fresh 1280 x 820 dark cold starts
+  passed from the isolated snapshot
+  `321053ce91c4407e99ce1bf0cf76f4b9719e56f0fbb2a19706c72203e9efd769`;
+- exact product bundle: 6,524,641 bytes, SHA-256
+  `aaee832f3b225a29edd8a47cd02ac9a4128ef9b4429a56ea9fd6bf879b85063f`;
+- each run resolved the PID-owned DevTool session to that exact bundle, reported
+  `kind: main`, advanced the connector sequence from 3 to 4, rendered the
+  complete new-thread Hero and Composer with GPT-5.6-Sol, and recorded zero
+  renderer errors;
+- each harness-owned process and copied state directory was disposed after its
+  run.
 
 ## Window identity
 
