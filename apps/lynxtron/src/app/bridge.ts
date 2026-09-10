@@ -74,6 +74,7 @@ import type {
   RuntimeMode,
   ModelSelection,
   ThreadTurnStartBootstrap,
+  UploadChatAttachment,
 } from "@t3tools/contracts";
 import type { ModelPickerModel } from "@t3tools/client-runtime/presentation/model-picker";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
@@ -161,6 +162,7 @@ export interface T3ConnectorCommandBridge {
   sendPrompt(input: {
     threadId: string;
     text: string;
+    attachments?: ReadonlyArray<UploadChatAttachment>;
     bootstrap?: ThreadTurnStartBootstrap;
   }): Promise<void>;
   interrupt(input: { threadId: string; turnId?: TurnId }): Promise<void>;

@@ -119,4 +119,27 @@ describe("projectThreadTurnDispatchState", () => {
       }),
     ).toBeNull();
   });
+
+  it("forwards upload attachments into the client turn command", () => {
+    const attachments = [
+      {
+        type: "image" as const,
+        name: "diagram.png",
+        mimeType: "image/png",
+        sizeBytes: 3,
+        dataUrl: "data:image/png;base64,AQID",
+      },
+    ];
+    const command = buildThreadTurnStartCommand({
+      threadId: ThreadId.make("thread-attachments"),
+      text: "Review this",
+      thread: shell,
+      attachments,
+      commandId: CommandId.make("command-attachments"),
+      messageId: MessageId.make("message-attachments"),
+      createdAt: "2026-09-10T00:00:00.000Z",
+    });
+
+    expect(command?.message.attachments).toEqual(attachments);
+  });
 });

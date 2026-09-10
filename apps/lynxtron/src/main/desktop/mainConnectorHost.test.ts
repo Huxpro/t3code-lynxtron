@@ -315,10 +315,22 @@ describe("main connector host", () => {
     await host.connect();
     const command = handlers.get(T3_CONNECTOR_METHODS.command)!;
 
-    await command({ method: "sendPrompt", params: { threadId: "t1", text: "hello" } });
+    const attachments = [
+      {
+        type: "image",
+        name: "diagram.png",
+        mimeType: "image/png",
+        sizeBytes: 3,
+        dataUrl: "data:image/png;base64,AQID",
+      },
+    ];
+    await command({
+      method: "sendPrompt",
+      params: { threadId: "t1", text: "hello", attachments },
+    });
     assert.deepEqual(connector.calls[0], {
       method: "sendPrompt",
-      input: { threadId: "t1", text: "hello" },
+      input: { threadId: "t1", text: "hello", attachments },
     });
 
     await command({ method: "selectThread", params: "t1" });

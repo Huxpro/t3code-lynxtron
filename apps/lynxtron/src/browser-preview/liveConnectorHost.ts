@@ -29,7 +29,7 @@ import {
   WS_METHODS,
   ORCHESTRATION_WS_METHODS,
   CommandId,
-  type DispatchableClientOrchestrationCommand,
+  type ClientOrchestrationCommand,
   MessageId,
   ThreadId,
   type AuthAccessSnapshot,
@@ -72,6 +72,7 @@ import {
   type TerminalSessionSnapshot,
   type TerminalWriteInput,
   type ThreadTurnStartBootstrap,
+  type UploadChatAttachment,
   type VcsStatusResult,
 } from "@t3tools/contracts";
 import { buildThreadTurnStartCommand } from "@t3tools/client-runtime/operations/thread-dispatch";
@@ -179,15 +180,13 @@ export interface LiveConnectorDiagnostics {
 /** Commands the isolated browser pane cannot satisfy (no local fs/shell). */
 const UNSUPPORTED_COMMANDS = new Set<string>();
 
-type ThreadTurnStartCommand = Extract<
-  DispatchableClientOrchestrationCommand,
-  { type: "thread.turn.start" }
->;
+type ThreadTurnStartCommand = Extract<ClientOrchestrationCommand, { type: "thread.turn.start" }>;
 
 export async function dispatchLivePrompt<A>(input: {
   readonly params: {
     readonly threadId: string;
     readonly text: string;
+    readonly attachments?: ReadonlyArray<UploadChatAttachment>;
     readonly bootstrap?: ThreadTurnStartBootstrap;
   };
   readonly thread:
@@ -202,6 +201,7 @@ export async function dispatchLivePrompt<A>(input: {
   const command = buildThreadTurnStartCommand({
     threadId: ThreadId.make(input.params.threadId),
     text: input.params.text,
+    attachments: input.params.attachments,
     thread: input.thread,
     bootstrap: input.params.bootstrap,
     commandId: CommandId.make(input.commandId ?? globalThis.crypto.randomUUID()),
@@ -790,6 +790,7 @@ export class LiveConnectorHost {
       const params = request.params as {
         threadId: string;
         text: string;
+        attachments?: ReadonlyArray<UploadChatAttachment>;
         bootstrap?: ThreadTurnStartBootstrap;
       };
       const thread =

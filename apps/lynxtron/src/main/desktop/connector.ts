@@ -118,7 +118,7 @@ import {
   type VcsInitInput,
   type VcsStatusResult,
 } from "@t3tools/contracts";
-import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
+import type { ThreadTurnStartBootstrap, UploadChatAttachment } from "@t3tools/contracts";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
 import { discoverDesktopLocalEnvironment } from "./localEnvironmentRendezvous.ts";
@@ -1159,6 +1159,7 @@ export class T3Connector {
   async sendPrompt(input: {
     threadId: string;
     text: string;
+    attachments?: ReadonlyArray<UploadChatAttachment>;
     bootstrap?: ThreadTurnStartBootstrap;
   }): Promise<void> {
     await this.awaitRecoveredTransport();
@@ -1169,6 +1170,7 @@ export class T3Connector {
     const command = buildThreadTurnStartCommand({
       threadId: ThreadId.make(input.threadId),
       text: input.text,
+      attachments: input.attachments,
       thread,
       pendingModelSelection: this.pendingThreadModelSelections.get(input.threadId),
       bootstrap,

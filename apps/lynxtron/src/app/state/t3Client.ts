@@ -88,6 +88,7 @@ import type {
   RuntimeMode,
   ThreadTurnStartBootstrap,
   TurnId,
+  UploadChatAttachment,
 } from "@t3tools/contracts";
 import { newThreadId } from "../../../../web/src/lib/utils";
 
@@ -1197,7 +1198,11 @@ function setComposerDraftText(scopeKey: string, text: string): void {
   }, 300);
 }
 
-function sendPrompt(text: string, bootstrap?: ThreadTurnStartBootstrap): Promise<boolean> {
+function sendPrompt(
+  text: string,
+  bootstrap?: ThreadTurnStartBootstrap,
+  attachments: ReadonlyArray<UploadChatAttachment> = [],
+): Promise<boolean> {
   const trimmed = text.trim();
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const threadId = state.activeThreadId;
@@ -1213,6 +1218,7 @@ function sendPrompt(text: string, bootstrap?: ThreadTurnStartBootstrap): Promise
       .sendPrompt({
         threadId,
         text: trimmed,
+        ...(attachments.length > 0 ? { attachments } : {}),
         ...(resolvedBootstrap ? { bootstrap: resolvedBootstrap } : {}),
       })
       .then(() => true)

@@ -1,6 +1,6 @@
 import type {
   CommandId,
-  DispatchableClientOrchestrationCommand,
+  ClientOrchestrationCommand,
   MessageId,
   ModelSelection,
   OrchestrationThreadShell,
@@ -8,6 +8,7 @@ import type {
   RuntimeMode,
   ThreadId,
   ThreadTurnStartBootstrap,
+  UploadChatAttachment,
 } from "@t3tools/contracts";
 
 export interface ThreadTurnDispatchState {
@@ -56,6 +57,7 @@ export function resolveThreadTurnDispatchState(input: {
 export function buildThreadTurnStartCommand(input: {
   readonly threadId: ThreadId;
   readonly text: string;
+  readonly attachments?: ReadonlyArray<UploadChatAttachment>;
   readonly thread:
     | Pick<OrchestrationThreadShell, "modelSelection" | "runtimeMode" | "interactionMode">
     | undefined;
@@ -64,7 +66,7 @@ export function buildThreadTurnStartCommand(input: {
   readonly commandId: CommandId;
   readonly messageId: MessageId;
   readonly createdAt: string;
-}): Extract<DispatchableClientOrchestrationCommand, { type: "thread.turn.start" }> | null {
+}): Extract<ClientOrchestrationCommand, { type: "thread.turn.start" }> | null {
   const dispatchState = resolveThreadTurnDispatchState({
     thread: input.thread,
     ...(input.pendingModelSelection ? { pendingModelSelection: input.pendingModelSelection } : {}),
@@ -81,7 +83,7 @@ export function buildThreadTurnStartCommand(input: {
       messageId: input.messageId,
       role: "user",
       text: input.text,
-      attachments: [],
+      attachments: [...(input.attachments ?? [])],
     },
     ...dispatchState,
     ...(input.bootstrap?.createThread ? { titleSeed: input.bootstrap.createThread.title } : {}),
