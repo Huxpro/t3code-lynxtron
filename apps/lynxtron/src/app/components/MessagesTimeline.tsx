@@ -625,7 +625,9 @@ function buildLynxTranscriptRowElements(
       >
         {kind === "work-entry" ? (
           <svg
-            className="transcript-disclosure-chevron-native"
+            className={`transcript-disclosure-chevron-native${
+              expanded ? " transcript-disclosure-chevron-native--expanded" : ""
+            }`}
             src={externalChevronDownUrl}
             style={{ width: "12px", height: "12px" }}
           />

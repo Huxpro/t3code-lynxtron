@@ -244,6 +244,10 @@ describe("transcript layout contract", () => {
     expect(sharedRowSource).toContain("onDisclosure?.();\n              setExpanded");
     expect(sharedRowSource).toContain("onWorkEntryDisclosure={onWorkEntryDisclosure}");
     expect(timelineSource).toContain("onWorkEntryDisclosure={detachForManualNavigation}");
+    expect(timelineSource).toContain("transcript-disclosure-chevron-native--expanded");
+    expect(overrides).toContain(
+      ".transcript-disclosure-chevron-native--expanded {\n  transform: rotate(180deg) scale(1.01);",
+    );
   });
 
   it("keeps empty right-panel cards at the authority height", () => {

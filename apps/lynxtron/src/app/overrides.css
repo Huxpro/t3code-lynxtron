@@ -4645,6 +4645,9 @@
   transform: scale(1.01);
   transform-origin: center center;
 }
+.transcript-disclosure-chevron-native--expanded {
+  transform: rotate(180deg) scale(1.01);
+}
 .transcript-work-entry-heading--native {
   flex-shrink: 0;
   height: 20px;
