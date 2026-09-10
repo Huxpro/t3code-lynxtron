@@ -17,13 +17,6 @@
 .theme-light .sidebar-grain {
   display: none;
 }
-.theme-light .sidebar-header-authority,
-.theme-light .sidebar-settings-authority,
-.theme-light .sidebar-v2-control-authority,
-.theme-light .lynx-sidebar-chrome-header--authority .sidebar-brand,
-.theme-light .sidebar-footer--authority .sidebar-settings-row > image,
-.theme-light .sidebar-footer--authority .sidebar-settings-row > text,
-.theme-light .sidebar-v2-control-row--authority > view,
 .theme-light .composer-context-backdrop {
   border-right-color: #eaeaea;
   border-bottom-color: #eaeaea;
@@ -1163,17 +1156,6 @@
 .lynx-sidebar-chrome-header .sidebar-brand--on-backdrop .sidebar-brand-code-label {
   color: rgba(255, 255, 255, 0.7);
 }
-.sidebar-header-authority {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 255px;
-  height: 52px;
-  z-index: 20;
-}
-.lynx-sidebar-chrome-header--authority .sidebar-brand {
-  z-index: 30;
-}
 .sidebar-v2-search {
   width: 100%;
   height: 32px;
@@ -1463,20 +1445,6 @@
   padding-left: 10px;
   gap: 10px;
   box-sizing: border-box;
-}
-.sidebar-v2-control-row--authority {
-  position: relative;
-}
-.sidebar-v2-control-row--authority > view {
-  opacity: 0;
-}
-.sidebar-v2-control-authority {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 239px;
-  height: 32px;
-  opacity: 1;
 }
 .sidebar-brand-code-label,
 .sidebar-search-label,
@@ -5730,10 +5698,6 @@
   display: flex;
   opacity: 1;
 }
-.theme-light .settings-nav > .lynx-sidebar-chrome-header--authority .sidebar-brand,
-.theme-dark .settings-nav > .lynx-sidebar-chrome-header--authority .sidebar-brand {
-  opacity: 0;
-}
 .settings-nav__search {
   position: relative;
   z-index: 1;
@@ -7219,13 +7183,6 @@
 /* Calibration sprites are exact only at the 1280px authority viewport.
    Other window sizes keep the same semantic nodes and interactions, but
    render the responsive Lynx composition instead of stretching snapshots. */
-.viewport-responsive .sidebar-header-authority,
-.viewport-responsive .sidebar-settings-authority,
-.viewport-responsive .sidebar-v2-control-authority,
-.viewport-responsive .lynx-sidebar-chrome-header--authority .sidebar-brand,
-.viewport-responsive .sidebar-footer--authority .sidebar-settings-row > image,
-.viewport-responsive .sidebar-footer--authority .sidebar-settings-row > text,
-.viewport-responsive .sidebar-v2-control-row--authority > view,
 .viewport-responsive .sidebar-global-toggle-icon {
   opacity: 0.54;
 }
@@ -7239,15 +7196,8 @@
 /* The 256px Sidebar keeps the calibrated authority sprites. Any user resize
    switches the same semantic subtree to real flex sizing so the extra width
    becomes usable instead of leaving a fixed 239px island. */
-.sidebar-width-responsive .sidebar-header-authority,
-.sidebar-width-responsive .sidebar-settings-authority,
-.sidebar-width-responsive .sidebar-v2-control-authority,
-.sidebar-width-responsive .lynx-sidebar-chrome-header--authority .sidebar-brand,
-.sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > image,
-.sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > text,
-.sidebar-width-responsive .sidebar-v2-control-row--authority > view,
 .sidebar-width-responsive .sidebar-settings-row,
-.sidebar-width-responsive .sidebar-v2-control-row--authority {
+.sidebar-width-responsive .sidebar-v2-control-row {
   width: 100%;
 }
 .sidebar-width-responsive .sidebar-v2-thread-list {

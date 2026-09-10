@@ -48,8 +48,6 @@ export interface SidebarV2ControlsSurfaceProps {
   readonly scopedFavicon: ReactNode | null;
   readonly scopedDisplayName: string | null;
   readonly onNewProjectClick: HostButtonProps["onClick"];
-  readonly searchVisual?: ReactNode;
-  readonly projectScopeVisual?: ReactNode;
 }
 
 /**
@@ -62,10 +60,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
   return (
     <>
       <SidebarGroup className="sidebar-v2-control-group px-2 pb-2 pt-3">
-        <HostView
-          className={`sidebar-v2-control-row sidebar-v2-control-row--search flex items-center gap-1${props.searchVisual ? " sidebar-v2-control-row--authority" : ""}`}
-        >
-          {props.searchVisual}
+        <HostView className="sidebar-v2-control-row sidebar-v2-control-row--search flex items-center gap-1">
           <HostView className="sidebar-v2-control-primary min-w-0 flex-1">
             {props.searchControl ?? (
               <CommandDialogTrigger
@@ -126,10 +121,7 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
       </SidebarGroup>
       {props.projectScopeOptions.length > 0 ? (
         <SidebarGroup className="sidebar-v2-control-group px-2 pb-2 pt-0">
-          <HostView
-            className={`sidebar-v2-control-row sidebar-v2-control-row--projects flex items-center gap-1${props.projectScopeVisual ? " sidebar-v2-control-row--authority" : ""}`}
-          >
-            {props.projectScopeVisual}
+          <HostView className="sidebar-v2-control-row sidebar-v2-control-row--projects flex items-center gap-1">
             <HostView
               className={`sidebar-v2-project-scope-host relative min-w-0 flex-1${
                 props.projectScopeMenuOpen ? " sidebar-v2-project-scope-host--open" : ""

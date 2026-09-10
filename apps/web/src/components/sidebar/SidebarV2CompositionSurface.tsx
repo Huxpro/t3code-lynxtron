@@ -27,8 +27,6 @@ export interface SidebarV2CompositionSurfaceProps {
   readonly onAddProjectClick: SidebarV2ControlsSurfaceProps["onNewProjectClick"];
   readonly listRef?: HostListRef;
   readonly afterContent?: ReactNode;
-  readonly headerAuthorityVisual?: ReactNode;
-  readonly footerAuthorityVisual?: ReactNode;
 }
 
 /**
@@ -42,10 +40,7 @@ export interface SidebarV2CompositionSurfaceProps {
 export function SidebarV2CompositionSurface(props: SidebarV2CompositionSurfaceProps) {
   return (
     <>
-      <SidebarChromeHeader
-        isElectron={props.isElectron}
-        authorityVisual={props.headerAuthorityVisual}
-      />
+      <SidebarChromeHeader isElectron={props.isElectron} />
       <SidebarContent
         className="gap-0"
         fixedHeader={<SidebarV2ControlsSurface {...props.controls} />}
@@ -80,7 +75,7 @@ export function SidebarV2CompositionSurface(props: SidebarV2CompositionSurfacePr
         </SidebarGroup>
       </SidebarContent>
       {props.afterContent}
-      <SidebarChromeFooter authorityVisual={props.footerAuthorityVisual} />
+      <SidebarChromeFooter />
     </>
   );
 }

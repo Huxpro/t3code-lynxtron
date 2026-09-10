@@ -26,12 +26,10 @@ import { T3Wordmark } from "./T3Wordmark";
 
 export const SidebarChromeHeader = memo(function SidebarChromeHeader({
   isElectron,
-  authorityVisual,
   showTrigger = true,
   leadingControl,
 }: {
   isElectron: boolean;
-  readonly authorityVisual?: ReactNode;
   readonly showTrigger?: boolean;
   readonly leadingControl?: ReactNode;
 }) {
@@ -50,7 +48,6 @@ export const SidebarChromeHeader = memo(function SidebarChromeHeader({
     <SidebarChromeHeaderSurface
       isElectron={isElectron}
       backdrop={backdropVariant ? <SidebarStageBackdrop variant={backdropVariant} /> : undefined}
-      authorityVisual={authorityVisual}
       trigger={
         leadingControl ??
         (showTrigger ? (
@@ -104,11 +101,7 @@ function SidebarBrand({ onBackdrop }: { onBackdrop: boolean }) {
   );
 }
 
-export const SidebarChromeFooter = memo(function SidebarChromeFooter({
-  authorityVisual,
-}: {
-  readonly authorityVisual?: ReactNode;
-}) {
+export const SidebarChromeFooter = memo(function SidebarChromeFooter() {
   const navigate = useNavigate();
   const { isMobile, setOpenMobile } = useSidebar();
   const handleSettingsClick = useCallback(() => {
@@ -119,7 +112,7 @@ export const SidebarChromeFooter = memo(function SidebarChromeFooter({
   }, [isMobile, navigate, setOpenMobile]);
 
   return (
-    <SidebarChromeFooterSurface authorityVisual={authorityVisual}>
+    <SidebarChromeFooterSurface>
       <SidebarProviderUpdatePill />
       <SidebarUpdatePill />
       <SidebarMenu>

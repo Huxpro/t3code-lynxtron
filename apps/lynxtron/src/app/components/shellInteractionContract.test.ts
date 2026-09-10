@@ -154,6 +154,13 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).not.toContain(".composer-context-authority-surface");
     expect(overrides).not.toContain(".composer-context-strip--authority");
   });
+
+  it("keeps the Sidebar on real shared controls instead of authority visuals", () => {
+    expect(sidebarSource).not.toContain("headerAuthorityVisual");
+    expect(sidebarSource).not.toContain("footerAuthorityVisual");
+    expect(overrides).not.toContain(".sidebar-header-authority");
+    expect(overrides).not.toContain(".sidebar-v2-control-row--authority");
+  });
   it("uses the synchronized client auto-settle preference for the active thread banner", () => {
     const chatView = componentSource("ChatView.tsx");
 

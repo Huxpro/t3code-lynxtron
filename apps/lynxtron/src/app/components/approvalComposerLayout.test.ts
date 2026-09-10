@@ -16,16 +16,9 @@ describe("approval Composer layout", () => {
   });
 
   it("always renders real approval content instead of fixture-specific sprites", () => {
-    const lightFallback = overridesSource.match(
-      /\.theme-light \.sidebar-grain[\s\S]*?\.theme-light \.lynx-sidebar-chrome-header--authority/u,
-    )?.[0];
-
-    expect(lightFallback).not.toContain(".theme-light .composer-pending-authority-copy");
-    expect(lightFallback).not.toContain(".theme-light .composer-editor-authority-surface");
-    expect(lightFallback).not.toContain(".theme-light .ui-button__authority-label");
-    expect(lightFallback).toContain("display: none;");
-    expect(lightFallback).toContain("opacity: 0;");
-    expect(lightFallback).toContain("pointer-events: none;");
+    expect(overridesSource).not.toContain(".composer-pending-authority-copy");
+    expect(overridesSource).not.toContain(".composer-editor-authority-surface");
+    expect(overridesSource).not.toContain(".ui-button__authority-label");
     expect(composerSource).not.toContain("approval-editor-pending@2x.png");
     expect(composerSource).not.toContain("composer__input--authority-hidden");
     expect(overridesSource).not.toContain(".composer-pending-copy--authority-hidden");

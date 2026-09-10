@@ -377,6 +377,9 @@ following-end` with the jump affordance visible only while detached. That gate
   retain their layout and colors.
 - The shared Composer context strip no longer carries an unused authority-image
   injection slot or CSS that could hide its real checkout and branch controls.
+- Shared Sidebar header/footer and search/project controls no longer expose dead
+  authority-image slots or CSS branches. Both renderers now use the same real
+  interactive composition without a hidden screenshot replacement path.
 - The chat Header no longer swaps its complete shared surface for a fixed
   1024-pixel screenshot when the pending-approval fixture is selected. Project
   identity, Git actions, project scripts, and panel controls now remain the real
