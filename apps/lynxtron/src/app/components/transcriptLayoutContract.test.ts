@@ -275,6 +275,9 @@ describe("transcript layout contract", () => {
     expect(planPanelSource).toContain("onImageExpand={onImageExpand}");
     expect(timelineSource).toContain("threadId={threadId}");
     expect(planPanelSource).toContain("threadId={threadId}");
+    expect(planPanelSource).toContain("normalizePlanMarkdownForExport(planMarkdown)");
+    expect(planPanelSource).toContain('data-plan-copy-state={copyStatus ?? "idle"}');
+    expect(planPanelSource).toContain("}, [planMarkdown]);");
     expect(webTimelineSource).toContain("@t3tools/client-runtime/presentation/image-preview");
   });
 

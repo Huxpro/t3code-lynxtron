@@ -9196,6 +9196,24 @@
   padding: 12px;
   gap: 16px;
 }
+.plan-panel__actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+.plan-panel__copy-action {
+  padding: 4px 8px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 6px;
+}
+.plan-panel__copy-label {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+}
 
 /* Plan explanation, steps, proposed-plan section, and empty state compile
    from the shared PlanSurface (AR5.3); only the status-icon and chevron
