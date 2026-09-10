@@ -5363,6 +5363,26 @@
   width: 100%;
   height: calc(100% - 28px);
 }
+.image-preview-overlay__error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100% - 28px);
+  gap: 8px;
+}
+.image-preview-overlay__error-title {
+  color: #f4f4f5;
+  font-size: 14px;
+  font-weight: 600;
+}
+.image-preview-overlay__error-path {
+  max-width: 80%;
+  color: rgba(244, 244, 245, 0.62);
+  font-size: 12px;
+  line-height: 18px;
+}
 .image-preview-overlay__caption {
   max-width: 92%;
   height: 20px;

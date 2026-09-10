@@ -11,9 +11,14 @@ export function ImagePreviewOverlay({
   readonly onClose: () => void;
 }) {
   const [offset, setOffset] = useState(0);
-  useEffect(() => setOffset(0), [preview]);
   const index = (preview.index + offset + preview.images.length) % preview.images.length;
   const item = preview.images[index];
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  useEffect(() => {
+    setOffset(0);
+    setFailedSrc(null);
+  }, [preview]);
+  useEffect(() => setFailedSrc(null), [item?.src]);
   const previous = useCallback(() => setOffset((value) => value - 1), []);
   const next = useCallback(() => setOffset((value) => value + 1), []);
   if (!item) return null;
@@ -33,7 +38,21 @@ export function ImagePreviewOverlay({
         >
           <Icon name="x" size={16} color="#f4f4f5" />
         </view>
-        <image className="image-preview-overlay__image" src={item.src} mode="aspectFit" />
+        {failedSrc === item.src ? (
+          <view className="image-preview-overlay__error">
+            <text className="image-preview-overlay__error-title">Unable to load image</text>
+            <text className="image-preview-overlay__error-path" text-maxline="2">
+              {item.src}
+            </text>
+          </view>
+        ) : (
+          <image
+            className="image-preview-overlay__image"
+            src={item.src}
+            mode="aspectFit"
+            binderror={() => setFailedSrc(item.src)}
+          />
+        )}
         <text className="image-preview-overlay__caption" text-maxline="1">
           {item.name}
           {preview.images.length > 1 ? ` (${index + 1}/${preview.images.length})` : ""}

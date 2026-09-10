@@ -264,6 +264,11 @@ describe("transcript layout contract", () => {
     expect(imagePreviewSource).toContain('aria-label="Close image preview"');
     expect(imagePreviewSource).toContain('aria-label="Previous image"');
     expect(imagePreviewSource).toContain('aria-label="Next image"');
+    expect(markdownSource).toContain("function MarkdownImageBlock");
+    expect(markdownSource).toContain("binderror={() => setFailed(true)}");
+    expect(markdownSource).toContain("useEffect(() => setFailed(false), [blockKey, href])");
+    expect(imagePreviewSource).toContain("Unable to load image");
+    expect(imagePreviewSource).toContain("binderror={() => setFailedSrc(item.src)}");
     expect(chatViewSource).toContain("onImageExpand={setExpandedImage}");
     expect(rightPanelSource).toContain("onImageExpand={props.onImageExpand}");
     expect(planPanelSource).toContain("onImageExpand={onImageExpand}");

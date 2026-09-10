@@ -444,6 +444,49 @@ function MarkdownTableBlock({
   );
 }
 
+function MarkdownImageBlock({
+  block,
+  blockKey,
+  onImageExpand,
+}: {
+  readonly block: ParsedMarkdownBlock;
+  readonly blockKey: string;
+  readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
+}) {
+  const href = block.href ?? "";
+  const supportedSource = /^(?:https?:|data:image\/)/i.test(href);
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [blockKey, href]);
+  if (!supportedSource || failed) {
+    return (
+      <view className="md-media-fallback" data-markdown-image-fallback="true">
+        <text className="md-media-fallback-label">
+          {failed ? `Unable to load ${block.alt || "image"}` : block.alt || "Image"}
+        </text>
+        <text className="md-media-fallback-path">{href}</text>
+      </view>
+    );
+  }
+  const openPreview = onImageExpand
+    ? () =>
+        onImageExpand({
+          images: [{ src: href, name: block.alt || block.title || "Image" }],
+          index: 0,
+        })
+    : undefined;
+  return (
+    <view
+      className="md-image-frame"
+      data-markdown-image="true"
+      aria-label={openPreview ? `Preview ${block.alt || "image"}` : undefined}
+      bindtap={openPreview}
+    >
+      <image className="md-image" src={href} mode="aspectFit" binderror={() => setFailed(true)} />
+      {block.alt ? <text className="md-image-caption">{block.alt}</text> : null}
+    </view>
+  );
+}
+
 function renderBlock(
   block: ParsedMarkdownBlock,
   idx: number,
@@ -536,32 +579,8 @@ function renderBlock(
     }
 
     case "image": {
-      const href = block.href ?? "";
-      const supportedSource = /^(?:https?:|data:image\/)/i.test(href);
-      return supportedSource ? (
-        <view
-          key={key}
-          className="md-image-frame"
-          data-markdown-image="true"
-          aria-label={onImageExpand ? `Preview ${block.alt || "image"}` : undefined}
-          bindtap={
-            onImageExpand
-              ? () =>
-                  onImageExpand({
-                    images: [{ src: href, name: block.alt || block.title || "Image" }],
-                    index: 0,
-                  })
-              : undefined
-          }
-        >
-          <image className="md-image" src={href} mode="aspectFit" />
-          {block.alt ? <text className="md-image-caption">{block.alt}</text> : null}
-        </view>
-      ) : (
-        <view key={key} className="md-media-fallback" data-markdown-image-fallback="true">
-          <text className="md-media-fallback-label">{block.alt || "Image"}</text>
-          <text className="md-media-fallback-path">{href}</text>
-        </view>
+      return (
+        <MarkdownImageBlock key={key} block={block} blockKey={key} onImageExpand={onImageExpand} />
       );
     }
 

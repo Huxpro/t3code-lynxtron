@@ -395,6 +395,9 @@ following-end` with the jump affordance visible only while detached. That gate
   of silently losing that interaction outside the transcript.
   Web now imports this preview model directly from `client-runtime`; its former
   renderer-local re-export has been deleted.
+  Inline and expanded Native images now surface a visible load-failure fallback
+  and reset that failure state when a virtualized block or selected image
+  changes, rather than leaving a blank interactive frame.
 
 ## PF4: Complete remote and multi-environment operation
 
