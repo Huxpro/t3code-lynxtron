@@ -291,7 +291,8 @@ following-end` with the jump affordance visible only while detached. That gate
   render as their original structures instead of flattening into inline text.
   Images embedded between paragraph text are projected in source order through
   the existing image/fallback renderer instead of leaking their Markdown syntax
-  as ordinary prose.
+  as ordinary prose. Single-line prose containing an embedded image now also
+  routes through that block projection instead of the compact inline renderer.
 - Shared inline Markdown now matches GFM autolink meaning for bare
   `www.example.com` and email addresses, including canonical `https://` and
   `mailto:` targets and trailing-punctuation boundaries. Code spans, embedded

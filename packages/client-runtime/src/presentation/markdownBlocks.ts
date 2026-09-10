@@ -83,7 +83,7 @@ export function shouldRenderBlockMarkdown(text: string): boolean {
   return (
     parseMarkdownFence(trimmed) !== null ||
     /^(?:#{1,6}\s+|(?:>\s*)+|(?:[-+*]|\d+[.)])\s+|(?:-{3,}|\*{3,}|_{3,})\s*$)/.test(trimmed) ||
-    /^!\[[^\]]*]\([^)]+\)$/.test(trimmed) ||
+    /!\[[^\]]*]\(\S+?(?:\s+["'][^"']*["'])?\)/.test(trimmed) ||
     /^<details(?:\s|>)/i.test(trimmed)
   );
 }

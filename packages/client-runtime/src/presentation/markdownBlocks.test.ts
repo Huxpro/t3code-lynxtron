@@ -282,6 +282,7 @@ describe("shouldRenderBlockMarkdown", () => {
     "---",
     "~~~ts",
     "![image](https://example.com/image.png)",
+    "Before ![image](https://example.com/image.png) after.",
     "<details><summary>More</summary></details>",
   ])("routes single-line block syntax through the block renderer: %s", (text) => {
     expect(shouldRenderBlockMarkdown(text)).toBe(true);
@@ -289,5 +290,6 @@ describe("shouldRenderBlockMarkdown", () => {
 
   it("keeps ordinary inline prose on the compact renderer", () => {
     expect(shouldRenderBlockMarkdown("Use **bold**, ~~old~~, and `code`.")).toBe(false);
+    expect(shouldRenderBlockMarkdown("Incomplete ![image]( path")).toBe(false);
   });
 });
