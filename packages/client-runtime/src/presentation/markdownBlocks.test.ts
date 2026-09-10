@@ -255,6 +255,41 @@ describe("parseMarkdownBlocks", () => {
     ]);
   });
 
+  it("accepts standard open attribute forms and preserves summary emphasis", () => {
+    expect(
+      parseMarkdownBlocks(
+        '<details open="">\n<summary>More <strong>important</strong> `context`</summary>\nBody\n</details>',
+      ),
+    ).toEqual([
+      {
+        type: "details",
+        open: true,
+        summary: "More **important** `context`",
+        children: [{ type: "paragraph", text: "Body" }],
+      },
+    ]);
+    expect(
+      parseMarkdownBlocks("<details open='open'><summary><em>More</em></summary>Body</details>"),
+    ).toEqual([
+      {
+        type: "details",
+        open: true,
+        summary: "_More_",
+        children: [{ type: "paragraph", text: "Body" }],
+      },
+    ]);
+    expect(
+      parseMarkdownBlocks('<details open=""><summary><code>More</code></summary>Body</details>'),
+    ).toEqual([
+      {
+        type: "details",
+        open: true,
+        summary: "`More`",
+        children: [{ type: "paragraph", text: "Body" }],
+      },
+    ]);
+  });
+
   it("preserves images embedded between paragraph text", () => {
     expect(
       parseMarkdownBlocks(

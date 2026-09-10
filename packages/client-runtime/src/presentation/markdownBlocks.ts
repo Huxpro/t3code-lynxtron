@@ -1,4 +1,5 @@
 import {
+  normalizeMarkdownVisibleText,
   parseMarkdownFenceInfo,
   parseMarkdownImageTokens,
   parseMarkdownListItem,
@@ -6,6 +7,18 @@ import {
   type MarkdownListItemPresentation,
   type MarkdownTablePresentation,
 } from "./markdown.ts";
+
+const DETAILS_OPEN_TAG_PATTERN = /^<details(?:\s+open(?:=(?:""|'open'|"open"|open))?)?\s*>$/i;
+const DETAILS_OPEN_ATTRIBUTE_PATTERN = /\sopen(?:=(?:""|'open'|"open"|open))?(?=\s|>)/i;
+
+function normalizeDetailsSummary(summary: string | undefined): string {
+  if (!summary) return "Details";
+  return normalizeMarkdownVisibleText(summary)
+    .replace(/<\/?strong(?:\s[^>]*)?>/gi, "**")
+    .replace(/<\/?em(?:\s[^>]*)?>/gi, "_")
+    .replace(/<\/?del(?:\s[^>]*)?>/gi, "~~")
+    .replace(/<\/?code(?:\s[^>]*)?>/gi, "`");
+}
 
 export interface ParsedMarkdownBlock {
   type:
@@ -161,29 +174,31 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
 
     const inlineDetailsMatch = line
       .trim()
-      .match(/^<details(\s+open)?\s*>\s*<summary>(.*?)<\/summary>\s*(.*?)\s*<\/details>\s*$/i);
+      .match(
+        /^<details(\s+open(?:=(?:""|'open'|"open"|open))?)?\s*>\s*<summary>(.*?)<\/summary>\s*(.*?)\s*<\/details>\s*$/i,
+      );
     if (inlineDetailsMatch) {
       const body = inlineDetailsMatch[3] ?? "";
       blocks.push({
         type: "details",
         open: Boolean(inlineDetailsMatch[1]),
-        summary: inlineDetailsMatch[2] || "Details",
+        summary: normalizeDetailsSummary(inlineDetailsMatch[2]),
         children: body ? parseMarkdownBlocks(body) : [],
       });
       index++;
       continue;
     }
 
-    const detailsMatch = line.trim().match(/^<details(?:\s+open)?\s*>$/i);
+    const detailsMatch = line.trim().match(DETAILS_OPEN_TAG_PATTERN);
     if (detailsMatch) {
-      const open = /\sopen(?:\s|>)/i.test(line);
+      const open = DETAILS_OPEN_ATTRIBUTE_PATTERN.test(line);
       const detailLines: string[] = [];
       let summary = "Details";
       index++;
       if (index < lines.length) {
         const summaryMatch = lines[index]!.trim().match(/^<summary>(.*)<\/summary>$/i);
         if (summaryMatch) {
-          summary = summaryMatch[1] || "Details";
+          summary = normalizeDetailsSummary(summaryMatch[1]);
           index++;
         }
       }

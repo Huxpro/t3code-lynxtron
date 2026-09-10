@@ -368,6 +368,10 @@ following-end` with the jump affordance visible only while detached. That gate
   from leaking between recycled transcript rows. Timeline-hosted details,
   including nested disclosures, also detach follow before changing row height;
   the standalone Plan panel keeps its own scrolling semantics.
+  Shared details parsing now accepts standard HTML boolean attribute forms such
+  as `open=""` and `open="open"`, and translates common HTML emphasis in
+  summaries into the existing inline Markdown projection instead of leaking raw
+  tags.
 - Native Markdown tables now preserve readable minimum column widths behind a
   horizontal viewport and expose Web-equivalent Markdown/CSV copy formats. The
   renderer-neutral table projection owns visible-text normalization and
