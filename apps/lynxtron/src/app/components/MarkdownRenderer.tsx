@@ -210,7 +210,7 @@ function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; bl
     return () => {
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
-  }, [block.code]);
+  }, [block.code, blockKey]);
   const handleCopy = useCallback(() => {
     "background only";
     if (copyStatus === "pending") return;
