@@ -374,7 +374,8 @@ following-end` with the jump affordance visible only while detached. That gate
   Shared details parsing now accepts standard HTML boolean attribute forms such
   as `open=""` and `open="open"`, and translates common HTML emphasis in
   summaries into the existing inline Markdown projection instead of leaking raw
-  tags.
+  tags. Details and summary elements may also retain ordinary HTML attributes;
+  the presence of `open` follows HTML boolean semantics regardless of its value.
 - Native Markdown tables now preserve readable minimum column widths behind a
   horizontal viewport and expose Web-equivalent Markdown/CSV copy formats. The
   renderer-neutral table projection owns visible-text normalization and

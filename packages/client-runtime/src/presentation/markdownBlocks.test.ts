@@ -288,6 +288,30 @@ describe("parseMarkdownBlocks", () => {
         children: [{ type: "paragraph", text: "Body" }],
       },
     ]);
+    expect(
+      parseMarkdownBlocks(
+        '<details class="note" open="false"><summary aria-label="Context"><strong>More</strong></summary>Body</details>',
+      ),
+    ).toEqual([
+      {
+        type: "details",
+        open: true,
+        summary: "**More**",
+        children: [{ type: "paragraph", text: "Body" }],
+      },
+    ]);
+    expect(
+      parseMarkdownBlocks(
+        '<details class="note">\n<summary aria-label="Context">More</summary>\nBody\n</details>',
+      ),
+    ).toEqual([
+      {
+        type: "details",
+        open: false,
+        summary: "More",
+        children: [{ type: "paragraph", text: "Body" }],
+      },
+    ]);
   });
 
   it("preserves images embedded between paragraph text", () => {

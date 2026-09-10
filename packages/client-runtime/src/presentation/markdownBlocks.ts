@@ -8,8 +8,10 @@ import {
   type MarkdownTablePresentation,
 } from "./markdown.ts";
 
-const DETAILS_OPEN_TAG_PATTERN = /^<details(?:\s+open(?:=(?:""|'open'|"open"|open))?)?\s*>$/i;
-const DETAILS_OPEN_ATTRIBUTE_PATTERN = /\sopen(?:=(?:""|'open'|"open"|open))?(?=\s|>)/i;
+const DETAILS_OPEN_TAG_PATTERN = /^<details\b([^>]*)>$/i;
+const DETAILS_OPEN_ATTRIBUTE_PATTERN =
+  /(?:^|\s)open(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?(?=\s|$)/i;
+const DETAILS_SUMMARY_PATTERN = /^<summary\b[^>]*>(.*?)<\/summary>$/i;
 
 function normalizeDetailsSummary(summary: string | undefined): string {
   if (!summary) return "Details";
@@ -174,14 +176,12 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
 
     const inlineDetailsMatch = line
       .trim()
-      .match(
-        /^<details(\s+open(?:=(?:""|'open'|"open"|open))?)?\s*>\s*<summary>(.*?)<\/summary>\s*(.*?)\s*<\/details>\s*$/i,
-      );
+      .match(/^<details\b([^>]*)>\s*<summary\b[^>]*>(.*?)<\/summary>\s*(.*?)\s*<\/details>\s*$/i);
     if (inlineDetailsMatch) {
       const body = inlineDetailsMatch[3] ?? "";
       blocks.push({
         type: "details",
-        open: Boolean(inlineDetailsMatch[1]),
+        open: DETAILS_OPEN_ATTRIBUTE_PATTERN.test(inlineDetailsMatch[1] ?? ""),
         summary: normalizeDetailsSummary(inlineDetailsMatch[2]),
         children: body ? parseMarkdownBlocks(body) : [],
       });
@@ -191,12 +191,12 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
 
     const detailsMatch = line.trim().match(DETAILS_OPEN_TAG_PATTERN);
     if (detailsMatch) {
-      const open = DETAILS_OPEN_ATTRIBUTE_PATTERN.test(line);
+      const open = DETAILS_OPEN_ATTRIBUTE_PATTERN.test(detailsMatch[1] ?? "");
       const detailLines: string[] = [];
       let summary = "Details";
       index++;
       if (index < lines.length) {
-        const summaryMatch = lines[index]!.trim().match(/^<summary>(.*)<\/summary>$/i);
+        const summaryMatch = lines[index]!.trim().match(DETAILS_SUMMARY_PATTERN);
         if (summaryMatch) {
           summary = normalizeDetailsSummary(summaryMatch[1]);
           index++;
