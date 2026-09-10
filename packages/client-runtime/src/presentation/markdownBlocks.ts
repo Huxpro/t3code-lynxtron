@@ -307,7 +307,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         parsedItems.push({
           item: {
             ...item,
-            content: [item.content, ...continuationLines].join("\n"),
+            content: joinMarkdownParagraphLines([item.content, ...continuationLines]),
           },
           indentColumns: markdownListIndentColumns(itemLine),
         });

@@ -51,11 +51,22 @@ describe("parseMarkdownBlocks", () => {
     expect(list).toMatchObject({
       type: "list",
       items: [
-        { depth: 0, content: "first line\ncontinuation with **meaning**" },
+        { depth: 0, content: "first line continuation with **meaning**" },
         { depth: 1, content: "nested line" },
         { depth: 0, content: "second" },
       ],
     });
+  });
+
+  it("preserves hard breaks in list-item continuation lines", () => {
+    const [list] = parseMarkdownBlocks(
+      ["- first line  ", "  hard continuation", "- second\\", "  hard slash"].join("\n"),
+    );
+
+    expect(list?.items?.map((item) => item.content)).toEqual([
+      "first line\nhard continuation",
+      "second\nhard slash",
+    ]);
   });
 
   it("normalizes two-space and four-space list indentation to structural depth", () => {
