@@ -25,6 +25,14 @@ import { deriveVisibleUserMessage } from "./userMessage.ts";
 
 export const EMPTY_TRANSCRIPT_PLACEHOLDER = "Send a message to start the conversation.";
 
+export function assistantMessageDisplayText(
+  text: string | undefined,
+  streaming: boolean | undefined,
+): string {
+  if (text && text.trim().length > 0) return text;
+  return streaming ? "" : "(empty response)";
+}
+
 export type TimelineScrollMode = "following-end" | "anchoring-new-turn" | "free-scrolling";
 
 export type TimelineScrollModeEvent =

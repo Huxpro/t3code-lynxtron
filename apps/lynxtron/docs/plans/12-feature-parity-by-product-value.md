@@ -346,6 +346,9 @@ following-end` with the jump affordance visible only while detached. That gate
   of an unhandled clipboard promise: pending disables duplicate taps, success
   shows the check state, and rejection exposes `Copy failed` before the feedback
   resets.
+- Settled assistant messages with no visible text now use the same shared
+  `(empty response)` fallback as Web instead of leaving an unexplained blank
+  transcript row; streaming empty messages retain the `Thinking…` state.
 - Discrete keyboard coverage now spans all three layers: native menu packet
   encoding, the shared keybinding resolver, and a dependency-injected product
   action dispatcher for New Thread, Quick Switch, File Picker, Settings, Sidebar,

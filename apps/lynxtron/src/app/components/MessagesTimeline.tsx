@@ -9,6 +9,7 @@ import {
   summarizeChangedFiles,
 } from "@t3tools/client-runtime/presentation/diff";
 import {
+  assistantMessageDisplayText,
   deriveActiveWorkStartedAt,
   computeStableMessagesTimelineRows,
   deriveMessagesTimelineRows,
@@ -553,7 +554,12 @@ function buildLynxTranscriptRowElements(
         )
       ) : row.message.streaming ? (
         <text className="lynx-host-text text-sm text-muted-foreground/60">Thinking…</text>
-      ) : null,
+      ) : (
+        <InlineMarkdownRenderer
+          text={assistantMessageDisplayText(row.message.text, row.message.streaming)}
+          cwd={cwd}
+        />
+      ),
     renderAssistantMeta: ({ row }) => {
       const copyState = resolveAssistantMessageCopyState({
         text: row.message.text,

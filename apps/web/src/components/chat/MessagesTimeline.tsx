@@ -73,6 +73,7 @@ import { ChangedFilesCard } from "./ChangedFilesTree";
 import { shouldAutoExpandChangedFiles } from "@t3tools/client-runtime/presentation/diff";
 import { MessageCopyButton } from "./MessageCopyButton";
 import {
+  assistantMessageDisplayText,
   computeStableMessagesTimelineRows,
   deriveMessagesTimelineRows,
   deriveTimelineMinimapItems,
@@ -817,7 +818,7 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
       renderUserMeta: ({ row: messageRow }) => <UserTimelineMessageMeta row={messageRow} />,
       renderAssistantMarkdown: ({ row: messageRow }) => (
         <ChatMarkdown
-          text={messageRow.message.text || (messageRow.message.streaming ? "" : "(empty response)")}
+          text={assistantMessageDisplayText(messageRow.message.text, messageRow.message.streaming)}
           cwd={ctx.markdownCwd}
           threadRef={ctx.threadRef ?? undefined}
           isStreaming={Boolean(messageRow.message.streaming)}

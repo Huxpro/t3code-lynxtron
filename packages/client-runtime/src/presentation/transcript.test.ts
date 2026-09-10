@@ -3,6 +3,7 @@ import { describe, expect, it } from "vite-plus/test";
 import { EventId, MessageId, TurnId, type OrchestrationThreadActivity } from "@t3tools/contracts";
 
 import {
+  assistantMessageDisplayText,
   computeMessageDurationStart,
   computeStableMessagesTimelineRows,
   deriveMessagesTimelineRows,
@@ -24,6 +25,15 @@ import {
   type TimelineEntry,
   type TranscriptMessage,
 } from "./transcript.ts";
+
+describe("assistantMessageDisplayText", () => {
+  it("preserves authored text and distinguishes streaming from settled emptiness", () => {
+    expect(assistantMessageDisplayText("done", false)).toBe("done");
+    expect(assistantMessageDisplayText("", true)).toBe("");
+    expect(assistantMessageDisplayText("   ", false)).toBe("(empty response)");
+    expect(assistantMessageDisplayText(undefined, false)).toBe("(empty response)");
+  });
+});
 
 function buildTimelineMeasurementState({
   positions,

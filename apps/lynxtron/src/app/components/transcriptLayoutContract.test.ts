@@ -182,6 +182,11 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain("!compactFooter && !questionMode");
   });
 
+  it("shows the shared settled empty-response fallback", () => {
+    expect(timelineSource).toContain("assistantMessageDisplayText(row.message.text");
+    expect(timelineSource).toContain("<InlineMarkdownRenderer");
+  });
+
   it("lets the settled Composer banner grow without collapsing its action", () => {
     const bannerStart = overrides.indexOf(".composer-settled-banner {");
     const bannerBlock = overrides.slice(bannerStart, overrides.indexOf("}", bannerStart));
