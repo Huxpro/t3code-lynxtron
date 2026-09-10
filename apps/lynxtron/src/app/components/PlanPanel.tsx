@@ -1,5 +1,6 @@
 import { useCallback, useState } from "@lynx-js/react";
 import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
+import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import {
   PlanEmptySurface,
   PlanExplanationSurface,
@@ -12,6 +13,7 @@ import { MarkdownRenderer } from "./MarkdownRenderer";
 interface PlanPanelProps {
   activePlan: ActivePlanState | null;
   activeProposedPlan: LatestProposedPlanState | null;
+  onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
 }
 
 function stepStatusIcon(status: string): string {
@@ -26,7 +28,7 @@ function stepStatusClass(status: string): string {
   return "plan-step__icon--pending";
 }
 
-export function PlanPanel({ activePlan, activeProposedPlan }: PlanPanelProps) {
+export function PlanPanel({ activePlan, activeProposedPlan, onImageExpand }: PlanPanelProps) {
   const [proposedExpanded, setProposedExpanded] = useState(false);
   const planMarkdown = activeProposedPlan?.planMarkdown ?? null;
   const planTitle = planMarkdown ? proposedPlanTitle(planMarkdown) : null;
@@ -72,7 +74,7 @@ export function PlanPanel({ activePlan, activeProposedPlan }: PlanPanelProps) {
               <text className="plan-panel__proposed-chevron">{proposedExpanded ? "▼" : "▶"}</text>
             }
           >
-            <MarkdownRenderer text={planMarkdown} streaming={false} />
+            <MarkdownRenderer text={planMarkdown} streaming={false} onImageExpand={onImageExpand} />
           </ProposedPlanSectionSurface>
         ) : null}
 

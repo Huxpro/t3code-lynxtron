@@ -27,6 +27,8 @@ const imagePreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "ImagePreviewOverlay.tsx"),
   "utf8",
 );
+const rightPanelSource = readFileSync(path.resolve(import.meta.dirname, "RightPanel.tsx"), "utf8");
+const planPanelSource = readFileSync(path.resolve(import.meta.dirname, "PlanPanel.tsx"), "utf8");
 const browserPreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
   "utf8",
@@ -258,6 +260,9 @@ describe("transcript layout contract", () => {
     expect(imagePreviewSource).toContain('aria-label="Close image preview"');
     expect(imagePreviewSource).toContain('aria-label="Previous image"');
     expect(imagePreviewSource).toContain('aria-label="Next image"');
+    expect(chatViewSource).toContain("onImageExpand={setExpandedImage}");
+    expect(rightPanelSource).toContain("onImageExpand={props.onImageExpand}");
+    expect(planPanelSource).toContain("onImageExpand={onImageExpand}");
   });
 
   it("hydrates persisted attachment previews without mutating canonical messages", () => {

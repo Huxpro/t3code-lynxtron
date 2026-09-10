@@ -391,6 +391,8 @@ following-end` with the jump affordance visible only while detached. That gate
   the existing signed-asset command, projects successful URLs onto view-only
   messages, and opens the same multi-image viewer; failed resolutions keep the
   original file-card fallback without mutating canonical connector state.
+  The Plan panel passes its Markdown images through the same root viewer instead
+  of silently losing that interaction outside the transcript.
 
 ## PF4: Complete remote and multi-environment operation
 

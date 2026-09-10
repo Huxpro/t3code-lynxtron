@@ -30,6 +30,7 @@ import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
 import { BrowserPanel } from "./BrowserPanel";
 import { selectWarmBrowserSurfaceIds } from "./browserPanel.logic";
 import { useT3ClientState } from "../state/t3Client";
+import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import {
   clientCapabilities,
   isEmbeddedBrowserAvailable,
@@ -42,6 +43,7 @@ interface RightPanelContentProps {
   activeProposedPlan: LatestProposedPlanState | null;
   terminalHeight: number;
   terminalWidth: number;
+  onImageExpand: (preview: ExpandedImagePreview) => void;
 }
 
 interface RightPanelProps {
@@ -49,6 +51,7 @@ interface RightPanelProps {
   activeProposedPlan: LatestProposedPlanState | null;
   maximized?: boolean;
   onMaximizedChange?: (maximized: boolean) => void;
+  onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
 }
 
 type AddableKind = RightPanelKind;
@@ -114,7 +117,11 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
   switch (surface.kind) {
     case "plan":
       return (
-        <PlanPanel activePlan={props.activePlan} activeProposedPlan={props.activeProposedPlan} />
+        <PlanPanel
+          activePlan={props.activePlan}
+          activeProposedPlan={props.activeProposedPlan}
+          onImageExpand={props.onImageExpand}
+        />
       );
     case "diff":
       return <DiffPanel turnId={surface.turnId} filePath={surface.filePath} />;
@@ -140,6 +147,7 @@ export function RightPanel({
   activeProposedPlan,
   maximized = false,
   onMaximizedChange = () => undefined,
+  onImageExpand = () => undefined,
 }: RightPanelProps) {
   const { activeThreadId } = useT3ClientState();
   const state = useRightPanelState();
@@ -472,6 +480,7 @@ export function RightPanel({
               activeProposedPlan,
               terminalHeight,
               terminalWidth,
+              onImageExpand,
             })
           )
         ) : (

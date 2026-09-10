@@ -787,6 +787,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           activeProposedPlan={activeProposedPlan ?? null}
           maximized={rightPanelMaximized}
           onMaximizedChange={setRightPanelMaximized}
+          onImageExpand={setExpandedImage}
         />
       }
       overlays={
