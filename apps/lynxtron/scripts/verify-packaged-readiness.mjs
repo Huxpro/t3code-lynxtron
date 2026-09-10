@@ -3824,6 +3824,27 @@ async function verifyNewThreadDraftLifecycle({
     lineEnd: 5,
     text: "persisted\ncontext",
   };
+  const persistedAttachment = {
+    type: "image",
+    name: "restart-pixel.png",
+    mimeType: "image/png",
+    sizeBytes: 68,
+    dataUrl:
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZlWQAAAAASUVORK5CYII=",
+  };
+  const persistedAttachmentResponse = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__?.(${JSON.stringify(
+      persistedAttachment,
+    )}) ?? false`,
+    returnByValue: true,
+  });
+  if (commandResult(persistedAttachmentResponse)?.value !== true) {
+    throw new Error(
+      `Native persisted attachment fixture was not applied: ${JSON.stringify(
+        persistedAttachmentResponse,
+      )}`,
+    );
+  }
   const persistedTerminalContextResponse = await client.runCdp("Runtime.evaluate", {
     expression: `globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
       persistedTerminalContext,
@@ -3842,7 +3863,8 @@ async function verifyNewThreadDraftLifecycle({
     client,
     timeoutMs,
     predicate: (state) =>
-      state?.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id,
+      state?.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id &&
+      state?.activeComposerDraftAttachments?.[0]?.name === persistedAttachment.name,
   });
   await client.runCdp("Runtime.evaluate", {
     expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('@review-fixture')",
@@ -3928,15 +3950,18 @@ async function verifyNewThreadDraftLifecycle({
   let persistedDraftText = null;
   let savedTerminalContexts = null;
   let savedFileContexts = null;
+  let savedAttachments = null;
   while (Date.now() < persistenceDeadline) {
     const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
     persistedDraftText = prefs.composerDraftTextByScopeKey?.[draftScopeKey] ?? null;
     savedTerminalContexts = prefs.composerTerminalContextsByScopeKey?.[draftScopeKey] ?? null;
     savedFileContexts = prefs.composerFileContextsByScopeKey?.[draftScopeKey] ?? null;
+    savedAttachments = prefs.composerDraftAttachmentsByScopeKey?.[draftScopeKey] ?? null;
     if (
       persistedDraftText === draftText &&
       savedTerminalContexts?.[0]?.id === persistedTerminalContext.id &&
-      savedFileContexts?.[0]?.path === "review-fixture.txt"
+      savedFileContexts?.[0]?.path === "review-fixture.txt" &&
+      savedAttachments?.[0]?.name === persistedAttachment.name
     )
       break;
     await waitForChildExit(child, 50);
@@ -3944,7 +3969,8 @@ async function verifyNewThreadDraftLifecycle({
   if (
     persistedDraftText !== draftText ||
     savedTerminalContexts?.[0]?.id !== persistedTerminalContext.id ||
-    savedFileContexts?.[0]?.path !== "review-fixture.txt"
+    savedFileContexts?.[0]?.path !== "review-fixture.txt" ||
+    savedAttachments?.[0]?.name !== persistedAttachment.name
   ) {
     throw new Error(
       `Native Composer state did not persist before cold restart: ${JSON.stringify({
@@ -3952,6 +3978,7 @@ async function verifyNewThreadDraftLifecycle({
         persistedDraftText,
         savedTerminalContexts,
         savedFileContexts,
+        savedAttachments,
       })}`,
     );
   }
@@ -4018,7 +4045,8 @@ async function verifyNewThreadDraftLifecycle({
         state.activeThreadId === state.draftThreadId &&
         state.activeComposerDraftText === draftText &&
         state.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id &&
-        state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt",
+        state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt" &&
+        state.activeComposerDraftAttachments?.[0]?.name === persistedAttachment.name,
     });
     await waitForMeasurement({
       child: restartedChild,
@@ -4036,6 +4064,7 @@ async function verifyNewThreadDraftLifecycle({
           text: restartedDraft.activeComposerDraftText,
           terminalContext: restartedDraft.activeComposerTerminalContexts[0],
           fileContext: restartedDraft.activeComposerFileContexts[0],
+          attachment: restartedDraft.activeComposerDraftAttachments[0],
           initialProcessId,
           initialClient,
           restartedProcessId: restartedChild.pid,

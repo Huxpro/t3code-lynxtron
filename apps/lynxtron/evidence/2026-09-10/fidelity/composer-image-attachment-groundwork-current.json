@@ -21,6 +21,13 @@
       "primaryActionState": "send",
       "removedByMeasuredTap": true
     },
+    "coldRestart": {
+      "status": "pass",
+      "scopeKey": "project:2e4cb40d-3a04-4002-82b5-c6d5526a5add",
+      "name": "restart-pixel.png",
+      "mimeType": "image/png",
+      "sizeBytes": 68
+    },
     "rendererErrors": 0,
     "isolatedStateDisposed": true
   },
@@ -40,22 +47,24 @@
     "reportPath": "/tmp/t3code-pf2-attachment-final.fKrzBJ/report.json",
     "reportSha256": "ce0437df7b3db97821fab610c2db08bd304e6e4200653aa878dbbf3554f4b4f7",
     "logSha256": "d4f101869248b39a535fa0ec2c9c2c4046dd0d315076526b725d92f4b11896fe",
-    "bundleSha256": "3c6bd3873b3d1ec66ab04e297b0f92e401411c99fd243589bfb29b7f2fb6554a"
+    "bundleSha256": "78740671a0f8f25024cc0088524bc60e2fe280eb6fd1a3dbd6a4a4bff580e032",
+    "restartReportPath": "/tmp/t3code-pf2-attachment-persist.KLWzdF/report.json",
+    "restartReportSha256": "e616cd79ba3987771a9e376f939622cf7d422a2d691fcdfb7d7520acc076a2b8"
   },
   "evidenceBoundary": {
     "proved": [
       "upload DTO propagation through every existing dispatch boundary",
       "image-only sendability projection",
       "Native 64 px card anatomy with a 62 px image leaf",
-      "measured remove interaction and state cleanup"
+      "measured remove interaction and state cleanup",
+      "strictly decoded attachment state survives an owned cold restart alongside draft text and context chips"
     ],
     "notYetProved": [
       "user-reachable image selection on Lynxtron 0.0.21",
-      "attachment persistence across process restart",
       "canonical server persistence and provider receipt from a real attachment send",
       "upload failure and resend behavior",
       "matched Web and Lynx attachment pixels"
     ]
   },
-  "classification": "The attachment transport and Native draft presentation are now real and independently verified, but the only available native file dialog crashes into a Lynxtron 0.0.21 Fiber attribute LogBox in three controlled variants. The broken entry point is intentionally not rendered. This is groundwork and blocker evidence, not PF2 completion or user-visible attachment parity."
+  "classification": "The attachment transport, Native draft presentation, removal, and scoped cold-restart restoration are independently verified. The only available native file dialog still crashes into a Lynxtron 0.0.21 Fiber attribute LogBox in three controlled variants, so the broken entry point remains hidden. This is verified groundwork plus a runtime blocker, not full user-visible attachment parity."
 }

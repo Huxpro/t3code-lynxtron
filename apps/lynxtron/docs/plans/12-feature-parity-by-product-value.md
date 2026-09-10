@@ -160,7 +160,10 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   after a failed send, clearing them only on success. The user-visible native
   picker remains hidden because Lynxtron 0.0.21 `dialog.showOpenDialog` triggers
   `FiberSetAttribute param 0 should be RefCounted` in three independent real
-  window trials; no broken affordance is shipped.
+  window trials; no broken affordance is shipped. Strictly decoded attachment
+  state now survives an owned cold restart together with draft text and context
+  chips. Canonical provider receipt and explicit failure/retry acceptance remain
+  open.
 - Web and Native now share terminal-context normalization, labeling, block
   serialization, and prompt append behavior. The Native terminal surface can
   add its latest 50 history lines to the scoped Composer, where a context-only

@@ -27,6 +27,7 @@ import {
   composerDraftScopeKey,
   createLocalDraftThread,
   forgetLocalDraftThread,
+  normalizeComposerDraftAttachmentsByScopeKey,
   normalizeComposerDraftTextByScopeKey,
   removeComposerDraftAttachment,
   projectDraftThreadInteractionMode,
@@ -1005,6 +1006,9 @@ async function bootstrapT3Client(): Promise<void> {
   const savedComposerDraftText = normalizeComposerDraftTextByScopeKey(
     getPref<unknown>("composerDraftTextByScopeKey", null),
   );
+  const savedComposerDraftAttachments = normalizeComposerDraftAttachmentsByScopeKey(
+    getPref<unknown>("composerDraftAttachmentsByScopeKey", null),
+  );
   const savedComposerTerminalContexts = normalizeComposerTerminalContextsByScopeKey(
     getPref<unknown>("composerTerminalContextsByScopeKey", null),
   );
@@ -1015,12 +1019,14 @@ async function bootstrapT3Client(): Promise<void> {
     patchState({
       modelSelection: saved,
       composerDraftTextByScopeKey: savedComposerDraftText,
+      composerDraftAttachmentsByScopeKey: savedComposerDraftAttachments,
       composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
       composerFileContextsByScopeKey: savedComposerFileContexts,
     });
   } else {
     patchState({
       composerDraftTextByScopeKey: savedComposerDraftText,
+      composerDraftAttachmentsByScopeKey: savedComposerDraftAttachments,
       composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
       composerFileContextsByScopeKey: savedComposerFileContexts,
     });
@@ -1256,8 +1262,17 @@ function setDraftStartFromOrigin(startFromOrigin: boolean): void {
 }
 
 let composerDraftPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
+let composerAttachmentPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
 let composerTerminalContextPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
 let composerFileContextPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
+
+function persistComposerAttachments(next: ComposerDraftAttachmentsByScopeKey): void {
+  if (composerAttachmentPersistenceTimer) clearTimeout(composerAttachmentPersistenceTimer);
+  composerAttachmentPersistenceTimer = setTimeout(() => {
+    composerAttachmentPersistenceTimer = undefined;
+    setPref("composerDraftAttachmentsByScopeKey", next);
+  }, 300);
+}
 
 function persistComposerTerminalContexts(next: ComposerTerminalContextsByScopeKey): void {
   if (composerTerminalContextPersistenceTimer)
@@ -1294,30 +1309,31 @@ function addComposerAttachments(
   attachments: ReadonlyArray<UploadChatAttachment>,
 ): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
-  patchState({
-    composerDraftAttachmentsByScopeKey: addComposerDraftAttachments(
-      state.composerDraftAttachmentsByScopeKey,
-      scopeKey,
-      attachments,
-    ),
-  });
+  const next = addComposerDraftAttachments(
+    state.composerDraftAttachmentsByScopeKey,
+    scopeKey,
+    attachments,
+  );
+  patchState({ composerDraftAttachmentsByScopeKey: next });
+  persistComposerAttachments(next);
 }
 
 function removeComposerAttachment(scopeKey: string, index: number): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
-  patchState({
-    composerDraftAttachmentsByScopeKey: removeComposerDraftAttachment(
-      state.composerDraftAttachmentsByScopeKey,
-      scopeKey,
-      index,
-    ),
-  });
+  const next = removeComposerDraftAttachment(
+    state.composerDraftAttachmentsByScopeKey,
+    scopeKey,
+    index,
+  );
+  patchState({ composerDraftAttachmentsByScopeKey: next });
+  persistComposerAttachments(next);
 }
 
 function clearComposerAttachments(scopeKey: string): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const { [scopeKey]: _cleared, ...remaining } = state.composerDraftAttachmentsByScopeKey;
   patchState({ composerDraftAttachmentsByScopeKey: remaining });
+  persistComposerAttachments(remaining);
 }
 
 function addComposerTerminalContext(scopeKey: string, context: ComposerTerminalContext): void {
