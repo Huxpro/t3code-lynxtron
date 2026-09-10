@@ -105,6 +105,24 @@ function appendParagraphWithImages(blocks: ParsedMarkdownBlock[], text: string):
   if (after.length > 0 || cursor === 0) blocks.push({ type: "paragraph", text: after });
 }
 
+function joinMarkdownParagraphLines(lines: ReadonlyArray<string>): string {
+  let paragraph = "";
+  for (const line of lines) {
+    if (paragraph.length === 0) {
+      paragraph = line;
+      continue;
+    }
+    if (/ {2,}$/.test(paragraph)) {
+      paragraph = paragraph.replace(/ {2,}$/, "") + "\n" + line;
+    } else if (paragraph.endsWith("\\")) {
+      paragraph = paragraph.slice(0, -1) + "\n" + line;
+    } else {
+      paragraph = paragraph + " " + line;
+    }
+  }
+  return paragraph;
+}
+
 export function shouldRenderBlockMarkdown(text: string): boolean {
   if (text.includes("\n")) return true;
   const trimmed = text.trim();
@@ -320,7 +338,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       paragraphLines.push(lines[index]!);
       index++;
     }
-    appendParagraphWithImages(blocks, paragraphLines.join("\n"));
+    appendParagraphWithImages(blocks, joinMarkdownParagraphLines(paragraphLines));
   }
 
   return blocks;

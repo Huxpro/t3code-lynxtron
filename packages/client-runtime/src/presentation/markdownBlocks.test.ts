@@ -30,6 +30,19 @@ describe("parseMarkdownBlocks", () => {
     ).toEqual(["paragraph", "empty", "list", "empty", "code"]);
   });
 
+  it("collapses paragraph soft breaks while preserving authored hard breaks", () => {
+    expect(
+      parseMarkdownBlocks(
+        ["soft", "continuation", "hard spaces  ", "next", "hard slash\\", "last"].join("\n"),
+      ),
+    ).toEqual([
+      {
+        type: "paragraph",
+        text: "soft continuation hard spaces\nnext hard slash\nlast",
+      },
+    ]);
+  });
+
   it("keeps indented continuation lines inside their list item", () => {
     const [list] = parseMarkdownBlocks(
       ["- first line", "  continuation with **meaning**", "  - nested line", "- second"].join("\n"),
@@ -97,7 +110,7 @@ describe("parseMarkdownBlocks", () => {
     expect(blocks[4]).toMatchObject({
       quoteDepth: 1,
       text: "quoted\ntext",
-      children: [{ type: "paragraph", text: "quoted\ntext" }],
+      children: [{ type: "paragraph", text: "quoted text" }],
     });
     expect(blocks[6]?.items).toEqual([
       expect.objectContaining({ kind: "unordered", content: "unordered" }),
@@ -123,7 +136,7 @@ describe("parseMarkdownBlocks", () => {
         type: "blockquote",
         text: "nested\nstill nested",
         quoteDepth: 2,
-        children: [{ type: "paragraph", text: "nested\nstill nested" }],
+        children: [{ type: "paragraph", text: "nested still nested" }],
       },
       {
         type: "blockquote",

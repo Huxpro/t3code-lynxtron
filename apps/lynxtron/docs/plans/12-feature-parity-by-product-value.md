@@ -282,7 +282,9 @@ following-end` with the jump affordance visible only while detached. That gate
   renderer. AST-level convergence with Web's react-markdown pipeline remains
   open. Shared parser coverage now also preserves CommonMark setext headings
   and single-line HTML details blocks, which previously rendered with the wrong
-  structure or leaked raw tags into transcript prose. Parser tests now live with
+  structure or leaked raw tags into transcript prose. Paragraph soft breaks now
+  collapse to spaces like Web while double-space and backslash hard breaks remain
+  visible. Parser tests now live with
   the shared implementation; the Lynx suite retains only platform clipboard
   behavior. Indented continuation lines now remain inside their owning list
   item while nested markers keep their own depth, preventing multi-line GFM
