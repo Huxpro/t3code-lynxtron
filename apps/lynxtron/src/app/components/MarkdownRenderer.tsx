@@ -21,6 +21,7 @@ import {
   type ParsedMarkdownBlock,
 } from "@t3tools/client-runtime/presentation/markdown-blocks";
 import { copyMarkdownCode } from "./markdownClipboard";
+import { markdownTableContentWidth } from "./markdownTableLayout";
 import type { MessageCopyStatus } from "./messageCopy";
 
 // Simple markdown-to-Lynx-views renderer. Handles the most common
@@ -395,32 +396,37 @@ function renderBlock(
       const table = block.table;
       if (!table) return <view key={key} />;
       return (
-        <view key={key} className="md-table">
-          <view className="md-table-row md-table-row--header">
-            {table.headers.map((header, column) => (
-              <text
-                key={`${key}-h${column}`}
-                className="md-table-cell md-table-cell--header"
-                style={{ textAlign: table.alignments[column] ?? "left" } as any}
-              >
-                {renderInline(parseMarkdownInline(header), `${key}-h${column}`, cwd)}
-              </text>
-            ))}
-          </view>
-          {table.rows.map((row, rowIndex) => (
-            <view key={`${key}-r${rowIndex}`} className="md-table-row">
-              {row.map((cell, column) => (
+        <scroll-view key={key} className="md-table-scroll" scroll-orientation="horizontal">
+          <view
+            className="md-table"
+            style={{ width: `${markdownTableContentWidth(table.headers.length)}px` }}
+          >
+            <view className="md-table-row md-table-row--header">
+              {table.headers.map((header, column) => (
                 <text
-                  key={`${key}-r${rowIndex}c${column}`}
-                  className="md-table-cell"
+                  key={`${key}-h${column}`}
+                  className="md-table-cell md-table-cell--header"
                   style={{ textAlign: table.alignments[column] ?? "left" } as any}
                 >
-                  {renderInline(parseMarkdownInline(cell), `${key}-r${rowIndex}c${column}`, cwd)}
+                  {renderInline(parseMarkdownInline(header), `${key}-h${column}`, cwd)}
                 </text>
               ))}
             </view>
-          ))}
-        </view>
+            {table.rows.map((row, rowIndex) => (
+              <view key={`${key}-r${rowIndex}`} className="md-table-row">
+                {row.map((cell, column) => (
+                  <text
+                    key={`${key}-r${rowIndex}c${column}`}
+                    className="md-table-cell"
+                    style={{ textAlign: table.alignments[column] ?? "left" } as any}
+                  >
+                    {renderInline(parseMarkdownInline(cell), `${key}-r${rowIndex}c${column}`, cwd)}
+                  </text>
+                ))}
+              </view>
+            ))}
+          </view>
+        </scroll-view>
       );
     }
 

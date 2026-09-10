@@ -209,6 +209,18 @@ describe("transcript layout contract", () => {
     expect(scroll).toContain("overflow-y: hidden;");
   });
 
+  it("keeps wide Markdown tables horizontally reachable without crushing columns", () => {
+    expect(markdownSource).toContain('className="md-table-scroll" scroll-orientation="horizontal"');
+    expect(markdownSource).toContain("markdownTableContentWidth(table.headers.length)");
+    const scrollStart = overrides.indexOf(".md-table-scroll {");
+    const scroll = overrides.slice(scrollStart, overrides.indexOf("}", scrollStart));
+    const cellStart = overrides.indexOf(".md-table-cell {");
+    const cell = overrides.slice(cellStart, overrides.indexOf("}", cellStart));
+    expect(scroll).toContain("overflow-x: scroll;");
+    expect(scroll).toContain("overflow-y: hidden;");
+    expect(cell).toContain("min-width: 132px;");
+  });
+
   it("keeps empty right-panel cards at the authority height", () => {
     const start = overrides.indexOf(".right-panel-empty-card {");
     const block = overrides.slice(start, overrides.indexOf("}", start));
