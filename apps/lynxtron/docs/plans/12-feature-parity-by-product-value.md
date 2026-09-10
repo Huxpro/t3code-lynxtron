@@ -377,7 +377,9 @@ following-end` with the jump affordance visible only while detached. That gate
   as `open=""` and `open="open"`, and translates common HTML emphasis in
   summaries into the existing inline Markdown projection instead of leaking raw
   tags. Details and summary elements may also retain ordinary HTML attributes;
-  the presence of `open` follows HTML boolean semantics regardless of its value.
+  the presence of `open` follows HTML boolean semantics regardless of its value,
+  and attributed disclosures start a new block even without a preceding blank
+  line instead of being flattened into adjacent prose.
 - Native Markdown tables now preserve readable minimum column widths behind a
   horizontal viewport and expose Web-equivalent Markdown/CSV copy formats. The
   renderer-neutral table projection owns visible-text normalization and

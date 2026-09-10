@@ -9,6 +9,7 @@ import {
 } from "./markdown.ts";
 
 const DETAILS_OPEN_TAG_PATTERN = /^<details\b([^>]*)>$/i;
+const DETAILS_START_PATTERN = /^<details\b[^>]*>/i;
 const DETAILS_OPEN_ATTRIBUTE_PATTERN =
   /(?:^|\s)open(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s"'=<>`]+))?(?=\s|$)/i;
 const DETAILS_SUMMARY_PATTERN = /^<summary\b[^>]*>(.*?)<\/summary>$/i;
@@ -101,7 +102,7 @@ export function shouldRenderBlockMarkdown(text: string): boolean {
     parseMarkdownFence(trimmed) !== null ||
     /^(?:#{1,6}\s+|(?:>\s*)+|(?:[-+*]|\d+[.)])\s+|(?:-{3,}|\*{3,}|_{3,})\s*$)/.test(trimmed) ||
     parseMarkdownImageTokens(trimmed).length > 0 ||
-    /^<details(?:\s|>)/i.test(trimmed)
+    DETAILS_START_PATTERN.test(trimmed)
   );
 }
 
@@ -301,7 +302,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         const [image] = parseMarkdownImageTokens(trimmed);
         return image?.start === 0 && image.end === trimmed.length;
       })() &&
-      !lines[index]!.trim().match(/^<details(?:\s+open)?\s*>/i) &&
+      !DETAILS_START_PATTERN.test(lines[index]!.trim()) &&
       !parseMarkdownTable(lines.slice(index)) &&
       !parseMarkdownListItem(lines[index]!) &&
       !/^(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[index]!.trim())

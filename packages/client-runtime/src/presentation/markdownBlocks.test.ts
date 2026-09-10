@@ -324,6 +324,22 @@ describe("parseMarkdownBlocks", () => {
     ]);
   });
 
+  it("starts attributed details as a new block after adjacent prose", () => {
+    expect(
+      parseMarkdownBlocks(
+        'Intro\n<details class="note"><summary aria-label="Context">More</summary>Body</details>',
+      ),
+    ).toEqual([
+      { type: "paragraph", text: "Intro" },
+      {
+        type: "details",
+        open: false,
+        summary: "More",
+        children: [{ type: "paragraph", text: "Body" }],
+      },
+    ]);
+  });
+
   it("preserves images embedded between paragraph text", () => {
     expect(
       parseMarkdownBlocks(
