@@ -209,8 +209,22 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       while (index < lines.length) {
         const item = parseMarkdownListItem(lines[index]!);
         if (!item) break;
-        items.push(item);
         index++;
+        const continuationLines: string[] = [];
+        while (
+          index < lines.length &&
+          lines[index]!.trim().length > 0 &&
+          !parseMarkdownListItem(lines[index]!) &&
+          /^\s+/.test(lines[index]!) &&
+          !parseMarkdownFence(lines[index]!)
+        ) {
+          continuationLines.push(lines[index]!.trim());
+          index++;
+        }
+        items.push({
+          ...item,
+          content: [item.content, ...continuationLines].join("\n"),
+        });
       }
       blocks.push({ type: "list", items });
       continue;

@@ -30,6 +30,21 @@ describe("parseMarkdownBlocks", () => {
     ).toEqual(["paragraph", "empty", "list", "empty", "code"]);
   });
 
+  it("keeps indented continuation lines inside their list item", () => {
+    const [list] = parseMarkdownBlocks(
+      ["- first line", "  continuation with **meaning**", "  - nested line", "- second"].join("\n"),
+    );
+
+    expect(list).toMatchObject({
+      type: "list",
+      items: [
+        { depth: 0, content: "first line\ncontinuation with **meaning**" },
+        { depth: 1, content: "nested line" },
+        { depth: 0, content: "second" },
+      ],
+    });
+  });
+
   it("covers the block formats rendered by the Original transcript", () => {
     const blocks = parseMarkdownBlocks(
       [

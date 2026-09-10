@@ -252,7 +252,9 @@ following-end` with the jump affordance visible only while detached. That gate
   and single-line HTML details blocks, which previously rendered with the wrong
   structure or leaked raw tags into transcript prose. Parser tests now live with
   the shared implementation; the Lynx suite retains only platform clipboard
-  behavior.
+  behavior. Indented continuation lines now remain inside their owning list
+  item while nested markers keep their own depth, preventing multi-line GFM
+  bullets from being split into unrelated transcript paragraphs.
 
 ## PF4: Complete remote and multi-environment operation
 
