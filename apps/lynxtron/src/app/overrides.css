@@ -4343,6 +4343,18 @@
 .transcript-message-meta__action:hover {
   background-color: rgba(var(--foreground-rgb), 0.08);
 }
+.transcript-message-meta__action--disabled {
+  opacity: 0.45;
+}
+.transcript-message-meta__action--failed {
+  color: var(--destructive);
+}
+.transcript-message-meta__failure {
+  color: var(--destructive);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+}
 .transcript-turn-fold-outer {
   width: 100%;
   height: 29px;

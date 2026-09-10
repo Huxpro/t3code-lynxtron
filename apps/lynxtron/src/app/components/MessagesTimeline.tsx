@@ -57,7 +57,7 @@ import { InlineMarkdownRenderer, MarkdownRenderer } from "./MarkdownRenderer";
 import { shouldRenderBlockMarkdown } from "@t3tools/client-runtime/presentation/markdown-blocks";
 import { uiActions } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
-import { showNativeConfirm, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
+import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { t3ClientActions } from "../state/t3Client";
 import { useClientSettingsState } from "../state/prefsStore";
 import { deriveDisplayedUserMessageState } from "../../../../web/src/lib/terminalContext";
@@ -71,6 +71,7 @@ import {
 } from "./workingLabelAtlas";
 import { timelineRowReuseIdentifier } from "./timelineRowSize";
 import { runMessageCopy, type MessageCopyStatus } from "./messageCopy";
+import { runMessageRevert, type MessageRevertStatus } from "./messageRevert";
 import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import { buildExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import {
@@ -417,6 +418,74 @@ function MessageCopyControl({ text }: { readonly text: string }) {
   );
 }
 
+function UserMessageMeta({
+  messageId,
+  createdAt,
+  copyText,
+  revertTurnCount,
+  isWorking,
+  timestampFormat,
+}: {
+  readonly messageId: string;
+  readonly createdAt: string;
+  readonly copyText: string;
+  readonly revertTurnCount: number | undefined;
+  readonly isWorking: boolean;
+  readonly timestampFormat: Parameters<typeof formatShortTimestamp>[1];
+}) {
+  const [revertStatus, setRevertStatus] = useState<MessageRevertStatus | null>(null);
+  useEffect(() => setRevertStatus(null), [messageId, revertTurnCount]);
+  const revertPending = revertStatus === "pending";
+  const revertFailed = revertStatus === "failed";
+  const handleRevert = useCallback(() => {
+    if (revertTurnCount === undefined || isWorking || revertPending) return;
+    void runMessageRevert(
+      () =>
+        showNativeConfirm({
+          message: `Revert this thread to checkpoint ${revertTurnCount}?`,
+          detail:
+            "This will discard newer messages and turn diffs in this thread. This action cannot be undone.",
+          confirmLabel: "Revert",
+        }),
+      () => t3ClientActions.revertCheckpoint(revertTurnCount),
+      setRevertStatus,
+    );
+  }, [isWorking, revertPending, revertTurnCount]);
+  return (
+    <view
+      flatten={false}
+      className={`transcript-message-meta transcript-user-meta${
+        revertFailed ? " transcript-message-meta--visible" : ""
+      }`}
+      data-message-revert-state={revertStatus ?? "idle"}
+    >
+      <text className="transcript-message-meta__time">
+        {formatShortTimestamp(createdAt, timestampFormat)}
+      </text>
+      {revertTurnCount !== undefined ? (
+        <view
+          className={`transcript-message-meta__action${
+            isWorking || revertPending ? " transcript-message-meta__action--disabled" : ""
+          }${revertFailed ? " transcript-message-meta__action--failed" : ""}`}
+          aria-label={revertFailed ? "Revert failed" : "Revert to this message"}
+          aria-disabled={isWorking || revertPending ? "true" : "false"}
+          bindtap={isWorking || revertPending ? undefined : handleRevert}
+        >
+          <Icon
+            name={revertFailed ? "x" : "rotate-ccw"}
+            size={14}
+            color={revertFailed ? "#f87171" : "#818181"}
+          />
+        </view>
+      ) : null}
+      {revertFailed ? (
+        <text className="transcript-message-meta__failure">Revert failed</text>
+      ) : null}
+      <MessageCopyControl text={copyText} />
+    </view>
+  );
+}
+
 /** Platform islands handed to the shared transcript composition. */
 function buildLynxTranscriptRowElements(
   cwd: string | undefined,
@@ -424,7 +493,6 @@ function buildLynxTranscriptRowElements(
   compactChangedFiles: boolean,
   compactChangedFilesActions: boolean,
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
-  revertMessage: (turnCount: number) => void,
   isWorking: boolean,
   onManualNavigation: () => void,
   onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined,
@@ -528,24 +596,14 @@ function buildLynxTranscriptRowElements(
     renderUserMeta: ({ row }) => {
       const copyText = deriveDisplayedUserMessageState(row.message.text).copyText;
       return (
-        <view flatten={false} className="transcript-message-meta transcript-user-meta">
-          <text className="transcript-message-meta__time">
-            {formatShortTimestamp(row.message.createdAt, timestampFormat)}
-          </text>
-          {typeof row.revertTurnCount === "number" ? (
-            <view
-              className={`transcript-message-meta__action${
-                isWorking ? " transcript-message-meta__action--disabled" : ""
-              }`}
-              aria-label="Revert to this message"
-              aria-disabled={isWorking ? "true" : "false"}
-              bindtap={isWorking ? undefined : () => revertMessage(row.revertTurnCount!)}
-            >
-              <Icon name="rotate-ccw" size={14} color="#818181" />
-            </view>
-          ) : null}
-          <MessageCopyControl text={copyText} />
-        </view>
+        <UserMessageMeta
+          messageId={row.message.id}
+          createdAt={row.message.createdAt}
+          copyText={copyText}
+          revertTurnCount={row.revertTurnCount}
+          isWorking={isWorking}
+          timestampFormat={timestampFormat}
+        />
       );
     },
     renderAssistantMarkdown: ({ row }) =>
@@ -745,21 +803,6 @@ export function MessagesTimeline({
   const [activeMinimapItemId, setActiveMinimapItemId] = useState<string | null>(null);
 
   const isWorking = isSessionWorking(sessionStatus);
-  const revertMessage = useCallback((turnCount: number) => {
-    void showNativeContextMenu([
-      { id: "revert", label: `Revert to checkpoint ${turnCount}`, destructive: true },
-    ]).then((selection) => {
-      if (selection !== "revert") return;
-      void showNativeConfirm({
-        message: `Revert this thread to checkpoint ${turnCount}?`,
-        detail:
-          "This will discard newer messages and turn diffs in this thread. This action cannot be undone.",
-        confirmLabel: "Revert",
-      }).then((confirmed) => {
-        if (confirmed) void t3ClientActions.revertCheckpoint(turnCount).catch(() => undefined);
-      });
-    });
-  }, []);
   const detachForManualNavigation = useCallback(() => {
     setAnchorMessageId(null);
     setTimelineAtEnd(false);
@@ -775,7 +818,6 @@ export function MessagesTimeline({
         timelineViewportWidth < 360,
         timelineViewportWidth < 640,
         clientSettings.timestampFormat,
-        revertMessage,
         isWorking,
         detachForManualNavigation,
         onImageExpand,
@@ -786,7 +828,6 @@ export function MessagesTimeline({
       timelineViewportWidth,
       cwd,
       latestTurn?.turnId,
-      revertMessage,
       isWorking,
       detachForManualNavigation,
       onImageExpand,

@@ -2302,10 +2302,14 @@ describe("desktop shell interaction contract", () => {
 
   it("disables destructive transcript revert while the agent is working", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
-    expect(timelineSource).toContain('aria-disabled={isWorking ? "true" : "false"}');
     expect(timelineSource).toContain(
-      "bindtap={isWorking ? undefined : () => revertMessage(row.revertTurnCount!)}",
+      'aria-disabled={isWorking || revertPending ? "true" : "false"}',
     );
+    expect(timelineSource).toContain(
+      "bindtap={isWorking || revertPending ? undefined : handleRevert}",
+    );
+    expect(timelineSource).not.toContain(".catch(() => undefined)");
+    expect(timelineSource).toContain("setRevertStatus(null), [messageId, revertTurnCount]");
   });
 
   it("resets recycled checkpoint-card expansion for a new checkpoint identity", () => {
