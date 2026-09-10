@@ -252,6 +252,9 @@ following-end` with the jump affordance visible only while detached. That gate
   pending/success/failure transition no longer rebuilds the parent row-elements
   contract and invalidates every visible transcript row; recycled controls also
   cancel their reset timer on unmount.
+  The Native minimap now tracks hover/preview state by stable user-message ID
+  instead of array index, so inserted, folded, or replaced rows cannot silently
+  redirect the preview to a different turn.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

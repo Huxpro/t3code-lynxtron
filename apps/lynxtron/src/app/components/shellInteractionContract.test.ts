@@ -2214,6 +2214,16 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("pointer-events: none;");
   });
 
+  it("tracks the transcript minimap hover by stable message identity", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain("activeMinimapItemId");
+    expect(timelineSource).toContain(
+      "minimapItems.findIndex((item) => item.id === activeMinimapItemId)",
+    );
+    expect(timelineSource).toContain("setActiveMinimapItemId(item.id)");
+    expect(timelineSource).toContain('data-timeline-minimap-active={activeMinimapItemId ?? ""}');
+  });
+
   it("opens the complete plan surface from a transcript plan card", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
     expect(timelineSource).toContain('data-transcript-plan-open="true"');

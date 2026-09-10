@@ -631,7 +631,7 @@ export function MessagesTimeline({
   const pendingTurnFoldAnchorRef = useRef<string | null>(null);
   const newestUserMessageIdRef = useRef<string | null | undefined>(undefined);
   const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
-  const [activeMinimapIndex, setActiveMinimapIndex] = useState<number | null>(null);
+  const [activeMinimapItemId, setActiveMinimapItemId] = useState<string | null>(null);
 
   const isWorking = isSessionWorking(sessionStatus);
   const revertMessage = useCallback((turnCount: number) => {
@@ -747,6 +747,15 @@ export function MessagesTimeline({
     return next.result;
   }, [derivedRows]);
   const minimapItems = useMemo(() => deriveTimelineMinimapItems(rows), [rows]);
+  const activeMinimapIndex = useMemo(
+    () =>
+      activeMinimapItemId === null
+        ? null
+        : minimapItems.findIndex((item) => item.id === activeMinimapItemId),
+    [activeMinimapItemId, minimapItems],
+  );
+  const activeMinimapItem =
+    activeMinimapIndex === null ? null : (minimapItems[activeMinimapIndex] ?? null);
 
   useEffect(() => {
     const next = deriveTranscriptNewTurnAnchor(
@@ -1000,8 +1009,8 @@ export function MessagesTimeline({
         <HostView
           className="timeline-minimap"
           data-timeline-minimap
-          data-timeline-minimap-active={activeMinimapIndex ?? ""}
-          onMouseLeave={() => setActiveMinimapIndex(null)}
+          data-timeline-minimap-active={activeMinimapItemId ?? ""}
+          onMouseLeave={() => setActiveMinimapItemId(null)}
         >
           <view
             className="timeline-minimap__rail"
@@ -1020,7 +1029,7 @@ export function MessagesTimeline({
                   style={{
                     top: `${resolveTimelineMinimapTopPercent(index, minimapItems.length)}%`,
                   }}
-                  onMouseEnter={() => setActiveMinimapIndex(index)}
+                  onMouseEnter={() => setActiveMinimapItemId(item.id)}
                   onClick={() => {
                     setAnchorMessageId(null);
                     listRef.current
@@ -1044,14 +1053,14 @@ export function MessagesTimeline({
               );
             })}
           </view>
-          {activeMinimapIndex !== null && minimapItems[activeMinimapIndex] ? (
+          {activeMinimapItem ? (
             <view className="timeline-minimap__preview" data-timeline-minimap-preview>
               <text className="timeline-minimap__preview-title" text-maxline="1">
-                {minimapItems[activeMinimapIndex]?.userText ?? "User message"}
+                {activeMinimapItem.userText ?? "User message"}
               </text>
-              {minimapItems[activeMinimapIndex]?.assistantText ? (
+              {activeMinimapItem.assistantText ? (
                 <text className="timeline-minimap__preview-detail" text-maxline="3">
-                  {minimapItems[activeMinimapIndex]?.assistantText}
+                  {activeMinimapItem.assistantText}
                 </text>
               ) : null}
             </view>
