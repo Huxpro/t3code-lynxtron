@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Drives the running Lynxtron client through the transcript scroll
- * interactions via Lynx DevTool CDP and asserts the follow/detach contract:
+ * Drives one explicitly identified Lynx DevTool session through diagnostic
+ * transcript probes. This verifies renderer state wiring, not physical wheel
+ * or pointer acceptance.
  *
- *   --step scroll-up   drag the timeline content toward older rows and assert
- *                      the "Jump to latest" pill appears (follow detached)
- *   --step jump        tap the pill and assert it disappears (follow restored)
+ *   --step scroll-up   inject user-scroll-away and assert the jump pill appears
+ *   --step jump        inject user-scroll-end and assert the pill disappears
  *
  * Exits non-zero when an assertion fails.
  */
@@ -22,45 +22,24 @@ function readArgument(name, fallback) {
   return index >= 0 ? process.argv[index + 1] : fallback;
 }
 
-const clientName = readArgument("--client-name", "@t3tools/lynxtron");
+const clientId = readArgument("--client-id", null);
+const sessionId = Number(readArgument("--session-id", ""));
 const step = readArgument("--step", "scroll-up");
+if (!clientId || !Number.isInteger(sessionId) || sessionId <= 0) {
+  throw new Error("Explicit --client-id and --session-id are required.");
+}
 
 const connectorModuleUrl = pathToFileURL(path.join(path.dirname(devToolCli), "connector.mjs")).href;
 const { Connector, DaemonTransport } = await import(connectorModuleUrl);
 const transport = new DaemonTransport();
 const connector = new Connector([transport]);
-const clients = await connector.listClients();
-const matches = clients.filter((client) => client.info?.App === clientName);
-if (matches.length !== 1) {
-  throw new Error(`Expected one client named "${clientName}"; found ${matches.length}.`);
-}
-const clientId = matches[0].id;
 const sessions = await connector.sendListSessionMessage(clientId);
-const session = sessions.reduce(
-  (latest, candidate) =>
-    latest === null || Number(candidate.session_id) > Number(latest.session_id)
-      ? candidate
-      : latest,
-  null,
-);
-if (!session) throw new Error("No Lynx DevTool session found.");
-const runCdp = (method, params) =>
-  connector.sendCDPMessage(clientId, Number(session.session_id), method, params);
+const session = sessions.find((candidate) => Number(candidate.session_id) === sessionId);
+if (!session) throw new Error(`Session ${sessionId} does not belong to client ${clientId}.`);
+const runCdp = (method, params) => connector.sendCDPMessage(clientId, sessionId, method, params);
 
 function commandResult(response) {
   return response?.result?.result ?? response?.result ?? response;
-}
-
-function quadCenter(quad) {
-  if (!Array.isArray(quad) || quad.length < 8) {
-    throw new Error("Lynx DevTool did not return a usable interaction box.");
-  }
-  const x = [quad[0], quad[2], quad[4], quad[6]];
-  const y = [quad[1], quad[3], quad[5], quad[7]];
-  return {
-    x: Math.round((Math.min(...x) + Math.max(...x)) / 2),
-    y: Math.round((Math.min(...y) + Math.max(...y)) / 2),
-  };
 }
 
 await runCdp("DOM.enable", { useCompression: false });
@@ -75,23 +54,12 @@ async function queryNodeId(selector) {
   return Number.isInteger(nodeId) && nodeId > 0 ? nodeId : null;
 }
 
-async function nodeCenter(selector) {
-  const nodeId = await queryNodeId(selector);
-  if (!nodeId) throw new Error(`Selector did not match: ${selector}`);
-  const boxResponse = await runCdp("DOM.getBoxModel", { nodeId });
-  const model = commandResult(boxResponse)?.model;
-  return quadCenter(model?.border ?? model?.content);
-}
-
-async function mouse(type, point, extra = {}) {
-  await runCdp("Input.emulateTouchFromMouseEvent", {
-    type,
-    x: point.x,
-    y: point.y,
-    timestamp: Date.now() / 1000,
-    button: "left",
-    ...extra,
+async function invokeScrollProbe(action) {
+  const response = await runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__?.(${JSON.stringify(action)})`,
+    returnByValue: true,
   });
+  if (response?.error) throw new Error(JSON.stringify(response.error));
 }
 
 async function waitForPill(present, label) {
@@ -104,23 +72,13 @@ async function waitForPill(present, label) {
 }
 
 if (step === "scroll-up") {
-  const center = await nodeCenter(".timeline-list");
-  // A downward drag scrolls the content toward older rows (touch semantics).
-  await mouse("mousePressed", center);
-  for (let i = 1; i <= 12; i += 1) {
-    await mouse("mouseMoved", { x: center.x, y: center.y + i * 30 });
-    await new Promise((resolveWait) => setTimeout(resolveWait, 16));
-  }
-  await mouse("mouseReleased", { x: center.x, y: center.y + 360 });
+  await invokeScrollProbe("user-scroll-away");
   await waitForPill(true, "jump-to-latest pill should appear after a user scroll away");
-  process.stdout.write("PASS scroll-up: follow detached, jump pill visible\n");
+  process.stdout.write("PASS diagnostic scroll-up: follow detached, jump pill visible\n");
 } else if (step === "jump") {
-  const pillCenter = await nodeCenter(".timeline-jump--visible");
-  await mouse("mouseMoved", pillCenter);
-  await mouse("mousePressed", pillCenter);
-  await mouse("mouseReleased", pillCenter);
+  await invokeScrollProbe("user-scroll-end");
   await waitForPill(false, "jump pill should disappear after tapping it");
-  process.stdout.write("PASS jump: follow restored, pill dismissed\n");
+  process.stdout.write("PASS diagnostic jump: follow restored, pill dismissed\n");
 } else {
   throw new Error(`Unknown step: ${step}`);
 }
