@@ -357,6 +357,10 @@ following-end` with the jump affordance visible only while detached. That gate
   expand/collapse action follows the canonical word-wrap default, detaches
   transcript follow before changing row height, and resets when a virtualized
   table identity changes.
+- Shared work-entry disclosures now reset their local expansion state when a
+  virtualized row receives a different activity identity. Both renderers also
+  route the disclosure through their manual-navigation path before changing row
+  height, so streaming output cannot steal the expanded tool/error body.
 
 ## PF4: Complete remote and multi-environment operation
 

@@ -1050,6 +1050,7 @@ export function MessagesTimeline({
                 elements={rowElements}
                 onToggleTurnFold={handleToggleTurn}
                 onToggleWorkGroup={handleToggleWorkGroup}
+                onWorkEntryDisclosure={detachForManualNavigation}
               />
             </view>
           </list-item>

@@ -11,7 +11,7 @@
  * contract. Compiled by both renderers: Web resolves the host leaves to DOM
  * elements, Lynx to Lynx elements.
  */
-import { memo, useState, type ReactNode } from "react";
+import { memo, useEffect, useState, type ReactNode } from "react";
 
 import {
   normalizeCompactToolLabel,
@@ -107,6 +107,7 @@ export interface TranscriptRowSurfaceProps<
   readonly elements: TranscriptRowElements<M, P, D>;
   readonly onToggleTurnFold: (turnId: TurnId) => void;
   readonly onToggleWorkGroup: (groupId: string, anchorElement?: unknown) => void;
+  readonly onWorkEntryDisclosure?: (() => void) | undefined;
 }
 
 function UserRow({
@@ -196,13 +197,16 @@ function WorkEntryRow({
   workspaceRoot,
   activeTurnInProgress,
   elements,
+  onDisclosure,
 }: {
   readonly workEntry: TimelineWorkEntry;
   readonly workspaceRoot: string | undefined;
   readonly activeTurnInProgress: boolean;
   readonly elements: TranscriptRowElements;
+  readonly onDisclosure: (() => void) | undefined;
 }) {
   const [expanded, setExpanded] = useState(false);
+  useEffect(() => setExpanded(false), [workEntry.id]);
   const iconConfig = workToneIcon(workEntry.tone);
   const showWarningIndicator = workEntry.sourceActivityKind === "runtime.warning";
   const entryIconName = showWarningIndicator ? "x" : workEntryIconName(workEntry);
@@ -253,7 +257,14 @@ function WorkEntryRow({
       data-transcript-work-entry={workEntry.id}
       data-transcript-work-tone={workEntry.tone}
       data-transcript-work-state={canExpand ? (expanded ? "expanded" : "collapsed") : "static"}
-      onClick={canExpand ? () => setExpanded((value) => !value) : undefined}
+      onClick={
+        canExpand
+          ? () => {
+              onDisclosure?.();
+              setExpanded((value) => !value);
+            }
+          : undefined
+      }
     >
       {authorityVisual}
       <HostView
@@ -325,11 +336,13 @@ function WorkGroupRows({
   workspaceRoot,
   activeTurnInProgress,
   elements,
+  onWorkEntryDisclosure,
 }: {
   readonly row: Extract<TranscriptTimelineRow, { kind: "work" }>;
   readonly workspaceRoot: string | undefined;
   readonly activeTurnInProgress: boolean;
   readonly elements: TranscriptRowElements;
+  readonly onWorkEntryDisclosure: (() => void) | undefined;
 }) {
   const nonEmptyEntries = row.groupedEntries.filter(
     (entry) => entry.tone === "thinking" || !workEntryIndicatesToolNeutralStatus(entry),
@@ -356,6 +369,7 @@ function WorkGroupRows({
             workspaceRoot={workspaceRoot}
             activeTurnInProgress={activeTurnInProgress}
             elements={elements}
+            onDisclosure={onWorkEntryDisclosure}
           />
         ))}
       </HostView>
@@ -458,6 +472,7 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
   elements,
   onToggleTurnFold,
   onToggleWorkGroup,
+  onWorkEntryDisclosure,
 }: TranscriptRowSurfaceProps<M, P, D>) {
   const isCommentaryAssistant =
     row.kind === "message" && row.message.role === "assistant" && !row.showAssistantMeta;
@@ -493,6 +508,7 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
           workspaceRoot={workspaceRoot}
           activeTurnInProgress={activeTurnInProgress}
           elements={elements}
+          onWorkEntryDisclosure={onWorkEntryDisclosure}
         />
       ) : null}
       {row.kind === "work-toggle" ? (

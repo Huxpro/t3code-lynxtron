@@ -143,6 +143,7 @@ interface TimelineRowSharedState {
   onOpenTurnDiff: (turnId: TurnId, filePath?: string) => void;
   onToggleTurnFold: (turnId: TurnId) => void;
   onToggleWorkGroup: (groupId: string, anchorElement?: HTMLElement) => void;
+  onManualNavigation: () => void;
   compactChangedFiles: boolean;
 }
 
@@ -443,6 +444,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
       onOpenTurnDiff,
       onToggleTurnFold,
       onToggleWorkGroup,
+      onManualNavigation,
       compactChangedFiles,
     }),
     [
@@ -458,6 +460,7 @@ export const MessagesTimeline = memo(function MessagesTimeline({
       onOpenTurnDiff,
       onToggleTurnFold,
       onToggleWorkGroup,
+      onManualNavigation,
       compactChangedFiles,
     ],
   );
@@ -937,6 +940,7 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
       onToggleWorkGroup={(groupId, anchorElement) =>
         ctx.onToggleWorkGroup(groupId, anchorElement as HTMLElement | undefined)
       }
+      onWorkEntryDisclosure={ctx.onManualNavigation}
     />
   );
 });

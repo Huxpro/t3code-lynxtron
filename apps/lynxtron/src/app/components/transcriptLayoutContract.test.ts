@@ -239,6 +239,13 @@ describe("transcript layout contract", () => {
     );
   });
 
+  it("resets recycled work disclosures and routes expansion through manual navigation", () => {
+    expect(sharedRowSource).toContain("useEffect(() => setExpanded(false), [workEntry.id])");
+    expect(sharedRowSource).toContain("onDisclosure?.();\n              setExpanded");
+    expect(sharedRowSource).toContain("onWorkEntryDisclosure={onWorkEntryDisclosure}");
+    expect(timelineSource).toContain("onWorkEntryDisclosure={detachForManualNavigation}");
+  });
+
   it("keeps empty right-panel cards at the authority height", () => {
     const start = overrides.indexOf(".right-panel-empty-card {");
     const block = overrides.slice(start, overrides.indexOf("}", start));
