@@ -339,9 +339,13 @@ function renderBlock(
           className="md-blockquote"
           style={{ marginLeft: Math.max(0, (block.quoteDepth ?? 1) - 1) * 14 } as any}
         >
-          <text className="md-blockquote-text">
-            {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd)}
-          </text>
+          {block.children?.length ? (
+            block.children.map((child, index) => renderBlock(child, index, cwd, `${key}-quote`))
+          ) : (
+            <text className="md-blockquote-text">
+              {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd)}
+            </text>
+          )}
         </view>
       );
 

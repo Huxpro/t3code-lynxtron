@@ -84,7 +84,11 @@ describe("parseMarkdownBlocks", () => {
     expect(blocks[2]).toMatchObject({
       text: "Paragraph with **bold**, _italic_, `inline code`, and [a link](https://example.com).",
     });
-    expect(blocks[4]).toMatchObject({ quoteDepth: 1, text: "quoted\ntext" });
+    expect(blocks[4]).toMatchObject({
+      quoteDepth: 1,
+      text: "quoted\ntext",
+      children: [{ type: "paragraph", text: "quoted\ntext" }],
+    });
     expect(blocks[6]?.items).toEqual([
       expect.objectContaining({ kind: "unordered", content: "unordered" }),
       expect.objectContaining({ kind: "ordered", ordinal: 1, content: "ordered" }),
@@ -99,9 +103,51 @@ describe("parseMarkdownBlocks", () => {
 
   it("preserves nested blockquote depth as separate blocks", () => {
     expect(parseMarkdownBlocks("> outer\n>> nested\n>> still nested\n> outer again")).toEqual([
-      { type: "blockquote", text: "outer", quoteDepth: 1 },
-      { type: "blockquote", text: "nested\nstill nested", quoteDepth: 2 },
-      { type: "blockquote", text: "outer again", quoteDepth: 1 },
+      {
+        type: "blockquote",
+        text: "outer",
+        quoteDepth: 1,
+        children: [{ type: "paragraph", text: "outer" }],
+      },
+      {
+        type: "blockquote",
+        text: "nested\nstill nested",
+        quoteDepth: 2,
+        children: [{ type: "paragraph", text: "nested\nstill nested" }],
+      },
+      {
+        type: "blockquote",
+        text: "outer again",
+        quoteDepth: 1,
+        children: [{ type: "paragraph", text: "outer again" }],
+      },
+    ]);
+  });
+
+  it("preserves block structure inside a quote", () => {
+    expect(
+      parseMarkdownBlocks(
+        "> Context\n>\n> - first\n> - second\n>\n> ```ts\n> const answer = 42;\n> ```",
+      ),
+    ).toEqual([
+      {
+        type: "blockquote",
+        quoteDepth: 1,
+        text: "Context\n\n- first\n- second\n\n```ts\nconst answer = 42;\n```",
+        children: [
+          { type: "paragraph", text: "Context" },
+          { type: "empty" },
+          {
+            type: "list",
+            items: [
+              expect.objectContaining({ content: "first" }),
+              expect.objectContaining({ content: "second" }),
+            ],
+          },
+          { type: "empty" },
+          { type: "code", language: "ts", title: undefined, code: "const answer = 42;" },
+        ],
+      },
     ]);
   });
 

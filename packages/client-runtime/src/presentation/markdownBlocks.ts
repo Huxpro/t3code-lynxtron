@@ -193,7 +193,13 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         quoteLines.push(nestedMatch[2] ?? "");
         index++;
       }
-      blocks.push({ type: "blockquote", text: quoteLines.join("\n"), quoteDepth });
+      const quoteText = quoteLines.join("\n");
+      blocks.push({
+        type: "blockquote",
+        text: quoteText,
+        quoteDepth,
+        children: parseMarkdownBlocks(quoteText),
+      });
       continue;
     }
 

@@ -254,7 +254,9 @@ following-end` with the jump affordance visible only while detached. That gate
   the shared implementation; the Lynx suite retains only platform clipboard
   behavior. Indented continuation lines now remain inside their owning list
   item while nested markers keep their own depth, preventing multi-line GFM
-  bullets from being split into unrelated transcript paragraphs.
+  bullets from being split into unrelated transcript paragraphs. Blockquotes
+  now retain a recursive child-block projection, so quoted lists and fenced code
+  render as their original structures instead of flattening into inline text.
 
 ## PF4: Complete remote and multi-environment operation
 
