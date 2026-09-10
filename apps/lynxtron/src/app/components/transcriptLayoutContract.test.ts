@@ -252,6 +252,9 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("onImageExpand={onImageExpand}");
     expect(chatViewSource).toContain("<ImagePreviewOverlay");
     expect(chatViewSource).toContain("onImageExpand={setExpandedImage}");
+    expect(chatViewSource).toContain(
+      "useEffect(() => setExpandedImage(null), [activeThreadId, threadId])",
+    );
     expect(imagePreviewSource).toContain('aria-label="Close image preview"');
     expect(imagePreviewSource).toContain('aria-label="Previous image"');
     expect(imagePreviewSource).toContain('aria-label="Next image"');

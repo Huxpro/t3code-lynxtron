@@ -132,6 +132,8 @@ export function ChatView({ threadId }: ChatViewProps) {
     activeTurnId,
     checkpoints,
   } = useT3ClientState();
+  useEffect(() => setExpandedImage(null), [activeThreadId, threadId]);
+  const closeExpandedImage = useCallback(() => setExpandedImage(null), []);
   const [clientSettings] = useClientSettingsState();
   const rightPanel = useRightPanelState();
   const modelPickerOpen = useModelPickerOpen();
@@ -734,7 +736,7 @@ export function ChatView({ threadId }: ChatViewProps) {
       }
       overlays={
         expandedImage ? (
-          <ImagePreviewOverlay preview={expandedImage} onClose={() => setExpandedImage(null)} />
+          <ImagePreviewOverlay preview={expandedImage} onClose={closeExpandedImage} />
         ) : null
       }
     >
