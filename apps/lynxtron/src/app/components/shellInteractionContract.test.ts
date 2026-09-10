@@ -2205,6 +2205,14 @@ describe("desktop shell interaction contract", () => {
     expect(timelineSource).toContain("aria-label={`Open proposed plan: ${title}`}");
   });
 
+  it("disables destructive transcript revert while the agent is working", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain('aria-disabled={isWorking ? "true" : "false"}');
+    expect(timelineSource).toContain(
+      "bindtap={isWorking ? undefined : () => revertMessage(row.revertTurnCount!)}",
+    );
+  });
+
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
     const composer = componentSource("Composer.tsx");
     expect(clientSource).toContain("modelSelection: saved,");

@@ -265,6 +265,10 @@ following-end` with the jump affordance visible only while detached. That gate
   state and the existing panel route; its real OS tap remains covered by the
   documented Lynxtron 0.0.21 native-tap blocker rather than being marked as
   accepted from a source-level contract alone.
+- Native now matches Web's safety boundary for message reverts: while an agent
+  turn is working, the destructive "Revert to this message" action is visibly
+  disabled and has no tap handler; idle checkpoint-backed messages retain the
+  existing confirm-and-revert path.
 
 ## PF4: Complete remote and multi-environment operation
 

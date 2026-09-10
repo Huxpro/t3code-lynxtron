@@ -331,6 +331,7 @@ function buildLynxTranscriptRowElements(
   copiedMessageId: string | null,
   copyMessage: (messageId: string, text: string) => void,
   revertMessage: (turnCount: number) => void,
+  isWorking: boolean,
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
   return {
     userBubbleClassName: ({ row }) => {
@@ -402,9 +403,12 @@ function buildLynxTranscriptRowElements(
           </text>
           {typeof row.revertTurnCount === "number" ? (
             <view
-              className="transcript-message-meta__action"
+              className={`transcript-message-meta__action${
+                isWorking ? " transcript-message-meta__action--disabled" : ""
+              }`}
               aria-label="Revert to this message"
-              bindtap={() => revertMessage(row.revertTurnCount!)}
+              aria-disabled={isWorking ? "true" : "false"}
+              bindtap={isWorking ? undefined : () => revertMessage(row.revertTurnCount!)}
             >
               <Icon name="rotate-ccw" size={14} color="#818181" />
             </view>
@@ -639,6 +643,7 @@ export function MessagesTimeline({
         copiedMessageId,
         copyMessage,
         revertMessage,
+        isWorking,
       ),
     [
       clientSettings.timestampFormat,
@@ -648,6 +653,7 @@ export function MessagesTimeline({
       cwd,
       latestTurn?.turnId,
       revertMessage,
+      isWorking,
     ],
   );
 
