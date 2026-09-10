@@ -9,6 +9,7 @@ import type {
 } from "@t3tools/contracts";
 
 import { isLatestTurnSettled } from "./session.ts";
+import { deriveVisibleUserMessage } from "./userMessage.ts";
 
 /**
  * Renderer-neutral chat transcript projection shared by Web and Lynx.
@@ -250,7 +251,9 @@ export function deriveTimelineMinimapItems(
     items.push({
       id: row.id,
       rowIndex: index,
-      userText: compactTimelineMinimapPreview(row.message.text),
+      userText: compactTimelineMinimapPreview(
+        deriveVisibleUserMessage(row.message.text ?? "").visibleText,
+      ),
       assistantText,
     });
   }

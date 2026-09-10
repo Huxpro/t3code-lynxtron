@@ -14,6 +14,7 @@ export {
 } from "@t3tools/client-runtime/presentation/terminal-context";
 
 import { extractTrailingElementContexts, type ParsedElementContextEntry } from "./elementContext";
+import { deriveVisibleUserMessage } from "@t3tools/client-runtime/presentation/user-message";
 
 export interface TerminalContextSelection {
   terminalId: string;
@@ -210,9 +211,10 @@ export function deriveDisplayedUserMessageState(prompt: string): DisplayedUserMe
   // terminal block can be matched by `extractTrailingTerminalContexts`.
   const extractedElement = extractTrailingElementContexts(prompt);
   const extractedTerminal = extractTrailingTerminalContexts(extractedElement.promptText);
+  const shared = deriveVisibleUserMessage(prompt);
   return {
-    visibleText: extractedTerminal.promptText,
-    copyText: prompt,
+    visibleText: shared.visibleText,
+    copyText: shared.copyText,
     contextCount: extractedTerminal.contextCount,
     previewTitle: extractedTerminal.previewTitle,
     contexts: extractedTerminal.contexts,

@@ -558,6 +558,30 @@ describe("timeline minimap projection", () => {
       { id: "u2", rowIndex: 3, userText: "Second", assistantText: null },
     ]);
   });
+
+  it("keeps send-time context payloads out of minimap previews", () => {
+    const rows = [
+      {
+        kind: "message",
+        id: "u-context",
+        message: message({
+          id: "u-context",
+          role: "user",
+          text: [
+            "Inspect this",
+            "",
+            "<terminal_context>",
+            "- Terminal line 1:",
+            "  1 | secret output",
+            "</terminal_context>",
+          ].join("\n"),
+          createdAt: "2026-01-01T00:00:00.000Z",
+        }),
+      },
+    ] as unknown as Parameters<typeof deriveTimelineMinimapItems>[0];
+
+    expect(deriveTimelineMinimapItems(rows)[0]?.userText).toBe("Inspect this");
+  });
 });
 
 describe("computeMessageDurationStart", () => {

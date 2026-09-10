@@ -155,6 +155,10 @@
       "types": "./src/presentation/terminalContext.ts",
       "default": "./src/presentation/terminalContext.ts"
     },
+    "./presentation/user-message": {
+      "types": "./src/presentation/userMessage.ts",
+      "default": "./src/presentation/userMessage.ts"
+    },
     "./presentation/file-context": {
       "types": "./src/presentation/fileContext.ts",
       "default": "./src/presentation/fileContext.ts"

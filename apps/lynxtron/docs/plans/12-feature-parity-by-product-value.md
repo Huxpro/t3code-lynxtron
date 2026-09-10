@@ -260,6 +260,10 @@ following-end` with the jump affordance visible only while detached. That gate
   Expanding or collapsing a historical turn/work group uses the same manual-
   navigation detach path, preserving the reader's position instead of letting a
   subsequent streaming update snap back to the live edge.
+  Minimap user previews now use a shared visible-message projection that strips
+  trailing terminal/element context payloads while preserving the canonical raw
+  text for copy and provider history. Web's detailed context parser delegates its
+  visible/copy boundary to the same helper.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
