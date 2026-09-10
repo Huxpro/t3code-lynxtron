@@ -154,11 +154,13 @@ function LynxTurnDiffCard({
       : summary.status === "missing"
         ? "Checkpoint unavailable"
         : "Checkpoint failed";
-  const openDiff = (filePath?: string) =>
+  const openDiff = (filePath?: string) => {
+    onManualNavigation();
     uiActions.openRightPanelSurface("diff", {
       turnId: summary.turnId,
       filePath,
     });
+  };
 
   return (
     <ChangedFilesCardSurface

@@ -374,6 +374,21 @@ describe("transcript layout contract", () => {
     expect(timelineSource).not.toContain('icon: <Icon name="file-json"');
   });
 
+  it("detaches transcript follow before opening a checkpoint diff", () => {
+    const openDiffStart = timelineSource.indexOf("const openDiff =");
+    const detachStart = timelineSource.indexOf("onManualNavigation();", openDiffStart);
+    const panelOpenStart = timelineSource.indexOf(
+      'uiActions.openRightPanelSurface("diff"',
+      openDiffStart,
+    );
+    expect(openDiffStart).toBeGreaterThan(-1);
+    expect(detachStart).toBeGreaterThan(openDiffStart);
+    expect(detachStart).toBeLessThan(panelOpenStart);
+    expect(timelineSource).toContain("onClick={() => openDiff(summary.files[0]?.path)}");
+    expect(timelineSource).toContain("onSelect: () => openDiff(file.path)");
+    expect(timelineSource).toContain("onOpenFile={openDiff}");
+  });
+
   it("keeps shared user-row spacing in the native list-item measurement", () => {
     expect(overrides).toContain(".timeline-row-root--user {");
     expect(overrides).toContain(".timeline-row-root--user > .transcript-user-outer {");

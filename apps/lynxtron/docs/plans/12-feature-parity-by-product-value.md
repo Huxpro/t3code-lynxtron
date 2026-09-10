@@ -357,7 +357,9 @@ following-end` with the jump affordance visible only while detached. That gate
   output arrives. Ready checkpoints with zero additions and deletions now omit
   the empty stat label like Web instead of rendering `+0 −0` noise. Collapsed
   checkpoint previews also use the same path-aware file icon projection as the
-  expanded tree instead of labeling every file as generic JSON.
+  expanded tree instead of labeling every file as generic JSON. Opening a full
+  diff from the header, preview, or expanded tree now detaches transcript follow
+  first, so streaming output cannot move the history position behind the panel.
 - Native now matches Web's safety boundary for message reverts: while an agent
   turn is working, the destructive "Revert to this message" action is visibly
   disabled and has no tap handler; idle checkpoint-backed messages retain the
