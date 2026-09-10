@@ -62,6 +62,7 @@ import { t3ClientActions } from "../state/t3Client";
 import { useClientSettingsState } from "../state/prefsStore";
 import { deriveDisplayedUserMessageState } from "../../../../web/src/lib/terminalContext";
 import { LynxChangedFilesTree } from "./LynxChangedFilesTree";
+import { ProjectFileIcon } from "./ProjectFileIcon";
 import {
   layoutWorkingLabel,
   resolveWorkingLabelFullCell,
@@ -224,7 +225,8 @@ function LynxTurnDiffCard({
       previewFiles={preview.map((file) => ({
         key: file.path,
         name: changedFileName(file.path),
-        icon: <Icon name="file-json" size={12} color="#818181" />,
+        title: file.path,
+        icon: <ProjectFileIcon path={file.path} />,
         onSelect: () => openDiff(file.path),
       }))}
       expandedBody={

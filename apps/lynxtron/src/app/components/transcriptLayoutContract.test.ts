@@ -368,6 +368,12 @@ describe("transcript layout contract", () => {
     );
   });
 
+  it("uses path-aware file icons in changed-file previews like the expanded tree", () => {
+    expect(timelineSource).toContain("icon: <ProjectFileIcon path={file.path} />");
+    expect(timelineSource).toContain("title: file.path");
+    expect(timelineSource).not.toContain('icon: <Icon name="file-json"');
+  });
+
   it("keeps shared user-row spacing in the native list-item measurement", () => {
     expect(overrides).toContain(".timeline-row-root--user {");
     expect(overrides).toContain(".timeline-row-root--user > .transcript-user-outer {");
