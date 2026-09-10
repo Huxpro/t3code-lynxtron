@@ -9,6 +9,7 @@ import {
 } from "@lynx-js/react";
 import {
   parseMarkdownInline,
+  resolveInlineCodeFileLinkMeta,
   resolveMarkdownFileLinkMeta,
   resolveMarkdownImageSource,
   serializeMarkdownTable,
@@ -115,6 +116,14 @@ function markdownLinkContextMenuHandler(
   };
 }
 
+function inlinePresentationHref(
+  span: MarkdownInlinePresentation,
+  cwd: string | undefined,
+): string | null {
+  if (span.href) return span.href;
+  return span.code ? (resolveInlineCodeFileLinkMeta(span.text, cwd)?.targetPath ?? null) : null;
+}
+
 function renderInline(
   spans: ReadonlyArray<MarkdownInlinePresentation>,
   key: string,
@@ -123,19 +132,20 @@ function renderInline(
 ): ReactNode[] {
   return spans.map((span, index) => {
     const spanKey = `${key}-${index}`;
-    const handleTap = span.href
+    const href = inlinePresentationHref(span, cwd);
+    const handleTap = href
       ? () => {
           "background only";
-          activateMarkdownLink(span.href!, cwd);
+          activateMarkdownLink(href, cwd);
         }
       : undefined;
-    const handleContextMenu = markdownLinkContextMenuHandler(span.href, cwd);
+    const handleContextMenu = markdownLinkContextMenuHandler(href, cwd);
     const Inline = inlineHost ? HostInlineText : HostText;
     if (span.code) {
       return (
         <Inline
           key={spanKey}
-          className={`md-inline-code ${span.href ? "md-link" : ""}`}
+          className={`md-inline-code ${href ? "md-link" : ""}`}
           onClick={handleTap}
           onContextMenu={handleContextMenu}
         >
@@ -166,17 +176,18 @@ function renderInline(
 
 function renderInteractiveParagraph(text: string, key: string, cwd: string | undefined): ReactNode {
   const spans = parseMarkdownInline(text);
-  if (!spans.some((span) => span.href)) {
+  if (!spans.some((span) => inlinePresentationHref(span, cwd))) {
     return <text className="md-paragraph">{renderInline(spans, key, cwd)}</text>;
   }
   return (
     <view className="md-paragraph md-paragraph--segments" data-markdown-interactive-paragraph>
       {spans.map((span, index) => {
         const spanKey = `${key}-${index}`;
+        const href = inlinePresentationHref(span, cwd);
         const className = `${span.code ? "md-inline-code" : "md-inline"}${
-          span.href ? " md-link" : ""
+          href ? " md-link" : ""
         }${span.strikethrough ? " md-strikethrough" : ""}`;
-        const handleContextMenu = markdownLinkContextMenuHandler(span.href, cwd);
+        const handleContextMenu = markdownLinkContextMenuHandler(href, cwd);
         const content = (
           <HostText
             key={spanKey}
@@ -192,11 +203,11 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
             {span.text}
           </HostText>
         );
-        return span.href ? (
+        return href ? (
           <HostView
             key={spanKey}
             className="md-link-hit-target"
-            onClick={() => activateMarkdownLink(span.href!, cwd)}
+            onClick={() => activateMarkdownLink(href, cwd)}
             onContextMenu={handleContextMenu}
           >
             {content}
@@ -704,8 +715,9 @@ export function InlineMarkdownRenderer({
   const spans = useMemo(() => parseMarkdownInline(text), [text]);
   return (
     <view className={["inline-markdown-row", className].filter(Boolean).join(" ")}>
-      {spans.flatMap((span, index) =>
-        span.code ? (
+      {spans.flatMap((span, index) => {
+        const href = inlinePresentationHref(span, cwd);
+        return span.code ? (
           wrapCodeWords && span.text.includes(" ") ? (
             span.text.split(/(?=\s+\S+$)/u).map((part, partIndex) => (
               <view
@@ -721,9 +733,14 @@ export function InlineMarkdownRenderer({
               </view>
             ))
           ) : (
-            <view key={`inline-${index}`} className="inline-markdown-code">
+            <HostView
+              key={`inline-${index}`}
+              className={`inline-markdown-code${href ? " md-link" : ""}`}
+              onClick={href ? () => activateMarkdownLink(href, cwd) : undefined}
+              onContextMenu={markdownLinkContextMenuHandler(href, cwd)}
+            >
               <text className="inline-markdown-code-label">{span.text}</text>
-            </view>
+            </HostView>
           )
         ) : (
           <text
@@ -738,8 +755,8 @@ export function InlineMarkdownRenderer({
           >
             {span.text}
           </text>
-        ),
-      )}
+        );
+      })}
     </view>
   );
 }

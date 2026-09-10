@@ -213,7 +213,7 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain("uiActions.openFileSurface(fileLink.workspaceRelativePath)");
     expect(markdown).toContain("data-markdown-interactive-paragraph");
     expect(markdown).toContain('className="md-link-hit-target"');
-    expect(markdown).toContain("onClick={() => activateMarkdownLink(span.href!, cwd)}");
+    expect(markdown).toContain("onClick={() => activateMarkdownLink(href, cwd)}");
     expect(markdown).toContain("showMarkdownFileLinkContextMenu");
     expect(markdown).toContain('{ id: "open", label: "Open in editor" }');
     expect(markdown).toContain('{ id: "copy-relative", label: "Copy relative path" }');
@@ -227,6 +227,11 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain("clientCapabilities.clipboard.writeText(href)");
     expect(markdown.indexOf("uiActions.openFileSurface")).toBeLessThan(
       markdown.indexOf("clientCapabilities.navigation.canOpenPath()"),
+    );
+    expect(markdown).toContain("resolveInlineCodeFileLinkMeta(span.text, cwd)");
+    expect(markdown).toContain("inlinePresentationHref(span, cwd)");
+    expect(markdown).toContain(
+      "onClick={href ? () => activateMarkdownLink(href, cwd) : undefined}",
     );
   });
 

@@ -401,6 +401,10 @@ following-end` with the jump affordance visible only while detached. That gate
   Relative workspace images resolve through the existing thread-scoped signed
   asset command, refresh before expiry, and retain explicit loading/failure
   states instead of resolving accidentally against the Lynx bundle origin.
+- Native block and single-line Markdown now apply the shared bare inline-code
+  file resolver used by Web. File-shaped code spans open the internal file
+  surface and expose open/copy context actions, while commands, identifiers,
+  hosts, and git refs remain ordinary code.
 
 ## PF4: Complete remote and multi-environment operation
 
