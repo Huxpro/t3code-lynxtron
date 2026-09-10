@@ -8,6 +8,7 @@ import {
   type RuntimeMode,
   type ThreadId,
   type ThreadTurnStartBootstrap,
+  type UploadChatAttachment,
 } from "@t3tools/contracts";
 
 export type LocalDraftThreadEnvMode = "local" | "worktree";
@@ -20,6 +21,9 @@ export interface LocalDraftThread extends OrchestrationThreadShell {
 export type LocalDraftThreadsByProjectId = Readonly<Record<string, LocalDraftThread>>;
 
 export type ComposerDraftTextByScopeKey = Readonly<Record<string, string>>;
+export type ComposerDraftAttachmentsByScopeKey = Readonly<
+  Record<string, ReadonlyArray<UploadChatAttachment>>
+>;
 
 export function composerDraftScopeKey(input: {
   readonly threadId?: string;
@@ -43,6 +47,61 @@ export function normalizeComposerDraftTextByScopeKey(value: unknown): ComposerDr
         text.length > 0,
     ),
   );
+}
+
+export function normalizeComposerDraftAttachmentsByScopeKey(
+  value: unknown,
+): ComposerDraftAttachmentsByScopeKey {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value).flatMap(([key, attachments]) => {
+      const validKey =
+        (key.startsWith("thread:") || key.startsWith("project:")) &&
+        key.length > key.indexOf(":") + 1;
+      if (!validKey || !Array.isArray(attachments)) return [];
+      const valid = attachments.filter(
+        (attachment): attachment is UploadChatAttachment =>
+          typeof attachment === "object" &&
+          attachment !== null &&
+          (attachment as UploadChatAttachment).type === "image" &&
+          typeof (attachment as UploadChatAttachment).name === "string" &&
+          typeof (attachment as UploadChatAttachment).mimeType === "string" &&
+          (attachment as UploadChatAttachment).mimeType.startsWith("image/") &&
+          typeof (attachment as UploadChatAttachment).sizeBytes === "number" &&
+          typeof (attachment as UploadChatAttachment).dataUrl === "string" &&
+          (attachment as UploadChatAttachment).dataUrl.startsWith("data:image/"),
+      );
+      return valid.length > 0 ? [[key, valid]] : [];
+    }),
+  );
+}
+
+export function addComposerDraftAttachments(
+  draftsByScopeKey: ComposerDraftAttachmentsByScopeKey,
+  scopeKey: string,
+  attachments: ReadonlyArray<UploadChatAttachment>,
+  limit = 8,
+): ComposerDraftAttachmentsByScopeKey {
+  const current = draftsByScopeKey[scopeKey] ?? [];
+  const next = [...current, ...attachments].slice(0, limit);
+  return next.length === current.length && next.every((item, index) => item === current[index])
+    ? draftsByScopeKey
+    : { ...draftsByScopeKey, [scopeKey]: next };
+}
+
+export function removeComposerDraftAttachment(
+  draftsByScopeKey: ComposerDraftAttachmentsByScopeKey,
+  scopeKey: string,
+  index: number,
+): ComposerDraftAttachmentsByScopeKey {
+  const current = draftsByScopeKey[scopeKey] ?? [];
+  const next = current.filter((_, currentIndex) => currentIndex !== index);
+  if (next.length === current.length) return draftsByScopeKey;
+  if (next.length === 0) {
+    const { [scopeKey]: _cleared, ...remaining } = draftsByScopeKey;
+    return remaining;
+  }
+  return { ...draftsByScopeKey, [scopeKey]: next };
 }
 
 export function projectComposerDraftText(

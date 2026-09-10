@@ -1,7 +1,6 @@
 export const T3_CLIPBOARD_WRITE_TEXT_METHOD = "t3:capability.clipboard.write-text";
 export const T3_CONTEXT_MENU_SHOW_METHOD = "t3:capability.context-menu.show";
 export const T3_CONFIRM_METHOD = "t3:capability.confirm";
-
 export interface NativeConfirmInput {
   readonly message: string;
   readonly detail?: string;

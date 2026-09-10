@@ -2805,6 +2805,42 @@
   line-height: 23px;
   pointer-events: none;
 }
+.composer-attachment-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 12px 16px 0;
+  gap: 8px;
+  box-sizing: border-box;
+}
+.composer-attachment-card {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  overflow: hidden;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(var(--border-rgb), 0.8);
+  border-radius: 8px;
+  background-color: var(--background);
+}
+.composer-attachment-preview {
+  width: 62px;
+  height: 62px;
+}
+.composer-attachment-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background-color: rgba(var(--background-rgb), 0.8);
+}
 .composer-context-picker {
   position: absolute;
   left: 0;

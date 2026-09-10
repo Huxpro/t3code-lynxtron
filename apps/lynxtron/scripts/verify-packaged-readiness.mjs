@@ -3459,6 +3459,55 @@ async function verifyNewThreadDraftLifecycle({
               )}`,
             );
           }
+          const attachment = {
+            type: "image",
+            name: "one-pixel.png",
+            mimeType: "image/png",
+            sizeBytes: 68,
+            dataUrl:
+              "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9ZlWQAAAAASUVORK5CYII=",
+          };
+          const attachmentFixtureResponse = await client.runCdp("Runtime.evaluate", {
+            expression: `globalThis.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__?.(${JSON.stringify(
+              attachment,
+            )}) ?? false`,
+            returnByValue: true,
+          });
+          if (commandResult(attachmentFixtureResponse)?.value !== true) {
+            throw new Error(
+              `Native attachment fixture was not applied: ${JSON.stringify(
+                attachmentFixtureResponse,
+              )}`,
+            );
+          }
+          const attachmentList = await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-attachment-list",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-composer-attachment-count"] === "1",
+          });
+          const preview = await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-attachment-preview",
+            timeoutMs,
+            predicate: (measurement) => measurement !== null,
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".composer-attachment-remove",
+            timeoutMs,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-attachment-list",
+            timeoutMs,
+            predicate: (measurement) => measurement === null,
+          });
           return {
             status: "pass",
             canonicalThreadId,
@@ -3466,6 +3515,11 @@ async function verifyNewThreadDraftLifecycle({
             text: restored.activeComposerDraftText,
             primaryActionState: "send",
             placeholderVisible: false,
+            attachmentLifecycle: {
+              addedCount: Number(attachmentList.attributes["data-composer-attachment-count"]),
+              preview: preview.rect,
+              removed: true,
+            },
           };
         })();
   await tapSelector({

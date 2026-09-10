@@ -1014,6 +1014,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "state.activeComposerDraftText === draftText");
     assert.include(source, 'measurement?.attributes["data-composer-primary-state"] === "send"');
     assert.include(source, "placeholderVisible: false");
+    assert.include(source, "__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__");
+    assert.include(source, 'selector: ".composer-attachment-remove"');
+    assert.include(source, "attachmentLifecycle: {");
     assert.include(source, "routeRoundTrip,");
     assert.include(source, "shouldVerifyNewThreadDraftLifecycle ||");
     assert.include(source, "Native draft text did not persist before cold restart");

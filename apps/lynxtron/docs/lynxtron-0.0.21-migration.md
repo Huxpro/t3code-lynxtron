@@ -77,6 +77,18 @@ builtin-browser implementation and framework staging do not regress while the
 host runtime, builder, and dev plugin move to 0.0.21. Remove this exception when
 the 0.0.21 macOS arm64 asset is republished as a valid archive.
 
+### Native open-dialog regression
+
+Opening `dialog.showOpenDialog` from the 0.0.21 runtime consistently raises a
+native LogBox error, `FiberSetAttribute param 0 should be RefCounted`. The same
+error reproduced three times with a raw Lynx trigger, a shared `HostButton`, a
+window-attached sheet, an application-modal dialog, and with all renderer state
+updates removed from the open/cancel path. The JavaScript console remains clean,
+which localizes the failure below the app renderer. The Composer therefore does
+not expose the native image-picker affordance yet. Attachment DTO transport and
+preview/remove/send state remain implemented and testable without advertising an
+input path that fails acceptance.
+
 ## Verification
 
 - connector transport tests: 30/30 passed;

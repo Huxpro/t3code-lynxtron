@@ -607,6 +607,10 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("nativeEditorValueRef.current");
     expect(composer).toContain('method: "setValue"');
     expect(composer).toContain("[editorKey, editorRevision, editorValue]");
+    expect(composer).toContain('className="composer-attachment-card"');
+    expect(composer).toContain("aria-label={`Remove ${attachment.name}`}");
+    expect(composer).toContain("__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__");
+    expect(chatView).toContain("clearComposerAttachments(composerDraftKey)");
     expect(chatView).toContain("composerDraftTextByScopeKey[composerDraftKey]");
     expect(composer).toContain("responsiveMenuWheelDelta(");
     expect(modelPicker).toContain('className="picker-list"');
@@ -2038,7 +2042,7 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain(".catch((error: unknown) => {");
     expect(clientSource).toContain("sessionError: presentThreadCommandErrorMessage(");
     const composerSource = componentSource("Composer.tsx");
-    expect(composerSource).toContain("if (await current.onSend(text))");
+    expect(composerSource).toContain("if (await current.onSend(text, current.attachments))");
     expect(composerSource).toContain('onValueChange("");');
   });
 
@@ -2048,7 +2052,8 @@ describe("desktop shell interaction contract", () => {
 
     expect(clientSource).toContain("const draftThread = createLocalDraftThread");
     expect(clientSource).toContain("draftThread,");
-    expect(clientSource).toContain("buildDraftThreadTurnBootstrap(draftThread");
+    expect(clientSource).toContain("buildDraftThreadTurnBootstrap(");
+    expect(clientSource).toContain("draftThread,");
     expect(clientSource).not.toContain("const result = await bridge.createThread");
     expect(clientSource).toContain("projectDraftThreadModelSelection");
     expect(clientSource).toContain("projectDraftThreadRuntimeMode");

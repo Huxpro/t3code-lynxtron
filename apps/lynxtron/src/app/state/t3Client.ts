@@ -11,10 +11,12 @@ import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
 import {
   buildDraftThreadTurnBootstrap,
+  addComposerDraftAttachments,
   composerDraftScopeKey,
   createLocalDraftThread,
   forgetLocalDraftThread,
   normalizeComposerDraftTextByScopeKey,
+  removeComposerDraftAttachment,
   projectDraftThreadInteractionMode,
   projectComposerDraftText,
   projectDraftThreadModelSelection,
@@ -27,6 +29,7 @@ import {
   type LocalDraftThreadEnvMode,
   type LocalDraftThreadsByProjectId,
   type ComposerDraftTextByScopeKey,
+  type ComposerDraftAttachmentsByScopeKey,
 } from "@t3tools/client-runtime/presentation/draft-thread";
 import {
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
@@ -182,6 +185,7 @@ export interface T3ClientState {
   readonly draftThread?: LocalDraftThread;
   readonly draftThreadsByProjectId: LocalDraftThreadsByProjectId;
   readonly composerDraftTextByScopeKey: ComposerDraftTextByScopeKey;
+  readonly composerDraftAttachmentsByScopeKey: ComposerDraftAttachmentsByScopeKey;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -221,6 +225,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   archivedThreads: [],
   draftThreadsByProjectId: {},
   composerDraftTextByScopeKey: {},
+  composerDraftAttachmentsByScopeKey: {},
   messages: [],
   checkpoints: [],
   sessionStatus: "idle",
@@ -808,6 +813,9 @@ function installTransportDevToolHook(): void {
         ? (state.composerDraftTextByScopeKey[activeComposerDraftKey] ?? "")
         : "",
       composerDraftTextByScopeKey: state.composerDraftTextByScopeKey,
+      activeComposerDraftAttachments: activeComposerDraftKey
+        ? (state.composerDraftAttachmentsByScopeKey[activeComposerDraftKey] ?? [])
+        : [],
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
@@ -1198,6 +1206,37 @@ function setComposerDraftText(scopeKey: string, text: string): void {
   }, 300);
 }
 
+function addComposerAttachments(
+  scopeKey: string,
+  attachments: ReadonlyArray<UploadChatAttachment>,
+): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  patchState({
+    composerDraftAttachmentsByScopeKey: addComposerDraftAttachments(
+      state.composerDraftAttachmentsByScopeKey,
+      scopeKey,
+      attachments,
+    ),
+  });
+}
+
+function removeComposerAttachment(scopeKey: string, index: number): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  patchState({
+    composerDraftAttachmentsByScopeKey: removeComposerDraftAttachment(
+      state.composerDraftAttachmentsByScopeKey,
+      scopeKey,
+      index,
+    ),
+  });
+}
+
+function clearComposerAttachments(scopeKey: string): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const { [scopeKey]: _cleared, ...remaining } = state.composerDraftAttachmentsByScopeKey;
+  patchState({ composerDraftAttachmentsByScopeKey: remaining });
+}
+
 function sendPrompt(
   text: string,
   bootstrap?: ThreadTurnStartBootstrap,
@@ -1208,9 +1247,15 @@ function sendPrompt(
   const threadId = state.activeThreadId;
   const draftThread = state.draftThread?.id === threadId ? state.draftThread : undefined;
   const bridge = getBridge();
-  if (!trimmed || !threadId || !bridge?.sendPrompt) return Promise.resolve(false);
+  if ((!trimmed && attachments.length === 0) || !threadId || !bridge?.sendPrompt) {
+    return Promise.resolve(false);
+  }
   const resolvedBootstrap = draftThread
-    ? buildDraftThreadTurnBootstrap(draftThread, truncate(trimmed), bootstrap)
+    ? buildDraftThreadTurnBootstrap(
+        draftThread,
+        truncate(trimmed || attachments[0]?.name || "New thread"),
+        bootstrap,
+      )
     : bootstrap;
   patchState({ sessionError: null });
   try {
@@ -2070,6 +2115,7 @@ function closeTerminal(input: TerminalCloseInput): Promise<void> {
 }
 
 export const t3ClientActions = {
+  addComposerAttachments,
   archiveThread,
   browseFilesystem,
   createAssetUrl,
@@ -2114,6 +2160,7 @@ export const t3ClientActions = {
   writeTerminal,
   resizeTerminal,
   closeTerminal,
+  clearComposerAttachments,
   settleThread,
   unsettleThread,
   unsnoozeThread,
@@ -2132,5 +2179,6 @@ export const t3ClientActions = {
   updateProjectScripts,
   upsertKeybinding,
   removeKeybinding,
+  removeComposerAttachment,
   writeProjectFile,
 } as const;

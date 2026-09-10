@@ -82,6 +82,7 @@ import approvalEyebrowUrl from "../assets/approval-eyebrow@2x.png?external";
 import approvalSummaryUrl from "../assets/approval-summary@2x.png?external";
 import { useT3ProjectFileScripts } from "../hooks/useT3ProjectFileScripts";
 import type { ProjectScript } from "@t3tools/contracts";
+import type { UploadChatAttachment } from "@t3tools/contracts";
 import { runProjectScriptInTerminal } from "./projectActionImports.logic";
 
 interface ChatViewProps {
@@ -102,6 +103,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     draftHeroThreadId,
     draftThread,
     composerDraftTextByScopeKey,
+    composerDraftAttachmentsByScopeKey,
     messages,
     sessionStatus,
     sessionError,
@@ -461,21 +463,25 @@ export function ChatView({ threadId }: ChatViewProps) {
   );
 
   const handleSend = useCallback(
-    (text: string): Promise<boolean> => {
+    (text: string, attachments: ReadonlyArray<UploadChatAttachment>): Promise<boolean> => {
       if (workspaceMode === "worktree" && !workspaceModeLocked && activeProject && checkoutBranch) {
-        return sendPrompt(text, {
-          prepareWorktree: {
-            projectCwd: activeProject.workspaceRoot,
-            baseBranch: checkoutBranch,
-            ...(startFromOrigin ? { startFromOrigin: true } : {}),
+        return sendPrompt(
+          text,
+          {
+            prepareWorktree: {
+              projectCwd: activeProject.workspaceRoot,
+              baseBranch: checkoutBranch,
+              ...(startFromOrigin ? { startFromOrigin: true } : {}),
+            },
+            runSetupScript: true,
           },
-          runSetupScript: true,
-        });
+          attachments,
+        );
       }
       if (workspaceMode === "worktree" && !workspaceModeLocked && !checkoutBranch) {
         return Promise.resolve(false);
       }
-      return sendPrompt(text);
+      return sendPrompt(text, undefined, attachments);
     },
     [
       activeProject,
@@ -494,6 +500,9 @@ export function ChatView({ threadId }: ChatViewProps) {
   const composerDraftText = composerDraftKey
     ? (composerDraftTextByScopeKey[composerDraftKey] ?? "")
     : "";
+  const composerDraftAttachments = composerDraftKey
+    ? (composerDraftAttachmentsByScopeKey[composerDraftKey] ?? [])
+    : [];
   const handleComposerDraftTextChange = useCallback(
     (text: string) => {
       if (composerDraftKey) t3ClientActions.setComposerDraftText(composerDraftKey, text);
@@ -915,9 +924,21 @@ export function ChatView({ threadId }: ChatViewProps) {
         onQuestionCustomAnswerChange={handleQuestionCustomAnswerChange}
         value={composerDraftText}
         onValueChange={handleComposerDraftTextChange}
+        attachments={composerDraftAttachments}
+        onAddAttachments={(attachments) => {
+          if (composerDraftKey)
+            t3ClientActions.addComposerAttachments(composerDraftKey, attachments);
+        }}
+        onRemoveAttachment={(index) => {
+          if (composerDraftKey) t3ClientActions.removeComposerAttachment(composerDraftKey, index);
+        }}
         disabled={status !== "ready" || sessionStatus === "starting"}
         busy={sessionWorking}
-        onSend={handleSend}
+        onSend={async (text, attachments) => {
+          const sent = await handleSend(text, attachments);
+          if (sent && composerDraftKey) t3ClientActions.clearComposerAttachments(composerDraftKey);
+          return sent;
+        }}
         onStop={interrupt}
         onModelTap={providerAvailable ? uiActions.toggleModelPicker : undefined}
         onModelPickerClose={uiActions.closeModelPicker}

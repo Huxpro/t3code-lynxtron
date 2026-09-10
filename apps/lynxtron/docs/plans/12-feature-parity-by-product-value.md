@@ -154,6 +154,13 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
 - Connector reconnect restoration, attachments, and terminal/element context
   lifecycles remain open; this checkpoint does not
   satisfy the PF2 exit criteria by itself.
+- Attachment upload DTOs now cross the shared command builder, Browser live
+  connector, Native main bridge, and server normalizer. Native draft state can
+  render and remove the same 64 px image-card anatomy and preserves attachments
+  after a failed send, clearing them only on success. The user-visible native
+  picker remains hidden because Lynxtron 0.0.21 `dialog.showOpenDialog` triggers
+  `FiberSetAttribute param 0 should be RefCounted` in three independent real
+  window trials; no broken affordance is shipped.
 
 ## PF3: Complete transcript navigation and interaction
 

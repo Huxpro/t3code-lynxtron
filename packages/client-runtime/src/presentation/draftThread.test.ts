@@ -8,12 +8,15 @@ import {
 } from "@t3tools/contracts";
 
 import {
+  addComposerDraftAttachments,
   buildDraftThreadTurnBootstrap,
   composerDraftScopeKey,
   createLocalDraftThread,
   forgetLocalDraftThread,
+  normalizeComposerDraftAttachmentsByScopeKey,
   projectDraftThreadInteractionMode,
   projectComposerDraftText,
+  removeComposerDraftAttachment,
   normalizeComposerDraftTextByScopeKey,
   projectDraftThreadModelSelection,
   projectDraftThreadRuntimeMode,
@@ -64,6 +67,25 @@ describe("local draft thread", () => {
       "project:project-a": "keep",
       "thread:thread-a": "also keep",
     });
+  });
+
+  it("normalizes, limits, and removes persisted image attachments by scope", () => {
+    const image = {
+      type: "image" as const,
+      name: "diagram.png",
+      mimeType: "image/png",
+      sizeBytes: 3,
+      dataUrl: "data:image/png;base64,AQID",
+    };
+    expect(
+      normalizeComposerDraftAttachmentsByScopeKey({
+        "project:project-a": [image, { ...image, mimeType: "text/plain" }],
+        legacy: [image],
+      }),
+    ).toEqual({ "project:project-a": [image] });
+    const added = addComposerDraftAttachments({}, "project:project-a", [image, image], 1);
+    expect(added).toEqual({ "project:project-a": [image] });
+    expect(removeComposerDraftAttachment(added, "project:project-a", 0)).toEqual({});
   });
 
   it("remembers one reusable local draft per project", () => {

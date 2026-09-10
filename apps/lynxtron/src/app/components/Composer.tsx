@@ -23,7 +23,11 @@ import {
   projectComposerContext,
   type ContextWindowSnapshot,
 } from "@t3tools/client-runtime/presentation/composer";
-import type { ProviderInteractionMode, RuntimeMode } from "@t3tools/contracts";
+import {
+  type ProviderInteractionMode,
+  type RuntimeMode,
+  type UploadChatAttachment,
+} from "@t3tools/contracts";
 import type {
   ProjectEntry,
   ServerProviderSkill,
@@ -107,7 +111,10 @@ interface ComposerProps {
   onQuestionCustomAnswerChange?: (value: string) => void;
   value: string;
   onValueChange: (value: string) => void;
-  onSend: (text: string) => Promise<boolean>;
+  attachments: ReadonlyArray<UploadChatAttachment>;
+  onAddAttachments: (attachments: ReadonlyArray<UploadChatAttachment>) => void;
+  onRemoveAttachment: (index: number) => void;
+  onSend: (text: string, attachments: ReadonlyArray<UploadChatAttachment>) => Promise<boolean>;
   onStop: () => void;
   onModelTap?: () => void;
   onModelPickerClose?: () => void;
@@ -185,6 +192,9 @@ export function Composer({
   onQuestionCustomAnswerChange,
   value,
   onValueChange,
+  attachments,
+  onAddAttachments,
+  onRemoveAttachment,
   onSend,
   onStop,
   onModelTap,
@@ -404,6 +414,7 @@ export function Composer({
   useEffect(() => {
     const diagnosticsGlobal = globalThis as {
       __T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?: (value: string) => boolean;
+      __T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__?: (attachment: UploadChatAttachment) => boolean;
       __T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
       __T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?: (offset: number) => Promise<unknown>;
     };
@@ -415,16 +426,29 @@ export function Composer({
       else onValueChange(nextValue);
       return true;
     };
+    diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__ = (attachment) => {
+      if (questionMode || approvalActions) return false;
+      onAddAttachments([attachment]);
+      return true;
+    };
     diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__ = (deltaY) =>
       runOnMainThread(handleModelOptionMenuWheel)({ deltaY } as MainThread.WheelEvent);
     diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__ = (offset) =>
       runOnMainThread(scrollCompactControlsMenu)(offset);
     return () => {
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__;
+      delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__;
     };
-  }, [onQuestionCustomAnswerChange, onValueChange, questionMode, viewport.testResize]);
+  }, [
+    approvalActions,
+    onAddAttachments,
+    onQuestionCustomAnswerChange,
+    onValueChange,
+    questionMode,
+    viewport.testResize,
+  ]);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
@@ -460,7 +484,7 @@ export function Composer({
   });
   const sendState = deriveComposerSendState({
     prompt: value,
-    imageCount: 0,
+    imageCount: attachments.length,
     terminalContexts: [],
   });
   const primaryActionRef = useRef({
@@ -468,6 +492,7 @@ export function Composer({
     busy,
     trimmedPrompt: sendState.trimmedPrompt,
     onSend,
+    attachments,
     onStop,
   });
   primaryActionRef.current = {
@@ -475,6 +500,7 @@ export function Composer({
     busy,
     trimmedPrompt: sendState.trimmedPrompt,
     onSend,
+    attachments,
     onStop,
   };
 
@@ -574,15 +600,14 @@ export function Composer({
     }
     if (current.disabled) return;
     const text = current.trimmedPrompt;
-    if (!text) return;
-    if (await current.onSend(text)) {
+    if (!text && current.attachments.length === 0) return;
+    if (await current.onSend(text, current.attachments)) {
       onValueChange("");
       setComposerCursor(0);
       setDismissedContextTrigger(null);
       setEditorRevision((revision) => revision + 1);
     }
   }, [onValueChange]);
-
   const editorValue = questionMode ? (questionCustomAnswer ?? "") : value;
   const editorKey = questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor";
   useEffect(() => {
@@ -755,6 +780,33 @@ export function Composer({
           }
           elements={{
             renderBanners: () => pendingBanner,
+            renderAttachments: () =>
+              questionMode || approvalActions ? null : (
+                <>
+                  {attachments.length > 0 ? (
+                    <view
+                      className="composer-attachment-list"
+                      data-composer-attachment-count={String(attachments.length)}
+                    >
+                      {attachments.map((attachment, index) => (
+                        <view
+                          key={`${attachment.name}:${index}`}
+                          className="composer-attachment-card"
+                        >
+                          <image className="composer-attachment-preview" src={attachment.dataUrl} />
+                          <view
+                            className="composer-attachment-remove"
+                            aria-label={`Remove ${attachment.name}`}
+                            bindtap={() => onRemoveAttachment(index)}
+                          >
+                            <Icon name="x" size={12} color="#f5f5f5" />
+                          </view>
+                        </view>
+                      ))}
+                    </view>
+                  ) : null}
+                </>
+              ),
             renderEditor: () => (
               <>
                 {editorValue.length === 0 ? (
