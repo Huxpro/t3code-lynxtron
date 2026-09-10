@@ -262,7 +262,7 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("<MarkdownRenderer text={preview}");
     expect(timelineSource).toContain("cwd={cwd} threadId={threadId}");
     expect(timelineSource).toContain("Open full plan");
-    expect(timelineSource).toContain('onClick={() => uiActions.openRightPanelSurface("plan")}');
+    expect(timelineSource).toContain('uiActions.openRightPanelSurface("plan");');
   });
 
   it("detaches follow before expanding table cells and resets recycled state", () => {
@@ -387,6 +387,19 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("onClick={() => openDiff(summary.files[0]?.path)}");
     expect(timelineSource).toContain("onSelect: () => openDiff(file.path)");
     expect(timelineSource).toContain("onOpenFile={openDiff}");
+  });
+
+  it("detaches transcript follow before opening the Native plan panel", () => {
+    const planCardStart = timelineSource.indexOf("function LynxProposedPlanCard");
+    const detachStart = timelineSource.indexOf("onManualNavigation();", planCardStart);
+    const panelOpenStart = timelineSource.indexOf(
+      'uiActions.openRightPanelSurface("plan")',
+      planCardStart,
+    );
+    expect(planCardStart).toBeGreaterThan(-1);
+    expect(detachStart).toBeGreaterThan(planCardStart);
+    expect(detachStart).toBeLessThan(panelOpenStart);
+    expect(timelineSource).toContain("onManualNavigation={onManualNavigation}");
   });
 
   it("keeps shared user-row spacing in the native list-item measurement", () => {

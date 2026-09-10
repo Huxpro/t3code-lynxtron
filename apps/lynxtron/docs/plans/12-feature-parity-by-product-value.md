@@ -340,7 +340,8 @@ following-end` with the jump affordance visible only while detached. That gate
   accepted from a source-level contract alone.
   The card now also renders a shared four-line Markdown preview with the title
   stripped, so the transcript preserves actual plan meaning before navigation
-  instead of presenting only a static title.
+  instead of presenting only a static title. Opening the Native Plan panel now
+  detaches transcript follow before the panel changes the timeline viewport.
 - The Native Plan panel now copies the same normalized export Markdown as Web,
   with pending/copied/failed feedback scoped to the active plan and reset when
   plan identity changes. Download and save-to-workspace remain separate host

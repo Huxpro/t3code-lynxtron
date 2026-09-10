@@ -255,10 +255,12 @@ function LynxProposedPlanCard({
   plan,
   cwd,
   threadId,
+  onManualNavigation,
 }: {
   plan: OrchestrationProposedPlan;
   cwd: string | undefined;
   threadId: ThreadId | undefined;
+  onManualNavigation: () => void;
 }) {
   const title = proposedPlanTitle(plan.planMarkdown) ?? "Proposed plan";
   const preview = buildCollapsedProposedPlanPreviewMarkdown(plan.planMarkdown, { maxLines: 4 });
@@ -267,7 +269,10 @@ function LynxProposedPlanCard({
       className="plan-row"
       aria-label={`Open proposed plan: ${title}`}
       data-transcript-plan-open="true"
-      onClick={() => uiActions.openRightPanelSurface("plan")}
+      onClick={() => {
+        onManualNavigation();
+        uiActions.openRightPanelSurface("plan");
+      }}
     >
       <text className="plan-row__eyebrow">Proposed plan</text>
       <text className="plan-row__title" text-maxline="2">
@@ -607,7 +612,12 @@ function buildLynxTranscriptRowElements(
       ) : null;
     },
     renderProposedPlanCard: ({ row }) => (
-      <LynxProposedPlanCard plan={row.proposedPlan} cwd={cwd} threadId={threadId} />
+      <LynxProposedPlanCard
+        plan={row.proposedPlan}
+        cwd={cwd}
+        threadId={threadId}
+        onManualNavigation={onManualNavigation}
+      />
     ),
     renderWorkIcon: ({ name, className }) =>
       name === "terminal" ? (
