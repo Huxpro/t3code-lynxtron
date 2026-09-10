@@ -14,6 +14,7 @@ import {
   toggleComposerInteractionMode,
 } from "@t3tools/client-runtime/presentation/composer";
 import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
+import { appendTerminalContextsToPrompt } from "@t3tools/client-runtime/presentation/terminal-context";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
 import { projectConnectionLifecycle } from "@t3tools/client-runtime/connection/presentation";
 import {
@@ -104,6 +105,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     draftThread,
     composerDraftTextByScopeKey,
     composerDraftAttachmentsByScopeKey,
+    composerTerminalContextsByScopeKey,
     messages,
     sessionStatus,
     sessionError,
@@ -502,6 +504,9 @@ export function ChatView({ threadId }: ChatViewProps) {
     : "";
   const composerDraftAttachments = composerDraftKey
     ? (composerDraftAttachmentsByScopeKey[composerDraftKey] ?? [])
+    : [];
+  const composerTerminalContexts = composerDraftKey
+    ? (composerTerminalContextsByScopeKey[composerDraftKey] ?? [])
     : [];
   const handleComposerDraftTextChange = useCallback(
     (text: string) => {
@@ -925,6 +930,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         value={composerDraftText}
         onValueChange={handleComposerDraftTextChange}
         attachments={composerDraftAttachments}
+        terminalContexts={composerTerminalContexts}
         onAddAttachments={(attachments) => {
           if (composerDraftKey)
             t3ClientActions.addComposerAttachments(composerDraftKey, attachments);
@@ -932,11 +938,21 @@ export function ChatView({ threadId }: ChatViewProps) {
         onRemoveAttachment={(index) => {
           if (composerDraftKey) t3ClientActions.removeComposerAttachment(composerDraftKey, index);
         }}
+        onRemoveTerminalContext={(contextId) => {
+          if (composerDraftKey)
+            t3ClientActions.removeComposerTerminalContext(composerDraftKey, contextId);
+        }}
         disabled={status !== "ready" || sessionStatus === "starting"}
         busy={sessionWorking}
         onSend={async (text, attachments) => {
-          const sent = await handleSend(text, attachments);
-          if (sent && composerDraftKey) t3ClientActions.clearComposerAttachments(composerDraftKey);
+          const sent = await handleSend(
+            appendTerminalContextsToPrompt(text, composerTerminalContexts),
+            attachments,
+          );
+          if (sent && composerDraftKey) {
+            t3ClientActions.clearComposerAttachments(composerDraftKey);
+            t3ClientActions.clearComposerTerminalContexts(composerDraftKey);
+          }
           return sent;
         }}
         onStop={interrupt}

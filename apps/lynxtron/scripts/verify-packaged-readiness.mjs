@@ -3368,6 +3368,100 @@ async function verifyNewThreadDraftLifecycle({
   const persistedThreadIdsBefore = persistedThreadIdsAfterRuntimeRecovery;
   const normalizedThreadIds = (threadIds) => [...threadIds].sort();
   const beforeSequence = await readRendererReadiness(client);
+  const canonicalThreadId = canonicalThreadIdsBefore[0];
+  const terminalContextEntry =
+    typeof canonicalThreadId !== "string"
+      ? {
+          status: "not-covered",
+          reason: "Fixture has no canonical thread for a terminal session.",
+        }
+      : await (async () => {
+          await client.runCdp("Runtime.evaluate", {
+            expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(
+              canonicalThreadId,
+            )})`,
+            returnByValue: true,
+          });
+          await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) => state?.activeThreadId === canonicalThreadId,
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".topbar__toggle--terminal",
+            timeoutMs,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".right-panel",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-right-panel-active-kind"] === "terminal",
+          });
+          const addContext = await waitForMeasurement({
+            child,
+            client,
+            selector: ".terminal-panel__add-context",
+            timeoutMs,
+            predicate: (measurement) => measurement?.attributes["aria-disabled"] === "false",
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".terminal-panel__add-context",
+            timeoutMs,
+          });
+          const contextState = await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) => state?.activeComposerTerminalContexts?.length === 1,
+          });
+          const chip = await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-terminal-context-chip",
+            timeoutMs,
+            predicate: (measurement) => measurement?.text.includes("Terminal 1 line") === true,
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".composer-terminal-context-remove",
+            timeoutMs,
+          });
+          await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) => state?.activeComposerTerminalContexts?.length === 0,
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".right-panel__layout-control--close",
+            timeoutMs,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".right-panel",
+            timeoutMs,
+            predicate: (measurement) => measurement === null,
+          });
+          return {
+            status: "pass",
+            input: "DevTool touch on the measured terminal-context and Composer remove controls",
+            control: addContext.rect,
+            label: chip.text.trim(),
+            context: contextState.activeComposerTerminalContexts[0],
+            removed: true,
+          };
+        })();
   await tapSelector({
     child,
     client,
@@ -3408,7 +3502,6 @@ async function verifyNewThreadDraftLifecycle({
     timeoutMs,
     predicate: (state) => state?.activeComposerDraftText === draftText,
   });
-  const canonicalThreadId = canonicalThreadIdsBefore[0];
   const routeRoundTrip =
     typeof canonicalThreadId !== "string"
       ? {
@@ -3508,6 +3601,73 @@ async function verifyNewThreadDraftLifecycle({
             timeoutMs,
             predicate: (measurement) => measurement === null,
           });
+          await client.runCdp("Runtime.evaluate", {
+            expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('')",
+            returnByValue: true,
+          });
+          const terminalContext = {
+            id: "terminal-1:2:3",
+            terminalId: "terminal-1",
+            terminalLabel: "Terminal 1",
+            lineStart: 2,
+            lineEnd: 3,
+            text: "two\nthree",
+          };
+          const terminalContextResponse = await client.runCdp("Runtime.evaluate", {
+            expression: `globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
+              terminalContext,
+            )}) ?? false`,
+            returnByValue: true,
+          });
+          if (commandResult(terminalContextResponse)?.value !== true) {
+            throw new Error(
+              `Native terminal context fixture was not applied: ${JSON.stringify(
+                terminalContextResponse,
+              )}`,
+            );
+          }
+          const terminalContextChip = await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-terminal-context-chip",
+            timeoutMs,
+            predicate: (measurement) => measurement?.text.includes("Terminal 1 lines 2-3") === true,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-primary-action",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-composer-primary-state"] === "send",
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".composer-terminal-context-remove",
+            timeoutMs,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-terminal-context-chip",
+            timeoutMs,
+            predicate: (measurement) => measurement === null,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-primary-action",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-composer-primary-state"] === "disabled",
+          });
+          await client.runCdp("Runtime.evaluate", {
+            expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
+              draftText,
+            )})`,
+            returnByValue: true,
+          });
           return {
             status: "pass",
             canonicalThreadId,
@@ -3518,6 +3678,11 @@ async function verifyNewThreadDraftLifecycle({
             attachmentLifecycle: {
               addedCount: Number(attachmentList.attributes["data-composer-attachment-count"]),
               preview: preview.rect,
+              removed: true,
+            },
+            terminalContextLifecycle: {
+              label: terminalContextChip.text.trim(),
+              contextOnlySendable: true,
               removed: true,
             },
           };
@@ -3569,6 +3734,7 @@ async function verifyNewThreadDraftLifecycle({
     canonicalThreadIdsAfter: reusedDraftState.threadIds ?? [],
     persistedThreadIdsBefore,
     persistedThreadIdsAfter,
+    terminalContextEntry,
     firstDraftThreadId: firstDraftState.draftThreadId,
     reusedDraftThreadId: reusedDraftState.draftThreadId,
     routeRoundTrip,

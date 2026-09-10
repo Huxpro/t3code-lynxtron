@@ -1017,6 +1017,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__");
     assert.include(source, 'selector: ".composer-attachment-remove"');
     assert.include(source, "attachmentLifecycle: {");
+    assert.include(source, "__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__");
+    assert.include(source, 'selector: ".terminal-panel__add-context"');
+    assert.include(source, "terminalContextEntry,");
+    assert.include(source, 'selector: ".composer-terminal-context-remove"');
+    assert.include(source, "terminalContextLifecycle: {");
     assert.include(source, "routeRoundTrip,");
     assert.include(source, "shouldVerifyNewThreadDraftLifecycle ||");
     assert.include(source, "Native draft text did not persist before cold restart");
@@ -1145,7 +1150,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"--verify-sidebar-project-groups"');
     assert.include(
       source,
-      '"--verify-sidebar-project-groups requires visual-state.json projectGroupTitles."',
+      '"--verify-sidebar-project-groups and --verify-new-thread-projects require visual-state.json projectGroupTitles."',
     );
     assert.include(source, "legacySidebarEnabled: true");
     assert.include(source, 'sidebarProjectGroupingMode: "separate"');
@@ -1319,9 +1324,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Math.abs(assistantRowRoot.height - (assistantRow.height + 16)) <= 0.5");
     assert.include(source, 'readOptionalMeasurement(client, ".timeline-jump")');
     assert.include(source, 'data-transcript-jump-visible"] === "false"');
-    assert.include(
+    assert.match(
       source,
-      'readFirstSelectorStyleValue(\n    client,\n    ".timeline-jump",\n    "opacity"',
+      /readFirstSelectorStyleValue\(\s*client,\s*"\.timeline-jump",\s*"opacity"/,
     );
     assert.include(source, "!scrollToEndHidden");
     assert.include(source, 'assistantText !== "fidelity loop complete"');

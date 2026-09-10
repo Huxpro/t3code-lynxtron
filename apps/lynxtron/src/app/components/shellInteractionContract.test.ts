@@ -2197,9 +2197,15 @@ describe("desktop shell interaction contract", () => {
   });
 
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
+    const composer = componentSource("Composer.tsx");
     expect(clientSource).toContain("modelSelection: saved,");
     expect(clientSource).toContain("composerDraftTextByScopeKey: savedComposerDraftText");
     expect(clientSource).toContain("__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
+    expect(clientSource).toContain("__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__");
+    expect(componentSource("TerminalPanel.tsx")).toContain(
+      'aria-label="Add recent terminal output to composer"',
+    );
+    expect(composer).toContain('className="composer-terminal-context-chip"');
     expect(clientSource).toContain(
       'transport.invokeSettled("setModelSelection", { selection: saved })',
     );

@@ -5,6 +5,8 @@ import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
 import { terminalSplitGridSize } from "./terminalGrid.logic";
 import { terminalReturnController } from "../state/terminalKeyboard";
+import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
+import { recentTerminalContext } from "@t3tools/client-runtime/presentation/terminal-context";
 import {
   activateTerminalSession,
   addTerminalSession,
@@ -45,6 +47,11 @@ export function TerminalPanel({
   const project =
     projects.find((candidate) => candidate.id === activeThread?.projectId) ?? projects[0] ?? null;
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
+  const composerScopeKey = composerDraftScopeKey({
+    threadId: activeThreadId,
+    projectId: project?.id,
+    localDraft: draftThread?.id === activeThreadId || activeThreadId === undefined,
+  });
   const terminalKey = activeThreadId
     ? activeThreadId + String.fromCharCode(0) + selection.activeId
     : null;
@@ -150,6 +157,18 @@ export function TerminalPanel({
       );
   };
 
+  const addRecentOutputToComposer = () => {
+    if (!composerScopeKey || !session?.history) return;
+    const context = recentTerminalContext({
+      terminalId: selection.activeId,
+      terminalLabel: `Terminal ${selection.ids.indexOf(selection.activeId) + 1}`,
+      history: presentTerminalText(session.history),
+      maxLines: 50,
+    });
+    if (!context) return;
+    t3ClientActions.addComposerTerminalContext(composerScopeKey, context);
+  };
+
   useEffect(
     () => () => {
       terminalReturnController.dispose();
@@ -239,6 +258,14 @@ export function TerminalPanel({
           bindtap={() => setSelection(addTerminalSession)}
         >
           <Icon name="plus" size={13} color="#818181" />
+        </view>
+        <view
+          className={`terminal-panel__add-context${!session?.history ? " terminal-panel__add-context--disabled" : ""}`}
+          aria-label="Add recent terminal output to composer"
+          aria-disabled={session?.history ? "false" : "true"}
+          bindtap={addRecentOutputToComposer}
+        >
+          <Icon name="message-square-plus" size={13} color="#818181" />
         </view>
       </view>
       <view

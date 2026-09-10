@@ -161,6 +161,14 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   picker remains hidden because Lynxtron 0.0.21 `dialog.showOpenDialog` triggers
   `FiberSetAttribute param 0 should be RefCounted` in three independent real
   window trials; no broken affordance is shipped.
+- Web and Native now share terminal-context normalization, labeling, block
+  serialization, and prompt append behavior. The Native terminal surface can
+  add its latest 50 history lines to the scoped Composer, where a context-only
+  draft is sendable and the chip can be removed. One exact-bundle gate proves
+  the `Terminal 1 lines 2-3` fixture, measured removal, main transport, zero
+  renderer errors, attachment regression coverage, route restoration, and an
+  owned cold restart. Terminal-context restart persistence and a canonical real
+  provider receipt remain open, so PF2 stays `in_progress`.
 
 ## PF3: Complete transcript navigation and interaction
 

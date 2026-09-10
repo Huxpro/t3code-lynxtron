@@ -9,6 +9,10 @@ import {
 } from "@lynx-js/react";
 import type { MainThread } from "@lynx-js/types";
 import {
+  formatTerminalContextLabel,
+  type ComposerTerminalContext,
+} from "@t3tools/client-runtime/presentation/terminal-context";
+import {
   resolveCompactComposerControlsAlign,
   shouldUseCompactComposerFooter,
 } from "../../../../web/src/components/composerFooterLayout";
@@ -112,8 +116,10 @@ interface ComposerProps {
   value: string;
   onValueChange: (value: string) => void;
   attachments: ReadonlyArray<UploadChatAttachment>;
+  terminalContexts: ReadonlyArray<ComposerTerminalContext>;
   onAddAttachments: (attachments: ReadonlyArray<UploadChatAttachment>) => void;
   onRemoveAttachment: (index: number) => void;
+  onRemoveTerminalContext: (contextId: string) => void;
   onSend: (text: string, attachments: ReadonlyArray<UploadChatAttachment>) => Promise<boolean>;
   onStop: () => void;
   onModelTap?: () => void;
@@ -193,8 +199,10 @@ export function Composer({
   value,
   onValueChange,
   attachments,
+  terminalContexts,
   onAddAttachments,
   onRemoveAttachment,
+  onRemoveTerminalContext,
   onSend,
   onStop,
   onModelTap,
@@ -485,7 +493,7 @@ export function Composer({
   const sendState = deriveComposerSendState({
     prompt: value,
     imageCount: attachments.length,
-    terminalContexts: [],
+    terminalContexts,
   });
   const primaryActionRef = useRef({
     disabled,
@@ -783,6 +791,25 @@ export function Composer({
             renderAttachments: () =>
               questionMode || approvalActions ? null : (
                 <>
+                  {terminalContexts.length > 0 ? (
+                    <view className="composer-terminal-context-list">
+                      {terminalContexts.map((context) => (
+                        <view key={context.id} className="composer-terminal-context-chip">
+                          <Icon name="terminal-square" size={12} color="#818181" />
+                          <text className="composer-terminal-context-label" text-maxline="1">
+                            {formatTerminalContextLabel(context)}
+                          </text>
+                          <HostButton
+                            className="composer-terminal-context-remove"
+                            aria-label={`Remove ${formatTerminalContextLabel(context)}`}
+                            onClick={() => onRemoveTerminalContext(context.id)}
+                          >
+                            <Icon name="x" size={11} color="#818181" />
+                          </HostButton>
+                        </view>
+                      ))}
+                    </view>
+                  ) : null}
                   {attachments.length > 0 ? (
                     <view
                       className="composer-attachment-list"

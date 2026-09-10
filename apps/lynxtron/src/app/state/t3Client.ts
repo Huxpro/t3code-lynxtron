@@ -9,6 +9,7 @@ import {
 } from "@t3tools/client-runtime/presentation/model-picker";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
+import type { ComposerTerminalContext } from "@t3tools/client-runtime/presentation/terminal-context";
 import {
   buildDraftThreadTurnBootstrap,
   addComposerDraftAttachments,
@@ -186,6 +187,9 @@ export interface T3ClientState {
   readonly draftThreadsByProjectId: LocalDraftThreadsByProjectId;
   readonly composerDraftTextByScopeKey: ComposerDraftTextByScopeKey;
   readonly composerDraftAttachmentsByScopeKey: ComposerDraftAttachmentsByScopeKey;
+  readonly composerTerminalContextsByScopeKey: Readonly<
+    Record<string, ReadonlyArray<ComposerTerminalContext>>
+  >;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -226,6 +230,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   draftThreadsByProjectId: {},
   composerDraftTextByScopeKey: {},
   composerDraftAttachmentsByScopeKey: {},
+  composerTerminalContextsByScopeKey: {},
   messages: [],
   checkpoints: [],
   sessionStatus: "idle",
@@ -773,6 +778,9 @@ function installTransportDevToolHook(): void {
     };
     __T3_LYNXTRON_SELECT_THREAD__?: (threadId: string) => void;
     __T3_LYNXTRON_CREATE_DRAFT_THREAD__?: (projectId: string) => Promise<boolean>;
+    __T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?: (
+      context: ComposerTerminalContext,
+    ) => boolean;
     __T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?: (provider: ServerProvider) => boolean;
   };
   diagnosticsGlobal.__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
@@ -815,6 +823,9 @@ function installTransportDevToolHook(): void {
       composerDraftTextByScopeKey: state.composerDraftTextByScopeKey,
       activeComposerDraftAttachments: activeComposerDraftKey
         ? (state.composerDraftAttachmentsByScopeKey[activeComposerDraftKey] ?? [])
+        : [],
+      activeComposerTerminalContexts: activeComposerDraftKey
+        ? (state.composerTerminalContextsByScopeKey[activeComposerDraftKey] ?? [])
         : [],
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
@@ -918,6 +929,21 @@ function installTransportDevToolHook(): void {
   ) {
     diagnosticsGlobal.__T3_LYNXTRON_CREATE_DRAFT_THREAD__ = async (projectId) => {
       await createThread(projectId);
+      return true;
+    };
+    diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__ = (context) => {
+      const state = appAtomRegistry.get(t3ClientStateAtom);
+      const activeThread =
+        state.threads.find((thread) => thread.id === state.activeThreadId) ??
+        (state.draftThread?.id === state.activeThreadId ? state.draftThread : undefined);
+      const scopeKey = composerDraftScopeKey({
+        threadId: state.activeThreadId,
+        projectId: activeThread?.projectId ?? state.projects[0]?.id,
+        localDraft:
+          state.draftThread?.id === state.activeThreadId || state.activeThreadId === undefined,
+      });
+      if (!scopeKey) return false;
+      addComposerTerminalContext(scopeKey, context);
       return true;
     };
     diagnosticsGlobal.__T3_LYNXTRON_MTS_PROVIDER_FIXTURE__ = (provider) => {
@@ -1235,6 +1261,35 @@ function clearComposerAttachments(scopeKey: string): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const { [scopeKey]: _cleared, ...remaining } = state.composerDraftAttachmentsByScopeKey;
   patchState({ composerDraftAttachmentsByScopeKey: remaining });
+}
+
+function addComposerTerminalContext(scopeKey: string, context: ComposerTerminalContext): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const current = state.composerTerminalContextsByScopeKey[scopeKey] ?? [];
+  const withoutDuplicate = current.filter((candidate) => candidate.id !== context.id);
+  patchState({
+    composerTerminalContextsByScopeKey: {
+      ...state.composerTerminalContextsByScopeKey,
+      [scopeKey]: [...withoutDuplicate, context],
+    },
+  });
+}
+
+function removeComposerTerminalContext(scopeKey: string, contextId: string): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const current = state.composerTerminalContextsByScopeKey[scopeKey] ?? [];
+  const next = current.filter((context) => context.id !== contextId);
+  if (next.length === current.length) return;
+  const contexts = { ...state.composerTerminalContextsByScopeKey };
+  if (next.length > 0) contexts[scopeKey] = next;
+  else delete contexts[scopeKey];
+  patchState({ composerTerminalContextsByScopeKey: contexts });
+}
+
+function clearComposerTerminalContexts(scopeKey: string): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const { [scopeKey]: _cleared, ...remaining } = state.composerTerminalContextsByScopeKey;
+  patchState({ composerTerminalContextsByScopeKey: remaining });
 }
 
 function sendPrompt(
@@ -2116,6 +2171,7 @@ function closeTerminal(input: TerminalCloseInput): Promise<void> {
 
 export const t3ClientActions = {
   addComposerAttachments,
+  addComposerTerminalContext,
   archiveThread,
   browseFilesystem,
   createAssetUrl,
@@ -2161,6 +2217,7 @@ export const t3ClientActions = {
   resizeTerminal,
   closeTerminal,
   clearComposerAttachments,
+  clearComposerTerminalContexts,
   settleThread,
   unsettleThread,
   unsnoozeThread,
@@ -2180,5 +2237,6 @@ export const t3ClientActions = {
   upsertKeybinding,
   removeKeybinding,
   removeComposerAttachment,
+  removeComposerTerminalContext,
   writeProjectFile,
 } as const;

@@ -147,6 +147,10 @@
       "types": "./src/presentation/composer.ts",
       "default": "./src/presentation/composer.ts"
     },
+    "./presentation/terminal-context": {
+      "types": "./src/presentation/terminalContext.ts",
+      "default": "./src/presentation/terminalContext.ts"
+    },
     "./presentation/floating-relation": {
       "types": "./src/presentation/floatingRelation.ts",
       "default": "./src/presentation/floatingRelation.ts"
