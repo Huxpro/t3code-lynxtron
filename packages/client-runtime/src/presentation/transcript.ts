@@ -1857,7 +1857,7 @@ function isRowUnchanged<M extends TranscriptMessage, P extends TranscriptPropose
     }
 
     case "proposed-plan":
-      return a.proposedPlan === (b as typeof a).proposedPlan;
+      return Equal.equals(a.proposedPlan, (b as typeof a).proposedPlan);
 
     case "work":
       return Equal.equals(a.groupedEntries, (b as typeof a).groupedEntries);
@@ -1876,7 +1876,7 @@ function isRowUnchanged<M extends TranscriptMessage, P extends TranscriptPropose
     case "message": {
       const bm = b as typeof a;
       return (
-        a.message === bm.message &&
+        Equal.equals(a.message, bm.message) &&
         a.durationStart === bm.durationStart &&
         a.showAssistantMeta === bm.showAssistantMeta &&
         a.showAssistantCopyButton === bm.showAssistantCopyButton &&

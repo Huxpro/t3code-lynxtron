@@ -649,6 +649,35 @@ describe("computeStableMessagesTimelineRows", () => {
     expect(second.result[0]).toBe(first.result[0]);
     expect(second.result[1]).not.toBe(first.result[1]);
   });
+
+  it("reuses rows from value-equal connector payload clones", () => {
+    const initial: StableMessagesTimelineRowsState<FixtureMessage> = {
+      byId: new Map(),
+      result: [],
+    };
+    const sourceMessage = message({
+      id: "u1",
+      role: "user",
+      text: "stable",
+      createdAt: "2026-01-01T00:00:00.000Z",
+    });
+    const derive = (value: FixtureMessage) =>
+      deriveMessagesTimelineRows<FixtureMessage, never>({
+        timelineEntries: deriveTimelineEntries([value], [], []),
+        isWorking: false,
+        activeTurnStartedAt: null,
+      });
+    const first = computeStableMessagesTimelineRows(derive(sourceMessage), initial);
+    const equalClone = { ...sourceMessage };
+    const second = computeStableMessagesTimelineRows(derive(equalClone), first);
+    const changed = computeStableMessagesTimelineRows(
+      derive({ ...sourceMessage, text: "changed" }),
+      second,
+    );
+
+    expect(second).toBe(first);
+    expect(changed.result[0]).not.toBe(second.result[0]);
+  });
 });
 
 describe("reduceTranscriptFollow", () => {
