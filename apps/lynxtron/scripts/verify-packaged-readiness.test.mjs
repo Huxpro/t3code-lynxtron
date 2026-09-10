@@ -997,6 +997,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "allowMissingContext: expectNoComposerContext");
     assert.include(source, "Non-repository Hero Composer rendered repository context.");
     assert.include(source, 'selector: ".hero__headline"');
+    assert.include(source, "(hero.rect.y + 219)");
     assert.include(source, 'headlineFontSize !== "30px"');
     assert.include(source, 'headlineLineHeight !== "36px"');
     assert.include(source, 'headlineLetterSpacing !== "-0.75px"');

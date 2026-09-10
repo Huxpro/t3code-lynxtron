@@ -49,6 +49,13 @@ assumed the pre-0.0.21 `dist/Lynxtron.app` layout, so preflight failed before
 launching the owned process. The harness now uses the package export first and
 retains its legacy path only as a fallback for older runtimes.
 
+The 0.0.21 runtime can expose a geometrically stable intermediate Hero frame
+before the Hero and Composer reach their final centered positions. The
+readiness harness previously accepted three unchanged headline samples and
+then failed the final relative-geometry assertion. It now treats the expected
+Hero-relative position as part of the signal predicate and reads the Composer
+only after that settled condition is reached.
+
 ### CEF WebView archive
 
 `@lynx-js/cef-webview@0.0.21` cannot currently be installed on macOS arm64. Its

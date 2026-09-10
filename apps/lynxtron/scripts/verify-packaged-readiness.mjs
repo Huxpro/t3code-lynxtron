@@ -1979,12 +1979,6 @@ async function verifyHeroComposerState({
     timeoutMs,
     predicate: (measurement) => measurement?.text.trim() === expectedModelLabel,
   });
-  const composer = await readComposerOutcome(client, {
-    allowMissingContext: expectNoComposerContext,
-  });
-  assertComposerGeometry(composer, {
-    allowMissingContext: expectNoComposerContext,
-  });
   const headline = await waitForStableMeasurement({
     child,
     client,
@@ -1992,7 +1986,15 @@ async function verifyHeroComposerState({
     timeoutMs,
     predicate: (measurement) =>
       Math.abs((measurement?.rect.width ?? 0) - 768) <= 1 &&
-      Math.abs((measurement?.rect.height ?? 0) - 36) <= 1,
+      Math.abs((measurement?.rect.height ?? 0) - 36) <= 1 &&
+      Math.abs((measurement?.rect.x ?? 0) - (hero.rect.x + 128)) <= 1 &&
+      Math.abs((measurement?.rect.y ?? 0) - (hero.rect.y + 219)) <= 1,
+  });
+  const composer = await readComposerOutcome(client, {
+    allowMissingContext: expectNoComposerContext,
+  });
+  assertComposerGeometry(composer, {
+    allowMissingContext: expectNoComposerContext,
   });
   const [headlineFontSize, headlineLineHeight, headlineLetterSpacing] = await Promise.all([
     readFirstSelectorStyleValue(client, ".hero__headline", "font-size"),
