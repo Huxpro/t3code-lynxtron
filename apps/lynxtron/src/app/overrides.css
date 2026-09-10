@@ -5308,7 +5308,7 @@
   background-color: var(--composer-surface);
   padding: 10px 12px;
   margin-bottom: 8px;
-  overflow: scroll;
+  overflow: hidden;
 }
 .md-code-header {
   display: flex;
@@ -5340,10 +5340,21 @@
   font-family: var(--font-sans);
 }
 .md-code-text {
+  display: block;
+  width: max-content;
+  min-width: 100%;
   color: var(--foreground);
   font-size: 12px;
   line-height: 20px;
   font-family: var(--font-mono);
+  white-space: pre;
+}
+.md-code-scroll {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow-x: scroll;
+  overflow-y: hidden;
 }
 .md-list {
   display: block;
