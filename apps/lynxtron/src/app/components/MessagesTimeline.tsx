@@ -64,6 +64,7 @@ import {
 } from "./workingLabelAtlas";
 import { timelineRowReuseIdentifier } from "./timelineRowSize";
 import { runMessageCopy, type MessageCopyStatus } from "./messageCopy";
+import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import {
   resolveTimelineMinimapHeightStyle,
   resolveTimelineMinimapTopPercent,
@@ -80,6 +81,7 @@ interface MessagesTimelineProps {
   activeTurnId?: TurnId | null;
   checkpoints?: ReadonlyArray<OrchestrationCheckpointSummary>;
   availableWidth?: number;
+  onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
 }
 
 type TimelineRow = MessagesTimelineRow<
@@ -389,6 +391,7 @@ function buildLynxTranscriptRowElements(
   revertMessage: (turnCount: number) => void,
   isWorking: boolean,
   onManualNavigation: () => void,
+  onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined,
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
   return {
     userBubbleClassName: ({ row }) => {
@@ -456,6 +459,7 @@ function buildLynxTranscriptRowElements(
             text={displayed.visibleText}
             cwd={cwd}
             onManualNavigation={onManualNavigation}
+            onImageExpand={onImageExpand}
           />
         </view>
       );
@@ -491,6 +495,7 @@ function buildLynxTranscriptRowElements(
             streaming={row.message.streaming}
             cwd={cwd}
             onManualNavigation={onManualNavigation}
+            onImageExpand={onImageExpand}
           />
         ) : (
           <InlineMarkdownRenderer text={row.message.text} cwd={cwd} />
@@ -642,6 +647,7 @@ export function MessagesTimeline({
   activeTurnId = null,
   checkpoints = [],
   availableWidth = 1024,
+  onImageExpand,
 }: MessagesTimelineProps) {
   const [clientSettings] = useClientSettingsState();
   const [timelineViewportWidth, setTimelineViewportWidth] = useState(availableWidth);
@@ -691,6 +697,7 @@ export function MessagesTimeline({
         revertMessage,
         isWorking,
         detachForManualNavigation,
+        onImageExpand,
       ),
     [
       clientSettings.timestampFormat,
@@ -700,6 +707,7 @@ export function MessagesTimeline({
       revertMessage,
       isWorking,
       detachForManualNavigation,
+      onImageExpand,
     ],
   );
 

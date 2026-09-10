@@ -47,6 +47,7 @@ import {
   shouldShowEmptyTranscript,
 } from "@t3tools/client-runtime/presentation/transcript";
 import { ChatRouteSurface } from "../../../../web/src/components/ChatRouteSurface";
+import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import { ConnectionLifecycleBannerSurface } from "../../../../web/src/components/chat/ConnectionLifecycleBannerSurface";
 import { ThreadErrorBannerSurface } from "../../../../web/src/components/chat/ThreadErrorBannerSurface";
 import {
@@ -58,6 +59,7 @@ import { TranscriptEmptySurface } from "../../../../web/src/components/chat/Tran
 import { ChatHeader, ChatLayoutControls } from "./ChatHeader";
 import { Icon } from "./Icon";
 import { MessagesTimeline } from "./MessagesTimeline";
+import { ImagePreviewOverlay } from "./ImagePreviewOverlay";
 import { Composer } from "./Composer";
 import { ModelPicker } from "./ModelPicker";
 import { RightPanel } from "./RightPanel";
@@ -95,6 +97,7 @@ interface ChatViewProps {
 }
 
 export function ChatView({ threadId }: ChatViewProps) {
+  const [expandedImage, setExpandedImage] = useState<ExpandedImagePreview | null>(null);
   const {
     status,
     statusDetail,
@@ -729,6 +732,11 @@ export function ChatView({ threadId }: ChatViewProps) {
           onMaximizedChange={setRightPanelMaximized}
         />
       }
+      overlays={
+        expandedImage ? (
+          <ImagePreviewOverlay preview={expandedImage} onClose={() => setExpandedImage(null)} />
+        ) : null
+      }
     >
       {!hero ? (
         <MessagesTimeline
@@ -743,6 +751,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           activeTurnId={activeTurnId}
           checkpoints={checkpoints}
           availableWidth={centerPanelWidth}
+          onImageExpand={setExpandedImage}
         />
       ) : null}
       <Composer

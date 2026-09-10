@@ -99,6 +99,10 @@
       "types": "./src/presentation/markdownBlocks.ts",
       "default": "./src/presentation/markdownBlocks.ts"
     },
+    "./presentation/image-preview": {
+      "types": "./src/presentation/imagePreview.ts",
+      "default": "./src/presentation/imagePreview.ts"
+    },
     "./presentation/paths": {
       "types": "./src/presentation/paths.ts",
       "default": "./src/presentation/paths.ts"

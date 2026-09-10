@@ -366,6 +366,11 @@ following-end` with the jump affordance visible only while detached. That gate
   viewport. The shared semantic row anatomy now remains visible and operable in
   that real approval flow; unrelated shell/composer calibration assets remain a
   separate convergence concern.
+- Supported Markdown images now open a Native root-level preview overlay rather
+  than ending at a static inline image. The preview data model is shared with
+  Web, includes close/previous/next semantics, and is threaded through nested
+  blockquotes/details; persisted message attachments remain file cards until
+  their canonical contract exposes a retrievable preview URL.
 
 ## PF4: Complete remote and multi-environment operation
 

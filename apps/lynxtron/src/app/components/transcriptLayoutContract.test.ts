@@ -22,6 +22,11 @@ const sharedRowSource = readFileSync(
   "utf8",
 );
 const appSource = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
+const chatViewSource = readFileSync(path.resolve(import.meta.dirname, "ChatView.tsx"), "utf8");
+const imagePreviewSource = readFileSync(
+  path.resolve(import.meta.dirname, "ImagePreviewOverlay.tsx"),
+  "utf8",
+);
 const browserPreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "../../browser-preview/index.ts"),
   "utf8",
@@ -237,6 +242,19 @@ describe("transcript layout contract", () => {
     expect(markdownSource).toContain(
       'aria-label={expanded ? "Collapse table cells" : "Expand table cells"}',
     );
+  });
+
+  it("routes supported Markdown images into the root preview overlay", () => {
+    expect(markdownSource).toContain("const supportedSource =");
+    expect(markdownSource).toContain("data:image");
+    expect(markdownSource).toContain("onImageExpand({");
+    expect(markdownSource).toContain("onImageExpand={onImageExpand}");
+    expect(timelineSource).toContain("onImageExpand={onImageExpand}");
+    expect(chatViewSource).toContain("<ImagePreviewOverlay");
+    expect(chatViewSource).toContain("onImageExpand={setExpandedImage}");
+    expect(imagePreviewSource).toContain('aria-label="Close image preview"');
+    expect(imagePreviewSource).toContain('aria-label="Previous image"');
+    expect(imagePreviewSource).toContain('aria-label="Next image"');
   });
 
   it("resets recycled work disclosures and routes expansion through manual navigation", () => {

@@ -26,6 +26,7 @@ import {
 import { copyMarkdownCode } from "./markdownClipboard";
 import { markdownTableContentWidth } from "./markdownTableLayout";
 import type { MessageCopyStatus } from "./messageCopy";
+import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 
 // Simple markdown-to-Lynx-views renderer. Handles the most common
 // formatting used in AI assistant responses.
@@ -276,11 +277,13 @@ function MarkdownDetailsBlock({
   blockKey,
   cwd,
   onManualNavigation,
+  onImageExpand,
 }: {
   readonly block: ParsedMarkdownBlock;
   readonly blockKey: string;
   readonly cwd: string | undefined;
   readonly onManualNavigation: (() => void) | undefined;
+  readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
 }) {
   const [open, setOpen] = useState(block.open ?? false);
   useEffect(() => {
@@ -311,7 +314,7 @@ function MarkdownDetailsBlock({
       {open ? (
         <view className="md-details-content">
           {(block.children ?? []).map((child, index) =>
-            renderBlock(child, index, cwd, `${blockKey}-detail`, onManualNavigation),
+            renderBlock(child, index, cwd, `${blockKey}-detail`, onManualNavigation, onImageExpand),
           )}
         </view>
       ) : null}
@@ -447,6 +450,7 @@ function renderBlock(
   cwd: string | undefined,
   keyPrefix = "b",
   onManualNavigation?: () => void,
+  onImageExpand?: (preview: ExpandedImagePreview) => void,
 ): ReactNode {
   const key = `${keyPrefix}${idx}`;
   switch (block.type) {
@@ -507,7 +511,7 @@ function renderBlock(
         >
           {block.children?.length ? (
             block.children.map((child, index) =>
-              renderBlock(child, index, cwd, `${key}-quote`, onManualNavigation),
+              renderBlock(child, index, cwd, `${key}-quote`, onManualNavigation, onImageExpand),
             )
           ) : (
             <text className="md-blockquote-text">
@@ -535,7 +539,21 @@ function renderBlock(
       const href = block.href ?? "";
       const supportedSource = /^(?:https?:|data:image\/)/i.test(href);
       return supportedSource ? (
-        <view key={key} className="md-image-frame" data-markdown-image="true">
+        <view
+          key={key}
+          className="md-image-frame"
+          data-markdown-image="true"
+          aria-label={onImageExpand ? `Preview ${block.alt || "image"}` : undefined}
+          bindtap={
+            onImageExpand
+              ? () =>
+                  onImageExpand({
+                    images: [{ src: href, name: block.alt || block.title || "Image" }],
+                    index: 0,
+                  })
+              : undefined
+          }
+        >
           <image className="md-image" src={href} mode="aspectFit" />
           {block.alt ? <text className="md-image-caption">{block.alt}</text> : null}
         </view>
@@ -555,6 +573,7 @@ function renderBlock(
           blockKey={key}
           cwd={cwd}
           onManualNavigation={onManualNavigation}
+          onImageExpand={onImageExpand}
         />
       );
 
@@ -571,6 +590,7 @@ interface MarkdownRendererProps {
   streaming?: boolean;
   cwd?: string | undefined;
   onManualNavigation?: (() => void) | undefined;
+  onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
 }
 
 export function InlineMarkdownRenderer({
@@ -632,12 +652,15 @@ export function MarkdownRenderer({
   streaming,
   cwd,
   onManualNavigation,
+  onImageExpand,
 }: MarkdownRendererProps) {
   const blocks = useMemo(() => parseMarkdownBlocks(text), [text]);
 
   return (
     <view className="markdown-body">
-      {blocks.map((block, idx) => renderBlock(block, idx, cwd, "b", onManualNavigation))}
+      {blocks.map((block, idx) =>
+        renderBlock(block, idx, cwd, "b", onManualNavigation, onImageExpand),
+      )}
       {streaming ? <text className="md-cursor">▋</text> : null}
     </view>
   );
