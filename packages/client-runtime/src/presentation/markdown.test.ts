@@ -386,11 +386,15 @@ describe("parseMarkdownInline", () => {
     ]);
   });
 
-  it("does not autolink www text inside words, code spans, or hostless email text", () => {
-    expect(parseMarkdownInline("`www.example.com` prefixwww.example.com user@localhost")).toEqual([
+  it("does not autolink URLs inside words, code spans, or hostless email text", () => {
+    expect(
+      parseMarkdownInline(
+        "`www.example.com` prefixwww.example.com prefixhttps://example.com user@localhost",
+      ),
+    ).toEqual([
       { text: "www.example.com", bold: false, italic: false, code: true, href: null },
       {
-        text: " prefixwww.example.com user@localhost",
+        text: " prefixwww.example.com prefixhttps://example.com user@localhost",
         bold: false,
         italic: false,
         code: false,

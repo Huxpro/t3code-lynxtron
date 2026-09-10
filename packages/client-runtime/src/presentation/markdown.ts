@@ -627,7 +627,8 @@ function parseMarkdownInlineWithStyle(
       }
     }
 
-    const urlMatch = text.slice(cursor).match(/^https?:\/\/[^\s<]+/i);
+    const atAutolinkBoundary = cursor === 0 || /[\s(\[{]/.test(text[cursor - 1]!);
+    const urlMatch = atAutolinkBoundary ? text.slice(cursor).match(/^https?:\/\/[^\s<]+/i) : null;
     if (urlMatch?.[0]) {
       const url = trimMarkdownAutolink(urlMatch[0]);
       append(url, false, { href: url });
@@ -635,7 +636,6 @@ function parseMarkdownInlineWithStyle(
       continue;
     }
 
-    const atAutolinkBoundary = cursor === 0 || /[\s(\[{]/.test(text[cursor - 1]!);
     if (atAutolinkBoundary) {
       const wwwMatch = text.slice(cursor).match(/^www\.[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?:\/[^\s<]*)?/);
       if (wwwMatch?.[0]) {
