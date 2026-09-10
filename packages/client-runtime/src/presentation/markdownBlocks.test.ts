@@ -45,6 +45,16 @@ describe("parseMarkdownBlocks", () => {
     });
   });
 
+  it("normalizes two-space and four-space list indentation to structural depth", () => {
+    for (const indentation of ["  ", "    "]) {
+      const [list] = parseMarkdownBlocks(
+        ["- root", `${indentation}- child`, `${indentation}${indentation}- grandchild`].join("\n"),
+      );
+
+      expect(list?.items?.map((item) => item.depth)).toEqual([0, 1, 2]);
+    }
+  });
+
   it("covers the block formats rendered by the Original transcript", () => {
     const blocks = parseMarkdownBlocks(
       [

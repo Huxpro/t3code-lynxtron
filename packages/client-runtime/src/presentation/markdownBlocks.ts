@@ -73,6 +73,10 @@ function closesMarkdownFence(line: string, opening: MarkdownFence): boolean {
   return marker[0] === opening.character && marker.length >= opening.length;
 }
 
+function markdownListIndentColumns(line: string): number {
+  return line.match(/^(\s*)/)?.[1]?.replaceAll("\t", "    ").length ?? 0;
+}
+
 function appendParagraphWithImages(blocks: ParsedMarkdownBlock[], text: string): void {
   let cursor = 0;
   for (const image of parseMarkdownImageTokens(text)) {
@@ -245,9 +249,13 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
     }
 
     if (parseMarkdownListItem(line)) {
-      const items: MarkdownListItemPresentation[] = [];
+      const parsedItems: Array<{
+        readonly item: MarkdownListItemPresentation;
+        readonly indentColumns: number;
+      }> = [];
       while (index < lines.length) {
-        const item = parseMarkdownListItem(lines[index]!);
+        const itemLine = lines[index]!;
+        const item = parseMarkdownListItem(itemLine);
         if (!item) break;
         index++;
         const continuationLines: string[] = [];
@@ -261,11 +269,21 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
           continuationLines.push(lines[index]!.trim());
           index++;
         }
-        items.push({
-          ...item,
-          content: [item.content, ...continuationLines].join("\n"),
+        parsedItems.push({
+          item: {
+            ...item,
+            content: [item.content, ...continuationLines].join("\n"),
+          },
+          indentColumns: markdownListIndentColumns(itemLine),
         });
       }
+      const indentationLevels = [
+        ...new Set(parsedItems.map(({ indentColumns }) => indentColumns)),
+      ].sort((left, right) => left - right);
+      const items = parsedItems.map(({ item, indentColumns }) => ({
+        ...item,
+        depth: indentationLevels.indexOf(indentColumns),
+      }));
       blocks.push({ type: "list", items });
       continue;
     }
