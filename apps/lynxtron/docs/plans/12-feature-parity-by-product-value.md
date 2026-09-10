@@ -278,6 +278,10 @@ following-end` with the jump affordance visible only while detached. That gate
   used by Web/Mobile text rendering while preserving unknown, null, surrogate,
   and out-of-range entities literally. Code spans remain byte-for-byte authored
   text.
+- Shared visible-text normalization now also matches Mobile/Web semantics for
+  safe inline formatting tags (`kbd`, `mark`, `sub`, `sup`, `u`), `<br>` line
+  breaks, and double-encoded entities. Unknown HTML remains literal rather than
+  being treated as trusted markup.
 - Native proposed-plan timeline cards now open the existing full Plan panel
   instead of ending at a static two-line title. The card reuses canonical plan
   state and the existing panel route; its real OS tap remains covered by the

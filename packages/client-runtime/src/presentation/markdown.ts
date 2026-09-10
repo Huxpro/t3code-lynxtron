@@ -24,6 +24,8 @@ const MARKDOWN_ENTITY_REPLACEMENTS: Readonly<Record<string, string>> = {
   nbsp: " ",
   quot: '"',
 };
+const SAFE_INLINE_HTML_TAG_PATTERN = /<\/?(?:kbd|mark|sub|sup|u)(?:\s[^>]*)?>/gi;
+const MARKDOWN_LINE_BREAK_PATTERN = /<br\s*\/?>/gi;
 const POSIX_FILE_ROOT_PREFIXES = [
   "/Users/",
   "/home/",
@@ -117,6 +119,18 @@ export function decodeMarkdownTextEntities(text: string): string {
     }
     return `&${entity};`;
   });
+}
+
+export function normalizeMarkdownVisibleText(text: string): string {
+  let normalized = text;
+  for (let pass = 0; pass < 2; pass += 1) {
+    const next = decodeMarkdownTextEntities(normalized);
+    if (next === normalized) break;
+    normalized = next;
+  }
+  return normalized
+    .replace(MARKDOWN_LINE_BREAK_PATTERN, "\n")
+    .replace(SAFE_INLINE_HTML_TAG_PATTERN, "");
 }
 
 /**
@@ -390,7 +404,7 @@ function parseMarkdownInlineWithStyle(
 
   const append = (value: string, code = false, override?: Partial<MarkdownInlineStyle>) => {
     appendInlinePresentation(output, {
-      text: code ? value : decodeMarkdownTextEntities(value),
+      text: code ? value : normalizeMarkdownVisibleText(value),
       bold: override?.bold ?? style.bold,
       italic: override?.italic ?? style.italic,
       code,

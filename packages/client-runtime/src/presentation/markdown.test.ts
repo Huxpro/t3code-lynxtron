@@ -9,6 +9,7 @@ import {
   parseMarkdownFenceInfo,
   parseMarkdownInline,
   decodeMarkdownTextEntities,
+  normalizeMarkdownVisibleText,
   parseMarkdownListItem,
   parseMarkdownTable,
   resolveInlineCodeFileLinkMeta,
@@ -192,6 +193,18 @@ describe("parseMarkdownInline", () => {
   it("preserves unknown and invalid Markdown entities", () => {
     expect(decodeMarkdownTextEntities("&unknown; &#0; &#xD800; &#9999999999;")).toBe(
       "&unknown; &#0; &#xD800; &#9999999999;",
+    );
+  });
+
+  it("normalizes safe inline HTML and double-encoded visible text", () => {
+    expect(
+      normalizeMarkdownVisibleText("Keyboard: <kbd>⌘</kbd> + <mark>K</mark><br />Less: &amp;lt;"),
+    ).toBe("Keyboard: ⌘ + K\nLess: <");
+  });
+
+  it("keeps unknown HTML literal instead of treating it as trusted formatting", () => {
+    expect(normalizeMarkdownVisibleText("<script>alert(1)</script>")).toBe(
+      "<script>alert(1)</script>",
     );
   });
 
