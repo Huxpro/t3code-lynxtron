@@ -344,8 +344,11 @@ following-end` with the jump affordance visible only while detached. That gate
   detaches transcript follow before the panel changes the timeline viewport.
 - The Native Plan panel now copies the same normalized export Markdown as Web,
   with pending/copied/failed feedback scoped to the active plan and reset when
-  plan identity changes. Download and save-to-workspace remain separate host
-  actions rather than being represented by inert buttons.
+  plan identity changes. Copy and save completions are generation-guarded so an
+  old plan cannot overwrite the replacement panel's feedback. The full panel
+  also passes workspace context into Markdown image resolution, matching its
+  transcript preview. Download and save-to-workspace remain separate host actions
+  rather than being represented by inert buttons.
 - Native can now save the normalized plan to the workspace using Web's shared
   default filename projection and the typed project-file writer. Missing
   workspace, pending, success, and failure states remain visible; Web's custom

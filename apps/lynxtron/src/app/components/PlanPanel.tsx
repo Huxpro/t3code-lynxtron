@@ -26,6 +26,11 @@ interface PlanPanelProps {
   onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
 }
 
+type PlanSaveStatus =
+  | { readonly status: "pending" }
+  | { readonly status: "saved"; readonly relativePath: string }
+  | { readonly status: "failed"; readonly message: string };
+
 function stepStatusIcon(status: string): string {
   if (status === "completed") return "✓";
   if (status === "inProgress") return "◌";
@@ -47,13 +52,9 @@ export function PlanPanel({
 }: PlanPanelProps) {
   const [proposedExpanded, setProposedExpanded] = useState(false);
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
-  const [saveStatus, setSaveStatus] = useState<
-    | { readonly status: "pending" }
-    | { readonly status: "saved"; readonly relativePath: string }
-    | { readonly status: "failed"; readonly message: string }
-    | null
-  >(null);
+  const [saveStatus, setSaveStatus] = useState<PlanSaveStatus | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const actionGenerationRef = useRef(0);
   const planMarkdown = activeProposedPlan?.planMarkdown ?? null;
   const planTitle = planMarkdown ? proposedPlanTitle(planMarkdown) : null;
 
@@ -61,22 +62,29 @@ export function PlanPanel({
     setProposedExpanded((v) => !v);
   }, []);
   useEffect(() => {
+    actionGenerationRef.current += 1;
     setCopyStatus(null);
     setSaveStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     return () => {
+      actionGenerationRef.current += 1;
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
   }, [planMarkdown]);
   const copyPlan = useCallback(() => {
     if (!planMarkdown || copyStatus === "pending") return;
+    const actionGeneration = ++actionGenerationRef.current;
+    const setCurrentCopyStatus = (status: MessageCopyStatus) => {
+      if (actionGenerationRef.current === actionGeneration) setCopyStatus(status);
+    };
     void runMessageCopy(
       (text) => clientCapabilities.clipboard.writeText(text),
       normalizePlanMarkdownForExport(planMarkdown),
-      setCopyStatus,
+      setCurrentCopyStatus,
     ).then(() => {
+      if (actionGenerationRef.current !== actionGeneration) return;
       resetTimerRef.current = setTimeout(() => {
-        setCopyStatus(null);
+        if (actionGenerationRef.current === actionGeneration) setCopyStatus(null);
         resetTimerRef.current = null;
       }, 1_000);
     });
@@ -91,13 +99,17 @@ export function PlanPanel({
           : "Copy plan";
   const savePlan = useCallback(() => {
     if (!cwd || !planMarkdown || saveStatus?.status === "pending") return;
-    setSaveStatus({ status: "pending" });
+    const actionGeneration = ++actionGenerationRef.current;
+    const setCurrentSaveStatus = (status: PlanSaveStatus) => {
+      if (actionGenerationRef.current === actionGeneration) setSaveStatus(status);
+    };
+    setCurrentSaveStatus({ status: "pending" });
     void savePlanToDefaultWorkspacePath(
       (workspace, relativePath, contents) =>
         t3ClientActions.writeProjectFile(workspace, relativePath, contents),
       cwd,
       planMarkdown,
-    ).then(setSaveStatus);
+    ).then(setCurrentSaveStatus);
   }, [cwd, planMarkdown, saveStatus]);
   const saveLabel =
     saveStatus?.status === "pending"
@@ -170,6 +182,7 @@ export function PlanPanel({
             <MarkdownRenderer
               text={planMarkdown}
               streaming={false}
+              cwd={cwd}
               onImageExpand={onImageExpand}
               threadId={threadId}
             />

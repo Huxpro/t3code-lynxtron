@@ -303,11 +303,14 @@ describe("transcript layout contract", () => {
     expect(planPanelSource).toContain("threadId={threadId}");
     expect(planPanelSource).toContain("normalizePlanMarkdownForExport(planMarkdown)");
     expect(planPanelSource).toContain('data-plan-copy-state={copyStatus ?? "idle"}');
+    expect(planPanelSource).toContain("actionGenerationRef.current += 1");
+    expect(planPanelSource).toContain("actionGenerationRef.current !== actionGeneration");
     expect(planPanelSource).toContain("}, [planMarkdown]);");
     expect(planPanelSource).toContain("savePlanToDefaultWorkspacePath");
     expect(planPanelSource).toContain('data-plan-save-state={saveStatus?.status ?? "idle"}');
     expect(planPanelSource).toContain("Saved: ${saveStatus.relativePath}");
     expect(planPanelSource).toContain("Save failed: ${saveStatus.message}");
+    expect(planPanelSource).toContain("cwd={cwd}");
     expect(webTimelineSource).toContain("@t3tools/client-runtime/presentation/image-preview");
   });
 
