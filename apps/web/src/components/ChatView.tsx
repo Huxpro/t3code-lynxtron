@@ -94,6 +94,7 @@ import {
 import { type LegendListRef } from "@legendapp/list/react";
 import {
   getAnchoredTurnMetrics,
+  reduceTimelineScrollMode,
   type TimelineScrollMode,
 } from "@t3tools/client-runtime/presentation/transcript";
 import {
@@ -3577,7 +3578,9 @@ function ChatViewContent(props: ChatViewProps) {
   const anchorScrollRestoreFrameRef = useRef<number | null>(null);
   const cancelTimelineLiveFollowForUserNavigation = useCallback(() => {
     anchorUserScrollGenerationRef.current += 1;
-    timelineScrollModeRef.current = "free-scrolling";
+    timelineScrollModeRef.current = reduceTimelineScrollMode(timelineScrollModeRef.current, {
+      kind: "user-scroll-away",
+    });
     liveFollowUserScrollGenerationRef.current = null;
     pendingTimelineAnchorRef.current = null;
     positionedTimelineAnchorRef.current = null;
@@ -3648,7 +3651,9 @@ function ChatViewContent(props: ChatViewProps) {
   // gesture opts out.
   const scrollToEnd = useCallback((animated = false) => {
     isAtEndRef.current = true;
-    timelineScrollModeRef.current = "following-end";
+    timelineScrollModeRef.current = reduceTimelineScrollMode(timelineScrollModeRef.current, {
+      kind: "follow-end",
+    });
     liveFollowUserScrollGenerationRef.current = anchorUserScrollGenerationRef.current;
     pendingTimelineAnchorRef.current = null;
     activeTimelineAnchorIndexRef.current = null;
@@ -3792,12 +3797,16 @@ function ChatViewContent(props: ChatViewProps) {
     if (isAtEndRef.current === isAtEnd) return;
     isAtEndRef.current = isAtEnd;
     if (isAtEnd) {
-      timelineScrollModeRef.current = "following-end";
+      timelineScrollModeRef.current = reduceTimelineScrollMode(timelineScrollModeRef.current, {
+        kind: "user-scroll-end",
+      });
       liveFollowUserScrollGenerationRef.current = anchorUserScrollGenerationRef.current;
       showScrollDebouncer.current.cancel();
       setShowScrollToBottom(false);
     } else {
-      timelineScrollModeRef.current = "free-scrolling";
+      timelineScrollModeRef.current = reduceTimelineScrollMode(timelineScrollModeRef.current, {
+        kind: "user-scroll-away",
+      });
       liveFollowUserScrollGenerationRef.current = null;
       showScrollDebouncer.current.maybeExecute();
     }
@@ -3872,7 +3881,9 @@ function ChatViewContent(props: ChatViewProps) {
   useEffect(() => {
     setPullRequestDialogState(null);
     isAtEndRef.current = true;
-    timelineScrollModeRef.current = "following-end";
+    timelineScrollModeRef.current = reduceTimelineScrollMode(timelineScrollModeRef.current, {
+      kind: "thread-changed",
+    });
     liveFollowUserScrollGenerationRef.current = anchorUserScrollGenerationRef.current;
     pendingTimelineAnchorRef.current = null;
     positionedTimelineAnchorRef.current = null;
@@ -4790,7 +4801,9 @@ function ChatViewContent(props: ChatViewProps) {
     // anchored end-space target so it lands near the top while the response
     // streams into the reserved space below it.
     isAtEndRef.current = true;
-    timelineScrollModeRef.current = "anchoring-new-turn";
+    timelineScrollModeRef.current = reduceTimelineScrollMode(timelineScrollModeRef.current, {
+      kind: "begin-new-turn",
+    });
     liveFollowUserScrollGenerationRef.current = anchorUserScrollGenerationRef.current;
     pendingTimelineAnchorRef.current = messageIdForSend;
     activeTimelineAnchorIndexRef.current = null;
@@ -5233,7 +5246,9 @@ function ChatViewContent(props: ChatViewProps) {
 
       // Position this sent row once LegendList has measured the anchored tail.
       isAtEndRef.current = true;
-      timelineScrollModeRef.current = "anchoring-new-turn";
+      timelineScrollModeRef.current = reduceTimelineScrollMode(timelineScrollModeRef.current, {
+        kind: "begin-new-turn",
+      });
       liveFollowUserScrollGenerationRef.current = anchorUserScrollGenerationRef.current;
       pendingTimelineAnchorRef.current = messageIdForSend;
       activeTimelineAnchorIndexRef.current = null;

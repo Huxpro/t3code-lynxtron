@@ -14,6 +14,7 @@ import {
   getTimelineRowBottom,
   shouldShowAssistantChangedFiles,
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
+  reduceTimelineScrollMode,
   reduceTranscriptFollow,
   deriveTranscriptNewTurnAnchor,
   shouldShowEmptyTranscript,
@@ -149,6 +150,29 @@ describe("timeline scroll anchoring", () => {
         anchorOffset: 16,
       })?.overflowsUsableViewport,
     ).toBe(true);
+  });
+});
+
+describe("timeline scroll mode", () => {
+  it("enters anchored mode for a newly sent turn", () => {
+    expect(reduceTimelineScrollMode("following-end", { kind: "begin-new-turn" })).toBe(
+      "anchoring-new-turn",
+    );
+  });
+
+  it("detaches only for explicit user navigation away", () => {
+    expect(reduceTimelineScrollMode("anchoring-new-turn", { kind: "user-scroll-away" })).toBe(
+      "free-scrolling",
+    );
+  });
+
+  it("returns to follow mode at the end or on a thread change", () => {
+    expect(reduceTimelineScrollMode("free-scrolling", { kind: "user-scroll-end" })).toBe(
+      "following-end",
+    );
+    expect(reduceTimelineScrollMode("free-scrolling", { kind: "thread-changed" })).toBe(
+      "following-end",
+    );
   });
 });
 

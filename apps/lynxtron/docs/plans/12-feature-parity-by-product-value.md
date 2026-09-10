@@ -52,7 +52,7 @@ If an invariant regresses, fix it inside the active PF task and add a focused re
 | P0       | PF0 | Rebaseline the complete Web feature journey           | Plan 11    | `completed`   | One fixed parity ledger identifies required, deferred, unsupported, and blocked paths   |
 | P1       | PF1 | Complete agent intervention and recovery              | PF0        | `completed`   | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
 | P1       | PF2 | Complete Composer input and context                   | PF1        | `in_progress` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
-| P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `pending`     | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
+| P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `in_progress` | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
 | P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `pending`     | A user can find, connect to, diagnose, and operate supported remote environments        |
 | P2       | PF5 | Complete change review, checkpoints, and files        | PF4        | `pending`     | A user can inspect the result and its source-control implications without Web           |
 | P2       | PF6 | Expand terminal and browser work surfaces             | PF5        | `pending`     | Approved placeholder surfaces are replaced only where the runtime can support them      |
@@ -233,8 +233,12 @@ A working agent loop must remain usable across long output, structured Markdown,
   owned by `client-runtime/presentation/transcript` instead of a Web-private
   module. Web consumes the shared source directly, while Lynx already consumes
   the same module for follow/detach and new-turn anchoring. The original six
-  LegendList geometry cases now run with the shared transcript tests. Transition
-  convergence and renderer acceptance remain open.
+  LegendList geometry cases now run with the shared transcript tests. A shared
+  three-state reducer now owns begin-turn anchoring, explicit user detach,
+  re-stick, and thread-reset transitions; Web routes each mode change through
+  it, and Lynx's legacy follow projection delegates its user-scroll transition
+  to the same authority. Renderer acceptance and removal of the legacy boolean
+  projection remain open.
 
 ## PF4: Complete remote and multi-environment operation
 

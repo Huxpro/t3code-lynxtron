@@ -26,6 +26,29 @@ export const EMPTY_TRANSCRIPT_PLACEHOLDER = "Send a message to start the convers
 
 export type TimelineScrollMode = "following-end" | "anchoring-new-turn" | "free-scrolling";
 
+export type TimelineScrollModeEvent =
+  | { readonly kind: "begin-new-turn" }
+  | { readonly kind: "follow-end" }
+  | { readonly kind: "thread-changed" }
+  | { readonly kind: "user-scroll-away" }
+  | { readonly kind: "user-scroll-end" };
+
+export function reduceTimelineScrollMode(
+  mode: TimelineScrollMode,
+  event: TimelineScrollModeEvent,
+): TimelineScrollMode {
+  switch (event.kind) {
+    case "begin-new-turn":
+      return "anchoring-new-turn";
+    case "user-scroll-away":
+      return "free-scrolling";
+    case "follow-end":
+    case "thread-changed":
+    case "user-scroll-end":
+      return "following-end";
+  }
+}
+
 export interface TimelineListMeasurementState {
   readonly data: readonly unknown[];
   readonly scroll: number;
@@ -1359,7 +1382,14 @@ export function reduceTranscriptFollow(
         return state.following && state.atEnd ? state : INITIAL_TRANSCRIPT_FOLLOW_STATE;
       }
       const atEnd = event.distanceFromEnd <= threshold;
-      const following = event.source === "user" ? atEnd : state.following;
+      const currentMode: TimelineScrollMode = state.following ? "following-end" : "free-scrolling";
+      const nextMode =
+        event.source === "user"
+          ? reduceTimelineScrollMode(currentMode, {
+              kind: atEnd ? "user-scroll-end" : "user-scroll-away",
+            })
+          : currentMode;
+      const following = nextMode !== "free-scrolling";
       if (atEnd === state.atEnd && following === state.following) {
         return state;
       }
