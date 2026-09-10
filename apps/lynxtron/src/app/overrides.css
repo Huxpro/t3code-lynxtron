@@ -9200,13 +9200,18 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
+  gap: 6px;
 }
+.plan-panel__save-action,
 .plan-panel__copy-action {
   padding: 4px 8px;
   border-width: 1px;
   border-style: solid;
   border-color: var(--border);
   border-radius: 6px;
+}
+.plan-panel__action--disabled {
+  opacity: 0.45;
 }
 .plan-panel__copy-label {
   color: var(--muted-foreground);

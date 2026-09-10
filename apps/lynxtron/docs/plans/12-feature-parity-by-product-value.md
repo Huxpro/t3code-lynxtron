@@ -324,6 +324,10 @@ following-end` with the jump affordance visible only while detached. That gate
   with pending/copied/failed feedback scoped to the active plan and reset when
   plan identity changes. Download and save-to-workspace remain separate host
   actions rather than being represented by inert buttons.
+- Native can now save the normalized plan to the workspace using Web's shared
+  default filename projection and the typed project-file writer. Missing
+  workspace, pending, success, and failure states remain visible; Web's custom
+  save-path dialog and browser download remain host-specific follow-up work.
 - Native checkpoint cards now recompute their auto-expand default and reset
   user/directory expansion only when the checkpoint identity changes, preventing
   recycled list cells from leaking a previous diff card's state.

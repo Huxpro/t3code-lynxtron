@@ -39,6 +39,7 @@ import {
 } from "../platform/clientCapabilities.lynx";
 
 interface RightPanelContentProps {
+  cwd: string | undefined;
   activeThreadId: string | null;
   activePlan: ActivePlanState | null;
   activeProposedPlan: LatestProposedPlanState | null;
@@ -48,6 +49,7 @@ interface RightPanelContentProps {
 }
 
 interface RightPanelProps {
+  cwd?: string | undefined;
   activePlan: ActivePlanState | null;
   activeProposedPlan: LatestProposedPlanState | null;
   maximized?: boolean;
@@ -120,6 +122,7 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
       return (
         <PlanPanel
           threadId={props.activeThreadId ? ThreadId.make(props.activeThreadId) : undefined}
+          cwd={props.cwd}
           activePlan={props.activePlan}
           activeProposedPlan={props.activeProposedPlan}
           onImageExpand={props.onImageExpand}
@@ -145,6 +148,7 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
 }
 
 export function RightPanel({
+  cwd,
   activePlan,
   activeProposedPlan,
   maximized = false,
@@ -478,6 +482,7 @@ export function RightPanel({
           activeSurface.kind === "browser" ? null : (
             renderSurface(activeSurface, {
               activeThreadId: activeThreadId ?? null,
+              cwd,
               activePlan,
               activeProposedPlan,
               terminalHeight,

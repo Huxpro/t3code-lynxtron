@@ -783,6 +783,7 @@ export function ChatView({ threadId }: ChatViewProps) {
       chatColumnHidden={rightPanel.isOpen && rightPanelMaximized}
       rightPanel={
         <RightPanel
+          cwd={cwd}
           activePlan={activePlan ?? null}
           activeProposedPlan={activeProposedPlan ?? null}
           maximized={rightPanelMaximized}

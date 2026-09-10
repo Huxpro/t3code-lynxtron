@@ -15,9 +15,12 @@ import type { ActivePlanState, LatestProposedPlanState } from "../bridge";
 import { MarkdownRenderer } from "./MarkdownRenderer";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
 import { runMessageCopy, type MessageCopyStatus } from "./messageCopy";
+import { t3ClientActions } from "../state/t3Client";
+import { savePlanToDefaultWorkspacePath } from "./planActions";
 
 interface PlanPanelProps {
   threadId?: ThreadId | undefined;
+  cwd?: string | undefined;
   activePlan: ActivePlanState | null;
   activeProposedPlan: LatestProposedPlanState | null;
   onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
@@ -37,12 +40,14 @@ function stepStatusClass(status: string): string {
 
 export function PlanPanel({
   threadId,
+  cwd,
   activePlan,
   activeProposedPlan,
   onImageExpand,
 }: PlanPanelProps) {
   const [proposedExpanded, setProposedExpanded] = useState(false);
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
+  const [saveStatus, setSaveStatus] = useState<"pending" | "saved" | "failed" | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const planMarkdown = activeProposedPlan?.planMarkdown ?? null;
   const planTitle = planMarkdown ? proposedPlanTitle(planMarkdown) : null;
@@ -52,6 +57,7 @@ export function PlanPanel({
   }, []);
   useEffect(() => {
     setCopyStatus(null);
+    setSaveStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     return () => {
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
@@ -78,6 +84,24 @@ export function PlanPanel({
         : copyStatus === "failed"
           ? "Copy failed"
           : "Copy plan";
+  const savePlan = useCallback(() => {
+    if (!cwd || !planMarkdown || saveStatus === "pending") return;
+    setSaveStatus("pending");
+    void savePlanToDefaultWorkspacePath(
+      (workspace, relativePath, contents) =>
+        t3ClientActions.writeProjectFile(workspace, relativePath, contents),
+      cwd,
+      planMarkdown,
+    ).then(setSaveStatus);
+  }, [cwd, planMarkdown, saveStatus]);
+  const saveLabel =
+    saveStatus === "pending"
+      ? "Saving…"
+      : saveStatus === "saved"
+        ? "Saved"
+        : saveStatus === "failed"
+          ? "Save failed"
+          : "Save to workspace";
 
   const hasSteps = activePlan && activePlan.steps.length > 0;
   const isEmpty = !activePlan && !planMarkdown;
@@ -87,6 +111,15 @@ export function PlanPanel({
       <view className="plan-panel__inner">
         {planMarkdown ? (
           <view className="plan-panel__actions">
+            <view
+              className={`plan-panel__save-action${!cwd ? " plan-panel__action--disabled" : ""}`}
+              data-plan-save-state={saveStatus ?? "idle"}
+              aria-label={cwd ? saveLabel : "Workspace path unavailable"}
+              aria-disabled={!cwd || saveStatus === "pending" ? "true" : "false"}
+              bindtap={!cwd || saveStatus === "pending" ? undefined : savePlan}
+            >
+              <text className="plan-panel__copy-label">{saveLabel}</text>
+            </view>
             <view
               className="plan-panel__copy-action"
               data-plan-copy-state={copyStatus ?? "idle"}
