@@ -7,7 +7,7 @@ interface HostKeyEvent {
 interface MainThreadKeyEvent extends HostKeyEvent {}
 
 interface MainThreadMouseEvent {
-  readonly button: number;
+  readonly button?: number;
   readonly currentTarget: {
     querySelector(selector: string): { setStyleProperty(name: string, value: string): void } | null;
     setAttribute(name: string, value: unknown): void;
@@ -144,7 +144,7 @@ export function HostView({
   return (
     <view
       {...props}
-      className={className}
+      className={typeof className === "string" ? className : undefined}
       {...(onContextMenu ? { "main-thread:ref": contextMenuRef } : {})}
       flatten={hoverRevealSelector ? false : undefined}
       event-through={eventThrough}
@@ -351,7 +351,7 @@ export function HostButton({
   return (
     <view
       {...props}
-      className={className}
+      className={typeof className === "string" ? className : undefined}
       aria-expanded={ariaExpanded}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}

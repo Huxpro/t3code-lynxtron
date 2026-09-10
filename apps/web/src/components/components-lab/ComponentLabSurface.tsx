@@ -454,23 +454,28 @@ function ComponentLabCommandStory() {
                 Workspace
               </CommandGroupLabel>
               <CommandCollection>
-                {(item: (typeof items)[number], index) => (
-                  <CommandItem
-                    className="component-lab-command__item"
-                    key={item.value}
-                    value={item.value}
-                  >
-                    <HostText className="component-lab-command__item-label">{item.label}</HostText>
-                    {item.shortcut ? (
-                      <CommandShortcut className="component-lab-command__shortcut">
-                        {item.shortcut}
-                      </CommandShortcut>
-                    ) : null}
-                    {index < items.length - 1 ? (
-                      <CommandSeparator className="component-lab-command__separator" />
-                    ) : null}
-                  </CommandItem>
-                )}
+                {(rawItem: unknown, index) => {
+                  const item = rawItem as (typeof items)[number];
+                  return (
+                    <CommandItem
+                      className="component-lab-command__item"
+                      key={item.value}
+                      value={item.value}
+                    >
+                      <HostText className="component-lab-command__item-label">
+                        {item.label}
+                      </HostText>
+                      {item.shortcut ? (
+                        <CommandShortcut className="component-lab-command__shortcut">
+                          {item.shortcut}
+                        </CommandShortcut>
+                      ) : null}
+                      {index < items.length - 1 ? (
+                        <CommandSeparator className="component-lab-command__separator" />
+                      ) : null}
+                    </CommandItem>
+                  );
+                }}
               </CommandCollection>
             </CommandGroup>
           </CommandList>
@@ -915,7 +920,9 @@ export function ComponentLabSurface() {
               <ProjectFavicon
                 className="component-lab-project-favicon"
                 cwd="/Users/bytedance/github/background-only"
-                environmentId={PRIMARY_LOCAL_ENVIRONMENT_ID}
+                environmentId={
+                  PRIMARY_LOCAL_ENVIRONMENT_ID as import("@t3tools/contracts").EnvironmentId
+                }
               />
               <HostText className="component-lab-host-text">background-only</HostText>
             </HostView>

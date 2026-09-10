@@ -334,7 +334,7 @@ export function TooltipPopup({
     sideOffset,
   });
   return (
-    <overlay level="1" className="lynx-tooltip-overlay">
+    <overlay level={1} className="lynx-tooltip-overlay">
       <view
         {...props}
         event-through

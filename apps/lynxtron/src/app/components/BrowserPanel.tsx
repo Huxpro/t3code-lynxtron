@@ -205,7 +205,7 @@ export function BrowserPanel({
             setLoading(false);
             setError(failure);
             const probe = browserProbe.current;
-            if (probe && url === probe.failureUrl) {
+            if (probe?.successUrl && url === probe.failureUrl) {
               browserProbeFailure.current = failure;
               reportEmbeddedBrowserProbe({
                 status: "running",

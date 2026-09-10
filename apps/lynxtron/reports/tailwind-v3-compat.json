@@ -6,116 +6,320 @@
     "preset": "@lynx-js/tailwind-preset"
   },
   "compatibilityItems": ["R6", "R7", "R9"],
-  "removedSelectorCount": 80,
-  "removedDeclarationCount": 11,
-  "removedSelectors": [
-    ".\\[\\&\\>span\\:last-child\\]\\:flex>span:last-child",
-    ".\\[\\&\\>span\\:last-child\\]\\:gap-2>span:last-child",
-    ".\\[\\&\\>span\\:last-child\\]\\:items-center>span:last-child",
-    ".\\[\\&\\>span\\:last-child\\]\\:min-w-0>span:last-child",
-    ".\\[\\&\\>span\\:last-child\\]\\:truncate>span:last-child",
-    ".\\[\\&\\>svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-4>svg:not([class*='size-'])",
-    ".\\[\\&_svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-3 svg:not([class*='size-'])",
-    ".active\\:\\[\\&\\>svg\\]\\:text-sidebar-foreground>svg:active",
-    ".active\\:bg-accent:active",
-    ".active\\:bg-sidebar-row-active:active",
-    ".active\\:text-sidebar-foreground:active",
-    ".after\\:-inset-2::after",
-    ".after\\:absolute::after",
-    ".after\\:inset-y-0::after",
-    ".after\\:left-1\\/2::after",
-    ".after\\:w-\\[2px\\]::after",
-    ".dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]:is(.dark *)",
-    ".dark\\:border-amber-400\\/30:is(.dark *)",
-    ".dark\\:border-transparent:is(.dark *)",
-    ".dark\\:text-amber-200:is(.dark *)",
-    ".dark\\:text-amber-300:is(.dark *)",
-    ".dark\\:text-blue-400:is(.dark *)",
-    ".dark\\:text-emerald-400:is(.dark *)",
-    ".dark\\:text-indigo-300:is(.dark *)",
-    ".dark\\:text-red-300:is(.dark *)",
-    ".dark\\:text-red-400:is(.dark *)",
-    ".dark\\:text-sky-400:is(.dark *)",
-    ".data-\\[state\\=open\\]\\:hover\\:bg-sidebar-row-hover:hover[data-state=\"open\"]",
-    ".data-\\[state\\=open\\]\\:hover\\:text-sidebar-foreground:hover[data-state=\"open\"]",
-    ".disabled\\:opacity-50:disabled",
-    ".disabled\\:pointer-events-none:disabled",
-    ".focus-visible\\:opacity-100:focus-visible",
-    ".focus-visible\\:outline-none:focus-visible",
-    ".focus-visible\\:ring-1:focus-visible",
-    ".focus-within\\:opacity-100:focus-within",
-    ".focus\\:opacity-100:focus",
-    ".group:hover .group-hover\\:block",
-    ".group:hover .group-hover\\:hidden",
-    ".group:hover .group-hover\\:opacity-100",
-    ".group:hover .group-hover\\:text-foreground\\/80",
-    ".group:hover .group-hover\\:text-foreground\\/90",
-    ".group:hover .group-hover\\:text-muted-foreground\\/60",
-    ".group[data-collapsible=\"offcanvas\"] .group-data-\\[collapsible\\=offcanvas\\]\\:after\\:left-full::after",
-    ".group[data-collapsible=\"offcanvas\"] .hover\\:group-data-\\[collapsible\\=offcanvas\\]\\:bg-sidebar:hover",
-    ".group\\/menu-item:focus-within .group-focus-within\\/menu-item\\:opacity-100",
-    ".group\\/menu-item:hover .group-hover\\/menu-item\\:opacity-100",
-    ".group\\/menu-sub-item:focus-within .group-focus-within\\/menu-sub-item\\:opacity-0",
-    ".group\\/menu-sub-item:focus-within .group-focus-within\\/menu-sub-item\\:opacity-100",
-    ".group\\/menu-sub-item:focus-within .group-focus-within\\/menu-sub-item\\:pointer-events-auto",
-    ".group\\/menu-sub-item:hover .group-hover\\/menu-sub-item\\:opacity-0",
-    ".group\\/menu-sub-item:hover .group-hover\\/menu-sub-item\\:opacity-100",
-    ".group\\/menu-sub-item:hover .group-hover\\/menu-sub-item\\:pointer-events-auto",
-    ".group\\/project-header:focus-within .group-focus-within\\/project-header\\:opacity-0",
-    ".group\\/project-header:focus-within .group-focus-within\\/project-header\\:opacity-100",
-    ".group\\/project-header:focus-within .group-focus-within\\/project-header\\:pointer-events-auto",
-    ".group\\/project-header:focus-within .max-sm\\:group-focus-within\\/project-header\\:opacity-100",
-    ".group\\/project-header:hover .group-hover\\/project-header\\:bg-sidebar-row-hover",
-    ".group\\/project-header:hover .group-hover\\/project-header\\:opacity-0",
-    ".group\\/project-header:hover .group-hover\\/project-header\\:opacity-100",
-    ".group\\/project-header:hover .group-hover\\/project-header\\:pointer-events-auto",
-    ".group\\/project-header:hover .group-hover\\/project-header\\:text-sidebar-foreground",
-    ".group\\/project-header:hover .max-sm\\:group-hover\\/project-header\\:opacity-100",
-    ".group\\/v2-row:hover .group-hover\\/v2-row\\:grayscale-0",
-    ".group\\/v2-row:hover .group-hover\\/v2-row\\:opacity-0",
-    ".group\\/v2-row:hover .group-hover\\/v2-row\\:opacity-100",
-    ".hover\\:\\[\\&\\>svg\\]\\:text-sidebar-foreground>svg:hover",
-    ".hover\\:after\\:bg-sidebar-border:hover::after",
-    ".hover\\:bg-accent:hover",
-    ".hover\\:bg-accent\\/60:hover",
-    ".hover\\:bg-muted:hover",
-    ".hover\\:bg-sidebar-row-active:hover",
-    ".hover\\:bg-sidebar-row-hover:hover",
-    ".hover\\:border-border:hover",
-    ".hover\\:opacity-100:hover",
-    ".hover\\:text-accent-foreground:hover",
-    ".hover\\:text-foreground:hover",
-    ".hover\\:text-primary:hover",
-    ".hover\\:text-sidebar-foreground:hover",
-    ".md\\:after\\:hidden::after",
-    ".peer\\/menu-button:hover ~ .peer-hover\\/menu-button\\:text-sidebar-foreground"
+  "processedInputs": [
+    "src/app/generated/lynx.css",
+    "src/app/overrides.css",
+    "src/app/tailwind.css"
   ],
-  "removedDeclarations": [
+  "removedSelectorCount": 0,
+  "removedDeclarationCount": 1,
+  "retainedSupportedSelectorCount": 2,
+  "retainedSupportedDeclarationCount": 2,
+  "transformedSelectorCount": 35,
+  "transformedDeclarationCount": 9,
+  "transformedSelectors": [
+    {
+      "from": ".dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]:is(.dark *)",
+      "to": ".dark .dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:border-amber-400\\/30:is(.dark *)",
+      "to": ".dark .dark\\:border-amber-400\\/30",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:border-transparent:is(.dark *)",
+      "to": ".dark .dark\\:border-transparent",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-amber-200:is(.dark *)",
+      "to": ".dark .dark\\:text-amber-200",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-amber-300:is(.dark *)",
+      "to": ".dark .dark\\:text-amber-300",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-blue-400:is(.dark *)",
+      "to": ".dark .dark\\:text-blue-400",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-emerald-400:is(.dark *)",
+      "to": ".dark .dark\\:text-emerald-400",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-indigo-300:is(.dark *)",
+      "to": ".dark .dark\\:text-indigo-300",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-red-300:is(.dark *)",
+      "to": ".dark .dark\\:text-red-300",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-red-400:is(.dark *)",
+      "to": ".dark .dark\\:text-red-400",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-sky-400:is(.dark *)",
+      "to": ".dark .dark\\:text-sky-400",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".focus-visible\\:opacity-100:focus-visible",
+      "to": ".focus-visible\\:opacity-100[data-lynx-focus=\"true\"]",
+      "transformations": ["focus-visible-to-state-attribute"]
+    },
+    {
+      "from": ".focus-visible\\:outline-none:focus-visible",
+      "to": ".focus-visible\\:outline-none[data-lynx-focus=\"true\"]",
+      "transformations": ["focus-visible-to-state-attribute"]
+    },
+    {
+      "from": ".focus-visible\\:ring-1:focus-visible",
+      "to": ".focus-visible\\:ring-1[data-lynx-focus=\"true\"]",
+      "transformations": ["focus-visible-to-state-attribute"]
+    },
+    {
+      "from": ".focus\\:opacity-100:focus",
+      "to": ".focus\\:opacity-100[data-lynx-focus=\"true\"]",
+      "transformations": ["focus-to-state-attribute"]
+    },
+    {
+      "from": ".group:hover .group-hover\\:block",
+      "to": ".group[data-lynx-hover=\"true\"] .group-hover\\:block",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group:hover .group-hover\\:hidden",
+      "to": ".group[data-lynx-hover=\"true\"] .group-hover\\:hidden",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group:hover .group-hover\\:opacity-100",
+      "to": ".group[data-lynx-hover=\"true\"] .group-hover\\:opacity-100",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group:hover .group-hover\\:text-foreground\\/80",
+      "to": ".group[data-lynx-hover=\"true\"] .group-hover\\:text-foreground\\/80",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group:hover .group-hover\\:text-foreground\\/90",
+      "to": ".group[data-lynx-hover=\"true\"] .group-hover\\:text-foreground\\/90",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group:hover .group-hover\\:text-muted-foreground\\/60",
+      "to": ".group[data-lynx-hover=\"true\"] .group-hover\\:text-muted-foreground\\/60",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group\\/v2-row:hover .group-hover\\/v2-row\\:grayscale-0",
+      "to": ".group\\/v2-row[data-lynx-hover=\"true\"] .group-hover\\/v2-row\\:grayscale-0",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group\\/v2-row:hover .group-hover\\/v2-row\\:opacity-0",
+      "to": ".group\\/v2-row[data-lynx-hover=\"true\"] .group-hover\\/v2-row\\:opacity-0",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".group\\/v2-row:hover .group-hover\\/v2-row\\:opacity-100",
+      "to": ".group\\/v2-row[data-lynx-hover=\"true\"] .group-hover\\/v2-row\\:opacity-100",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:bg-accent:hover",
+      "to": ".hover\\:bg-accent[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:bg-accent\\/60:hover",
+      "to": ".hover\\:bg-accent\\/60[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:bg-muted:hover",
+      "to": ".hover\\:bg-muted[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:bg-sidebar-row-active:hover",
+      "to": ".hover\\:bg-sidebar-row-active[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:bg-sidebar-row-hover:hover",
+      "to": ".hover\\:bg-sidebar-row-hover[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:border-border:hover",
+      "to": ".hover\\:border-border[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:opacity-100:hover",
+      "to": ".hover\\:opacity-100[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:text-accent-foreground:hover",
+      "to": ".hover\\:text-accent-foreground[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:text-foreground:hover",
+      "to": ".hover\\:text-foreground[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:text-primary:hover",
+      "to": ".hover\\:text-primary[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    },
+    {
+      "from": ".hover\\:text-sidebar-foreground:hover",
+      "to": ".hover\\:text-sidebar-foreground[data-lynx-hover=\"true\"]",
+      "transformations": ["hover-to-state-attribute"]
+    }
+  ],
+  "transformedDeclarations": [
+    {
+      "property": "--skeleton-highlight",
+      "value": "var(--alpha(var(--color-white)/4%))",
+      "selector": ".dark .dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]",
+      "replacements": [
+        {
+          "prop": "--skeleton-highlight",
+          "value": "rgba(255, 255, 255, 0.04)"
+        }
+      ]
+    },
     {
       "property": "--skeleton-highlight",
       "value": "var(--alpha(var(--color-white)/64%))",
-      "selector": ".\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/64\\%\\)\\]"
+      "selector": ".\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/64\\%\\)\\]",
+      "replacements": [
+        {
+          "prop": "--skeleton-highlight",
+          "value": "rgba(255, 255, 255, 0.64)"
+        }
+      ]
     },
     {
-      "property": "-webkit-app-region",
-      "value": "no-drag",
-      "selector": ".\\[-webkit-app-region\\:no-drag\\]"
+      "property": "font-variant-numeric",
+      "value": "tabular-nums",
+      "selector": ".composer-context-window-popup__usage,\n.composer-context-window-popup__total",
+      "replacements": [
+        {
+          "prop": "font-feature-settings",
+          "value": "\"tnum\""
+        }
+      ]
     },
     {
-      "property": "contain-intrinsic-size",
-      "value": "auto 34px",
-      "selector": ".\\[contain-intrinsic-size\\:auto_34px\\]"
+      "property": "font-variant-numeric",
+      "value": "tabular-nums",
+      "selector": ".tabular-nums",
+      "replacements": [
+        {
+          "prop": "font-feature-settings",
+          "value": "\"tnum\""
+        }
+      ]
     },
     {
-      "property": "contain-intrinsic-size",
-      "value": "auto 96px",
-      "selector": ".\\[contain-intrinsic-size\\:auto_96px\\]"
+      "property": "inset",
+      "value": "0",
+      "selector": ".ui-sheet-backdrop",
+      "replacements": [
+        {
+          "prop": "top",
+          "value": "0"
+        },
+        {
+          "prop": "right",
+          "value": "0"
+        },
+        {
+          "prop": "bottom",
+          "value": "0"
+        },
+        {
+          "prop": "left",
+          "value": "0"
+        }
+      ]
     },
     {
-      "property": "content-visibility",
-      "value": "auto",
-      "selector": ".\\[content-visibility\\:auto\\]"
+      "property": "inset",
+      "value": "0",
+      "selector": ".ui-sheet-viewport",
+      "replacements": [
+        {
+          "prop": "top",
+          "value": "0"
+        },
+        {
+          "prop": "right",
+          "value": "0"
+        },
+        {
+          "prop": "bottom",
+          "value": "0"
+        },
+        {
+          "prop": "left",
+          "value": "0"
+        }
+      ]
     },
+    {
+      "property": "overflow-wrap",
+      "value": "anywhere",
+      "selector": ".transcript-user-body .md-paragraph",
+      "replacements": [
+        {
+          "prop": "word-break",
+          "value": "break-all"
+        }
+      ]
+    },
+    {
+      "property": "overflow-wrap",
+      "value": "break-word",
+      "selector": ".wrap-break-word",
+      "replacements": [
+        {
+          "prop": "word-break",
+          "value": "break-all"
+        }
+      ]
+    },
+    {
+      "property": "user-select",
+      "value": "none",
+      "selector": ".select-none",
+      "replacements": [],
+      "semanticEquivalent": "lynx-text-selection-disabled-by-default"
+    }
+  ],
+  "retainedSupportedSelectors": [
+    ".\\[\\&_svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-3 svg:not([class*='size-'])",
+    ".active\\:bg-accent:active"
+  ],
+  "retainedSupportedDeclarations": [
     {
       "property": "display",
       "value": "grid",
@@ -125,26 +329,14 @@
       "property": "grid-template-columns",
       "value": "4ch 4ch",
       "selector": ".grid-cols-\\[4ch_4ch\\]"
-    },
+    }
+  ],
+  "removedSelectors": [],
+  "removedDeclarations": [
     {
-      "property": "padding-left",
-      "value": "calc(--spacing(1) - 1px)",
-      "selector": ".px-\\[calc\\(--spacing\\(1\\)-1px\\)\\]"
-    },
-    {
-      "property": "padding-right",
-      "value": "calc(--spacing(1) - 1px)",
-      "selector": ".px-\\[calc\\(--spacing\\(1\\)-1px\\)\\]"
-    },
-    {
-      "property": "width",
-      "value": "calc(var(--sidebar-width-icon) + (--spacing(4)) + 2px)",
-      "selector": ".group[data-collapsible=\"icon\"] .group-data-\\[collapsible\\=icon\\]\\:w-\\[calc\\(var\\(--sidebar-width-icon\\)\\+\\(--spacing\\(4\\)\\)\\+2px\\)\\]"
-    },
-    {
-      "property": "width",
-      "value": "calc(var(--sidebar-width-icon) + (--spacing(4)))",
-      "selector": ".group[data-collapsible=\"icon\"] .group-data-\\[collapsible\\=icon\\]\\:w-\\[calc\\(var\\(--sidebar-width-icon\\)\\+\\(--spacing\\(4\\)\\)\\)\\]"
+      "property": "tab-size",
+      "value": "2",
+      "selector": ".files-panel__editor"
     }
   ]
 }

@@ -654,7 +654,7 @@ export function ConnectionsSettings() {
               title="New pairing link"
               description={
                 accessError ??
-                `One-time code: ${pairingCredential?.credential ?? ""} · ${formatRelativeTimeUntilLabel(pairingCredential?.expiresAt ?? Date.now(), Date.now())}`
+                `One-time code: ${pairingCredential?.credential ?? ""} · ${formatRelativeTimeUntilLabel(pairingCredential?.expiresAt ?? new Date().toISOString(), Date.now())}`
               }
             />
           ) : null}

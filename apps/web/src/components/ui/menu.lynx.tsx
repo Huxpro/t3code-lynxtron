@@ -178,7 +178,9 @@ export function MenuTrigger({ children, render, ...props }: ElementProps) {
       __T3_LYNXTRON_MENU_PROBE__?: Record<string, () => Promise<void>>;
     };
     const probes = target.__T3_LYNXTRON_MENU_PROBE__ ?? {};
-    probes[relationId] = () => runOnMainThread(handleTap)();
+    probes[relationId] = async () => {
+      await runOnMainThread(handleTap)();
+    };
     target.__T3_LYNXTRON_MENU_PROBE__ = probes;
     installMenuTestBridge();
     return () => {

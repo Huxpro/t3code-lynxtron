@@ -106,10 +106,10 @@ export function PopoverTrigger({ children, render, ...props }: ElementProps) {
     "main-thread:bindtap": handleTap,
   };
   if (isValidElement(render)) {
-    return cloneElement(render, { ...props, ...triggerProps, children });
+    return cloneElement(render, { ...props, ...triggerProps, children } as any);
   }
   return (
-    <view {...props} {...triggerProps}>
+    <view {...props} {...(triggerProps as any)}>
       {children}
     </view>
   );

@@ -11,6 +11,7 @@ export interface InputProps {
   readonly children?: ReactNode;
   readonly className?: string;
   readonly disabled?: boolean;
+  readonly id?: string;
   readonly nativeInput?: boolean;
   readonly onBlur?: () => void;
   readonly onChange?: (event: { currentTarget: { value: string } }) => void;
@@ -27,6 +28,7 @@ export function Input({
   "aria-label": ariaLabel,
   className,
   disabled = false,
+  id,
   onBlur,
   onChange,
   onValueChange,
@@ -57,6 +59,7 @@ export function Input({
       aria-label={ariaLabel}
       aria-disabled={disabled ? "true" : undefined}
       className={resolvedClassName}
+      id={id}
       {...({ value } as object)}
       placeholder={placeholder}
       bindblur={onBlur}
