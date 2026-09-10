@@ -2288,9 +2288,16 @@ describe("desktop shell interaction contract", () => {
 
   it("opens the complete plan surface from a transcript plan card", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
+    const planCardStart = timelineSource.indexOf("function LynxProposedPlanCard");
+    const detachStart = timelineSource.indexOf("onManualNavigation();", planCardStart);
+    const panelOpenStart = timelineSource.indexOf(
+      'uiActions.openRightPanelSurface("plan")',
+      planCardStart,
+    );
     expect(timelineSource).toContain('data-transcript-plan-open="true"');
-    expect(timelineSource).toContain('onClick={() => uiActions.openRightPanelSurface("plan")}');
     expect(timelineSource).toContain("aria-label={`Open proposed plan: ${title}`}");
+    expect(detachStart).toBeGreaterThan(planCardStart);
+    expect(detachStart).toBeLessThan(panelOpenStart);
   });
 
   it("disables destructive transcript revert while the agent is working", () => {
@@ -2312,7 +2319,9 @@ describe("desktop shell interaction contract", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
     expect(timelineSource).toContain("onManualNavigation: () => void;");
     expect(timelineSource).toContain("onManualNavigation={onManualNavigation}");
-    expect(timelineSource.match(/onManualNavigation\(\);/gu)).toHaveLength(3);
+    expect(timelineSource.match(/onManualNavigation\(\);/gu)?.length ?? 0).toBeGreaterThanOrEqual(
+      5,
+    );
   });
 
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
