@@ -201,6 +201,32 @@ describe("parseMarkdownInline", () => {
     ]);
   });
 
+  it("preserves balanced and escaped parentheses in link destinations", () => {
+    expect(
+      parseMarkdownInline(
+        "Read [nested](https://example.com/a_(b)) and [escaped](https://example.com/a\\(b\\)).",
+      ),
+    ).toEqual([
+      { text: "Read ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "nested",
+        bold: false,
+        italic: false,
+        code: false,
+        href: "https://example.com/a_(b)",
+      },
+      { text: " and ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "escaped",
+        bold: false,
+        italic: false,
+        code: false,
+        href: "https://example.com/a\\(b\\)",
+      },
+      { text: ".", bold: false, italic: false, code: false, href: null },
+    ]);
+  });
+
   it("projects autolinks, bare urls, and escaped markers", () => {
     expect(
       parseMarkdownInline("\\*literal\\* <https://example.com> https://t3.tools/docs"),

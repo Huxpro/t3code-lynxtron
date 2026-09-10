@@ -306,6 +306,40 @@ function findClosingDelimiter(text: string, delimiter: string, from: number): nu
   return -1;
 }
 
+function findClosingLinkDestination(text: string, from: number): number {
+  let depth = 0;
+  let escaped = false;
+  let angleWrapped = false;
+  for (let index = from; index < text.length; index += 1) {
+    const character = text[index]!;
+    if (escaped) {
+      escaped = false;
+      continue;
+    }
+    if (character === "\\") {
+      escaped = true;
+      continue;
+    }
+    if (index === from && character === "<") {
+      angleWrapped = true;
+      continue;
+    }
+    if (angleWrapped) {
+      if (character === ">") angleWrapped = false;
+      continue;
+    }
+    if (character === "(") {
+      depth += 1;
+      continue;
+    }
+    if (character === ")") {
+      if (depth === 0) return index;
+      depth -= 1;
+    }
+  }
+  return -1;
+}
+
 function parseMarkdownLinkDestination(source: string): string | null {
   const match = source.match(/^\s*(<[^>\n]+>|[^\s\n]+?)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*$/);
   if (!match?.[1]) return null;
@@ -340,7 +374,7 @@ function parseMarkdownInlineWithStyle(
     if (text[cursor] === "[") {
       const labelEnd = findClosingDelimiter(text, "]", cursor + 1);
       if (labelEnd !== -1 && text[labelEnd + 1] === "(") {
-        const destinationEnd = findClosingDelimiter(text, ")", labelEnd + 2);
+        const destinationEnd = findClosingLinkDestination(text, labelEnd + 2);
         if (destinationEnd !== -1) {
           const href = parseMarkdownLinkDestination(text.slice(labelEnd + 2, destinationEnd));
           if (href) {
