@@ -155,6 +155,14 @@ async function moveMouse(client, point) {
 function resolveLynxtronExecutable() {
   const configured = process.env.LYNXTRON_EXECUTABLE?.trim();
   if (configured) return path.resolve(configured);
+  try {
+    const nativePaths = require("@lynx-js/lynxtron/native-paths");
+    if (typeof nativePaths.executablePath === "string") {
+      return nativePaths.executablePath;
+    }
+  } catch {
+    // Lynxtron before 0.0.21 did not expose runtime-aware native paths.
+  }
   const packageJson = import.meta.resolve("@lynx-js/lynxtron/package.json");
   const packageRoot = path.dirname(fileURLToPath(packageJson));
   if (process.platform === "darwin") {

@@ -42,6 +42,15 @@ boundaries:
 
 ## Confirmed 0.0.21 packaging regression
 
+Lynxtron 0.0.21 stages the development runtime at
+`dist/devtool/Lynxtron.app` and exposes the selected executable through
+`@lynx-js/lynxtron/native-paths`. The packaged-readiness harness previously
+assumed the pre-0.0.21 `dist/Lynxtron.app` layout, so preflight failed before
+launching the owned process. The harness now uses the package export first and
+retains its legacy path only as a fallback for older runtimes.
+
+### CEF WebView archive
+
 `@lynx-js/cef-webview@0.0.21` cannot currently be installed on macOS arm64. Its
 postinstall downloads:
 

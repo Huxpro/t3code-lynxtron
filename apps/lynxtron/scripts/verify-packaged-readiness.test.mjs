@@ -13,6 +13,13 @@ const outcomeChecksSource = source.slice(
 );
 
 describe("packaged readiness Sidebar geometry", () => {
+  it("resolves the selected Lynxtron runtime through the package native-paths export", () => {
+    assert.include(source, 'require("@lynx-js/lynxtron/native-paths")');
+    assert.include(source, 'typeof nativePaths.executablePath === "string"');
+    assert.include(source, "return nativePaths.executablePath");
+    assert.include(source, "Lynxtron before 0.0.21 did not expose runtime-aware native paths");
+  });
+
   it("attaches verification to an existing environment without reporting credentials", () => {
     assert.include(source, '"--pairing-url-file"');
     assert.include(source, "T3_LYNXTRON_PAIRING_URL: pairingUrl");
