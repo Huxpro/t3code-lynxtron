@@ -448,7 +448,11 @@ function buildLynxTranscriptRowElements(
             useAuthoritySurface ? " transcript-user-body--authority-hidden" : ""
           }`}
         >
-          <MarkdownRenderer text={row.message.text} cwd={cwd} />
+          <MarkdownRenderer
+            text={row.message.text}
+            cwd={cwd}
+            onManualNavigation={onManualNavigation}
+          />
         </view>
       );
     },
@@ -478,7 +482,12 @@ function buildLynxTranscriptRowElements(
     renderAssistantMarkdown: ({ row }) =>
       row.message.text && row.message.text.trim().length > 0 ? (
         shouldRenderBlockMarkdown(row.message.text) ? (
-          <MarkdownRenderer text={row.message.text} streaming={row.message.streaming} cwd={cwd} />
+          <MarkdownRenderer
+            text={row.message.text}
+            streaming={row.message.streaming}
+            cwd={cwd}
+            onManualNavigation={onManualNavigation}
+          />
         ) : (
           <InlineMarkdownRenderer text={row.message.text} cwd={cwd} />
         )

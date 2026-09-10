@@ -269,10 +269,12 @@ function MarkdownDetailsBlock({
   block,
   blockKey,
   cwd,
+  onManualNavigation,
 }: {
   readonly block: ParsedMarkdownBlock;
   readonly blockKey: string;
   readonly cwd: string | undefined;
+  readonly onManualNavigation: (() => void) | undefined;
 }) {
   const [open, setOpen] = useState(block.open ?? false);
   useEffect(() => {
@@ -284,7 +286,13 @@ function MarkdownDetailsBlock({
       data-markdown-details="true"
       data-markdown-details-open={open ? "true" : "false"}
     >
-      <view className="md-details-summary" bindtap={() => setOpen((value) => !value)}>
+      <view
+        className="md-details-summary"
+        bindtap={() => {
+          onManualNavigation?.();
+          setOpen((value) => !value);
+        }}
+      >
         <text className={`md-details-chevron${open ? " md-details-chevron--open" : ""}`}>›</text>
         <text className="md-details-label">
           {renderInline(
@@ -297,7 +305,7 @@ function MarkdownDetailsBlock({
       {open ? (
         <view className="md-details-content">
           {(block.children ?? []).map((child, index) =>
-            renderBlock(child, index, cwd, `${blockKey}-detail`),
+            renderBlock(child, index, cwd, `${blockKey}-detail`, onManualNavigation),
           )}
         </view>
       ) : null}
@@ -310,6 +318,7 @@ function renderBlock(
   idx: number,
   cwd: string | undefined,
   keyPrefix = "b",
+  onManualNavigation?: () => void,
 ): ReactNode {
   const key = `${keyPrefix}${idx}`;
   switch (block.type) {
@@ -369,7 +378,9 @@ function renderBlock(
           style={{ marginLeft: Math.max(0, (block.quoteDepth ?? 1) - 1) * 14 } as any}
         >
           {block.children?.length ? (
-            block.children.map((child, index) => renderBlock(child, index, cwd, `${key}-quote`))
+            block.children.map((child, index) =>
+              renderBlock(child, index, cwd, `${key}-quote`, onManualNavigation),
+            )
           ) : (
             <text className="md-blockquote-text">
               {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd)}
@@ -428,7 +439,15 @@ function renderBlock(
     }
 
     case "details":
-      return <MarkdownDetailsBlock key={key} block={block} blockKey={key} cwd={cwd} />;
+      return (
+        <MarkdownDetailsBlock
+          key={key}
+          block={block}
+          blockKey={key}
+          cwd={cwd}
+          onManualNavigation={onManualNavigation}
+        />
+      );
 
     case "hr":
       return <view key={key} className="md-hr" />;
@@ -442,6 +461,7 @@ interface MarkdownRendererProps {
   text: string;
   streaming?: boolean;
   cwd?: string | undefined;
+  onManualNavigation?: (() => void) | undefined;
 }
 
 export function InlineMarkdownRenderer({
@@ -498,12 +518,17 @@ export function InlineMarkdownRenderer({
   );
 }
 
-export function MarkdownRenderer({ text, streaming, cwd }: MarkdownRendererProps) {
+export function MarkdownRenderer({
+  text,
+  streaming,
+  cwd,
+  onManualNavigation,
+}: MarkdownRendererProps) {
   const blocks = useMemo(() => parseMarkdownBlocks(text), [text]);
 
   return (
     <view className="markdown-body">
-      {blocks.map((block, idx) => renderBlock(block, idx, cwd))}
+      {blocks.map((block, idx) => renderBlock(block, idx, cwd, "b", onManualNavigation))}
       {streaming ? <text className="md-cursor">▋</text> : null}
     </view>
   );

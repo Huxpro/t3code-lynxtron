@@ -327,7 +327,9 @@ following-end` with the jump affordance visible only while detached. That gate
   blocks contain identical code, so `Copied` never leaks into another message.
 - Native Markdown details disclosures now reset to the newly authored `open`
   state when a virtualized block identity changes, preventing expansion state
-  from leaking between recycled transcript rows.
+  from leaking between recycled transcript rows. Timeline-hosted details,
+  including nested disclosures, also detach follow before changing row height;
+  the standalone Plan panel keeps its own scrolling semantics.
 
 ## PF4: Complete remote and multi-environment operation
 

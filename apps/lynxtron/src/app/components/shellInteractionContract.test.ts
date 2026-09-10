@@ -223,6 +223,14 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain("}, [block.open, blockKey]);");
   });
 
+  it("detaches transcript follow before expanding Markdown details", () => {
+    const markdown = readFileSync(path.join(import.meta.dirname, "MarkdownRenderer.tsx"), "utf8");
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(markdown).toContain("onManualNavigation?.();");
+    expect(markdown).toContain("onManualNavigation={onManualNavigation}");
+    expect(timelineSource).toContain("onManualNavigation={onManualNavigation}");
+  });
+
   it("keeps archived thread destructive actions behind the native menu and confirmation", () => {
     expect(settingsLayoutSource).toContain("onContextMenu={onContextMenu}");
     expect(settingsLayoutSource.match(/onContextMenu=\{onContextMenu\}/g)).toHaveLength(4);
