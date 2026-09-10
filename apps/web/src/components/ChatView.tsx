@@ -92,7 +92,10 @@ import {
   isLatestTurnSettled,
 } from "../session-logic";
 import { type LegendListRef } from "@legendapp/list/react";
-import { getAnchoredTurnMetrics, type TimelineScrollMode } from "./chat/timelineScrollAnchoring";
+import {
+  getAnchoredTurnMetrics,
+  type TimelineScrollMode,
+} from "@t3tools/client-runtime/presentation/transcript";
 import {
   buildPendingUserInputAnswers,
   derivePendingUserInputProgress,

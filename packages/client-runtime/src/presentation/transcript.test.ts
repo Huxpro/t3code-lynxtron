@@ -10,6 +10,8 @@ import {
   deriveTimelineEntries,
   deriveWorkLogEntries,
   formatDuration,
+  getAnchoredTurnMetrics,
+  getTimelineRowBottom,
   shouldShowAssistantChangedFiles,
   INITIAL_TRANSCRIPT_FOLLOW_STATE,
   reduceTranscriptFollow,
@@ -21,6 +23,134 @@ import {
   type TimelineEntry,
   type TranscriptMessage,
 } from "./transcript.ts";
+
+function buildTimelineMeasurementState({
+  positions,
+  sizes,
+  scroll = 0,
+  scrollLength = 700,
+}: {
+  readonly positions: readonly number[];
+  readonly sizes: readonly number[];
+  readonly scroll?: number;
+  readonly scrollLength?: number;
+}) {
+  return {
+    data: positions.map((_, index) => index),
+    scroll,
+    scrollLength,
+    positionAtIndex: (index: number) => positions[index],
+    sizeAtIndex: (index: number) => sizes[index],
+  };
+}
+
+describe("timeline scroll anchoring", () => {
+  it("measures row bottoms from renderer-neutral row position and size", () => {
+    const state = buildTimelineMeasurementState({ positions: [0, 120], sizes: [80, 40] });
+    expect(getTimelineRowBottom(state, 1)).toBe(160);
+  });
+
+  it("treats the active turn as fitting when it fits above the composer", () => {
+    const metrics = getAnchoredTurnMetrics({
+      state: buildTimelineMeasurementState({
+        positions: [0, 300, 460],
+        sizes: [240, 80, 140],
+        scrollLength: 760,
+      }),
+      anchorIndex: 1,
+      composerOverlayHeight: 180,
+      anchorOffset: 16,
+    });
+    expect(metrics).toMatchObject({
+      turnHeight: 300,
+      usableViewportHeight: 564,
+      overflowsUsableViewport: false,
+      targetScrollToRevealEnd: 36,
+      scrollDeltaToRevealEnd: 36,
+    });
+  });
+
+  it("targets the real row end instead of any temporary reserved tail", () => {
+    const metrics = getAnchoredTurnMetrics({
+      state: buildTimelineMeasurementState({
+        positions: [0, 1720, 1880],
+        sizes: [1600, 80, 120],
+        scroll: 1900,
+        scrollLength: 760,
+      }),
+      anchorIndex: 1,
+      composerOverlayHeight: 180,
+      anchorOffset: 16,
+    });
+    expect(metrics).toMatchObject({
+      lastBottom: 2000,
+      targetScrollToRevealEnd: 1436,
+      scrollDeltaToRevealEnd: 0,
+    });
+  });
+
+  it("reports overflow only for the current anchored turn", () => {
+    const metrics = getAnchoredTurnMetrics({
+      state: buildTimelineMeasurementState({
+        positions: [0, 900, 1180],
+        sizes: [800, 220, 300],
+        scroll: 900,
+        scrollLength: 760,
+      }),
+      anchorIndex: 1,
+      composerOverlayHeight: 180,
+      anchorOffset: 16,
+    });
+    expect(metrics).toMatchObject({
+      turnHeight: 580,
+      usableViewportHeight: 564,
+      overflowsUsableViewport: true,
+    });
+  });
+
+  it("returns the minimal positive scroll delta needed to reveal the turn end", () => {
+    const metrics = getAnchoredTurnMetrics({
+      state: buildTimelineMeasurementState({
+        positions: [0, 900, 1180],
+        sizes: [800, 220, 360],
+        scroll: 900,
+        scrollLength: 760,
+      }),
+      anchorIndex: 1,
+      composerOverlayHeight: 180,
+      anchorOffset: 16,
+    });
+    expect(metrics).toMatchObject({
+      lastBottom: 1540,
+      visibleUsableBottom: 1464,
+      scrollDeltaToRevealEnd: 76,
+    });
+  });
+
+  it("subtracts composer height from usable viewport height", () => {
+    const state = buildTimelineMeasurementState({
+      positions: [0, 300],
+      sizes: [120, 470],
+      scrollLength: 700,
+    });
+    expect(
+      getAnchoredTurnMetrics({
+        state,
+        anchorIndex: 1,
+        composerOverlayHeight: 0,
+        anchorOffset: 16,
+      })?.overflowsUsableViewport,
+    ).toBe(false);
+    expect(
+      getAnchoredTurnMetrics({
+        state,
+        anchorIndex: 1,
+        composerOverlayHeight: 220,
+        anchorOffset: 16,
+      })?.overflowsUsableViewport,
+    ).toBe(true);
+  });
+});
 
 describe("empty transcript presentation", () => {
   it("shows only for a truly idle empty session projection", () => {

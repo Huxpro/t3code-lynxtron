@@ -227,6 +227,15 @@ A working agent loop must remain usable across long output, structured Markdown,
 - Discrete accelerators reach the shared resolver with exact packet semantics.
 - Real-input checks are either passed in one authorized user session or remain visibly blocked by their runtime gap.
 
+### Current progress
+
+- Web's three-state scroll-mode vocabulary and anchored-turn geometry are now
+  owned by `client-runtime/presentation/transcript` instead of a Web-private
+  module. Web consumes the shared source directly, while Lynx already consumes
+  the same module for follow/detach and new-turn anchoring. The original six
+  LegendList geometry cases now run with the shared transcript tests. Transition
+  convergence and renderer acceptance remain open.
+
 ## PF4: Complete remote and multi-environment operation
 
 Remote readiness is a core product property. A Lynxtron desktop shell that works only against its bundled local server is not feature-parity.
