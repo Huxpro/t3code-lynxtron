@@ -233,6 +233,8 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain(
       "onClick={href ? () => activateMarkdownLink(href, cwd) : undefined}",
     );
+    expect(markdown).toContain('className="inline-markdown-link"');
+    expect(markdown).toContain("onClick={() => activateMarkdownLink(href, cwd)}");
   });
 
   it("surfaces pending, success, and failure for code-block copy", () => {

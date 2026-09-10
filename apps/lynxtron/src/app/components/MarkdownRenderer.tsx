@@ -742,6 +742,27 @@ export function InlineMarkdownRenderer({
               <text className="inline-markdown-code-label">{span.text}</text>
             </HostView>
           )
+        ) : href ? (
+          <HostView
+            key={`inline-${index}`}
+            className="inline-markdown-link"
+            onClick={() => activateMarkdownLink(href, cwd)}
+            onContextMenu={markdownLinkContextMenuHandler(href, cwd)}
+          >
+            <HostText
+              className={`inline-markdown-text md-link${
+                span.strikethrough ? " md-strikethrough" : ""
+              }`}
+              style={
+                {
+                  fontWeight: span.bold ? "700" : "400",
+                  fontStyle: span.italic ? "italic" : "normal",
+                } as object
+              }
+            >
+              {span.text}
+            </HostText>
+          </HostView>
         ) : (
           <text
             key={`inline-${index}`}

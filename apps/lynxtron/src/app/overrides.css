@@ -4239,6 +4239,11 @@
   align-items: center;
   width: 100%;
 }
+.inline-markdown-link {
+  display: inline-flex;
+  flex-direction: row;
+  min-width: 0;
+}
 .transcript-assistant-row > .inline-markdown-row {
   width: 100%;
   max-width: 760px;

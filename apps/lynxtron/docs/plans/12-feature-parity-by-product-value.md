@@ -396,6 +396,9 @@ following-end` with the jump affordance visible only while detached. That gate
   1024-pixel screenshot when the pending-approval fixture is selected. Project
   identity, Git actions, project scripts, and panel controls now remain the real
   interactive Header at every viewport.
+- Compact single-line assistant replies now keep ordinary Markdown links
+  tappable and expose the same external/file context actions as block-rendered
+  paragraphs.
 - Supported Markdown images now open a Native root-level preview overlay rather
   than ending at a static inline image. The preview data model is shared with
   Web, includes close/previous/next semantics, and is threaded through nested
