@@ -380,22 +380,38 @@ function LynxWorkingLabel({ createdAt }: { createdAt: string | null }) {
   return <text className="transcript-working-label">{fullLabel}</text>;
 }
 
-function MessageCopyControl({ text }: { readonly text: string }) {
+function MessageCopyControl({
+  text,
+  identity,
+}: {
+  readonly text: string;
+  readonly identity: string;
+}) {
   const [status, setStatus] = useState<MessageCopyStatus | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(
-    () => () => {
+  const requestGenerationRef = useRef(0);
+  useEffect(() => {
+    requestGenerationRef.current += 1;
+    if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    resetTimerRef.current = null;
+    setStatus(null);
+    return () => {
+      requestGenerationRef.current += 1;
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
-    },
-    [],
-  );
+    };
+  }, [identity, text]);
   const pending = status === "pending";
   const handleCopy = useCallback(() => {
     if (pending) return;
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
-    void runMessageCopy(clientCapabilities.clipboard.writeText, text, setStatus).then(() => {
+    const requestGeneration = ++requestGenerationRef.current;
+    const setCurrentStatus = (nextStatus: MessageCopyStatus) => {
+      if (requestGenerationRef.current === requestGeneration) setStatus(nextStatus);
+    };
+    void runMessageCopy(clientCapabilities.clipboard.writeText, text, setCurrentStatus).then(() => {
+      if (requestGenerationRef.current !== requestGeneration) return;
       resetTimerRef.current = setTimeout(() => {
-        setStatus(null);
+        if (requestGenerationRef.current === requestGeneration) setStatus(null);
         resetTimerRef.current = null;
       }, 1_000);
     });
@@ -481,7 +497,7 @@ function UserMessageMeta({
       {revertFailed ? (
         <text className="transcript-message-meta__failure">Revert failed</text>
       ) : null}
-      <MessageCopyControl text={copyText} />
+      <MessageCopyControl key={messageId} text={copyText} identity={messageId} />
     </view>
   );
 }
@@ -647,7 +663,11 @@ function buildLynxTranscriptRowElements(
           }`}
         >
           {copyState.visible && copyState.text ? (
-            <MessageCopyControl text={copyState.text} />
+            <MessageCopyControl
+              key={row.message.id}
+              text={copyState.text}
+              identity={row.message.id}
+            />
           ) : null}
           {!row.message.streaming ? (
             <text className="transcript-message-meta__time">

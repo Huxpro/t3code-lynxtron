@@ -36,6 +36,9 @@ describe("message hover actions contract", () => {
     expect(timelineSource).toContain("t3ClientActions.revertCheckpoint(revertTurnCount)");
     expect(timelineSource).toContain("runMessageRevert(");
     expect(timelineSource).toContain('data-message-revert-state={revertStatus ?? "idle"}');
+    expect(timelineSource).toContain("requestGenerationRef.current += 1");
+    expect(timelineSource).toContain("}, [identity, text]);");
+    expect(timelineSource).toContain("identity={row.message.id}");
     expect(timelineSource).toContain("showNativeConfirm({");
     expect(timelineSource).toContain('confirmLabel: "Revert"');
     expect(timelineSource).toContain("}, 1_000);");
