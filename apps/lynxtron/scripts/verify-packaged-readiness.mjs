@@ -2,6 +2,7 @@
 import { createHash } from "node:crypto";
 import { spawn, spawnSync } from "node:child_process";
 import { EventEmitter } from "node:events";
+import { createRequire } from "node:module";
 import {
   chmodSync,
   cpSync,
@@ -38,6 +39,7 @@ import {
 } from "../../../packages/client-runtime/src/presentation/files.ts";
 
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
+const require = createRequire(import.meta.url);
 const REPO_ROOT = path.resolve(APP_ROOT, "../..");
 const DEFAULT_DEVTOOL_CLI = path.join(
   os.homedir(),

@@ -14,6 +14,8 @@ const outcomeChecksSource = source.slice(
 
 describe("packaged readiness Sidebar geometry", () => {
   it("resolves the selected Lynxtron runtime through the package native-paths export", () => {
+    assert.include(source, 'import { createRequire } from "node:module"');
+    assert.include(source, "const require = createRequire(import.meta.url)");
     assert.include(source, 'require("@lynx-js/lynxtron/native-paths")');
     assert.include(source, 'typeof nativePaths.executablePath === "string"');
     assert.include(source, "return nativePaths.executablePath");
