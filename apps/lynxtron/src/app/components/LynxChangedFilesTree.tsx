@@ -34,11 +34,13 @@ function LynxDiffStatLabel({
 export function LynxChangedFilesTree({
   files,
   onOpenFile,
+  onDirectoryToggle,
   allDirectoriesExpanded,
   selectedPath = null,
 }: {
   readonly files: ReadonlyArray<OrchestrationCheckpointFile>;
   readonly onOpenFile?: (path: string) => void;
+  readonly onDirectoryToggle?: (() => void) | undefined;
   readonly allDirectoriesExpanded: boolean;
   readonly selectedPath?: string | null;
 }) {
@@ -60,6 +62,7 @@ export function LynxChangedFilesTree({
 
   const toggleDirectory = useCallback(
     (pathValue: string) => {
+      onDirectoryToggle?.();
       setDirectoryExpansionState((current) => {
         const nextOverrides = current.key === expansionStateKey ? current.overrides : {};
         return {
@@ -71,7 +74,7 @@ export function LynxChangedFilesTree({
         };
       });
     },
-    [allDirectoriesExpanded, expansionStateKey],
+    [allDirectoriesExpanded, expansionStateKey, onDirectoryToggle],
   );
 
   const renderNode = (node: ChangedFilesTreeNode, depth: number): ReactNode => {

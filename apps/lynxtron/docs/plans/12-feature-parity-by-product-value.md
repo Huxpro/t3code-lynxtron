@@ -357,8 +357,9 @@ following-end` with the jump affordance visible only while detached. That gate
   user/directory expansion only when the checkpoint identity changes, preventing
   recycled list cells from leaking a previous diff card's state.
   User-driven checkpoint-card and directory expansion also detach follow mode
-  before changing row height, preserving the chosen history position while new
-  output arrives. Ready checkpoints with zero additions and deletions now omit
+  before changing row height, including individual folder toggles inside the
+  expanded tree, preserving the chosen history position while new output arrives.
+  Ready checkpoints with zero additions and deletions now omit
   the empty stat label like Web instead of rendering `+0 −0` noise. Collapsed
   checkpoint previews also use the same path-aware file icon projection as the
   expanded tree instead of labeling every file as generic JSON. Opening a full

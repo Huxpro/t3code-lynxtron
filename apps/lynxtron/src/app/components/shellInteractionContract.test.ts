@@ -2337,6 +2337,12 @@ describe("desktop shell interaction contract", () => {
     expect(timelineSource.match(/onManualNavigation\(\);/gu)?.length ?? 0).toBeGreaterThanOrEqual(
       5,
     );
+    expect(timelineSource).toContain("onDirectoryToggle={onManualNavigation}");
+    const changedFilesTree = componentSource("LynxChangedFilesTree.tsx");
+    expect(changedFilesTree).toContain("onDirectoryToggle?.();");
+    expect(changedFilesTree.indexOf("onDirectoryToggle?.();")).toBeLessThan(
+      changedFilesTree.indexOf("setDirectoryExpansionState((current)"),
+    );
   });
 
   it("seeds and synchronizes the saved model selection before creating new chats", () => {

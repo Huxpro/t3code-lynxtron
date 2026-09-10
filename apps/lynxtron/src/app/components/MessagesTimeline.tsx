@@ -237,6 +237,7 @@ function LynxTurnDiffCard({
           files={summary.files}
           allDirectoriesExpanded={allDirectoriesExpanded}
           onOpenFile={openDiff}
+          onDirectoryToggle={onManualNavigation}
         />
       }
       onExpandedChange={(value) => {
