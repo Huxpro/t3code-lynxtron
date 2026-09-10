@@ -403,7 +403,8 @@ function findClosingDelimiter(text: string, delimiter: string, from: number): nu
 }
 
 function isMarkdownWordCharacter(character: string | undefined): boolean {
-  return character !== undefined && /[\p{L}\p{N}]/u.test(character);
+  if (character === undefined) return false;
+  return /[A-Za-z0-9]/.test(character) || (character.charCodeAt(0) > 0x7f && !/\s/.test(character));
 }
 
 function canOpenUnderscoreDelimiter(text: string, index: number, length: number): boolean {

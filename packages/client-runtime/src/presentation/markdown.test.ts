@@ -279,6 +279,15 @@ describe("parseMarkdownInline", () => {
       { text: " and ", bold: false, italic: false, code: false, href: null },
       { text: "foo_bar", bold: true, italic: false, code: false, href: null },
     ]);
+    expect(parseMarkdownInline("中文_标识_名称")).toEqual([
+      {
+        text: "中文_标识_名称",
+        bold: false,
+        italic: false,
+        code: false,
+        href: null,
+      },
+    ]);
   });
 
   it("preserves balanced and escaped parentheses in link destinations", () => {
