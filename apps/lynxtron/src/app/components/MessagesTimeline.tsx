@@ -1032,6 +1032,11 @@ export function MessagesTimeline({
                   onMouseEnter={() => setActiveMinimapItemId(item.id)}
                   onClick={() => {
                     setAnchorMessageId(null);
+                    setActiveMinimapItemId(null);
+                    setTimelineAtEnd(false);
+                    setTimelineScrollMode((current) =>
+                      reduceTimelineScrollMode(current, { kind: "user-scroll-away" }),
+                    );
                     listRef.current
                       ?.invoke({
                         method: "scrollToPosition",

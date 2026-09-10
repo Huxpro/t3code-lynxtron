@@ -254,7 +254,9 @@ following-end` with the jump affordance visible only while detached. That gate
   cancel their reset timer on unmount.
   The Native minimap now tracks hover/preview state by stable user-message ID
   instead of array index, so inserted, folded, or replaced rows cannot silently
-  redirect the preview to a different turn.
+  redirect the preview to a different turn. Selecting a minimap turn now also
+  clears the hover preview and detaches follow mode before scrolling, so incoming
+  streaming content cannot steal the chosen history position.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

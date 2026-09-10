@@ -2222,6 +2222,11 @@ describe("desktop shell interaction contract", () => {
     );
     expect(timelineSource).toContain("setActiveMinimapItemId(item.id)");
     expect(timelineSource).toContain('data-timeline-minimap-active={activeMinimapItemId ?? ""}');
+    expect(timelineSource).toContain("setActiveMinimapItemId(null);");
+    expect(timelineSource).toContain("setTimelineAtEnd(false);");
+    expect(timelineSource).toContain(
+      'reduceTimelineScrollMode(current, { kind: "user-scroll-away" })',
+    );
   });
 
   it("opens the complete plan surface from a transcript plan card", () => {
