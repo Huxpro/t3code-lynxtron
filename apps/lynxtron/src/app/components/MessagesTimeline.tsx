@@ -110,11 +110,13 @@ function LynxTurnDiffCard({
   isLatestTurn,
   compact,
   compactActions,
+  onManualNavigation,
 }: {
   summary: OrchestrationCheckpointSummary;
   isLatestTurn: boolean;
   compact: boolean;
   compactActions: boolean;
+  onManualNavigation: () => void;
 }) {
   const [expandedOverride, setExpandedOverride] = useState<boolean | null>(null);
   const autoExpanded = useMemo(
@@ -165,7 +167,10 @@ function LynxTurnDiffCard({
           className="turn-diff-card__folders-toggle inline-flex size-[22px] flex-col items-center justify-center rounded-md border border-border"
           aria-label={allDirectoriesExpanded ? "Collapse all folders" : "Expand all folders"}
           data-review-toggle-directories
-          onClick={() => setAllDirectoriesExpanded((current) => !current)}
+          onClick={() => {
+            onManualNavigation();
+            setAllDirectoriesExpanded((current) => !current);
+          }}
         >
           <Icon
             name="chevron-down"
@@ -214,8 +219,14 @@ function LynxTurnDiffCard({
           onOpenFile={openDiff}
         />
       }
-      onExpandedChange={setExpandedOverride}
-      onShowAll={() => setExpandedOverride(true)}
+      onExpandedChange={(value) => {
+        onManualNavigation();
+        setExpandedOverride(value);
+      }}
+      onShowAll={() => {
+        onManualNavigation();
+        setExpandedOverride(true);
+      }}
     />
   );
 }
@@ -378,6 +389,7 @@ function buildLynxTranscriptRowElements(
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
   revertMessage: (turnCount: number) => void,
   isWorking: boolean,
+  onManualNavigation: () => void,
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
   return {
     userBubbleClassName: ({ row }) => {
@@ -510,6 +522,7 @@ function buildLynxTranscriptRowElements(
           isLatestTurn={summary.turnId === latestTurnId}
           compact={compactChangedFiles}
           compactActions={compactChangedFilesActions}
+          onManualNavigation={onManualNavigation}
         />
       ) : null;
     },
@@ -649,6 +662,13 @@ export function MessagesTimeline({
       });
     });
   }, []);
+  const detachForManualNavigation = useCallback(() => {
+    setAnchorMessageId(null);
+    setTimelineAtEnd(false);
+    setTimelineScrollMode((current) =>
+      reduceTimelineScrollMode(current, { kind: "user-scroll-away" }),
+    );
+  }, []);
   const rowElements = useMemo(
     () =>
       buildLynxTranscriptRowElements(
@@ -659,6 +679,7 @@ export function MessagesTimeline({
         clientSettings.timestampFormat,
         revertMessage,
         isWorking,
+        detachForManualNavigation,
       ),
     [
       clientSettings.timestampFormat,
@@ -667,6 +688,7 @@ export function MessagesTimeline({
       latestTurn?.turnId,
       revertMessage,
       isWorking,
+      detachForManualNavigation,
     ],
   );
 
@@ -898,14 +920,6 @@ export function MessagesTimeline({
     setTimelineScrollMode((current) => reduceTimelineScrollMode(current, { kind: "follow-end" }));
     scrollToEnd(true);
   }, [scrollToEnd]);
-
-  const detachForManualNavigation = useCallback(() => {
-    setAnchorMessageId(null);
-    setTimelineAtEnd(false);
-    setTimelineScrollMode((current) =>
-      reduceTimelineScrollMode(current, { kind: "user-scroll-away" }),
-    );
-  }, []);
 
   const handleToggleTurn = useCallback(
     (turnId: TurnId) => {

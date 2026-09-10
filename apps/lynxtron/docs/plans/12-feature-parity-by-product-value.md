@@ -309,6 +309,9 @@ following-end` with the jump affordance visible only while detached. That gate
 - Native checkpoint cards now recompute their auto-expand default and reset
   user/directory expansion only when the checkpoint identity changes, preventing
   recycled list cells from leaking a previous diff card's state.
+  User-driven checkpoint-card and directory expansion also detach follow mode
+  before changing row height, preserving the chosen history position while new
+  output arrives.
 - Native now matches Web's safety boundary for message reverts: while an agent
   turn is working, the destructive "Revert to this message" action is visibly
   disabled and has no tap handler; idle checkpoint-backed messages retain the

@@ -2258,6 +2258,13 @@ describe("desktop shell interaction contract", () => {
     expect(timelineSource).toContain("}, [autoExpanded, summary.checkpointRef, summary.turnId]);");
   });
 
+  it("detaches transcript follow before changing checkpoint-card height", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain("onManualNavigation: () => void;");
+    expect(timelineSource).toContain("onManualNavigation={onManualNavigation}");
+    expect(timelineSource.match(/onManualNavigation\(\);/gu)).toHaveLength(3);
+  });
+
   it("seeds and synchronizes the saved model selection before creating new chats", () => {
     const composer = componentSource("Composer.tsx");
     expect(clientSource).toContain("modelSelection: saved,");
