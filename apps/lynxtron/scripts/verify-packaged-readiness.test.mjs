@@ -1021,6 +1021,10 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
     assert.include(source, "state?.composerDraftTextByScopeKey?.[draftScopeKey] === draftText");
     assert.include(source, "coldRestart: {");
+    assert.include(
+      source,
+      "persistedThreadIdsAfterRuntimeRecovery = readPersistedThreadIds(baseDir)",
+    );
   });
 
   it("verifies idle from the canonical session projection rather than visual status", () => {

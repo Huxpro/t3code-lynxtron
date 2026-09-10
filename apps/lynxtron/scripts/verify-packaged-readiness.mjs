@@ -3329,6 +3329,7 @@ async function verifyNewThreadDraftLifecycle({
   }
   const runtimeRecoveryDeadline = Date.now() + timeoutMs;
   let runtimeRecoveryState = await readClientState(client);
+  let persistedThreadIdsAfterRuntimeRecovery = readPersistedThreadIds(baseDir);
   let runtimeThreadObserved =
     runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId) === true;
   while (Date.now() < runtimeRecoveryDeadline) {
@@ -3336,9 +3337,15 @@ async function verifyNewThreadDraftLifecycle({
       throw new Error("Lynxtron exited before the runtime empty thread was recovered.");
     }
     runtimeRecoveryState = await readClientState(client);
+    persistedThreadIdsAfterRuntimeRecovery = readPersistedThreadIds(baseDir);
     runtimeThreadObserved ||=
       runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId) === true;
-    if (!runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId)) break;
+    if (
+      !runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId) &&
+      !persistedThreadIdsAfterRuntimeRecovery.includes(freshEmptyThreadId)
+    ) {
+      break;
+    }
     await waitForChildExit(child, 100);
   }
   if (runtimeRecoveryState?.threadIds?.includes(freshEmptyThreadId)) {
@@ -3349,7 +3356,6 @@ async function verifyNewThreadDraftLifecycle({
       })}`,
     );
   }
-  const persistedThreadIdsAfterRuntimeRecovery = readPersistedThreadIds(baseDir);
   if (persistedThreadIdsAfterRuntimeRecovery.includes(freshEmptyThreadId)) {
     throw new Error(
       `A runtime-created empty Native thread survived automatic recovery: ${JSON.stringify({

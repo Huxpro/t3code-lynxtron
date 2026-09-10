@@ -41,16 +41,16 @@
       "status": "pass",
       "draftScopeKey": "project:2e4cb40d-3a04-4002-82b5-c6d5526a5add",
       "restoredText": "Native route-scoped draft",
-      "initialProcessId": 84026,
-      "restartedProcessId": 85030,
+      "initialProcessId": 94528,
+      "restartedProcessId": 95544,
       "transportKind": "main",
       "lastSeq": 3
     }
   },
   "artifacts": {
-    "reportPath": "/tmp/t3code-pf2-draft-restart.4dWjDZ/report.json",
-    "reportSha256": "1c4012cbcc49de58344bae3883f3b48879e9f2f19ba7235aa112746702da92bd",
-    "logSha256": "4a1390d8eaa436f71e242b1f42ba2ab6169ba411950759be178dd724e761e298",
+    "reportPath": "/tmp/t3code-pf2-draft-restart.HAybgb/report.json",
+    "reportSha256": "7c34fcf3cb55a3ee93e51a097196cfd98e4dd5a6ccaae757d3129bd3952011f8",
+    "logSha256": "3b3cbe6daf4d6b1d0786389cd30dac9883ce4aed920129e50823d27847c61551",
     "bundleSha256": "0ce2a8f9c2d7dff2d3e6769e1ad3809f332870cf1b606d3440cbc09a5ed41a72"
   },
   "evidenceBoundary": {
