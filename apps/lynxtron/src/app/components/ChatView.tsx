@@ -101,6 +101,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   const [attachmentPreviewUrlById, setAttachmentPreviewUrlById] = useState<
     Readonly<Record<string, string>>
   >({});
+  const [attachmentPreviewRevision, setAttachmentPreviewRevision] = useState(0);
   const {
     status,
     statusDetail,
@@ -146,6 +147,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   const attachmentIdsKey = attachmentIds.join("\u0000");
   useEffect(() => {
     let active = true;
+    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
     setAttachmentPreviewUrlById({});
     void Promise.all(
       attachmentIds.map(async (attachmentId) => {
@@ -153,7 +155,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           const result = await t3ClientActions.createAssetUrl({
             resource: { _tag: "attachment", attachmentId },
           });
-          return [attachmentId, result.url] as const;
+          return { attachmentId, url: result.url, expiresAt: result.expiresAt };
         } catch {
           return null;
         }
@@ -162,14 +164,24 @@ export function ChatView({ threadId }: ChatViewProps) {
       if (!active) return;
       setAttachmentPreviewUrlById(
         Object.fromEntries(
-          entries.filter((entry): entry is readonly [string, string] => entry !== null),
+          entries.flatMap((entry) => (entry ? [[entry.attachmentId, entry.url] as const] : [])),
         ),
       );
+      const earliestExpiry = Math.min(
+        ...entries.flatMap((entry) => (entry ? [entry.expiresAt] : [])),
+      );
+      if (Number.isFinite(earliestExpiry)) {
+        refreshTimer = setTimeout(
+          () => setAttachmentPreviewRevision((revision) => revision + 1),
+          Math.max(1_000, earliestExpiry - Date.now() - 5 * 60_000),
+        );
+      }
     });
     return () => {
       active = false;
+      if (refreshTimer !== null) clearTimeout(refreshTimer);
     };
-  }, [activeThreadId, attachmentIdsKey]);
+  }, [activeThreadId, attachmentIdsKey, attachmentPreviewRevision]);
   const displayMessages = useMemo(
     () =>
       messages.map((message) => ({

@@ -263,6 +263,8 @@ describe("transcript layout contract", () => {
   it("hydrates persisted attachment previews without mutating canonical messages", () => {
     expect(chatViewSource).toContain('resource: { _tag: "attachment", attachmentId }');
     expect(chatViewSource).toContain("if (!active) return;");
+    expect(chatViewSource).toContain("earliestExpiry - Date.now() - 5 * 60_000");
+    expect(chatViewSource).toContain("if (refreshTimer !== null) clearTimeout(refreshTimer)");
     expect(chatViewSource).toContain("const displayMessages = useMemo");
     expect(chatViewSource).toContain("previewUrl: attachmentPreviewUrlById[attachment.id]");
     expect(chatViewSource).toContain("messages={displayMessages}");
