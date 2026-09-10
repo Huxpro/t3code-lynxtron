@@ -361,6 +361,13 @@ describe("transcript layout contract", () => {
     expect(block).toContain("min-width: 0;");
   });
 
+  it("hides zero changed-file stats like Web", () => {
+    expect(timelineSource).toContain('summary.status === "ready" && hasNonZeroStat(stat)');
+    expect(timelineSource).toContain(
+      'import { hasNonZeroStat } from "../../../../web/src/components/chat/DiffStatLabel"',
+    );
+  });
+
   it("keeps shared user-row spacing in the native list-item measurement", () => {
     expect(overrides).toContain(".timeline-row-root--user {");
     expect(overrides).toContain(".timeline-row-root--user > .transcript-user-outer {");

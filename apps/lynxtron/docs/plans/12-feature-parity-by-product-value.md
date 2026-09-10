@@ -354,7 +354,8 @@ following-end` with the jump affordance visible only while detached. That gate
   recycled list cells from leaking a previous diff card's state.
   User-driven checkpoint-card and directory expansion also detach follow mode
   before changing row height, preserving the chosen history position while new
-  output arrives.
+  output arrives. Ready checkpoints with zero additions and deletions now omit
+  the empty stat label like Web instead of rendering `+0 −0` noise.
 - Native now matches Web's safety boundary for message reverts: while an agent
   turn is working, the destructive "Revert to this message" action is visibly
   disabled and has no tap handler; idle checkpoint-backed messages retain the

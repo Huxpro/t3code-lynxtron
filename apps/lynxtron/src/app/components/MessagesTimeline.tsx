@@ -45,6 +45,7 @@ import {
   type TranscriptRowElements,
 } from "../../../../web/src/components/chat/TranscriptRowSurface";
 import { ChangedFilesCardSurface } from "../../../../web/src/components/chat/ChangedFilesCardSurface";
+import { hasNonZeroStat } from "../../../../web/src/components/chat/DiffStatLabel";
 import { HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ActivityEntry, ChatMessage, SessionStatus } from "../bridge";
 import externalChevronDownUrl from "../assets/chevron-down.svg?external";
@@ -169,7 +170,7 @@ function LynxTurnDiffCard({
       compact={compact}
       toggleIcon={<Icon name="chevron-right" size={14} color="#818181" />}
       stat={
-        summary.status === "ready" ? (
+        summary.status === "ready" && hasNonZeroStat(stat) ? (
           <view className="lynx-diff-stat text-xs leading-4">
             <text className="lynx-diff-stat__additions">+{stat.additions}</text>
             <text className="lynx-diff-stat__deletions">−{stat.deletions}</text>
