@@ -19,11 +19,16 @@ describe("deriveVisibleUserMessage", () => {
     expect(deriveVisibleUserMessage(prompt)).toEqual({
       visibleText: "Inspect this",
       copyText: prompt,
+      contextKinds: ["terminal", "element"],
     });
   });
 
   it("does not strip context-looking text that is not a trailing complete block", () => {
     const prompt = "Explain <terminal_context> literally";
-    expect(deriveVisibleUserMessage(prompt)).toEqual({ visibleText: prompt, copyText: prompt });
+    expect(deriveVisibleUserMessage(prompt)).toEqual({
+      visibleText: prompt,
+      copyText: prompt,
+      contextKinds: [],
+    });
   });
 });

@@ -264,6 +264,9 @@ following-end` with the jump affordance visible only while detached. That gate
   trailing terminal/element context payloads while preserving the canonical raw
   text for copy and provider history. Web's detailed context parser delegates its
   visible/copy boundary to the same helper.
+  Native user bubbles now use that visible projection too: canonical context
+  payloads remain available to copy/provider history, while the transcript shows
+  a compact terminal/element-context summary instead of raw XML blocks.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

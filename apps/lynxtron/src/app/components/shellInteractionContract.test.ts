@@ -2234,6 +2234,14 @@ describe("desktop shell interaction contract", () => {
     expect(timelineSource).toContain("detachForManualNavigation();");
   });
 
+  it("hides raw context payloads behind a compact user-message summary", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain("deriveVisibleUserMessage(row.message.text)");
+    expect(timelineSource).toContain("data-message-context-count");
+    expect(timelineSource).toContain("text={displayed.visibleText}");
+    expect(overrides).toContain(".transcript-context-summary {");
+  });
+
   it("detaches transcript follow before expanding historical rows", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
     expect(timelineSource).toContain("const detachForManualNavigation = useCallback");

@@ -27,6 +27,7 @@ import {
 } from "@t3tools/client-runtime/presentation/transcript";
 import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
+import { deriveVisibleUserMessage } from "@t3tools/client-runtime/presentation/user-message";
 import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
 import type {
   OrchestrationLatestTurn,
@@ -400,13 +401,15 @@ function buildLynxTranscriptRowElements(
       return estimatedInlineWidth > 590 ? "transcript-user-bubble--max" : undefined;
     },
     renderUserExtras: ({ row }) => {
+      const displayed = deriveVisibleUserMessage(row.message.text);
       const authority =
         row.message.text ===
         "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval." ? (
           <image className="transcript-user-authority-surface" src={userPendingUrl} />
         ) : null;
       const attachments = row.message.attachments ?? [];
-      if (!authority && attachments.length === 0) return null;
+      if (!authority && attachments.length === 0 && displayed.contextKinds.length === 0)
+        return null;
       return (
         <view className="transcript-user-extras">
           {authority}
@@ -435,10 +438,25 @@ function buildLynxTranscriptRowElements(
               ))}
             </view>
           ) : null}
+          {displayed.contextKinds.length > 0 ? (
+            <view
+              className="transcript-context-summary"
+              data-message-context-count={String(displayed.contextKinds.length)}
+            >
+              <text className="transcript-context-summary__label">
+                {displayed.contextKinds.length === 1
+                  ? displayed.contextKinds[0] === "terminal"
+                    ? "Terminal context"
+                    : "Element context"
+                  : `${displayed.contextKinds.length} attached contexts`}
+              </text>
+            </view>
+          ) : null}
         </view>
       );
     },
     renderUserBody: ({ row }) => {
+      const displayed = deriveVisibleUserMessage(row.message.text);
       const useAuthoritySurface =
         row.message.text ===
         "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval.";
@@ -449,7 +467,7 @@ function buildLynxTranscriptRowElements(
           }`}
         >
           <MarkdownRenderer
-            text={row.message.text}
+            text={displayed.visibleText}
             cwd={cwd}
             onManualNavigation={onManualNavigation}
           />
