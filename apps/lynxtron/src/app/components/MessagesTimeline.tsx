@@ -28,7 +28,10 @@ import {
 import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
 import { deriveVisibleUserMessage } from "@t3tools/client-runtime/presentation/user-message";
-import { proposedPlanTitle } from "@t3tools/client-runtime/presentation/proposed-plan";
+import {
+  buildCollapsedProposedPlanPreviewMarkdown,
+  proposedPlanTitle,
+} from "@t3tools/client-runtime/presentation/proposed-plan";
 import type {
   OrchestrationLatestTurn,
   OrchestrationCheckpointSummary,
@@ -244,6 +247,7 @@ function LynxTurnDiffCard({
 /** Lynx proposed-plan island: eyebrow + title card. */
 function LynxProposedPlanCard({ plan }: { plan: OrchestrationProposedPlan }) {
   const title = proposedPlanTitle(plan.planMarkdown) ?? "Proposed plan";
+  const preview = buildCollapsedProposedPlanPreviewMarkdown(plan.planMarkdown, { maxLines: 4 });
   return (
     <HostView
       className="plan-row"
@@ -255,6 +259,10 @@ function LynxProposedPlanCard({ plan }: { plan: OrchestrationProposedPlan }) {
       <text className="plan-row__title" text-maxline="2">
         {title}
       </text>
+      <view className="plan-row__preview">
+        <MarkdownRenderer text={preview} streaming={false} />
+      </view>
+      <text className="plan-row__open-label">Open full plan</text>
     </HostView>
   );
 }

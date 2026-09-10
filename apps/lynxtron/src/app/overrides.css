@@ -4599,6 +4599,21 @@
   font-weight: 600;
   font-family: var(--font-sans);
 }
+.plan-row__preview {
+  margin-top: 8px;
+  max-height: 112px;
+  overflow: hidden;
+}
+.plan-row__preview .markdown-body {
+  gap: 2px;
+}
+.plan-row__open-label {
+  margin-top: 8px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 16px;
+}
 .timeline-jump {
   position: absolute;
   bottom: 12px;

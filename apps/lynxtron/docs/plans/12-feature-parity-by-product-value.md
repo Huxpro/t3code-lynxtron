@@ -320,6 +320,9 @@ following-end` with the jump affordance visible only while detached. That gate
   state and the existing panel route; its real OS tap remains covered by the
   documented Lynxtron 0.0.21 native-tap blocker rather than being marked as
   accepted from a source-level contract alone.
+  The card now also renders a shared four-line Markdown preview with the title
+  stripped, so the transcript preserves actual plan meaning before navigation
+  instead of presenting only a static title.
 - The Native Plan panel now copies the same normalized export Markdown as Web,
   with pending/copied/failed feedback scoped to the active plan and reset when
   plan identity changes. Download and save-to-workspace remain separate host

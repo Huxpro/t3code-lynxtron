@@ -240,6 +240,13 @@ describe("transcript layout contract", () => {
     expect(markdownSource).toContain('data-markdown-table-copy-state={copyStatus ?? "idle"}');
   });
 
+  it("renders real proposed-plan content before opening the full panel", () => {
+    expect(timelineSource).toContain("buildCollapsedProposedPlanPreviewMarkdown");
+    expect(timelineSource).toContain("<MarkdownRenderer text={preview} streaming={false} />");
+    expect(timelineSource).toContain("Open full plan");
+    expect(timelineSource).toContain('onClick={() => uiActions.openRightPanelSurface("plan")}');
+  });
+
   it("detaches follow before expanding table cells and resets recycled state", () => {
     expect(markdownSource).toContain("const [expanded, setExpanded] = useState(initialExpanded)");
     expect(markdownSource).toContain("setExpanded(initialExpanded)");
