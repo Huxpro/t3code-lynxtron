@@ -207,6 +207,15 @@ describe("desktop shell interaction contract", () => {
     );
   });
 
+  it("surfaces pending, success, and failure for code-block copy", () => {
+    const markdown = readFileSync(path.join(import.meta.dirname, "MarkdownRenderer.tsx"), "utf8");
+    expect(markdown).toContain('data-markdown-code-copy-state={copyStatus ?? "idle"}');
+    expect(markdown).toContain('copyStatus === "failed" ? "Copy failed"');
+    expect(markdown).toContain('aria-disabled={copyStatus === "pending" ? "true" : "false"}');
+    expect(markdown).toContain('bindtap={copyStatus === "pending" ? undefined : handleCopy}');
+    expect(markdown).toContain("clearTimeout(resetTimerRef.current)");
+  });
+
   it("keeps archived thread destructive actions behind the native menu and confirmation", () => {
     expect(settingsLayoutSource).toContain("onContextMenu={onContextMenu}");
     expect(settingsLayoutSource.match(/onContextMenu=\{onContextMenu\}/g)).toHaveLength(4);

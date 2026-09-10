@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
 } from "@lynx-js/react";
@@ -20,6 +21,7 @@ import {
   type ParsedMarkdownBlock,
 } from "@t3tools/client-runtime/presentation/markdown-blocks";
 import { copyMarkdownCode } from "./markdownClipboard";
+import type { MessageCopyStatus } from "./messageCopy";
 
 // Simple markdown-to-Lynx-views renderer. Handles the most common
 // formatting used in AI assistant responses.
@@ -200,18 +202,35 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
 }
 
 function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; blockKey: string }) {
-  const [copied, setCopied] = useState(false);
-  useEffect(() => setCopied(false), [block.code]);
+  const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    setCopyStatus(null);
+    if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    return () => {
+      if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    };
+  }, [block.code]);
   const handleCopy = useCallback(() => {
     "background only";
+    if (copyStatus === "pending") return;
+    setCopyStatus("pending");
     void copyMarkdownCode(block.code ?? "", clientCapabilities.clipboard)
       .then((didCopy) => {
-        if (didCopy) setCopied(true);
+        setCopyStatus(didCopy ? "copied" : "failed");
       })
-      .catch((cause) => {
-        console.error("[lynx-markdown] failed to copy code block", { cause });
+      .catch(() => {
+        setCopyStatus("failed");
+      })
+      .then(() => {
+        resetTimerRef.current = setTimeout(() => {
+          setCopyStatus(null);
+          resetTimerRef.current = null;
+        }, 1_000);
       });
-  }, [block.code]);
+  }, [block.code, copyStatus]);
+  const copyLabel =
+    copyStatus === "copied" ? "Copied" : copyStatus === "failed" ? "Copy failed" : "Copy";
 
   return (
     <view
@@ -225,11 +244,18 @@ function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; bl
         <text className="md-code-lang">{block.title ?? block.language ?? "Code"}</text>
         <view
           className="md-code-copy"
-          data-markdown-code-copy-state={copied ? "copied" : "idle"}
-          aria-label={copied ? "Code copied" : "Copy code"}
-          bindtap={handleCopy}
+          data-markdown-code-copy-state={copyStatus ?? "idle"}
+          aria-label={
+            copyStatus === "failed"
+              ? "Code copy failed"
+              : copyStatus === "copied"
+                ? "Code copied"
+                : "Copy code"
+          }
+          aria-disabled={copyStatus === "pending" ? "true" : "false"}
+          bindtap={copyStatus === "pending" ? undefined : handleCopy}
         >
-          <text className="md-code-copy-label">{copied ? "Copied" : "Copy"}</text>
+          <text className="md-code-copy-label">{copyLabel}</text>
         </view>
       </view>
       <text className="md-code-text whitespace-pre" data-markdown-code-content="true">
