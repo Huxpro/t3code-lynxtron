@@ -100,6 +100,17 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       continue;
     }
 
+    const setextLevel = lines[index + 1]?.trim().match(/^(=+|-+)$/)?.[1]?.[0];
+    if (line.trim().length > 0 && setextLevel) {
+      blocks.push({
+        type: "heading",
+        level: setextLevel === "=" ? 1 : 2,
+        text: line.trim(),
+      });
+      index += 2;
+      continue;
+    }
+
     const headingMatch = line.match(/^(#{1,6})\s+(.+)/);
     if (headingMatch) {
       blocks.push({
@@ -124,6 +135,21 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         alt: imageMatch[1] ?? "",
         href: imageMatch[2]!,
         title: imageMatch[3],
+      });
+      index++;
+      continue;
+    }
+
+    const inlineDetailsMatch = line
+      .trim()
+      .match(/^<details(\s+open)?\s*>\s*<summary>(.*?)<\/summary>\s*(.*?)\s*<\/details>\s*$/i);
+    if (inlineDetailsMatch) {
+      const body = inlineDetailsMatch[3] ?? "";
+      blocks.push({
+        type: "details",
+        open: Boolean(inlineDetailsMatch[1]),
+        summary: inlineDetailsMatch[2] || "Details",
+        children: body ? parseMarkdownBlocks(body) : [],
       });
       index++;
       continue;
@@ -195,10 +221,11 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       index < lines.length &&
       lines[index]!.trim() !== "" &&
       !parseMarkdownFence(lines[index]!) &&
+      !(lines[index + 1]?.trim().match(/^(=+|-+)$/) && lines[index]!.trim().length > 0) &&
       !lines[index]!.match(/^(#{1,6})\s/) &&
       !lines[index]!.match(/^((?:>\s*)+)(.*)$/) &&
       !lines[index]!.trim().match(/^!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)\s*$/) &&
-      !lines[index]!.trim().match(/^<details(?:\s+open)?\s*>$/i) &&
+      !lines[index]!.trim().match(/^<details(?:\s+open)?\s*>/i) &&
       !parseMarkdownTable(lines.slice(index)) &&
       !parseMarkdownListItem(lines[index]!) &&
       !/^(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[index]!.trim())

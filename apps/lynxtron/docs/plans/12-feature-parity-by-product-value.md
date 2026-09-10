@@ -248,7 +248,11 @@ following-end` with the jump affordance visible only while detached. That gate
   quotes, GFM lists/tasks/tables, images, details, rules, and paragraph ordering
   now have a shared ownership boundary that Web can consume without importing a
   renderer. AST-level convergence with Web's react-markdown pipeline remains
-  open.
+  open. Shared parser coverage now also preserves CommonMark setext headings
+  and single-line HTML details blocks, which previously rendered with the wrong
+  structure or leaked raw tags into transcript prose. Parser tests now live with
+  the shared implementation; the Lynx suite retains only platform clipboard
+  behavior.
 
 ## PF4: Complete remote and multi-environment operation
 

@@ -1,10 +1,6 @@
-import { describe, expect, it, vi } from "vite-plus/test";
+import { describe, expect, it } from "vite-plus/test";
 
-import { copyMarkdownCode } from "./markdownClipboard";
-import {
-  parseMarkdownBlocks,
-  shouldRenderBlockMarkdown,
-} from "@t3tools/client-runtime/presentation/markdown-blocks";
+import { parseMarkdownBlocks, shouldRenderBlockMarkdown } from "./markdownBlocks.ts";
 
 describe("parseMarkdownBlocks", () => {
   it("preserves fenced-code language, title, and content", () => {
@@ -164,6 +160,29 @@ describe("parseMarkdownBlocks", () => {
       },
     ]);
   });
+
+  it("preserves setext headings with their CommonMark level", () => {
+    expect(parseMarkdownBlocks("Primary heading\n===\n\nSecondary heading\n---")).toEqual([
+      { type: "heading", level: 1, text: "Primary heading" },
+      { type: "empty" },
+      { type: "heading", level: 2, text: "Secondary heading" },
+    ]);
+  });
+
+  it("parses single-line details without leaking raw HTML into prose", () => {
+    expect(
+      parseMarkdownBlocks(
+        "<details open><summary>More context</summary>Nested **content**.</details>",
+      ),
+    ).toEqual([
+      {
+        type: "details",
+        open: true,
+        summary: "More context",
+        children: [{ type: "paragraph", text: "Nested **content**." }],
+      },
+    ]);
+  });
 });
 
 describe("shouldRenderBlockMarkdown", () => {
@@ -182,32 +201,5 @@ describe("shouldRenderBlockMarkdown", () => {
 
   it("keeps ordinary inline prose on the compact renderer", () => {
     expect(shouldRenderBlockMarkdown("Use **bold**, ~~old~~, and `code`.")).toBe(false);
-  });
-});
-
-describe("copyMarkdownCode", () => {
-  it("copies the complete code block and reports success", async () => {
-    const writeText = vi.fn(async () => undefined);
-
-    await expect(
-      copyMarkdownCode("first line\nsecond line", {
-        available: () => true,
-        writeText,
-      }),
-    ).resolves.toBe(true);
-    expect(writeText).toHaveBeenCalledOnce();
-    expect(writeText).toHaveBeenCalledWith("first line\nsecond line");
-  });
-
-  it("does not write when the clipboard capability is unavailable", async () => {
-    const writeText = vi.fn(async () => undefined);
-
-    await expect(
-      copyMarkdownCode("code", {
-        available: () => false,
-        writeText,
-      }),
-    ).resolves.toBe(false);
-    expect(writeText).not.toHaveBeenCalled();
   });
 });
