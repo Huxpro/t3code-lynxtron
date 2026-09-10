@@ -269,6 +269,8 @@ following-end` with the jump affordance visible only while detached. That gate
   a compact terminal/element-context summary instead of raw XML blocks.
   Context-only or attachment-only messages no longer allocate an empty Markdown
   body below those extras.
+  User-bubble width estimation also uses visible text, so hidden context payloads
+  cannot stretch a short authored message to the maximum bubble width.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

@@ -394,7 +394,8 @@ function buildLynxTranscriptRowElements(
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
   return {
     userBubbleClassName: ({ row }) => {
-      const estimatedInlineWidth = parseMarkdownInline(row.message.text).reduce(
+      const visibleText = deriveVisibleUserMessage(row.message.text).visibleText;
+      const estimatedInlineWidth = parseMarkdownInline(visibleText).reduce(
         (width, span) => width + span.text.length * (span.code ? 7.25 : 6.9) + (span.code ? 16 : 0),
         0,
       );
