@@ -361,6 +361,11 @@ following-end` with the jump affordance visible only while detached. That gate
   virtualized row receives a different activity identity. Both renderers also
   route the disclosure through their manual-navigation path before changing row
   height, so streaming output cannot steal the expanded tool/error body.
+- Transcript rows no longer replace one fixture-specific user prompt and
+  command-approval entry with calibration screenshots at the authority
+  viewport. The shared semantic row anatomy now remains visible and operable in
+  that real approval flow; unrelated shell/composer calibration assets remain a
+  separate convergence concern.
 
 ## PF4: Complete remote and multi-environment operation
 

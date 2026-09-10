@@ -21,8 +21,6 @@
 .theme-light .sidebar-settings-authority,
 .theme-light .sidebar-v2-control-authority,
 .theme-light .topbar-authority-surface,
-.theme-light .transcript-user-authority-surface,
-.theme-light .transcript-work-entry-authority-surface,
 .theme-light .composer-pending-authority-copy,
 .theme-light .composer-editor-authority-surface,
 .theme-light .composer-context-authority-surface,
@@ -37,8 +35,6 @@
 .theme-light .sidebar-v2-control-row--authority > view,
 .theme-light .topbar--authority > .topbar__content,
 .theme-light .topbar--authority > .topbar__layout-controls,
-.theme-light .transcript-user-body--authority-hidden,
-.theme-light .transcript-work-entry-line--authority-hidden,
 .theme-light .composer-pending-copy--authority-hidden,
 .theme-light .composer__input--authority-hidden,
 .theme-light .composer-context-strip--authority > .composer-context-backdrop,
@@ -4325,29 +4321,6 @@
   font-size: 14px;
   line-height: 20px;
 }
-.transcript-user-authority-surface {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 614px;
-  height: 70px;
-}
-.transcript-user-body--authority-hidden {
-  opacity: 0;
-}
-.transcript-work-entry--authority {
-  position: relative;
-}
-.transcript-work-entry-authority-surface {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 768px;
-  height: 24px;
-}
-.transcript-work-entry-line--authority-hidden {
-  opacity: 0;
-}
 .transcript-user-bubble--max {
   width: 80%;
   max-width: 614px;
@@ -7264,8 +7237,6 @@
 .viewport-responsive .sidebar-settings-authority,
 .viewport-responsive .sidebar-v2-control-authority,
 .viewport-responsive .topbar-authority-surface,
-.viewport-responsive .transcript-user-authority-surface,
-.viewport-responsive .transcript-work-entry-authority-surface,
 .viewport-responsive .composer-pending-authority-copy,
 .viewport-responsive .composer-editor-authority-surface,
 .viewport-responsive .composer-context-authority-surface,
@@ -7280,8 +7251,6 @@
 .viewport-responsive .sidebar-v2-control-row--authority > view,
 .viewport-responsive .topbar--authority > .topbar__content,
 .viewport-responsive .topbar--authority > .topbar__layout-controls,
-.viewport-responsive .transcript-user-body--authority-hidden,
-.viewport-responsive .transcript-work-entry-line--authority-hidden,
 .viewport-responsive .composer-pending-copy--authority-hidden,
 .viewport-responsive .composer__input--authority-hidden,
 .viewport-responsive .composer-context-strip--authority > .composer-context-backdrop,
@@ -7306,8 +7275,6 @@
 .sidebar-width-responsive .sidebar-settings-authority,
 .sidebar-width-responsive .sidebar-v2-control-authority,
 .sidebar-width-responsive .topbar-authority-surface,
-.sidebar-width-responsive .transcript-user-authority-surface,
-.sidebar-width-responsive .transcript-work-entry-authority-surface,
 .sidebar-width-responsive .composer-pending-authority-copy,
 .sidebar-width-responsive .composer-editor-authority-surface,
 .sidebar-width-responsive .composer-context-authority-surface,
@@ -7322,8 +7289,6 @@
 .sidebar-width-responsive .sidebar-v2-control-row--authority > view,
 .sidebar-width-responsive .topbar--authority > .topbar__content,
 .sidebar-width-responsive .topbar--authority > .topbar__layout-controls,
-.sidebar-width-responsive .transcript-user-body--authority-hidden,
-.sidebar-width-responsive .transcript-work-entry-line--authority-hidden,
 .sidebar-width-responsive .composer-pending-copy--authority-hidden,
 .sidebar-width-responsive .composer__input--authority-hidden,
 .sidebar-width-responsive .composer-context-strip--authority > .composer-context-backdrop,

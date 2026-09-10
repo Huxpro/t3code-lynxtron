@@ -82,7 +82,6 @@ export interface TranscriptRowElements<
     headingClassName: string;
     preview: string | null;
   }): ReactNode;
-  renderWorkEntryVisual?(input: { heading: string; preview: string | null }): ReactNode;
   /** Trailing work-entry status affordance (Web: tooltip icons; Lynx: glyph). */
   renderWorkStatus(input: { failed: boolean; succeeded: boolean; warning: boolean }): ReactNode;
   /** Disclosure chevron leaf (Web: lucide SVG icons; Lynx: text glyph). */
@@ -242,14 +241,11 @@ function WorkEntryRow({
   const showSuccessIndicator =
     workEntryIndicatesToolSuccess(workEntry) ||
     (turnSettled && workEntryIndicatesToolNeutralStatus(workEntry));
-  const authorityVisual = elements.renderWorkEntryVisual?.({ heading, preview });
-
   return (
     <HostView
       className={cn(
         "transcript-work-entry flex flex-col rounded-md px-0.5 py-0.5",
         canExpand && "cursor-pointer",
-        authorityVisual && "transcript-work-entry--authority",
       )}
       role={canExpand ? "button" : undefined}
       aria-label={canExpand ? displayText : undefined}
@@ -266,13 +262,7 @@ function WorkEntryRow({
           : undefined
       }
     >
-      {authorityVisual}
-      <HostView
-        className={cn(
-          "transcript-work-entry-line flex select-none items-center gap-1.5",
-          authorityVisual && "transcript-work-entry-line--authority-hidden",
-        )}
-      >
+      <HostView className="transcript-work-entry-line flex select-none items-center gap-1.5">
         <HostText className={iconWrapperClass}>
           {elements.renderWorkIcon({
             name: entryIconName,

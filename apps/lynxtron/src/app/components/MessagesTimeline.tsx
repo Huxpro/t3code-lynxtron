@@ -44,8 +44,6 @@ import { HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ActivityEntry, ChatMessage, SessionStatus } from "../bridge";
 import externalChevronDownUrl from "../assets/chevron-down.svg?external";
 import externalTerminalUrl from "../assets/terminal.svg?external";
-import commandPendingUrl from "../assets/transcript-command-pending@2x.png?external";
-import userPendingUrl from "../assets/transcript-user-pending@2x.png?external";
 import workingLabelFullAtlasUrl from "../assets/working-label-64-71h@2x.png?external";
 import workingLabelAtlasUrl from "../assets/working-label-atlas@2x.png?external";
 import { Icon } from "./Icon";
@@ -403,17 +401,10 @@ function buildLynxTranscriptRowElements(
     },
     renderUserExtras: ({ row }) => {
       const displayed = deriveVisibleUserMessage(row.message.text);
-      const authority =
-        row.message.text ===
-        "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval." ? (
-          <image className="transcript-user-authority-surface" src={userPendingUrl} />
-        ) : null;
       const attachments = row.message.attachments ?? [];
-      if (!authority && attachments.length === 0 && displayed.contextKinds.length === 0)
-        return null;
+      if (attachments.length === 0 && displayed.contextKinds.length === 0) return null;
       return (
         <view className="transcript-user-extras">
-          {authority}
           {attachments.length > 0 ? (
             <view
               className="transcript-attachment-list"
@@ -459,15 +450,8 @@ function buildLynxTranscriptRowElements(
     renderUserBody: ({ row }) => {
       const displayed = deriveVisibleUserMessage(row.message.text);
       if (displayed.visibleText.trim().length === 0) return null;
-      const useAuthoritySurface =
-        row.message.text ===
-        "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval.";
       return (
-        <view
-          className={`transcript-user-body lynx-host-text whitespace-pre-wrap text-sm leading-6 text-foreground/92${
-            useAuthoritySurface ? " transcript-user-body--authority-hidden" : ""
-          }`}
-        >
+        <view className="transcript-user-body lynx-host-text whitespace-pre-wrap text-sm leading-6 text-foreground/92">
           <MarkdownRenderer
             text={displayed.visibleText}
             cwd={cwd}
@@ -601,10 +585,6 @@ function buildLynxTranscriptRowElements(
         ) : null}
       </view>
     ),
-    renderWorkEntryVisual: ({ heading, preview }) =>
-      heading === "Command approval requested" && preview === "printf pending-approval" ? (
-        <image className="transcript-work-entry-authority-surface" src={commandPendingUrl} />
-      ) : null,
     renderWorkStatus: ({ failed, succeeded }) =>
       failed ? (
         <view className="transcript-work-status transcript-work-status--failed">
