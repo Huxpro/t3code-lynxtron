@@ -370,7 +370,9 @@ following-end` with the jump affordance visible only while detached. That gate
 - Native message copy now has an explicit pending/success/failure state instead
   of an unhandled clipboard promise: pending disables duplicate taps, success
   shows the check state, and rejection exposes `Copy failed` before the feedback
-  resets.
+  resets. The shared Native hover host now reveals both opacity and visibility,
+  so user and assistant metadata controls are no longer kept hidden by the
+  transcript's initial visibility contract.
 - Settled assistant messages with no visible text now use the same shared
   `(empty response)` fallback as Web instead of leaving an unexplained blank
   transcript row; streaming empty messages retain the `Thinking…` state.

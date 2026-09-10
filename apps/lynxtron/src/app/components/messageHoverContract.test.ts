@@ -26,20 +26,27 @@ describe("message hover actions contract", () => {
     expect(timelineSource.match(/flatten=\{false\}/gu)).toHaveLength(2);
     expect(timelineSource).toContain("resolveAssistantMessageCopyState");
     expect(timelineSource).toContain("deriveDisplayedUserMessageState(row.message.text).copyText");
-    expect(timelineSource).toContain('aria-label="Copy link"');
-    expect(timelineSource).toContain('aria-label="Revert to this message"');
+    expect(timelineSource).toContain(
+      'aria-label={status === "failed" ? "Copy failed" : "Copy link"}',
+    );
+    expect(timelineSource).toContain(
+      'aria-label={revertFailed ? "Revert failed" : "Revert to this message"}',
+    );
     expect(timelineSource).toContain("inferCheckpointTurnCountByTurnId(checkpoints)");
-    expect(timelineSource).toContain("t3ClientActions.revertCheckpoint(turnCount)");
-    expect(timelineSource).toContain("label: `Revert to checkpoint ${turnCount}`");
+    expect(timelineSource).toContain("t3ClientActions.revertCheckpoint(revertTurnCount)");
+    expect(timelineSource).toContain("runMessageRevert(");
+    expect(timelineSource).toContain('data-message-revert-state={revertStatus ?? "idle"}');
     expect(timelineSource).toContain("showNativeConfirm({");
     expect(timelineSource).toContain('confirmLabel: "Revert"');
     expect(timelineSource).toContain("}, 1_000);");
-    expect(timelineSource).toContain("formatShortTimestamp(row.message.createdAt");
+    expect(timelineSource).toContain("createdAt={row.message.createdAt}");
+    expect(timelineSource).toContain("formatShortTimestamp(createdAt, timestampFormat)");
     expect(timelineSource).toContain("formatShortTimestamp(row.message.updatedAt");
     expect(overrides).toContain(".transcript-message-meta {");
     expect(overrides).toContain("opacity: 1;");
     expect(overrides).toContain("visibility: visible;");
     expect(overrides).toContain(".transcript-message-meta--visible {\n  opacity: 1;");
+    expect(overrides).toContain(".transcript-message-meta__failure {");
     expect(overrides).toContain(".transcript-user-row:hover > .transcript-message-meta");
     expect(overrides).toContain(".transcript-assistant-row:hover > .transcript-message-meta");
     expect(overrides).toContain("visibility: visible;");

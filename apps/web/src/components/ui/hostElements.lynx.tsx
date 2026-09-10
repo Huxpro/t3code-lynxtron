@@ -105,7 +105,9 @@ export function HostView({
     injectedMouseEnter?.(event);
     injectedMouseMove?.(event);
     if (hoverRevealSelector) {
-      event.currentTarget.querySelector(hoverRevealSelector)?.setStyleProperty("opacity", "1");
+      const revealTarget = event.currentTarget.querySelector(hoverRevealSelector);
+      revealTarget?.setStyleProperty("opacity", "1");
+      revealTarget?.setStyleProperty("visibility", "visible");
     }
     if (trackHoverState) event.currentTarget.setAttribute("data-lynx-hover", "true");
     if (onMouseEnter) runOnBackground(onMouseEnter)({});
@@ -114,7 +116,9 @@ export function HostView({
     "main thread";
     injectedMouseLeave?.(event);
     if (hoverRevealSelector) {
-      event.currentTarget.querySelector(hoverRevealSelector)?.setStyleProperty("opacity", "0");
+      const revealTarget = event.currentTarget.querySelector(hoverRevealSelector);
+      revealTarget?.setStyleProperty("opacity", "0");
+      revealTarget?.setStyleProperty("visibility", "hidden");
     }
     if (trackHoverState) event.currentTarget.setAttribute("data-lynx-hover", "false");
     if (onMouseLeave) runOnBackground(onMouseLeave)({});
