@@ -371,6 +371,10 @@ following-end` with the jump affordance visible only while detached. That gate
   Arbitrary command/file approval details now use the same semantic surface in
   dark, light, and responsive layouts; Header/button calibration remains a
   separate convergence slice.
+- The chat Header no longer swaps its complete shared surface for a fixed
+  1024-pixel screenshot when the pending-approval fixture is selected. Project
+  identity, Git actions, project scripts, and panel controls now remain the real
+  interactive Header at every viewport.
 - Supported Markdown images now open a Native root-level preview overlay rather
   than ending at a static inline image. The preview data model is shared with
   Web, includes close/previous/next semantics, and is threaded through nested

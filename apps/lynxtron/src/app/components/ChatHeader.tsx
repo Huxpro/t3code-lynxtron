@@ -17,7 +17,6 @@ import { ProjectFavicon } from "../../../../web/src/components/ProjectFavicon.ly
 import { t3ClientActions } from "../state/t3Client";
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../state/environment";
 import { uiActions } from "../state/uiState";
-import headerPendingUrl from "../assets/header-pending@2x.png?external";
 import { Icon, type IconName } from "./Icon";
 import { OpenInPicker } from "./OpenInPicker";
 import { shouldCompactHeaderActions } from "./chatHeaderLayout";
@@ -178,8 +177,6 @@ export function ChatHeader({
   const [gitActionPending, setGitActionPending] = useState(false);
   const [projectActionsMenuOpen, setProjectActionsMenuOpen] = useState(false);
   const [projectActionError, setProjectActionError] = useState<string | null>(null);
-  const useAuthoritySurface =
-    projectName === "pending-fixture" && threadTitle === "Run printf pending-approval";
   const compactActions = shouldCompactHeaderActions(centerPanelWidth);
   const importableActions = useMemo(
     () => importableProjectScripts(projectScripts, fileScripts),
@@ -271,14 +268,11 @@ export function ChatHeader({
     <view
       className={`chat-header-reference topbar lynx-titlebar-drag-region${
         compactActions ? " topbar--compact-actions" : ""
-      }${useAuthoritySurface ? " topbar--authority" : ""}`}
+      }`}
       data-chat-header
       data-chat-header-center-width={String(centerPanelWidth)}
       data-chat-header-actions-compact={compactActions ? "true" : "false"}
     >
-      {useAuthoritySurface ? (
-        <image className="topbar-authority-surface" src={headerPendingUrl} />
-      ) : null}
       <ChatHeaderSurface
         activeProjectName={projectName}
         activeThreadTitle={threadTitle}

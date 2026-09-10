@@ -20,7 +20,6 @@
 .theme-light .sidebar-header-authority,
 .theme-light .sidebar-settings-authority,
 .theme-light .sidebar-v2-control-authority,
-.theme-light .topbar-authority-surface,
 .theme-light .composer-context-authority-surface,
 .theme-light .ui-button__authority-label {
   display: none;
@@ -31,8 +30,6 @@
 .theme-light .sidebar-footer--authority .sidebar-settings-row > image,
 .theme-light .sidebar-footer--authority .sidebar-settings-row > text,
 .theme-light .sidebar-v2-control-row--authority > view,
-.theme-light .topbar--authority > .topbar__content,
-.theme-light .topbar--authority > .topbar__layout-controls,
 .theme-light .composer-context-strip--authority > .composer-context-backdrop,
 .theme-light .composer-context-strip--authority > .composer-context-item,
 .theme-light .ui-button__label--authority-hidden {
@@ -1927,17 +1924,6 @@
 .lynx-titlebar-no-drag input,
 .lynx-titlebar-no-drag textarea {
   -x-app-region: no-drag;
-}
-.topbar-authority-surface {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 1024px;
-  height: 52px;
-}
-.topbar--authority > .topbar__content,
-.topbar--authority > .topbar__layout-controls {
-  opacity: 0;
 }
 .chat-header-project-main,
 .topbar__actions,
@@ -7269,7 +7255,6 @@
 .viewport-responsive .sidebar-header-authority,
 .viewport-responsive .sidebar-settings-authority,
 .viewport-responsive .sidebar-v2-control-authority,
-.viewport-responsive .topbar-authority-surface,
 .viewport-responsive .composer-context-authority-surface,
 .viewport-responsive .ui-button__authority-label {
   display: none;
@@ -7280,8 +7265,6 @@
 .viewport-responsive .sidebar-footer--authority .sidebar-settings-row > image,
 .viewport-responsive .sidebar-footer--authority .sidebar-settings-row > text,
 .viewport-responsive .sidebar-v2-control-row--authority > view,
-.viewport-responsive .topbar--authority > .topbar__content,
-.viewport-responsive .topbar--authority > .topbar__layout-controls,
 .viewport-responsive .composer-context-strip--authority > .composer-context-backdrop,
 .viewport-responsive .composer-context-strip--authority > .composer-context-item,
 .viewport-responsive .ui-button__label--authority-hidden {
@@ -7303,7 +7286,6 @@
 .sidebar-width-responsive .sidebar-header-authority,
 .sidebar-width-responsive .sidebar-settings-authority,
 .sidebar-width-responsive .sidebar-v2-control-authority,
-.sidebar-width-responsive .topbar-authority-surface,
 .sidebar-width-responsive .composer-context-authority-surface,
 .sidebar-width-responsive .ui-button__authority-label {
   display: none;
@@ -7314,8 +7296,6 @@
 .sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > image,
 .sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > text,
 .sidebar-width-responsive .sidebar-v2-control-row--authority > view,
-.sidebar-width-responsive .topbar--authority > .topbar__content,
-.sidebar-width-responsive .topbar--authority > .topbar__layout-controls,
 .sidebar-width-responsive .composer-context-strip--authority > .composer-context-backdrop,
 .sidebar-width-responsive .composer-context-strip--authority > .composer-context-item,
 .sidebar-width-responsive .ui-button__label--authority-hidden {

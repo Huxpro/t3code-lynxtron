@@ -138,6 +138,12 @@ const branchToolbarBranchSource = readFileSync(
 );
 
 describe("desktop shell interaction contract", () => {
+  it("always renders the real shared header instead of fixture-specific screenshots", () => {
+    expect(chatHeaderSource).not.toContain("pending-fixture");
+    expect(chatHeaderSource).not.toContain("header-pending@2x.png");
+    expect(chatHeaderSource).not.toContain("topbar--authority");
+    expect(overrides).not.toContain(".topbar-authority-surface");
+  });
   it("uses the synchronized client auto-settle preference for the active thread banner", () => {
     const chatView = componentSource("ChatView.tsx");
 
