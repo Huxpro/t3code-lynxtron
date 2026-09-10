@@ -334,6 +334,11 @@ following-end` with the jump affordance visible only while detached. That gate
   of an unhandled clipboard promise: pending disables duplicate taps, success
   shows the check state, and rejection exposes `Copy failed` before the feedback
   resets.
+- Discrete keyboard coverage now spans all three layers: native menu packet
+  encoding, the shared keybinding resolver, and a dependency-injected product
+  action dispatcher for New Thread, Quick Switch, File Picker, Settings, Sidebar,
+  and thread/model jumps. This is command-path evidence, not physical keyboard
+  acceptance.
 - Native code-block copy now follows the same pending/copied/failed contract,
   disables duplicate taps while the bridge write is in flight, and clears its
   feedback timer when a virtualized block unmounts.

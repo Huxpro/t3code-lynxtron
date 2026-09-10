@@ -4,11 +4,8 @@ import { navigate } from "../router";
 import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";
 import { dismissOpenSearchOverlay, isModelPickerOpen, uiActions } from "./uiState";
 import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution";
+import { dispatchResolvedKeyboardCommand } from "./keyboardCommandDispatch";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
-import {
-  modelPickerJumpIndexFromCommand,
-  threadJumpIndexFromCommand,
-} from "../../../../web/src/keybindings";
 import { requestModelPickerJump } from "./modelPickerJump";
 import { terminalReturnController } from "./terminalKeyboard";
 import { requestSidebarThreadJump } from "./sidebarThreadNavigation";
@@ -53,32 +50,18 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
   const command = resolveKeyboardPacketCommand(input, state.serverConfig?.keybindings ?? [], {
     modelPickerOpen,
   });
-  const modelJumpIndex = modelPickerJumpIndexFromCommand(command ?? "");
-  if (modelPickerOpen && modelJumpIndex !== null) return requestModelPickerJump(modelJumpIndex);
-  const jumpIndex = threadJumpIndexFromCommand(command ?? "");
-  if (jumpIndex !== null) return requestSidebarThreadJump(jumpIndex);
-
-  switch (command) {
-    case "sidebar.toggle":
-      requestSidebarToggle();
-      return true;
-    case "chat.new":
-    case "chat.newLocal":
-      void t3ClientActions.createThread();
-      return true;
-    case "commandPalette.toggle":
-      uiActions.toggleQuickSwitch("command");
-      return true;
-    case "filePicker.toggle":
-      uiActions.toggleQuickSwitch("files");
-      return true;
-    case "settings.open":
+  return dispatchResolvedKeyboardCommand(command, modelPickerOpen, {
+    createThread: () => void t3ClientActions.createThread(),
+    jumpModel: requestModelPickerJump,
+    jumpThread: requestSidebarThreadJump,
+    openFilePicker: () => uiActions.toggleQuickSwitch("files"),
+    openQuickSwitch: () => uiActions.toggleQuickSwitch("command"),
+    openSettings: () => {
       uiActions.closeQuickSwitch();
       navigate("/settings/general");
-      return true;
-    default:
-      return false;
-  }
+    },
+    toggleSidebar: requestSidebarToggle,
+  });
 }
 
 export function registerKeyboardCommands(): void {
