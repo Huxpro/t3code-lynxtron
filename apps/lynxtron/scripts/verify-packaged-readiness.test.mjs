@@ -950,6 +950,10 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "connectedComposer");
     assert.include(source, "disabledComposer");
     assert.include(source, "recoveredComposer");
+    assert.include(source, '"--verify-composer-reconnect"');
+    assert.include(source, "Reconnect-scoped Native draft");
+    assert.include(source, "failedRoute?.route !== reconnectFixture.route");
+    assert.include(source, "recoveredStatePreserved");
   });
 
   it("verifies exact-bundle review patches from a real checkpoint fixture", () => {

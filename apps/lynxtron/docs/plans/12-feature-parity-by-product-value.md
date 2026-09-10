@@ -174,6 +174,12 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   but its assistant run was externally blocked by the account usage limit. PF2
   stays `in_progress` for attachment fail/retry, reconnect, file context, and
   real-input closure.
+- A real owned-server `SIGKILL` and Reconnect cycle now proves the same local
+  draft ID, chat route, draft text, and terminal context survive both the
+  connection-error state and the replacement server. Submission is disabled
+  while disconnected and returns to sendable after the main sequence advances
+  on the recovered server. PF2 remains open for attachment fail/retry, file
+  context, and real-input closure.
 
 ## PF3: Complete transcript navigation and interaction
 

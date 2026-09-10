@@ -1797,6 +1797,7 @@ function composerStateForSessionStatus(sessionStatus) {
 async function waitForSessionComposerProjection({
   child,
   client,
+  expectedComposerState: expectedComposerStateOverride,
   expectedSessionStatus,
   timeoutMs,
 }) {
@@ -1809,7 +1810,8 @@ async function waitForSessionComposerProjection({
     const state = await readClientState(client);
     const composer = await readOptionalMeasurement(client, ".composer-frame");
     const shellSessionStatus = state?.activeThread?.session?.status ?? "idle";
-    const expectedComposerState = composerStateForSessionStatus(state?.sessionStatus);
+    const expectedComposerState =
+      expectedComposerStateOverride ?? composerStateForSessionStatus(state?.sessionStatus);
     latest = {
       composer,
       expectedComposerState,
@@ -12491,11 +12493,76 @@ async function verifySidebarScopeBehavior({ child, client, height, timeoutMs, wi
   };
 }
 
-async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs }) {
+async function verifyLifecycleRecovery({
+  baseDir,
+  child,
+  client,
+  log,
+  projectId,
+  timeoutMs,
+  verifyComposerReconnect,
+}) {
   await waitForLifecycleBannerToClear({ child, client, timeoutMs });
+  const reconnectFixture = verifyComposerReconnect
+    ? await (async () => {
+        await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+        const draft = await waitForClientState({
+          child,
+          client,
+          timeoutMs,
+          predicate: (state) =>
+            typeof state?.draftThreadId === "string" &&
+            state.activeThreadId === state.draftThreadId &&
+            state.activeThread?.projectId === projectId,
+        });
+        await waitForRuntimeValue({
+          child,
+          client,
+          expression:
+            "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__].join(':')",
+          predicate: (value) => value === "function:function",
+          timeoutMs,
+        });
+        const text = "Reconnect-scoped Native draft";
+        const context = {
+          id: "terminal-reconnect:7:8",
+          terminalId: "terminal-reconnect",
+          terminalLabel: "Terminal reconnect",
+          lineStart: 7,
+          lineEnd: 8,
+          text: "before reconnect\nafter reconnect",
+        };
+        const fixtureResponse = await client.runCdp("Runtime.evaluate", {
+          expression: `JSON.stringify({text:globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
+            text,
+          )}) ?? false,context:globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
+            context,
+          )}) ?? false})`,
+          returnByValue: true,
+        });
+        const fixtureResult = JSON.parse(commandResult(fixtureResponse)?.value ?? "null");
+        if (fixtureResult?.text !== true || fixtureResult?.context !== true) {
+          throw new Error(
+            `Reconnect Composer fixtures were not applied: ${JSON.stringify(fixtureResponse)}`,
+          );
+        }
+        const state = await waitForClientState({
+          child,
+          client,
+          timeoutMs,
+          predicate: (candidate) =>
+            candidate?.activeThreadId === draft.draftThreadId &&
+            candidate.activeComposerDraftText === text &&
+            candidate.activeComposerTerminalContexts?.[0]?.id === context.id,
+        });
+        const route = await readRoutePanel(client);
+        return { threadId: state.activeThreadId, text, context, route: route.route };
+      })()
+    : null;
   const connectedProjection = await waitForSessionComposerProjection({
     child,
     client,
+    expectedComposerState: reconnectFixture ? "sendable" : undefined,
     timeoutMs,
   });
   const ports = [...log.read().matchAll(/Listening on http:\/\/127\.0\.0\.1:(\d+)/gu)].map(
@@ -12528,7 +12595,9 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
     timeoutMs,
     predicate: (measurement) =>
       measurement?.attributes["data-composer-state"] ===
-      connectedProjection.composer.attributes["data-composer-state"],
+      (reconnectFixture
+        ? "disabled"
+        : connectedProjection.composer.attributes["data-composer-state"]),
   });
   const disabledPrimaryAction = await waitForMeasurement({
     child,
@@ -12538,6 +12607,18 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
     predicate: (measurement) =>
       measurement?.attributes["data-composer-primary-state"] === "disabled",
   });
+  const failedReconnectState = reconnectFixture
+    ? await waitForClientState({
+        child,
+        client,
+        timeoutMs,
+        predicate: (state) =>
+          state?.activeThreadId === reconnectFixture.threadId &&
+          state.activeComposerDraftText === reconnectFixture.text &&
+          state.activeComposerTerminalContexts?.[0]?.id === reconnectFixture.context.id,
+      })
+    : null;
+  const failedRoute = reconnectFixture ? await readRoutePanel(client) : null;
 
   await tapSelector({
     child,
@@ -12562,9 +12643,31 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
   const recoveredProjection = await waitForSessionComposerProjection({
     child,
     client,
+    expectedComposerState: reconnectFixture ? "sendable" : undefined,
     expectedSessionStatus: connectedProjection.sessionStatus,
     timeoutMs,
   });
+  const recoveredReconnectState = reconnectFixture
+    ? await waitForClientState({
+        child,
+        client,
+        timeoutMs,
+        predicate: (state) =>
+          state?.activeThreadId === reconnectFixture.threadId &&
+          state.activeComposerDraftText === reconnectFixture.text &&
+          state.activeComposerTerminalContexts?.[0]?.id === reconnectFixture.context.id,
+      })
+    : null;
+  const recoveredRoute = reconnectFixture ? await readRoutePanel(client) : null;
+  if (
+    reconnectFixture &&
+    (failedRoute?.route !== reconnectFixture.route ||
+      recoveredRoute?.route !== reconnectFixture.route)
+  ) {
+    throw new Error(
+      `Reconnect changed the Native route: ${JSON.stringify({ reconnectFixture, failedRoute, recoveredRoute })}`,
+    );
+  }
 
   const recoveredPorts = [...log.read().matchAll(/Listening on http:\/\/127\.0\.0\.1:(\d+)/gu)].map(
     (match) => Number(match[1]),
@@ -12601,6 +12704,17 @@ async function verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs 
       rect: recoveredProjection.composer.rect,
     },
     recoveredServer,
+    composerReconnect: reconnectFixture
+      ? {
+          status: "pass",
+          threadId: reconnectFixture.threadId,
+          route: reconnectFixture.route,
+          draftText: reconnectFixture.text,
+          terminalContextId: reconnectFixture.context.id,
+          failureStatePreserved: failedReconnectState !== null,
+          recoveredStatePreserved: recoveredReconnectState !== null,
+        }
+      : undefined,
     sequence: { before: beforeInterrupt.lastSeq, after: afterRecovery.lastSeq },
     finalBanner: null,
   };
@@ -12689,6 +12803,7 @@ async function runOnce({
   verifyFloatingRelations: shouldVerifyFloatingRelations,
   verifySidebarScope,
   verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
+  verifyComposerReconnect: shouldVerifyComposerReconnect,
   verifyComposerBranding,
   verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
@@ -12806,6 +12921,7 @@ async function runOnce({
       shouldVerifyFilePickerDefault ||
       shouldVerifyNewThreadProjects ||
       shouldVerifyNewThreadDraftLifecycle ||
+      shouldVerifyComposerReconnect ||
       shouldVerifyTerminalContextProviderSend ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
@@ -13535,7 +13651,15 @@ async function runOnce({
           verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs }),
         )
       : shouldVerifyLifecycleRecovery
-        ? await verifyLifecycleRecovery({ baseDir, child, client, log, timeoutMs })
+        ? await verifyLifecycleRecovery({
+            baseDir,
+            child,
+            client,
+            log,
+            projectId: fixtureManifestProjectId,
+            timeoutMs,
+            verifyComposerReconnect: shouldVerifyComposerReconnect,
+          })
         : undefined;
     const rendererErrors = readRendererErrors({
       clientId: client.identity.clientId,
@@ -13736,6 +13860,7 @@ const shouldVerifySidebarInlineSearch = process.argv.includes("--verify-sidebar-
 const shouldVerifyFloatingRelations = process.argv.includes("--verify-floating-relations");
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
+const shouldVerifyComposerReconnect = process.argv.includes("--verify-composer-reconnect");
 const verifyComposerBranding = process.argv.includes("--verify-composer-branding");
 const shouldVerifyNewThreadDraftLifecycle = process.argv.includes(
   "--verify-new-thread-draft-lifecycle",
@@ -13840,6 +13965,9 @@ if (
 }
 if (shouldVerifyHeroComposerState && !expectedModelLabel) {
   throw new Error("--verify-hero-composer-state requires --expected-model-label.");
+}
+if (shouldVerifyComposerReconnect && !shouldVerifyLifecycleRecovery) {
+  throw new Error("--verify-composer-reconnect requires --verify-lifecycle-recovery.");
 }
 if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
   throw new Error("--quick-switch-query requires --verify-quick-switch-default.");
@@ -13987,6 +14115,9 @@ if (
   throw new Error("--verify-review-diff-state requires a real completed reviewFixture checkpoint.");
 }
 const fixtureManifestProjectId = fixtureManifest.project?.projectId;
+if (shouldVerifyComposerReconnect && typeof fixtureManifestProjectId !== "string") {
+  throw new Error("--verify-composer-reconnect requires visual-state.json project.projectId.");
+}
 const transcriptFixture = fixtureManifest.transcriptFixture;
 if (
   verifyComposerStop &&
@@ -14163,6 +14294,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyFloatingRelations: shouldVerifyFloatingRelations,
       verifySidebarScope,
       verifyLifecycleRecovery: shouldVerifyLifecycleRecovery,
+      verifyComposerReconnect: shouldVerifyComposerReconnect,
       verifyComposerBranding,
       verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
