@@ -552,7 +552,9 @@ export function parseMarkdownImageTokens(text: string): ReadonlyArray<MarkdownIm
       continue;
     }
     tokens.push({
-      alt: normalizeMarkdownVisibleText(text.slice(start + 2, labelEnd)),
+      alt: parseMarkdownInline(text.slice(start + 2, labelEnd))
+        .map((span) => span.text)
+        .join(""),
       start,
       end: destinationEnd + 1,
       ...destination,

@@ -606,6 +606,18 @@ describe("parseMarkdownImageTokens", () => {
     ]);
   });
 
+  it("projects image alt text through shared inline visible-text semantics", () => {
+    const markdown = "![**Architecture** \\[draft\\] &amp; `v2`](https://example.com/diagram.png)";
+    expect(parseMarkdownImageTokens(markdown)).toEqual([
+      {
+        alt: "Architecture [draft] & v2",
+        start: 0,
+        end: markdown.length,
+        href: "https://example.com/diagram.png",
+      },
+    ]);
+  });
+
   it("ignores malformed image syntax", () => {
     expect(parseMarkdownImageTokens("Before ![missing]( after")).toEqual([]);
   });
