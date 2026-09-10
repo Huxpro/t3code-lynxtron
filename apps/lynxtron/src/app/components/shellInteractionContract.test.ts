@@ -253,6 +253,8 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain('aria-disabled={copyStatus === "pending" ? "true" : "false"}');
     expect(markdown).toContain('bindtap={copyStatus === "pending" ? undefined : handleCopy}');
     expect(markdown).toContain("clearTimeout(resetTimerRef.current)");
+    expect(markdown).toContain("copyGenerationRef.current += 1");
+    expect(markdown).toContain("copyGenerationRef.current !== copyGeneration");
     expect(markdown).toContain("}, [block.code, blockKey, initialWrapped]);");
   });
 

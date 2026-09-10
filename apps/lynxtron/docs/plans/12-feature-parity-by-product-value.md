@@ -387,7 +387,8 @@ following-end` with the jump affordance visible only while detached. That gate
   disables duplicate taps while the bridge write is in flight, and clears its
   feedback timer when a virtualized block unmounts.
   Its feedback also resets on block identity changes even when two recycled
-  blocks contain identical code, so `Copied` never leaks into another message.
+  blocks contain identical code, and stale clipboard completions cannot write
+  into the replacement block, so `Copied` never leaks into another message.
   Code blocks now also expose Web-equivalent Wrap/Unwrap controls initialized
   from the canonical word-wrap preference. Toggling wrap detaches transcript
   follow before changing row height and resets when a recycled block identity
@@ -411,7 +412,8 @@ following-end` with the jump affordance visible only while detached. That gate
   block so copying does not invalidate the parent transcript row. A local
   expand/collapse action follows the canonical word-wrap default, detaches
   transcript follow before changing row height, and resets when a virtualized
-  table identity changes.
+  table identity changes. Context-menu and clipboard completions are generation-
+  guarded so a recycled table cannot inherit stale copy feedback.
 - Shared work-entry disclosures now reset their local expansion state when a
   virtualized row receives a different activity identity. Both renderers also
   route the disclosure through their manual-navigation path before changing row

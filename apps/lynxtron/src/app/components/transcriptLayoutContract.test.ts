@@ -255,6 +255,7 @@ describe("transcript layout contract", () => {
     expect(markdownSource).toContain('label: "Copy as CSV"');
     expect(markdownSource).toContain("serializeMarkdownTable(table, selection)");
     expect(markdownSource).toContain('data-markdown-table-copy-state={copyStatus ?? "idle"}');
+    expect(markdownSource).toContain("if (copyGenerationRef.current !== copyGeneration) return;");
   });
 
   it("renders real proposed-plan content before opening the full panel", () => {

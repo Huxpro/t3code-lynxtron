@@ -241,11 +241,14 @@ function MarkdownCodeBlock({
   const [wrapped, setWrapped] = useState(initialWrapped);
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyGenerationRef = useRef(0);
   useEffect(() => {
+    copyGenerationRef.current += 1;
     setWrapped(initialWrapped);
     setCopyStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     return () => {
+      copyGenerationRef.current += 1;
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
   }, [block.code, blockKey, initialWrapped]);
@@ -257,17 +260,22 @@ function MarkdownCodeBlock({
   const handleCopy = useCallback(() => {
     "background only";
     if (copyStatus === "pending") return;
-    setCopyStatus("pending");
+    const copyGeneration = ++copyGenerationRef.current;
+    const setCurrentStatus = (status: MessageCopyStatus | null) => {
+      if (copyGenerationRef.current === copyGeneration) setCopyStatus(status);
+    };
+    setCurrentStatus("pending");
     void copyMarkdownCode(block.code ?? "", clientCapabilities.clipboard)
       .then((didCopy) => {
-        setCopyStatus(didCopy ? "copied" : "failed");
+        setCurrentStatus(didCopy ? "copied" : "failed");
       })
       .catch(() => {
-        setCopyStatus("failed");
+        setCurrentStatus("failed");
       })
       .then(() => {
+        if (copyGenerationRef.current !== copyGeneration) return;
         resetTimerRef.current = setTimeout(() => {
-          setCopyStatus(null);
+          setCurrentStatus(null);
           resetTimerRef.current = null;
         }, 1_000);
       });
@@ -405,11 +413,14 @@ function MarkdownTableBlock({
   const [expanded, setExpanded] = useState(initialExpanded);
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyGenerationRef = useRef(0);
   useEffect(() => {
+    copyGenerationRef.current += 1;
     setExpanded(initialExpanded);
     setCopyStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     return () => {
+      copyGenerationRef.current += 1;
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
   }, [blockKey, initialExpanded, table]);
@@ -421,24 +432,30 @@ function MarkdownTableBlock({
   const handleCopy = useCallback(() => {
     "background only";
     if (copyStatus === "pending") return;
+    const copyGeneration = ++copyGenerationRef.current;
+    const setCurrentStatus = (status: MessageCopyStatus | null) => {
+      if (copyGenerationRef.current === copyGeneration) setCopyStatus(status);
+    };
     void (async () => {
       try {
         const selection = await showNativeContextMenu([
           { id: "markdown", label: "Copy as Markdown" },
           { id: "csv", label: "Copy as CSV" },
         ]);
+        if (copyGenerationRef.current !== copyGeneration) return;
         if (selection !== "markdown" && selection !== "csv") return;
-        setCopyStatus("pending");
+        setCurrentStatus("pending");
         const didCopy = await copyMarkdownCode(
           serializeMarkdownTable(table, selection),
           clientCapabilities.clipboard,
         );
-        setCopyStatus(didCopy ? "copied" : "failed");
+        setCurrentStatus(didCopy ? "copied" : "failed");
       } catch {
-        setCopyStatus("failed");
+        setCurrentStatus("failed");
       }
+      if (copyGenerationRef.current !== copyGeneration) return;
       resetTimerRef.current = setTimeout(() => {
-        setCopyStatus(null);
+        setCurrentStatus(null);
         resetTimerRef.current = null;
       }, 1_000);
     })();
