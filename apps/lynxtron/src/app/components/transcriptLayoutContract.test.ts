@@ -229,6 +229,16 @@ describe("transcript layout contract", () => {
     expect(markdownSource).toContain('data-markdown-table-copy-state={copyStatus ?? "idle"}');
   });
 
+  it("detaches follow before expanding table cells and resets recycled state", () => {
+    expect(markdownSource).toContain("const [expanded, setExpanded] = useState(initialExpanded)");
+    expect(markdownSource).toContain("setExpanded(initialExpanded)");
+    expect(markdownSource).toContain("onManualNavigation?.();");
+    expect(markdownSource).toContain('text-maxline={expanded ? undefined : "1"}');
+    expect(markdownSource).toContain(
+      'aria-label={expanded ? "Collapse table cells" : "Expand table cells"}',
+    );
+  });
+
   it("keeps empty right-panel cards at the authority height", () => {
     const start = overrides.indexOf(".right-panel-empty-card {");
     const block = overrides.slice(start, overrides.indexOf("}", start));

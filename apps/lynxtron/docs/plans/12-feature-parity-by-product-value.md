@@ -353,7 +353,10 @@ following-end` with the jump affordance visible only while detached. That gate
   horizontal viewport and expose Web-equivalent Markdown/CSV copy formats. The
   renderer-neutral table projection owns visible-text normalization and
   serialization, while pending/success/failure feedback stays inside the table
-  block so copying does not invalidate the parent transcript row.
+  block so copying does not invalidate the parent transcript row. A local
+  expand/collapse action follows the canonical word-wrap default, detaches
+  transcript follow before changing row height, and resets when a virtualized
+  table identity changes.
 
 ## PF4: Complete remote and multi-environment operation
 

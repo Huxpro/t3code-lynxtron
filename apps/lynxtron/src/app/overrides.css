@@ -5436,13 +5436,14 @@
 .md-table-footer {
   display: flex;
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: space-between;
   margin-top: 2px;
 }
+.md-table-expand,
 .md-table-copy {
   padding: 4px 6px;
 }
-.md-table-copy-label {
+.md-table-action-label {
   color: var(--muted-foreground);
   font-family: var(--font-sans);
   font-size: 11px;

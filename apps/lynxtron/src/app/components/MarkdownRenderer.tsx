@@ -15,6 +15,7 @@ import {
   type MarkdownTablePresentation,
 } from "@t3tools/client-runtime/presentation/markdown";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
+import { getClientSettingsState } from "../state/prefsStore";
 import { uiActions } from "../state/uiState";
 import { HostInlineText, HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import { resolveExternalWebLinkHost } from "../../../../web/src/components/chat/externalLinkContextMenu";
@@ -322,20 +323,30 @@ function MarkdownTableBlock({
   table,
   blockKey,
   cwd,
+  onManualNavigation,
 }: {
   readonly table: MarkdownTablePresentation;
   readonly blockKey: string;
   readonly cwd: string | undefined;
+  readonly onManualNavigation: (() => void) | undefined;
 }) {
+  const initialExpanded = getClientSettingsState().wordWrap;
+  const [expanded, setExpanded] = useState(initialExpanded);
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
+    setExpanded(initialExpanded);
     setCopyStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     return () => {
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
-  }, [blockKey, table]);
+  }, [blockKey, initialExpanded, table]);
+  const handleToggleExpanded = useCallback(() => {
+    "background only";
+    onManualNavigation?.();
+    setExpanded((value) => !value);
+  }, [onManualNavigation]);
   const handleCopy = useCallback(() => {
     "background only";
     if (copyStatus === "pending") return;
@@ -365,7 +376,11 @@ function MarkdownTableBlock({
     copyStatus === "copied" ? "Copied" : copyStatus === "failed" ? "Copy failed" : "Copy table";
 
   return (
-    <view className="md-table-container" data-markdown-table="true">
+    <view
+      className="md-table-container"
+      data-markdown-table="true"
+      data-markdown-table-expanded={expanded ? "true" : "false"}
+    >
       <scroll-view className="md-table-scroll" scroll-orientation="horizontal">
         <view
           className="md-table"
@@ -377,6 +392,7 @@ function MarkdownTableBlock({
                 key={`${blockKey}-h${column}`}
                 className="md-table-cell md-table-cell--header"
                 style={{ textAlign: table.alignments[column] ?? "left" } as any}
+                text-maxline={expanded ? undefined : "1"}
               >
                 {renderInline(parseMarkdownInline(header), `${blockKey}-h${column}`, cwd)}
               </text>
@@ -389,6 +405,7 @@ function MarkdownTableBlock({
                   key={`${blockKey}-r${rowIndex}c${column}`}
                   className="md-table-cell"
                   style={{ textAlign: table.alignments[column] ?? "left" } as any}
+                  text-maxline={expanded ? undefined : "1"}
                 >
                   {renderInline(
                     parseMarkdownInline(cell),
@@ -403,13 +420,21 @@ function MarkdownTableBlock({
       </scroll-view>
       <view className="md-table-footer">
         <view
+          className="md-table-expand"
+          aria-label={expanded ? "Collapse table cells" : "Expand table cells"}
+          aria-pressed={expanded ? "true" : "false"}
+          bindtap={handleToggleExpanded}
+        >
+          <text className="md-table-action-label">{expanded ? "Collapse" : "Expand"}</text>
+        </view>
+        <view
           className="md-table-copy"
           data-markdown-table-copy-state={copyStatus ?? "idle"}
           aria-label={copyLabel}
           aria-disabled={copyStatus === "pending" ? "true" : "false"}
           bindtap={copyStatus === "pending" ? undefined : handleCopy}
         >
-          <text className="md-table-copy-label">{copyLabel}</text>
+          <text className="md-table-action-label">{copyLabel}</text>
         </view>
       </view>
     </view>
@@ -495,7 +520,15 @@ function renderBlock(
     case "table": {
       const table = block.table;
       if (!table) return <view key={key} />;
-      return <MarkdownTableBlock key={key} table={table} blockKey={key} cwd={cwd} />;
+      return (
+        <MarkdownTableBlock
+          key={key}
+          table={table}
+          blockKey={key}
+          cwd={cwd}
+          onManualNavigation={onManualNavigation}
+        />
+      );
     }
 
     case "image": {
