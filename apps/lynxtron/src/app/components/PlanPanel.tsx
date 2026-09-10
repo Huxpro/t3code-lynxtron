@@ -47,7 +47,12 @@ export function PlanPanel({
 }: PlanPanelProps) {
   const [proposedExpanded, setProposedExpanded] = useState(false);
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
-  const [saveStatus, setSaveStatus] = useState<"pending" | "saved" | "failed" | null>(null);
+  const [saveStatus, setSaveStatus] = useState<
+    | { readonly status: "pending" }
+    | { readonly status: "saved"; readonly relativePath: string }
+    | { readonly status: "failed"; readonly message: string }
+    | null
+  >(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const planMarkdown = activeProposedPlan?.planMarkdown ?? null;
   const planTitle = planMarkdown ? proposedPlanTitle(planMarkdown) : null;
@@ -85,8 +90,8 @@ export function PlanPanel({
           ? "Copy failed"
           : "Copy plan";
   const savePlan = useCallback(() => {
-    if (!cwd || !planMarkdown || saveStatus === "pending") return;
-    setSaveStatus("pending");
+    if (!cwd || !planMarkdown || saveStatus?.status === "pending") return;
+    setSaveStatus({ status: "pending" });
     void savePlanToDefaultWorkspacePath(
       (workspace, relativePath, contents) =>
         t3ClientActions.writeProjectFile(workspace, relativePath, contents),
@@ -95,12 +100,12 @@ export function PlanPanel({
     ).then(setSaveStatus);
   }, [cwd, planMarkdown, saveStatus]);
   const saveLabel =
-    saveStatus === "pending"
+    saveStatus?.status === "pending"
       ? "Saving…"
-      : saveStatus === "saved"
-        ? "Saved"
-        : saveStatus === "failed"
-          ? "Save failed"
+      : saveStatus?.status === "saved"
+        ? `Saved: ${saveStatus.relativePath}`
+        : saveStatus?.status === "failed"
+          ? `Save failed: ${saveStatus.message}`
           : "Save to workspace";
 
   const hasSteps = activePlan && activePlan.steps.length > 0;
@@ -113,10 +118,10 @@ export function PlanPanel({
           <view className="plan-panel__actions">
             <view
               className={`plan-panel__save-action${!cwd ? " plan-panel__action--disabled" : ""}`}
-              data-plan-save-state={saveStatus ?? "idle"}
+              data-plan-save-state={saveStatus?.status ?? "idle"}
               aria-label={cwd ? saveLabel : "Workspace path unavailable"}
-              aria-disabled={!cwd || saveStatus === "pending" ? "true" : "false"}
-              bindtap={!cwd || saveStatus === "pending" ? undefined : savePlan}
+              aria-disabled={!cwd || saveStatus?.status === "pending" ? "true" : "false"}
+              bindtap={!cwd || saveStatus?.status === "pending" ? undefined : savePlan}
             >
               <text className="plan-panel__copy-label">{saveLabel}</text>
             </view>

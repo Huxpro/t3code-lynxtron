@@ -3,21 +3,23 @@ import {
   normalizePlanMarkdownForExport,
 } from "@t3tools/client-runtime/presentation/proposed-plan";
 
-export type PlanSaveStatus = "saved" | "failed";
+export type PlanSaveResult =
+  | { readonly status: "saved"; readonly relativePath: string }
+  | { readonly status: "failed"; readonly message: string };
 
 export async function savePlanToDefaultWorkspacePath(
   writeFile: (cwd: string, relativePath: string, contents: string) => Promise<unknown>,
   cwd: string,
   planMarkdown: string,
-): Promise<PlanSaveStatus> {
+): Promise<PlanSaveResult> {
+  const relativePath = buildProposedPlanMarkdownFilename(planMarkdown);
   try {
-    await writeFile(
-      cwd,
-      buildProposedPlanMarkdownFilename(planMarkdown),
-      normalizePlanMarkdownForExport(planMarkdown),
-    );
-    return "saved";
-  } catch {
-    return "failed";
+    await writeFile(cwd, relativePath, normalizePlanMarkdownForExport(planMarkdown));
+    return { status: "saved", relativePath };
+  } catch (cause) {
+    return {
+      status: "failed",
+      message: cause instanceof Error ? cause.message : "Could not save plan",
+    };
   }
 }

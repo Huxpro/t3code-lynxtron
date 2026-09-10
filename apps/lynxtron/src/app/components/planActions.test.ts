@@ -8,7 +8,7 @@ describe("savePlanToDefaultWorkspacePath", () => {
 
     await expect(
       savePlanToDefaultWorkspacePath(writeFile, "/repo", "# Ship Renderer\n\n"),
-    ).resolves.toBe("saved");
+    ).resolves.toEqual({ status: "saved", relativePath: "ship-renderer.md" });
     expect(writeFile).toHaveBeenCalledWith("/repo", "ship-renderer.md", "# Ship Renderer\n");
   });
 
@@ -19,6 +19,6 @@ describe("savePlanToDefaultWorkspacePath", () => {
         "/repo",
         "# Plan",
       ),
-    ).resolves.toBe("failed");
+    ).resolves.toEqual({ status: "failed", message: "disk full" });
   });
 });
