@@ -220,16 +220,32 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
   );
 }
 
-function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; blockKey: string }) {
+function MarkdownCodeBlock({
+  block,
+  blockKey,
+  onManualNavigation,
+}: {
+  block: ParsedMarkdownBlock;
+  blockKey: string;
+  onManualNavigation: (() => void) | undefined;
+}) {
+  const initialWrapped = getClientSettingsState().wordWrap;
+  const [wrapped, setWrapped] = useState(initialWrapped);
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
+    setWrapped(initialWrapped);
     setCopyStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     return () => {
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
-  }, [block.code, blockKey]);
+  }, [block.code, blockKey, initialWrapped]);
+  const toggleWrapped = useCallback(() => {
+    "background only";
+    onManualNavigation?.();
+    setWrapped((value) => !value);
+  }, [onManualNavigation]);
   const handleCopy = useCallback(() => {
     "background only";
     if (copyStatus === "pending") return;
@@ -258,30 +274,49 @@ function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; bl
       data-markdown-code-block="true"
       data-markdown-code-language={block.language ?? ""}
       data-markdown-code-title={block.title ?? ""}
+      data-markdown-code-wrap={wrapped ? "true" : "false"}
     >
       <view className="md-code-header" data-markdown-code-header="true">
         <text className="md-code-lang">{block.title ?? block.language ?? "Code"}</text>
-        <view
-          className="md-code-copy"
-          data-markdown-code-copy-state={copyStatus ?? "idle"}
-          aria-label={
-            copyStatus === "failed"
-              ? "Code copy failed"
-              : copyStatus === "copied"
-                ? "Code copied"
-                : "Copy code"
-          }
-          aria-disabled={copyStatus === "pending" ? "true" : "false"}
-          bindtap={copyStatus === "pending" ? undefined : handleCopy}
-        >
-          <text className="md-code-copy-label">{copyLabel}</text>
+        <view className="md-code-actions">
+          <view
+            className="md-code-wrap"
+            aria-label={wrapped ? "Disable line wrap" : "Wrap lines"}
+            aria-pressed={wrapped ? "true" : "false"}
+            bindtap={toggleWrapped}
+          >
+            <text className="md-code-copy-label">{wrapped ? "Unwrap" : "Wrap"}</text>
+          </view>
+          <view
+            className="md-code-copy"
+            data-markdown-code-copy-state={copyStatus ?? "idle"}
+            aria-label={
+              copyStatus === "failed"
+                ? "Code copy failed"
+                : copyStatus === "copied"
+                  ? "Code copied"
+                  : "Copy code"
+            }
+            aria-disabled={copyStatus === "pending" ? "true" : "false"}
+            bindtap={copyStatus === "pending" ? undefined : handleCopy}
+          >
+            <text className="md-code-copy-label">{copyLabel}</text>
+          </view>
         </view>
       </view>
-      <scroll-view className="md-code-scroll" scroll-orientation="horizontal">
-        <text className="md-code-text whitespace-pre" data-markdown-code-content="true">
-          {block.code}
-        </text>
-      </scroll-view>
+      {wrapped ? (
+        <view className="md-code-wrap-body">
+          <text className="md-code-text md-code-text--wrapped" data-markdown-code-content="true">
+            {block.code}
+          </text>
+        </view>
+      ) : (
+        <scroll-view className="md-code-scroll" scroll-orientation="horizontal">
+          <text className="md-code-text whitespace-pre" data-markdown-code-content="true">
+            {block.code}
+          </text>
+        </scroll-view>
+      )}
     </view>
   );
 }
@@ -590,7 +625,14 @@ function renderBlock(
       return <view key={key}>{renderInteractiveParagraph(block.text ?? "", key, cwd)}</view>;
 
     case "code":
-      return <MarkdownCodeBlock key={key} block={block} blockKey={key} />;
+      return (
+        <MarkdownCodeBlock
+          key={key}
+          block={block}
+          blockKey={key}
+          onManualNavigation={onManualNavigation}
+        />
+      );
 
     case "list": {
       const items = block.items ?? [];

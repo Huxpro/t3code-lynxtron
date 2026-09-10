@@ -220,6 +220,18 @@ describe("transcript layout contract", () => {
     expect(scroll).toContain("overflow-y: hidden;");
   });
 
+  it("matches Web code-block wrap controls without stealing transcript follow", () => {
+    expect(markdownSource).toContain("const [wrapped, setWrapped] = useState(initialWrapped)");
+    expect(markdownSource).toContain("setWrapped(initialWrapped)");
+    expect(markdownSource).toContain('aria-label={wrapped ? "Disable line wrap" : "Wrap lines"}');
+    expect(markdownSource).toContain("onManualNavigation?.();");
+    expect(markdownSource).toContain('className="md-code-text md-code-text--wrapped"');
+    const wrappedStart = overrides.indexOf(".md-code-text--wrapped {");
+    const wrapped = overrides.slice(wrappedStart, overrides.indexOf("}", wrappedStart));
+    expect(wrapped).toContain("white-space: pre-wrap;");
+    expect(wrapped).toContain("word-break: break-word;");
+  });
+
   it("keeps wide Markdown tables horizontally reachable without crushing columns", () => {
     expect(markdownSource).toContain('className="md-table-scroll" scroll-orientation="horizontal"');
     expect(markdownSource).toContain("markdownTableContentWidth(table.headers.length)");

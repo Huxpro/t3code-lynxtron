@@ -244,7 +244,7 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain('aria-disabled={copyStatus === "pending" ? "true" : "false"}');
     expect(markdown).toContain('bindtap={copyStatus === "pending" ? undefined : handleCopy}');
     expect(markdown).toContain("clearTimeout(resetTimerRef.current)");
-    expect(markdown).toContain("}, [block.code, blockKey]);");
+    expect(markdown).toContain("}, [block.code, blockKey, initialWrapped]);");
   });
 
   it("resets Markdown details state when a virtualized block identity changes", () => {

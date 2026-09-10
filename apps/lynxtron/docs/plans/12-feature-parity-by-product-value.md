@@ -356,6 +356,10 @@ following-end` with the jump affordance visible only while detached. That gate
   feedback timer when a virtualized block unmounts.
   Its feedback also resets on block identity changes even when two recycled
   blocks contain identical code, so `Copied` never leaks into another message.
+  Code blocks now also expose Web-equivalent Wrap/Unwrap controls initialized
+  from the canonical word-wrap preference. Toggling wrap detaches transcript
+  follow before changing row height and resets when a recycled block identity
+  changes.
 - Native Markdown details disclosures now reset to the newly authored `open`
   state when a virtualized block identity changes, preventing expansion state
   from leaking between recycled transcript rows. Timeline-hosted details,
