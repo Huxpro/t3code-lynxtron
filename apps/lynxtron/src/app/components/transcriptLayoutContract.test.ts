@@ -271,6 +271,11 @@ describe("transcript layout contract", () => {
     );
   });
 
+  it("exposes native work status meaning without relying on icon shape", () => {
+    expect(timelineSource).toContain('warning ? "Tool warning" : "Tool call failed"');
+    expect(timelineSource).toContain('aria-label="Tool call completed"');
+  });
+
   it("keeps empty right-panel cards at the authority height", () => {
     const start = overrides.indexOf(".right-panel-empty-card {");
     const block = overrides.slice(start, overrides.indexOf("}", start));

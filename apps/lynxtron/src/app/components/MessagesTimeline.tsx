@@ -590,13 +590,19 @@ function buildLynxTranscriptRowElements(
         ) : null}
       </view>
     ),
-    renderWorkStatus: ({ failed, succeeded }) =>
+    renderWorkStatus: ({ failed, succeeded, warning }) =>
       failed ? (
-        <view className="transcript-work-status transcript-work-status--failed">
+        <view
+          className="transcript-work-status transcript-work-status--failed"
+          aria-label={warning ? "Tool warning" : "Tool call failed"}
+        >
           <Icon name="x" size={12} color="#f87171" />
         </view>
       ) : succeeded ? (
-        <view className="transcript-work-status transcript-work-status--succeeded">
+        <view
+          className="transcript-work-status transcript-work-status--succeeded"
+          aria-label="Tool call completed"
+        >
           <Icon name="check" size={12} color="#818181" />
         </view>
       ) : null,
