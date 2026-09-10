@@ -324,6 +324,44 @@ function LynxWorkingLabel({ createdAt }: { createdAt: string | null }) {
   return <text className="transcript-working-label">{fullLabel}</text>;
 }
 
+function MessageCopyControl({ text }: { readonly text: string }) {
+  const [status, setStatus] = useState<MessageCopyStatus | null>(null);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(
+    () => () => {
+      if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    },
+    [],
+  );
+  const pending = status === "pending";
+  const handleCopy = useCallback(() => {
+    if (pending) return;
+    if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
+    void runMessageCopy(clientCapabilities.clipboard.writeText, text, setStatus).then(() => {
+      resetTimerRef.current = setTimeout(() => {
+        setStatus(null);
+        resetTimerRef.current = null;
+      }, 1_000);
+    });
+  }, [pending, text]);
+  return (
+    <view
+      className={`transcript-message-meta__action${
+        pending ? " transcript-message-meta__action--disabled" : ""
+      }`}
+      aria-label={status === "failed" ? "Copy failed" : "Copy link"}
+      aria-disabled={pending ? "true" : "false"}
+      bindtap={pending ? undefined : handleCopy}
+    >
+      <Icon
+        name={status === "copied" ? "check" : status === "failed" ? "x" : "copy"}
+        size={14}
+        color="#818181"
+      />
+    </view>
+  );
+}
+
 /** Platform islands handed to the shared transcript composition. */
 function buildLynxTranscriptRowElements(
   cwd: string | undefined,
@@ -331,8 +369,6 @@ function buildLynxTranscriptRowElements(
   compactChangedFiles: boolean,
   compactChangedFilesActions: boolean,
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
-  copyFeedback: { readonly messageId: string; readonly status: MessageCopyStatus } | null,
-  copyMessage: (messageId: string, text: string) => void,
   revertMessage: (turnCount: number) => void,
   isWorking: boolean,
 ): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
@@ -416,42 +452,7 @@ function buildLynxTranscriptRowElements(
               <Icon name="rotate-ccw" size={14} color="#818181" />
             </view>
           ) : null}
-          <view
-            className={`transcript-message-meta__action${
-              copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
-                ? " transcript-message-meta__action--disabled"
-                : ""
-            }`}
-            aria-label={
-              copyFeedback?.messageId === row.message.id && copyFeedback.status === "failed"
-                ? "Copy failed"
-                : "Copy link"
-            }
-            aria-disabled={
-              copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
-                ? "true"
-                : "false"
-            }
-            bindtap={
-              copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
-                ? undefined
-                : () => copyMessage(row.message.id, copyText)
-            }
-          >
-            <Icon
-              name={
-                copyFeedback?.messageId === row.message.id
-                  ? copyFeedback.status === "copied"
-                    ? "check"
-                    : copyFeedback.status === "failed"
-                      ? "x"
-                      : "copy"
-                  : "copy"
-              }
-              size={14}
-              color="#818181"
-            />
-          </view>
+          <MessageCopyControl text={copyText} />
         </view>
       );
     },
@@ -484,42 +485,7 @@ function buildLynxTranscriptRowElements(
           }`}
         >
           {copyState.visible && copyState.text ? (
-            <view
-              className={`transcript-message-meta__action${
-                copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
-                  ? " transcript-message-meta__action--disabled"
-                  : ""
-              }`}
-              aria-label={
-                copyFeedback?.messageId === row.message.id && copyFeedback.status === "failed"
-                  ? "Copy failed"
-                  : "Copy link"
-              }
-              aria-disabled={
-                copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
-                  ? "true"
-                  : "false"
-              }
-              bindtap={
-                copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
-                  ? undefined
-                  : () => copyMessage(row.message.id, copyState.text ?? "")
-              }
-            >
-              <Icon
-                name={
-                  copyFeedback?.messageId === row.message.id
-                    ? copyFeedback.status === "copied"
-                      ? "check"
-                      : copyFeedback.status === "failed"
-                        ? "x"
-                        : "copy"
-                    : "copy"
-                }
-                size={14}
-                color="#818181"
-              />
-            </view>
+            <MessageCopyControl text={copyState.text} />
           ) : null}
           {!row.message.streaming ? (
             <text className="transcript-message-meta__time">
@@ -648,10 +614,6 @@ export function MessagesTimeline({
 }: MessagesTimelineProps) {
   const [clientSettings] = useClientSettingsState();
   const [timelineViewportWidth, setTimelineViewportWidth] = useState(availableWidth);
-  const [copyFeedback, setCopyFeedback] = useState<{
-    readonly messageId: string;
-    readonly status: MessageCopyStatus;
-  } | null>(null);
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
   const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
   const [timelineScrollMode, setTimelineScrollMode] = useState<TimelineScrollMode>("following-end");
@@ -665,15 +627,6 @@ export function MessagesTimeline({
   const [activeMinimapIndex, setActiveMinimapIndex] = useState<number | null>(null);
 
   const isWorking = isSessionWorking(sessionStatus);
-  const copyMessage = useCallback((messageId: string, text: string) => {
-    void runMessageCopy(clientCapabilities.clipboard.writeText, text, (status) => {
-      setCopyFeedback({ messageId, status });
-    }).then(() => {
-      setTimeout(() => {
-        setCopyFeedback((current) => (current?.messageId === messageId ? null : current));
-      }, 1_000);
-    });
-  }, []);
   const revertMessage = useCallback((turnCount: number) => {
     void showNativeContextMenu([
       { id: "revert", label: `Revert to checkpoint ${turnCount}`, destructive: true },
@@ -697,16 +650,12 @@ export function MessagesTimeline({
         timelineViewportWidth < 360,
         timelineViewportWidth < 640,
         clientSettings.timestampFormat,
-        copyFeedback,
-        copyMessage,
         revertMessage,
         isWorking,
       ),
     [
       clientSettings.timestampFormat,
       timelineViewportWidth,
-      copyFeedback,
-      copyMessage,
       cwd,
       latestTurn?.turnId,
       revertMessage,

@@ -248,6 +248,10 @@ following-end` with the jump affordance visible only while detached. That gate
   Message and proposed-plan rows now compare value-equal connector payload clones
   structurally rather than requiring the same object reference, while real field
   changes still invalidate only the affected row.
+  Copy feedback state now lives inside the selected message's copy control, so a
+  pending/success/failure transition no longer rebuilds the parent row-elements
+  contract and invalidates every visible transcript row; recycled controls also
+  cancel their reset timer on unmount.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
