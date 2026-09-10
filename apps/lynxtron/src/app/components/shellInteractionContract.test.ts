@@ -603,6 +603,11 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain('name={busy ? "stop-square" : "send-arrow"}');
     expect(composer).toContain("size={busy ? 12 : 14}");
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__");
+    expect(composer).toContain("onValueChange(nextValue)");
+    expect(composer).toContain("nativeEditorValueRef.current");
+    expect(composer).toContain('method: "setValue"');
+    expect(composer).toContain("[editorKey, editorRevision, editorValue]");
+    expect(chatView).toContain("composerDraftTextByThreadId[composerDraftKey]");
     expect(composer).toContain("responsiveMenuWheelDelta(");
     expect(modelPicker).toContain('className="picker-list"');
     expect(modelPicker).toContain("scroll-y");
@@ -2034,7 +2039,7 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain("sessionError: presentThreadCommandErrorMessage(");
     const composerSource = componentSource("Composer.tsx");
     expect(composerSource).toContain("if (await current.onSend(text))");
-    expect(composerSource).toContain('setValue("");');
+    expect(composerSource).toContain('onValueChange("");');
   });
 
   it("keeps new threads local until the first prompt atomically creates them", () => {

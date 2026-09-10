@@ -12,6 +12,7 @@ import {
   createLocalDraftThread,
   forgetLocalDraftThread,
   projectDraftThreadInteractionMode,
+  projectComposerDraftText,
   projectDraftThreadModelSelection,
   projectDraftThreadRuntimeMode,
   projectDraftThreadWorkspace,
@@ -26,6 +27,17 @@ const selection = {
 };
 
 describe("local draft thread", () => {
+  it("keeps Composer text scoped to its thread and removes empty drafts", () => {
+    const first = projectComposerDraftText({}, "thread-a", "draft a");
+    const second = projectComposerDraftText(first, "thread-b", "draft b");
+
+    expect(second).toEqual({ "thread-a": "draft a", "thread-b": "draft b" });
+    expect(projectComposerDraftText(second, "thread-a", "draft a")).toBe(second);
+    expect(projectComposerDraftText(second, "thread-a", "")).toEqual({
+      "thread-b": "draft b",
+    });
+  });
+
   it("remembers one reusable local draft per project", () => {
     const first = createLocalDraftThread({
       threadId: ThreadId.make("draft-a"),

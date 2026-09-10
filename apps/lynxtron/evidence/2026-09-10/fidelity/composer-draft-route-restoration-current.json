@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-10T05:11:59-04:00",
+  "stateId": "composer-draft-route-restoration",
+  "codeState": "working-tree-product-change",
+  "scope": {
+    "authority": "web",
+    "candidate": "lynx-native",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "snapshotSha256": "31e536a429df40d07648a4dae41a07436ad5d9136ca1f57614807988008ed739",
+    "canonicalThreadId": "fidelity-review-thread",
+    "canonicalThreadTitle": "Review checkpoint baseline",
+    "draftText": "Native route-scoped draft"
+  },
+  "before": {
+    "productLoss": [
+      "Lynx owned prompt text in Composer component-local state, so selecting another thread unmounted the Composer and discarded the draft.",
+      "A restored renderer value was not synchronized into the native textarea host after route remount."
+    ]
+  },
+  "current": {
+    "sharedOwner": "thread-scoped Composer draft text projection in client-runtime and the Lynx client state",
+    "nativeLeaf": "controlled state-to-textarea setValue synchronization without focus or selection takeover",
+    "routeRoundTrip": {
+      "status": "pass",
+      "draftThreadId": "25f90b8a-51f4-4e4f-8758-3fe8304c0ab7",
+      "leftForThreadId": "fidelity-review-thread",
+      "restoredText": "Native route-scoped draft",
+      "primaryActionState": "send",
+      "placeholderVisible": false
+    },
+    "canonicalThreadIdsBefore": ["fidelity-review-thread"],
+    "canonicalThreadIdsAfter": ["fidelity-review-thread"],
+    "persistedThreadIdsBefore": ["fidelity-review-thread"],
+    "persistedThreadIdsAfter": ["fidelity-review-thread"],
+    "mainTransportSequence": { "before": 18, "after": 22 },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "artifacts": {
+    "reportPath": "/tmp/t3code-pf2-draft-proof.TFVlqx/report.json",
+    "reportSha256": "baeddb239928f64b7011cb597a3d47b077de6e76f91b94dc4d9db68781154342",
+    "logSha256": "8c75a1e01e16cda8d870f046eca94e60d02904e2825539e154adc5ba06f91895",
+    "bundleSha256": "d5f9dc62a4dd0a02cd990e2b576551385f82ddb38bfc928ea86bf0016079e7d5"
+  },
+  "evidenceBoundary": {
+    "proved": [
+      "one-process route change from a local draft to a canonical thread and back",
+      "thread-scoped text identity and sendable presentation restoration",
+      "native textarea host synchronization after remount",
+      "no accidental canonical empty-thread persistence"
+    ],
+    "notYetProved": [
+      "draft persistence across process restart or disk reload",
+      "draft restoration after connector disconnect and reconnect",
+      "image and file attachment preview, removal, upload failure, retry, and send",
+      "terminal and element context lifecycle",
+      "physical keyboard focus, selection, paste, and IME"
+    ]
+  },
+  "classification": "The Web authority already preserves thread-scoped Composer drafts. Native previously discarded text when its keyed Composer unmounted and did not hydrate the host textarea from restored state. The current implementation moves text ownership into a thread-scoped client projection and keeps the Lynx textarea as a capability leaf. Exact-bundle Native leaves the draft for the same persisted canonical thread, returns to the same draft ID, restores send semantics with no placeholder, advances main transport, reports zero renderer errors, and disposes isolated state. This closes only route-scoped text restoration; PF2 remains in progress."
+}

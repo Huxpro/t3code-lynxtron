@@ -19,6 +19,22 @@ export interface LocalDraftThread extends OrchestrationThreadShell {
 
 export type LocalDraftThreadsByProjectId = Readonly<Record<string, LocalDraftThread>>;
 
+export type ComposerDraftTextByThreadId = Readonly<Record<string, string>>;
+
+export function projectComposerDraftText(
+  draftsByThreadId: ComposerDraftTextByThreadId,
+  threadId: string,
+  text: string,
+): ComposerDraftTextByThreadId {
+  if (text.length === 0) {
+    if (!(threadId in draftsByThreadId)) return draftsByThreadId;
+    const { [threadId]: _cleared, ...remaining } = draftsByThreadId;
+    return remaining;
+  }
+  if (draftsByThreadId[threadId] === text) return draftsByThreadId;
+  return { ...draftsByThreadId, [threadId]: text };
+}
+
 export function readLocalDraftThreadForProject(
   draftsByProjectId: LocalDraftThreadsByProjectId,
   projectId: ProjectId,

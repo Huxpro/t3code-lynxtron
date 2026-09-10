@@ -47,17 +47,17 @@ If an invariant regresses, fix it inside the active PF task and add a focused re
 
 ## Priority and task sequence
 
-| Priority | ID  | Product capability                                    | Depends on | Status    | User-visible exit                                                                       |
-| -------- | --- | ----------------------------------------------------- | ---------- | --------- | --------------------------------------------------------------------------------------- |
-| P0       | PF0 | Rebaseline the complete Web feature journey           | Plan 11    | `pending` | One fixed parity ledger identifies required, deferred, unsupported, and blocked paths   |
-| P1       | PF1 | Complete agent intervention and recovery              | PF0        | `pending` | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
-| P1       | PF2 | Complete Composer input and context                   | PF1        | `pending` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
-| P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `pending` | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
-| P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `pending` | A user can find, connect to, diagnose, and operate supported remote environments        |
-| P2       | PF5 | Complete change review, checkpoints, and files        | PF4        | `pending` | A user can inspect the result and its source-control implications without Web           |
-| P2       | PF6 | Expand terminal and browser work surfaces             | PF5        | `pending` | Approved placeholder surfaces are replaced only where the runtime can support them      |
-| P2       | PF7 | Close performance, theme, and remaining platform gaps | PF6        | `pending` | Long sessions remain fast and required theme/input/runtime gates have evidence          |
-| P3       | PF8 | Certify the end-to-end Lynxtron product journey       | PF7        | `pending` | Local and remote journeys pass the complete phase-exit evidence matrix                  |
+| Priority | ID  | Product capability                                    | Depends on | Status        | User-visible exit                                                                       |
+| -------- | --- | ----------------------------------------------------- | ---------- | ------------- | --------------------------------------------------------------------------------------- |
+| P0       | PF0 | Rebaseline the complete Web feature journey           | Plan 11    | `completed`   | One fixed parity ledger identifies required, deferred, unsupported, and blocked paths   |
+| P1       | PF1 | Complete agent intervention and recovery              | PF0        | `completed`   | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
+| P1       | PF2 | Complete Composer input and context                   | PF1        | `in_progress` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
+| P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `pending`     | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
+| P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `pending`     | A user can find, connect to, diagnose, and operate supported remote environments        |
+| P2       | PF5 | Complete change review, checkpoints, and files        | PF4        | `pending`     | A user can inspect the result and its source-control implications without Web           |
+| P2       | PF6 | Expand terminal and browser work surfaces             | PF5        | `pending`     | Approved placeholder surfaces are replaced only where the runtime can support them      |
+| P2       | PF7 | Close performance, theme, and remaining platform gaps | PF6        | `pending`     | Long sessions remain fast and required theme/input/runtime gates have evidence          |
+| P3       | PF8 | Certify the end-to-end Lynxtron product journey       | PF7        | `pending`     | Local and remote journeys pass the complete phase-exit evidence matrix                  |
 
 Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `skipped(reason)`. Only one task may be `in_progress`.
 
@@ -138,6 +138,19 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
 - Add/remove/fail/retry/send behavior is proven through canonical receipts.
 - Draft and context survive the scoped navigation and reconnect paths defined by Web.
 - R5-dependent typing, focus, paste, or selection checks remain `pending-user-session` until one authorized real-input pass is recorded.
+
+### Current progress
+
+- Native Composer text now has a thread-scoped owner instead of component-local
+  state. A 1280 x 820 exact-bundle run proves a local draft can leave for a
+  canonical thread and return with the same draft ID, text, send state, and no
+  placeholder while preserving the canonical thread set.
+- The native textarea synchronizes restored controlled state through its
+  capability leaf without taking focus or selection on ordinary keystroke
+  renders.
+- Disk/restart persistence, connector reconnect restoration, attachments, and
+  terminal/element context lifecycles remain open; this checkpoint does not
+  satisfy the PF2 exit criteria by itself.
 
 ## PF3: Complete transcript navigation and interaction
 

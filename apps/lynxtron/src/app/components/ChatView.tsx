@@ -100,6 +100,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     activeThreadId,
     draftHeroThreadId,
     draftThread,
+    composerDraftTextByThreadId,
     messages,
     sessionStatus,
     sessionError,
@@ -483,6 +484,12 @@ export function ChatView({ threadId }: ChatViewProps) {
       workspaceMode,
       workspaceModeLocked,
     ],
+  );
+  const composerDraftKey = activeThreadId ?? `project:${activeProject?.id ?? "none"}`;
+  const composerDraftText = composerDraftTextByThreadId[composerDraftKey] ?? "";
+  const handleComposerDraftTextChange = useCallback(
+    (text: string) => t3ClientActions.setComposerDraftText(composerDraftKey, text),
+    [composerDraftKey],
   );
 
   const handleRespondToApproval = useCallback(
@@ -897,6 +904,8 @@ export function ChatView({ threadId }: ChatViewProps) {
         questionEditorKey={activePendingQuestion?.id}
         questionCustomAnswer={activePendingDraft?.customAnswer ?? ""}
         onQuestionCustomAnswerChange={handleQuestionCustomAnswerChange}
+        value={composerDraftText}
+        onValueChange={handleComposerDraftTextChange}
         disabled={status !== "ready" || sessionStatus === "starting"}
         busy={sessionWorking}
         onSend={handleSend}

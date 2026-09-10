@@ -3377,6 +3377,84 @@ async function verifyNewThreadDraftLifecycle({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
+  const draftText = "Native route-scoped draft";
+  const draftFixtureResponse = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
+      draftText,
+    )}) ?? false`,
+    returnByValue: true,
+  });
+  if (commandResult(draftFixtureResponse)?.value !== true) {
+    throw new Error(
+      `Native draft text fixture was not applied: ${JSON.stringify(draftFixtureResponse)}`,
+    );
+  }
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeComposerDraftText === draftText,
+  });
+  const canonicalThreadId = canonicalThreadIdsBefore[0];
+  const routeRoundTrip =
+    typeof canonicalThreadId !== "string"
+      ? {
+          status: "not-covered",
+          reason: "Fixture has no canonical thread to leave and revisit.",
+        }
+      : await (async () => {
+          await client.runCdp("Runtime.evaluate", {
+            expression: `globalThis.__T3_LYNXTRON_SELECT_THREAD__?.(${JSON.stringify(
+              canonicalThreadId,
+            )})`,
+            returnByValue: true,
+          });
+          await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) =>
+              state?.activeThreadId === canonicalThreadId && state.activeComposerDraftText === "",
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".sidebar-v2-new-thread",
+            timeoutMs,
+          });
+          const restored = await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) =>
+              state?.activeThreadId === firstDraftState.draftThreadId &&
+              state.activeComposerDraftText === draftText,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-primary-action",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-composer-primary-state"] === "send",
+          });
+          const placeholder = await readOptionalMeasurement(client, ".composer__placeholder");
+          if (placeholder !== null) {
+            throw new Error(
+              `Restored Native draft still rendered its placeholder: ${JSON.stringify(
+                placeholder,
+              )}`,
+            );
+          }
+          return {
+            status: "pass",
+            canonicalThreadId,
+            draftThreadId: restored.draftThreadId,
+            text: restored.activeComposerDraftText,
+            primaryActionState: "send",
+            placeholderVisible: false,
+          };
+        })();
   await tapSelector({
     child,
     client,
@@ -3426,6 +3504,7 @@ async function verifyNewThreadDraftLifecycle({
     persistedThreadIdsAfter,
     firstDraftThreadId: firstDraftState.draftThreadId,
     reusedDraftThreadId: reusedDraftState.draftThreadId,
+    routeRoundTrip,
     serverSequenceBefore: beforeSequence.lastSeq,
     serverSequenceAfter: afterSequence.lastSeq,
   };
@@ -12163,6 +12242,7 @@ async function runOnce({
       shouldVerifyFileEditingSave ||
       shouldVerifyFilePickerDefault ||
       shouldVerifyNewThreadProjects ||
+      shouldVerifyNewThreadDraftLifecycle ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyCompletedTranscriptState ||

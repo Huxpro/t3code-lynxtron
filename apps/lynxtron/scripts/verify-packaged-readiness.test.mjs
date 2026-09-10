@@ -1007,6 +1007,17 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "heroOnlyEmptyFixture");
   });
 
+  it("verifies Native Composer draft text across a real route round trip", () => {
+    assert.include(source, 'const draftText = "Native route-scoped draft"');
+    assert.include(source, "state?.activeComposerDraftText === draftText");
+    assert.include(source, 'status: "not-covered"');
+    assert.include(source, "state.activeComposerDraftText === draftText");
+    assert.include(source, 'measurement?.attributes["data-composer-primary-state"] === "send"');
+    assert.include(source, "placeholderVisible: false");
+    assert.include(source, "routeRoundTrip,");
+    assert.include(source, "shouldVerifyNewThreadDraftLifecycle ||");
+  });
+
   it("verifies idle from the canonical session projection rather than visual status", () => {
     assert.include(source, "async function verifyIdleThreadState");
     assert.include(source, '"--verify-idle-thread-state"');

@@ -14,6 +14,7 @@ import {
   createLocalDraftThread,
   forgetLocalDraftThread,
   projectDraftThreadInteractionMode,
+  projectComposerDraftText,
   projectDraftThreadModelSelection,
   projectDraftThreadRuntimeMode,
   projectDraftThreadWorkspace,
@@ -23,6 +24,7 @@ import {
   type LocalDraftThread,
   type LocalDraftThreadEnvMode,
   type LocalDraftThreadsByProjectId,
+  type ComposerDraftTextByThreadId,
 } from "@t3tools/client-runtime/presentation/draft-thread";
 import {
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
@@ -176,6 +178,7 @@ export interface T3ClientState {
   readonly draftHeroThreadId?: string;
   readonly draftThread?: LocalDraftThread;
   readonly draftThreadsByProjectId: LocalDraftThreadsByProjectId;
+  readonly composerDraftTextByThreadId: ComposerDraftTextByThreadId;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -214,6 +217,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   threads: [],
   archivedThreads: [],
   draftThreadsByProjectId: {},
+  composerDraftTextByThreadId: {},
   messages: [],
   checkpoints: [],
   sessionStatus: "idle",
@@ -790,6 +794,9 @@ function installTransportDevToolHook(): void {
           draft.id,
         ]),
       ),
+      activeComposerDraftText: state.activeThreadId
+        ? (state.composerDraftTextByThreadId[state.activeThreadId] ?? "")
+        : "",
       sessionStatus: state.sessionStatus,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
@@ -1150,6 +1157,17 @@ function setDraftStartFromOrigin(startFromOrigin: boolean): void {
   patchState({
     draftThread,
     draftThreadsByProjectId: rememberLocalDraftThread(state.draftThreadsByProjectId, draftThread),
+  });
+}
+
+function setComposerDraftText(threadId: string, text: string): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  patchState({
+    composerDraftTextByThreadId: projectComposerDraftText(
+      state.composerDraftTextByThreadId,
+      threadId,
+      text,
+    ),
   });
 }
 
@@ -2070,6 +2088,7 @@ export const t3ClientActions = {
   setModelSelection,
   setModelOptions,
   setDraftStartFromOrigin,
+  setComposerDraftText,
   setDraftWorkspaceMode,
   setProviderEnabled,
   setThreadInteractionMode,

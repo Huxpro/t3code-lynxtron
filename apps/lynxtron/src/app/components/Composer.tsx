@@ -105,6 +105,8 @@ interface ComposerProps {
   questionEditorKey?: string;
   questionCustomAnswer?: string;
   onQuestionCustomAnswerChange?: (value: string) => void;
+  value: string;
+  onValueChange: (value: string) => void;
   onSend: (text: string) => Promise<boolean>;
   onStop: () => void;
   onModelTap?: () => void;
@@ -181,6 +183,8 @@ export function Composer({
   questionEditorKey,
   questionCustomAnswer,
   onQuestionCustomAnswerChange,
+  value,
+  onValueChange,
   onSend,
   onStop,
   onModelTap,
@@ -193,7 +197,6 @@ export function Composer({
   onStartFromOriginChange,
 }: ComposerProps) {
   const questionMode = questionActions !== undefined;
-  const [value, setValue] = useState("");
   const [openComposerMenu, setOpenComposerMenu] = useState<
     "model-option" | "runtime" | "compact-controls" | "workspace" | "context-window" | null
   >(null);
@@ -263,8 +266,10 @@ export function Composer({
   const mobileCollapsed =
     viewport.width < 640 && !mobileComposerExpanded && !approvalActions && !questionMode;
   const promptValueRef = useRef(value);
+  const nativeEditorValueRef = useRef<{ key: string; value: string } | null>(null);
   promptValueRef.current = value;
   const applyExternalTextInsertion = (nextValue: string, cursor = nextValue.length) => {
+    nativeEditorValueRef.current = { key: "prompt-editor", value: nextValue };
     const invoke = (method: string, params?: Record<string, unknown>) => {
       lynx
         .createSelectorQuery()
@@ -291,11 +296,11 @@ export function Composer({
         if (questionMode) return false;
         const nextValue = appendComposerText(promptValueRef.current, text);
         promptValueRef.current = nextValue;
-        setValue(nextValue);
+        onValueChange(nextValue);
         applyExternalTextInsertion(nextValue);
         return true;
       }),
-    [questionMode],
+    [onValueChange, questionMode],
   );
   useEffect(() => {
     if (composerTrigger?.kind !== "path" || !cwd) {
@@ -407,7 +412,7 @@ export function Composer({
       setComposerCursor(nextValue.length);
       setDismissedContextTrigger(null);
       if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
-      else setValue(nextValue);
+      else onValueChange(nextValue);
       return true;
     };
     diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__ = (deltaY) =>
@@ -419,7 +424,7 @@ export function Composer({
       delete diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__;
     };
-  }, [onQuestionCustomAnswerChange, questionMode, viewport.testResize]);
+  }, [onQuestionCustomAnswerChange, onValueChange, questionMode, viewport.testResize]);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
     hasWideActions: Boolean(approvalActions || questionActions),
   });
@@ -486,6 +491,10 @@ export function Composer({
       const nextValue =
         inputEvent.detail?.value ?? inputEvent.target?.value ?? inputEvent.currentTarget?.value;
       if (typeof nextValue === "string") {
+        nativeEditorValueRef.current = {
+          key: questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor",
+          value: nextValue,
+        };
         const selectionStart =
           typeof inputEvent.detail === "object" &&
           inputEvent.detail !== null &&
@@ -496,20 +505,20 @@ export function Composer({
         setComposerCursor(selectionStart);
         setDismissedContextTrigger(null);
         if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
-        else setValue(nextValue);
+        else onValueChange(nextValue);
       }
     },
-    [onQuestionCustomAnswerChange, questionMode],
+    [onQuestionCustomAnswerChange, onValueChange, questionMode],
   );
   const replaceComposerTrigger = useCallback(
     (trigger: ComposerTrigger, replacement: string) => {
       const result = replaceTextRange(value, trigger.rangeStart, trigger.rangeEnd, replacement);
-      setValue(result.text);
+      onValueChange(result.text);
       setComposerCursor(result.cursor);
       setDismissedContextTrigger(null);
       applyExternalTextInsertion(result.text, result.cursor);
     },
-    [value],
+    [onValueChange, value],
   );
   const selectContextPath = useCallback(
     (entry: ProjectEntry) => {
@@ -567,14 +576,31 @@ export function Composer({
     const text = current.trimmedPrompt;
     if (!text) return;
     if (await current.onSend(text)) {
-      setValue("");
+      onValueChange("");
       setComposerCursor(0);
       setDismissedContextTrigger(null);
       setEditorRevision((revision) => revision + 1);
     }
-  }, []);
+  }, [onValueChange]);
 
   const editorValue = questionMode ? (questionCustomAnswer ?? "") : value;
+  const editorKey = questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor";
+  useEffect(() => {
+    const nativeValue = nativeEditorValueRef.current;
+    if (nativeValue?.key === editorKey && nativeValue.value === editorValue) return;
+    nativeEditorValueRef.current = { key: editorKey, value: editorValue };
+    lynx
+      .createSelectorQuery()
+      .select("#composer-prompt-editor")
+      .invoke({
+        method: "setValue",
+        params: { value: editorValue },
+        fail: (result) => {
+          console.error("[lynx-composer] controlled value sync failed", { result });
+        },
+      })
+      .exec();
+  }, [editorKey, editorRevision, editorValue]);
   const controlState = deriveComposerControlState({
     working: busy,
     blocked: disabled,
@@ -736,7 +762,7 @@ export function Composer({
                 ) : null}
                 <textarea
                   id="composer-prompt-editor"
-                  key={`${questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor"}:${editorRevision}`}
+                  key={`${editorKey}:${editorRevision}`}
                   className="composer__input"
                   data-composer-editor="true"
                   bindinput={handleInput}
