@@ -16,6 +16,14 @@ const RELATIVE_FILE_PATH_PATTERN = /^[A-Za-z0-9._-]+(?:\/[A-Za-z0-9._-]+)+(?::\d
 const RELATIVE_FILE_NAME_PATTERN = /^[A-Za-z0-9._-]+\.[A-Za-z0-9_-]+(?::\d+){0,2}$/;
 const POSITION_SUFFIX_PATTERN = /:\d+(?::\d+)?$/;
 const POSITION_ONLY_PATTERN = /^\d+(?::\d+)?$/;
+const MARKDOWN_ENTITY_REPLACEMENTS: Readonly<Record<string, string>> = {
+  amp: "&",
+  apos: "'",
+  gt: ">",
+  lt: "<",
+  nbsp: " ",
+  quot: '"',
+};
 const POSIX_FILE_ROOT_PREFIXES = [
   "/Users/",
   "/home/",
@@ -83,6 +91,32 @@ export interface MarkdownFileLinkMeta {
   readonly basename: string;
   readonly line?: number;
   readonly column?: number;
+}
+
+function decodeMarkdownCodePoint(codePoint: number, entity: string): string {
+  if (
+    !Number.isInteger(codePoint) ||
+    codePoint <= 0 ||
+    codePoint > 0x10ffff ||
+    (codePoint >= 0xd800 && codePoint <= 0xdfff)
+  ) {
+    return `&${entity};`;
+  }
+  return String.fromCodePoint(codePoint);
+}
+
+export function decodeMarkdownTextEntities(text: string): string {
+  return text.replace(/&([A-Za-z]+|#\d+|#x[0-9A-Fa-f]+);/g, (_, entity: string) => {
+    const named = MARKDOWN_ENTITY_REPLACEMENTS[entity];
+    if (named !== undefined) return named;
+    if (entity.startsWith("#x")) {
+      return decodeMarkdownCodePoint(Number.parseInt(entity.slice(2), 16), entity);
+    }
+    if (entity.startsWith("#")) {
+      return decodeMarkdownCodePoint(Number.parseInt(entity.slice(1), 10), entity);
+    }
+    return `&${entity};`;
+  });
 }
 
 /**
@@ -356,7 +390,7 @@ function parseMarkdownInlineWithStyle(
 
   const append = (value: string, code = false, override?: Partial<MarkdownInlineStyle>) => {
     appendInlinePresentation(output, {
-      text: value,
+      text: code ? value : decodeMarkdownTextEntities(value),
       bold: override?.bold ?? style.bold,
       italic: override?.italic ?? style.italic,
       code,
@@ -370,6 +404,15 @@ function parseMarkdownInlineWithStyle(
       append(text[cursor + 1]!);
       cursor += 2;
       continue;
+    }
+
+    if (text[cursor] === "&") {
+      const entityMatch = text.slice(cursor).match(/^&([A-Za-z]+|#\d+|#x[0-9A-Fa-f]+);/);
+      if (entityMatch?.[0]) {
+        append(decodeMarkdownTextEntities(entityMatch[0]));
+        cursor += entityMatch[0].length;
+        continue;
+      }
     }
 
     if (text[cursor] === "[") {

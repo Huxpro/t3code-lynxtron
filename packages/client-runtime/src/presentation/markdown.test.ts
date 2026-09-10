@@ -8,6 +8,7 @@ import {
   normalizeMarkdownLinkHrefKey,
   parseMarkdownFenceInfo,
   parseMarkdownInline,
+  decodeMarkdownTextEntities,
   parseMarkdownListItem,
   parseMarkdownTable,
   resolveInlineCodeFileLinkMeta,
@@ -181,6 +182,19 @@ describe("findMarkdownTaskListMarkerOffset", () => {
 });
 
 describe("parseMarkdownInline", () => {
+  it("decodes safe Markdown text entities without changing code spans", () => {
+    expect(parseMarkdownInline("A &amp; B &#62; C &#x1F680; `&amp;`")).toEqual([
+      { text: "A & B > C 🚀 ", bold: false, italic: false, code: false, href: null },
+      { text: "&amp;", bold: false, italic: false, code: true, href: null },
+    ]);
+  });
+
+  it("preserves unknown and invalid Markdown entities", () => {
+    expect(decodeMarkdownTextEntities("&unknown; &#0; &#xD800; &#9999999999;")).toBe(
+      "&unknown; &#0; &#xD800; &#9999999999;",
+    );
+  });
+
   it("projects nested emphasis, code, and links into flat renderer spans", () => {
     expect(
       parseMarkdownInline(
