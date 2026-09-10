@@ -57,6 +57,26 @@ function closesMarkdownFence(line: string, opening: MarkdownFence): boolean {
   return marker[0] === opening.character && marker.length >= opening.length;
 }
 
+const MARKDOWN_IMAGE_PATTERN = /!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)/g;
+
+function appendParagraphWithImages(blocks: ParsedMarkdownBlock[], text: string): void {
+  let cursor = 0;
+  for (const match of text.matchAll(MARKDOWN_IMAGE_PATTERN)) {
+    const start = match.index ?? 0;
+    const before = text.slice(cursor, start);
+    if (before.length > 0) blocks.push({ type: "paragraph", text: before });
+    blocks.push({
+      type: "image",
+      alt: match[1] ?? "",
+      href: match[2]!,
+      title: match[3],
+    });
+    cursor = start + match[0].length;
+  }
+  const after = text.slice(cursor);
+  if (after.length > 0 || cursor === 0) blocks.push({ type: "paragraph", text: after });
+}
+
 export function shouldRenderBlockMarkdown(text: string): boolean {
   if (text.includes("\n")) return true;
   const trimmed = text.trim();
@@ -253,7 +273,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       paragraphLines.push(lines[index]!);
       index++;
     }
-    blocks.push({ type: "paragraph", text: paragraphLines.join("\n") });
+    appendParagraphWithImages(blocks, paragraphLines.join("\n"));
   }
 
   return blocks;

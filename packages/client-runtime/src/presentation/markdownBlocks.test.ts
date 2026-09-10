@@ -244,6 +244,23 @@ describe("parseMarkdownBlocks", () => {
       },
     ]);
   });
+
+  it("preserves images embedded between paragraph text", () => {
+    expect(
+      parseMarkdownBlocks(
+        'Before ![Architecture](https://example.com/architecture.png "Diagram") after.',
+      ),
+    ).toEqual([
+      { type: "paragraph", text: "Before " },
+      {
+        type: "image",
+        alt: "Architecture",
+        href: "https://example.com/architecture.png",
+        title: "Diagram",
+      },
+      { type: "paragraph", text: " after." },
+    ]);
+  });
 });
 
 describe("shouldRenderBlockMarkdown", () => {

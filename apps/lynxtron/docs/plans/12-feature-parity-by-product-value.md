@@ -257,6 +257,9 @@ following-end` with the jump affordance visible only while detached. That gate
   bullets from being split into unrelated transcript paragraphs. Blockquotes
   now retain a recursive child-block projection, so quoted lists and fenced code
   render as their original structures instead of flattening into inline text.
+  Images embedded between paragraph text are projected in source order through
+  the existing image/fallback renderer instead of leaking their Markdown syntax
+  as ordinary prose.
 
 ## PF4: Complete remote and multi-environment operation
 
