@@ -437,9 +437,62 @@ function findClosingLinkDestination(text: string, from: number): number {
 }
 
 function parseMarkdownLinkDestination(source: string): string | null {
-  const match = source.match(/^\s*(<[^>\n]+>|[^\s\n]+?)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*$/);
+  return parseMarkdownLinkDestinationParts(source)?.href ?? null;
+}
+
+function parseMarkdownLinkDestinationParts(
+  source: string,
+): { readonly href: string; readonly title?: string } | null {
+  const match = source.match(
+    /^\s*(<[^>\n]+>|[^\s\n]+?)(?:\s+(?:"([^"]*)"|'([^']*)'|\(([^)]*)\)))?\s*$/,
+  );
   if (!match?.[1]) return null;
-  return normalizeMarkdownLinkHrefKey(match[1]);
+  const title = match[2] ?? match[3] ?? match[4];
+  return {
+    href: normalizeMarkdownLinkHrefKey(match[1]),
+    ...(title !== undefined ? { title } : {}),
+  };
+}
+
+export interface MarkdownImageToken {
+  readonly alt: string;
+  readonly end: number;
+  readonly href: string;
+  readonly start: number;
+  readonly title?: string;
+}
+
+/** Find authored Markdown images using the same balanced destination rules as links. */
+export function parseMarkdownImageTokens(text: string): ReadonlyArray<MarkdownImageToken> {
+  const tokens: MarkdownImageToken[] = [];
+  let cursor = 0;
+  while (cursor < text.length) {
+    const start = text.indexOf("![", cursor);
+    if (start === -1) break;
+    const labelEnd = findClosingDelimiter(text, "]", start + 2);
+    if (labelEnd === -1 || text[labelEnd + 1] !== "(") {
+      cursor = start + 2;
+      continue;
+    }
+    const destinationEnd = findClosingLinkDestination(text, labelEnd + 2);
+    if (destinationEnd === -1) {
+      cursor = labelEnd + 1;
+      continue;
+    }
+    const destination = parseMarkdownLinkDestinationParts(text.slice(labelEnd + 2, destinationEnd));
+    if (!destination) {
+      cursor = destinationEnd + 1;
+      continue;
+    }
+    tokens.push({
+      alt: normalizeMarkdownVisibleText(text.slice(start + 2, labelEnd)),
+      start,
+      end: destinationEnd + 1,
+      ...destination,
+    });
+    cursor = destinationEnd + 1;
+  }
+  return tokens;
 }
 
 function parseMarkdownInlineWithStyle(

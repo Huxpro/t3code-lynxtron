@@ -1,5 +1,6 @@
 import {
   parseMarkdownFenceInfo,
+  parseMarkdownImageTokens,
   parseMarkdownListItem,
   parseMarkdownTable,
   type MarkdownListItemPresentation,
@@ -57,21 +58,18 @@ function closesMarkdownFence(line: string, opening: MarkdownFence): boolean {
   return marker[0] === opening.character && marker.length >= opening.length;
 }
 
-const MARKDOWN_IMAGE_PATTERN = /!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)/g;
-
 function appendParagraphWithImages(blocks: ParsedMarkdownBlock[], text: string): void {
   let cursor = 0;
-  for (const match of text.matchAll(MARKDOWN_IMAGE_PATTERN)) {
-    const start = match.index ?? 0;
-    const before = text.slice(cursor, start);
+  for (const image of parseMarkdownImageTokens(text)) {
+    const before = text.slice(cursor, image.start);
     if (before.length > 0) blocks.push({ type: "paragraph", text: before });
     blocks.push({
       type: "image",
-      alt: match[1] ?? "",
-      href: match[2]!,
-      title: match[3],
+      alt: image.alt,
+      href: image.href,
+      title: image.title,
     });
-    cursor = start + match[0].length;
+    cursor = image.end;
   }
   const after = text.slice(cursor);
   if (after.length > 0 || cursor === 0) blocks.push({ type: "paragraph", text: after });
@@ -83,7 +81,7 @@ export function shouldRenderBlockMarkdown(text: string): boolean {
   return (
     parseMarkdownFence(trimmed) !== null ||
     /^(?:#{1,6}\s+|(?:>\s*)+|(?:[-+*]|\d+[.)])\s+|(?:-{3,}|\*{3,}|_{3,})\s*$)/.test(trimmed) ||
-    /!\[[^\]]*]\(\S+?(?:\s+["'][^"']*["'])?\)/.test(trimmed) ||
+    parseMarkdownImageTokens(trimmed).length > 0 ||
     /^<details(?:\s|>)/i.test(trimmed)
   );
 }
@@ -148,13 +146,14 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       continue;
     }
 
-    const imageMatch = line.trim().match(/^!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)\s*$/);
-    if (imageMatch) {
+    const trimmedLine = line.trim();
+    const [standaloneImage] = parseMarkdownImageTokens(trimmedLine);
+    if (standaloneImage?.start === 0 && standaloneImage.end === trimmedLine.length) {
       blocks.push({
         type: "image",
-        alt: imageMatch[1] ?? "",
-        href: imageMatch[2]!,
-        title: imageMatch[3],
+        alt: standaloneImage.alt,
+        href: standaloneImage.href,
+        ...(standaloneImage.title !== undefined ? { title: standaloneImage.title } : {}),
       });
       index++;
       continue;
@@ -264,7 +263,11 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       !(lines[index + 1]?.trim().match(/^(=+|-+)$/) && lines[index]!.trim().length > 0) &&
       !lines[index]!.match(/^(#{1,6})(?:\s|$)/) &&
       !lines[index]!.match(/^((?:>\s*)+)(.*)$/) &&
-      !lines[index]!.trim().match(/^!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)\s*$/) &&
+      !(() => {
+        const trimmed = lines[index]!.trim();
+        const [image] = parseMarkdownImageTokens(trimmed);
+        return image?.start === 0 && image.end === trimmed.length;
+      })() &&
       !lines[index]!.trim().match(/^<details(?:\s+open)?\s*>/i) &&
       !parseMarkdownTable(lines.slice(index)) &&
       !parseMarkdownListItem(lines[index]!) &&

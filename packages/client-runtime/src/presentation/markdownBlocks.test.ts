@@ -271,6 +271,24 @@ describe("parseMarkdownBlocks", () => {
       { type: "paragraph", text: " after." },
     ]);
   });
+
+  it("preserves balanced image destinations and optional titles", () => {
+    expect(
+      parseMarkdownBlocks('Before ![diagram](https://example.com/a_(b).png "Nested") after.'),
+    ).toEqual([
+      { type: "paragraph", text: "Before " },
+      {
+        type: "image",
+        alt: "diagram",
+        href: "https://example.com/a_(b).png",
+        title: "Nested",
+      },
+      { type: "paragraph", text: " after." },
+    ]);
+    expect(parseMarkdownBlocks("![diagram](./shots/a_(b).png)")).toEqual([
+      { type: "image", alt: "diagram", href: "./shots/a_(b).png" },
+    ]);
+  });
 });
 
 describe("shouldRenderBlockMarkdown", () => {

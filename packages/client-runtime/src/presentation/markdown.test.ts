@@ -8,6 +8,7 @@ import {
   normalizeMarkdownLinkHrefKey,
   parseMarkdownFenceInfo,
   parseMarkdownInline,
+  parseMarkdownImageTokens,
   decodeMarkdownTextEntities,
   normalizeMarkdownVisibleText,
   parseMarkdownListItem,
@@ -515,5 +516,35 @@ describe("resolveMarkdownImageSource", () => {
     expect(resolveMarkdownImageSource("javascript:alert(1)", "/repo")).toEqual({
       kind: "unsupported",
     });
+  });
+});
+
+describe("parseMarkdownImageTokens", () => {
+  it("shares balanced and escaped destination parsing with inline links", () => {
+    expect(
+      parseMarkdownImageTokens(
+        'Before ![A &amp; B](https://example.com/a\(b\).png "Diagram") after',
+      ),
+    ).toEqual([
+      {
+        alt: "A & B",
+        start: 7,
+        end: 59,
+        href: "https://example.com/a(b).png",
+        title: "Diagram",
+      },
+    ]);
+    expect(parseMarkdownImageTokens("![nested](https://example.com/a_(b).png)")).toEqual([
+      {
+        alt: "nested",
+        start: 0,
+        end: 40,
+        href: "https://example.com/a_(b).png",
+      },
+    ]);
+  });
+
+  it("ignores malformed image syntax", () => {
+    expect(parseMarkdownImageTokens("Before ![missing]( after")).toEqual([]);
   });
 });
