@@ -3680,6 +3680,96 @@ async function verifyNewThreadDraftLifecycle({
               measurement?.attributes["data-composer-primary-state"] === "disabled",
           });
           await client.runCdp("Runtime.evaluate", {
+            expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('@')",
+            returnByValue: true,
+          });
+          await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) => state?.activeComposerDraftText === "@",
+          });
+          await client.runCdp("Runtime.evaluate", {
+            expression: "globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__?.(1)",
+            returnByValue: true,
+          });
+          await waitForRuntimeValue({
+            child,
+            client,
+            expression: "JSON.stringify(globalThis.__T3_LYNXTRON_COMPOSER_TRIGGER_STATE__ ?? null)",
+            predicate: (value) => {
+              if (typeof value !== "string") return false;
+              const state = JSON.parse(value);
+              return (
+                state?.value === "@" &&
+                state?.composerCursor === 1 &&
+                state?.contextPickerOpen === true
+              );
+            },
+            timeoutMs,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-context-picker",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-composer-context-picker"] === "path",
+          });
+          const fileContextPath = "review-fixture.txt";
+          await tapSelectorByAttribute({
+            attribute: "data-composer-context-path",
+            child,
+            client,
+            selector: ".composer-context-picker__item",
+            timeoutMs,
+            value: fileContextPath,
+          });
+          await waitForClientState({
+            child,
+            client,
+            timeoutMs,
+            predicate: (state) =>
+              state?.activeComposerDraftText === "" &&
+              state.activeComposerFileContexts?.[0]?.path === fileContextPath,
+          });
+          const fileContextChip = await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-file-context-chip",
+            timeoutMs,
+            predicate: (measurement) => measurement?.text.includes("review-fixture.txt") === true,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-primary-action",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-composer-primary-state"] === "send",
+          });
+          await tapSelector({
+            child,
+            client,
+            selector: ".composer-file-context-remove",
+            timeoutMs,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-file-context-chip",
+            timeoutMs,
+            predicate: (measurement) => measurement === null,
+          });
+          await waitForMeasurement({
+            child,
+            client,
+            selector: ".composer-primary-action",
+            timeoutMs,
+            predicate: (measurement) =>
+              measurement?.attributes["data-composer-primary-state"] === "disabled",
+          });
+          await client.runCdp("Runtime.evaluate", {
             expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
               draftText,
             )})`,
@@ -3699,6 +3789,13 @@ async function verifyNewThreadDraftLifecycle({
             },
             terminalContextLifecycle: {
               label: terminalContextChip.text.trim(),
+              contextOnlySendable: true,
+              removed: true,
+            },
+            fileContextLifecycle: {
+              label: fileContextChip.text.trim(),
+              canonicalMention: "[review-fixture.txt](review-fixture.txt)",
+              entry: "composer @ picker",
               contextOnlySendable: true,
               removed: true,
             },
@@ -3747,6 +3844,45 @@ async function verifyNewThreadDraftLifecycle({
     predicate: (state) =>
       state?.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id,
   });
+  await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('@review-fixture')",
+    returnByValue: true,
+  });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeComposerDraftText === "@review-fixture",
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__?.(15)",
+    returnByValue: true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-context-picker",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-context-picker"] === "path",
+  });
+  await tapSelectorByAttribute({
+    attribute: "data-composer-context-path",
+    child,
+    client,
+    selector: ".composer-context-picker__item",
+    timeoutMs,
+    value: "review-fixture.txt",
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(draftText)})`,
+    returnByValue: true,
+  });
+  const persistedFileContext = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeComposerFileContexts?.[0]?.path === "review-fixture.txt",
+  });
   const afterSequence = await readRendererReadiness(client);
   const persistedThreadIdsAfter = readPersistedThreadIds(baseDir);
   if (
@@ -3791,26 +3927,31 @@ async function verifyNewThreadDraftLifecycle({
   const persistenceDeadline = Date.now() + timeoutMs;
   let persistedDraftText = null;
   let savedTerminalContexts = null;
+  let savedFileContexts = null;
   while (Date.now() < persistenceDeadline) {
     const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
     persistedDraftText = prefs.composerDraftTextByScopeKey?.[draftScopeKey] ?? null;
     savedTerminalContexts = prefs.composerTerminalContextsByScopeKey?.[draftScopeKey] ?? null;
+    savedFileContexts = prefs.composerFileContextsByScopeKey?.[draftScopeKey] ?? null;
     if (
       persistedDraftText === draftText &&
-      savedTerminalContexts?.[0]?.id === persistedTerminalContext.id
+      savedTerminalContexts?.[0]?.id === persistedTerminalContext.id &&
+      savedFileContexts?.[0]?.path === "review-fixture.txt"
     )
       break;
     await waitForChildExit(child, 50);
   }
   if (
     persistedDraftText !== draftText ||
-    savedTerminalContexts?.[0]?.id !== persistedTerminalContext.id
+    savedTerminalContexts?.[0]?.id !== persistedTerminalContext.id ||
+    savedFileContexts?.[0]?.path !== "review-fixture.txt"
   ) {
     throw new Error(
       `Native Composer state did not persist before cold restart: ${JSON.stringify({
         draftScopeKey,
         persistedDraftText,
         savedTerminalContexts,
+        savedFileContexts,
       })}`,
     );
   }
@@ -3876,7 +4017,8 @@ async function verifyNewThreadDraftLifecycle({
         typeof state?.draftThreadId === "string" &&
         state.activeThreadId === state.draftThreadId &&
         state.activeComposerDraftText === draftText &&
-        state.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id,
+        state.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id &&
+        state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt",
     });
     await waitForMeasurement({
       child: restartedChild,
@@ -3893,6 +4035,7 @@ async function verifyNewThreadDraftLifecycle({
           draftScopeKey,
           text: restartedDraft.activeComposerDraftText,
           terminalContext: restartedDraft.activeComposerTerminalContexts[0],
+          fileContext: restartedDraft.activeComposerFileContexts[0],
           initialProcessId,
           initialClient,
           restartedProcessId: restartedChild.pid,

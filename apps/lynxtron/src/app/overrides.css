@@ -9891,7 +9891,8 @@
   opacity: 0.4;
 }
 
-.composer-terminal-context-list {
+.composer-terminal-context-list,
+.composer-file-context-list {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -9899,7 +9900,8 @@
   gap: 6px;
   box-sizing: border-box;
 }
-.composer-terminal-context-chip {
+.composer-terminal-context-chip,
+.composer-file-context-chip {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -9913,7 +9915,8 @@
   border-radius: 7px;
   background-color: var(--muted);
 }
-.composer-terminal-context-label {
+.composer-terminal-context-label,
+.composer-file-context-label {
   flex-shrink: 1;
   overflow: hidden;
   color: var(--muted-foreground);
@@ -9923,7 +9926,8 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.composer-terminal-context-remove {
+.composer-terminal-context-remove,
+.composer-file-context-remove {
   display: flex;
   align-items: center;
   justify-content: center;

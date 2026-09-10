@@ -15,6 +15,10 @@ import {
 } from "@t3tools/client-runtime/presentation/composer";
 import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
 import { appendTerminalContextsToPrompt } from "@t3tools/client-runtime/presentation/terminal-context";
+import {
+  appendFileContextsToPrompt,
+  composerFileContext,
+} from "@t3tools/client-runtime/presentation/file-context";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
 import { projectConnectionLifecycle } from "@t3tools/client-runtime/connection/presentation";
 import {
@@ -106,6 +110,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     composerDraftTextByScopeKey,
     composerDraftAttachmentsByScopeKey,
     composerTerminalContextsByScopeKey,
+    composerFileContextsByScopeKey,
     messages,
     sessionStatus,
     sessionError,
@@ -507,6 +512,9 @@ export function ChatView({ threadId }: ChatViewProps) {
     : [];
   const composerTerminalContexts = composerDraftKey
     ? (composerTerminalContextsByScopeKey[composerDraftKey] ?? [])
+    : [];
+  const composerFileContexts = composerDraftKey
+    ? (composerFileContextsByScopeKey[composerDraftKey] ?? [])
     : [];
   const handleComposerDraftTextChange = useCallback(
     (text: string) => {
@@ -931,6 +939,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         onValueChange={handleComposerDraftTextChange}
         attachments={composerDraftAttachments}
         terminalContexts={composerTerminalContexts}
+        fileContexts={composerFileContexts}
         onAddAttachments={(attachments) => {
           if (composerDraftKey)
             t3ClientActions.addComposerAttachments(composerDraftKey, attachments);
@@ -942,16 +951,29 @@ export function ChatView({ threadId }: ChatViewProps) {
           if (composerDraftKey)
             t3ClientActions.removeComposerTerminalContext(composerDraftKey, contextId);
         }}
+        onAddFileContext={(path) => {
+          const context = composerFileContext(path);
+          if (composerDraftKey && context)
+            t3ClientActions.addComposerFileContext(composerDraftKey, context);
+        }}
+        onRemoveFileContext={(contextId) => {
+          if (composerDraftKey)
+            t3ClientActions.removeComposerFileContext(composerDraftKey, contextId);
+        }}
         disabled={status !== "ready" || sessionStatus === "starting"}
         busy={sessionWorking}
         onSend={async (text, attachments) => {
           const sent = await handleSend(
-            appendTerminalContextsToPrompt(text, composerTerminalContexts),
+            appendTerminalContextsToPrompt(
+              appendFileContextsToPrompt(text, composerFileContexts),
+              composerTerminalContexts,
+            ),
             attachments,
           );
           if (sent && composerDraftKey) {
             t3ClientActions.clearComposerAttachments(composerDraftKey);
             t3ClientActions.clearComposerTerminalContexts(composerDraftKey);
+            t3ClientActions.clearComposerFileContexts(composerDraftKey);
           }
           return sent;
         }}

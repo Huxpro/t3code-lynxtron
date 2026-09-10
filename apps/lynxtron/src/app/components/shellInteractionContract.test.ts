@@ -643,12 +643,14 @@ describe("desktop shell interaction contract", () => {
   it("uses shared composer triggers for real file, skill, and command context insertion", () => {
     const composer = componentSource("Composer.tsx");
     const chatView = componentSource("ChatView.tsx");
-    expect(composer).toContain("detectComposerTrigger(value, composerCursor)");
+    expect(composer).toContain("detectComposerTrigger(value, effectiveComposerCursor)");
     expect(composer).toContain(
       "t3ClientActions.searchComposerProjectEntries(cwd, composerTrigger.query, 50)",
     );
     expect(clientSource).toContain("return bridge.searchProjectEntries({ cwd, query, limit });");
-    expect(composer).toContain("serializeComposerFileLink(entry.path)");
+    expect(composer).toContain("onAddFileContext(entry.path)");
+    expect(composer).toContain('className="composer-file-context-chip"');
+    expect(chatView).toContain("appendFileContextsToPrompt(text, composerFileContexts)");
     expect(composer).toContain("data-composer-context-picker={composerTrigger.kind}");
     expect(composer).toContain("const contextPickerHeight = Math.min(288");
     expect(composer).toContain("data-composer-context-path={entry.path}");
@@ -1062,7 +1064,7 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("onContextMenu={() => onContextMenu(node.path)}");
     expect(fileTreeSurfaceSource).toContain("eventThrough>{fileIcon}");
     expect(fileTreeSurfaceSource).toContain("onContextMenu={onContextMenu}");
-    expect(files).toContain("if (!requestComposerTextInsertion(`${mention} `))");
+    expect(files).toContain("t3ClientActions.addComposerFileContext(composerScopeKey, context)");
     expect(composer).toContain("onComposerTextInsertion((text) =>");
     expect(composer).toContain('select("#composer-prompt-editor")');
     expect(composer).toContain('invoke("setValue", { value: nextValue })');

@@ -11,6 +11,8 @@ import { resolvePathLinkTarget } from "@t3tools/client-runtime/presentation/path
 import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coordinator";
 import type { ProjectEntry, ProjectReadFileResult } from "@t3tools/contracts";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
+import { composerFileContext } from "@t3tools/client-runtime/presentation/file-context";
+import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 
 import {
@@ -22,7 +24,6 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
-import { requestComposerTextInsertion } from "../state/composerCommandBus";
 import { Icon } from "./Icon";
 import { ProjectFileIcon } from "./ProjectFileIcon";
 import { OpenInPicker } from "./OpenInPicker";
@@ -320,6 +321,11 @@ export function FilesPanel({
     threads.find((thread) => thread.id === activeThreadId) ??
     (draftThread?.id === activeThreadId ? draftThread : undefined);
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
+  const composerScopeKey = composerDraftScopeKey({
+    threadId: activeThreadId,
+    projectId: project?.id,
+    localDraft: draftThread?.id === activeThreadId || activeThreadId === undefined,
+  });
 
   useEffect(() => {
     if (!cwd) {
@@ -379,20 +385,23 @@ export function FilesPanel({
   }, []);
 
   const selectFile = useCallback((path: string) => uiActions.openFileSurface(path), []);
-  const showFileContextMenu = useCallback(async (path: string) => {
-    const mention = serializeComposerFileLink(path);
-    const selection = await showNativeContextMenu([
-      { id: "copy-mention", label: "Copy mention" },
-      { id: "add-to-chat", label: "Add to chat" },
-    ]);
-    if (selection === "copy-mention") {
-      await clientCapabilities.clipboard.writeText(mention);
-    } else if (selection === "add-to-chat") {
-      if (!requestComposerTextInsertion(`${mention} `)) {
-        console.error("[lynx-files] active composer cannot accept file mentions", { path });
+  const showFileContextMenu = useCallback(
+    async (path: string) => {
+      const mention = serializeComposerFileLink(path);
+      const selection = await showNativeContextMenu([
+        { id: "copy-mention", label: "Copy mention" },
+        { id: "add-to-chat", label: "Add to chat" },
+      ]);
+      if (selection === "copy-mention") {
+        await clientCapabilities.clipboard.writeText(mention);
+      } else if (selection === "add-to-chat") {
+        const context = composerFileContext(path);
+        if (composerScopeKey && context)
+          t3ClientActions.addComposerFileContext(composerScopeKey, context);
       }
-    }
-  }, []);
+    },
+    [composerScopeKey],
+  );
 
   return (
     <view className="files-panel">

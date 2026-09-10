@@ -12,6 +12,7 @@ import {
   formatTerminalContextLabel,
   type ComposerTerminalContext,
 } from "@t3tools/client-runtime/presentation/terminal-context";
+import type { ComposerFileContext } from "@t3tools/client-runtime/presentation/file-context";
 import {
   resolveCompactComposerControlsAlign,
   shouldUseCompactComposerFooter,
@@ -40,7 +41,6 @@ import type {
 import {
   detectComposerTrigger,
   replaceTextRange,
-  serializeComposerFileLink,
   type ComposerTrigger,
 } from "@t3tools/shared/composerTrigger";
 import approvalEditorPendingUrl from "../assets/approval-editor-pending@2x.png?external";
@@ -117,9 +117,12 @@ interface ComposerProps {
   onValueChange: (value: string) => void;
   attachments: ReadonlyArray<UploadChatAttachment>;
   terminalContexts: ReadonlyArray<ComposerTerminalContext>;
+  fileContexts: ReadonlyArray<ComposerFileContext>;
   onAddAttachments: (attachments: ReadonlyArray<UploadChatAttachment>) => void;
   onRemoveAttachment: (index: number) => void;
   onRemoveTerminalContext: (contextId: string) => void;
+  onRemoveFileContext: (contextId: string) => void;
+  onAddFileContext: (path: string) => void;
   onSend: (text: string, attachments: ReadonlyArray<UploadChatAttachment>) => Promise<boolean>;
   onStop: () => void;
   onModelTap?: () => void;
@@ -200,9 +203,12 @@ export function Composer({
   onValueChange,
   attachments,
   terminalContexts,
+  fileContexts,
   onAddAttachments,
   onRemoveAttachment,
   onRemoveTerminalContext,
+  onRemoveFileContext,
+  onAddFileContext,
   onSend,
   onStop,
   onModelTap,
@@ -224,16 +230,23 @@ export function Composer({
   const [editorRevision, setEditorRevision] = useState(0);
   const [mobileComposerExpanded, setMobileComposerExpanded] = useState(false);
   const [composerCursor, setComposerCursor] = useState(0);
+  const [, setComposerSelectionRevision] = useState(0);
   const [contextEntries, setContextEntries] = useState<ReadonlyArray<ProjectEntry>>([]);
   const [contextSearchPending, setContextSearchPending] = useState(false);
   const [contextSearchError, setContextSearchError] = useState<string | null>(null);
   const [dismissedContextTrigger, setDismissedContextTrigger] = useState<string | null>(null);
+  const nativeEditorValueRef = useRef<{ key: string; value: string; cursor: number } | null>(null);
   const runtimeModeMenuOpen = openComposerMenu === "runtime";
   const modelOptionMenuOpen = openComposerMenu === "model-option";
   const compactControlsMenuOpen = openComposerMenu === "compact-controls";
   const workspaceMenuOpen = openComposerMenu === "workspace";
   const contextWindowOpen = openComposerMenu === "context-window";
-  const composerTrigger = detectComposerTrigger(value, composerCursor);
+  const effectiveComposerCursor =
+    nativeEditorValueRef.current?.key === "prompt-editor" &&
+    nativeEditorValueRef.current.value === value
+      ? nativeEditorValueRef.current.cursor
+      : composerCursor;
+  const composerTrigger = detectComposerTrigger(value, effectiveComposerCursor);
   const composerTriggerKey = composerTrigger
     ? `${composerTrigger.kind}:${composerTrigger.rangeStart}:${composerTrigger.rangeEnd}:${composerTrigger.query}`
     : null;
@@ -281,13 +294,34 @@ export function Composer({
   const compactControlsMenuScrollRef = useMainThreadRef<MainThread.Element>(null);
   const compactControlsMenuWheelRef = useMainThreadRef({ offset: 0 });
   const viewport = useViewportSnapshot();
+  if (viewport.testResize) {
+    (
+      globalThis as { __T3_LYNXTRON_COMPOSER_TRIGGER_STATE__?: unknown }
+    ).__T3_LYNXTRON_COMPOSER_TRIGGER_STATE__ = {
+      value,
+      composerCursor,
+      effectiveComposerCursor,
+      composerTrigger,
+      composerTriggerKey,
+      dismissedContextTrigger,
+      openComposerMenu,
+      modelPickerOpen: modelPicker != null,
+      questionMode,
+      contextPickerOpen,
+      cwd: cwd ?? null,
+      contextEntryCount: contextEntries.length,
+      contextSearchPending,
+      contextSearchError,
+    };
+  }
   const mobileCollapsed =
     viewport.width < 640 && !mobileComposerExpanded && !approvalActions && !questionMode;
   const promptValueRef = useRef(value);
-  const nativeEditorValueRef = useRef<{ key: string; value: string } | null>(null);
   promptValueRef.current = value;
   const applyExternalTextInsertion = (nextValue: string, cursor = nextValue.length) => {
-    nativeEditorValueRef.current = { key: "prompt-editor", value: nextValue };
+    nativeEditorValueRef.current = { key: "prompt-editor", value: nextValue, cursor };
+    setComposerCursor(cursor);
+    setComposerSelectionRevision((revision) => revision + 1);
     const invoke = (method: string, params?: Record<string, unknown>) => {
       lynx
         .createSelectorQuery()
@@ -314,8 +348,8 @@ export function Composer({
         if (questionMode) return false;
         const nextValue = appendComposerText(promptValueRef.current, text);
         promptValueRef.current = nextValue;
-        onValueChange(nextValue);
         applyExternalTextInsertion(nextValue);
+        onValueChange(nextValue);
         return true;
       }),
     [onValueChange, questionMode],
@@ -422,16 +456,30 @@ export function Composer({
   useEffect(() => {
     const diagnosticsGlobal = globalThis as {
       __T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?: (value: string) => boolean;
+      __T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__?: (cursor: number) => boolean;
       __T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__?: (attachment: UploadChatAttachment) => boolean;
       __T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
       __T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?: (offset: number) => Promise<unknown>;
     };
     if (!viewport.testResize) return;
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__ = (nextValue) => {
-      setComposerCursor(nextValue.length);
       setDismissedContextTrigger(null);
       if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
-      else onValueChange(nextValue);
+      else {
+        applyExternalTextInsertion(nextValue);
+        onValueChange(nextValue);
+      }
+      return true;
+    };
+    diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__ = (cursor) => {
+      const nextCursor = Math.max(0, Math.min(promptValueRef.current.length, Math.floor(cursor)));
+      nativeEditorValueRef.current = {
+        key: "prompt-editor",
+        value: promptValueRef.current,
+        cursor: nextCursor,
+      };
+      setComposerCursor(nextCursor);
+      setComposerSelectionRevision((revision) => revision + 1);
       return true;
     };
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__ = (attachment) => {
@@ -445,6 +493,7 @@ export function Composer({
       runOnMainThread(scrollCompactControlsMenu)(offset);
     return () => {
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__;
+      delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__;
@@ -494,6 +543,7 @@ export function Composer({
     prompt: value,
     imageCount: attachments.length,
     terminalContexts,
+    elementContextCount: fileContexts.length,
   });
   const primaryActionRef = useRef({
     disabled,
@@ -527,10 +577,6 @@ export function Composer({
       const nextValue =
         inputEvent.detail?.value ?? inputEvent.target?.value ?? inputEvent.currentTarget?.value;
       if (typeof nextValue === "string") {
-        nativeEditorValueRef.current = {
-          key: questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor",
-          value: nextValue,
-        };
         const selectionStart =
           typeof inputEvent.detail === "object" &&
           inputEvent.detail !== null &&
@@ -538,7 +584,13 @@ export function Composer({
           typeof inputEvent.detail.selectionStart === "number"
             ? inputEvent.detail.selectionStart
             : nextValue.length;
+        nativeEditorValueRef.current = {
+          key: questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor",
+          value: nextValue,
+          cursor: selectionStart,
+        };
         setComposerCursor(selectionStart);
+        setComposerSelectionRevision((revision) => revision + 1);
         setDismissedContextTrigger(null);
         if (questionMode) onQuestionCustomAnswerChange?.(nextValue);
         else onValueChange(nextValue);
@@ -559,9 +611,10 @@ export function Composer({
   const selectContextPath = useCallback(
     (entry: ProjectEntry) => {
       if (!composerTrigger || composerTrigger.kind !== "path") return;
-      replaceComposerTrigger(composerTrigger, `${serializeComposerFileLink(entry.path)} `);
+      onAddFileContext(entry.path);
+      replaceComposerTrigger(composerTrigger, "");
     },
-    [composerTrigger, replaceComposerTrigger],
+    [composerTrigger, onAddFileContext, replaceComposerTrigger],
   );
   const selectContextSkill = useCallback(
     (skill: ServerProviderSkill) => {
@@ -615,6 +668,7 @@ export function Composer({
     if (sent) {
       onValueChange("");
       setComposerCursor(0);
+      setComposerSelectionRevision((revision) => revision + 1);
       setDismissedContextTrigger(null);
       setEditorRevision((revision) => revision + 1);
     }
@@ -635,7 +689,13 @@ export function Composer({
   useEffect(() => {
     const nativeValue = nativeEditorValueRef.current;
     if (nativeValue?.key === editorKey && nativeValue.value === editorValue) return;
-    nativeEditorValueRef.current = { key: editorKey, value: editorValue };
+    nativeEditorValueRef.current = {
+      key: editorKey,
+      value: editorValue,
+      cursor: editorValue.length,
+    };
+    setComposerCursor(editorValue.length);
+    setComposerSelectionRevision((revision) => revision + 1);
     lynx
       .createSelectorQuery()
       .select("#composer-prompt-editor")
@@ -817,6 +877,25 @@ export function Composer({
                             className="composer-terminal-context-remove"
                             aria-label={`Remove ${formatTerminalContextLabel(context)}`}
                             onClick={() => onRemoveTerminalContext(context.id)}
+                          >
+                            <Icon name="x" size={11} color="#818181" />
+                          </HostButton>
+                        </view>
+                      ))}
+                    </view>
+                  ) : null}
+                  {fileContexts.length > 0 ? (
+                    <view className="composer-file-context-list">
+                      {fileContexts.map((context) => (
+                        <view key={context.id} className="composer-file-context-chip">
+                          <Icon name="file-json" size={12} color="#818181" />
+                          <text className="composer-file-context-label" text-maxline="1">
+                            {basenameOfComposerPath(context.path)}
+                          </text>
+                          <HostButton
+                            className="composer-file-context-remove"
+                            aria-label={`Remove ${context.path}`}
+                            onClick={() => onRemoveFileContext(context.id)}
                           >
                             <Icon name="x" size={11} color="#818181" />
                           </HostButton>

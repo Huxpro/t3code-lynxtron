@@ -174,6 +174,13 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   but its assistant run was externally blocked by the account usage limit. PF2
   stays `in_progress` for attachment fail/retry, reconnect, file context, and
   real-input closure.
+- Native file mentions now use the Web authority's canonical Markdown-link
+  serializer while rendering as scoped Composer chips. The Composer `@` picker
+  creates a chip, removal restores the disabled empty state, and strict
+  persistence restores the same file context after a cold restart. Files-panel
+  Add to chat targets the same scoped action. Drag/drop remains unsupported,
+  and PF2 remains `in_progress` for attachment fail/retry and final real-input
+  acceptance.
 - A real owned-server `SIGKILL` and Reconnect cycle now proves the same local
   draft ID, chat route, draft text, and terminal context survive both the
   connection-error state and the replacement server. Submission is disabled

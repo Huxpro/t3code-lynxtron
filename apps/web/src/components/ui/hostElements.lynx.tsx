@@ -301,6 +301,7 @@ export function HostButton({
   onKeyDown,
   onMouseEnter,
   onMouseLeave,
+  stopTapPropagation,
   ...props
 }: Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -310,6 +311,7 @@ export function HostButton({
   readonly onKeyDown?: (event: unknown) => void;
   readonly onMouseEnter?: (event: unknown) => void;
   readonly onMouseLeave?: (event: unknown) => void;
+  readonly stopTapPropagation?: boolean;
 }) {
   const trackHoverState = needsHoverState(className);
   const trackFocusState = needsFocusState(className);
@@ -367,7 +369,7 @@ export function HostButton({
         ? { "main-thread:bindmouseleave": handleMouseLeave }
         : {})}
       bindmousemove={onMouseEnter}
-      bindtap={onClick}
+      {...(stopTapPropagation ? { catchtap: onClick ?? ignoreTap } : { bindtap: onClick })}
     >
       {children}
     </view>

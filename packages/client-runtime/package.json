@@ -151,6 +151,10 @@
       "types": "./src/presentation/terminalContext.ts",
       "default": "./src/presentation/terminalContext.ts"
     },
+    "./presentation/file-context": {
+      "types": "./src/presentation/fileContext.ts",
+      "default": "./src/presentation/fileContext.ts"
+    },
     "./presentation/floating-relation": {
       "types": "./src/presentation/floatingRelation.ts",
       "default": "./src/presentation/floatingRelation.ts"
