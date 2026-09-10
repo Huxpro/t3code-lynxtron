@@ -171,20 +171,29 @@ function splitMarkdownTableRow(line: string): string[] {
   const cells: string[] = [];
   let cell = "";
   let escaped = false;
-  for (const character of trimmed) {
+  let codeDelimiterLength = 0;
+  for (let index = 0; index < trimmed.length; index += 1) {
+    const character = trimmed[index]!;
     if (escaped) {
       cell += character;
       escaped = false;
     } else if (character === "\\") {
       escaped = true;
-      cell += character;
-    } else if (character === "|") {
+    } else if (character === "`") {
+      let tickCount = 1;
+      while (trimmed[index + tickCount] === "`") tickCount += 1;
+      if (codeDelimiterLength === 0) codeDelimiterLength = tickCount;
+      else if (codeDelimiterLength === tickCount) codeDelimiterLength = 0;
+      cell += "`".repeat(tickCount);
+      index += tickCount - 1;
+    } else if (character === "|" && codeDelimiterLength === 0) {
       cells.push(cell.trim());
       cell = "";
     } else {
       cell += character;
     }
   }
+  if (escaped) cell += "\\";
   cells.push(cell.trim());
   return cells;
 }

@@ -133,9 +133,23 @@ describe("parseMarkdownTable", () => {
       headers: ["Name", "Result", "Notes"],
       alignments: ["left", "center", "right"],
       rows: [
-        ["Web", "pass", "shared \\| stable"],
+        ["Web", "pass", "shared | stable"],
         ["Lynx", "pass", ""],
       ],
+    });
+  });
+
+  it("keeps pipes inside code spans in one cell", () => {
+    expect(
+      parseMarkdownTable([
+        "| Expression | Meaning |",
+        "| --- | --- |",
+        "| `left | right` | union |",
+      ]),
+    ).toEqual({
+      headers: ["Expression", "Meaning"],
+      alignments: [null, null],
+      rows: [["`left | right`", "union"]],
     });
   });
 

@@ -264,6 +264,8 @@ following-end` with the jump affordance visible only while detached. That gate
   `www.example.com` and email addresses, including canonical `https://` and
   `mailto:` targets and trailing-punctuation boundaries. Code spans, embedded
   `www` text, and hostless email-like text remain literal.
+- Shared GFM table parsing now renders escaped pipes as literal cell content and
+  keeps pipes inside code spans in the same cell instead of splitting columns.
 - Native proposed-plan timeline cards now open the existing full Plan panel
   instead of ending at a static two-line title. The card reuses canonical plan
   state and the existing panel route; its real OS tap remains covered by the
