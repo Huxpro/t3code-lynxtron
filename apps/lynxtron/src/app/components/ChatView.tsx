@@ -98,6 +98,9 @@ interface ChatViewProps {
 
 export function ChatView({ threadId }: ChatViewProps) {
   const [expandedImage, setExpandedImage] = useState<ExpandedImagePreview | null>(null);
+  const [attachmentPreviewUrlById, setAttachmentPreviewUrlById] = useState<
+    Readonly<Record<string, string>>
+  >({});
   const {
     status,
     statusDetail,
@@ -134,6 +137,50 @@ export function ChatView({ threadId }: ChatViewProps) {
   } = useT3ClientState();
   useEffect(() => setExpandedImage(null), [activeThreadId, threadId]);
   const closeExpandedImage = useCallback(() => setExpandedImage(null), []);
+  const attachmentIds = useMemo(
+    () => [
+      ...new Set(messages.flatMap((message) => (message.attachments ?? []).map(({ id }) => id))),
+    ],
+    [messages],
+  );
+  const attachmentIdsKey = attachmentIds.join("\u0000");
+  useEffect(() => {
+    let active = true;
+    setAttachmentPreviewUrlById({});
+    void Promise.all(
+      attachmentIds.map(async (attachmentId) => {
+        try {
+          const result = await t3ClientActions.createAssetUrl({
+            resource: { _tag: "attachment", attachmentId },
+          });
+          return [attachmentId, result.url] as const;
+        } catch {
+          return null;
+        }
+      }),
+    ).then((entries) => {
+      if (!active) return;
+      setAttachmentPreviewUrlById(
+        Object.fromEntries(
+          entries.filter((entry): entry is readonly [string, string] => entry !== null),
+        ),
+      );
+    });
+    return () => {
+      active = false;
+    };
+  }, [activeThreadId, attachmentIdsKey]);
+  const displayMessages = useMemo(
+    () =>
+      messages.map((message) => ({
+        ...message,
+        attachments: message.attachments?.map((attachment) => ({
+          ...attachment,
+          previewUrl: attachmentPreviewUrlById[attachment.id],
+        })),
+      })),
+    [attachmentPreviewUrlById, messages],
+  );
   const [clientSettings] = useClientSettingsState();
   const rightPanel = useRightPanelState();
   const modelPickerOpen = useModelPickerOpen();
@@ -743,7 +790,7 @@ export function ChatView({ threadId }: ChatViewProps) {
       {!hero ? (
         <MessagesTimeline
           key={activeThreadId ?? "no-thread"}
-          messages={messages}
+          messages={displayMessages}
           activities={activities}
           sessionStatus={sessionStatus}
           hasTopBanner={Boolean(visibleThreadError || visibleProviderStatusNotice)}

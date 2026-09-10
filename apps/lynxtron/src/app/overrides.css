@@ -5604,6 +5604,12 @@
   width: 0;
   flex-grow: 1;
 }
+.transcript-attachment-preview {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border-radius: 5px;
+}
 .transcript-attachment-name {
   color: var(--foreground);
   font-family: var(--font-sans);

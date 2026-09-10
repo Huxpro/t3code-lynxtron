@@ -369,8 +369,10 @@ following-end` with the jump affordance visible only while detached. That gate
 - Supported Markdown images now open a Native root-level preview overlay rather
   than ending at a static inline image. The preview data model is shared with
   Web, includes close/previous/next semantics, and is threaded through nested
-  blockquotes/details; persisted message attachments remain file cards until
-  their canonical contract exposes a retrievable preview URL.
+  blockquotes/details. Native also resolves persisted attachment ids through
+  the existing signed-asset command, projects successful URLs onto view-only
+  messages, and opens the same multi-image viewer; failed resolutions keep the
+  original file-card fallback without mutating canonical connector state.
 
 ## PF4: Complete remote and multi-environment operation
 

@@ -65,13 +65,20 @@ import {
 import { timelineRowReuseIdentifier } from "./timelineRowSize";
 import { runMessageCopy, type MessageCopyStatus } from "./messageCopy";
 import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+import { buildExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import {
   resolveTimelineMinimapHeightStyle,
   resolveTimelineMinimapTopPercent,
 } from "../../../../web/src/components/chat/MessagesTimeline.logic";
 
+type LynxChatMessage = Omit<ChatMessage, "attachments"> & {
+  readonly attachments?: ReadonlyArray<
+    NonNullable<ChatMessage["attachments"]>[number] & { readonly previewUrl?: string }
+  >;
+};
+
 interface MessagesTimelineProps {
-  messages: ReadonlyArray<ChatMessage>;
+  messages: ReadonlyArray<LynxChatMessage>;
   activities: ReadonlyArray<ActivityEntry>;
   sessionStatus: SessionStatus;
   hasTopBanner?: boolean;
@@ -85,7 +92,7 @@ interface MessagesTimelineProps {
 }
 
 type TimelineRow = MessagesTimelineRow<
-  ChatMessage,
+  LynxChatMessage,
   OrchestrationProposedPlan,
   OrchestrationCheckpointSummary
 >;
@@ -392,7 +399,11 @@ function buildLynxTranscriptRowElements(
   isWorking: boolean,
   onManualNavigation: () => void,
   onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined,
-): TranscriptRowElements<ChatMessage, OrchestrationProposedPlan, OrchestrationCheckpointSummary> {
+): TranscriptRowElements<
+  LynxChatMessage,
+  OrchestrationProposedPlan,
+  OrchestrationCheckpointSummary
+> {
   return {
     userBubbleClassName: ({ row }) => {
       const visibleText = deriveVisibleUserMessage(row.message.text).visibleText;
@@ -418,8 +429,27 @@ function buildLynxTranscriptRowElements(
                   key={attachment.id}
                   className="transcript-attachment-card"
                   data-message-attachment-type={attachment.type}
+                  aria-label={
+                    attachment.previewUrl ? `Preview ${attachment.name}` : attachment.name
+                  }
+                  bindtap={
+                    attachment.previewUrl && onImageExpand
+                      ? () => {
+                          const preview = buildExpandedImagePreview(attachments, attachment.id);
+                          if (preview) onImageExpand(preview);
+                        }
+                      : undefined
+                  }
                 >
-                  <Icon name="file-json" size={14} color="#818181" />
+                  {attachment.previewUrl ? (
+                    <image
+                      className="transcript-attachment-preview"
+                      src={attachment.previewUrl}
+                      mode="aspectFill"
+                    />
+                  ) : (
+                    <Icon name="file-json" size={14} color="#818181" />
+                  )}
                   <view className="transcript-attachment-copy">
                     <text className="transcript-attachment-name" text-maxline="1">
                       {attachment.name}

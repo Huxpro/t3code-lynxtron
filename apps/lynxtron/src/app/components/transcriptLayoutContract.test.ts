@@ -260,6 +260,16 @@ describe("transcript layout contract", () => {
     expect(imagePreviewSource).toContain('aria-label="Next image"');
   });
 
+  it("hydrates persisted attachment previews without mutating canonical messages", () => {
+    expect(chatViewSource).toContain('resource: { _tag: "attachment", attachmentId }');
+    expect(chatViewSource).toContain("if (!active) return;");
+    expect(chatViewSource).toContain("const displayMessages = useMemo");
+    expect(chatViewSource).toContain("previewUrl: attachmentPreviewUrlById[attachment.id]");
+    expect(chatViewSource).toContain("messages={displayMessages}");
+    expect(timelineSource).toContain("buildExpandedImagePreview(attachments, attachment.id)");
+    expect(timelineSource).toContain('className="transcript-attachment-preview"');
+  });
+
   it("resets recycled work disclosures and routes expansion through manual navigation", () => {
     expect(sharedRowSource).toContain("useEffect(() => setExpanded(false), [workEntry.id])");
     expect(sharedRowSource).toContain("onDisclosure?.();\n              setExpanded");
