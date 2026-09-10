@@ -131,12 +131,12 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       continue;
     }
 
-    const headingMatch = line.match(/^(#{1,6})\s+(.+)/);
+    const headingMatch = line.match(/^(#{1,6})(?:\s+(.*?))?\s*#*\s*$/);
     if (headingMatch) {
       blocks.push({
         type: "heading",
         level: headingMatch[1]!.length,
-        text: headingMatch[2]!,
+        text: headingMatch[2]?.replace(/\s+#+\s*$/, "") ?? "",
       });
       index++;
       continue;
@@ -262,7 +262,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       lines[index]!.trim() !== "" &&
       !parseMarkdownFence(lines[index]!) &&
       !(lines[index + 1]?.trim().match(/^(=+|-+)$/) && lines[index]!.trim().length > 0) &&
-      !lines[index]!.match(/^(#{1,6})\s/) &&
+      !lines[index]!.match(/^(#{1,6})(?:\s|$)/) &&
       !lines[index]!.match(/^((?:>\s*)+)(.*)$/) &&
       !lines[index]!.trim().match(/^!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)\s*$/) &&
       !lines[index]!.trim().match(/^<details(?:\s+open)?\s*>/i) &&

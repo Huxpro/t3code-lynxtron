@@ -268,6 +268,9 @@ following-end` with the jump affordance visible only while detached. That gate
   keeps pipes inside code spans in the same cell instead of splitting columns.
   Backslashes only escape pipe/backslash delimiters, so Windows-style or literal
   trailing slashes are not silently dropped from cell content.
+- Shared block parsing now follows CommonMark ATX heading boundaries, including
+  optional closing hashes and empty headings, without stripping literal hashes
+  such as `C#` from the heading text.
 - Native proposed-plan timeline cards now open the existing full Plan panel
   instead of ending at a static two-line title. The card reuses canonical plan
   state and the existing panel route; its real OS tap remains covered by the

@@ -230,6 +230,16 @@ describe("parseMarkdownBlocks", () => {
     ]);
   });
 
+  it("normalizes optional ATX closing hashes without consuming literal hashes", () => {
+    expect(parseMarkdownBlocks("## Release notes ##\n\n##\n\n## C# updates")).toEqual([
+      { type: "heading", level: 2, text: "Release notes" },
+      { type: "empty" },
+      { type: "heading", level: 2, text: "" },
+      { type: "empty" },
+      { type: "heading", level: 2, text: "C# updates" },
+    ]);
+  });
+
   it("parses single-line details without leaking raw HTML into prose", () => {
     expect(
       parseMarkdownBlocks(
