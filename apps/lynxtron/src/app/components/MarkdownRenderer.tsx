@@ -1,12 +1,4 @@
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type ReactNode,
-} from "@lynx-js/react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "@lynx-js/react";
 import {
   parseMarkdownInline,
   resolveInlineCodeFileLinkMeta,
@@ -637,7 +629,7 @@ function renderBlock(
     case "list": {
       const items = block.items ?? [];
       return (
-        <text key={key} className="md-list md-list-text">
+        <view key={key} className="md-list">
           {items.map((item, j) => {
             const marker =
               item.taskChecked !== null
@@ -648,14 +640,23 @@ function renderBlock(
                   ? `${item.ordinal ?? j + 1}.`
                   : "•";
             return (
-              <Fragment key={`${key}-${j}`}>
-                {`${"  ".repeat(item.depth)}${marker} `}
-                {renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd, true)}
-                {j < items.length - 1 ? "\n" : ""}
-              </Fragment>
+              <view
+                key={`${key}-${j}`}
+                className="md-list-item"
+                style={{ paddingLeft: `${item.depth * 16}px` }}
+                data-markdown-list-depth={String(item.depth)}
+                data-markdown-list-task={
+                  item.taskChecked === null ? "none" : item.taskChecked ? "checked" : "unchecked"
+                }
+              >
+                <text className="md-list-marker">{marker}</text>
+                <view className="md-list-content">
+                  {renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd)}
+                </view>
+              </view>
             );
           })}
-        </text>
+        </view>
       );
     }
 

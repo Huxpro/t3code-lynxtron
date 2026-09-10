@@ -289,6 +289,9 @@ following-end` with the jump affordance visible only while detached. That gate
   bullets from being split into unrelated transcript paragraphs. Blockquotes
   now retain a recursive child-block projection, so quoted lists and fenced code
   render as their original structures instead of flattening into inline text.
+  Native lists now render one stable row per item with explicit marker, nesting
+  depth, and task state rather than flattening the list into a single text node;
+  inline links remain interactive inside each item.
   Images embedded between paragraph text are projected in source order through
   the existing image/fallback renderer instead of leaking their Markdown syntax
   as ordinary prose. Single-line prose containing an embedded image now also

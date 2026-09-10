@@ -80,7 +80,7 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain("font-family: var(--font-mono);");
     expect(appSource).not.toContain("width:764px");
     expect(appSource).not.toContain("line-height:24px!important");
-    expect(markdownSource).toContain('className="md-list md-list-text"');
+    expect(markdownSource).toContain('className="md-list"');
     expect(timelineSource).not.toContain("scaleX(1.096)");
     expect(timelineSource).toContain("estimated-main-axis-size-px={32}");
     expect(timelineSource).toContain("!isWorking && !hasTopBanner");
@@ -392,18 +392,15 @@ describe("transcript layout contract", () => {
     );
   });
 
-  it("renders Markdown lists as vertical full-width text rows", () => {
-    expect(markdownSource).toContain('className="md-list md-list-text"');
-    expect(markdownSource).toContain("<Fragment key={`${key}-${j}`}>");
-    expect(markdownSource).toContain(
-      "renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd, true)",
-    );
-    expect(markdownSource).toContain('{j < items.length - 1 ? "\\n" : ""}');
-    expect(overrides).toContain(".md-list {\n  display: block;");
-    expect(overrides).toContain("white-space: pre-wrap;");
-    expect(overrides).toContain("line-height: 23px;");
-    expect(overrides).not.toContain(".md-list-line {");
-    expect(overrides).not.toContain(".md-list-item {");
+  it("renders Markdown lists as semantic rows with stable depth and task state", () => {
+    expect(markdownSource).toContain('className="md-list-item"');
+    expect(markdownSource).toContain("data-markdown-list-depth={String(item.depth)}");
+    expect(markdownSource).toContain("data-markdown-list-task=");
+    expect(markdownSource).toContain('className="md-list-marker"');
+    expect(markdownSource).toContain('className="md-list-content"');
+    expect(overrides).toContain(".md-list {\n  display: flex;");
+    expect(overrides).toContain("flex-direction: column;");
+    expect(overrides).toContain(".md-list-item {");
     const inlineTextStart = hostElementsSource.indexOf("export function HostInlineText");
     const inlineTextBlock = hostElementsSource.slice(
       inlineTextStart,
