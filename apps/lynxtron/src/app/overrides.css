@@ -20,8 +20,7 @@
 .theme-light .sidebar-header-authority,
 .theme-light .sidebar-settings-authority,
 .theme-light .sidebar-v2-control-authority,
-.theme-light .composer-context-authority-surface,
-.theme-light .ui-button__authority-label {
+.theme-light .composer-context-authority-surface {
   display: none;
   opacity: 0;
   pointer-events: none;
@@ -31,8 +30,7 @@
 .theme-light .sidebar-footer--authority .sidebar-settings-row > text,
 .theme-light .sidebar-v2-control-row--authority > view,
 .theme-light .composer-context-strip--authority > .composer-context-backdrop,
-.theme-light .composer-context-strip--authority > .composer-context-item,
-.theme-light .ui-button__label--authority-hidden {
+.theme-light .composer-context-strip--authority > .composer-context-item {
   opacity: 1;
 }
 .theme-light .composer-context-backdrop {
@@ -7152,17 +7150,6 @@
   font-size: 14px;
   line-height: 20px;
 }
-.ui-button__label--authority-hidden {
-  opacity: 0;
-}
-.ui-button__authority-label {
-  position: absolute;
-  top: -1px;
-  left: -1px;
-}
-.ui-button__authority-label--edge {
-  left: 111px;
-}
 .ui-badge {
   display: flex;
   flex-direction: row;
@@ -7255,8 +7242,7 @@
 .viewport-responsive .sidebar-header-authority,
 .viewport-responsive .sidebar-settings-authority,
 .viewport-responsive .sidebar-v2-control-authority,
-.viewport-responsive .composer-context-authority-surface,
-.viewport-responsive .ui-button__authority-label {
+.viewport-responsive .composer-context-authority-surface {
   display: none;
   opacity: 0;
   pointer-events: none;
@@ -7266,8 +7252,7 @@
 .viewport-responsive .sidebar-footer--authority .sidebar-settings-row > text,
 .viewport-responsive .sidebar-v2-control-row--authority > view,
 .viewport-responsive .composer-context-strip--authority > .composer-context-backdrop,
-.viewport-responsive .composer-context-strip--authority > .composer-context-item,
-.viewport-responsive .ui-button__label--authority-hidden {
+.viewport-responsive .composer-context-strip--authority > .composer-context-item {
   opacity: 1;
 }
 .viewport-responsive .sidebar-global-toggle-icon {
@@ -7286,8 +7271,7 @@
 .sidebar-width-responsive .sidebar-header-authority,
 .sidebar-width-responsive .sidebar-settings-authority,
 .sidebar-width-responsive .sidebar-v2-control-authority,
-.sidebar-width-responsive .composer-context-authority-surface,
-.sidebar-width-responsive .ui-button__authority-label {
+.sidebar-width-responsive .composer-context-authority-surface {
   display: none;
   opacity: 0;
   pointer-events: none;
@@ -7297,8 +7281,7 @@
 .sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > text,
 .sidebar-width-responsive .sidebar-v2-control-row--authority > view,
 .sidebar-width-responsive .composer-context-strip--authority > .composer-context-backdrop,
-.sidebar-width-responsive .composer-context-strip--authority > .composer-context-item,
-.sidebar-width-responsive .ui-button__label--authority-hidden {
+.sidebar-width-responsive .composer-context-strip--authority > .composer-context-item {
   opacity: 1;
 }
 .sidebar-width-responsive .sidebar-settings-row,

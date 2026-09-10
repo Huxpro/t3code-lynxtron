@@ -22,13 +22,14 @@ describe("approval Composer layout", () => {
 
     expect(lightFallback).not.toContain(".theme-light .composer-pending-authority-copy");
     expect(lightFallback).not.toContain(".theme-light .composer-editor-authority-surface");
-    expect(lightFallback).toContain(".theme-light .ui-button__authority-label");
+    expect(lightFallback).not.toContain(".theme-light .ui-button__authority-label");
     expect(lightFallback).toContain("display: none;");
     expect(lightFallback).toContain("opacity: 0;");
     expect(lightFallback).toContain("pointer-events: none;");
     expect(composerSource).not.toContain("approval-editor-pending@2x.png");
     expect(composerSource).not.toContain("composer__input--authority-hidden");
     expect(overridesSource).not.toContain(".composer-pending-copy--authority-hidden");
+    expect(overridesSource).not.toContain(".ui-button__label--authority-hidden");
   });
 
   it("keeps the light approval fallback on light theme tokens", () => {
