@@ -784,6 +784,7 @@ function installTransportDevToolHook(): void {
     __T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?: (
       context: ComposerTerminalContext,
     ) => boolean;
+    __T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?: (instanceId: string, model: string) => boolean;
     __T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?: (provider: ServerProvider) => boolean;
   };
   diagnosticsGlobal.__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
@@ -830,7 +831,9 @@ function installTransportDevToolHook(): void {
       activeComposerTerminalContexts: activeComposerDraftKey
         ? (state.composerTerminalContextsByScopeKey[activeComposerDraftKey] ?? [])
         : [],
+      messages: state.messages,
       sessionStatus: state.sessionStatus,
+      sessionError: state.sessionError,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
       threadIds: state.threads.map((thread) => thread.id),
@@ -947,6 +950,15 @@ function installTransportDevToolHook(): void {
       });
       if (!scopeKey) return false;
       addComposerTerminalContext(scopeKey, context);
+      return true;
+    };
+    diagnosticsGlobal.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__ = (instanceId, model) => {
+      const state = appAtomRegistry.get(t3ClientStateAtom);
+      const selection = state.models.find(
+        (candidate) => candidate.instanceId === instanceId && candidate.slug === model,
+      );
+      if (!selection) return false;
+      setModelSelection(selection);
       return true;
     };
     diagnosticsGlobal.__T3_LYNXTRON_MTS_PROVIDER_FIXTURE__ = (provider) => {

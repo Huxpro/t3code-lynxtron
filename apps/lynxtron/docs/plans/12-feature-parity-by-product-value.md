@@ -168,8 +168,12 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   the `Terminal 1 lines 2-3` fixture, measured removal, main transport, zero
   renderer errors, attachment regression coverage, route restoration, and an
   owned cold restart. Terminal contexts are strictly decoded by stable scope and
-  now survive an owned cold restart as well. A canonical real provider receipt
-  remains open, so PF2 stays `in_progress`.
+  now survive an owned cold restart as well. A real authenticated OpenCode turn
+  proves the canonical user message keeps the serialized context and receives
+  an exact assistant reply. The same Codex path reached canonical persistence
+  but its assistant run was externally blocked by the account usage limit. PF2
+  stays `in_progress` for attachment fail/retry, reconnect, file context, and
+  real-input closure.
 
 ## PF3: Complete transcript navigation and interaction
 

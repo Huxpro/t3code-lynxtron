@@ -150,6 +150,31 @@ export function decodeConnectorCommandParams(
   method: ConnectorCommandName,
   params: unknown,
 ): unknown {
+  if (method === "sendPrompt") {
+    const input = params as
+      | {
+          readonly bootstrap?: {
+            readonly createThread?: Record<string, unknown>;
+          };
+        }
+      | null
+      | undefined;
+    const createThread = input?.bootstrap?.createThread;
+    if (createThread) {
+      return {
+        ...input,
+        bootstrap: {
+          ...input.bootstrap,
+          createThread: {
+            ...createThread,
+            branch: createThread.branch ?? null,
+            worktreePath: createThread.worktreePath ?? null,
+          },
+        },
+      };
+    }
+    return params;
+  }
   if (method !== "updateServerSettings") return params;
   const input = params as { readonly patch?: unknown } | null | undefined;
   return {

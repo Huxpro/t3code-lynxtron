@@ -533,6 +533,21 @@ async function waitForClientState({ child, client, predicate, timeoutMs }) {
   throw new Error(`Timed out waiting for client state: ${JSON.stringify({ latest })}`);
 }
 
+async function waitForRuntimeValue({ child, client, expression, predicate, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before runtime state reached its expected postcondition.");
+    }
+    const response = await client.runCdp("Runtime.evaluate", { expression, returnByValue: true });
+    latest = commandResult(response)?.value ?? null;
+    if (predicate(latest)) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(`Timed out waiting for runtime state: ${JSON.stringify({ expression, latest })}`);
+}
+
 async function waitForFileContents({ child, filePath, predicate, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest = null;
@@ -5624,6 +5639,169 @@ async function verifyComposerStopBehavior({
       stopped: stoppedSequence.lastSeq,
     },
   };
+}
+
+async function verifyTerminalContextProviderSend({ child, client, projectId, timeoutMs }) {
+  const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
+  const refreshedConfig = await invokeConnector(client, "refreshProviders", {
+    instanceId: modelSelection.instanceId,
+  });
+  const provider = refreshedConfig?.providers?.find(
+    (candidate) => candidate.instanceId === modelSelection.instanceId,
+  );
+  if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
+    throw new Error(
+      `OpenCode provider is not ready for terminal context acceptance: ${JSON.stringify(provider)}`,
+    );
+  }
+  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const draft = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" && state.activeThreadId === state.draftThreadId,
+  });
+  const threadId = draft.draftThreadId;
+  try {
+    const modelFixture = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?.(${JSON.stringify(
+        modelSelection.instanceId,
+      )}, ${JSON.stringify(modelSelection.model)}) ?? false`,
+      returnByValue: true,
+    });
+    if (commandResult(modelFixture)?.value !== true) {
+      throw new Error(`OpenCode model fixture was not applied: ${JSON.stringify(modelFixture)}`);
+    }
+    await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThread?.modelSelection?.instanceId === modelSelection.instanceId &&
+        state.activeThread.modelSelection.model === modelSelection.model,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-primary-action",
+      timeoutMs,
+      predicate: (measurement) => measurement !== null,
+    });
+    await waitForRuntimeValue({
+      child,
+      client,
+      expression:
+        "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__].join(':')",
+      predicate: (value) => value === "function:function:function",
+      timeoutMs,
+    });
+    const promptToken = `T3_TERMINAL_CONTEXT_${Date.now()}`;
+    const responseToken = `${promptToken}_ACCEPTED`;
+    const prompt = `Reply exactly ${responseToken}. Do not use tools or modify files.`;
+    const context = {
+      id: `${promptToken}:1:1`,
+      terminalId: promptToken,
+      terminalLabel: "Terminal provider acceptance",
+      lineStart: 1,
+      lineEnd: 1,
+      text: promptToken,
+    };
+    const inputResponse = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(prompt)}) ?? false`,
+      returnByValue: true,
+    });
+    const contextResponse = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
+        context,
+      )}) ?? false`,
+      returnByValue: true,
+    });
+    if (
+      commandResult(inputResponse)?.value !== true ||
+      commandResult(contextResponse)?.value !== true
+    ) {
+      throw new Error(
+        `Terminal context acceptance fixtures were not applied: ${JSON.stringify({ inputResponse, contextResponse })}`,
+      );
+    }
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-primary-action",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "send",
+    });
+    const beforeSend = await readRendererReadiness(client);
+    const sendResponse = await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__?.() ?? false",
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (commandResult(sendResponse)?.value !== true) {
+      const diagnostics = await readComposerPrimaryActionDiagnostics(client);
+      const state = await readClientState(client);
+      throw new Error(
+        `Terminal context acceptance send hook failed: ${JSON.stringify({ sendResponse, diagnostics, sessionError: state?.sessionError ?? null })}`,
+      );
+    }
+    const completed = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) => {
+        const user = state?.messages?.find(
+          (message) =>
+            message.role === "user" &&
+            message.text.includes(promptToken) &&
+            message.text.includes("<terminal_context>"),
+        );
+        const assistant = state?.messages?.find(
+          (message) =>
+            message.role === "assistant" &&
+            message.streaming === false &&
+            message.text.includes(responseToken),
+        );
+        return (
+          state?.activeThreadId === threadId &&
+          state?.threadIds?.includes(threadId) &&
+          (state?.sessionStatus === "idle" || state?.sessionStatus === "ready") &&
+          state?.activeTurnId == null &&
+          user &&
+          assistant
+        );
+      },
+    });
+    const afterSend = await readRendererReadiness(client);
+    const canonicalUserMessage = completed.messages.find(
+      (message) => message.role === "user" && message.text.includes(promptToken),
+    );
+    const canonicalAssistantMessage = completed.messages.find(
+      (message) => message.role === "assistant" && message.text.includes(responseToken),
+    );
+    return {
+      status: "pass",
+      input:
+        "test-only invocation of the same Native Composer handleSend callback; real OS click is a separate acceptance",
+      threadId,
+      provider: modelSelection,
+      promptToken,
+      canonicalUserMessage: {
+        id: canonicalUserMessage.id,
+        hasTerminalContextBlock: canonicalUserMessage.text.includes("<terminal_context>"),
+        hasTerminalLine: canonicalUserMessage.text.includes(`1 | ${promptToken}`),
+      },
+      canonicalAssistantMessage: {
+        id: canonicalAssistantMessage.id,
+        responseToken,
+      },
+      sessionStatus: completed.sessionStatus,
+      sequence: { before: beforeSend.lastSeq, after: afterSend.lastSeq },
+    };
+  } finally {
+    await invokeConnector(client, "deleteThread", { threadId }).catch(() => undefined);
+  }
 }
 
 async function verifyModelPickerFidelity({
@@ -12522,6 +12700,7 @@ async function runOnce({
   verifyPlanMode: shouldVerifyPlanMode,
   verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
   verifyComposerStop,
+  verifyTerminalContextProviderSend: shouldVerifyTerminalContextProviderSend,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
   verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
@@ -12627,6 +12806,7 @@ async function runOnce({
       shouldVerifyFilePickerDefault ||
       shouldVerifyNewThreadProjects ||
       shouldVerifyNewThreadDraftLifecycle ||
+      shouldVerifyTerminalContextProviderSend ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyCompletedTranscriptState ||
@@ -13070,6 +13250,14 @@ async function runOnce({
           viewportWidth: width,
         })
       : undefined;
+    const terminalContextProviderSend = shouldVerifyTerminalContextProviderSend
+      ? await verifyTerminalContextProviderSend({
+          child,
+          client,
+          projectId: fixtureManifestProjectId,
+          timeoutMs,
+        })
+      : undefined;
     const composerWorkingState = shouldVerifyComposerWorkingState
       ? await verifyComposerWorkingState({
           client,
@@ -13384,6 +13572,7 @@ async function runOnce({
       planMode,
       modelOptionMenuMutation,
       composerStop,
+      terminalContextProviderSend,
       composerWorkingState,
       completedTranscriptState,
       failedTranscriptState,
@@ -13455,6 +13644,7 @@ async function runOnce({
       planMode,
       modelOptionMenuMutation,
       composerStop,
+      terminalContextProviderSend,
       composerWorkingState,
       completedTranscriptState,
       failedTranscriptState,
@@ -13567,6 +13757,9 @@ const shouldVerifyModelOptionMenuMutation = process.argv.includes(
   "--verify-model-option-menu-mutation",
 );
 const verifyComposerStop = process.argv.includes("--verify-composer-stop");
+const shouldVerifyTerminalContextProviderSend = process.argv.includes(
+  "--verify-terminal-context-provider-send",
+);
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
   "--verify-completed-transcript-state",
@@ -13801,6 +13994,11 @@ if (
 ) {
   throw new Error("--verify-composer-stop requires visual-state.json project.projectId.");
 }
+if (shouldVerifyTerminalContextProviderSend && typeof fixtureManifestProjectId !== "string") {
+  throw new Error(
+    "--verify-terminal-context-provider-send requires visual-state.json project.projectId.",
+  );
+}
 const canonicalThreadTitle = shouldVerifyIdleThreadState
   ? idleFixture.title
   : shouldVerifyCompletedTranscriptState || shouldVerifyFailedTranscriptState
@@ -13976,6 +14174,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyPlanMode: shouldVerifyPlanMode,
       verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
       verifyComposerStop,
+      verifyTerminalContextProviderSend: shouldVerifyTerminalContextProviderSend,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
       verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,

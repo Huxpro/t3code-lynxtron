@@ -610,6 +610,8 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain('className="composer-attachment-card"');
     expect(composer).toContain("aria-label={`Remove ${attachment.name}`}");
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__");
+    expect(composer).toContain("__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__");
+    expect(composer).toContain("if (!current.hasSendableContent) return false");
     expect(chatView).toContain("clearComposerAttachments(composerDraftKey)");
     expect(chatView).toContain("composerDraftTextByScopeKey[composerDraftKey]");
     expect(composer).toContain("responsiveMenuWheelDelta(");
@@ -2042,7 +2044,10 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain(".catch((error: unknown) => {");
     expect(clientSource).toContain("sessionError: presentThreadCommandErrorMessage(");
     const composerSource = componentSource("Composer.tsx");
-    expect(composerSource).toContain("if (await current.onSend(text, current.attachments))");
+    expect(composerSource).toContain(
+      "const sent = await current.onSend(text, current.attachments)",
+    );
+    expect(composerSource).toContain("if (sent)");
     expect(composerSource).toContain('onValueChange("");');
   });
 
@@ -2206,6 +2211,8 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain('setPref("composerTerminalContextsByScopeKey", next)');
     expect(clientSource).toContain("__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
     expect(clientSource).toContain("__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__");
+    expect(clientSource).toContain("__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__");
+    expect(clientSource).toContain("messages: state.messages");
     expect(componentSource("TerminalPanel.tsx")).toContain(
       'aria-label="Add recent terminal output to composer"',
     );

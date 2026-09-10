@@ -499,6 +499,7 @@ export function Composer({
     disabled,
     busy,
     trimmedPrompt: sendState.trimmedPrompt,
+    hasSendableContent: sendState.hasSendableContent,
     onSend,
     attachments,
     onStop,
@@ -507,6 +508,7 @@ export function Composer({
     disabled,
     busy,
     trimmedPrompt: sendState.trimmedPrompt,
+    hasSendableContent: sendState.hasSendableContent,
     onSend,
     attachments,
     onStop,
@@ -604,18 +606,30 @@ export function Composer({
     };
     if (current.busy) {
       current.onStop();
-      return;
+      return true;
     }
-    if (current.disabled) return;
+    if (current.disabled) return false;
     const text = current.trimmedPrompt;
-    if (!text && current.attachments.length === 0) return;
-    if (await current.onSend(text, current.attachments)) {
+    if (!current.hasSendableContent) return false;
+    const sent = await current.onSend(text, current.attachments);
+    if (sent) {
       onValueChange("");
       setComposerCursor(0);
       setDismissedContextTrigger(null);
       setEditorRevision((revision) => revision + 1);
     }
+    return sent;
   }, [onValueChange]);
+  useEffect(() => {
+    const diagnosticsGlobal = globalThis as {
+      __T3_LYNXTRON_COMPOSER_SEND_FIXTURE__?: () => Promise<boolean>;
+    };
+    if (!viewport.testResize) return;
+    diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__ = handleSend;
+    return () => {
+      delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__;
+    };
+  }, [handleSend, viewport.testResize]);
   const editorValue = questionMode ? (questionCustomAnswer ?? "") : value;
   const editorKey = questionMode ? `question-editor:${questionEditorKey ?? ""}` : "prompt-editor";
   useEffect(() => {

@@ -1022,6 +1022,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "terminalContextEntry,");
     assert.include(source, 'selector: ".composer-terminal-context-remove"');
     assert.include(source, "terminalContextLifecycle: {");
+    assert.include(source, "async function verifyTerminalContextProviderSend");
+    assert.include(source, '"--verify-terminal-context-provider-send"');
+    assert.include(source, 'selector: ".composer-primary-action"');
+    assert.include(source, 'message.text.includes("<terminal_context>")');
+    assert.include(source, "canonicalAssistantMessage");
     assert.include(source, "routeRoundTrip,");
     assert.include(source, "shouldVerifyNewThreadDraftLifecycle ||");
     assert.include(source, "Native Composer state did not persist before cold restart");

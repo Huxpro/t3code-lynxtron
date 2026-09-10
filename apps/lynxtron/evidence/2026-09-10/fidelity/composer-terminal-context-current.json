@@ -30,13 +30,24 @@
       "chipLabel": "Terminal restart lines 4-5",
       "text": "persisted\ncontext"
     },
+    "providerSend": {
+      "status": "pass",
+      "provider": "opencode/opencode/big-pickle",
+      "canonicalUserMessageHasTerminalContextBlock": true,
+      "canonicalUserMessageHasNumberedTerminalLine": true,
+      "assistantResponseMatchedUniqueToken": true,
+      "sessionStatus": "ready",
+      "sequence": [18, 46]
+    },
     "rendererErrors": 0,
     "isolatedStateDisposed": true
   },
   "artifacts": {
     "reportPath": "/tmp/t3code-pf2-terminal-persist-final.L5u2x9/report.json",
     "reportSha256": "c29590ad75ebea509c8ee830c6b9113fe63f2f4612735cd4f3b50bdcb730b9eb",
-    "bundleSha256": "5f585e2737aad1d67580fc674426f32ffe921badd40fbb94c1597c4eb825118a"
+    "bundleSha256": "1df3ca06c6fcc16d13e5d34293cc189163e15b08b9e3f19d075239459731167f",
+    "providerReportPath": "/tmp/t3code-pf2-terminal-provider-pass.LY4qzH/report.json",
+    "providerReportSha256": "5f8c07f989be49b649194575effff1d7a493623b6c19b379bee84c881c5c582c"
   },
   "evidenceBoundary": {
     "proved": [
@@ -46,14 +57,14 @@
       "terminal context alone makes the Composer sendable",
       "measured removal clears the chip and returns the empty Composer to disabled",
       "strictly decoded scoped terminal context survives an owned cold restart",
+      "a real authenticated OpenCode turn receives the serialized context and returns a canonical assistant response",
       "attachment removal, route-scoped draft restoration, and owned cold restart still pass in the same exact-bundle gate",
       "the running client loaded the recorded bundle through main transport with an advancing server sequence"
     ],
     "notYetProved": [
-      "canonical provider receipt containing terminal context from a real send",
       "matched Web and Lynx terminal-context pixels",
       "file and element context parity"
     ]
   },
-  "classification": "Terminal context now has a shared projection and a real Native add, sendable, and remove lifecycle. This is an independently verified PF2 slice; it does not complete PF2 while picker, canonical send receipt, reconnect, file context, and real-input gates remain open."
+  "classification": "Terminal context now has a shared projection, a real Native add/remove lifecycle, scoped restart restoration, and a canonical provider send through OpenCode. Codex reached the same canonical user message but its assistant run was externally blocked by account usage limits. This closes the terminal-context slice, not PF2 as a whole; picker, attachment fail/retry, reconnect, file context, and real-input gates remain open."
 }

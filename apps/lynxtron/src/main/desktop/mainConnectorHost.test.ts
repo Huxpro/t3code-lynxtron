@@ -13,6 +13,7 @@ import {
 import {
   T3_CONNECTOR_EVENT,
   T3_CONNECTOR_METHODS,
+  decodeConnectorCommandParams,
   encodeConnectorCommandParams,
   type ConnectorEventEnvelope,
 } from "../../shared/connectorProtocol.ts";
@@ -925,6 +926,41 @@ describe("dispatchConnectorCommand", () => {
       { method: "upsertKeybinding", input: params },
       { method: "removeKeybinding", input: params },
     ]);
+  });
+
+  it("restores required null draft bootstrap fields omitted by the Lynx bridge", () => {
+    assert.deepEqual(
+      decodeConnectorCommandParams("sendPrompt", {
+        threadId: "draft-1",
+        text: "bootstrap",
+        bootstrap: {
+          createThread: {
+            projectId: "project-1",
+            title: "bootstrap",
+            modelSelection: { instanceId: "codex", model: "gpt-5.6-sol" },
+            runtimeMode: "full-access",
+            interactionMode: "default",
+            createdAt: "2026-09-10T00:00:00.000Z",
+          },
+        },
+      }),
+      {
+        threadId: "draft-1",
+        text: "bootstrap",
+        bootstrap: {
+          createThread: {
+            projectId: "project-1",
+            title: "bootstrap",
+            modelSelection: { instanceId: "codex", model: "gpt-5.6-sol" },
+            runtimeMode: "full-access",
+            interactionMode: "default",
+            branch: null,
+            worktreePath: null,
+            createdAt: "2026-09-10T00:00:00.000Z",
+          },
+        },
+      },
+    );
   });
 
   it("throws a clear error for missing connector methods", () => {
