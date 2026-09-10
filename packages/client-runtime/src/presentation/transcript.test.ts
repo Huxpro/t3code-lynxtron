@@ -594,6 +594,61 @@ describe("computeStableMessagesTimelineRows", () => {
     const second = computeStableMessagesTimelineRows([...rows], first);
     expect(second).toBe(first);
   });
+
+  it("reuses historical rows when only the streaming tail changes", () => {
+    const initial: StableMessagesTimelineRowsState<FixtureMessage> = {
+      byId: new Map(),
+      result: [],
+    };
+    const historicalMessage = message({
+      id: "u1",
+      role: "user",
+      text: "request",
+      createdAt: "2026-01-01T00:00:00.000Z",
+    });
+    const firstRows = deriveMessagesTimelineRows<FixtureMessage, never>({
+      timelineEntries: deriveTimelineEntries<FixtureMessage, never>(
+        [
+          historicalMessage,
+          message({
+            id: "a1",
+            role: "assistant",
+            text: "draft",
+            streaming: true,
+            createdAt: "2026-01-01T00:00:01.000Z",
+          }),
+        ],
+        [],
+        [],
+      ),
+      isWorking: true,
+      activeTurnStartedAt: null,
+    });
+    const first = computeStableMessagesTimelineRows(firstRows, initial);
+    const nextRows = deriveMessagesTimelineRows<FixtureMessage, never>({
+      timelineEntries: deriveTimelineEntries<FixtureMessage, never>(
+        [
+          historicalMessage,
+          message({
+            id: "a1",
+            role: "assistant",
+            text: "draft extended",
+            streaming: true,
+            createdAt: "2026-01-01T00:00:01.000Z",
+            updatedAt: "2026-01-01T00:00:02.000Z",
+          }),
+        ],
+        [],
+        [],
+      ),
+      isWorking: true,
+      activeTurnStartedAt: null,
+    });
+    const second = computeStableMessagesTimelineRows(nextRows, first);
+
+    expect(second.result[0]).toBe(first.result[0]);
+    expect(second.result[1]).not.toBe(first.result[1]);
+  });
 });
 
 describe("reduceTranscriptFollow", () => {

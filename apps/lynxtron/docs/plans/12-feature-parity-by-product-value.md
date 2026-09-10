@@ -242,6 +242,9 @@ following-end` with the jump affordance visible only while detached. That gate
   also caught and fixed an asynchronous-hydration bug where empty startup state
   followed by canonical history was misclassified as a new turn. Long streaming
   transcripts, paired position correlation, and real wheel input remain open.
+  Native now also consumes the shared structural-row cache already used by Web:
+  when a streaming tail changes, unchanged historical row objects retain their
+  identity so connector updates do not force the whole timeline to re-render.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

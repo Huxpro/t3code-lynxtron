@@ -10,6 +10,7 @@ import {
 } from "@t3tools/client-runtime/presentation/diff";
 import {
   deriveActiveWorkStartedAt,
+  computeStableMessagesTimelineRows,
   deriveMessagesTimelineRows,
   deriveTimelineMinimapItems,
   inferCheckpointTurnCountByTurnId,
@@ -21,6 +22,7 @@ import {
   reduceTimelineScrollMode,
   resolveAssistantMessageCopyState,
   type MessagesTimelineRow,
+  type StableMessagesTimelineRowsState,
   type TimelineScrollMode,
 } from "@t3tools/client-runtime/presentation/transcript";
 import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
@@ -712,7 +714,7 @@ export function MessagesTimeline({
     ],
   );
 
-  const rows = useMemo<TimelineRow[]>(() => {
+  const derivedRows = useMemo<TimelineRow[]>(() => {
     const workEntries = deriveWorkLogEntries(activities);
     const timelineEntries = deriveTimelineEntries<ChatMessage, OrchestrationProposedPlan>(
       messages,
@@ -776,6 +778,18 @@ export function MessagesTimeline({
     expandedWorkGroupIds,
     checkpoints,
   ]);
+  const stableRowsRef = useRef<
+    StableMessagesTimelineRowsState<
+      ChatMessage,
+      OrchestrationProposedPlan,
+      OrchestrationCheckpointSummary
+    >
+  >({ byId: new Map(), result: [] });
+  const rows = useMemo(() => {
+    const next = computeStableMessagesTimelineRows(derivedRows, stableRowsRef.current);
+    stableRowsRef.current = next;
+    return next.result;
+  }, [derivedRows]);
   const minimapItems = useMemo(() => deriveTimelineMinimapItems(rows), [rows]);
 
   useEffect(() => {
