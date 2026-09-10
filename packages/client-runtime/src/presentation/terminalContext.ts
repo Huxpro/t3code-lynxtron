@@ -11,6 +11,61 @@ export type TerminalContextContent = Omit<ComposerTerminalContext, "id"> & {
   readonly id?: string;
 };
 
+export type ComposerTerminalContextsByScopeKey = Readonly<
+  Record<string, ReadonlyArray<ComposerTerminalContext>>
+>;
+
+const VALID_SCOPE_KEY = /^(?:thread|project):.+/u;
+export const MAX_TERMINAL_CONTEXTS_PER_SCOPE = 8;
+
+function normalizeComposerTerminalContext(value: unknown): ComposerTerminalContext | null {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return null;
+  const context = value as Partial<ComposerTerminalContext>;
+  if (
+    typeof context.id !== "string" ||
+    context.id.length === 0 ||
+    typeof context.terminalId !== "string" ||
+    context.terminalId.length === 0 ||
+    typeof context.terminalLabel !== "string" ||
+    context.terminalLabel.trim().length === 0 ||
+    typeof context.lineStart !== "number" ||
+    !Number.isSafeInteger(context.lineStart) ||
+    context.lineStart < 1 ||
+    typeof context.lineEnd !== "number" ||
+    !Number.isSafeInteger(context.lineEnd) ||
+    typeof context.text !== "string"
+  ) {
+    return null;
+  }
+  const text = normalizeTerminalContextText(context.text);
+  const lineCount = text ? text.split("\n").length : 0;
+  if (!text || context.lineEnd !== context.lineStart + lineCount - 1) return null;
+  return {
+    id: context.id,
+    terminalId: context.terminalId,
+    terminalLabel: context.terminalLabel.trim(),
+    lineStart: context.lineStart,
+    lineEnd: context.lineEnd,
+    text,
+  };
+}
+
+export function normalizeComposerTerminalContextsByScopeKey(
+  value: unknown,
+): ComposerTerminalContextsByScopeKey {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value).flatMap(([scopeKey, contexts]) => {
+      if (!VALID_SCOPE_KEY.test(scopeKey) || !Array.isArray(contexts)) return [];
+      const normalized = contexts
+        .map(normalizeComposerTerminalContext)
+        .filter((context): context is ComposerTerminalContext => context !== null)
+        .slice(-MAX_TERMINAL_CONTEXTS_PER_SCOPE);
+      return normalized.length > 0 ? [[scopeKey, normalized]] : [];
+    }),
+  );
+}
+
 export function normalizeTerminalContextText(text: string): string {
   return text.replace(/\r\n/gu, "\n").replace(/^\n+|\n+$/gu, "");
 }

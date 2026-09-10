@@ -167,8 +167,9 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   draft is sendable and the chip can be removed. One exact-bundle gate proves
   the `Terminal 1 lines 2-3` fixture, measured removal, main transport, zero
   renderer errors, attachment regression coverage, route restoration, and an
-  owned cold restart. Terminal-context restart persistence and a canonical real
-  provider receipt remain open, so PF2 stays `in_progress`.
+  owned cold restart. Terminal contexts are strictly decoded by stable scope and
+  now survive an owned cold restart as well. A canonical real provider receipt
+  remains open, so PF2 stays `in_progress`.
 
 ## PF3: Complete transcript navigation and interaction
 

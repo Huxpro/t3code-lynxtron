@@ -3702,6 +3702,34 @@ async function verifyNewThreadDraftLifecycle({
       state.activeThreadId === firstDraftState.draftThreadId &&
       JSON.stringify(state.threadIds ?? []) === JSON.stringify(canonicalThreadIdsBefore),
   });
+  const persistedTerminalContext = {
+    id: "terminal-restart:4:5",
+    terminalId: "terminal-restart",
+    terminalLabel: "Terminal restart",
+    lineStart: 4,
+    lineEnd: 5,
+    text: "persisted\ncontext",
+  };
+  const persistedTerminalContextResponse = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
+      persistedTerminalContext,
+    )}) ?? false`,
+    returnByValue: true,
+  });
+  if (commandResult(persistedTerminalContextResponse)?.value !== true) {
+    throw new Error(
+      `Native persisted terminal context fixture was not applied: ${JSON.stringify(
+        persistedTerminalContextResponse,
+      )}`,
+    );
+  }
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id,
+  });
   const afterSequence = await readRendererReadiness(client);
   const persistedThreadIdsAfter = readPersistedThreadIds(baseDir);
   if (
@@ -3745,17 +3773,27 @@ async function verifyNewThreadDraftLifecycle({
   const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
   const persistenceDeadline = Date.now() + timeoutMs;
   let persistedDraftText = null;
+  let savedTerminalContexts = null;
   while (Date.now() < persistenceDeadline) {
     const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
     persistedDraftText = prefs.composerDraftTextByScopeKey?.[draftScopeKey] ?? null;
-    if (persistedDraftText === draftText) break;
+    savedTerminalContexts = prefs.composerTerminalContextsByScopeKey?.[draftScopeKey] ?? null;
+    if (
+      persistedDraftText === draftText &&
+      savedTerminalContexts?.[0]?.id === persistedTerminalContext.id
+    )
+      break;
     await waitForChildExit(child, 50);
   }
-  if (persistedDraftText !== draftText) {
+  if (
+    persistedDraftText !== draftText ||
+    savedTerminalContexts?.[0]?.id !== persistedTerminalContext.id
+  ) {
     throw new Error(
-      `Native draft text did not persist before cold restart: ${JSON.stringify({
+      `Native Composer state did not persist before cold restart: ${JSON.stringify({
         draftScopeKey,
         persistedDraftText,
+        savedTerminalContexts,
       })}`,
     );
   }
@@ -3820,7 +3858,8 @@ async function verifyNewThreadDraftLifecycle({
       predicate: (state) =>
         typeof state?.draftThreadId === "string" &&
         state.activeThreadId === state.draftThreadId &&
-        state.activeComposerDraftText === draftText,
+        state.activeComposerDraftText === draftText &&
+        state.activeComposerTerminalContexts?.[0]?.id === persistedTerminalContext.id,
     });
     await waitForMeasurement({
       child: restartedChild,
@@ -3836,6 +3875,7 @@ async function verifyNewThreadDraftLifecycle({
           status: "pass",
           draftScopeKey,
           text: restartedDraft.activeComposerDraftText,
+          terminalContext: restartedDraft.activeComposerTerminalContexts[0],
           initialProcessId,
           initialClient,
           restartedProcessId: restartedChild.pid,

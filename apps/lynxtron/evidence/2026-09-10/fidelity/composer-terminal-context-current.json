@@ -24,13 +24,19 @@
     "contextOnlyPrimaryActionState": "send",
     "removedByMeasuredTap": true,
     "primaryActionStateAfterRemoval": "disabled",
+    "coldRestart": {
+      "status": "pass",
+      "scopeKey": "project:2e4cb40d-3a04-4002-82b5-c6d5526a5add",
+      "chipLabel": "Terminal restart lines 4-5",
+      "text": "persisted\ncontext"
+    },
     "rendererErrors": 0,
     "isolatedStateDisposed": true
   },
   "artifacts": {
-    "reportPath": "/tmp/t3code-pf2-terminal-entry.6IBr8V/report.json",
-    "reportSha256": "242e9c4cd2f563f4db8b7ea79c5c0b08a45106e5ff5bab9c03f845207259546a",
-    "bundleSha256": "5ca20b1f20214b812d0db74bc285dbffa67766dc347c731f85d35dac4863d106"
+    "reportPath": "/tmp/t3code-pf2-terminal-persist-final.L5u2x9/report.json",
+    "reportSha256": "c29590ad75ebea509c8ee830c6b9113fe63f2f4612735cd4f3b50bdcb730b9eb",
+    "bundleSha256": "5f585e2737aad1d67580fc674426f32ffe921badd40fbb94c1597c4eb825118a"
   },
   "evidenceBoundary": {
     "proved": [
@@ -39,11 +45,11 @@
       "the measured Terminal-panel entry control creates a chip from owned connector history and the measured remove control clears it",
       "terminal context alone makes the Composer sendable",
       "measured removal clears the chip and returns the empty Composer to disabled",
+      "strictly decoded scoped terminal context survives an owned cold restart",
       "attachment removal, route-scoped draft restoration, and owned cold restart still pass in the same exact-bundle gate",
       "the running client loaded the recorded bundle through main transport with an advancing server sequence"
     ],
     "notYetProved": [
-      "terminal context persistence across process restart",
       "canonical provider receipt containing terminal context from a real send",
       "matched Web and Lynx terminal-context pixels",
       "file and element context parity"

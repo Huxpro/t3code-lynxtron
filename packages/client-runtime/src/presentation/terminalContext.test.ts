@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { appendTerminalContextsToPrompt, recentTerminalContext } from "./terminalContext.ts";
+import {
+  appendTerminalContextsToPrompt,
+  normalizeComposerTerminalContextsByScopeKey,
+  recentTerminalContext,
+} from "./terminalContext.ts";
 
 describe("terminal context presentation", () => {
   it("projects the most recent bounded terminal lines with canonical numbering", () => {
@@ -35,5 +39,43 @@ describe("terminal context presentation", () => {
     expect(appendTerminalContextsToPrompt("", [context!])).toBe(
       "<terminal_context>\n- Terminal 1 line 1:\n  1 | ready\n</terminal_context>",
     );
+  });
+
+  it("strictly restores only scoped terminal contexts with consistent line ranges", () => {
+    expect(
+      normalizeComposerTerminalContextsByScopeKey({
+        "project:project-1": [
+          {
+            id: "term-1:2:3",
+            terminalId: "term-1",
+            terminalLabel: " Terminal 1 ",
+            lineStart: 2,
+            lineEnd: 3,
+            text: "two\r\nthree\n",
+          },
+          {
+            id: "broken-range",
+            terminalId: "term-1",
+            terminalLabel: "Terminal 1",
+            lineStart: 2,
+            lineEnd: 9,
+            text: "two\nthree",
+          },
+        ],
+        invalid: [],
+        "thread:thread-1": "not-an-array",
+      }),
+    ).toEqual({
+      "project:project-1": [
+        {
+          id: "term-1:2:3",
+          terminalId: "term-1",
+          terminalLabel: "Terminal 1",
+          lineStart: 2,
+          lineEnd: 3,
+          text: "two\nthree",
+        },
+      ],
+    });
   });
 });

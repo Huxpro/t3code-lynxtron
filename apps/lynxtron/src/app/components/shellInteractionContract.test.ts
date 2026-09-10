@@ -2200,6 +2200,10 @@ describe("desktop shell interaction contract", () => {
     const composer = componentSource("Composer.tsx");
     expect(clientSource).toContain("modelSelection: saved,");
     expect(clientSource).toContain("composerDraftTextByScopeKey: savedComposerDraftText");
+    expect(clientSource).toContain(
+      "composerTerminalContextsByScopeKey: savedComposerTerminalContexts",
+    );
+    expect(clientSource).toContain('setPref("composerTerminalContextsByScopeKey", next)');
     expect(clientSource).toContain("__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
     expect(clientSource).toContain("__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__");
     expect(componentSource("TerminalPanel.tsx")).toContain(

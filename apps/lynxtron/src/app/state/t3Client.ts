@@ -9,7 +9,12 @@ import {
 } from "@t3tools/client-runtime/presentation/model-picker";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
-import type { ComposerTerminalContext } from "@t3tools/client-runtime/presentation/terminal-context";
+import {
+  MAX_TERMINAL_CONTEXTS_PER_SCOPE,
+  normalizeComposerTerminalContextsByScopeKey,
+  type ComposerTerminalContext,
+  type ComposerTerminalContextsByScopeKey,
+} from "@t3tools/client-runtime/presentation/terminal-context";
 import {
   buildDraftThreadTurnBootstrap,
   addComposerDraftAttachments,
@@ -187,9 +192,7 @@ export interface T3ClientState {
   readonly draftThreadsByProjectId: LocalDraftThreadsByProjectId;
   readonly composerDraftTextByScopeKey: ComposerDraftTextByScopeKey;
   readonly composerDraftAttachmentsByScopeKey: ComposerDraftAttachmentsByScopeKey;
-  readonly composerTerminalContextsByScopeKey: Readonly<
-    Record<string, ReadonlyArray<ComposerTerminalContext>>
-  >;
+  readonly composerTerminalContextsByScopeKey: ComposerTerminalContextsByScopeKey;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -979,13 +982,20 @@ async function bootstrapT3Client(): Promise<void> {
   const savedComposerDraftText = normalizeComposerDraftTextByScopeKey(
     getPref<unknown>("composerDraftTextByScopeKey", null),
   );
+  const savedComposerTerminalContexts = normalizeComposerTerminalContextsByScopeKey(
+    getPref<unknown>("composerTerminalContextsByScopeKey", null),
+  );
   if (saved) {
     patchState({
       modelSelection: saved,
       composerDraftTextByScopeKey: savedComposerDraftText,
+      composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
     });
   } else {
-    patchState({ composerDraftTextByScopeKey: savedComposerDraftText });
+    patchState({
+      composerDraftTextByScopeKey: savedComposerDraftText,
+      composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
+    });
   }
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
@@ -1218,6 +1228,16 @@ function setDraftStartFromOrigin(startFromOrigin: boolean): void {
 }
 
 let composerDraftPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
+let composerTerminalContextPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
+
+function persistComposerTerminalContexts(next: ComposerTerminalContextsByScopeKey): void {
+  if (composerTerminalContextPersistenceTimer)
+    clearTimeout(composerTerminalContextPersistenceTimer);
+  composerTerminalContextPersistenceTimer = setTimeout(() => {
+    composerTerminalContextPersistenceTimer = undefined;
+    setPref("composerTerminalContextsByScopeKey", next);
+  }, 300);
+}
 
 function setComposerDraftText(scopeKey: string, text: string): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
@@ -1267,12 +1287,12 @@ function addComposerTerminalContext(scopeKey: string, context: ComposerTerminalC
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const current = state.composerTerminalContextsByScopeKey[scopeKey] ?? [];
   const withoutDuplicate = current.filter((candidate) => candidate.id !== context.id);
-  patchState({
-    composerTerminalContextsByScopeKey: {
-      ...state.composerTerminalContextsByScopeKey,
-      [scopeKey]: [...withoutDuplicate, context],
-    },
-  });
+  const next = {
+    ...state.composerTerminalContextsByScopeKey,
+    [scopeKey]: [...withoutDuplicate, context].slice(-MAX_TERMINAL_CONTEXTS_PER_SCOPE),
+  };
+  patchState({ composerTerminalContextsByScopeKey: next });
+  persistComposerTerminalContexts(next);
 }
 
 function removeComposerTerminalContext(scopeKey: string, contextId: string): void {
@@ -1284,12 +1304,14 @@ function removeComposerTerminalContext(scopeKey: string, contextId: string): voi
   if (next.length > 0) contexts[scopeKey] = next;
   else delete contexts[scopeKey];
   patchState({ composerTerminalContextsByScopeKey: contexts });
+  persistComposerTerminalContexts(contexts);
 }
 
 function clearComposerTerminalContexts(scopeKey: string): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const { [scopeKey]: _cleared, ...remaining } = state.composerTerminalContextsByScopeKey;
   patchState({ composerTerminalContextsByScopeKey: remaining });
+  persistComposerTerminalContexts(remaining);
 }
 
 function sendPrompt(
