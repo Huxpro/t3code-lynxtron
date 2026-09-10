@@ -760,6 +760,34 @@ describe("main connector host", () => {
     assert.isTrue(logs.some((line) => line.includes("reconnecting once")));
   });
 
+  it("injects one send failure before dispatching a retry", async () => {
+    const handlers = new Map<string, (params: unknown) => unknown>();
+    const calls: unknown[] = [];
+    const host = new MainConnectorHost({
+      window: { sendGlobalEvent: () => true },
+      registerHandler: (method, handler) => handlers.set(method, handler),
+      createConnector: (events) => ({
+        ...events,
+        connect: () => Promise.resolve({ status: "ready" }),
+        dispose: () => {},
+        sendPrompt: (input: unknown) => {
+          calls.push(input);
+          return Promise.resolve();
+        },
+      }),
+      testSendPromptErrorOnce: true,
+    });
+    host.attach();
+    await host.connect();
+    const command = handlers.get(T3_CONNECTOR_METHODS.command)!;
+    const request = { method: "sendPrompt", params: { threadId: "draft-1", text: "retry" } };
+
+    await assertRejects(command(request), /Injected sendPrompt failure/);
+    await command(request);
+
+    assert.deepEqual(calls, [{ threadId: "draft-1", text: "retry" }]);
+  });
+
   it("forwards undelivered push failures to the log without throwing", async () => {
     const { host, connector, logs } = createHarness({
       window: { sendGlobalEvent: () => false },

@@ -80,6 +80,7 @@ export interface MainConnectorHostOptions {
   readonly createConnector: (events: ConnectorEventCallbacks) => ConnectorLike;
   readonly onLog?: (line: string) => void;
   readonly testSocketOpenErrorForThreadModelSelectionOnce?: boolean;
+  readonly testSendPromptErrorOnce?: boolean;
 }
 
 const EMPTY_ACCESS: AuthAccessPresentation = {
@@ -142,6 +143,7 @@ export class MainConnectorHost {
   private connectorGeneration = 0;
   private disposed = false;
   private testSocketOpenErrorForThreadModelSelectionPending: boolean;
+  private testSendPromptErrorPending: boolean;
   private seq = 0;
   private status: ConnectorStatusPayload = { status: "idle" };
   private config: ConnectorServerConfig | null = null;
@@ -154,6 +156,7 @@ export class MainConnectorHost {
     this.options = options;
     this.testSocketOpenErrorForThreadModelSelectionPending =
       options.testSocketOpenErrorForThreadModelSelectionOnce === true;
+    this.testSendPromptErrorPending = options.testSendPromptErrorOnce === true;
   }
 
   /** Register the typed renderer->main handlers. Idempotent. */
@@ -215,6 +218,10 @@ export class MainConnectorHost {
       ) {
         this.testSocketOpenErrorForThreadModelSelectionPending = false;
         throw new Error('SocketOpenError: timeout waiting for "open"');
+      }
+      if (this.testSendPromptErrorPending && request.method === "sendPrompt") {
+        this.testSendPromptErrorPending = false;
+        throw new Error("Injected sendPrompt failure");
       }
       return Promise.resolve(dispatchConnectorCommand(connector, request));
     };

@@ -5978,6 +5978,266 @@ async function verifyTerminalContextProviderSend({ child, client, projectId, tim
   }
 }
 
+async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
+  const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
+  const refreshedConfig = await invokeConnector(client, "refreshProviders", {
+    instanceId: modelSelection.instanceId,
+  });
+  const provider = refreshedConfig?.providers?.find(
+    (candidate) => candidate.instanceId === modelSelection.instanceId,
+  );
+  if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
+    throw new Error(
+      `OpenCode provider is not ready for Composer retry acceptance: ${JSON.stringify(provider)}`,
+    );
+  }
+  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const draft = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" && state.activeThreadId === state.draftThreadId,
+  });
+  const threadId = draft.draftThreadId;
+  const canonicalThreadIdsBefore = draft.threadIds ?? [];
+  const persistedThreadIdsBefore = readPersistedThreadIds(baseDir);
+  try {
+    const modelFixture = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?.(${JSON.stringify(
+        modelSelection.instanceId,
+      )}, ${JSON.stringify(modelSelection.model)}) ?? false`,
+      returnByValue: true,
+    });
+    if (commandResult(modelFixture)?.value !== true) {
+      throw new Error(`OpenCode model fixture was not applied: ${JSON.stringify(modelFixture)}`);
+    }
+    await waitForRuntimeValue({
+      child,
+      client,
+      expression:
+        "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__].join(':')",
+      predicate: (value) => value === "function:function:function:function:function",
+      timeoutMs,
+    });
+    const promptToken = `T3_COMPOSER_RETRY_${Date.now()}`;
+    const responseToken = `${promptToken}_ACCEPTED`;
+    const prompt = `Reply exactly ${responseToken}. Do not use tools or modify files.`;
+    const attachment = {
+      type: "image",
+      name: "retry-pixel.png",
+      mimeType: "image/png",
+      sizeBytes: 566,
+      dataUrl:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAA4CAIAAABYNb64AAAACXBIWXMAAAAAAAAAAQCEeRdzAAABLGlDQ1BfAAB4nH2Qv0vDUBSFP0tB1C6iooNDxi5qW7E/sA62atGxVahuaRqK2NaQRnTv6h/h7Ca4iNDZxUlwEnFxFwTXeNIMKUi9l5v7vfMOee8+iC2hiKeg0/XcaqVk1I9PjMkPJpTDMK2ew/iQ6+c19L6s/OMbF1NNu2epf6k8V4frl03xfCvkq4AbIV8HfOk5nvgmYPewWhbfi5OtEW6MsOW4gf9NXOy0L6zo3iTs7lFNva5apsK5skUbmzVqnHGKKUqxS4E86+rbyg1VmoyUAlmtUpQpkdM3x56UvPbS7AxZjuA9wyP777A18H3/MdIOBnCXhemHSEtuwmwCnp4jLXpjx3TNoRRXxewSfC9olFuY+4SZvtTFYHvMrMafWQ326WKxKspomjTZXwyUTdpwduwoAAAAsElEQVR4nL2QQQ4BQRBF688UEhORmViJAziAEzivxCWsXUBYskEQRMxMf1VtFhKx1Yt+qZ+uqt8fRVGIiEo8X4AINd6ikIQSrErgoqmAIlEJVO3k5WOv/dH0sJ5pNpgcN3Pt5mMg1XY2tB5NWz34a5/VbMAH0Ij46eX/sE/X5dXtPu9bT+JxWjlu+6XbvewWZNDqeRYDQ03W1hfBUDGKFd4Qj84m0qJjoMHCjOnSV70AR55QzMkwRuEAAAAASUVORK5CYII=",
+    };
+    const terminalContext = {
+      id: `${promptToken}:1:1`,
+      terminalId: promptToken,
+      terminalLabel: "Terminal retry acceptance",
+      lineStart: 1,
+      lineEnd: 1,
+      text: promptToken,
+    };
+    const fixtures = await client.runCdp("Runtime.evaluate", {
+      expression: `JSON.stringify({text:globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
+        prompt,
+      )}) ?? false,attachment:globalThis.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__?.(${JSON.stringify(
+        attachment,
+      )}) ?? false,terminal:globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
+        terminalContext,
+      )}) ?? false})`,
+      returnByValue: true,
+    });
+    const applied = JSON.parse(commandResult(fixtures)?.value ?? "null");
+    if (applied?.text !== true || applied.attachment !== true || applied.terminal !== true) {
+      throw new Error(`Composer retry fixtures were not applied: ${JSON.stringify(fixtures)}`);
+    }
+    await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('@review-fixture')",
+      returnByValue: true,
+    });
+    await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__?.(15)",
+      returnByValue: true,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-context-picker",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.attributes["data-composer-context-picker"] === "path",
+    });
+    await tapSelectorByAttribute({
+      attribute: "data-composer-context-path",
+      child,
+      client,
+      selector: ".composer-context-picker__item",
+      timeoutMs,
+      value: "review-fixture.txt",
+    });
+    await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(prompt)})`,
+      returnByValue: true,
+    });
+    const beforeFailure = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === threadId &&
+        state.activeComposerDraftText === prompt &&
+        state.activeComposerDraftAttachments?.[0]?.name === attachment.name &&
+        state.activeComposerTerminalContexts?.[0]?.id === terminalContext.id &&
+        state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt",
+    });
+    const firstSend = await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__?.() ?? false",
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (commandResult(firstSend)?.value !== false) {
+      throw new Error(
+        `Injected Composer send unexpectedly succeeded: ${JSON.stringify(firstSend)}`,
+      );
+    }
+    const failed = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === threadId &&
+        state.draftThreadId === threadId &&
+        JSON.stringify(state.threadIds ?? []) === JSON.stringify(canonicalThreadIdsBefore) &&
+        state.activeComposerDraftText === prompt &&
+        state.activeComposerDraftAttachments?.[0]?.name === attachment.name &&
+        state.activeComposerTerminalContexts?.[0]?.id === terminalContext.id &&
+        state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt" &&
+        state.sessionError?.includes("Injected sendPrompt failure"),
+    });
+    const failedPreview = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-attachment-preview",
+      timeoutMs,
+      predicate: (measurement) => measurement !== null,
+    });
+    const failedTerminalChip = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-terminal-context-chip",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurement?.text.includes(terminalContext.terminalLabel) === true,
+    });
+    const failedFileChip = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-file-context-chip",
+      timeoutMs,
+      predicate: (measurement) => measurement?.text.includes("review-fixture.txt") === true,
+    });
+    const persistedThreadIdsAfterFailure = readPersistedThreadIds(baseDir);
+    if (
+      JSON.stringify([...persistedThreadIdsAfterFailure].sort()) !==
+      JSON.stringify([...persistedThreadIdsBefore].sort())
+    ) {
+      throw new Error(
+        `Failed Composer send persisted a canonical thread: ${JSON.stringify({
+          persistedThreadIdsBefore,
+          persistedThreadIdsAfterFailure,
+        })}`,
+      );
+    }
+    const beforeRetry = await readRendererReadiness(client);
+    const retry = await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__?.() ?? false",
+      awaitPromise: true,
+      returnByValue: true,
+    });
+    if (commandResult(retry)?.value !== true) {
+      throw new Error(`Composer retry failed: ${JSON.stringify(retry)}`);
+    }
+    const completed = await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) => {
+        const user = state?.messages?.find(
+          (message) =>
+            message.role === "user" &&
+            message.text.includes(promptToken) &&
+            message.text.includes("<terminal_context>") &&
+            message.text.includes("[review-fixture.txt](review-fixture.txt)") &&
+            message.attachments?.some((candidate) => candidate.name === attachment.name),
+        );
+        const assistant = state?.messages?.find(
+          (message) =>
+            message.role === "assistant" &&
+            message.streaming === false &&
+            message.text.includes(responseToken),
+        );
+        return (
+          state?.activeThreadId === threadId &&
+          state.threadIds?.includes(threadId) &&
+          state.draftThreadId !== threadId &&
+          state.activeComposerDraftText === "" &&
+          state.activeComposerDraftAttachments?.length === 0 &&
+          state.activeComposerTerminalContexts?.length === 0 &&
+          state.activeComposerFileContexts?.length === 0 &&
+          (state.sessionStatus === "idle" || state.sessionStatus === "ready") &&
+          state.activeTurnId == null &&
+          user &&
+          assistant
+        );
+      },
+    });
+    const afterRetry = await readRendererReadiness(client);
+    const canonicalUserMessage = completed.messages.find(
+      (message) => message.role === "user" && message.text.includes(promptToken),
+    );
+    return {
+      status: "pass",
+      input: "two test-only invocations of the same Native Composer handleSend callback",
+      threadId,
+      provider: modelSelection,
+      firstAttempt: {
+        result: false,
+        canonicalThreadCreated: false,
+        sessionError: failed.sessionError,
+        persistedThreadIdsBefore,
+        persistedThreadIdsAfterFailure,
+        preserved: {
+          text: true,
+          attachment: { name: attachment.name, preview: failedPreview.rect },
+          terminalContext: failedTerminalChip.text.trim(),
+          fileContext: failedFileChip.text.trim(),
+        },
+      },
+      retry: {
+        result: true,
+        canonicalThreadCreated: true,
+        canonicalUserMessage: {
+          id: canonicalUserMessage.id,
+          attachmentName: canonicalUserMessage.attachments[0]?.name ?? null,
+          hasTerminalContextBlock: canonicalUserMessage.text.includes("<terminal_context>"),
+          hasFileMention: canonicalUserMessage.text.includes(
+            "[review-fixture.txt](review-fixture.txt)",
+          ),
+        },
+        responseToken,
+        cleared: { text: true, attachment: true, terminalContext: true, fileContext: true },
+      },
+      draftStateBeforeFailure: beforeFailure.draftThreadId,
+      sequence: { beforeRetry: beforeRetry.lastSeq, afterRetry: afterRetry.lastSeq },
+    };
+  } finally {
+    await invokeConnector(client, "deleteThread", { threadId }).catch(() => undefined);
+  }
+}
+
 async function verifyModelPickerFidelity({
   baseDir,
   child,
@@ -12988,6 +13248,7 @@ async function runOnce({
   verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
   verifyComposerStop,
   verifyTerminalContextProviderSend: shouldVerifyTerminalContextProviderSend,
+  verifyComposerSendRetry: shouldVerifyComposerSendRetry,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
   verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
@@ -13095,6 +13356,7 @@ async function runOnce({
       shouldVerifyNewThreadDraftLifecycle ||
       shouldVerifyComposerReconnect ||
       shouldVerifyTerminalContextProviderSend ||
+      shouldVerifyComposerSendRetry ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyCompletedTranscriptState ||
@@ -13106,6 +13368,7 @@ async function runOnce({
       ...(shouldVerifyModelSelectionSocketRecovery
         ? { T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE: "1" }
         : {}),
+      ...(shouldVerifyComposerSendRetry ? { T3_TEST_SEND_PROMPT_ERROR_ONCE: "1" } : {}),
       ...(shouldVerifySourceControlLoading
         ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
         : {}),
@@ -13546,6 +13809,14 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const composerSendRetry = shouldVerifyComposerSendRetry
+      ? await verifyComposerSendRetry({
+          baseDir,
+          child,
+          client,
+          timeoutMs,
+        })
+      : undefined;
     const composerWorkingState = shouldVerifyComposerWorkingState
       ? await verifyComposerWorkingState({
           client,
@@ -13869,6 +14140,7 @@ async function runOnce({
       modelOptionMenuMutation,
       composerStop,
       terminalContextProviderSend,
+      composerSendRetry,
       composerWorkingState,
       completedTranscriptState,
       failedTranscriptState,
@@ -13941,6 +14213,7 @@ async function runOnce({
       modelOptionMenuMutation,
       composerStop,
       terminalContextProviderSend,
+      composerSendRetry,
       composerWorkingState,
       completedTranscriptState,
       failedTranscriptState,
@@ -14057,6 +14330,7 @@ const verifyComposerStop = process.argv.includes("--verify-composer-stop");
 const shouldVerifyTerminalContextProviderSend = process.argv.includes(
   "--verify-terminal-context-provider-send",
 );
+const shouldVerifyComposerSendRetry = process.argv.includes("--verify-composer-send-retry");
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
   "--verify-completed-transcript-state",
@@ -14302,6 +14576,9 @@ if (shouldVerifyTerminalContextProviderSend && typeof fixtureManifestProjectId !
     "--verify-terminal-context-provider-send requires visual-state.json project.projectId.",
   );
 }
+if (shouldVerifyComposerSendRetry && typeof fixtureManifestProjectId !== "string") {
+  throw new Error("--verify-composer-send-retry requires visual-state.json project.projectId.");
+}
 const canonicalThreadTitle = shouldVerifyIdleThreadState
   ? idleFixture.title
   : shouldVerifyCompletedTranscriptState || shouldVerifyFailedTranscriptState
@@ -14479,6 +14756,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyModelOptionMenuMutation: shouldVerifyModelOptionMenuMutation,
       verifyComposerStop,
       verifyTerminalContextProviderSend: shouldVerifyTerminalContextProviderSend,
+      verifyComposerSendRetry: shouldVerifyComposerSendRetry,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
       verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,

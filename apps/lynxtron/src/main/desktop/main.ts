@@ -160,6 +160,7 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
     onLog: (line) => console.log(line),
     testSocketOpenErrorForThreadModelSelectionOnce:
       process.env.T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE === "1",
+    testSendPromptErrorOnce: process.env.T3_TEST_SEND_PROMPT_ERROR_ONCE === "1",
   });
   host.attach();
   win.on("closed", () => {

@@ -1033,6 +1033,21 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".composer-primary-action"');
     assert.include(source, 'message.text.includes("<terminal_context>")');
     assert.include(source, "canonicalAssistantMessage");
+    assert.include(source, "async function verifyComposerSendRetry");
+    assert.include(source, '"--verify-composer-send-retry"');
+    assert.include(source, 'T3_TEST_SEND_PROMPT_ERROR_ONCE: "1"');
+    assert.include(source, "Injected Composer send unexpectedly succeeded");
+    assert.include(source, "canonicalThreadCreated: false");
+    assert.include(source, "Failed Composer send persisted a canonical thread");
+    assert.include(source, 'selector: ".composer-attachment-preview"');
+    assert.include(
+      source,
+      "message.attachments?.some((candidate) => candidate.name === attachment.name)",
+    );
+    assert.include(
+      source,
+      "cleared: { text: true, attachment: true, terminalContext: true, fileContext: true }",
+    );
     assert.include(source, "routeRoundTrip,");
     assert.include(source, "shouldVerifyNewThreadDraftLifecycle ||");
     assert.include(source, "Native Composer state did not persist before cold restart");

@@ -162,8 +162,12 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   `FiberSetAttribute param 0 should be RefCounted` in three independent real
   window trials; no broken affordance is shipped. Strictly decoded attachment
   state now survives an owned cold restart together with draft text and context
-  chips. Canonical provider receipt and explicit failure/retry acceptance remain
-  open.
+  chips. A one-shot main-bridge failure gate now proves the first send leaves
+  the local draft unpersisted and preserves its text, image preview, terminal
+  chip, and file chip. Retrying the same Composer action creates one canonical
+  thread, persists a provider-decodable image plus both context forms, receives
+  the expected authenticated OpenCode reply, and clears all four draft inputs
+  only after success.
 - Web and Native now share terminal-context normalization, labeling, block
   serialization, and prompt append behavior. The Native terminal surface can
   add its latest 50 history lines to the scoped Composer, where a context-only
@@ -175,21 +179,21 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   proves the canonical user message keeps the serialized context and receives
   an exact assistant reply. The same Codex path reached canonical persistence
   but its assistant run was externally blocked by the account usage limit. PF2
-  stays `in_progress` for attachment fail/retry, reconnect, file context, and
-  real-input closure.
+  stays `in_progress` for final real-input closure and matched Web/Lynx
+  attachment evidence.
 - Native file mentions now use the Web authority's canonical Markdown-link
   serializer while rendering as scoped Composer chips. The Composer `@` picker
   creates a chip, removal restores the disabled empty state, and strict
   persistence restores the same file context after a cold restart. Files-panel
   Add to chat targets the same scoped action. Drag/drop remains unsupported,
-  and PF2 remains `in_progress` for attachment fail/retry and final real-input
-  acceptance.
+  and PF2 remains `in_progress` for final real-input acceptance and matched
+  Web/Lynx attachment evidence.
 - A real owned-server `SIGKILL` and Reconnect cycle now proves the same local
   draft ID, chat route, draft text, and terminal context survive both the
   connection-error state and the replacement server. Submission is disabled
   while disconnected and returns to sendable after the main sequence advances
-  on the recovered server. PF2 remains open for attachment fail/retry, file
-  context, and real-input closure.
+  on the recovered server. PF2 remains open for final real-input closure and
+  matched Web/Lynx attachment evidence.
 
 ## PF3: Complete transcript navigation and interaction
 
