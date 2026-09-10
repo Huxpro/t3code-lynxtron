@@ -245,7 +245,15 @@ function LynxTurnDiffCard({
 }
 
 /** Lynx proposed-plan island: eyebrow + title card. */
-function LynxProposedPlanCard({ plan }: { plan: OrchestrationProposedPlan }) {
+function LynxProposedPlanCard({
+  plan,
+  cwd,
+  threadId,
+}: {
+  plan: OrchestrationProposedPlan;
+  cwd: string | undefined;
+  threadId: ThreadId | undefined;
+}) {
   const title = proposedPlanTitle(plan.planMarkdown) ?? "Proposed plan";
   const preview = buildCollapsedProposedPlanPreviewMarkdown(plan.planMarkdown, { maxLines: 4 });
   return (
@@ -260,7 +268,7 @@ function LynxProposedPlanCard({ plan }: { plan: OrchestrationProposedPlan }) {
         {title}
       </text>
       <view className="plan-row__preview">
-        <MarkdownRenderer text={preview} streaming={false} />
+        <MarkdownRenderer text={preview} streaming={false} cwd={cwd} threadId={threadId} />
       </view>
       <text className="plan-row__open-label">Open full plan</text>
     </HostView>
@@ -587,7 +595,9 @@ function buildLynxTranscriptRowElements(
         />
       ) : null;
     },
-    renderProposedPlanCard: ({ row }) => <LynxProposedPlanCard plan={row.proposedPlan} />,
+    renderProposedPlanCard: ({ row }) => (
+      <LynxProposedPlanCard plan={row.proposedPlan} cwd={cwd} threadId={threadId} />
+    ),
     renderWorkIcon: ({ name, className }) =>
       name === "terminal" ? (
         <svg

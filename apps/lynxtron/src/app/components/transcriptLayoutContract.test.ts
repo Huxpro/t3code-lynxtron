@@ -254,7 +254,8 @@ describe("transcript layout contract", () => {
 
   it("renders real proposed-plan content before opening the full panel", () => {
     expect(timelineSource).toContain("buildCollapsedProposedPlanPreviewMarkdown");
-    expect(timelineSource).toContain("<MarkdownRenderer text={preview} streaming={false} />");
+    expect(timelineSource).toContain("<MarkdownRenderer text={preview}");
+    expect(timelineSource).toContain("cwd={cwd} threadId={threadId}");
     expect(timelineSource).toContain("Open full plan");
     expect(timelineSource).toContain('onClick={() => uiActions.openRightPanelSurface("plan")}');
   });
