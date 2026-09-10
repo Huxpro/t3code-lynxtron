@@ -273,6 +273,10 @@ following-end` with the jump affordance visible only while detached. That gate
   turn is working, the destructive "Revert to this message" action is visibly
   disabled and has no tap handler; idle checkpoint-backed messages retain the
   existing confirm-and-revert path.
+- Native message copy now has an explicit pending/success/failure state instead
+  of an unhandled clipboard promise: pending disables duplicate taps, success
+  shows the check state, and rejection exposes `Copy failed` before the feedback
+  resets.
 
 ## PF4: Complete remote and multi-environment operation
 

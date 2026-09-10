@@ -62,6 +62,7 @@ import {
   WORKING_LABEL_FULL_ATLAS,
 } from "./workingLabelAtlas";
 import { timelineRowReuseIdentifier } from "./timelineRowSize";
+import { runMessageCopy, type MessageCopyStatus } from "./messageCopy";
 import {
   resolveTimelineMinimapHeightStyle,
   resolveTimelineMinimapTopPercent,
@@ -328,7 +329,7 @@ function buildLynxTranscriptRowElements(
   compactChangedFiles: boolean,
   compactChangedFilesActions: boolean,
   timestampFormat: Parameters<typeof formatShortTimestamp>[1],
-  copiedMessageId: string | null,
+  copyFeedback: { readonly messageId: string; readonly status: MessageCopyStatus } | null,
   copyMessage: (messageId: string, text: string) => void,
   revertMessage: (turnCount: number) => void,
   isWorking: boolean,
@@ -414,12 +415,37 @@ function buildLynxTranscriptRowElements(
             </view>
           ) : null}
           <view
-            className="transcript-message-meta__action"
-            aria-label="Copy link"
-            bindtap={() => copyMessage(row.message.id, copyText)}
+            className={`transcript-message-meta__action${
+              copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
+                ? " transcript-message-meta__action--disabled"
+                : ""
+            }`}
+            aria-label={
+              copyFeedback?.messageId === row.message.id && copyFeedback.status === "failed"
+                ? "Copy failed"
+                : "Copy link"
+            }
+            aria-disabled={
+              copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
+                ? "true"
+                : "false"
+            }
+            bindtap={
+              copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
+                ? undefined
+                : () => copyMessage(row.message.id, copyText)
+            }
           >
             <Icon
-              name={copiedMessageId === row.message.id ? "check" : "copy"}
+              name={
+                copyFeedback?.messageId === row.message.id
+                  ? copyFeedback.status === "copied"
+                    ? "check"
+                    : copyFeedback.status === "failed"
+                      ? "x"
+                      : "copy"
+                  : "copy"
+              }
               size={14}
               color="#818181"
             />
@@ -457,12 +483,37 @@ function buildLynxTranscriptRowElements(
         >
           {copyState.visible && copyState.text ? (
             <view
-              className="transcript-message-meta__action"
-              aria-label="Copy link"
-              bindtap={() => copyMessage(row.message.id, copyState.text ?? "")}
+              className={`transcript-message-meta__action${
+                copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
+                  ? " transcript-message-meta__action--disabled"
+                  : ""
+              }`}
+              aria-label={
+                copyFeedback?.messageId === row.message.id && copyFeedback.status === "failed"
+                  ? "Copy failed"
+                  : "Copy link"
+              }
+              aria-disabled={
+                copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
+                  ? "true"
+                  : "false"
+              }
+              bindtap={
+                copyFeedback?.messageId === row.message.id && copyFeedback.status === "pending"
+                  ? undefined
+                  : () => copyMessage(row.message.id, copyState.text ?? "")
+              }
             >
               <Icon
-                name={copiedMessageId === row.message.id ? "check" : "copy"}
+                name={
+                  copyFeedback?.messageId === row.message.id
+                    ? copyFeedback.status === "copied"
+                      ? "check"
+                      : copyFeedback.status === "failed"
+                        ? "x"
+                        : "copy"
+                    : "copy"
+                }
                 size={14}
                 color="#818181"
               />
@@ -595,7 +646,10 @@ export function MessagesTimeline({
 }: MessagesTimelineProps) {
   const [clientSettings] = useClientSettingsState();
   const [timelineViewportWidth, setTimelineViewportWidth] = useState(availableWidth);
-  const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
+  const [copyFeedback, setCopyFeedback] = useState<{
+    readonly messageId: string;
+    readonly status: MessageCopyStatus;
+  } | null>(null);
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
   const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
   const [timelineScrollMode, setTimelineScrollMode] = useState<TimelineScrollMode>("following-end");
@@ -610,10 +664,11 @@ export function MessagesTimeline({
 
   const isWorking = isSessionWorking(sessionStatus);
   const copyMessage = useCallback((messageId: string, text: string) => {
-    void clientCapabilities.clipboard.writeText(text).then(() => {
-      setCopiedMessageId(messageId);
+    void runMessageCopy(clientCapabilities.clipboard.writeText, text, (status) => {
+      setCopyFeedback({ messageId, status });
+    }).then(() => {
       setTimeout(() => {
-        setCopiedMessageId((current) => (current === messageId ? null : current));
+        setCopyFeedback((current) => (current?.messageId === messageId ? null : current));
       }, 1_000);
     });
   }, []);
@@ -640,7 +695,7 @@ export function MessagesTimeline({
         timelineViewportWidth < 360,
         timelineViewportWidth < 640,
         clientSettings.timestampFormat,
-        copiedMessageId,
+        copyFeedback,
         copyMessage,
         revertMessage,
         isWorking,
@@ -648,7 +703,7 @@ export function MessagesTimeline({
     [
       clientSettings.timestampFormat,
       timelineViewportWidth,
-      copiedMessageId,
+      copyFeedback,
       copyMessage,
       cwd,
       latestTurn?.turnId,
