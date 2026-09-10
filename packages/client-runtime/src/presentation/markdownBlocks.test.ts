@@ -240,6 +240,22 @@ describe("parseMarkdownBlocks", () => {
     ]);
   });
 
+  it("does not promote block markers to setext headings", () => {
+    expect(parseMarkdownBlocks("- item\n---")).toEqual([
+      { type: "list", items: [expect.objectContaining({ content: "item", depth: 0 })] },
+      { type: "hr" },
+    ]);
+    expect(parseMarkdownBlocks("> quote\n---")).toEqual([
+      {
+        type: "blockquote",
+        text: "quote",
+        quoteDepth: 1,
+        children: [{ type: "paragraph", text: "quote" }],
+      },
+      { type: "hr" },
+    ]);
+  });
+
   it("normalizes optional ATX closing hashes without consuming literal hashes", () => {
     expect(parseMarkdownBlocks("## Release notes ##\n\n##\n\n## C# updates")).toEqual([
       { type: "heading", level: 2, text: "Release notes" },

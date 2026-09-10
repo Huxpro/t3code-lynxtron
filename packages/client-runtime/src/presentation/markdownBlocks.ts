@@ -78,6 +78,16 @@ function markdownListIndentColumns(line: string): number {
   return line.match(/^(\s*)/)?.[1]?.replaceAll("\t", "    ").length ?? 0;
 }
 
+function canStartSetextHeading(line: string): boolean {
+  const trimmed = line.trim();
+  if (trimmed.length === 0) return false;
+  if (parseMarkdownFence(line) || parseMarkdownListItem(line)) return false;
+  if (/^(?:#{1,6})(?:\s|$)/.test(line) || /^((?:>\s*)+)/.test(line)) return false;
+  if (DETAILS_START_PATTERN.test(trimmed)) return false;
+  const [image] = parseMarkdownImageTokens(trimmed);
+  return !(image?.start === 0 && image.end === trimmed.length);
+}
+
 function appendParagraphWithImages(blocks: ParsedMarkdownBlock[], text: string): void {
   let cursor = 0;
   for (const image of parseMarkdownImageTokens(text)) {
@@ -139,7 +149,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
     }
 
     const setextLevel = lines[index + 1]?.trim().match(/^(=+|-+)$/)?.[1]?.[0];
-    if (line.trim().length > 0 && setextLevel) {
+    if (canStartSetextHeading(line) && setextLevel) {
       blocks.push({
         type: "heading",
         level: setextLevel === "=" ? 1 : 2,

@@ -312,7 +312,9 @@ following-end` with the jump affordance visible only while detached. That gate
   trailing slashes are not silently dropped from cell content.
 - Shared block parsing now follows CommonMark ATX heading boundaries, including
   optional closing hashes and empty headings, without stripping literal hashes
-  such as `C#` from the heading text.
+  such as `C#` from the heading text. Setext underlines also no longer promote a
+  preceding list or quote marker into a heading, preserving both block types in
+  source order.
 - Shared inline Markdown now decodes the common named and numeric HTML entities
   used by Web/Mobile text rendering while preserving unknown, null, surrogate,
   and out-of-range entities literally. Code spans remain byte-for-byte authored
