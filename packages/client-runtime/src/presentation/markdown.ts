@@ -78,6 +78,11 @@ export interface MarkdownTablePresentation {
 
 export type MarkdownTableCopyFormat = "markdown" | "csv";
 
+export type MarkdownImageSource =
+  | { readonly kind: "direct"; readonly url: string }
+  | { readonly kind: "workspace-file"; readonly path: string }
+  | { readonly kind: "unsupported" };
+
 export interface MarkdownInlinePresentation {
   readonly text: string;
   readonly bold: boolean;
@@ -752,6 +757,19 @@ export function resolveMarkdownFileLinkTarget(
   const pathWithPosition = appendLineColumnFromHash(decodedPath, decodedHash);
   if (!isRelativePath(pathWithPosition)) return pathWithPosition;
   return cwd ? resolvePathLinkTarget(pathWithPosition, cwd) : null;
+}
+
+/** Resolve image sources without coupling renderer hosts to browser URL rules. */
+export function resolveMarkdownImageSource(
+  href: string | undefined,
+  cwd?: string,
+): MarkdownImageSource {
+  const normalized = href ? normalizeMarkdownLinkDestination(href) : "";
+  if (/^(?:https?:|data:image\/)/i.test(normalized)) {
+    return { kind: "direct", url: normalized };
+  }
+  const path = resolveMarkdownFileLinkTarget(normalized, cwd);
+  return path ? { kind: "workspace-file", path } : { kind: "unsupported" };
 }
 
 const INLINE_CODE_DISQUALIFIER_PATTERN = /[\s`]/;

@@ -33,6 +33,7 @@ import type {
   OrchestrationLatestTurn,
   OrchestrationCheckpointSummary,
   OrchestrationProposedPlan,
+  ThreadId,
   TurnId,
 } from "@t3tools/contracts";
 import {
@@ -78,6 +79,7 @@ type LynxChatMessage = Omit<ChatMessage, "attachments"> & {
 };
 
 interface MessagesTimelineProps {
+  threadId?: ThreadId | undefined;
   messages: ReadonlyArray<LynxChatMessage>;
   activities: ReadonlyArray<ActivityEntry>;
   sessionStatus: SessionStatus;
@@ -399,6 +401,7 @@ function buildLynxTranscriptRowElements(
   isWorking: boolean,
   onManualNavigation: () => void,
   onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined,
+  threadId: ThreadId | undefined,
 ): TranscriptRowElements<
   LynxChatMessage,
   OrchestrationProposedPlan,
@@ -490,6 +493,7 @@ function buildLynxTranscriptRowElements(
             cwd={cwd}
             onManualNavigation={onManualNavigation}
             onImageExpand={onImageExpand}
+            threadId={threadId}
           />
         </view>
       );
@@ -526,6 +530,7 @@ function buildLynxTranscriptRowElements(
             cwd={cwd}
             onManualNavigation={onManualNavigation}
             onImageExpand={onImageExpand}
+            threadId={threadId}
           />
         ) : (
           <InlineMarkdownRenderer text={row.message.text} cwd={cwd} />
@@ -673,6 +678,7 @@ function buildLynxTranscriptRowElements(
 }
 
 export function MessagesTimeline({
+  threadId,
   messages,
   activities,
   sessionStatus,
@@ -734,6 +740,7 @@ export function MessagesTimeline({
         isWorking,
         detachForManualNavigation,
         onImageExpand,
+        threadId,
       ),
     [
       clientSettings.timestampFormat,
@@ -744,12 +751,13 @@ export function MessagesTimeline({
       isWorking,
       detachForManualNavigation,
       onImageExpand,
+      threadId,
     ],
   );
 
   const derivedRows = useMemo<TimelineRow[]>(() => {
     const workEntries = deriveWorkLogEntries(activities);
-    const timelineEntries = deriveTimelineEntries<ChatMessage, OrchestrationProposedPlan>(
+    const timelineEntries = deriveTimelineEntries<LynxChatMessage, OrchestrationProposedPlan>(
       messages,
       proposedPlans,
       workEntries,

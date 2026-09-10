@@ -10,6 +10,7 @@ import {
 import {
   parseMarkdownInline,
   resolveMarkdownFileLinkMeta,
+  resolveMarkdownImageSource,
   serializeMarkdownTable,
   type MarkdownInlinePresentation,
   type MarkdownTablePresentation,
@@ -27,6 +28,8 @@ import { copyMarkdownCode } from "./markdownClipboard";
 import { markdownTableContentWidth } from "./markdownTableLayout";
 import type { MessageCopyStatus } from "./messageCopy";
 import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+import type { ThreadId } from "@t3tools/contracts";
+import { t3ClientActions } from "../state/t3Client";
 
 // Simple markdown-to-Lynx-views renderer. Handles the most common
 // formatting used in AI assistant responses.
@@ -278,12 +281,14 @@ function MarkdownDetailsBlock({
   cwd,
   onManualNavigation,
   onImageExpand,
+  threadId,
 }: {
   readonly block: ParsedMarkdownBlock;
   readonly blockKey: string;
   readonly cwd: string | undefined;
   readonly onManualNavigation: (() => void) | undefined;
   readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
+  readonly threadId: ThreadId | undefined;
 }) {
   const [open, setOpen] = useState(block.open ?? false);
   useEffect(() => {
@@ -314,7 +319,15 @@ function MarkdownDetailsBlock({
       {open ? (
         <view className="md-details-content">
           {(block.children ?? []).map((child, index) =>
-            renderBlock(child, index, cwd, `${blockKey}-detail`, onManualNavigation, onImageExpand),
+            renderBlock(
+              child,
+              index,
+              cwd,
+              `${blockKey}-detail`,
+              onManualNavigation,
+              onImageExpand,
+              threadId,
+            ),
           )}
         </view>
       ) : null}
@@ -447,17 +460,51 @@ function MarkdownTableBlock({
 function MarkdownImageBlock({
   block,
   blockKey,
+  cwd,
   onImageExpand,
+  threadId,
 }: {
   readonly block: ParsedMarkdownBlock;
   readonly blockKey: string;
+  readonly cwd: string | undefined;
   readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
+  readonly threadId: ThreadId | undefined;
 }) {
   const href = block.href ?? "";
-  const supportedSource = /^(?:https?:|data:image\/)/i.test(href);
+  const source = useMemo(() => resolveMarkdownImageSource(href, cwd), [cwd, href]);
+  const [resolvedSrc, setResolvedSrc] = useState(source.kind === "direct" ? source.url : null);
   const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [blockKey, href]);
-  if (!supportedSource || failed) {
+  const [revision, setRevision] = useState(0);
+  useEffect(() => {
+    let active = true;
+    let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+    setFailed(false);
+    if (source.kind === "direct") {
+      setResolvedSrc(source.url);
+    } else if (source.kind === "workspace-file" && threadId) {
+      setResolvedSrc(null);
+      void t3ClientActions
+        .createAssetUrl({ resource: { _tag: "workspace-file", threadId, path: source.path } })
+        .then((result) => {
+          if (!active) return;
+          setResolvedSrc(result.url);
+          refreshTimer = setTimeout(
+            () => setRevision((value) => value + 1),
+            Math.max(1_000, result.expiresAt - Date.now() - 5 * 60_000),
+          );
+        })
+        .catch(() => {
+          if (active) setFailed(true);
+        });
+    } else {
+      setResolvedSrc(null);
+    }
+    return () => {
+      active = false;
+      if (refreshTimer !== null) clearTimeout(refreshTimer);
+    };
+  }, [blockKey, revision, source, threadId]);
+  if (source.kind === "unsupported" || failed) {
     return (
       <view className="md-media-fallback" data-markdown-image-fallback="true">
         <text className="md-media-fallback-label">
@@ -467,10 +514,18 @@ function MarkdownImageBlock({
       </view>
     );
   }
+  if (!resolvedSrc) {
+    return (
+      <view className="md-media-fallback" data-markdown-image-loading="true">
+        <text className="md-media-fallback-label">Loading image…</text>
+        <text className="md-media-fallback-path">{href}</text>
+      </view>
+    );
+  }
   const openPreview = onImageExpand
     ? () =>
         onImageExpand({
-          images: [{ src: href, name: block.alt || block.title || "Image" }],
+          images: [{ src: resolvedSrc, name: block.alt || block.title || "Image" }],
           index: 0,
         })
     : undefined;
@@ -481,7 +536,12 @@ function MarkdownImageBlock({
       aria-label={openPreview ? `Preview ${block.alt || "image"}` : undefined}
       bindtap={openPreview}
     >
-      <image className="md-image" src={href} mode="aspectFit" binderror={() => setFailed(true)} />
+      <image
+        className="md-image"
+        src={resolvedSrc}
+        mode="aspectFit"
+        binderror={() => setFailed(true)}
+      />
       {block.alt ? <text className="md-image-caption">{block.alt}</text> : null}
     </view>
   );
@@ -494,6 +554,7 @@ function renderBlock(
   keyPrefix = "b",
   onManualNavigation?: () => void,
   onImageExpand?: (preview: ExpandedImagePreview) => void,
+  threadId?: ThreadId,
 ): ReactNode {
   const key = `${keyPrefix}${idx}`;
   switch (block.type) {
@@ -554,7 +615,15 @@ function renderBlock(
         >
           {block.children?.length ? (
             block.children.map((child, index) =>
-              renderBlock(child, index, cwd, `${key}-quote`, onManualNavigation, onImageExpand),
+              renderBlock(
+                child,
+                index,
+                cwd,
+                `${key}-quote`,
+                onManualNavigation,
+                onImageExpand,
+                threadId,
+              ),
             )
           ) : (
             <text className="md-blockquote-text">
@@ -580,7 +649,14 @@ function renderBlock(
 
     case "image": {
       return (
-        <MarkdownImageBlock key={key} block={block} blockKey={key} onImageExpand={onImageExpand} />
+        <MarkdownImageBlock
+          key={key}
+          block={block}
+          blockKey={key}
+          cwd={cwd}
+          onImageExpand={onImageExpand}
+          threadId={threadId}
+        />
       );
     }
 
@@ -593,6 +669,7 @@ function renderBlock(
           cwd={cwd}
           onManualNavigation={onManualNavigation}
           onImageExpand={onImageExpand}
+          threadId={threadId}
         />
       );
 
@@ -610,6 +687,7 @@ interface MarkdownRendererProps {
   cwd?: string | undefined;
   onManualNavigation?: (() => void) | undefined;
   onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
+  threadId?: ThreadId | undefined;
 }
 
 export function InlineMarkdownRenderer({
@@ -672,13 +750,14 @@ export function MarkdownRenderer({
   cwd,
   onManualNavigation,
   onImageExpand,
+  threadId,
 }: MarkdownRendererProps) {
   const blocks = useMemo(() => parseMarkdownBlocks(text), [text]);
 
   return (
     <view className="markdown-body">
       {blocks.map((block, idx) =>
-        renderBlock(block, idx, cwd, "b", onManualNavigation, onImageExpand),
+        renderBlock(block, idx, cwd, "b", onManualNavigation, onImageExpand, threadId),
       )}
       {streaming ? <text className="md-cursor">▋</text> : null}
     </view>

@@ -398,6 +398,9 @@ following-end` with the jump affordance visible only while detached. That gate
   Inline and expanded Native images now surface a visible load-failure fallback
   and reset that failure state when a virtualized block or selected image
   changes, rather than leaving a blank interactive frame.
+  Relative workspace images resolve through the existing thread-scoped signed
+  asset command, refresh before expiry, and retain explicit loading/failure
+  states instead of resolving accidentally against the Lynx bundle origin.
 
 ## PF4: Complete remote and multi-environment operation
 

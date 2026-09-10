@@ -14,6 +14,7 @@ import {
   type RightPanelActionItem,
 } from "../../../../web/src/components/RightPanelSurface";
 import type { ActivePlanState, LatestProposedPlanState } from "../bridge";
+import { ThreadId } from "@t3tools/contracts";
 import {
   uiActions,
   useRightPanelState,
@@ -118,6 +119,7 @@ function renderSurface(surface: RightPanelSurface, props: RightPanelContentProps
     case "plan":
       return (
         <PlanPanel
+          threadId={props.activeThreadId ? ThreadId.make(props.activeThreadId) : undefined}
           activePlan={props.activePlan}
           activeProposedPlan={props.activeProposedPlan}
           onImageExpand={props.onImageExpand}

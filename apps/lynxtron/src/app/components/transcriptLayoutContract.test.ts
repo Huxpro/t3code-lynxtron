@@ -251,8 +251,7 @@ describe("transcript layout contract", () => {
   });
 
   it("routes supported Markdown images into the root preview overlay", () => {
-    expect(markdownSource).toContain("const supportedSource =");
-    expect(markdownSource).toContain("data:image");
+    expect(markdownSource).toContain("resolveMarkdownImageSource(href, cwd)");
     expect(markdownSource).toContain("onImageExpand({");
     expect(markdownSource).toContain("onImageExpand={onImageExpand}");
     expect(timelineSource).toContain("onImageExpand={onImageExpand}");
@@ -266,12 +265,16 @@ describe("transcript layout contract", () => {
     expect(imagePreviewSource).toContain('aria-label="Next image"');
     expect(markdownSource).toContain("function MarkdownImageBlock");
     expect(markdownSource).toContain("binderror={() => setFailed(true)}");
-    expect(markdownSource).toContain("useEffect(() => setFailed(false), [blockKey, href])");
+    expect(markdownSource).toContain('_tag: "workspace-file", threadId, path: source.path');
+    expect(markdownSource).toContain('data-markdown-image-loading="true"');
+    expect(markdownSource).toContain("if (refreshTimer !== null) clearTimeout(refreshTimer)");
     expect(imagePreviewSource).toContain("Unable to load image");
     expect(imagePreviewSource).toContain("binderror={() => setFailedSrc(item.src)}");
     expect(chatViewSource).toContain("onImageExpand={setExpandedImage}");
     expect(rightPanelSource).toContain("onImageExpand={props.onImageExpand}");
     expect(planPanelSource).toContain("onImageExpand={onImageExpand}");
+    expect(timelineSource).toContain("threadId={threadId}");
+    expect(planPanelSource).toContain("threadId={threadId}");
     expect(webTimelineSource).toContain("@t3tools/client-runtime/presentation/image-preview");
   });
 

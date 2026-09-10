@@ -15,6 +15,7 @@ import {
   resolveInlineCodeFileLinkMeta,
   resolveMarkdownFileLinkMeta,
   resolveMarkdownFileLinkTarget,
+  resolveMarkdownImageSource,
   resolveMarkdownCodeLanguage,
   serializeMarkdownTable,
   rewriteMarkdownFileUriHref,
@@ -488,5 +489,31 @@ describe("resolveInlineCodeFileLinkMeta", () => {
     expect(resolveInlineCodeFileLinkMeta("src/**/*.ts", "/Users/julius/project")).toBeNull();
     expect(resolveInlineCodeFileLinkMeta("origin/main", "/Users/julius/project")).toBeNull();
     expect(resolveInlineCodeFileLinkMeta(".plans/worktree-management-v1.md")).toBeNull();
+  });
+});
+
+describe("resolveMarkdownImageSource", () => {
+  it("keeps network and data images direct", () => {
+    expect(resolveMarkdownImageSource("https://example.com/a.png")).toEqual({
+      kind: "direct",
+      url: "https://example.com/a.png",
+    });
+    expect(resolveMarkdownImageSource("data:image/png;base64,AQID")).toEqual({
+      kind: "direct",
+      url: "data:image/png;base64,AQID",
+    });
+  });
+
+  it("resolves workspace images and rejects unresolved sources", () => {
+    expect(resolveMarkdownImageSource("./shots/result.png", "/repo")).toEqual({
+      kind: "workspace-file",
+      path: "/repo/./shots/result.png",
+    });
+    expect(resolveMarkdownImageSource("./shots/result.png")).toEqual({
+      kind: "unsupported",
+    });
+    expect(resolveMarkdownImageSource("javascript:alert(1)", "/repo")).toEqual({
+      kind: "unsupported",
+    });
   });
 });

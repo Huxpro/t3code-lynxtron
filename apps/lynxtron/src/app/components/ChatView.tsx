@@ -84,7 +84,7 @@ import {
   resolveModelPickerNavigationProvider,
 } from "../state/modelSelection.logic";
 import { useT3ProjectFileScripts } from "../hooks/useT3ProjectFileScripts";
-import type { ProjectScript } from "@t3tools/contracts";
+import { ThreadId, type ProjectScript } from "@t3tools/contracts";
 import type { UploadChatAttachment } from "@t3tools/contracts";
 import { runProjectScriptInTerminal } from "./projectActionImports.logic";
 
@@ -799,6 +799,7 @@ export function ChatView({ threadId }: ChatViewProps) {
       {!hero ? (
         <MessagesTimeline
           key={activeThreadId ?? "no-thread"}
+          threadId={activeThreadId ? ThreadId.make(activeThreadId) : undefined}
           messages={displayMessages}
           activities={activities}
           sessionStatus={sessionStatus}
