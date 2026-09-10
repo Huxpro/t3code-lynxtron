@@ -258,9 +258,11 @@ function MarkdownCodeBlock({ block, blockKey }: { block: ParsedMarkdownBlock; bl
           <text className="md-code-copy-label">{copyLabel}</text>
         </view>
       </view>
-      <text className="md-code-text whitespace-pre" data-markdown-code-content="true">
-        {block.code}
-      </text>
+      <scroll-view className="md-code-scroll" scroll-orientation="horizontal">
+        <text className="md-code-text whitespace-pre" data-markdown-code-content="true">
+          {block.code}
+        </text>
+      </scroll-view>
     </view>
   );
 }
