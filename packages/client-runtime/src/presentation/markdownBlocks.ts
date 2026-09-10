@@ -74,6 +74,11 @@ function closesMarkdownFence(line: string, opening: MarkdownFence): boolean {
   return marker[0] === opening.character && marker.length >= opening.length;
 }
 
+function isMarkdownThematicBreak(line: string): boolean {
+  const compact = line.trim().replaceAll(/\s/g, "");
+  return compact.length >= 3 && /^(?:-+|\*+|_+)$/.test(compact);
+}
+
 function markdownListIndentColumns(line: string): number {
   return line.match(/^(\s*)/)?.[1]?.replaceAll("\t", "    ").length ?? 0;
 }
@@ -128,7 +133,8 @@ export function shouldRenderBlockMarkdown(text: string): boolean {
   const trimmed = text.trim();
   return (
     parseMarkdownFence(trimmed) !== null ||
-    /^(?:#{1,6}\s+|(?:>\s*)+|(?:[-+*]|\d+[.)])\s+|(?:-{3,}|\*{3,}|_{3,})\s*$)/.test(trimmed) ||
+    /^(?:#{1,6}\s+|(?:>\s*)+|(?:[-+*]|\d+[.)])\s+)/.test(trimmed) ||
+    isMarkdownThematicBreak(trimmed) ||
     parseMarkdownImageTokens(trimmed).length > 0 ||
     DETAILS_START_PATTERN.test(trimmed)
   );
@@ -188,7 +194,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       continue;
     }
 
-    if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(line.trim())) {
+    if (isMarkdownThematicBreak(line)) {
       blocks.push({ type: "hr" });
       index++;
       continue;
@@ -333,7 +339,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       !DETAILS_START_PATTERN.test(lines[index]!.trim()) &&
       !parseMarkdownTable(lines.slice(index)) &&
       !parseMarkdownListItem(lines[index]!) &&
-      !/^(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[index]!.trim())
+      !isMarkdownThematicBreak(lines[index]!)
     ) {
       paragraphLines.push(lines[index]!);
       index++;

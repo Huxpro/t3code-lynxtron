@@ -269,6 +269,14 @@ describe("parseMarkdownBlocks", () => {
     ]);
   });
 
+  it.each(["* * *", "- - -", "_ _ _", "***"])(
+    "parses CommonMark thematic-break spacing: %s",
+    (markdown) => {
+      expect(parseMarkdownBlocks(markdown)).toEqual([{ type: "hr" }]);
+      expect(shouldRenderBlockMarkdown(markdown)).toBe(true);
+    },
+  );
+
   it("normalizes optional ATX closing hashes without consuming literal hashes", () => {
     expect(parseMarkdownBlocks("## Release notes ##\n\n##\n\n## C# updates")).toEqual([
       { type: "heading", level: 2, text: "Release notes" },
