@@ -899,30 +899,46 @@ export function MessagesTimeline({
     scrollToEnd(true);
   }, [scrollToEnd]);
 
-  const handleToggleTurn = useCallback((turnId: TurnId) => {
-    pendingTurnFoldAnchorRef.current = `turn-fold:${turnId}`;
-    setExpandedTurnIds((current) => {
-      const next = new Set(current);
-      if (next.has(turnId)) {
-        next.delete(turnId);
-      } else {
-        next.add(turnId);
-      }
-      return next;
-    });
+  const detachForManualNavigation = useCallback(() => {
+    setAnchorMessageId(null);
+    setTimelineAtEnd(false);
+    setTimelineScrollMode((current) =>
+      reduceTimelineScrollMode(current, { kind: "user-scroll-away" }),
+    );
   }, []);
 
-  const handleToggleWorkGroup = useCallback((groupId: string) => {
-    setExpandedWorkGroupIds((current) => {
-      const next = new Set(current);
-      if (next.has(groupId)) {
-        next.delete(groupId);
-      } else {
-        next.add(groupId);
-      }
-      return next;
-    });
-  }, []);
+  const handleToggleTurn = useCallback(
+    (turnId: TurnId) => {
+      detachForManualNavigation();
+      pendingTurnFoldAnchorRef.current = `turn-fold:${turnId}`;
+      setExpandedTurnIds((current) => {
+        const next = new Set(current);
+        if (next.has(turnId)) {
+          next.delete(turnId);
+        } else {
+          next.add(turnId);
+        }
+        return next;
+      });
+    },
+    [detachForManualNavigation],
+  );
+
+  const handleToggleWorkGroup = useCallback(
+    (groupId: string) => {
+      detachForManualNavigation();
+      setExpandedWorkGroupIds((current) => {
+        const next = new Set(current);
+        if (next.has(groupId)) {
+          next.delete(groupId);
+        } else {
+          next.add(groupId);
+        }
+        return next;
+      });
+    },
+    [detachForManualNavigation],
+  );
 
   if (rows.length === 0) {
     return <view className="timeline-empty-spacer" />;
@@ -1031,12 +1047,8 @@ export function MessagesTimeline({
                   }}
                   onMouseEnter={() => setActiveMinimapItemId(item.id)}
                   onClick={() => {
-                    setAnchorMessageId(null);
                     setActiveMinimapItemId(null);
-                    setTimelineAtEnd(false);
-                    setTimelineScrollMode((current) =>
-                      reduceTimelineScrollMode(current, { kind: "user-scroll-away" }),
-                    );
+                    detachForManualNavigation();
                     listRef.current
                       ?.invoke({
                         method: "scrollToPosition",

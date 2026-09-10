@@ -2223,6 +2223,13 @@ describe("desktop shell interaction contract", () => {
     expect(timelineSource).toContain("setActiveMinimapItemId(item.id)");
     expect(timelineSource).toContain('data-timeline-minimap-active={activeMinimapItemId ?? ""}');
     expect(timelineSource).toContain("setActiveMinimapItemId(null);");
+    expect(timelineSource).toContain("detachForManualNavigation();");
+  });
+
+  it("detaches transcript follow before expanding historical rows", () => {
+    const timelineSource = componentSource("MessagesTimeline.tsx");
+    expect(timelineSource).toContain("const detachForManualNavigation = useCallback");
+    expect(timelineSource.match(/detachForManualNavigation\(\);/gu)).toHaveLength(3);
     expect(timelineSource).toContain("setTimelineAtEnd(false);");
     expect(timelineSource).toContain(
       'reduceTimelineScrollMode(current, { kind: "user-scroll-away" })',

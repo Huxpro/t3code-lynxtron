@@ -257,6 +257,9 @@ following-end` with the jump affordance visible only while detached. That gate
   redirect the preview to a different turn. Selecting a minimap turn now also
   clears the hover preview and detaches follow mode before scrolling, so incoming
   streaming content cannot steal the chosen history position.
+  Expanding or collapsing a historical turn/work group uses the same manual-
+  navigation detach path, preserving the reader's position instead of letting a
+  subsequent streaming update snap back to the live edge.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
