@@ -144,6 +144,16 @@ describe("desktop shell interaction contract", () => {
     expect(chatHeaderSource).not.toContain("topbar--authority");
     expect(overrides).not.toContain(".topbar-authority-surface");
   });
+
+  it("keeps the Composer context strip on real shared content", () => {
+    const composerSurface = readFileSync(
+      path.resolve(import.meta.dirname, "../../../../web/src/components/chat/ComposerSurface.tsx"),
+      "utf8",
+    );
+    expect(composerSurface).not.toContain("authorityVisual");
+    expect(overrides).not.toContain(".composer-context-authority-surface");
+    expect(overrides).not.toContain(".composer-context-strip--authority");
+  });
   it("uses the synchronized client auto-settle preference for the active thread banner", () => {
     const chatView = componentSource("ChatView.tsx");
 

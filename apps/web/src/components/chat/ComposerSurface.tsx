@@ -246,14 +246,12 @@ export function ComposerSurface({
  */
 export function ComposerContextStrip({
   backdrop,
-  authorityVisual,
   checkout,
   checkoutClassName,
   branch,
   className,
 }: {
   readonly backdrop?: ReactNode;
-  readonly authorityVisual?: ReactNode;
   readonly checkout: ReactNode;
   readonly checkoutClassName?: string | undefined;
   readonly branch: ReactNode;
@@ -263,12 +261,10 @@ export function ComposerContextStrip({
     <HostView
       className={cn(
         "composer-context-strip -mt-4 mx-3 flex items-center gap-2 rounded-b-2xl bg-muted px-1 pb-1 pt-5",
-        authorityVisual && "composer-context-strip--authority",
         className,
       )}
     >
       {backdrop}
-      {authorityVisual}
       <HostView
         className={cn(
           "composer-context-item composer-context-item--checkout flex min-w-0 flex-1 items-center gap-1",

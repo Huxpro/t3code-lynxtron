@@ -20,19 +20,10 @@
 .theme-light .sidebar-header-authority,
 .theme-light .sidebar-settings-authority,
 .theme-light .sidebar-v2-control-authority,
-.theme-light .composer-context-authority-surface {
-  display: none;
-  opacity: 0;
-  pointer-events: none;
-}
 .theme-light .lynx-sidebar-chrome-header--authority .sidebar-brand,
 .theme-light .sidebar-footer--authority .sidebar-settings-row > image,
 .theme-light .sidebar-footer--authority .sidebar-settings-row > text,
 .theme-light .sidebar-v2-control-row--authority > view,
-.theme-light .composer-context-strip--authority > .composer-context-backdrop,
-.theme-light .composer-context-strip--authority > .composer-context-item {
-  opacity: 1;
-}
 .theme-light .composer-context-backdrop {
   border-right-color: #eaeaea;
   border-bottom-color: #eaeaea;
@@ -3758,17 +3749,6 @@
   background-color: transparent;
   box-sizing: border-box;
 }
-.composer-context-authority-surface {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 48px;
-}
-.composer-context-strip--authority > .composer-context-backdrop,
-.composer-context-strip--authority > .composer-context-item {
-  opacity: 0;
-}
 .composer-context-backdrop {
   position: absolute;
   top: 16px;
@@ -7242,19 +7222,10 @@
 .viewport-responsive .sidebar-header-authority,
 .viewport-responsive .sidebar-settings-authority,
 .viewport-responsive .sidebar-v2-control-authority,
-.viewport-responsive .composer-context-authority-surface {
-  display: none;
-  opacity: 0;
-  pointer-events: none;
-}
 .viewport-responsive .lynx-sidebar-chrome-header--authority .sidebar-brand,
 .viewport-responsive .sidebar-footer--authority .sidebar-settings-row > image,
 .viewport-responsive .sidebar-footer--authority .sidebar-settings-row > text,
 .viewport-responsive .sidebar-v2-control-row--authority > view,
-.viewport-responsive .composer-context-strip--authority > .composer-context-backdrop,
-.viewport-responsive .composer-context-strip--authority > .composer-context-item {
-  opacity: 1;
-}
 .viewport-responsive .sidebar-global-toggle-icon {
   opacity: 0.54;
 }
@@ -7271,19 +7242,10 @@
 .sidebar-width-responsive .sidebar-header-authority,
 .sidebar-width-responsive .sidebar-settings-authority,
 .sidebar-width-responsive .sidebar-v2-control-authority,
-.sidebar-width-responsive .composer-context-authority-surface {
-  display: none;
-  opacity: 0;
-  pointer-events: none;
-}
 .sidebar-width-responsive .lynx-sidebar-chrome-header--authority .sidebar-brand,
 .sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > image,
 .sidebar-width-responsive .sidebar-footer--authority .sidebar-settings-row > text,
 .sidebar-width-responsive .sidebar-v2-control-row--authority > view,
-.sidebar-width-responsive .composer-context-strip--authority > .composer-context-backdrop,
-.sidebar-width-responsive .composer-context-strip--authority > .composer-context-item {
-  opacity: 1;
-}
 .sidebar-width-responsive .sidebar-settings-row,
 .sidebar-width-responsive .sidebar-v2-control-row--authority {
   width: 100%;
