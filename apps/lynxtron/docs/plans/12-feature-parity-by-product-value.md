@@ -462,7 +462,9 @@ following-end` with the jump affordance visible only while detached. That gate
 - Native block and single-line Markdown now apply the shared bare inline-code
   file resolver used by Web. File-shaped code spans open the internal file
   surface and expose open/copy context actions, while commands, identifiers,
-  hosts, and git refs remain ordinary code.
+  hosts, and git refs remain ordinary code. Internal workspace-file navigation
+  from block, compact, or context-menu links detaches transcript follow before
+  opening the Files panel; external and system-editor links remain unaffected.
 
 ## PF4: Complete remote and multi-environment operation
 

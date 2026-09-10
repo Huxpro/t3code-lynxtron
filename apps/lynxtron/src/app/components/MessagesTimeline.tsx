@@ -634,7 +634,11 @@ function buildLynxTranscriptRowElements(
             threadId={threadId}
           />
         ) : (
-          <InlineMarkdownRenderer text={row.message.text} cwd={cwd} />
+          <InlineMarkdownRenderer
+            text={row.message.text}
+            cwd={cwd}
+            onManualNavigation={onManualNavigation}
+          />
         )
       ) : row.message.streaming ? (
         <text className="lynx-host-text text-sm text-muted-foreground/60">Thinking…</text>
@@ -642,6 +646,7 @@ function buildLynxTranscriptRowElements(
         <InlineMarkdownRenderer
           text={assistantMessageDisplayText(row.message.text, row.message.streaming)}
           cwd={cwd}
+          onManualNavigation={onManualNavigation}
         />
       ),
     renderAssistantMeta: ({ row }) => {

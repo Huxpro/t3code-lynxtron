@@ -27,10 +27,15 @@ import { t3ClientActions } from "../state/t3Client";
 // Simple markdown-to-Lynx-views renderer. Handles the most common
 // formatting used in AI assistant responses.
 
-function activateMarkdownLink(href: string, cwd: string | undefined): void {
+function activateMarkdownLink(
+  href: string,
+  cwd: string | undefined,
+  onManualNavigation?: () => void,
+): void {
   "background only";
   const fileLink = resolveMarkdownFileLinkMeta(href, cwd);
   if (fileLink?.workspaceRelativePath) {
+    onManualNavigation?.();
     uiActions.openFileSurface(fileLink.workspaceRelativePath);
     return;
   }
@@ -50,6 +55,7 @@ function activateMarkdownLink(href: string, cwd: string | undefined): void {
 async function showMarkdownFileLinkContextMenu(
   href: string,
   cwd: string | undefined,
+  onManualNavigation?: () => void,
 ): Promise<void> {
   const fileLink = resolveMarkdownFileLinkMeta(href, cwd);
   if (!fileLink) return;
@@ -59,7 +65,7 @@ async function showMarkdownFileLinkContextMenu(
     { id: "copy-full", label: "Copy full path" },
   ]);
   if (selection === "open") {
-    activateMarkdownLink(href, cwd);
+    activateMarkdownLink(href, cwd, onManualNavigation);
   } else if (selection === "copy-relative") {
     await clientCapabilities.clipboard.writeText(fileLink.displayPath);
   } else if (selection === "copy-full") {
@@ -70,10 +76,11 @@ async function showMarkdownFileLinkContextMenu(
 function fileLinkContextMenuHandler(
   href: string | null,
   cwd: string | undefined,
+  onManualNavigation?: () => void,
 ): (() => void) | undefined {
   if (!href || !resolveMarkdownFileLinkMeta(href, cwd)) return undefined;
   return () => {
-    void showMarkdownFileLinkContextMenu(href, cwd).catch((cause) => {
+    void showMarkdownFileLinkContextMenu(href, cwd, onManualNavigation).catch((cause) => {
       console.error("[lynx-markdown] failed to handle file link context menu", { href, cause });
     });
   };
@@ -94,8 +101,9 @@ async function showMarkdownExternalLinkContextMenu(href: string): Promise<void> 
 function markdownLinkContextMenuHandler(
   href: string | null,
   cwd: string | undefined,
+  onManualNavigation?: () => void,
 ): (() => void) | undefined {
-  const fileHandler = fileLinkContextMenuHandler(href, cwd);
+  const fileHandler = fileLinkContextMenuHandler(href, cwd, onManualNavigation);
   if (fileHandler) return fileHandler;
   if (!href || !resolveExternalWebLinkHost(href)) return undefined;
   return () => {
@@ -120,6 +128,7 @@ function renderInline(
   spans: ReadonlyArray<MarkdownInlinePresentation>,
   key: string,
   cwd: string | undefined,
+  onManualNavigation?: () => void,
   inlineHost = false,
 ): ReactNode[] {
   return spans.map((span, index) => {
@@ -128,10 +137,10 @@ function renderInline(
     const handleTap = href
       ? () => {
           "background only";
-          activateMarkdownLink(href, cwd);
+          activateMarkdownLink(href, cwd, onManualNavigation);
         }
       : undefined;
-    const handleContextMenu = markdownLinkContextMenuHandler(href, cwd);
+    const handleContextMenu = markdownLinkContextMenuHandler(href, cwd, onManualNavigation);
     const Inline = inlineHost ? HostInlineText : HostText;
     if (span.code) {
       return (
@@ -166,10 +175,17 @@ function renderInline(
   });
 }
 
-function renderInteractiveParagraph(text: string, key: string, cwd: string | undefined): ReactNode {
+function renderInteractiveParagraph(
+  text: string,
+  key: string,
+  cwd: string | undefined,
+  onManualNavigation?: () => void,
+): ReactNode {
   const spans = parseMarkdownInline(text);
   if (!spans.some((span) => inlinePresentationHref(span, cwd))) {
-    return <text className="md-paragraph">{renderInline(spans, key, cwd)}</text>;
+    return (
+      <text className="md-paragraph">{renderInline(spans, key, cwd, onManualNavigation)}</text>
+    );
   }
   return (
     <view className="md-paragraph md-paragraph--segments" data-markdown-interactive-paragraph>
@@ -179,7 +195,7 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
         const className = `${span.code ? "md-inline-code" : "md-inline"}${
           href ? " md-link" : ""
         }${span.strikethrough ? " md-strikethrough" : ""}`;
-        const handleContextMenu = markdownLinkContextMenuHandler(href, cwd);
+        const handleContextMenu = markdownLinkContextMenuHandler(href, cwd, onManualNavigation);
         const content = (
           <HostText
             key={spanKey}
@@ -199,7 +215,7 @@ function renderInteractiveParagraph(text: string, key: string, cwd: string | und
           <HostView
             key={spanKey}
             className="md-link-hit-target"
-            onClick={() => activateMarkdownLink(href, cwd)}
+            onClick={() => activateMarkdownLink(href, cwd, onManualNavigation)}
             onContextMenu={handleContextMenu}
           >
             {content}
@@ -351,6 +367,7 @@ function MarkdownDetailsBlock({
             parseMarkdownInline(block.summary ?? "Details"),
             `${blockKey}-summary`,
             cwd,
+            onManualNavigation,
           )}
         </text>
       </view>
@@ -448,7 +465,12 @@ function MarkdownTableBlock({
                 style={{ textAlign: table.alignments[column] ?? "left" } as any}
                 text-maxline={expanded ? undefined : "1"}
               >
-                {renderInline(parseMarkdownInline(header), `${blockKey}-h${column}`, cwd)}
+                {renderInline(
+                  parseMarkdownInline(header),
+                  `${blockKey}-h${column}`,
+                  cwd,
+                  onManualNavigation,
+                )}
               </text>
             ))}
           </view>
@@ -465,6 +487,7 @@ function MarkdownTableBlock({
                     parseMarkdownInline(cell),
                     `${blockKey}-r${rowIndex}c${column}`,
                     cwd,
+                    onManualNavigation,
                   )}
                 </text>
               ))}
@@ -608,13 +631,17 @@ function renderBlock(
           className={`md-heading md-h${level}`}
           style={{ fontSize, fontWeight: "700" } as any}
         >
-          {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd)}
+          {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd, onManualNavigation)}
         </text>
       );
     }
 
     case "paragraph":
-      return <view key={key}>{renderInteractiveParagraph(block.text ?? "", key, cwd)}</view>;
+      return (
+        <view key={key}>
+          {renderInteractiveParagraph(block.text ?? "", key, cwd, onManualNavigation)}
+        </view>
+      );
 
     case "code":
       return (
@@ -651,7 +678,12 @@ function renderBlock(
               >
                 <text className="md-list-marker">{marker}</text>
                 <view className="md-list-content">
-                  {renderInline(parseMarkdownInline(item.content), `${key}-${j}`, cwd)}
+                  {renderInline(
+                    parseMarkdownInline(item.content),
+                    `${key}-${j}`,
+                    cwd,
+                    onManualNavigation,
+                  )}
                 </view>
               </view>
             );
@@ -681,7 +713,7 @@ function renderBlock(
             )
           ) : (
             <text className="md-blockquote-text">
-              {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd)}
+              {renderInline(parseMarkdownInline(block.text ?? ""), key, cwd, onManualNavigation)}
             </text>
           )}
         </view>
@@ -749,11 +781,13 @@ export function InlineMarkdownRenderer({
   cwd,
   className,
   wrapCodeWords = false,
+  onManualNavigation,
 }: {
   text: string;
   cwd?: string | undefined;
   className?: string | undefined;
   wrapCodeWords?: boolean;
+  onManualNavigation?: (() => void) | undefined;
 }) {
   const spans = useMemo(() => parseMarkdownInline(text), [text]);
   return (
@@ -779,8 +813,8 @@ export function InlineMarkdownRenderer({
             <HostView
               key={`inline-${index}`}
               className={`inline-markdown-code${href ? " md-link" : ""}`}
-              onClick={href ? () => activateMarkdownLink(href, cwd) : undefined}
-              onContextMenu={markdownLinkContextMenuHandler(href, cwd)}
+              onClick={href ? () => activateMarkdownLink(href, cwd, onManualNavigation) : undefined}
+              onContextMenu={markdownLinkContextMenuHandler(href, cwd, onManualNavigation)}
             >
               <text className="inline-markdown-code-label">{span.text}</text>
             </HostView>
@@ -789,8 +823,8 @@ export function InlineMarkdownRenderer({
           <HostView
             key={`inline-${index}`}
             className="inline-markdown-link"
-            onClick={() => activateMarkdownLink(href, cwd)}
-            onContextMenu={markdownLinkContextMenuHandler(href, cwd)}
+            onClick={() => activateMarkdownLink(href, cwd, onManualNavigation)}
+            onContextMenu={markdownLinkContextMenuHandler(href, cwd, onManualNavigation)}
           >
             <HostText
               className={`inline-markdown-text md-link${
