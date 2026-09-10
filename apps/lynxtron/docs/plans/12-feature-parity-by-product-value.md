@@ -242,6 +242,13 @@ following-end` with the jump affordance visible only while detached. That gate
   also caught and fixed an asynchronous-hydration bug where empty startup state
   followed by canonical history was misclassified as a new turn. Long streaming
   transcripts, paired position correlation, and real wheel input remain open.
+- The renderer-neutral block parser and block-routing predicate have moved out
+  of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
+  only the native view mapping, while fenced code metadata, headings, nested
+  quotes, GFM lists/tasks/tables, images, details, rules, and paragraph ordering
+  now have a shared ownership boundary that Web can consume without importing a
+  renderer. AST-level convergence with Web's react-markdown pipeline remains
+  open.
 
 ## PF4: Complete remote and multi-environment operation
 

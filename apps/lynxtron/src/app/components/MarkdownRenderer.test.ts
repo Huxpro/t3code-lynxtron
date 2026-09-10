@@ -1,7 +1,10 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 
 import { copyMarkdownCode } from "./markdownClipboard";
-import { parseMarkdownBlocks, shouldRenderBlockMarkdown } from "./markdownBlocks";
+import {
+  parseMarkdownBlocks,
+  shouldRenderBlockMarkdown,
+} from "@t3tools/client-runtime/presentation/markdown-blocks";
 
 describe("parseMarkdownBlocks", () => {
   it("preserves fenced-code language, title, and content", () => {
@@ -25,9 +28,9 @@ describe("parseMarkdownBlocks", () => {
 
   it("keeps second-response prose, lists, and code in source order", () => {
     expect(
-      parseMarkdownBlocks(
-        "Follow-up result:\n\n- first\n- second\n\n```bash\npnpm test\n```",
-      ).map((block) => block.type),
+      parseMarkdownBlocks("Follow-up result:\n\n- first\n- second\n\n```bash\npnpm test\n```").map(
+        (block) => block.type,
+      ),
     ).toEqual(["paragraph", "empty", "list", "empty", "code"]);
   });
 
@@ -123,7 +126,7 @@ describe("parseMarkdownBlocks", () => {
     expect(
       parseMarkdownBlocks(
         [
-          "![Architecture](https://example.com/architecture.png \"Diagram\")",
+          '![Architecture](https://example.com/architecture.png "Diagram")',
           "",
           "<details open>",
           "<summary>More context</summary>",

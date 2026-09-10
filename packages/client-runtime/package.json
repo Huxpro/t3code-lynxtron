@@ -95,6 +95,10 @@
       "types": "./src/presentation/markdown.ts",
       "default": "./src/presentation/markdown.ts"
     },
+    "./presentation/markdown-blocks": {
+      "types": "./src/presentation/markdownBlocks.ts",
+      "default": "./src/presentation/markdownBlocks.ts"
+    },
     "./presentation/paths": {
       "types": "./src/presentation/paths.ts",
       "default": "./src/presentation/paths.ts"

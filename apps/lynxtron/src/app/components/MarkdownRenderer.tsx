@@ -15,7 +15,10 @@ import { clientCapabilities, showNativeContextMenu } from "../platform/clientCap
 import { uiActions } from "../state/uiState";
 import { HostInlineText, HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import { resolveExternalWebLinkHost } from "../../../../web/src/components/chat/externalLinkContextMenu";
-import { parseMarkdownBlocks, type ParsedMarkdownBlock } from "./markdownBlocks";
+import {
+  parseMarkdownBlocks,
+  type ParsedMarkdownBlock,
+} from "@t3tools/client-runtime/presentation/markdown-blocks";
 import { copyMarkdownCode } from "./markdownClipboard";
 
 // Simple markdown-to-Lynx-views renderer. Handles the most common

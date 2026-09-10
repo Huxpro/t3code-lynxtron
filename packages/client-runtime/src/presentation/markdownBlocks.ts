@@ -4,7 +4,7 @@ import {
   parseMarkdownTable,
   type MarkdownListItemPresentation,
   type MarkdownTablePresentation,
-} from "@t3tools/client-runtime/presentation/markdown";
+} from "./markdown.ts";
 
 export interface ParsedMarkdownBlock {
   type:
@@ -62,9 +62,7 @@ export function shouldRenderBlockMarkdown(text: string): boolean {
   const trimmed = text.trim();
   return (
     parseMarkdownFence(trimmed) !== null ||
-    /^(?:#{1,6}\s+|(?:>\s*)+|(?:[-+*]|\d+[.)])\s+|(?:-{3,}|\*{3,}|_{3,})\s*$)/.test(
-      trimmed,
-    ) ||
+    /^(?:#{1,6}\s+|(?:>\s*)+|(?:[-+*]|\d+[.)])\s+|(?:-{3,}|\*{3,}|_{3,})\s*$)/.test(trimmed) ||
     /^!\[[^\]]*]\([^)]+\)$/.test(trimmed) ||
     /^<details(?:\s|>)/i.test(trimmed)
   );
@@ -119,9 +117,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       continue;
     }
 
-    const imageMatch = line
-      .trim()
-      .match(/^!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)\s*$/);
+    const imageMatch = line.trim().match(/^!\[([^\]]*)]\((\S+?)(?:\s+["']([^"']*)["'])?\)\s*$/);
     if (imageMatch) {
       blocks.push({
         type: "image",

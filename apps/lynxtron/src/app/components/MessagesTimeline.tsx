@@ -47,7 +47,7 @@ import workingLabelFullAtlasUrl from "../assets/working-label-64-71h@2x.png?exte
 import workingLabelAtlasUrl from "../assets/working-label-atlas@2x.png?external";
 import { Icon } from "./Icon";
 import { InlineMarkdownRenderer, MarkdownRenderer } from "./MarkdownRenderer";
-import { shouldRenderBlockMarkdown } from "./markdownBlocks";
+import { shouldRenderBlockMarkdown } from "@t3tools/client-runtime/presentation/markdown-blocks";
 import { uiActions } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
 import { showNativeConfirm, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
