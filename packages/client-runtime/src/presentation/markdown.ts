@@ -317,9 +317,7 @@ function parseMarkdownInlineWithStyle(
       italic: override?.italic ?? style.italic,
       code,
       href: override?.href ?? style.href,
-      ...(override?.strikethrough ?? style.strikethrough
-        ? { strikethrough: true }
-        : {}),
+      ...((override?.strikethrough ?? style.strikethrough) ? { strikethrough: true } : {}),
     });
   };
 
@@ -367,6 +365,27 @@ function parseMarkdownInlineWithStyle(
       append(url, false, { href: url });
       cursor += url.length;
       continue;
+    }
+
+    const atAutolinkBoundary = cursor === 0 || /[\s(\[{]/.test(text[cursor - 1]!);
+    if (atAutolinkBoundary) {
+      const wwwMatch = text.slice(cursor).match(/^www\.[A-Za-z0-9.-]+\.[A-Za-z]{2,}(?:\/[^\s<]*)?/);
+      if (wwwMatch?.[0]) {
+        const value = wwwMatch[0].replace(/[.,;!?]+$/, "");
+        append(value, false, { href: `https://${value}` });
+        cursor += value.length;
+        continue;
+      }
+
+      const emailMatch = text
+        .slice(cursor)
+        .match(/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/);
+      if (emailMatch?.[0]) {
+        const value = emailMatch[0].replace(/[.,;!?]+$/, "");
+        append(value, false, { href: `mailto:${value}` });
+        cursor += value.length;
+        continue;
+      }
     }
 
     if (text[cursor] === "`") {

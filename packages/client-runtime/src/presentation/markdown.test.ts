@@ -210,6 +210,41 @@ describe("parseMarkdownInline", () => {
     ]);
   });
 
+  it("projects GFM www and email autolink literals without trailing punctuation", () => {
+    expect(parseMarkdownInline("Visit www.example.com/docs, or email hello@example.com.")).toEqual([
+      { text: "Visit ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "www.example.com/docs",
+        bold: false,
+        italic: false,
+        code: false,
+        href: "https://www.example.com/docs",
+      },
+      { text: ", or email ", bold: false, italic: false, code: false, href: null },
+      {
+        text: "hello@example.com",
+        bold: false,
+        italic: false,
+        code: false,
+        href: "mailto:hello@example.com",
+      },
+      { text: ".", bold: false, italic: false, code: false, href: null },
+    ]);
+  });
+
+  it("does not autolink www text inside words, code spans, or hostless email text", () => {
+    expect(parseMarkdownInline("`www.example.com` prefixwww.example.com user@localhost")).toEqual([
+      { text: "www.example.com", bold: false, italic: false, code: true, href: null },
+      {
+        text: " prefixwww.example.com user@localhost",
+        bold: false,
+        italic: false,
+        code: false,
+        href: null,
+      },
+    ]);
+  });
+
   it("projects GFM strikethrough without losing nested inline styles", () => {
     expect(parseMarkdownInline("Keep ~~old **bold** text~~ now")).toEqual([
       { text: "Keep ", bold: false, italic: false, code: false, href: null },
