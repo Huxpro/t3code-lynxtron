@@ -64,7 +64,10 @@ import {
   ZapIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
-import { buildExpandedImagePreview, ExpandedImagePreview } from "./ExpandedImagePreview";
+import {
+  buildExpandedImagePreview,
+  type ExpandedImagePreview,
+} from "@t3tools/client-runtime/presentation/image-preview";
 import { ProposedPlanCard } from "./ProposedPlanCard";
 import { ChangedFilesCard } from "./ChangedFilesTree";
 import { shouldAutoExpandChangedFiles } from "@t3tools/client-runtime/presentation/diff";

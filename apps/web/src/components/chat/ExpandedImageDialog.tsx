@@ -1,7 +1,7 @@
 import { memo, useCallback, useEffect, useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
-import type { ExpandedImagePreview } from "./ExpandedImagePreview";
+import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 
 interface ExpandedImageDialogProps {
   preview: ExpandedImagePreview;

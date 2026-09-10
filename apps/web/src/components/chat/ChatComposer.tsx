@@ -112,7 +112,10 @@ import {
   renderProviderTraitsPicker,
 } from "./composerProviderState";
 import { ContextWindowMeter } from "./ContextWindowMeter";
-import { buildExpandedImagePreview, type ExpandedImagePreview } from "./ExpandedImagePreview";
+import {
+  buildExpandedImagePreview,
+  type ExpandedImagePreview,
+} from "@t3tools/client-runtime/presentation/image-preview";
 import { basenameOfPath } from "../../pierre-icons";
 import { cn, randomUUID } from "~/lib/utils";
 import { Separator } from "../ui/separator";

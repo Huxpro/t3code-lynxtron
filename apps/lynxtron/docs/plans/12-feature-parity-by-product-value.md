@@ -393,6 +393,8 @@ following-end` with the jump affordance visible only while detached. That gate
   original file-card fallback without mutating canonical connector state.
   The Plan panel passes its Markdown images through the same root viewer instead
   of silently losing that interaction outside the transcript.
+  Web now imports this preview model directly from `client-runtime`; its former
+  renderer-local re-export has been deleted.
 
 ## PF4: Complete remote and multi-environment operation
 
