@@ -457,6 +457,7 @@ function buildLynxTranscriptRowElements(
     },
     renderUserBody: ({ row }) => {
       const displayed = deriveVisibleUserMessage(row.message.text);
+      if (displayed.visibleText.trim().length === 0) return null;
       const useAuthoritySurface =
         row.message.text ===
         "Run `printf pending-approval` in the shell. Do not use any other tool and wait for my approval.";

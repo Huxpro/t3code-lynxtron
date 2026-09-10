@@ -2239,6 +2239,7 @@ describe("desktop shell interaction contract", () => {
     expect(timelineSource).toContain("deriveVisibleUserMessage(row.message.text)");
     expect(timelineSource).toContain("data-message-context-count");
     expect(timelineSource).toContain("text={displayed.visibleText}");
+    expect(timelineSource).toContain("if (displayed.visibleText.trim().length === 0) return null;");
     expect(overrides).toContain(".transcript-context-summary {");
   });
 
