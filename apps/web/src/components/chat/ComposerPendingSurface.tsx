@@ -8,19 +8,11 @@ export function ComposerPendingApprovalSurface({
   detail,
   detailLabel,
   pendingCount,
-  eyebrowVisual,
-  summaryVisual,
-  detailLabelVisual,
-  detailVisual,
 }: {
   readonly approvalSummary: string;
   readonly detail?: string;
   readonly detailLabel: string;
   readonly pendingCount: number;
-  readonly eyebrowVisual?: ReactNode;
-  readonly summaryVisual?: ReactNode;
-  readonly detailLabelVisual?: ReactNode;
-  readonly detailVisual?: ReactNode;
 }) {
   return (
     <HostView
@@ -28,46 +20,28 @@ export function ComposerPendingApprovalSurface({
       className="composer-pending-approval px-4 py-3.5 sm:px-5 sm:py-4"
     >
       <HostView className="composer-pending-approval__heading flex flex-wrap items-center gap-2">
-        <HostText
-          className={`composer-pending-approval__eyebrow text-sm tracking-[0.2em]${
-            eyebrowVisual ? " composer-pending-copy--authority-hidden" : ""
-          }`}
-        >
+        <HostText className="composer-pending-approval__eyebrow text-sm tracking-[0.2em]">
           PENDING APPROVAL
         </HostText>
-        {eyebrowVisual}
-        <HostText
-          className={`composer-pending-approval__summary text-sm font-medium${
-            summaryVisual ? " composer-pending-copy--authority-hidden" : ""
-          }`}
-        >
+        <HostText className="composer-pending-approval__summary text-sm font-medium">
           {approvalSummary}
         </HostText>
-        {summaryVisual}
         {pendingCount > 1 ? (
           <HostText className="text-xs text-muted-foreground">1/{pendingCount}</HostText>
         ) : null}
       </HostView>
       {detail ? (
         <HostView className="composer-pending-approval__detail mt-3 rounded-lg border border-border/65 bg-background/70 p-3">
-          <HostText
-            className={`composer-pending-approval__detail-label text-xs font-medium text-muted-foreground${
-              detailLabelVisual ? " composer-pending-copy--authority-hidden" : ""
-            }`}
-          >
+          <HostText className="composer-pending-approval__detail-label text-xs font-medium text-muted-foreground">
             {detailLabel}
           </HostText>
-          {detailLabelVisual}
           <HostText
             aria-label={detailLabel}
-            className={`composer-pending-approval__detail-value mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-foreground${
-              detailVisual ? " composer-pending-copy--authority-hidden" : ""
-            }`}
+            className="composer-pending-approval__detail-value mt-2 max-h-40 overflow-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed text-foreground"
             data-approval-detail="complete"
           >
             {detail}
           </HostText>
-          {detailVisual}
         </HostView>
       ) : null}
     </HostView>

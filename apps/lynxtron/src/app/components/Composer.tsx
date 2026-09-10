@@ -43,7 +43,6 @@ import {
   replaceTextRange,
   type ComposerTrigger,
 } from "@t3tools/shared/composerTrigger";
-import approvalEditorPendingUrl from "../assets/approval-editor-pending@2x.png?external";
 import {
   COMPOSER_SHELL_CLASS,
   ComposerContextStrip,
@@ -821,24 +820,11 @@ export function Composer({
                     <>
                       <view className="composer-editor-area composer-editor-area--approval">
                         <text
-                          className={[
-                            "composer__input composer__input--approval composer__input--placeholder",
-                            approvalDetail === "printf pending-approval"
-                              ? "composer__input--authority-hidden"
-                              : undefined,
-                          ]
-                            .filter(Boolean)
-                            .join(" ")}
+                          className="composer__input composer__input--approval composer__input--placeholder"
                           data-composer-editor="true"
                         >
                           {approvalDetail ?? "Resolve this approval request to continue"}
                         </text>
-                        {approvalDetail === "printf pending-approval" ? (
-                          <image
-                            className="composer-editor-authority-surface"
-                            src={approvalEditorPendingUrl}
-                          />
-                        ) : null}
                       </view>
                       providerAvailable ? (
                       <view

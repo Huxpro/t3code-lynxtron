@@ -21,8 +21,6 @@
 .theme-light .sidebar-settings-authority,
 .theme-light .sidebar-v2-control-authority,
 .theme-light .topbar-authority-surface,
-.theme-light .composer-pending-authority-copy,
-.theme-light .composer-editor-authority-surface,
 .theme-light .composer-context-authority-surface,
 .theme-light .ui-button__authority-label {
   display: none;
@@ -35,8 +33,6 @@
 .theme-light .sidebar-v2-control-row--authority > view,
 .theme-light .topbar--authority > .topbar__content,
 .theme-light .topbar--authority > .topbar__layout-controls,
-.theme-light .composer-pending-copy--authority-hidden,
-.theme-light .composer__input--authority-hidden,
 .theme-light .composer-context-strip--authority > .composer-context-backdrop,
 .theme-light .composer-context-strip--authority > .composer-context-item,
 .theme-light .ui-button__label--authority-hidden {
@@ -3588,33 +3584,6 @@
   text-stroke-color: var(--foreground);
   text-stroke-width: 0.15px;
 }
-.composer-pending-copy--authority-hidden {
-  opacity: 0;
-}
-.composer-pending-authority-copy {
-  position: absolute;
-  height: 20px;
-}
-.composer-pending-authority-copy--eyebrow {
-  top: 0;
-  left: 0;
-  width: 177px;
-}
-.composer-pending-authority-copy--summary {
-  top: 0;
-  left: 184px;
-  width: 202px;
-}
-.composer-pending-authority-copy--detail-label {
-  top: 15px;
-  left: 12px;
-  width: 60px;
-}
-.composer-pending-authority-copy--detail-value {
-  top: 15px;
-  left: 70px;
-  width: 168px;
-}
 .composer-editor-area--approval {
   position: relative;
   height: 90px;
@@ -3789,16 +3758,6 @@
   font-size: 12px;
   font-weight: 600;
   line-height: 16px;
-}
-.composer__input--authority-hidden {
-  opacity: 0;
-}
-.composer-editor-authority-surface {
-  position: absolute;
-  top: 12px;
-  left: 16px;
-  width: 734px;
-  height: 70px;
 }
 .composer-context-strip {
   display: flex;
@@ -7311,8 +7270,6 @@
 .viewport-responsive .sidebar-settings-authority,
 .viewport-responsive .sidebar-v2-control-authority,
 .viewport-responsive .topbar-authority-surface,
-.viewport-responsive .composer-pending-authority-copy,
-.viewport-responsive .composer-editor-authority-surface,
 .viewport-responsive .composer-context-authority-surface,
 .viewport-responsive .ui-button__authority-label {
   display: none;
@@ -7325,8 +7282,6 @@
 .viewport-responsive .sidebar-v2-control-row--authority > view,
 .viewport-responsive .topbar--authority > .topbar__content,
 .viewport-responsive .topbar--authority > .topbar__layout-controls,
-.viewport-responsive .composer-pending-copy--authority-hidden,
-.viewport-responsive .composer__input--authority-hidden,
 .viewport-responsive .composer-context-strip--authority > .composer-context-backdrop,
 .viewport-responsive .composer-context-strip--authority > .composer-context-item,
 .viewport-responsive .ui-button__label--authority-hidden {
@@ -7349,8 +7304,6 @@
 .sidebar-width-responsive .sidebar-settings-authority,
 .sidebar-width-responsive .sidebar-v2-control-authority,
 .sidebar-width-responsive .topbar-authority-surface,
-.sidebar-width-responsive .composer-pending-authority-copy,
-.sidebar-width-responsive .composer-editor-authority-surface,
 .sidebar-width-responsive .composer-context-authority-surface,
 .sidebar-width-responsive .ui-button__authority-label {
   display: none;
@@ -7363,8 +7316,6 @@
 .sidebar-width-responsive .sidebar-v2-control-row--authority > view,
 .sidebar-width-responsive .topbar--authority > .topbar__content,
 .sidebar-width-responsive .topbar--authority > .topbar__layout-controls,
-.sidebar-width-responsive .composer-pending-copy--authority-hidden,
-.sidebar-width-responsive .composer__input--authority-hidden,
 .sidebar-width-responsive .composer-context-strip--authority > .composer-context-backdrop,
 .sidebar-width-responsive .composer-context-strip--authority > .composer-context-item,
 .sidebar-width-responsive .ui-button__label--authority-hidden {

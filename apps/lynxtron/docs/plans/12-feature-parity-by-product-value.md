@@ -366,6 +366,11 @@ following-end` with the jump affordance visible only while detached. That gate
   viewport. The shared semantic row anatomy now remains visible and operable in
   that real approval flow; unrelated shell/composer calibration assets remain a
   separate convergence concern.
+- Pending-approval banners and the approval Composer no longer hide their real
+  shared text behind fixture-specific screenshots at the authority viewport.
+  Arbitrary command/file approval details now use the same semantic surface in
+  dark, light, and responsive layouts; Header/button calibration remains a
+  separate convergence slice.
 - Supported Markdown images now open a Native root-level preview overlay rather
   than ending at a static inline image. The preview data model is shared with
   Web, includes close/previous/next semantics, and is threaded through nested

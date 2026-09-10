@@ -83,10 +83,6 @@ import {
   resolveActiveThreadModelSelection,
   resolveModelPickerNavigationProvider,
 } from "../state/modelSelection.logic";
-import approvalDetailLabelUrl from "../assets/approval-detail-label@2x.png?external";
-import approvalDetailValuePendingUrl from "../assets/approval-detail-value-pending@2x.png?external";
-import approvalEyebrowUrl from "../assets/approval-eyebrow@2x.png?external";
-import approvalSummaryUrl from "../assets/approval-summary@2x.png?external";
 import { useT3ProjectFileScripts } from "../hooks/useT3ProjectFileScripts";
 import type { ProjectScript } from "@t3tools/contracts";
 import type { UploadChatAttachment } from "@t3tools/contracts";
@@ -903,32 +899,6 @@ export function ChatView({ threadId }: ChatViewProps) {
                       : "File change"
                 }
                 pendingCount={pendingApprovals.length}
-                eyebrowVisual={
-                  <image
-                    className="composer-pending-authority-copy composer-pending-authority-copy--eyebrow"
-                    src={approvalEyebrowUrl}
-                  />
-                }
-                summaryVisual={
-                  <image
-                    className="composer-pending-authority-copy composer-pending-authority-copy--summary"
-                    src={approvalSummaryUrl}
-                  />
-                }
-                detailLabelVisual={
-                  <image
-                    className="composer-pending-authority-copy composer-pending-authority-copy--detail-label"
-                    src={approvalDetailLabelUrl}
-                  />
-                }
-                detailVisual={
-                  activePendingApproval.detail === "printf pending-approval" ? (
-                    <image
-                      className="composer-pending-authority-copy composer-pending-authority-copy--detail-value"
-                      src={approvalDetailValuePendingUrl}
-                    />
-                  ) : undefined
-                }
               />
             </view>
           ) : activePendingQuestion ? (
