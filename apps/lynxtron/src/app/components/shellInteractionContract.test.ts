@@ -216,6 +216,12 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain("clearTimeout(resetTimerRef.current)");
   });
 
+  it("resets Markdown details state when a virtualized block identity changes", () => {
+    const markdown = readFileSync(path.join(import.meta.dirname, "MarkdownRenderer.tsx"), "utf8");
+    expect(markdown).toContain("setOpen(block.open ?? false);");
+    expect(markdown).toContain("}, [block.open, blockKey]);");
+  });
+
   it("keeps archived thread destructive actions behind the native menu and confirmation", () => {
     expect(settingsLayoutSource).toContain("onContextMenu={onContextMenu}");
     expect(settingsLayoutSource.match(/onContextMenu=\{onContextMenu\}/g)).toHaveLength(4);

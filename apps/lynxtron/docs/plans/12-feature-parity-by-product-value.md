@@ -309,6 +309,9 @@ following-end` with the jump affordance visible only while detached. That gate
 - Native code-block copy now follows the same pending/copied/failed contract,
   disables duplicate taps while the bridge write is in flight, and clears its
   feedback timer when a virtualized block unmounts.
+- Native Markdown details disclosures now reset to the newly authored `open`
+  state when a virtualized block identity changes, preventing expansion state
+  from leaking between recycled transcript rows.
 
 ## PF4: Complete remote and multi-environment operation
 

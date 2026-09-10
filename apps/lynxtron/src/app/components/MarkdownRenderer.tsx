@@ -275,6 +275,9 @@ function MarkdownDetailsBlock({
   readonly cwd: string | undefined;
 }) {
   const [open, setOpen] = useState(block.open ?? false);
+  useEffect(() => {
+    setOpen(block.open ?? false);
+  }, [block.open, blockKey]);
   return (
     <view
       className="md-details"
