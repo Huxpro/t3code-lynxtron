@@ -581,4 +581,18 @@ describe("parseMarkdownImageTokens", () => {
   it("ignores malformed image syntax", () => {
     expect(parseMarkdownImageTokens("Before ![missing]( after")).toEqual([]);
   });
+
+  it("keeps escaped and code-span image syntax literal", () => {
+    const text =
+      "\\![escaped](https://example.com/escaped.png) `![code](https://example.com/code.png)` ![real](https://example.com/real.png)";
+    const realStart = text.indexOf("![real]");
+    expect(parseMarkdownImageTokens(text)).toEqual([
+      {
+        alt: "real",
+        start: realStart,
+        end: text.length,
+        href: "https://example.com/real.png",
+      },
+    ]);
+  });
 });

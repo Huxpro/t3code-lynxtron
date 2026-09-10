@@ -298,6 +298,8 @@ following-end` with the jump affordance visible only while detached. That gate
   the existing image/fallback renderer instead of leaking their Markdown syntax
   as ordinary prose. Single-line prose containing an embedded image now also
   routes through that block projection instead of the compact inline renderer.
+  Escaped image syntax and image-like text inside code spans remain literal,
+  matching Web instead of opening an unintended Native image surface.
 - Shared inline Markdown now matches GFM autolink meaning for bare
   `www.example.com` and email addresses, including canonical `https://` and
   `mailto:` targets and trailing-punctuation boundaries. Unmatched closing

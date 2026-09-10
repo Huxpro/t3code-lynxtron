@@ -482,8 +482,23 @@ export function parseMarkdownImageTokens(text: string): ReadonlyArray<MarkdownIm
   const tokens: MarkdownImageToken[] = [];
   let cursor = 0;
   while (cursor < text.length) {
-    const start = text.indexOf("![", cursor);
-    if (start === -1) break;
+    if (text[cursor] === "\\" && cursor + 1 < text.length) {
+      cursor += 2;
+      continue;
+    }
+    if (text[cursor] === "`") {
+      let tickCount = 1;
+      while (text[cursor + tickCount] === "`") tickCount += 1;
+      const delimiter = "`".repeat(tickCount);
+      const end = findClosingDelimiter(text, delimiter, cursor + tickCount);
+      cursor = end === -1 ? cursor + tickCount : end + tickCount;
+      continue;
+    }
+    const start = text.startsWith("![", cursor) ? cursor : -1;
+    if (start === -1) {
+      cursor += 1;
+      continue;
+    }
     const labelEnd = findClosingDelimiter(text, "]", start + 2);
     if (labelEnd === -1 || text[labelEnd + 1] !== "(") {
       cursor = start + 2;

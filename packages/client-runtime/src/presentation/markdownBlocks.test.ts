@@ -374,6 +374,13 @@ describe("parseMarkdownBlocks", () => {
       { type: "image", alt: "diagram", href: "./shots/a_(b).png" },
     ]);
   });
+
+  it("does not route escaped or code-span image syntax to image blocks", () => {
+    const text =
+      "\\![escaped](https://example.com/escaped.png) and `![code](https://example.com/code.png)`";
+    expect(parseMarkdownBlocks(text)).toEqual([{ type: "paragraph", text }]);
+    expect(shouldRenderBlockMarkdown(text)).toBe(false);
+  });
 });
 
 describe("shouldRenderBlockMarkdown", () => {
