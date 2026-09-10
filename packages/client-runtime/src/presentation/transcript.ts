@@ -1309,7 +1309,7 @@ export const INITIAL_TRANSCRIPT_FOLLOW_STATE: TranscriptFollowState = {
 };
 
 export interface TranscriptNewTurnAnchor {
-  readonly newestUserMessageId: string | null;
+  readonly newestUserMessageId: string | null | undefined;
   readonly anchorMessageId: string | null;
 }
 
@@ -1330,6 +1330,9 @@ export function deriveTranscriptNewTurnAnchor(
       newestUserMessageId = message.id;
       break;
     }
+  }
+  if (previousNewestUserMessageId === undefined && newestUserMessageId === null) {
+    return { newestUserMessageId: undefined, anchorMessageId: null };
   }
   const anchorMessageId =
     previousNewestUserMessageId !== undefined &&

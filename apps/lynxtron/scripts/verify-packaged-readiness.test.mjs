@@ -1033,6 +1033,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".composer-primary-action"');
     assert.include(source, 'message.text.includes("<terminal_context>")');
     assert.include(source, "canonicalAssistantMessage");
+    assert.include(source, "async function verifyTranscriptFollowState");
+    assert.include(source, '"--verify-transcript-follow-state"');
+    assert.include(source, 'data-transcript-scroll-mode"] === "free-scrolling"');
     assert.include(source, "async function verifyComposerSendRetry");
     assert.include(source, '"--verify-composer-send-retry"');
     assert.include(source, 'T3_TEST_SEND_PROMPT_ERROR_ONCE: "1"');

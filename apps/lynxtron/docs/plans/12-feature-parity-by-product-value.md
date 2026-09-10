@@ -236,9 +236,12 @@ A working agent loop must remain usable across long output, structured Markdown,
   LegendList geometry cases now run with the shared transcript tests. A shared
   three-state reducer now owns begin-turn anchoring, explicit user detach,
   re-stick, and thread-reset transitions; Web routes each mode change through
-  it, and Lynx's legacy follow projection delegates its user-scroll transition
-  to the same authority. Renderer acceptance and removal of the legacy boolean
-  projection remain open.
+  it, and Lynx now stores the shared three-state mode directly. An exact-bundle
+  gate proves `following-end -> free-scrolling ->
+following-end` with the jump affordance visible only while detached. That gate
+  also caught and fixed an asynchronous-hydration bug where empty startup state
+  followed by canonical history was misclassified as a new turn. Long streaming
+  transcripts, paired position correlation, and real wheel input remain open.
 
 ## PF4: Complete remote and multi-environment operation
 

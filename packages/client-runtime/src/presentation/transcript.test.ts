@@ -707,6 +707,17 @@ describe("deriveTranscriptNewTurnAnchor", () => {
     });
   });
 
+  it("does not finish hydration from an empty intermediate projection", () => {
+    expect(deriveTranscriptNewTurnAnchor(undefined, [], true)).toEqual({
+      newestUserMessageId: undefined,
+      anchorMessageId: null,
+    });
+    expect(deriveTranscriptNewTurnAnchor(undefined, messages, true)).toEqual({
+      newestUserMessageId: "u1",
+      anchorMessageId: null,
+    });
+  });
+
   it("anchors only a newly materialized user turn while following", () => {
     const nextMessages = [
       ...messages,

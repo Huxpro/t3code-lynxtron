@@ -2190,15 +2190,10 @@ describe("desktop shell interaction contract", () => {
 
   it("shows the transcript jump affordance only after follow mode detaches", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
-    expect(timelineSource).toContain(
-      'followState.following ? "timeline-jump--hidden" : "timeline-jump--visible"',
-    );
-    expect(timelineSource).toContain(
-      'data-transcript-jump-visible={followState.following ? "false" : "true"}',
-    );
-    expect(timelineSource).toContain(
-      "contentLength: scrollHeight,\n          viewportLength: listHeight,",
-    );
+    expect(timelineSource).toContain('timelineScrollMode !== "free-scrolling"');
+    expect(timelineSource).toContain('timelineScrollMode === "free-scrolling" ? "true" : "false"');
+    expect(timelineSource).toContain("const contentFits = scrollHeight <= listHeight + 60;");
+    expect(timelineSource).toContain("data-transcript-scroll-mode={timelineScrollMode}");
     expect(overrides).toContain(".timeline-jump--hidden");
     expect(overrides).toContain("pointer-events: none;");
   });

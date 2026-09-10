@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-10T11:35:08-04:00",
+  "stateId": "transcript-follow-state",
+  "codeState": "working-tree-product-change",
+  "scope": {
+    "authority": "shared-client-runtime",
+    "candidate": "lynx-native",
+    "viewport": "1280x820",
+    "snapshotSha256": "31e536a429df40d07648a4dae41a07436ad5d9136ca1f57614807988008ed739",
+    "canonicalThreadId": "fidelity-review-thread"
+  },
+  "result": {
+    "status": "pass",
+    "initialMode": "following-end",
+    "detachedMode": "free-scrolling",
+    "jumpVisibleWhenDetached": true,
+    "restoredMode": "following-end",
+    "jumpHiddenWhenRestored": true,
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true
+  },
+  "regressionFixed": {
+    "symptom": "A cold-start empty projection followed by canonical history was treated as a newly materialized turn and left the timeline in anchoring-new-turn mode.",
+    "resolution": "The shared new-turn detector keeps hydration uninitialized across an empty intermediate projection and initializes only when canonical history first arrives."
+  },
+  "artifacts": {
+    "reportPath": "/tmp/t3code-pf3-follow-final.t3wFrw/report.json",
+    "reportSha256": "affd023b7a2e22729d930b5467771faa0d000f1f7b02143f0c576a15dfe95103",
+    "bundleSha256": "57297dc58263eb58f446e5f892a36993118c6e36c5d952701a25cdfed894676f"
+  },
+  "evidenceBoundary": {
+    "proved": [
+      "Web and Lynx consume one shared three-state scroll-mode authority",
+      "initial canonical history remains following-end after asynchronous hydration",
+      "a user-scroll-away transition detaches and exposes the jump affordance",
+      "a user-scroll-end transition restores follow mode and hides the jump affordance"
+    ],
+    "notYetProved": [
+      "physical wheel scrolling on Lynxtron 0.0.21 without the native tap/attribute LogBox",
+      "streaming row growth while detached on a long canonical transcript",
+      "paired Web and Lynx scroll-position correlation"
+    ]
+  }
+}

@@ -18,11 +18,10 @@ import {
   deriveWorkLogEntries,
   formatDuration,
   shouldShowAssistantChangedFiles,
-  INITIAL_TRANSCRIPT_FOLLOW_STATE,
-  reduceTranscriptFollow,
+  reduceTimelineScrollMode,
   resolveAssistantMessageCopyState,
   type MessagesTimelineRow,
-  type TranscriptFollowState,
+  type TimelineScrollMode,
 } from "@t3tools/client-runtime/presentation/transcript";
 import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
@@ -590,11 +589,10 @@ export function MessagesTimeline({
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
   const [expandedTurnIds, setExpandedTurnIds] = useState<ReadonlySet<TurnId>>(new Set());
   const [expandedWorkGroupIds, setExpandedWorkGroupIds] = useState<ReadonlySet<string>>(new Set());
-  const [followState, setFollowState] = useState<TranscriptFollowState>(
-    INITIAL_TRANSCRIPT_FOLLOW_STATE,
-  );
-  const followStateRef = useRef(followState);
-  followStateRef.current = followState;
+  const [timelineScrollMode, setTimelineScrollMode] = useState<TimelineScrollMode>("following-end");
+  const timelineScrollModeRef = useRef(timelineScrollMode);
+  timelineScrollModeRef.current = timelineScrollMode;
+  const [timelineAtEnd, setTimelineAtEnd] = useState(true);
   const listRef = useRef<NodesRef>(null);
   const pendingTurnFoldAnchorRef = useRef<string | null>(null);
   const newestUserMessageIdRef = useRef<string | null | undefined>(undefined);
@@ -718,10 +716,13 @@ export function MessagesTimeline({
     const next = deriveTranscriptNewTurnAnchor(
       newestUserMessageIdRef.current,
       messages,
-      followStateRef.current.following,
+      timelineScrollModeRef.current !== "free-scrolling",
     );
     newestUserMessageIdRef.current = next.newestUserMessageId;
     if (!next.anchorMessageId) return;
+    setTimelineScrollMode((current) =>
+      reduceTimelineScrollMode(current, { kind: "begin-new-turn" }),
+    );
     setAnchorMessageId(next.anchorMessageId);
     const rowIndex = rows.findIndex(
       (row) => row.kind === "message" && row.message.id === next.anchorMessageId,
@@ -778,7 +779,7 @@ export function MessagesTimeline({
       }`
     : "empty";
   useEffect(() => {
-    if (!followStateRef.current.following || anchorMessageId) return;
+    if (timelineScrollModeRef.current === "free-scrolling" || anchorMessageId) return;
     scrollToEnd(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tailFingerprint, anchorMessageId]);
@@ -796,15 +797,21 @@ export function MessagesTimeline({
       if (eventSource === LIST_EVENT_SOURCE_SCROLL) {
         setAnchorMessageId(null);
       }
-      setFollowState((current) =>
-        reduceTranscriptFollow(current, {
-          kind: "scrolled",
-          source: eventSource === LIST_EVENT_SOURCE_SCROLL ? "user" : "layout",
-          distanceFromEnd: scrollHeight - scrollTop - listHeight,
-          contentLength: scrollHeight,
-          viewportLength: listHeight,
-        }),
-      );
+      if (!Number.isFinite(listHeight) || listHeight <= 0) return;
+      const contentFits = scrollHeight <= listHeight + 60;
+      const atEnd = contentFits || scrollHeight - scrollTop - listHeight <= 60;
+      setTimelineAtEnd(atEnd);
+      if (contentFits) {
+        setTimelineScrollMode((current) =>
+          reduceTimelineScrollMode(current, { kind: "follow-end" }),
+        );
+      } else if (eventSource === LIST_EVENT_SOURCE_SCROLL) {
+        setTimelineScrollMode((current) =>
+          reduceTimelineScrollMode(current, {
+            kind: atEnd ? "user-scroll-end" : "user-scroll-away",
+          }),
+        );
+      }
     },
     [],
   );
@@ -820,13 +827,8 @@ export function MessagesTimeline({
     if (typeof diagnosticsGlobal.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
     const probe = (action: "user-scroll-away" | "user-scroll-end") => {
       setAnchorMessageId(null);
-      setFollowState((current) =>
-        reduceTranscriptFollow(current, {
-          kind: "scrolled",
-          source: "user",
-          distanceFromEnd: action === "user-scroll-away" ? 500 : 0,
-        }),
-      );
+      setTimelineAtEnd(action === "user-scroll-end");
+      setTimelineScrollMode((current) => reduceTimelineScrollMode(current, { kind: action }));
     };
     diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__ = probe;
     diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__ = (index, alignTo) => {
@@ -847,7 +849,8 @@ export function MessagesTimeline({
 
   const handleJumpToLatest = useCallback(() => {
     setAnchorMessageId(null);
-    setFollowState((current) => reduceTranscriptFollow(current, { kind: "jump-to-latest" }));
+    setTimelineAtEnd(true);
+    setTimelineScrollMode((current) => reduceTimelineScrollMode(current, { kind: "follow-end" }));
     scrollToEnd(true);
   }, [scrollToEnd]);
 
@@ -882,8 +885,9 @@ export function MessagesTimeline({
   return (
     <view
       className="timeline-host"
-      data-transcript-at-end={followState.atEnd ? "true" : "false"}
-      data-transcript-following={followState.following ? "true" : "false"}
+      data-transcript-at-end={timelineAtEnd ? "true" : "false"}
+      data-transcript-following={timelineScrollMode === "free-scrolling" ? "false" : "true"}
+      data-transcript-scroll-mode={timelineScrollMode}
       bindlayoutchange={(event: { detail?: { width?: unknown } }) => {
         const width = event.detail?.width;
         if (typeof width === "number" && Number.isFinite(width) && width > 0) {
@@ -1020,10 +1024,12 @@ export function MessagesTimeline({
       ) : null}
       <view
         className={`timeline-jump ${
-          followState.following ? "timeline-jump--hidden" : "timeline-jump--visible"
+          timelineScrollMode !== "free-scrolling"
+            ? "timeline-jump--hidden"
+            : "timeline-jump--visible"
         }`}
-        data-transcript-jump-visible={followState.following ? "false" : "true"}
-        bindtap={followState.following ? undefined : handleJumpToLatest}
+        data-transcript-jump-visible={timelineScrollMode === "free-scrolling" ? "true" : "false"}
+        bindtap={timelineScrollMode === "free-scrolling" ? handleJumpToLatest : undefined}
       >
         <text className="timeline-jump__label">↓ Scroll to end</text>
       </view>

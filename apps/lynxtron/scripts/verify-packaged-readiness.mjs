@@ -6839,6 +6839,73 @@ async function verifyCompletedTranscriptState({ child, client, devToolCli, outpu
   };
 }
 
+async function verifyTranscriptFollowState({ child, client, timeoutMs }) {
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression: "typeof globalThis.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__",
+    predicate: (value) => value === "function",
+    timeoutMs,
+  });
+  const initial = await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-host",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-transcript-scroll-mode"] === "following-end",
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__?.('user-scroll-away')",
+    returnByValue: true,
+  });
+  const detached = await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-host",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-transcript-scroll-mode"] === "free-scrolling" &&
+      measurement.attributes["data-transcript-following"] === "false",
+  });
+  const visibleJump = await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-jump",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-transcript-jump-visible"] === "true",
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__?.('user-scroll-end')",
+    returnByValue: true,
+  });
+  const restored = await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-host",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-transcript-scroll-mode"] === "following-end" &&
+      measurement.attributes["data-transcript-following"] === "true",
+  });
+  const hiddenJump = await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-jump",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-transcript-jump-visible"] === "false",
+  });
+  return {
+    status: "pass",
+    input: "renderer probe through the shared transcript scroll-mode reducer",
+    initialMode: initial.attributes["data-transcript-scroll-mode"],
+    detachedMode: detached.attributes["data-transcript-scroll-mode"],
+    jumpVisible: visibleJump.attributes["data-transcript-jump-visible"],
+    restoredMode: restored.attributes["data-transcript-scroll-mode"],
+    jumpHidden: hiddenJump.attributes["data-transcript-jump-visible"],
+  };
+}
+
 async function verifyFailedTranscriptState({
   child,
   client,
@@ -13251,6 +13318,7 @@ async function runOnce({
   verifyComposerSendRetry: shouldVerifyComposerSendRetry,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
+  verifyTranscriptFollowState: shouldVerifyTranscriptFollowState,
   verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
   verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
   verifyApprovalDeclineMutation: shouldVerifyApprovalDeclineMutation,
@@ -13360,6 +13428,7 @@ async function runOnce({
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyCompletedTranscriptState ||
+      shouldVerifyTranscriptFollowState ||
       shouldVerifyQuickSwitchDefault ||
       shouldVerifyProviderInstanceDialog
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
@@ -13833,6 +13902,9 @@ async function runOnce({
           outputDirectory,
         })
       : undefined;
+    const transcriptFollowState = shouldVerifyTranscriptFollowState
+      ? await verifyTranscriptFollowState({ child, client, timeoutMs })
+      : undefined;
     const failedTranscriptState = shouldVerifyFailedTranscriptState
       ? await verifyFailedTranscriptState({
           child,
@@ -14143,6 +14215,7 @@ async function runOnce({
       composerSendRetry,
       composerWorkingState,
       completedTranscriptState,
+      transcriptFollowState,
       failedTranscriptState,
       approvalTranscriptState,
       approvalDeclineMutation,
@@ -14216,6 +14289,7 @@ async function runOnce({
       composerSendRetry,
       composerWorkingState,
       completedTranscriptState,
+      transcriptFollowState,
       failedTranscriptState,
       approvalTranscriptState,
       approvalDeclineMutation,
@@ -14335,6 +14409,7 @@ const shouldVerifyComposerWorkingState = process.argv.includes("--verify-compose
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
   "--verify-completed-transcript-state",
 );
+const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transcript-follow-state");
 const shouldVerifyFailedTranscriptState = process.argv.includes("--verify-failed-transcript-state");
 const shouldVerifyApprovalTranscriptState = process.argv.includes(
   "--verify-approval-transcript-state",
@@ -14759,6 +14834,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyComposerSendRetry: shouldVerifyComposerSendRetry,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
+      verifyTranscriptFollowState: shouldVerifyTranscriptFollowState,
       verifyFailedTranscriptState: shouldVerifyFailedTranscriptState,
       verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
       verifyApprovalDeclineMutation: shouldVerifyApprovalDeclineMutation,
