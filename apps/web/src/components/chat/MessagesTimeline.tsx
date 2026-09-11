@@ -96,18 +96,9 @@ import { TranscriptRowSurface, type TranscriptRowElements } from "./TranscriptRo
 import { HostText } from "../ui/hostElements";
 import { TerminalContextInlineChip } from "./TerminalContextInlineChip";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
-import {
-  deriveDisplayedUserMessageState,
-  type ParsedTerminalContextEntry,
-} from "~/lib/terminalContext";
-import {
-  extractTrailingElementContexts,
-  type ParsedElementContextEntry,
-} from "~/lib/elementContext";
-import {
-  extractTrailingPreviewAnnotations,
-  type ParsedPreviewAnnotation,
-} from "~/lib/previewAnnotation";
+import type { ParsedTerminalContextEntry } from "~/lib/terminalContext";
+import type { ParsedElementContextEntry } from "~/lib/elementContext";
+import type { ParsedPreviewAnnotation } from "~/lib/previewAnnotation";
 import { cn } from "~/lib/utils";
 import { useUiStateStore } from "~/uiStateStore";
 import { type TimestampFormat } from "@t3tools/contracts/settings";
@@ -120,7 +111,10 @@ import {
 } from "./userMessageTerminalContexts";
 import { SkillInlineText } from "./SkillInlineText";
 import { formatWorkspaceRelativePath } from "../../filePathDisplay";
-import { deriveUserMessageSemanticText } from "@t3tools/client-runtime/presentation/user-message";
+import {
+  deriveUserMessagePresentation,
+  deriveUserMessageSemanticText,
+} from "@t3tools/client-runtime/presentation/user-message";
 import {
   buildReviewCommentRenderablePatch,
   formatReviewCommentFence,
@@ -957,17 +951,16 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
 
 function extractUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
   const userImages = row.message.attachments ?? [];
-  const displayedUserMessage = deriveDisplayedUserMessageState(row.message.text);
-  const previewAnnotationState = extractTrailingPreviewAnnotations(
-    displayedUserMessage.visibleText,
-  );
-  const elementContextState = extractTrailingElementContexts(previewAnnotationState.promptText);
+  const presentation = deriveUserMessagePresentation(row.message.text);
   return {
-    displayedUserMessage,
-    terminalContexts: displayedUserMessage.contexts,
-    previewAnnotations: previewAnnotationState.annotations,
-    elementContextState,
-    elementContexts: [...displayedUserMessage.elementContexts, ...elementContextState.contexts],
+    displayedUserMessage: {
+      visibleText: presentation.visibleText,
+      copyText: presentation.copyText,
+    },
+    terminalContexts: presentation.terminalContexts,
+    previewAnnotations: presentation.previewAnnotations,
+    elementContextState: { promptText: presentation.visibleText },
+    elementContexts: presentation.elementContexts,
     previewImages: userImages.filter((image) => image.name.startsWith("preview-annotation-")),
     regularImages: userImages.filter((image) => !image.name.startsWith("preview-annotation-")),
   };
@@ -1314,7 +1307,7 @@ const COLLAPSED_USER_MESSAGE_FADE_MASK = `linear-gradient(to bottom, black calc(
 
 const CollapsibleUserMessageBody = memo(function CollapsibleUserMessageBody(props: {
   text: string;
-  terminalContexts: ParsedTerminalContextEntry[];
+  terminalContexts: ReadonlyArray<ParsedTerminalContextEntry>;
   skills: ReadonlyArray<Pick<ServerProviderSkill, "name" | "displayName">>;
   markdownCwd: string | undefined;
   footer?: ReactNode;
@@ -1382,7 +1375,7 @@ const CollapsibleUserMessageBody = memo(function CollapsibleUserMessageBody(prop
 
 const UserMessageBody = memo(function UserMessageBody(props: {
   text: string;
-  terminalContexts: ParsedTerminalContextEntry[];
+  terminalContexts: ReadonlyArray<ParsedTerminalContextEntry>;
   skills: ReadonlyArray<Pick<ServerProviderSkill, "name" | "displayName">>;
   markdownCwd: string | undefined;
 }) {

@@ -5742,6 +5742,33 @@
   font-size: 10px;
   line-height: 14px;
 }
+.transcript-context-chips {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  align-self: flex-start;
+  margin-top: 6px;
+  gap: 6px;
+}
+.transcript-context-chip {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 100%;
+  padding: 3px 7px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 6px;
+  background-color: rgba(var(--foreground-rgb), 0.025);
+}
+.transcript-context-chip__label {
+  color: rgba(var(--muted-foreground-rgb), 0.8);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  line-height: 14px;
+}
 .md-cursor {
   color: var(--primary);
   font-size: 14px;

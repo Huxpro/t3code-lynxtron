@@ -199,13 +199,23 @@ describe("transcript layout contract", () => {
   });
 
   it("renders preview annotations separately from regular attachments and authored text", () => {
-    expect(timelineSource).toContain("extractTrailingPreviewAnnotations(");
+    expect(timelineSource).toContain("deriveUserMessagePresentation(row.message.text)");
     expect(timelineSource).toContain('attachment.name.startsWith("preview-annotation-")');
     expect(timelineSource).toContain('className="transcript-preview-annotation"');
     expect(timelineSource).toContain("displayed.previewAnnotations.map");
     expect(timelineSource).toContain("displayed.regularAttachments.map");
     expect(overrides).toContain(".transcript-preview-annotation {");
     expect(overrides).toContain(".transcript-preview-annotation__image {");
+  });
+
+  it("renders the same parsed terminal and element context labels as Web", () => {
+    expect(timelineSource).toContain("deriveUserMessagePresentation(row.message.text)");
+    expect(timelineSource).toContain("data-message-context-kind={kind}");
+    expect(timelineSource).toContain("displayed.terminalContexts.map");
+    expect(timelineSource).toContain("displayed.elementContexts.map");
+    expect(timelineSource).toContain("{context.header}");
+    expect(overrides).toContain(".transcript-context-chips {");
+    expect(overrides).toContain(".transcript-context-chip__label {");
   });
 
   it("lets the settled Composer banner grow without collapsing its action", () => {

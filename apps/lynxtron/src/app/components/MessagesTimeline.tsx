@@ -34,13 +34,11 @@ import {
   parseReviewCommentMessageSegments,
   type ReviewCommentContext,
 } from "@t3tools/client-runtime/presentation/review-comment";
+import { type ParsedPreviewAnnotation } from "@t3tools/client-runtime/presentation/preview-annotation";
 import {
-  extractTrailingPreviewAnnotations,
-  type ParsedPreviewAnnotation,
-} from "@t3tools/client-runtime/presentation/preview-annotation";
-import {
+  deriveUserMessagePresentation,
   deriveUserMessageSemanticText,
-  deriveVisibleUserMessage,
+  type ParsedUserContextEntry,
   shouldCollapseUserMessage,
 } from "@t3tools/client-runtime/presentation/user-message";
 import {
@@ -617,6 +615,26 @@ function LynxUserMessagePreviewAnnotationCard({
   );
 }
 
+function LynxUserMessageContextChip({
+  context,
+  kind,
+}: {
+  readonly context: ParsedUserContextEntry;
+  readonly kind: "terminal" | "element";
+}) {
+  return (
+    <view
+      className={`transcript-context-chip transcript-context-chip--${kind}`}
+      data-message-context-kind={kind}
+      aria-label={context.body ? `${context.header}\n${context.body}` : context.header}
+    >
+      <text className="transcript-context-chip__label" text-maxline="1">
+        {context.header}
+      </text>
+    </view>
+  );
+}
+
 function LynxUserMessageReviewCommentCard({
   comment,
   cwd,
@@ -768,14 +786,10 @@ function CollapsibleLynxUserMessageBody({
 
 /** Platform islands handed to the shared transcript composition. */
 function extractLynxUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
-  const initiallyDisplayed = deriveVisibleUserMessage(row.message.text);
-  const previewState = extractTrailingPreviewAnnotations(initiallyDisplayed.visibleText);
-  const displayed = deriveVisibleUserMessage(previewState.promptText);
+  const presentation = deriveUserMessagePresentation(row.message.text);
   const attachments = row.message.attachments ?? [];
   return {
-    visibleText: displayed.visibleText,
-    contextKinds: [...displayed.contextKinds, ...initiallyDisplayed.contextKinds],
-    previewAnnotations: previewState.annotations,
+    ...presentation,
     previewImages: attachments.filter((attachment) =>
       attachment.name.startsWith("preview-annotation-"),
     ),
@@ -846,18 +860,27 @@ function buildLynxTranscriptRowElements(
               onImageExpand={onImageExpand}
             />
           ))}
-          {displayed.contextKinds.length > 0 ? (
+          {displayed.terminalContexts.length > 0 || displayed.elementContexts.length > 0 ? (
             <view
-              className="transcript-context-summary"
-              data-message-context-count={String(displayed.contextKinds.length)}
+              className="transcript-context-chips"
+              data-message-context-count={String(
+                displayed.terminalContexts.length + displayed.elementContexts.length,
+              )}
             >
-              <text className="transcript-context-summary__label">
-                {displayed.contextKinds.length === 1
-                  ? displayed.contextKinds[0] === "terminal"
-                    ? "Terminal context"
-                    : "Element context"
-                  : `${displayed.contextKinds.length} attached contexts`}
-              </text>
+              {displayed.terminalContexts.map((context, index) => (
+                <LynxUserMessageContextChip
+                  key={`terminal:${context.header}:${index}`}
+                  context={context}
+                  kind="terminal"
+                />
+              ))}
+              {displayed.elementContexts.map((context, index) => (
+                <LynxUserMessageContextChip
+                  key={`element:${context.header}:${index}`}
+                  context={context}
+                  kind="element"
+                />
+              ))}
             </view>
           ) : null}
         </view>

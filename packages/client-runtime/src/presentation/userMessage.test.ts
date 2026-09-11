@@ -2,6 +2,7 @@ import { describe, expect, it } from "vite-plus/test";
 
 import {
   deriveUserMessageSemanticText,
+  deriveUserMessagePresentation,
   deriveVisibleUserMessage,
   shouldCollapseUserMessage,
 } from "./userMessage.ts";
@@ -71,6 +72,44 @@ describe("deriveVisibleUserMessage", () => {
     expect(visible).not.toContain("preview_annotation");
     expect(visible).not.toContain("element_context");
     expect(visible).not.toContain("terminal_context");
+    expect(deriveUserMessagePresentation(prompt)).toEqual(
+      expect.objectContaining({
+        visibleText: expect.stringContaining("<review_comment"),
+        semanticText: visible,
+        copyText: prompt,
+        contextKinds: ["terminal"],
+        terminalContexts: [{ header: "Terminal line 1", body: "1 | secret output" }],
+        elementContexts: [],
+        previewAnnotations: [expect.objectContaining({ id: "one", title: "Example" })],
+      }),
+    );
+  });
+
+  it("parses terminal and element entries around preview annotations", () => {
+    const presentation = deriveUserMessagePresentation(
+      [
+        "Fix this",
+        "",
+        "<terminal_context>",
+        "- Terminal 1 lines 2-3:",
+        "  2 | npm test",
+        "  3 | passed",
+        "</terminal_context>",
+        "",
+        "<element_context>",
+        "- <SaveButton> (Button.tsx:12):",
+        "  selector: button.save",
+        "</element_context>",
+      ].join("\n"),
+    );
+    expect(presentation.visibleText).toBe("Fix this");
+    expect(presentation.contextKinds).toEqual(["terminal", "element"]);
+    expect(presentation.terminalContexts).toEqual([
+      { header: "Terminal 1 lines 2-3", body: "2 | npm test\n3 | passed" },
+    ]);
+    expect(presentation.elementContexts).toEqual([
+      { header: "<SaveButton> (Button.tsx:12)", body: "selector: button.save" },
+    ]);
   });
 });
 

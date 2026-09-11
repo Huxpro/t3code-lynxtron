@@ -2285,14 +2285,14 @@ describe("desktop shell interaction contract", () => {
 
   it("hides raw context payloads behind a compact user-message summary", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
-    expect(timelineSource).toContain("extractLynxUserRowState(row)");
+    expect(timelineSource).toContain("deriveUserMessagePresentation(row.message.text)");
     expect(timelineSource).toContain("data-message-context-count");
     expect(timelineSource).toContain("text={displayed.visibleText}");
     expect(timelineSource).toContain(
       "const visibleText = extractLynxUserRowState(row).visibleText;",
     );
     expect(timelineSource).toContain("if (displayed.visibleText.trim().length === 0) return null;");
-    expect(overrides).toContain(".transcript-context-summary {");
+    expect(overrides).toContain(".transcript-context-chips {");
   });
 
   it("detaches transcript follow before expanding historical rows", () => {

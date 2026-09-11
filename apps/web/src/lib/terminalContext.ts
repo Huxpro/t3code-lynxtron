@@ -14,7 +14,14 @@ export {
 } from "@t3tools/client-runtime/presentation/terminal-context";
 
 import { extractTrailingElementContexts, type ParsedElementContextEntry } from "./elementContext";
-import { deriveVisibleUserMessage } from "@t3tools/client-runtime/presentation/user-message";
+import {
+  deriveVisibleUserMessage,
+  extractTrailingTerminalContexts,
+  type ExtractedTerminalContexts,
+  type ParsedUserContextEntry,
+} from "@t3tools/client-runtime/presentation/user-message";
+export { extractTrailingTerminalContexts };
+export type { ExtractedTerminalContexts };
 
 export interface TerminalContextSelection {
   terminalId: string;
@@ -28,13 +35,6 @@ export interface TerminalContextDraft extends TerminalContextSelection {
   id: string;
   threadId: ThreadId;
   createdAt: string;
-}
-
-export interface ExtractedTerminalContexts {
-  promptText: string;
-  contextCount: number;
-  previewTitle: string | null;
-  contexts: ParsedTerminalContextEntry[];
 }
 
 export interface DisplayedUserMessageState {
@@ -51,15 +51,9 @@ export interface DisplayedUserMessageState {
   elementContexts: ParsedElementContextEntry[];
 }
 
-export interface ParsedTerminalContextEntry {
-  header: string;
-  body: string;
-}
+export type ParsedTerminalContextEntry = ParsedUserContextEntry;
 
 export const INLINE_TERMINAL_CONTEXT_PLACEHOLDER = "\uFFFC";
-
-const TRAILING_TERMINAL_CONTEXT_BLOCK_PATTERN =
-  /\n*<terminal_context>\n([\s\S]*?)\n<\/terminal_context>\s*$/;
 
 export function hasTerminalContextText(context: { text: string }): boolean {
   return normalizeTerminalContextText(context.text).length > 0;
@@ -180,31 +174,6 @@ export function appendTerminalContextsToPrompt(
   );
 }
 
-export function extractTrailingTerminalContexts(prompt: string): ExtractedTerminalContexts {
-  const match = TRAILING_TERMINAL_CONTEXT_BLOCK_PATTERN.exec(prompt);
-  if (!match) {
-    return {
-      promptText: prompt,
-      contextCount: 0,
-      previewTitle: null,
-      contexts: [],
-    };
-  }
-  const promptText = prompt.slice(0, match.index).replace(/\n+$/, "");
-  const parsedContexts = parseTerminalContextEntries(match[1] ?? "");
-  return {
-    promptText,
-    contextCount: parsedContexts.length,
-    previewTitle:
-      parsedContexts.length > 0
-        ? parsedContexts
-            .map(({ header, body }) => (body.length > 0 ? `${header}\n${body}` : header))
-            .join("\n\n")
-        : null,
-    contexts: parsedContexts,
-  };
-}
-
 export function deriveDisplayedUserMessageState(prompt: string): DisplayedUserMessageState {
   // Order matters: send-time appends `<terminal_context>` first, then
   // `<element_context>` last. Strip element first so the (now-trailing)
@@ -220,47 +189,6 @@ export function deriveDisplayedUserMessageState(prompt: string): DisplayedUserMe
     contexts: extractedTerminal.contexts,
     elementContexts: extractedElement.contexts,
   };
-}
-
-function parseTerminalContextEntries(block: string): ParsedTerminalContextEntry[] {
-  const entries: ParsedTerminalContextEntry[] = [];
-  let current: { header: string; bodyLines: string[] } | null = null;
-
-  const commitCurrent = () => {
-    if (!current) {
-      return;
-    }
-    entries.push({
-      header: current.header,
-      body: current.bodyLines.join("\n").trimEnd(),
-    });
-    current = null;
-  };
-
-  for (const rawLine of block.split("\n")) {
-    const headerMatch = /^- (.+):$/.exec(rawLine);
-    if (headerMatch) {
-      commitCurrent();
-      current = {
-        header: headerMatch[1]!,
-        bodyLines: [],
-      };
-      continue;
-    }
-    if (!current) {
-      continue;
-    }
-    if (rawLine.startsWith("  ")) {
-      current.bodyLines.push(rawLine.slice(2));
-      continue;
-    }
-    if (rawLine.length === 0) {
-      current.bodyLines.push("");
-    }
-  }
-
-  commitCurrent();
-  return entries;
 }
 
 export function countInlineTerminalContextPlaceholders(prompt: string): number {
