@@ -46,6 +46,13 @@ window `89329`, real `Command+2` selected Thread One and `Command+1` returned to
 Thread Two; readiness ended on `fidelity-thread-two` at main sequence 20. This
 accepts populated thread indices 1 and 2. Model-picker jumps, selection, and
 general renderer keyboard/focus support remain open, so this item stays pending.
+The model-picker variant was then tested separately. Exact-owned PID `28160`,
+window `89449` showed the open picker with Sol/Terra/Luna at indices 1/2/3, but
+real `Command+2` left Sol selected and the picker open. A probe-only background
+dispatch snapshot remained `null` while the picker state and main transport were
+healthy, proving that the focused picker search field prevented the native Menu
+accelerator packet from reaching the renderer. No resolver or selection fix is
+claimed; this remains an R5 runtime gap.
 
 The same 1280 x 820 canonical-thread session also passes a real Sidebar resize
 drag through Computer Use. The divider moved from approximately 239 px to 319 px;

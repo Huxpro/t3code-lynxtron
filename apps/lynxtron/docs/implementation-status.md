@@ -507,6 +507,13 @@ selected Thread One and `Command+1` returned to Thread Two. The final readiness
 report confirmed `fidelity-thread-two` as active, main sequence 20, no keyboard
 or runtime errors, and captured-PID cleanup. This covers populated thread indices
 1 and 2 without claiming model-picker numeric jumps.
+The model-picker path was tested on a separate exact-owned PID `28160`, window
+`89449`. The open picker reported filtered rows Sol, Terra, Luna, 5.5, and
+Codex Spark, but real `Command+2` did not select Terra. The viewport-probe-only
+keyboard diagnostic remained `null`, while the picker state and main transport
+were healthy and the main log contained no delivery warning. The focused picker
+search field therefore prevents this native Menu accelerator from reaching the
+renderer; model-picker numeric jumps remain an explicit R5 runtime gap.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 

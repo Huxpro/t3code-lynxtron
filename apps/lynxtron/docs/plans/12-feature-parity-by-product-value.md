@@ -545,6 +545,13 @@ following-end` with the jump affordance visible only while detached. That gate
   no runtime errors. Populated thread indices 1 and 2 therefore have physical
   acceptance; model-picker numeric jumps and general renderer keyboard behavior
   retain only command-path coverage.
+  A separate exact-owned run opened the Model Picker on PID `28160`, window
+  `89449`, with Sol/Terra/Luna visibly ordered as indices 1/2/3. Real
+  `Command+2` left Sol selected and the picker open. A viewport-probe-only
+  dispatch diagnostic remained `null` while the picker runtime state and main
+  transport were healthy, showing that the focused picker search field prevented
+  the native Menu accelerator packet from reaching the renderer. This is retained
+  as a real R5 failure, not papered over with programmatic selection.
   A separate exact-owned PID `60545`, window `89233` run then used Computer Use
   for a real Sidebar resize drag from the current-frame divider at about 239 px
   to 319 px. The visible Sidebar expanded, while owned DevTool client
