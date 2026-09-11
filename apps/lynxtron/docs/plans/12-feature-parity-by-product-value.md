@@ -344,8 +344,9 @@ following-end` with the jump affordance visible only while detached. That gate
   detaches transcript follow before the panel changes the timeline viewport.
 - The Native Plan panel now copies the same normalized export Markdown as Web,
   with pending/copied/failed feedback scoped to the active plan and reset when
-  plan identity changes. Copy and save completions are generation-guarded so an
-  old plan cannot overwrite the replacement panel's feedback. The full panel
+  plan identity changes. Copy and save completions use independent generation
+  guards so concurrent actions cannot cancel one another and an old plan cannot
+  overwrite the replacement panel's feedback. The full panel
   also passes workspace context into Markdown image resolution, matching its
   transcript preview, and resets disclosure state when a different plan becomes
   active. Download and save-to-workspace remain separate host actions rather than

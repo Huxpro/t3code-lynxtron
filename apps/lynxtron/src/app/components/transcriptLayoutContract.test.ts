@@ -303,8 +303,9 @@ describe("transcript layout contract", () => {
     expect(planPanelSource).toContain("threadId={threadId}");
     expect(planPanelSource).toContain("normalizePlanMarkdownForExport(planMarkdown)");
     expect(planPanelSource).toContain('data-plan-copy-state={copyStatus ?? "idle"}');
-    expect(planPanelSource).toContain("actionGenerationRef.current += 1");
-    expect(planPanelSource).toContain("actionGenerationRef.current !== actionGeneration");
+    expect(planPanelSource).toContain("copyGenerationRef.current += 1");
+    expect(planPanelSource).toContain("saveGenerationRef.current += 1");
+    expect(planPanelSource).toContain("copyGenerationRef.current !== actionGeneration");
     expect(planPanelSource).toContain("setProposedExpanded(false)");
     expect(planPanelSource).toContain("}, [planMarkdown]);");
     expect(planPanelSource).toContain("savePlanToDefaultWorkspacePath");

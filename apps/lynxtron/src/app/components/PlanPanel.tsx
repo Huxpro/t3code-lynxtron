@@ -54,7 +54,8 @@ export function PlanPanel({
   const [copyStatus, setCopyStatus] = useState<MessageCopyStatus | null>(null);
   const [saveStatus, setSaveStatus] = useState<PlanSaveStatus | null>(null);
   const resetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const actionGenerationRef = useRef(0);
+  const copyGenerationRef = useRef(0);
+  const saveGenerationRef = useRef(0);
   const planMarkdown = activeProposedPlan?.planMarkdown ?? null;
   const planTitle = planMarkdown ? proposedPlanTitle(planMarkdown) : null;
 
@@ -62,30 +63,32 @@ export function PlanPanel({
     setProposedExpanded((v) => !v);
   }, []);
   useEffect(() => {
-    actionGenerationRef.current += 1;
+    copyGenerationRef.current += 1;
+    saveGenerationRef.current += 1;
     setProposedExpanded(false);
     setCopyStatus(null);
     setSaveStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     return () => {
-      actionGenerationRef.current += 1;
+      copyGenerationRef.current += 1;
+      saveGenerationRef.current += 1;
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
   }, [planMarkdown]);
   const copyPlan = useCallback(() => {
     if (!planMarkdown || copyStatus === "pending") return;
-    const actionGeneration = ++actionGenerationRef.current;
+    const actionGeneration = ++copyGenerationRef.current;
     const setCurrentCopyStatus = (status: MessageCopyStatus) => {
-      if (actionGenerationRef.current === actionGeneration) setCopyStatus(status);
+      if (copyGenerationRef.current === actionGeneration) setCopyStatus(status);
     };
     void runMessageCopy(
       (text) => clientCapabilities.clipboard.writeText(text),
       normalizePlanMarkdownForExport(planMarkdown),
       setCurrentCopyStatus,
     ).then(() => {
-      if (actionGenerationRef.current !== actionGeneration) return;
+      if (copyGenerationRef.current !== actionGeneration) return;
       resetTimerRef.current = setTimeout(() => {
-        if (actionGenerationRef.current === actionGeneration) setCopyStatus(null);
+        if (copyGenerationRef.current === actionGeneration) setCopyStatus(null);
         resetTimerRef.current = null;
       }, 1_000);
     });
@@ -100,9 +103,9 @@ export function PlanPanel({
           : "Copy plan";
   const savePlan = useCallback(() => {
     if (!cwd || !planMarkdown || saveStatus?.status === "pending") return;
-    const actionGeneration = ++actionGenerationRef.current;
+    const actionGeneration = ++saveGenerationRef.current;
     const setCurrentSaveStatus = (status: PlanSaveStatus) => {
-      if (actionGenerationRef.current === actionGeneration) setSaveStatus(status);
+      if (saveGenerationRef.current === actionGeneration) setSaveStatus(status);
     };
     setCurrentSaveStatus({ status: "pending" });
     void savePlanToDefaultWorkspacePath(
