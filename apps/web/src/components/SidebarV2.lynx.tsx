@@ -564,9 +564,22 @@ export default function SidebarV2() {
     (
       globalThis as {
         __T3_LYNXTRON_SIDEBAR_SEARCH_PROBE__?: (query: string) => void;
+        __T3_LYNXTRON_SIDEBAR_HOVER_STATE__?: () => string | null;
       }
     ).__T3_LYNXTRON_SIDEBAR_SEARCH_PROBE__ = setThreadSearchQuery;
-  }, [viewport.testResize]);
+    (
+      globalThis as {
+        __T3_LYNXTRON_SIDEBAR_HOVER_STATE__?: () => string | null;
+      }
+    ).__T3_LYNXTRON_SIDEBAR_HOVER_STATE__ = () => hoveredThreadId;
+    return () => {
+      delete (
+        globalThis as {
+          __T3_LYNXTRON_SIDEBAR_HOVER_STATE__?: () => string | null;
+        }
+      ).__T3_LYNXTRON_SIDEBAR_HOVER_STATE__;
+    };
+  }, [hoveredThreadId, viewport.testResize]);
   const projectById = useMemo(
     () => new Map(projects.map((project) => [project.id, project] as const)),
     [projects],
