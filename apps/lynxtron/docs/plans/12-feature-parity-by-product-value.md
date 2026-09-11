@@ -662,6 +662,20 @@ following-end` with the jump affordance visible only while detached. That gate
   and Native disposed its isolated state. This closes card-specific semantic
   correlation only: it does not claim paired pixels, provider ingestion, or an
   approve/decline mutation.
+- Review Diff now has a no-capture same-snapshot Electron/Native semantic gate.
+  Snapshot `3eeaf2b7f6e221ef35f71be417c755c8ae0d0a6f23d37e6a23e8b7e3ec7d7921`
+  pins dark theme, 1280 x 820, thread `fidelity-review-thread`, turn
+  `fidelity-review-turn-1`, and the one-file `review-fixture.txt` checkpoint.
+  The strict comparator passed all 17 identity, readiness, content, transport,
+  error, and cleanup checks. Electron opened the real non-loading/non-error Diff
+  renderer with one checkpoint and one file; exact-bundle Native rendered both
+  changed lines over main transport with zero renderer errors and measured the
+  540 px right panel, 539 x 728 diff surface, and 444 x 140 idle Composer. The
+  review fixture now writes deterministic Native theme/model preferences, and
+  the Native verifier has an explicit semantic-only mode that captures no
+  pixels. This evidence is direct-projection behavior/geometry correlation, not
+  backend ingestion, physical input, or paired pixels. The three `review-diff`
+  Final5 visual cells therefore remain pending.
 - The shared Composer context strip no longer carries an unused authority-image
   injection slot or CSS that could hide its real checkout and branch controls.
 - Shared Sidebar header/footer and search/project controls no longer expose dead

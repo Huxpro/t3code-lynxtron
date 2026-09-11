@@ -665,6 +665,17 @@ longer presents inert branch/working-tree controls: the bridge carries
 trees and totals. Full patch rendering remains explicitly gated by R10. The
 production Lynx bundle is 1,223.3 kB after this extraction.
 
+Current review-diff acceptance also has a reproducible no-capture paired gate.
+Electron and exact-bundle Native consume snapshot
+`3eeaf2b7f6e221ef35f71be417c755c8ae0d0a6f23d37e6a23e8b7e3ec7d7921`
+at 1280 x 820 dark with the same thread, completed turn, checkpoint, and
+`review-fixture.txt`. All 17 comparator checks pass; Native renders both changed
+lines over main transport with zero renderer errors and isolated cleanup.
+Electron's closed diff render tree is asserted as ready/non-error rather than
+misrepresented as CDP-readable line text. This closes current semantic behavior
+and Native geometry correlation only. Paired pixels, physical Open diff input,
+backend ingestion, and all three Final5 `review-diff` visual cells remain open.
+
 The file-browser extraction adds a 127-line shared production module. Web uses
 the canonical entry summary for file counts and Pierre tree paths; Lynx uses the
 same summary plus the normalized directory-first tree. Its previous static
