@@ -558,6 +558,15 @@ following-end` with the jump affordance visible only while detached. That gate
   transport were healthy, showing that the focused picker search field prevented
   the native Menu accelerator packet from reaching the renderer. This is retained
   as a real R5 failure, not papered over with programmatic selection.
+  A 2026-09-11 follow-up then proved that the focused input's own
+  `main-thread:bindkeydown` does receive physical `Command+2`, but neither
+  supported cross-thread path is usable on Lynxtron 0.0.21: a local
+  `runOnBackground` wrapper and `instance.triggerEvent` both raised a visible
+  LogBox raw error before the background model listener ran. Three exact-owned
+  attempts on PIDs `25043`, `51308`, and `74927` kept Sol selected and the picker
+  open; every attempted implementation was fully reverted and every owned process
+  and isolated state was cleaned. The gap is therefore narrowed to focused-input
+  main-to-background event bridging, not key detection or model ordering.
   File Picker input was then exercised on exact-owned PID `65032`, window
   `89601`. `Command+P` opened the picker, a real click focused search, and literal
   typing produced the exact Accessibility value `keyboardCommands.probe` while

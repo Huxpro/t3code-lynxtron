@@ -521,6 +521,14 @@ keyboard diagnostic remained `null`, while the picker state and main transport
 were healthy and the main log contained no delivery warning. The focused picker
 search field therefore prevents this native Menu accelerator from reaching the
 renderer; model-picker numeric jumps remain an explicit R5 runtime gap.
+A later exact-owned physical-input experiment localized the remaining boundary
+further. The focused search input's `main-thread:bindkeydown` receives
+`Command+2`, but Lynxtron 0.0.21 raises a visible LogBox raw error when that
+handler crosses to the background model-selection listener through either a
+local `runOnBackground` wrapper or `instance.triggerEvent`. Three isolated runs
+on PIDs `25043`, `51308`, and `74927` left Sol selected and the picker open. The
+tested implementations were reverted after real-input failure, so no crashing
+product path remains; R5 now records a focused-input cross-thread bridge gap.
 File Picker query entry was separately accepted on exact-owned PID `65032`,
 window `89601`: `Command+P`, a real focus click, and literal typing produced the
 Accessibility value `keyboardCommands.probe` and visibly filtered repository

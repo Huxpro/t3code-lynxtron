@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-11T06:20:00-04:00",
+  "stateId": "model-picker-default",
+  "classification": "runtime-boundary",
+  "runtime": "@lynx-js/lynxtron 0.0.21",
+  "scope": {
+    "viewport": "1280x820",
+    "theme": "dark",
+    "bundleSha256": "38431fe1a409e1f85ca6898f46b36b0bf874dd23a565373fe46909c1dd6a1cd9",
+    "threadId": "6fdec7ed-bbf4-4922-967d-36ee28444b70",
+    "initialModel": "codex:gpt-5.6-sol",
+    "targetModel": "codex:gpt-5.6-terra"
+  },
+  "physicalInput": {
+    "channel": "Computer Use",
+    "sequence": "Command+2",
+    "visibleOrder": ["codex:gpt-5.6-sol", "codex:gpt-5.6-terra", "codex:gpt-5.6-luna"]
+  },
+  "attempts": [
+    {
+      "ownedPid": 25043,
+      "windowId": 90034,
+      "bridge": "main-thread bindkeydown to runOnBackground imported background function",
+      "result": "failed-runtime-error",
+      "postcondition": "picker remained open on Sol and LogBox displayed one rawError"
+    },
+    {
+      "ownedPid": 51308,
+      "windowId": 90061,
+      "bridge": "main-thread bindkeydown to runOnBackground local background wrapper",
+      "result": "failed-runtime-error",
+      "postcondition": "picker remained open on Sol and LogBox displayed one rawError"
+    },
+    {
+      "ownedPid": 74927,
+      "windowId": 90115,
+      "bridge": "main-thread bindkeydown to instance.triggerEvent custom background event",
+      "result": "failed-runtime-error",
+      "postcondition": "picker remained open on Sol and LogBox displayed one rawError"
+    }
+  ],
+  "preconditions": {
+    "exactOwnedPidAndWindow": true,
+    "mainTransportReady": true,
+    "initialTransportSequence": 21,
+    "pickerSearchFocusedByMount": true,
+    "rendererKeyboardMenuDiagnosticBeforeInput": null
+  },
+  "outcome": {
+    "productChangeRetained": false,
+    "failedImplementationReverted": true,
+    "ownedProcessesStopped": true,
+    "isolatedStateDisposed": true,
+    "screenshotsRetained": 0
+  },
+  "boundary": "The focused native input receives physical Command+2 on its main-thread key handler, but Lynxtron 0.0.21 cannot safely bridge that handler to the background model-selection listener through either runOnBackground or instance.triggerEvent. The native Menu accelerator remains suppressed while the input is focused. Model-picker numeric jumps therefore remain an R5 runtime gap; no tested-but-crashing implementation is retained."
+}
