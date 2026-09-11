@@ -312,6 +312,12 @@ following-end` with the jump affordance visible only while detached. That gate
   stay smaller than canonical history, scrolls first-to-last through the owned
   list probe, and requires one native node ID to rebind to a different row ID.
   The gate remains pending until run against an exact-owned long-thread session.
+  A deterministic projection fixture and no-capture exact-owned runner now make
+  that gate reproducible without provider availability or retained screenshots.
+  The fixture records full thread/message/turn/session projections and labels
+  its direct-projection boundary so it cannot be mistaken for backend-ingestion
+  evidence; the runner pins bundle URL, main transport, active thread, viewport,
+  renderer errors, and owned-process cleanup before accepting node reuse.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
