@@ -23,6 +23,24 @@ export const T3_KEYBOARD_EVENT = "t3:keyboard";
 
 let lastSequence = -1;
 
+interface KeyboardDispatchProbe {
+  readonly sequence: number;
+  readonly type: "keydown" | "keyup";
+  readonly key: string;
+  readonly modelPickerOpen: boolean;
+  readonly command: string | null;
+  readonly handled: boolean;
+}
+
+function recordKeyboardDispatchProbe(value: KeyboardDispatchProbe): void {
+  const target = globalThis as typeof globalThis & {
+    __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
+    __T3_LYNXTRON_LAST_KEYBOARD_DISPATCH__?: KeyboardDispatchProbe;
+  };
+  if (typeof target.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
+  target.__T3_LYNXTRON_LAST_KEYBOARD_DISPATCH__ = value;
+}
+
 export function dispatchKeyboardPacket(input: unknown): boolean {
   if (!isRendererNeutralKeyboardPacket(input) || input.sequence <= lastSequence) {
     return false;
@@ -34,8 +52,29 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     shiftKey: input.modifiers.shift,
     altKey: input.modifiers.alt,
   });
-  if (input.type === "keyup") return true;
-  if (terminalReturnController.dispatch(input)) return true;
+  const modelPickerOpen = isModelPickerOpen();
+  if (input.type === "keyup") {
+    recordKeyboardDispatchProbe({
+      sequence: input.sequence,
+      type: input.type,
+      key: input.key,
+      modelPickerOpen,
+      command: null,
+      handled: true,
+    });
+    return true;
+  }
+  if (terminalReturnController.dispatch(input)) {
+    recordKeyboardDispatchProbe({
+      sequence: input.sequence,
+      type: input.type,
+      key: input.key,
+      modelPickerOpen,
+      command: "terminal.submit",
+      handled: true,
+    });
+    return true;
+  }
   if (
     input.key.toLowerCase() === "escape" &&
     !input.modifiers.meta &&
@@ -43,14 +82,22 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     !input.modifiers.shift &&
     !input.modifiers.alt
   ) {
-    return dismissOpenSearchOverlay();
+    const handled = dismissOpenSearchOverlay();
+    recordKeyboardDispatchProbe({
+      sequence: input.sequence,
+      type: input.type,
+      key: input.key,
+      modelPickerOpen,
+      command: "dismiss-overlay",
+      handled,
+    });
+    return handled;
   }
   const state = getT3ClientSnapshot();
-  const modelPickerOpen = isModelPickerOpen();
   const command = resolveKeyboardPacketCommand(input, state.serverConfig?.keybindings ?? [], {
     modelPickerOpen,
   });
-  return dispatchResolvedKeyboardCommand(command, modelPickerOpen, {
+  const handled = dispatchResolvedKeyboardCommand(command, modelPickerOpen, {
     createThread: () => void t3ClientActions.createThread(),
     jumpModel: requestModelPickerJump,
     jumpThread: requestSidebarThreadJump,
@@ -62,6 +109,15 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
     },
     toggleSidebar: requestSidebarToggle,
   });
+  recordKeyboardDispatchProbe({
+    sequence: input.sequence,
+    type: input.type,
+    key: input.key,
+    modelPickerOpen,
+    command,
+    handled,
+  });
+  return handled;
 }
 
 export function registerKeyboardCommands(): void {
