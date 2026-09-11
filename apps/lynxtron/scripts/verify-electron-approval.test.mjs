@@ -24,4 +24,15 @@ describe("Electron approval semantic runner", () => {
     assert.notInclude(source, "Page.captureScreenshot");
     assert.notInclude(source, "pkill");
   });
+
+  it("reuses the lifecycle for message-card semantics", () => {
+    assert.include(source, '"--message-card"');
+    assert.include(source, "manifest.messageCardFixture");
+    assert.include(source, "data-review-comment-file=");
+    assert.include(source, "data-preview-annotation=");
+    assert.include(source, 'data-message-context-kind=\"element\"');
+    assert.include(source, "visiblePageText: document.body?.innerText");
+    assert.include(source, "replace(/\\\\s+/g, ' ')");
+    assert.include(source, "diagnostic=${JSON.stringify(diagnostic)}");
+  });
 });

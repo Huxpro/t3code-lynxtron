@@ -121,6 +121,7 @@ const output = path.resolve(argumentValue("--output") ?? "");
 const timeoutMs = Number(argumentValue("--timeout-ms") ?? "90000");
 const width = Number(argumentValue("--width") ?? "1280");
 const height = Number(argumentValue("--height") ?? "820");
+const verifyMessageCard = process.argv.includes("--message-card");
 if (!argumentValue("--fixture-dir") || !argumentValue("--output")) {
   throw new Error("--fixture-dir and --output are required.");
 }
@@ -130,15 +131,26 @@ if (!existsSync(manifestPath) || !existsSync(sourceDatabase)) {
   throw new Error("Electron approval gate requires a prepared fixture.");
 }
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-const fixture = manifest.pendingRequestFixture;
-if (
+const fixture = verifyMessageCard ? manifest.messageCardFixture : manifest.pendingRequestFixture;
+if (verifyMessageCard) {
+  if (
+    typeof fixture?.threadId !== "string" ||
+    typeof fixture?.review?.filePath !== "string" ||
+    typeof fixture?.preview?.id !== "string" ||
+    typeof fixture?.element?.header !== "string"
+  ) {
+    throw new Error("Fixture manifest has no valid message-card fixture.");
+  }
+} else if (
   fixture?.mode !== "approval" ||
   fixture.activity?.kind !== "approval.requested" ||
   typeof fixture.activity?.payload?.requestId !== "string"
 ) {
   throw new Error("Fixture manifest has no valid pending approval.");
 }
-const runRoot = mkdtempSync(path.join(os.tmpdir(), "t3-electron-approval-"));
+const runRoot = mkdtempSync(
+  path.join(os.tmpdir(), verifyMessageCard ? "t3-electron-message-card-" : "t3-electron-approval-"),
+);
 const electronHome = path.join(runRoot, "home");
 const profile = path.join(runRoot, "profile");
 cpSync(fixtureDir, electronHome, { recursive: true });
@@ -209,13 +221,49 @@ try {
   if (reloadingForTheme) await new Promise((resolveWait) => setTimeout(resolveWait, 500));
   const canonicalRoute = `/${encodeURIComponent(environmentId)}/${encodeURIComponent(fixture.threadId)}`;
   await evaluate(client, `(() => { location.hash = "#" + ${JSON.stringify(canonicalRoute)}; })()`);
-  const expectedDetail = fixture.activity.payload.detail;
+  const expectedDetail = verifyMessageCard ? undefined : fixture.activity.payload.detail;
   const expectedActions = ["Cancel turn", "Decline", "Always allow this session", "Approve once"];
-  const state = await waitFor(
-    () =>
-      evaluate(
-        client,
-        `(() => {
+  let state;
+  try {
+    state = verifyMessageCard
+      ? await waitFor(
+          () =>
+            evaluate(
+              client,
+              `(() => {
+              const review = document.querySelector('[data-review-comment-file=${JSON.stringify(fixture.review.filePath)}]');
+              const preview = document.querySelector('[data-preview-annotation=${JSON.stringify(fixture.preview.id)}]');
+              const element = document.querySelector('[data-message-context-kind="element"]');
+              if (!review || !preview || !element) return null;
+              return {
+                href: location.href,
+                viewport: { width: innerWidth, height: innerHeight, devicePixelRatio },
+                theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+                visiblePageText: document.body?.innerText?.replace(/\\s+/g, ' ').trim() ?? '',
+                review: {
+                  filePath: review.getAttribute('data-review-comment-file'),
+                  rangeLabel: review.getAttribute('data-review-comment-range'),
+                  text: review.textContent?.replace(/\\s+/g, ' ').trim() ?? ''
+                },
+                preview: {
+                  id: preview.getAttribute('data-preview-annotation'),
+                  text: preview.textContent?.replace(/\\s+/g, ' ').trim() ?? ''
+                },
+                element: {
+                  kind: element.getAttribute('data-message-context-kind'),
+                  text: element.textContent?.replace(/\\s+/g, ' ').trim() ?? ''
+                }
+              };
+            })()`,
+            ),
+          "Electron message cards",
+          timeoutMs,
+        )
+      : await waitFor(
+          () =>
+            evaluate(
+              client,
+              `(() => {
           const pending = document.querySelector('[data-composer-pending-kind="approval"]');
           const summary = document.querySelector('.composer-pending-approval__summary');
           const detail = document.querySelector('[data-approval-detail="complete"]');
@@ -227,29 +275,54 @@ try {
             viewport: { width: innerWidth, height: innerHeight, devicePixelRatio },
             theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
             composerState: frame.getAttribute('data-composer-state'),
-            pending: pending.textContent?.replace(/\s+/g, ' ').trim() ?? '',
+            pending: pending.textContent?.replace(/\\s+/g, ' ').trim() ?? '',
             summary: summary.textContent?.trim() ?? '',
             detail: detail.textContent?.trim() ?? '',
             actions: actions.map((action) => action.textContent?.trim() ?? ''),
             disabled: actions.map((action) => action.matches(':disabled'))
           };
-        })()`,
-      ),
-    "Electron pending approval",
-    timeoutMs,
-  );
-  if (
-    !state.href.includes(canonicalRoute) ||
-    state.theme !== "dark" ||
-    state.composerState !== "working" ||
-    !state.pending.includes("PENDING APPROVAL") ||
-    state.summary.replace(/\s+/g, "") !== "Commandapprovalrequested" ||
-    !state.pending.includes(expectedDetail) ||
-    state.detail !== expectedDetail ||
-    JSON.stringify(state.actions) !== JSON.stringify(expectedActions) ||
-    state.disabled.some(Boolean)
-  ) {
-    throw new Error(`Electron approval semantics drifted: ${JSON.stringify(state)}`);
+            })()`,
+            ),
+          "Electron pending approval",
+          timeoutMs,
+        );
+  } catch (error) {
+    const diagnostic = await evaluate(
+      client,
+      `(() => ({
+        href: location.href,
+        bodyText: (document.body?.innerText ?? '').slice(0, 1200),
+        rowIds: Array.from(document.querySelectorAll('[data-timeline-row-id]')).map((row) => row.getAttribute('data-timeline-row-id')),
+        reviewCount: document.querySelectorAll('.transcript-review-comment').length,
+        previewCount: document.querySelectorAll('[data-preview-annotation]').length,
+        elementCount: document.querySelectorAll('[data-message-context-kind="element"]').length
+      }))()`,
+    ).catch(() => null);
+    throw new Error(
+      `${error instanceof Error ? error.message : String(error)}; diagnostic=${JSON.stringify(diagnostic)}`,
+    );
+  }
+  const identityMatches = state.href.includes(canonicalRoute) && state.theme === "dark";
+  const contentMatches = verifyMessageCard
+    ? state.review.filePath === fixture.review.filePath &&
+      state.review.rangeLabel === fixture.review.rangeLabel &&
+      state.preview.id === fixture.preview.id &&
+      state.element.kind === "element" &&
+      state.visiblePageText.includes("Keep the shared card semantics aligned.") &&
+      state.visiblePageText.includes(fixture.preview.comment) &&
+      state.visiblePageText.includes("1 selected element.") &&
+      state.visiblePageText.includes(fixture.element.header)
+    : state.composerState === "working" &&
+      state.pending.includes("PENDING APPROVAL") &&
+      state.summary.replace(/\s+/g, "") === "Commandapprovalrequested" &&
+      state.pending.includes(expectedDetail) &&
+      state.detail === expectedDetail &&
+      JSON.stringify(state.actions) === JSON.stringify(expectedActions) &&
+      state.disabled.every((disabled) => disabled === false);
+  if (!identityMatches || !contentMatches) {
+    throw new Error(
+      `Electron ${verifyMessageCard ? "message-card" : "approval"} semantics drifted: ${JSON.stringify(state)}`,
+    );
   }
   const report = {
     schemaVersion: 1,
@@ -264,8 +337,9 @@ try {
     fixture: {
       environmentId,
       threadId: fixture.threadId,
-      requestId: fixture.activity.payload.requestId,
-      activeTurnId: fixture.activeTurnId,
+      ...(verifyMessageCard
+        ? { turnId: fixture.turnId, userMessageId: fixture.userMessageId }
+        : { requestId: fixture.activity.payload.requestId, activeTurnId: fixture.activeTurnId }),
       backendBehaviorClaimed: manifest.preparation?.backendBehaviorClaimed === true,
     },
     requestedWindow: { width, height },
