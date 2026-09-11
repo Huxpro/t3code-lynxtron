@@ -538,7 +538,12 @@ following-end` with the jump affordance visible only while detached. That gate
   PID `50651`, window `89189` passed `Command+P` with visible repository results,
   `Escape` dismissal, and both hide/restore directions of `Command+B`; main
   transport stayed ready at sequence 15 and the log remained free of keyboard
-  or runtime warnings. Thread/model jumps and general renderer keyboard behavior
+  or runtime warnings. A deterministic two-active-thread fixture then fixed the
+  visible order as Thread Two followed by Thread One. On PID `81595`, window
+  `89329`, real `Command+2` selected Thread One and real `Command+1` returned to
+  Thread Two; readiness ended on `fidelity-thread-two` with main sequence 20 and
+  no runtime errors. Populated thread indices 1 and 2 therefore have physical
+  acceptance; model-picker numeric jumps and general renderer keyboard behavior
   retain only command-path coverage.
   A separate exact-owned PID `60545`, window `89233` run then used Computer Use
   for a real Sidebar resize drag from the current-frame divider at about 239 px

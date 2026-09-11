@@ -40,9 +40,12 @@ native Menu accelerators → renderer-neutral keyboard packets →
 command fixtures pass. Follow-up exact-owned Computer Use acceptance passes for
 real `Command+K`, `Escape`, `Command+,`, and `Command+N` on the 0.0.21 runtime.
 A second exact-owned run passes real `Command+P` for File Picker and both
-directions of `Command+B` for Sidebar visibility. Thread/model jumps, selection,
-and general renderer keyboard/focus support remain open, so this item stays
-pending.
+directions of `Command+B` for Sidebar visibility. An isolated two-thread fixture
+then pinned the order to Thread Two, Thread One. On exact-owned PID `81595`,
+window `89329`, real `Command+2` selected Thread One and `Command+1` returned to
+Thread Two; readiness ended on `fidelity-thread-two` at main sequence 20. This
+accepts populated thread indices 1 and 2. Model-picker jumps, selection, and
+general renderer keyboard/focus support remain open, so this item stays pending.
 
 The same 1280 x 820 canonical-thread session also passes a real Sidebar resize
 drag through Computer Use. The divider moved from approximately 239 px to 319 px;

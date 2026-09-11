@@ -490,7 +490,7 @@ window `88438` before every action: real `Command+K` opened Quick Switch,
 New Thread. Main transport remained ready and advanced from sequence 13 to 14,
 with no keyboard-delivery or runtime errors. This closes the bounded core menu
 shortcut acceptance, not general renderer keyboard support: text selection,
-focus traversal, non-Sidebar drag, and thread/model jump acceptance remain open. A second
+focus traversal, non-Sidebar drag, and model-picker jump acceptance remain open. A second
 exact-owned run pinned PID `50651`, window `89189`: real `Command+P` opened the
 File Picker with repository results, `Escape` dismissed it, and `Command+B` hid
 then restored Sidebar. Main transport remained ready at sequence 15, no keyboard
@@ -501,6 +501,12 @@ moved by roughly 80 px; DevTool resolved from the owned PID then measured
 `data-sidebar-width="341"` and matching 341 px gap/container geometry. The
 error console stayed empty and the canonical main transport remained ready at
 sequence 15.
+A deterministic two-active-thread fixture fixed the visible order as Thread Two
+then Thread One. On exact-owned PID `81595`, window `89329`, real `Command+2`
+selected Thread One and `Command+1` returned to Thread Two. The final readiness
+report confirmed `fidelity-thread-two` as active, main sequence 20, no keyboard
+or runtime errors, and captured-PID cleanup. This covers populated thread indices
+1 and 2 without claiming model-picker numeric jumps.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 
