@@ -668,9 +668,14 @@ task markers to the same shared source mutation and save coordinator as Web. An
 exact-owned physical run on PID `15807`, window `90160`, opened `README.md`,
 switched to Rendered, checked the first task, and persisted only the expected
 `[ ]` to `[x]` byte change with save status `saved`, main sequence 17, and zero
-renderer errors. Transcript tasks stay read-only by design. Tasks nested in
-stripped blockquote/details subtrees also remain read-only until absolute source
-ranges survive nested parsing; paired file preview pixels remain open.
+renderer errors. Transcript tasks stay read-only by design. Nested file-preview
+tasks are mutable when their original line boundaries survive parsing:
+blockquote children add the stripped prefix length to their original line start,
+and multiline details children retain the original line starts directly. An
+exact-owned run on PID `42621`, window `90511`, physically checked both forms and
+persisted exact bytes with `saved`, main sequence 14, and zero renderer errors.
+Single-line inline-details tasks remain read-only because they still lack absolute
+source ranges; paired file preview pixels remain open.
 The mutation now also has reproducible same-snapshot Electron/Native evidence.
 Both surfaces consumed snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`,
 the same project and `README.md`, 1280 x 820 dark, and the same initial bytes.

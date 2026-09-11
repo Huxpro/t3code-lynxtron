@@ -320,8 +320,14 @@ following-end` with the jump affordance visible only while detached. That gate
   Rendered and checked `First task`, and the file changed only from `[ ]` to
   `[x]` at that marker. Native reported `saved`, no save error, main sequence
   17, and zero renderer errors before cleanup. Transcript task markers remain
-  read-only, and blockquote/details tasks remain read-only until the shared AST
-  retains their absolute source ranges.
+  read-only. The shared parser now propagates exact original line offsets through
+  blockquote prefixes and multiline details bodies, so those nested file-preview
+  tasks are mutable as well. On exact-owned PID `42621`, window `90511`, physical
+  pointer input checked one blockquote task and one open-details task; both exact
+  markers persisted, save status returned to `saved`, main transport reached
+  sequence 14, and renderer errors stayed empty. Single-line inline-details tasks
+  remain read-only because their body is still an inline substring without an
+  absolute source range.
   A reproducible same-snapshot comparator now adds the Electron source of truth.
   Snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`
   pins project `c6766ca3-4586-4812-b2ec-a50f324cae7e`, `README.md`, 1280 x

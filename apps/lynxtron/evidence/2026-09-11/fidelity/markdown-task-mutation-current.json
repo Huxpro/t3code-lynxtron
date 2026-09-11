@@ -41,11 +41,13 @@
       "Lynx Markdown files expose explicit Source and Rendered modes like Web",
       "top-level and indentation-only task markers retain absolute source offsets",
       "a physical task-marker click updates only the requested marker and persists through the shared save coordinator",
-      "transcript Markdown remains read-only because it does not provide the mutation callback"
+      "transcript Markdown remains read-only because it does not provide the mutation callback",
+      "a follow-up exact-owned run proved blockquote and multiline details task mutation using propagated absolute line offsets"
     ],
     "notYetProved": [
       "paired Web and Lynx pixels for the rendered Markdown file",
-      "task mutation inside blockquote or details content whose stripped prefixes do not yet retain absolute source ranges",
+      "paired Electron and Native correlation for blockquote and multiline details task mutation",
+      "single-line inline details task mutation because its body remains an inline slice without source ranges",
       "keyboard activation of task markers"
     ]
   }
