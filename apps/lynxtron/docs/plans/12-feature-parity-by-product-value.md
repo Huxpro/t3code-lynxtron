@@ -288,13 +288,15 @@ following-end` with the jump affordance visible only while detached. That gate
   context card instead of exposing raw `<review_comment>` tags. The shared row
   semantic text hook now records renderer-visible content for user messages, so
   hidden element/review wrappers no longer leak through transcript attributes.
-  Paired same-thread runtime evidence for these cards remains open.
+  Paired same-thread semantic runtime evidence is now recorded below; paired
+  pixels and card interactions remain open.
   Preview-annotation presentation parsing is shared as well: both renderers peel
   one or more trailing annotation payloads from authored text in the same order.
   Native now pairs `preview-annotation-*` attachments with compact annotation
   cards, keeps unrelated attachments in their normal list, and no longer exposes
   the raw annotation or nested element-context payload in the visible message.
-  Paired annotated-preview evidence remains open.
+  Paired annotated-preview semantics are now recorded below; image/lightbox
+  interaction and paired pixels remain open.
   The renderer-neutral user-message semantic projection now applies the same
   context, preview-annotation, and review-comment pipeline to transcript row
   attributes and minimap previews. Long-thread navigation therefore shows
@@ -309,6 +311,17 @@ following-end` with the jump affordance visible only while detached. That gate
   once for bubble sizing, extras, body, metadata, and navigation preview. This
   was initially implementation coverage and is now backed by the exact-owned
   long-thread runtime measurement below.
+  A dedicated single-user-message fixture now drives the Web and Native renderers
+  from snapshot `64dba57750d7eec265a7676fa8bdd32bdca600ce8fe27141c56337a6babdf7bd`
+  at 1280 x 820 in dark theme and runtime evidence HEAD `fb1b06fd9`. The paired
+  semantic comparator passed all 18
+  checks for HEAD, snapshot, thread/turn/message identity, viewport/theme, review
+  file and range, preview id, element kind, and the renderer-visible review,
+  preview, target, and element text. Native used main transport sequence 3 -> 4,
+  had zero renderer errors, disposed its isolated state, and used the explicit
+  programmatic list probe to materialize the user row. Both owned processes
+  exited. This closes review-comment, preview-annotation, and element-context
+  semantic correlation; it does not claim paired pixels or physical navigation.
   The explicit transcript verifier now has a strict recycling step: it rejects
   fixtures below 100 canonical rows, requires the materialized DOM row set to
   stay smaller than canonical history, scrolls first-to-last through the owned
