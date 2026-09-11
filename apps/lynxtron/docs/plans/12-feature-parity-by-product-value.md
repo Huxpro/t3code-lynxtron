@@ -322,6 +322,16 @@ following-end` with the jump affordance visible only while detached. That gate
   17, and zero renderer errors before cleanup. Transcript task markers remain
   read-only, and blockquote/details tasks remain read-only until the shared AST
   retains their absolute source ranges.
+  A reproducible same-snapshot comparator now adds the Electron source of truth.
+  Snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`
+  pins project `c6766ca3-4586-4812-b2ec-a50f324cae7e`, `README.md`, 1280 x
+  820, and dark theme. Electron's CDP behavior runner and exact-owned Native
+  physical input both rendered two tasks, changed only `First task` from `[ ]`
+  to `[x]`, and persisted identical final bytes with SHA-256
+  `dc41af264092142dd5c4880c769fc2ce078ef43cdb610a7f019998a64674226a`.
+  The strict comparator passed all 18 identity, mutation, backend, transport,
+  error, evidence-kind, and cleanup checks. This is paired semantic behavior,
+  not paired pixels or physical Electron input.
   A dedicated single-user-message fixture now drives the Web and Native renderers
   from snapshot `64dba57750d7eec265a7676fa8bdd32bdca600ce8fe27141c56337a6babdf7bd`
   at 1280 x 820 in dark theme and runtime evidence HEAD `fb1b06fd9`. The paired

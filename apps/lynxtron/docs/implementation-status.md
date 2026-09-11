@@ -671,6 +671,14 @@ switched to Rendered, checked the first task, and persisted only the expected
 renderer errors. Transcript tasks stay read-only by design. Tasks nested in
 stripped blockquote/details subtrees also remain read-only until absolute source
 ranges survive nested parsing; paired file preview pixels remain open.
+The mutation now also has reproducible same-snapshot Electron/Native evidence.
+Both surfaces consumed snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`,
+the same project and `README.md`, 1280 x 820 dark, and the same initial bytes.
+Electron used a CDP DOM behavior runner; Native used physical Computer Use
+input. Both persisted the same one-marker change and final SHA-256
+`dc41af264092142dd5c4880c769fc2ce078ef43cdb610a7f019998a64674226a`.
+All 18 comparator checks pass. This closes paired semantic mutation behavior,
+while paired pixels and keyboard checkbox activation remain open.
 
 The changed-files extraction is a 233-line shared production module with six
 pure functions. Web consumes all six for its checkpoint card/tree, while Lynx
