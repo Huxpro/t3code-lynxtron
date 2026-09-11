@@ -70,6 +70,14 @@ thread and Composer remained stable, the error console was empty, main transport
 remained ready at sequence 15, and cleanup stopped only the captured PID. This
 closes Sidebar-resize drag acceptance, not unrelated drag or selection paths.
 
+Physical hover remains a runtime boundary. A two-active-thread run on exact-owned
+PID `22479`, window `89689` moved the real pointer over Thread Two, but the
+viewport-probe-only `hoveredThreadId` stayed `null`; both
+`.sidebar-v2-row-actions` nodes retained computed opacity 0. Main transport was
+healthy at sequence 16 and the error console was empty. This isolates the loss
+to native `mouseenter` delivery before React state rather than CSS class
+propagation. No programmatic hover substitute is counted as acceptance.
+
 Exit criteria:
 
 - The runtime probe records exact event support and version

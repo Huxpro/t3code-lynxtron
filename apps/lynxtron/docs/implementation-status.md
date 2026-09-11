@@ -501,6 +501,13 @@ moved by roughly 80 px; DevTool resolved from the owned PID then measured
 `data-sidebar-width="341"` and matching 341 px gap/container geometry. The
 error console stayed empty and the canonical main transport remained ready at
 sequence 15.
+Physical Sidebar hover was re-probed on a two-active-thread fixture with
+exact-owned PID `22479`, window `89689`. Computer Use moved the real pointer over
+Thread Two, while a viewport-test-only state probe remained
+`hoveredThreadId: null` and both action containers retained computed opacity 0.
+The main transport remained healthy at sequence 16 with no renderer errors. The
+failure therefore precedes React state/CSS propagation and remains an R6 native
+`mouseenter` gap.
 A deterministic two-active-thread fixture fixed the visible order as Thread Two
 then Thread One. On exact-owned PID `81595`, window `89329`, real `Command+2`
 selected Thread One and `Command+1` returned to Thread Two. The final readiness

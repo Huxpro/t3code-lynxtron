@@ -575,6 +575,13 @@ following-end` with the jump affordance visible only while detached. That gate
   the DevTool error console was empty, main transport remained ready at sequence
   15, and cleanup stopped only PID `60545`. Other drag and selection paths remain
   open.
+  A physical active-thread hover was also tested on exact-owned PID `22479`,
+  window `89689`. Computer Use moved the real pointer over Thread Two, but a
+  viewport-probe-only state read remained `hoveredThreadId: null` and both
+  `.sidebar-v2-row-actions` nodes kept computed opacity 0. Main transport stayed
+  healthy at sequence 16 and the console was clean. This identifies an R6 native
+  `mouseenter` delivery gap before React state; no programmatic hover is counted
+  as acceptance.
 - Native code-block copy now follows the same pending/copied/failed contract,
   disables duplicate taps while the bridge write is in flight, and clears its
   feedback timer when a virtualized block unmounts.
