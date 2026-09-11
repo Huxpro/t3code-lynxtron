@@ -318,6 +318,16 @@ following-end` with the jump affordance visible only while detached. That gate
   its direct-projection boundary so it cannot be mistaken for backend-ingestion
   evidence; the runner pins bundle URL, main transport, active thread, viewport,
   renderer errors, and owned-process cleanup before accepting node reuse.
+  The committed runner passed at `2b4ea49cc` on the isolated snapshot
+  `144cae82467d354991f778facdffb39133630d2892d5a1795d5261faf317cc5d`
+  and production bundle
+  `7285762784e43c3dd024f98ada7a3cbc02c324f8a18936d9f0054aa6643af6a5`:
+  240 canonical rows produced eight materialized nodes at both ends, and native
+  node `747` rebound from `fidelity-long-turn-118-assistant` to
+  `fidelity-long-turn-120-assistant`. The exact-owned app used main transport
+  sequence 12, the canonical thread was active, renderer errors were empty, and
+  pre/postflight found zero leaked processes. Physical wheel acceptance and
+  paired Electron/Native position correlation remain open.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
