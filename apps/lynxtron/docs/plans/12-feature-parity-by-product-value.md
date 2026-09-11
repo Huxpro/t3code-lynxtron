@@ -356,6 +356,18 @@ following-end` with the jump affordance visible only while detached. That gate
   pending. The visible runtime warning
   `FiberSetAttribute param 0 should be RefCounted` remains a separate platform
   loss and is not counted as a zero-warning acceptance.
+  That warning was subsequently traced to high-frequency main-thread hover and
+  focus handlers calling `setAttribute` on the transient event
+  `currentTarget`. Lynx's `MainThread.Element.setAttribute(name, value)` API is
+  valid, while a matching Lynx OnCall class-setter incident attributes the Fiber
+  error family to FFI parameter-type mismatches. Generated Native CSS had no
+  consumer for the shared `data-lynx-focus` writes and only the Sidebar resize
+  rail consumed `data-lynx-hover`; the redundant shared writes were deleted and
+  the resize rail now writes through its retained `useMainThreadRef` element. On
+  bundle `0cd9d159646abe7d4a5b79317738ca9f1a2c4e293a5f821622f18b9c7c50c2f0`,
+  exact-owned Native recycling still passed with zero console errors, and a
+  fresh visible Computer Use run remained free of LogBox warnings through real
+  wheel-away, return-to-end, Un-settle, and Composer focus.
   A separate fresh exact-owned Computer Use session proved Composer focus and
   literal typing: after a real OS click, Accessibility exposed the focused
   textarea and `focus selection probe` appeared as both its value and visible
