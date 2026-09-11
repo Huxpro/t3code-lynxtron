@@ -1250,7 +1250,10 @@ const UserMessageElementContextChip = memo(function UserMessageElementContextChi
     <Tooltip>
       <TooltipTrigger
         render={
-          <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-border/70 bg-background/70 px-1.5 py-0.5 text-xs text-foreground/85">
+          <span
+            className="inline-flex max-w-full items-center gap-1 rounded-md border border-border/70 bg-background/70 px-1.5 py-0.5 text-xs text-foreground/85"
+            data-message-context-kind="element"
+          >
             <MousePointerClickIcon className="size-3 shrink-0" />
             <span className="truncate">{props.context.header}</span>
           </span>
@@ -1269,7 +1272,10 @@ function UserMessagePreviewAnnotationCard(props: {
 }) {
   const ctx = use(TimelineRowCtx);
   return (
-    <div className="mb-2 flex max-w-full items-center overflow-hidden rounded-lg border border-border/70 bg-background/70">
+    <div
+      className="mb-2 flex max-w-full items-center overflow-hidden rounded-lg border border-border/70 bg-background/70"
+      data-preview-annotation={props.annotation.id}
+    >
       {props.image?.previewUrl ? (
         <button
           type="button"
@@ -1561,7 +1567,12 @@ function UserMessageReviewCommentCard({ comment }: { comment: ReviewCommentConte
   );
 
   return (
-    <div className="space-y-2 rounded-lg border border-border/70 bg-background/70 p-3">
+    <div
+      className="space-y-2 rounded-lg border border-border/70 bg-background/70 p-3"
+      data-review-comment={comment.id}
+      data-review-comment-file={comment.filePath}
+      data-review-comment-range={comment.rangeLabel}
+    >
       <div className="space-y-1">
         <div className="text-xs font-medium text-foreground">
           {formatWorkspaceRelativePath(comment.filePath, ctx.workspaceRoot)}
