@@ -534,9 +534,12 @@ following-end` with the jump affordance visible only while detached. That gate
   encoding, the shared keybinding resolver, and a dependency-injected product
   action dispatcher for New Thread, Quick Switch, File Picker, Settings, Sidebar,
   and thread/model jumps. The `Command+K`, `Escape`, `Command+,`, and `Command+N`
-  paths now also have exact-owned physical keyboard acceptance. File Picker,
-  Sidebar, thread/model jumps, and general renderer keyboard behavior retain
-  only command-path coverage.
+  paths now also have exact-owned physical keyboard acceptance. A second run on
+  PID `50651`, window `89189` passed `Command+P` with visible repository results,
+  `Escape` dismissal, and both hide/restore directions of `Command+B`; main
+  transport stayed ready at sequence 15 and the log remained free of keyboard
+  or runtime warnings. Thread/model jumps and general renderer keyboard behavior
+  retain only command-path coverage.
 - Native code-block copy now follows the same pending/copied/failed contract,
   disables duplicate taps while the bridge write is in flight, and clears its
   feedback timer when a virtualized block unmounts.

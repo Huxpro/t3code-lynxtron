@@ -39,8 +39,10 @@ native Menu accelerators → renderer-neutral keyboard packets →
 `sendGlobalEvent` → the shared keybinding resolver. Automated packet and
 command fixtures pass. Follow-up exact-owned Computer Use acceptance passes for
 real `Command+K`, `Escape`, `Command+,`, and `Command+N` on the 0.0.21 runtime.
-File Picker, Sidebar, thread/model jumps, selection, and general renderer
-keyboard/focus support remain open, so this item stays pending.
+A second exact-owned run passes real `Command+P` for File Picker and both
+directions of `Command+B` for Sidebar visibility. Thread/model jumps, selection,
+and general renderer keyboard/focus support remain open, so this item stays
+pending.
 
 Exit criteria:
 

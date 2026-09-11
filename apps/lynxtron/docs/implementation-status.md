@@ -490,8 +490,11 @@ window `88438` before every action: real `Command+K` opened Quick Switch,
 New Thread. Main transport remained ready and advanced from sequence 13 to 14,
 with no keyboard-delivery or runtime errors. This closes the bounded core menu
 shortcut acceptance, not general renderer keyboard support: text selection,
-focus traversal, drag, File Picker, Sidebar, and thread/model jump acceptance
-remain open.
+focus traversal, drag, and thread/model jump acceptance remain open. A second
+exact-owned run pinned PID `50651`, window `89189`: real `Command+P` opened the
+File Picker with repository results, `Escape` dismissed it, and `Command+B` hid
+then restored Sidebar. Main transport remained ready at sequence 15, no keyboard
+or runtime warnings appeared, and cleanup stopped only the captured PID.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 
