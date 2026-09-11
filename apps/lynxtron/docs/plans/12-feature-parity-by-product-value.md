@@ -573,6 +573,21 @@ following-end` with the jump affordance visible only while detached. That gate
   five fixed screenshot fragments. The real button children remain visible and
   accessible across themes and viewports while the existing approval variants
   retain their layout and colors.
+- Approval now has reproducible same-snapshot Electron/Native semantic evidence
+  without consuming screenshot budget. The fixture pins dark theme and provider
+  selection; Electron and Native both read snapshot
+  `f2fff2b8b7341d600796aa607a259b508b119dca7c3f7e552e85c6893df5b264`
+  at 1280 x 820 with thread `7bca730b-1006-4b21-8c0d-913838a53e5e`, request
+  `approval-fixture-command-1`, and turn
+  `f079fd25-2f9a-42eb-a93a-5e80710a982c`. The strict comparator passed report
+  status, HEAD, snapshot, thread/request/turn identity, viewport, dark theme,
+  working Composer state, `printf pending-approval`, all four enabled actions,
+  semantic-only labeling, direct-projection boundary, main transport, and zero
+  Native renderer errors. Native also retained its existing exact geometry gate
+  and advanced main transport from sequence 3 to 5. Both owned processes exited
+  and Native disposed its isolated state. This closes card-specific semantic
+  correlation only: it does not claim paired pixels, provider ingestion, or an
+  approve/decline mutation.
 - The shared Composer context strip no longer carries an unused authority-image
   injection slot or CSS that could hide its real checkout and branch controls.
 - Shared Sidebar header/footer and search/project controls no longer expose dead
