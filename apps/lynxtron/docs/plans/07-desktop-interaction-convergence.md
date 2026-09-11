@@ -61,6 +61,16 @@ keyboard files. Real `Escape` dismissed the picker. `Command+A` followed by
 Backspace removed only the trailing `e`, reproducing the same selection failure
 already seen in Composer. Query focus/typing is accepted; selection remains an
 R8 runtime gap across both text surfaces.
+File-result keyboard execution now matches the Electron source of truth. The
+first real ArrowDown/Enter run exposed two losses: Enter was inserted into the
+query and the selected path was sent to external `navigation.openPath` twice,
+leaving the picker open with two errors. Native now strips CR/LF from input,
+handles Enter once through the panel, and calls the existing internal
+`uiActions.openFileSurface(path)`. On exact-owned PID `75404`, window `89773`,
+real query typing plus ArrowDown and Enter closed the picker and opened
+`keyboardCommands.probe.test.ts` in the internal split Files surface. DevTool
+verified preview mode, a saved content revision, no console errors, and main
+sequence 13.
 
 The same 1280 x 820 canonical-thread session also passes a real Sidebar resize
 drag through Computer Use. The divider moved from approximately 239 px to 319 px;

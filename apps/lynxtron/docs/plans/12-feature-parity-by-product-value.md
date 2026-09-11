@@ -567,6 +567,15 @@ following-end` with the jump affordance visible only while detached. That gate
   Picker focus/query typing but strengthens the evidence that selection is a
   shared runtime gap. Main transport remained ready at sequence 16 and the owned
   PID was cleaned up.
+  A follow-up ArrowDown/Enter pass then exposed a real Electron/Native behavior
+  mismatch: Native inserted Enter into the query and called external
+  `navigation.openPath` twice instead of opening T3's internal file surface. The
+  implementation now strips CR/LF, handles Enter once, and uses
+  `uiActions.openFileSurface(path)`. On exact-owned PID `75404`, window `89773`,
+  literal query typing, ArrowDown, and Enter opened
+  `keyboardCommands.probe.test.ts` inside the split Files panel. Owned DevTool
+  confirmed preview mode, saved content revision, no console errors, and main
+  sequence 13.
   A separate exact-owned PID `60545`, window `89233` run then used Computer Use
   for a real Sidebar resize drag from the current-frame divider at about 239 px
   to 319 px. The visible Sidebar expanded, while owned DevTool client

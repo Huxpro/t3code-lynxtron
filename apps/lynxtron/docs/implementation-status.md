@@ -528,6 +528,13 @@ results. `Escape` dismissed the picker. A real `Command+A` plus Backspace change
 the value only to `keyboardCommands.prob`, so select-all remains broken across
 both Composer and File Picker rather than being a Composer-only defect. Main
 transport stayed ready at sequence 16 and cleanup stopped the captured PID.
+The next File Picker keyboard pass found and closed an Electron/Native behavior
+loss. Native Enter previously appended a newline and invoked external
+`navigation.openPath` twice. The picker now normalizes CR/LF, routes Enter once,
+and opens the existing internal file surface. Exact-owned PID `75404`, window
+`89773` accepted real ArrowDown and Enter for
+`keyboardCommands.probe.test.ts`; DevTool measured split layout, preview editor
+mode, saved content revision, zero console errors, and main sequence 13.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 
