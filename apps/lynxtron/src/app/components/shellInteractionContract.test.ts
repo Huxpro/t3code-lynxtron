@@ -1998,7 +1998,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("letter-spacing: 1.2px;");
     expect(appIndex).toContain('uiActions.openQuickSwitch("files")');
     expect(appIndex).toContain('overlay === "right-panel-tabs"');
-    expect(keyboardCommandsSource).toContain("return dismissOpenSearchOverlay();");
+    expect(keyboardCommandsSource).toContain("const handled = dismissOpenSearchOverlay();");
+    expect(keyboardCommandsSource).toContain('command: "dismiss-overlay"');
     expect(appIndex).toContain('uiActions.openRightPanelSurface("files")');
     expect(appIndex).toContain('uiActions.openRightPanelSurface("diff")');
     expect(appIndex.indexOf('uiActions.openRightPanelSurface("diff")')).toBeLessThan(

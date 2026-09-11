@@ -22,7 +22,6 @@ import {
   getProjectFilePickerMatches,
   PROJECT_FILE_PICKER_RESULT_LIMIT,
 } from "@t3tools/client-runtime/presentation/file-picker";
-import { resolvePathLinkTarget } from "@t3tools/client-runtime/presentation/paths";
 import { formatRelativeTimeLabel } from "@t3tools/client-runtime/presentation/time";
 import {
   parseCommandPaletteSearchQuery,
@@ -46,7 +45,6 @@ import type { ProjectSummary, ThreadSummary } from "../bridge";
 import { navigate } from "../router";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { uiActions } from "../state/uiState";
-import { clientCapabilities } from "../platform/clientCapabilities";
 import { Icon, type IconName } from "./Icon";
 import { ProjectFileIcon } from "./ProjectFileIcon";
 import {
@@ -143,7 +141,7 @@ export function QuickSwitch({
   const close = uiActions.closeQuickSwitch;
 
   const handleInput = useCallback((e: { detail: { value: string } }) => {
-    setQuery(e.detail.value);
+    setQuery(e.detail.value.replace(/[\r\n]+/gu, ""));
   }, []);
 
   const activeThread =
@@ -612,15 +610,10 @@ export function QuickSwitch({
   );
   const handleFileTap = useCallback(
     (path: string) => {
-      if (!cwd || !clientCapabilities.navigation.canOpenPath()) return;
-      void clientCapabilities.navigation
-        .openPath(resolvePathLinkTarget(path, cwd))
-        .then(close)
-        .catch((cause) => {
-          console.error("[quick-switch] failed to open file", { path, cause });
-        });
+      uiActions.openFileSurface(path);
+      close();
     },
-    [cwd],
+    [close],
   );
   const fileMode = mode === "files";
   const rootNavigationItems = useMemo<ReadonlyArray<PaletteNavigationItem>>(
@@ -783,7 +776,6 @@ export function QuickSwitch({
               {...({ value: query } as object)}
               placeholder={inputPlaceholder}
               bindinput={handleInput}
-              bindconfirm={() => handlePaletteKeyDown({ key: "Enter" })}
             />
           }
         />

@@ -16,6 +16,13 @@ describe("Quick Switch visual-state probe", () => {
     expect(source).toContain("[lynx-quick-switch] input focus failed");
   });
 
+  it("opens file results inside T3 and handles Enter once", () => {
+    expect(source).toContain("uiActions.openFileSurface(path)");
+    expect(source).toContain('setQuery(e.detail.value.replace(/[\\r\\n]+/gu, ""))');
+    expect(source).not.toContain("clientCapabilities.navigation.openPath");
+    expect(source).not.toContain('bindconfirm={() => handlePaletteKeyDown({ key: "Enter" })}');
+  });
+
   it("is available only in isolated viewport-test runs", () => {
     expect(source).toContain("if (!viewport.testResize) return;");
     expect(source).toContain("__T3_LYNXTRON_QUICK_SWITCH_QUERY__");
