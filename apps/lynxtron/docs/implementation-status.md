@@ -676,6 +676,14 @@ exact-owned run on PID `42621`, window `90511`, physically checked both forms an
 persisted exact bytes with `saved`, main sequence 14, and zero renderer errors.
 Single-line inline-details tasks remain read-only because they still lack absolute
 source ranges; paired file preview pixels remain open.
+An Electron source-of-truth correlation then showed that multiline details is
+not an interactive task surface on Web: Electron exposes one blockquote checkbox
+and leaves the details task as literal Markdown. Native's earlier details
+mutation, although technically functional, was therefore reverted. The corrected
+same-snapshot comparator passed all 18 checks on snapshot
+`79f288f279f6e5d80001ef964f14cf5f23726048c8e4da5d630b681b9a565ef0`;
+both surfaces changed only the blockquote marker and preserved identical details
+bytes. This is behavioral convergence to Electron, not feature maximization.
 The mutation now also has reproducible same-snapshot Electron/Native evidence.
 Both surfaces consumed snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`,
 the same project and `README.md`, 1280 x 820 dark, and the same initial bytes.

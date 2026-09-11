@@ -12,6 +12,8 @@ describe("Markdown task fixture preparation", () => {
   it("requires a canonical empty snapshot and exact workspace bytes", () => {
     assert.include(source, 'manifest.threadCount !== 0 || manifest.route !== "new-thread"');
     assert.include(source, "MARKDOWN_TASK_BEFORE");
+    assert.include(source, "MARKDOWN_NESTED_TASK_BEFORE");
+    assert.include(source, 'variant === "nested"');
     assert.include(source, 'relativePath = "README.md"');
   });
 
@@ -19,5 +21,6 @@ describe("Markdown task fixture preparation", () => {
     assert.include(source, 'kind: "canonical-markdown-task-fixture"');
     assert.include(source, "backendBehaviorClaimed: true");
     assert.include(source, '"lynxtron-prefs.json"');
+    assert.include(source, 'taskCount: variant === "nested" ? 1 : 2');
   });
 });

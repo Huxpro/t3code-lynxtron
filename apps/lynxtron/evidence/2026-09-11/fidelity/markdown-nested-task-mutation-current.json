@@ -1,45 +1,27 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "observedAt": "2026-09-11T07:31:00-04:00",
   "stateId": "file-markdown-nested-task-mutation",
-  "codeState": "working-tree-product-change",
-  "scope": {
-    "viewport": "1280x820",
-    "theme": "dark",
-    "snapshotSha256": "c43fe9a6f2c0550599ec62cf0bf71f2333d5eed4cb36385b42997de38d4938d1",
-    "file": "README.md"
+  "classification": "superseded-native-only-experiment",
+  "supersedes": "schemaVersion 1 Native-only claim from commit 158b2a955",
+  "finding": "Electron source-of-truth exposes one interactive task checkbox for the blockquote task, while multiline details content remains literal Markdown text. The earlier Native-only experiment proved the technical ability to mutate both, but enabling details mutation diverged from Electron behavior and is reverted by the follow-up convergence commit.",
+  "retainedProductBehavior": {
+    "blockquoteTaskMutation": true,
+    "multilineDetailsTaskMutation": false,
+    "inlineDetailsTaskMutation": false
   },
-  "physicalInput": {
-    "channel": "Computer Use",
-    "ownedPid": 42621,
-    "windowId": 90511,
-    "mutations": [
-      "blockquote task unchecked to checked",
-      "multiline details task unchecked to checked"
-    ]
+  "evidence": {
+    "electronDiagnostic": {
+      "taskCount": 1,
+      "detailsElementCount": 0,
+      "visibleDetailsText": "More - [ ] Detailed task"
+    },
+    "nativeExperiment": {
+      "ownedPid": 42621,
+      "windowId": 90511,
+      "bothTasksTechnicallyPersisted": true,
+      "fileSha256": "7fc009ba3eb5999eb646fcccb90cd0ebcefea447dbfea961c1b0d4399e49c4bb"
+    }
   },
-  "after": "# Nested tasks\n\n> - [x] Quoted task\n\n<details open>\n<summary>More</summary>\n- [x] Detailed task\n</details>\n",
-  "postconditions": {
-    "fileSha256": "7fc009ba3eb5999eb646fcccb90cd0ebcefea447dbfea961c1b0d4399e49c4bb",
-    "saveStatus": "saved",
-    "saveError": null,
-    "transport": "main",
-    "lastSequence": 14,
-    "rendererErrors": 0,
-    "ownedProcessStopped": true,
-    "isolatedStateDisposed": true,
-    "screenshotsRetained": 0
-  },
-  "boundary": {
-    "proved": [
-      "blockquote child-line offsets include the stripped quote prefix and map to the original source",
-      "multiline details child lines preserve their original absolute line offsets",
-      "both nested task mutations persist exact source bytes through the existing save coordinator"
-    ],
-    "notYetProved": [
-      "single-line inline details task mutation because its body remains an inline slice without source ranges",
-      "paired rendered pixels",
-      "keyboard activation"
-    ]
-  }
+  "boundary": "Only behavior shared with Electron remains enabled. A same-snapshot paired follow-up covers the retained blockquote mutation; details task mutation stays open until Electron renders it as an interactive task."
 }

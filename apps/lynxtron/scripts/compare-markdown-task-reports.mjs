@@ -17,6 +17,7 @@ if (!argumentValue("--electron") || !argumentValue("--native") || !argumentValue
 }
 const electron = JSON.parse(readFileSync(electronPath, "utf8"));
 const native = JSON.parse(readFileSync(nativePath, "utf8"));
+const expectedTaskCount = electron.fixture?.taskCount ?? electron.state?.taskCount;
 const checks = {
   reportsPassed: electron.status === "pass" && native.status === "pass",
   head: electron.head === native.head,
@@ -29,10 +30,15 @@ const checks = {
     electron.state?.viewport?.width === native.state?.viewport?.width &&
     electron.state?.viewport?.height === native.state?.viewport?.height,
   theme: electron.state?.theme === native.state?.theme && electron.state?.theme === "dark",
-  taskCount: electron.state?.taskCount === 2 && native.state?.taskCount === 2,
+  taskCount:
+    Number.isInteger(expectedTaskCount) &&
+    electron.state?.taskCount === expectedTaskCount &&
+    native.state?.taskCount === expectedTaskCount,
   checked:
-    JSON.stringify(electron.state?.checked) === JSON.stringify([true, true]) &&
-    JSON.stringify(native.state?.checked) === JSON.stringify([true, true]),
+    electron.state?.checked?.length === expectedTaskCount &&
+    native.state?.checked?.length === expectedTaskCount &&
+    electron.state.checked.every((checked) => checked === true) &&
+    native.state.checked.every((checked) => checked === true),
   fileHash: electron.state?.fileSha256 === native.state?.fileSha256,
   cleanSaves:
     electron.state?.saveError === false &&

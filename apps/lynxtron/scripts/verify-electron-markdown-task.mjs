@@ -125,6 +125,10 @@ if (
 ) {
   throw new Error("Fixture manifest has no canonical markdownTaskFixture.");
 }
+const expectedTaskCount = Number.isInteger(fixture.taskCount)
+  ? fixture.taskCount
+  : [...fixture.before.matchAll(/\[[ xX]\]/gu)].length;
+if (expectedTaskCount < 1) throw new Error("Markdown task fixture has no task markers.");
 const workspaceFile = path.join(manifest.project.workspaceRoot, fixture.relativePath);
 if (readFileSync(workspaceFile, "utf8") !== fixture.before) {
   throw new Error("Markdown task workspace did not start from canonical bytes.");
@@ -248,18 +252,29 @@ try {
     client,
     `(() => { document.querySelector('[aria-label="Show rendered markdown"]')?.click(); return true; })()`,
   );
-  const before = await waitFor(
-    () =>
-      evaluate(
-        client,
-        `(() => { const task = document.querySelector('input[name="markdown-task"]'); if (!task || task.checked) return null; return { viewport: { width: innerWidth, height: innerHeight, devicePixelRatio }, theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', taskCount: document.querySelectorAll('input[name="markdown-task"]').length }; })()`,
-      ),
-    "Electron rendered Markdown tasks",
-    timeoutMs,
-  );
+  let before;
+  try {
+    before = await waitFor(
+      () =>
+        evaluate(
+          client,
+          `(() => { const tasks = [...document.querySelectorAll('input[name="markdown-task"]')]; if (tasks.length !== ${JSON.stringify(expectedTaskCount)} || tasks.every((task) => task.checked)) return null; return { viewport: { width: innerWidth, height: innerHeight, devicePixelRatio }, theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', taskCount: tasks.length, initialChecked: tasks.map((task) => task.checked) }; })()`,
+        ),
+      "Electron rendered Markdown tasks",
+      timeoutMs,
+    );
+  } catch (error) {
+    const diagnostic = await evaluate(
+      client,
+      `(() => ({ bodyText: (document.body?.innerText ?? '').slice(0, 2000), taskCount: document.querySelectorAll('input[name="markdown-task"]').length, inputs: [...document.querySelectorAll('input[type="checkbox"]')].map((input) => ({ name: input.name, checked: input.checked, disabled: input.disabled })), details: [...document.querySelectorAll('details')].map((item) => ({ open: item.open, text: item.textContent })) }))()`,
+    ).catch(() => null);
+    throw new Error(
+      `${error instanceof Error ? error.message : String(error)}; diagnostic=${JSON.stringify(diagnostic)}`,
+    );
+  }
   await evaluate(
     client,
-    `(() => { document.querySelector('input[name="markdown-task"]')?.click(); return true; })()`,
+    `(() => { const tasks = [...document.querySelectorAll('input[name="markdown-task"]')]; for (const task of tasks) if (!task.checked) task.click(); return tasks.length; })()`,
   );
   await waitFor(
     () => (readFileSync(workspaceFile, "utf8") === fixture.after ? true : null),
@@ -271,8 +286,9 @@ try {
     `(() => ({ checked: [...document.querySelectorAll('input[name="markdown-task"]')].map((input) => input.checked), saveError: Boolean(document.querySelector('[data-file-save-error]')) }))()`,
   );
   if (
-    before.taskCount !== 2 ||
-    JSON.stringify(after.checked) !== JSON.stringify([true, true]) ||
+    before.taskCount !== expectedTaskCount ||
+    after.checked.length !== expectedTaskCount ||
+    after.checked.some((checked) => checked !== true) ||
     after.saveError
   ) {
     throw new Error(`Electron Markdown task state drifted: ${JSON.stringify({ before, after })}`);
@@ -290,7 +306,9 @@ try {
     fixture: {
       environmentId,
       projectId: manifest.project.projectId,
+      variant: fixture.variant ?? "simple",
       relativePath: fixture.relativePath,
+      taskCount: expectedTaskCount,
       before: fixture.before,
       after: fixture.after,
       backendBehaviorClaimed: true,

@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-11T08:01:18-04:00",
+  "stateId": "file-markdown-nested-task-mutation",
+  "status": "pass",
+  "identity": {
+    "head": "158b2a9553a6af98f095010e2b3345cd3d728771",
+    "snapshotSha256": "79f288f279f6e5d80001ef964f14cf5f23726048c8e4da5d630b681b9a565ef0",
+    "projectId": "1cb4745d-3b2f-4559-bdad-e9fe1fa51388",
+    "relativePath": "README.md",
+    "viewport": "1280x820",
+    "theme": "dark"
+  },
+  "sourceOfTruth": {
+    "electronInteractiveTaskCount": 1,
+    "interactiveTask": "blockquote task",
+    "detailsTaskPresentation": "literal Markdown text, not a checkbox"
+  },
+  "mutation": {
+    "before": "# Nested tasks\n\n> - [ ] Quoted task\n\n<details open>\n<summary>More</summary>\n- [ ] Detailed task\n</details>\n",
+    "after": "# Nested tasks\n\n> - [x] Quoted task\n\n<details open>\n<summary>More</summary>\n- [ ] Detailed task\n</details>\n",
+    "fileSha256": "b6292aa2765e06688ff2b70b98abc0c4df9fc431d697f50572719c3175fe0d52"
+  },
+  "checks": {
+    "count": 18,
+    "passed": 18,
+    "sameHeadSnapshotProjectFile": true,
+    "sameViewportTheme": true,
+    "sameInteractiveTaskCount": true,
+    "sameBeforeAfterBytesAndHash": true,
+    "bothBackendWritesClean": true,
+    "nativeTransport": "main",
+    "nativeRendererErrors": 0,
+    "nativeIsolatedStateDisposed": true,
+    "screenshotsRetained": 0
+  },
+  "interactionChannels": {
+    "electron": "CDP DOM behavior runner",
+    "native": "Computer Use physical ArrowDown, Enter, Source/Rendered, and blockquote task click"
+  },
+  "boundary": "Native retains only the blockquote mutation exposed by Electron. The prior Native-only multiline-details mutation was reverted because Electron renders that task as literal Markdown. Paired pixels and keyboard activation remain open."
+}

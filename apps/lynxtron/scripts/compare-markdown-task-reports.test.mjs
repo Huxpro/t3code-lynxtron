@@ -29,6 +29,8 @@ describe("paired Markdown task comparator", () => {
     ]) {
       assert.include(source, check);
     }
+    assert.include(source, "expectedTaskCount");
+    assert.include(source, "checked.every((checked) => checked === true)");
   });
   it("keeps behavior evidence distinct from pixels and keyboard activation", () => {
     assert.include(source, 'evidenceKind === "semantic-only"');

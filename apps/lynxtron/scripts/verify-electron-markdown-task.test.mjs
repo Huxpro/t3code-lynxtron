@@ -23,6 +23,8 @@ describe("Electron Markdown task runner", () => {
     assert.include(source, 'data-palette-row=\"true\"');
     assert.include(source, 'aria-label=\"Show rendered markdown\"');
     assert.include(source, 'input[name=\"markdown-task\"]');
+    assert.include(source, "for (const task of tasks) if (!task.checked) task.click()");
+    assert.include(source, "before.taskCount !== expectedTaskCount");
     assert.include(source, 'readFileSync(workspaceFile, "utf8") === fixture.after');
   });
 

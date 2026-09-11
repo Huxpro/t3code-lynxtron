@@ -328,6 +328,15 @@ following-end` with the jump affordance visible only while detached. That gate
   sequence 14, and renderer errors stayed empty. Single-line inline-details tasks
   remain read-only because their body is still an inline substring without an
   absolute source range.
+  The subsequent Electron source-of-truth pass corrected that boundary: Electron
+  exposes one interactive checkbox for the blockquote task but renders the
+  multiline-details task as literal Markdown. Native therefore retains only the
+  blockquote mutation and reverts the technically possible details mutation. On
+  snapshot `79f288f279f6e5d80001ef964f14cf5f23726048c8e4da5d630b681b9a565ef0`,
+  both 1280 x 820 dark surfaces changed only `> - [ ] Quoted task` to checked,
+  preserved `- [ ] Detailed task`, and produced the same SHA-256
+  `b6292aa2765e06688ff2b70b98abc0c4df9fc431d697f50572719c3175fe0d52`.
+  All 18 paired checks pass.
   A reproducible same-snapshot comparator now adds the Electron source of truth.
   Snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`
   pins project `c6766ca3-4586-4812-b2ec-a50f324cae7e`, `README.md`, 1280 x
