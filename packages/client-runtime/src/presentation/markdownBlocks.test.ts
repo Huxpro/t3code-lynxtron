@@ -12,7 +12,7 @@ describe("parseMarkdownBlocks", () => {
     ]);
   });
 
-  it("maps blockquote and multiline details tasks back to absolute source offsets", () => {
+  it("maps blockquote tasks back to absolute source offsets", () => {
     const markdown = [
       "> - [ ] Quoted task",
       "",
@@ -23,7 +23,7 @@ describe("parseMarkdownBlocks", () => {
     ].join("\n");
     const blocks = parseMarkdownBlocks(markdown);
     expect(blocks[0]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBe(4);
-    expect(blocks[2]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBe(57);
+    expect(blocks[2]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBeNull();
   });
 
   it("keeps inline-details task offsets read-only when the body is an inline slice", () => {

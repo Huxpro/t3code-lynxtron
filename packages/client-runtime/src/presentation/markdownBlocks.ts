@@ -248,7 +248,6 @@ export function parseMarkdownBlocks(
     if (detailsMatch) {
       const open = DETAILS_OPEN_ATTRIBUTE_PATTERN.test(detailsMatch[1] ?? "");
       const detailLines: string[] = [];
-      const detailLineOffsets: number[] = [];
       let summary = "Details";
       index++;
       if (index < lines.length) {
@@ -260,7 +259,6 @@ export function parseMarkdownBlocks(
       }
       while (index < lines.length && !/^<\/details>\s*$/i.test(lines[index]!.trim())) {
         detailLines.push(lines[index]!);
-        if (lineOffsets) detailLineOffsets.push(lineOffsets[index]!);
         index++;
       }
       if (index < lines.length) index++;
@@ -268,9 +266,7 @@ export function parseMarkdownBlocks(
         type: "details",
         open,
         summary,
-        children: parseMarkdownBlocks(detailLines.join("\n"), {
-          sourceLineOffsets: lineOffsets ? detailLineOffsets : null,
-        }),
+        children: parseMarkdownBlocks(detailLines.join("\n"), { sourceLineOffsets: null }),
       });
       continue;
     }

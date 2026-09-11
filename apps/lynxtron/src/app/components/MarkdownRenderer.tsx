@@ -344,7 +344,6 @@ function MarkdownDetailsBlock({
   onManualNavigation,
   onImageExpand,
   threadId,
-  onTaskListChange,
 }: {
   readonly block: ParsedMarkdownBlock;
   readonly blockKey: string;
@@ -352,9 +351,6 @@ function MarkdownDetailsBlock({
   readonly onManualNavigation: (() => void) | undefined;
   readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
   readonly threadId: ThreadId | undefined;
-  readonly onTaskListChange:
-    | ((input: { markerOffset: number; checked: boolean }) => void)
-    | undefined;
 }) {
   const [open, setOpen] = useState(block.open ?? false);
   useEffect(() => {
@@ -394,7 +390,6 @@ function MarkdownDetailsBlock({
               onManualNavigation,
               onImageExpand,
               threadId,
-              onTaskListChange,
             ),
           )}
         </view>
@@ -800,7 +795,6 @@ function renderBlock(
           onManualNavigation={onManualNavigation}
           onImageExpand={onImageExpand}
           threadId={threadId}
-          onTaskListChange={onTaskListChange}
         />
       );
 
