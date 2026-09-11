@@ -5,7 +5,8 @@ update native UI without waiting for the background thread:
 
 - Sidebar resize;
 - Right Panel resize;
-- Model Picker wheel scrolling.
+- Model Picker wheel scrolling;
+- Tooltip overlay pointer-leave tracking.
 
 ## Root cause
 
@@ -48,7 +49,9 @@ shared import to another variable before calling it from MTS.
 8. Do not keep resize on `main-thread:global-bindmousemove` or
    `main-thread:global-bindtouchmove`. Every global move enters the page-event
    bridge and can trigger the `ContextProxy::DispatchEvent called too
-frequently` monitor before handler-side throttling runs.
+frequently` monitor before handler-side throttling runs. Tooltip overlays are
+   the bounded exception: their temporary global mousemove closes a visible
+   overlay when the pointer leaves its measured anchor/popup region.
 9. Desktop mouse events are hit-tested at the current pointer position. While
    dragging a narrow resize rail, set its native `hit-slop` to cover the
    viewport, then restore it on end or cancel. This keeps move/up on the local
@@ -68,14 +71,16 @@ DEBUG='rspeedy,rsbuild' rspeedy build
 node scripts/audit-main-thread-script.mjs
 ```
 
-The audit expects five production contexts:
+The resize/wheel context audit expects five production contexts:
 
 - four Sidebar / Right Panel resize handlers;
-- one Model Picker wheel handler.
+- one Model Picker wheel handler, identified by the current `listWheelRef`.
 
 It rejects function/worklet captures that previously caused runtime failures,
 rejects page-global mouse/touch resize bindings, and requires local resize
-events plus the native `hit-slop` handle contract.
+events plus the native `hit-slop` handle contract. The source inventory audits
+the Tooltip global-mousemove exception separately so it cannot be mistaken for
+a resize regression.
 The source inventory test also fails when a new MTS binding is added without
 updating the audited surface list:
 

@@ -24,10 +24,10 @@ if (!existsSync(mainThreadPath)) {
     "handleRef",
     "hit-slop",
     "dragRef",
-    "wheelStateRef",
+    "listWheelRef",
+    "main-thread:global-bindmousemove",
   ];
   const forbiddenStrings = [
-    "main-thread:global-bindmousemove",
     "main-thread:global-bindtouchmove",
     "main-thread:global-bindmouseup",
     "main-thread:global-bindtouchend",
@@ -61,7 +61,7 @@ const forbiddenCaptures = new Set([
   "resolveMainThreadResizeWidth",
   "setMainThreadResizeWidth",
 ]);
-const productionContextMarkers = ["dragRef", "wheelStateRef"];
+const productionContextMarkers = ["dragRef", "listWheelRef"];
 const contextPattern = /_c:\{([^}]*)\},_wkltId/gu;
 const contexts = [...bundle.matchAll(contextPattern)]
   .map((match) => match[1])
@@ -85,7 +85,7 @@ for (const context of contexts) {
 }
 
 const resizeContexts = contexts.filter((context) => context.includes("dragRef"));
-const wheelContexts = contexts.filter((context) => context.includes("wheelStateRef"));
+const wheelContexts = contexts.filter((context) => context.includes("listWheelRef"));
 if (resizeContexts.length !== 4) {
   errors.push(`expected 4 resize MTS contexts, received ${resizeContexts.length}`);
 }

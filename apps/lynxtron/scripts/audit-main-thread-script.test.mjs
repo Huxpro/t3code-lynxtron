@@ -10,17 +10,28 @@ const productionSources = [
   "apps/lynxtron/src/app/components/RightPanel.tsx",
   "apps/web/src/components/ui/sidebar.lynx.tsx",
 ];
+const tooltipSource = "apps/web/src/components/ui/tooltip.lynx.tsx";
 
 describe("main-thread-script inventory", () => {
   it("keeps every production MTS surface in the audited inventory", () => {
     const source = productionSources
       .map((file) => readFileSync(path.join(repoRoot, file), "utf8"))
       .join("\n");
-    assert.equal(source.match(/["']main thread["']/gu)?.length, 5);
+    assert.equal(source.match(/["']main thread["']/gu)?.length, 7);
     assert.equal(source.match(/main-thread:ref=/gu)?.length, 4);
-    assert.equal(source.match(/main-thread:(?:global-)?bind(?:mouse|touch|wheel)/gu)?.length, 8);
+    assert.equal(source.match(/main-thread:(?:global-)?bind(?:mouse|touch|wheel)/gu)?.length, 11);
     assert.equal(source.match(/main-thread:global-bind(?:mouse|touch)/gu)?.length ?? 0, 0);
     assert.equal(source.match(/main-thread:ref=\{resize\.handleRef\}/gu)?.length, 2);
+    assert.include(source, "listWheelRef");
+    assert.include(source, "main-thread:global-bindwheel={handleListWheel}");
+  });
+
+  it("allows the tooltip overlay's bounded global mouse lifecycle", () => {
+    const source = readFileSync(path.join(repoRoot, tooltipSource), "utf8");
+    assert.equal(source.match(/["']main thread["']/gu)?.length, 6);
+    assert.equal(source.match(/main-thread:global-bindmousemove/gu)?.length, 1);
+    assert.equal(source.match(/main-thread:global-bind(?:touch|mouseup)/gu)?.length ?? 0, 0);
+    assert.include(source, "handleGlobalMouseMove");
   });
 
   it("keeps resize worklets self-contained", () => {
