@@ -687,7 +687,14 @@ bytes. This is behavioral convergence to Electron, not feature maximization.
 The Web sanitizer now also allows `details`, `summary`, and the `open` attribute,
 making the existing Web disclosure reachable. Raw HTML body text is intentionally
 not reparsed as Markdown; Native renders the same literal details body and no
-longer invents an extra interactive checkbox there.
+longer invents an extra interactive checkbox there. A fresh correlation binds
+Electron directly to `apps/web/dist`, records `index-BxbOs3Ye.js` at SHA-256
+`2bcc4c2ab79d2546c2f18e990e2da416fbd828557410067d43bc2e723cdb5a90`,
+and passes all 20 checks on snapshot
+`c2307357b08682e368d891a4a798847373e69f2225448655baadfe70334245c5`.
+Exact-owned Native PID `53154`, window `90936`, advanced main transport from 12
+to 17 while physical input changed only the blockquote marker; both surfaces
+kept one open disclosure, zero nested task inputs, and the same literal body.
 The mutation now also has reproducible same-snapshot Electron/Native evidence.
 Both surfaces consumed snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`,
 the same project and `README.md`, 1280 x 820 dark, and the same initial bytes.

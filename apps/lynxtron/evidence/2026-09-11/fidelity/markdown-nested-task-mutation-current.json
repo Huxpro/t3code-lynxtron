@@ -15,7 +15,9 @@
       "taskCount": 1,
       "detailsElementCountBeforeSanitizeFix": 0,
       "detailsDisclosureReachableAfterSanitizeFix": true,
-      "visibleDetailsText": "More - [ ] Detailed task"
+      "visibleDetailsText": "More - [ ] Detailed task",
+      "freshRendererEntryAssetUrl": "t3code://app/assets/index-BxbOs3Ye.js",
+      "freshRendererEntryAssetSha256": "2bcc4c2ab79d2546c2f18e990e2da416fbd828557410067d43bc2e723cdb5a90"
     },
     "nativeExperiment": {
       "ownedPid": 42621,
@@ -24,5 +26,5 @@
       "fileSha256": "7fc009ba3eb5999eb646fcccb90cd0ebcefea447dbfea961c1b0d4399e49c4bb"
     }
   },
-  "boundary": "Only behavior shared with Electron remains enabled. A same-snapshot paired follow-up covers the retained blockquote mutation. Both surfaces expose a details disclosure and keep its raw HTML body literal/read-only; details task mutation stays open until the source-of-truth parses Markdown inside raw HTML."
+  "boundary": "Only behavior shared with Electron remains enabled. A fresh-renderer same-snapshot paired follow-up covers the retained blockquote mutation and asserts one open disclosure with zero nested task inputs on both surfaces. Details task mutation stays open until the source-of-truth parses Markdown inside raw HTML."
 }

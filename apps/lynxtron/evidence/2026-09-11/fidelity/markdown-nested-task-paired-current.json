@@ -1,12 +1,12 @@
 {
-  "schemaVersion": 1,
-  "observedAt": "2026-09-11T08:01:18-04:00",
+  "schemaVersion": 2,
+  "observedAt": "2026-09-11T09:03:49-04:00",
   "stateId": "file-markdown-nested-task-mutation",
   "status": "pass",
   "identity": {
-    "head": "158b2a9553a6af98f095010e2b3345cd3d728771",
-    "snapshotSha256": "79f288f279f6e5d80001ef964f14cf5f23726048c8e4da5d630b681b9a565ef0",
-    "projectId": "1cb4745d-3b2f-4559-bdad-e9fe1fa51388",
+    "testedSourceHead": "90b59f0afec49e5c8c0976926d0c5f4b812033af",
+    "snapshotSha256": "c2307357b08682e368d891a4a798847373e69f2225448655baadfe70334245c5",
+    "projectId": "c9e496b6-f017-482a-b50a-74b2b915b48a",
     "relativePath": "README.md",
     "viewport": "1280x820",
     "theme": "dark"
@@ -14,7 +14,12 @@
   "sourceOfTruth": {
     "electronInteractiveTaskCount": 1,
     "interactiveTask": "blockquote task",
-    "detailsTaskPresentation": "details disclosure with literal Markdown body, not a checkbox"
+    "detailsTaskPresentation": "open details disclosure with literal Markdown body, not a checkbox",
+    "rendererIdentity": {
+      "staticDir": "apps/web/dist",
+      "entryAssetUrl": "t3code://app/assets/index-BxbOs3Ye.js",
+      "entryAssetSha256": "2bcc4c2ab79d2546c2f18e990e2da416fbd828557410067d43bc2e723cdb5a90"
+    }
   },
   "mutation": {
     "before": "# Nested tasks\n\n> - [ ] Quoted task\n\n<details open>\n<summary>More</summary>\n- [ ] Detailed task\n</details>\n",
@@ -22,14 +27,20 @@
     "fileSha256": "b6292aa2765e06688ff2b70b98abc0c4df9fc431d697f50572719c3175fe0d52"
   },
   "checks": {
-    "count": 18,
-    "passed": 18,
+    "count": 20,
+    "passed": 20,
     "sameHeadSnapshotProjectFile": true,
     "sameViewportTheme": true,
     "sameInteractiveTaskCount": true,
+    "sameOpenDetailsDisclosure": true,
+    "sameLiteralDetailsBodyWithoutTaskInput": true,
+    "electronFreshRendererIdentity": true,
     "sameBeforeAfterBytesAndHash": true,
     "bothBackendWritesClean": true,
-    "nativeTransport": "main",
+    "nativeOwnedPid": 53154,
+    "nativeOwnedWindowId": 90936,
+    "nativeBundleSha256": "4a4a3a188c33137cb6a962ae07a3385c8a51e68b2f0ddeba953ebe20e90313a9",
+    "nativeTransport": "main, sequence 12 to 17",
     "nativeRendererErrors": 0,
     "nativeIsolatedStateDisposed": true,
     "screenshotsRetained": 0
@@ -38,5 +49,5 @@
     "electron": "CDP DOM behavior runner",
     "native": "Computer Use physical ArrowDown, Enter, Source/Rendered, and blockquote task click"
   },
-  "boundary": "Native retains only the blockquote mutation exposed by Electron. The prior Native-only multiline-details mutation was reverted because both surfaces keep raw HTML details bodies literal. Web's sanitize allowlist now preserves the existing details disclosure. Paired pixels and keyboard activation remain open."
+  "boundary": "Native retains only the blockquote mutation exposed by Electron. The fresh Electron asset and exact-owned Native bundle both expose one open disclosure whose literal body contains no task input. Paired pixels and keyboard activation remain open."
 }

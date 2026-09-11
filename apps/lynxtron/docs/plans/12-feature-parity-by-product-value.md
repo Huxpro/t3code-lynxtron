@@ -332,11 +332,16 @@ following-end` with the jump affordance visible only while detached. That gate
   exposes one interactive checkbox for the blockquote task but renders the
   multiline-details task as literal Markdown. Native therefore retains only the
   blockquote mutation and reverts the technically possible details mutation. On
-  snapshot `79f288f279f6e5d80001ef964f14cf5f23726048c8e4da5d630b681b9a565ef0`,
+  snapshot `c2307357b08682e368d891a4a798847373e69f2225448655baadfe70334245c5`,
   both 1280 x 820 dark surfaces changed only `> - [ ] Quoted task` to checked,
   preserved `- [ ] Detailed task`, and produced the same SHA-256
   `b6292aa2765e06688ff2b70b98abc0c4df9fc431d697f50572719c3175fe0d52`.
-  All 18 paired checks pass.
+  The Electron runner now binds `apps/web/dist` explicitly instead of accepting
+  the server's older staged client fallback. It proves entry asset
+  `index-BxbOs3Ye.js` at SHA-256
+  `2bcc4c2ab79d2546c2f18e990e2da416fbd828557410067d43bc2e723cdb5a90`;
+  both surfaces expose one open disclosure, zero task inputs inside it, and the
+  same literal body. All 20 paired checks pass.
   Web's existing `MarkdownDetails` component had also been unreachable because
   the sanitizer omitted `details`, `summary`, and `open`. The allowlist now
   preserves that disclosure. Its raw HTML body remains literal by CommonMark
