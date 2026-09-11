@@ -14,24 +14,6 @@ interface MainThreadMouseEvent {
   };
 }
 
-function needsHoverState(className: unknown): boolean {
-  return (
-    typeof className === "string" &&
-    className
-      .split(/\s+/u)
-      .some((token) => token.startsWith("hover:") || /^(?:group|peer)(?:\/|$)/u.test(token))
-  );
-}
-
-function needsFocusState(className: unknown): boolean {
-  return (
-    typeof className === "string" &&
-    className
-      .split(/\s+/u)
-      .some((token) => token.startsWith("focus:") || token.startsWith("focus-visible:"))
-  );
-}
-
 interface MainThreadElement {
   animate(keyframes: ReadonlyArray<Record<string, number | string>>, options?: unknown): never;
   getAttribute(attributeName: string): unknown;
@@ -83,16 +65,6 @@ export function HostView({
   const injectedMouseLeave = props["main-thread:bindmouseleave"] as
     | ((event: MainThreadMouseEvent) => void)
     | undefined;
-  const trackHoverState = needsHoverState(className);
-  const trackFocusState = needsFocusState(className);
-  const handleFocus = (event: MainThreadMouseEvent) => {
-    "main thread";
-    event.currentTarget.setAttribute("data-lynx-focus", "true");
-  };
-  const handleBlur = (event: MainThreadMouseEvent) => {
-    "main thread";
-    event.currentTarget.setAttribute("data-lynx-focus", "false");
-  };
   const handleKeyDown = (event: MainThreadKeyEvent) => {
     "main thread";
     if (!onKeyDown) return;
@@ -109,7 +81,6 @@ export function HostView({
       revealTarget?.setStyleProperty("opacity", "1");
       revealTarget?.setStyleProperty("visibility", "visible");
     }
-    if (trackHoverState) event.currentTarget.setAttribute("data-lynx-hover", "true");
     if (onMouseEnter) runOnBackground(onMouseEnter)({});
   };
   const handleMouseLeave = (event: MainThreadMouseEvent) => {
@@ -120,7 +91,6 @@ export function HostView({
       revealTarget?.setStyleProperty("opacity", "0");
       revealTarget?.setStyleProperty("visibility", "hidden");
     }
-    if (trackHoverState) event.currentTarget.setAttribute("data-lynx-hover", "false");
     if (onMouseLeave) runOnBackground(onMouseLeave)({});
   };
   const handleMouseDown = async (event: MainThreadMouseEvent) => {
@@ -154,9 +124,7 @@ export function HostView({
       event-through={eventThrough}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
-      {...(trackFocusState ? { "main-thread:bindfocus": handleFocus } : {})}
-      {...(trackFocusState ? { "main-thread:bindblur": handleBlur } : {})}
-      {...(onMouseEnter || hoverRevealSelector || injectedMouseEnter || trackHoverState
+      {...(onMouseEnter || hoverRevealSelector || injectedMouseEnter
         ? { "main-thread:bindmouseenter": handleMouseEnter }
         : {})}
       {...(onMouseEnter || hoverRevealSelector || injectedMouseMove
@@ -165,7 +133,7 @@ export function HostView({
       {...(onMouseEnter || hoverRevealSelector
         ? { "main-thread:bindmouseover": handleMouseEnter }
         : {})}
-      {...(onMouseLeave || hoverRevealSelector || injectedMouseLeave || trackHoverState
+      {...(onMouseLeave || hoverRevealSelector || injectedMouseLeave
         ? { "main-thread:bindmouseleave": handleMouseLeave }
         : {})}
       bindmousemove={onMouseEnter}
@@ -317,16 +285,6 @@ export function HostButton({
   readonly onMouseLeave?: (event: unknown) => void;
   readonly stopTapPropagation?: boolean;
 }) {
-  const trackHoverState = needsHoverState(className);
-  const trackFocusState = needsFocusState(className);
-  const handleFocus = (event: MainThreadMouseEvent) => {
-    "main thread";
-    event.currentTarget.setAttribute("data-lynx-focus", "true");
-  };
-  const handleBlur = (event: MainThreadMouseEvent) => {
-    "main thread";
-    event.currentTarget.setAttribute("data-lynx-focus", "false");
-  };
   const handleKeyDown = (event: MainThreadKeyEvent) => {
     "main thread";
     if (!onKeyDown) return;
@@ -336,12 +294,10 @@ export function HostButton({
   };
   const handleMouseEnter = (event: MainThreadMouseEvent) => {
     "main thread";
-    if (trackHoverState) event.currentTarget.setAttribute("data-lynx-hover", "true");
     if (onMouseEnter) runOnBackground(onMouseEnter)({});
   };
   const handleMouseLeave = (event: MainThreadMouseEvent) => {
     "main thread";
-    if (trackHoverState) event.currentTarget.setAttribute("data-lynx-hover", "false");
     if (onMouseLeave) runOnBackground(onMouseLeave)({});
   };
   const handleMouseDown = (event: MainThreadMouseEvent) => {
@@ -361,17 +317,9 @@ export function HostButton({
       aria-expanded={ariaExpanded}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
-      {...(trackFocusState ? { "main-thread:bindfocus": handleFocus } : {})}
-      {...(trackFocusState ? { "main-thread:bindblur": handleBlur } : {})}
-      {...(onMouseEnter || trackHoverState
-        ? { "main-thread:bindmouseenter": handleMouseEnter }
-        : {})}
-      {...(onMouseEnter || trackHoverState
-        ? { "main-thread:bindmousemove": handleMouseEnter }
-        : {})}
-      {...(onMouseLeave || trackHoverState
-        ? { "main-thread:bindmouseleave": handleMouseLeave }
-        : {})}
+      {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
+      {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
+      {...(onMouseLeave ? { "main-thread:bindmouseleave": handleMouseLeave } : {})}
       bindmousemove={onMouseEnter}
       {...(stopTapPropagation ? { catchtap: onClick ?? ignoreTap } : { bindtap: onClick })}
     >

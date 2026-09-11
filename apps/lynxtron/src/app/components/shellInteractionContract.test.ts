@@ -476,6 +476,13 @@ describe("desktop shell interaction contract", () => {
     expect(textarea).toContain('aria-disabled={disabled ? "true" : undefined}');
   });
 
+  it("uses retained main-thread refs for runtime attribute writes", () => {
+    expect(hostElementsSource).not.toContain("event.currentTarget.setAttribute");
+    expect(componentSource("../../../../web/src/components/ui/sidebar.lynx.tsx")).not.toContain(
+      "event.currentTarget.setAttribute",
+    );
+  });
+
   it("renders shared provider connection fields, environment, refresh, and update actions", () => {
     const providers = componentSource("ProviderSettings.tsx");
     const app = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");

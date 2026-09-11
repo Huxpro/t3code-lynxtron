@@ -303,17 +303,13 @@ export function SidebarRail({ className, ...props }: ElementProps) {
     onResize: setSidebarWidth,
     testProbe: viewport.testResize,
   });
-  const handleMouseEnter = (event: {
-    currentTarget: { setAttribute(name: string, value: unknown): void };
-  }) => {
+  const handleMouseEnter = () => {
     "main thread";
-    event.currentTarget.setAttribute("data-lynx-hover", "true");
+    resize.handleRef.current?.setAttribute("data-lynx-hover", "true");
   };
-  const handleMouseLeave = (event: {
-    currentTarget: { setAttribute(name: string, value: unknown): void };
-  }) => {
+  const handleMouseLeave = () => {
     "main thread";
-    event.currentTarget.setAttribute("data-lynx-hover", "false");
+    resize.handleRef.current?.setAttribute("data-lynx-hover", "false");
   };
 
   if (isMobile || !open) return null;
