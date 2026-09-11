@@ -58,7 +58,6 @@ export function prepareMessageCardProjectionFixture(baseDirectory) {
   const threadId = "fidelity-message-card-thread";
   const turnId = "fidelity-message-card-turn-1";
   const userMessageId = "fidelity-message-card-user-1";
-  const assistantMessageId = "fidelity-message-card-assistant-1";
   const requestedAt = "2026-09-11T12:00:00.000Z";
   const completedAt = "2026-09-11T12:00:01.000Z";
   const modelSelection = manifest.project.defaultModelSelection ?? {
@@ -103,33 +102,18 @@ export function prepareMessageCardProjectionFixture(baseDirectory) {
         `INSERT INTO projection_thread_messages (
           message_id, thread_id, turn_id, role, text, is_streaming, created_at, updated_at,
           attachments_json
-        ) VALUES
-          (?, ?, ?, 'user', ?, 0, ?, ?, '[]'),
-          (?, ?, ?, 'assistant', ?, 0, ?, ?, '[]')`,
+        ) VALUES (?, ?, ?, 'user', ?, 0, ?, ?, '[]')`,
       )
-      .run(
-        userMessageId,
-        threadId,
-        turnId,
-        MESSAGE_CARD_PROMPT,
-        requestedAt,
-        requestedAt,
-        assistantMessageId,
-        threadId,
-        turnId,
-        "Recorded the shared message-card semantics.",
-        completedAt,
-        completedAt,
-      );
+      .run(userMessageId, threadId, turnId, MESSAGE_CARD_PROMPT, requestedAt, requestedAt);
     database
       .prepare(
         `INSERT INTO projection_turns (
           thread_id, turn_id, pending_message_id, assistant_message_id, state, requested_at,
           started_at, completed_at, checkpoint_turn_count, checkpoint_ref, checkpoint_status,
           checkpoint_files_json, source_proposed_plan_thread_id, source_proposed_plan_id
-        ) VALUES (?, ?, NULL, ?, 'completed', ?, ?, ?, NULL, NULL, NULL, '[]', NULL, NULL)`,
+        ) VALUES (?, ?, NULL, NULL, 'completed', ?, ?, ?, NULL, NULL, NULL, '[]', NULL, NULL)`,
       )
-      .run(threadId, turnId, assistantMessageId, requestedAt, requestedAt, completedAt);
+      .run(threadId, turnId, requestedAt, requestedAt, completedAt);
     database
       .prepare(
         `INSERT INTO projection_thread_sessions (
@@ -153,7 +137,6 @@ export function prepareMessageCardProjectionFixture(baseDirectory) {
     threadId,
     turnId,
     userMessageId,
-    assistantMessageId,
     title: "Message card semantics",
     review: { filePath: "src/card.tsx", rangeLabel: "+5 to +7" },
     preview: { id: "card-spacing", comment: "Tighten the card hierarchy." },

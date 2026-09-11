@@ -38,4 +38,13 @@ describe("message-card projection fixture", () => {
     assert.include(source, 'themePreference: "dark"');
     assert.isFunction(prepareMessageCardProjectionFixture);
   });
+
+  it("keeps the tested user card as the only materialized message", () => {
+    const source = readFileSync(
+      path.join(import.meta.dirname, "prepare-message-card-projection-fixture.mjs"),
+      "utf8",
+    );
+    assert.notInclude(source, "fidelity-message-card-assistant-1");
+    assert.include(source, "VALUES (?, ?, NULL, NULL, 'completed'");
+  });
 });

@@ -7176,6 +7176,66 @@ async function verifyApprovalTranscriptState({
   };
 }
 
+async function verifyMessageCardState({ child, client, messageCardFixture, timeoutMs }) {
+  const clientState = await readClientState(client);
+  await client.runCdp("Runtime.evaluate", {
+    expression: 'globalThis.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?.(0, "top")',
+    returnByValue: true,
+  });
+  const reviewSelector = ".transcript-review-comment";
+  const review = await waitForMeasurement({
+    child,
+    client,
+    selector: reviewSelector,
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const preview = await readOptionalMeasurement(client, ".transcript-preview-annotation");
+  const element = await readOptionalMeasurement(client, ".transcript-context-chip--element");
+  const normalizedPreviewText = preview?.text.replace(/\s+/gu, " ").trim() ?? "";
+  const stateMatches =
+    clientState?.activeThreadId === messageCardFixture.threadId &&
+    clientState?.activeThread?.id === messageCardFixture.threadId &&
+    clientState?.sessionStatus === "ready";
+  const contentMatches =
+    review?.text.includes(messageCardFixture.review.filePath) &&
+    review?.text.includes(messageCardFixture.review.rangeLabel) &&
+    review?.text.includes("Keep the shared card semantics aligned.") &&
+    normalizedPreviewText.includes(messageCardFixture.preview.comment) &&
+    normalizedPreviewText.includes("1 selected element.") &&
+    normalizedPreviewText.includes("◇ 1") &&
+    element?.text.includes(messageCardFixture.element.header);
+  if (!stateMatches || !contentMatches) {
+    throw new Error(
+      `Canonical message-card state drifted: ${JSON.stringify({
+        clientState,
+        review,
+        preview,
+        element,
+        stateMatches,
+        contentMatches,
+      })}`,
+    );
+  }
+  return {
+    status: "pass",
+    evidenceKind: "semantic-only",
+    navigation: "programmatic-list-probe",
+    fixture: {
+      threadId: messageCardFixture.threadId,
+      turnId: messageCardFixture.turnId,
+      userMessageId: messageCardFixture.userMessageId,
+    },
+    review: {
+      filePath: messageCardFixture.review.filePath,
+      rangeLabel: messageCardFixture.review.rangeLabel,
+      text: review.text.trim(),
+    },
+    preview: { id: messageCardFixture.preview.id, text: normalizedPreviewText },
+    element: { kind: "element", text: element.text.trim() },
+  };
+}
+
 async function verifyApprovalDeclineMutation({
   approvalFixture,
   baseDir,
@@ -13327,6 +13387,8 @@ async function runOnce({
   verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
   verifyApprovalDeclineMutation: shouldVerifyApprovalDeclineMutation,
   approvalFixture,
+  verifyMessageCardState: shouldVerifyMessageCardState,
+  messageCardFixture,
   verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
   questionFixture,
   verifyReviewDiffState: shouldVerifyReviewDiffState,
@@ -13431,6 +13493,7 @@ async function runOnce({
       shouldVerifyComposerSendRetry ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
+      shouldVerifyMessageCardState ||
       shouldVerifyCompletedTranscriptState ||
       shouldVerifyTranscriptFollowState ||
       shouldVerifyQuickSwitchDefault ||
@@ -13929,6 +13992,9 @@ async function runOnce({
             semanticOnly: approvalSemanticOnly,
           })
         : undefined;
+    const messageCardState = shouldVerifyMessageCardState
+      ? await verifyMessageCardState({ child, client, messageCardFixture, timeoutMs })
+      : undefined;
     let approvalDeclineMutation;
     if (shouldVerifyApprovalDeclineMutation) {
       const approvalDeclineVerification = await verifyApprovalDeclineMutation({
@@ -14223,6 +14289,7 @@ async function runOnce({
       transcriptFollowState,
       failedTranscriptState,
       approvalTranscriptState,
+      messageCardState,
       approvalDeclineMutation,
       questionTranscriptState,
       reviewDiffState,
@@ -14297,6 +14364,7 @@ async function runOnce({
       transcriptFollowState,
       failedTranscriptState,
       approvalTranscriptState,
+      messageCardState,
       approvalDeclineMutation,
       questionTranscriptState,
       reviewDiffState,
@@ -14420,6 +14488,7 @@ const shouldVerifyApprovalTranscriptState = process.argv.includes(
   "--verify-approval-transcript-state",
 );
 const approvalSemanticOnly = process.argv.includes("--approval-semantic-only");
+const shouldVerifyMessageCardState = process.argv.includes("--verify-message-card-state");
 const shouldVerifyApprovalDeclineMutation = process.argv.includes(
   "--verify-approval-decline-mutation",
 );
@@ -14591,6 +14660,18 @@ if (
   throw new Error(
     "--verify-approval-transcript-state requires a real pendingRequestFixture approval.",
   );
+}
+const messageCardFixture = fixtureManifest.messageCardFixture;
+if (
+  shouldVerifyMessageCardState &&
+  (typeof messageCardFixture?.threadId !== "string" ||
+    typeof messageCardFixture?.turnId !== "string" ||
+    typeof messageCardFixture?.userMessageId !== "string" ||
+    typeof messageCardFixture?.review?.filePath !== "string" ||
+    typeof messageCardFixture?.preview?.id !== "string" ||
+    typeof messageCardFixture?.element?.header !== "string")
+) {
+  throw new Error("--verify-message-card-state requires a canonical messageCardFixture.");
 }
 const questionFixture = fixtureManifest.pendingRequestFixture;
 if (
@@ -14848,6 +14929,8 @@ for (let index = 1; index <= runs; index += 1) {
       verifyApprovalTranscriptState: shouldVerifyApprovalTranscriptState,
       verifyApprovalDeclineMutation: shouldVerifyApprovalDeclineMutation,
       approvalFixture,
+      verifyMessageCardState: shouldVerifyMessageCardState,
+      messageCardFixture,
       verifyQuestionTranscriptState: shouldVerifyQuestionTranscriptState,
       questionFixture,
       verifyReviewDiffState: shouldVerifyReviewDiffState,

@@ -1449,6 +1449,19 @@ describe("packaged readiness Sidebar geometry", () => {
     );
   });
 
+  it("verifies semantic message cards without capturing pixels", () => {
+    assert.include(source, "async function verifyMessageCardState");
+    assert.include(source, '".transcript-review-comment"');
+    assert.include(source, '".transcript-preview-annotation"');
+    assert.include(source, '".transcript-context-chip--element"');
+    assert.include(source, "preview?.text.replace(/\\s+/gu");
+    assert.include(source, "__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__");
+    assert.include(source, "shouldVerifyMessageCardState ||");
+    assert.include(source, 'navigation: "programmatic-list-probe"');
+    assert.include(source, '"--verify-message-card-state"');
+    assert.include(source, 'evidenceKind: "semantic-only"');
+  });
+
   it("selects and submits a real Native pending question", () => {
     assert.include(source, "async function verifyQuestionTranscriptState");
     assert.include(source, '"--verify-question-transcript-state"');
