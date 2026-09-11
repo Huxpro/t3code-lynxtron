@@ -73,8 +73,8 @@ import { ChangedFilesCard } from "./ChangedFilesTree";
 import { shouldAutoExpandChangedFiles } from "@t3tools/client-runtime/presentation/diff";
 import { shouldCollapseUserMessage } from "@t3tools/client-runtime/presentation/user-message";
 import { MessageCopyButton } from "./MessageCopyButton";
+import { assistantMessageDisplayText } from "@t3tools/client-runtime/presentation/transcript";
 import {
-  assistantMessageDisplayText,
   computeStableMessagesTimelineRows,
   deriveMessagesTimelineRows,
   deriveTimelineMinimapItems,
