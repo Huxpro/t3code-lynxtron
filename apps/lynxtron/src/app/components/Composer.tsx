@@ -1,4 +1,5 @@
 import {
+  runOnBackground,
   runOnMainThread,
   useState,
   useCallback,
@@ -65,6 +66,7 @@ import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.lo
 import { COMPOSER_FOOTER_ICON_GEOMETRY } from "./composerFooterIconGeometry.logic";
 import { getComposerModelOptionLetterSpacing } from "./composerModelOptionTracking.logic";
 import { responsiveMenuWheelDelta } from "./menuWheel.logic";
+import { isComposerSelectAllKey } from "./composerSelection.logic";
 import { appendComposerText, onComposerTextInsertion } from "../state/composerCommandBus";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { t3ClientActions } from "../state/t3Client";
@@ -597,6 +599,27 @@ export function Composer({
     },
     [onQuestionCustomAnswerChange, onValueChange, questionMode],
   );
+  const selectAllComposerText = useCallback(() => {
+    const length = promptValueRef.current.length;
+    const invoke = (method: string, params?: Record<string, unknown>) =>
+      lynx
+        .createSelectorQuery()
+        .select("#composer-prompt-editor")
+        .invoke({ method, ...(params ? { params } : {}) })
+        .exec();
+    invoke("setSelectionRange", { selectionStart: 0, selectionEnd: length });
+    invoke("focus");
+  }, []);
+  const handleEditorKeyDown = (event: { key: string }) => {
+    "main thread";
+    const modifiers = event as unknown as {
+      key: string;
+      metaKey: boolean;
+      ctrlKey: boolean;
+    };
+    if (!isComposerSelectAllKey(modifiers)) return;
+    runOnBackground(selectAllComposerText)();
+  };
   const replaceComposerTrigger = useCallback(
     (trigger: ComposerTrigger, replacement: string) => {
       const result = replaceTextRange(value, trigger.rangeStart, trigger.rangeEnd, replacement);
@@ -924,6 +947,7 @@ export function Composer({
                   className="composer__input"
                   data-composer-editor="true"
                   bindinput={handleInput}
+                  main-thread:bindkeydown={handleEditorKeyDown}
                   confirm-type="send"
                   bindconfirm={handleSend}
                 />
