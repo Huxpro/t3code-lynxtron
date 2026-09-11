@@ -55,7 +55,6 @@ function activateMarkdownLink(
 async function showMarkdownFileLinkContextMenu(
   href: string,
   cwd: string | undefined,
-  onManualNavigation?: () => void,
 ): Promise<void> {
   const fileLink = resolveMarkdownFileLinkMeta(href, cwd);
   if (!fileLink) return;
@@ -65,7 +64,10 @@ async function showMarkdownFileLinkContextMenu(
     { id: "copy-full", label: "Copy full path" },
   ]);
   if (selection === "open") {
-    activateMarkdownLink(href, cwd, onManualNavigation);
+    if (!clientCapabilities.navigation.canOpenPath()) {
+      throw new Error("Opening files in an external editor is unavailable.");
+    }
+    await clientCapabilities.navigation.openPath(fileLink.filePath);
   } else if (selection === "copy-relative") {
     await clientCapabilities.clipboard.writeText(fileLink.displayPath);
   } else if (selection === "copy-full") {
@@ -76,11 +78,10 @@ async function showMarkdownFileLinkContextMenu(
 function fileLinkContextMenuHandler(
   href: string | null,
   cwd: string | undefined,
-  onManualNavigation?: () => void,
 ): (() => void) | undefined {
   if (!href || !resolveMarkdownFileLinkMeta(href, cwd)) return undefined;
   return () => {
-    void showMarkdownFileLinkContextMenu(href, cwd, onManualNavigation).catch((cause) => {
+    void showMarkdownFileLinkContextMenu(href, cwd).catch((cause) => {
       console.error("[lynx-markdown] failed to handle file link context menu", { href, cause });
     });
   };
@@ -101,9 +102,8 @@ async function showMarkdownExternalLinkContextMenu(href: string): Promise<void> 
 function markdownLinkContextMenuHandler(
   href: string | null,
   cwd: string | undefined,
-  onManualNavigation?: () => void,
 ): (() => void) | undefined {
-  const fileHandler = fileLinkContextMenuHandler(href, cwd, onManualNavigation);
+  const fileHandler = fileLinkContextMenuHandler(href, cwd);
   if (fileHandler) return fileHandler;
   if (!href || !resolveExternalWebLinkHost(href)) return undefined;
   return () => {
@@ -140,7 +140,7 @@ function renderInline(
           activateMarkdownLink(href, cwd, onManualNavigation);
         }
       : undefined;
-    const handleContextMenu = markdownLinkContextMenuHandler(href, cwd, onManualNavigation);
+    const handleContextMenu = markdownLinkContextMenuHandler(href, cwd);
     const Inline = inlineHost ? HostInlineText : HostText;
     if (span.code) {
       return (
@@ -195,7 +195,7 @@ function renderInteractiveParagraph(
         const className = `${span.code ? "md-inline-code" : "md-inline"}${
           href ? " md-link" : ""
         }${span.strikethrough ? " md-strikethrough" : ""}`;
-        const handleContextMenu = markdownLinkContextMenuHandler(href, cwd, onManualNavigation);
+        const handleContextMenu = markdownLinkContextMenuHandler(href, cwd);
         const content = (
           <HostText
             key={spanKey}
@@ -832,7 +832,7 @@ export function InlineMarkdownRenderer({
               key={`inline-${index}`}
               className={`inline-markdown-code${href ? " md-link" : ""}`}
               onClick={href ? () => activateMarkdownLink(href, cwd, onManualNavigation) : undefined}
-              onContextMenu={markdownLinkContextMenuHandler(href, cwd, onManualNavigation)}
+              onContextMenu={markdownLinkContextMenuHandler(href, cwd)}
             >
               <text className="inline-markdown-code-label">{span.text}</text>
             </HostView>
@@ -842,7 +842,7 @@ export function InlineMarkdownRenderer({
             key={`inline-${index}`}
             className="inline-markdown-link"
             onClick={() => activateMarkdownLink(href, cwd, onManualNavigation)}
-            onContextMenu={markdownLinkContextMenuHandler(href, cwd, onManualNavigation)}
+            onContextMenu={markdownLinkContextMenuHandler(href, cwd)}
           >
             <HostText
               className={`inline-markdown-text md-link${

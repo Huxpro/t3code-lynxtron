@@ -479,8 +479,10 @@ following-end` with the jump affordance visible only while detached. That gate
   file resolver used by Web. File-shaped code spans open the internal file
   surface and expose open/copy context actions, while commands, identifiers,
   hosts, and git refs remain ordinary code. Internal workspace-file navigation
-  from block, compact, or context-menu links detaches transcript follow before
-  opening the Files panel; external and system-editor links remain unaffected.
+  from block or compact links detaches transcript follow before opening the Files
+  panel; external links remain unaffected. The file context
+  menu's explicit Open in editor action now calls the system editor capability
+  instead of silently routing back to the internal Files panel.
 
 ## PF4: Complete remote and multi-environment operation
 

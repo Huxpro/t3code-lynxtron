@@ -224,6 +224,10 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain('{ id: "open", label: "Open in editor" }');
     expect(markdown).toContain('{ id: "copy-relative", label: "Copy relative path" }');
     expect(markdown).toContain('{ id: "copy-full", label: "Copy full path" }');
+    expect(markdown).toContain(
+      'throw new Error("Opening files in an external editor is unavailable.")',
+    );
+    expect(markdown).toContain("await clientCapabilities.navigation.openPath(fileLink.filePath)");
     expect(markdown).toContain("clientCapabilities.clipboard.writeText(fileLink.displayPath)");
     expect(markdown).toContain("clientCapabilities.clipboard.writeText(fileLink.targetPath)");
     expect(markdown).toContain("resolveExternalWebLinkHost(href)");
