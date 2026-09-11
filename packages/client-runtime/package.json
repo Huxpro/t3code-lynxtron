@@ -163,6 +163,10 @@
       "types": "./src/presentation/userMessage.ts",
       "default": "./src/presentation/userMessage.ts"
     },
+    "./presentation/review-comment": {
+      "types": "./src/presentation/reviewComment.ts",
+      "default": "./src/presentation/reviewComment.ts"
+    },
     "./presentation/file-context": {
       "types": "./src/presentation/fileContext.ts",
       "default": "./src/presentation/fileContext.ts"

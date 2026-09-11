@@ -28,6 +28,13 @@ import {
 } from "@t3tools/client-runtime/presentation/transcript";
 import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
+import { formatWorkspaceRelativePath } from "@t3tools/client-runtime/presentation/paths";
+import {
+  formatReviewCommentFence,
+  parseReviewCommentMessageSegments,
+  reviewCommentMessageVisibleText,
+  type ReviewCommentContext,
+} from "@t3tools/client-runtime/presentation/review-comment";
 import {
   deriveVisibleUserMessage,
   shouldCollapseUserMessage,
@@ -555,6 +562,61 @@ function TranscriptAttachmentCard({
   );
 }
 
+function LynxUserMessageReviewCommentCard({
+  comment,
+  cwd,
+  messageId,
+  onManualNavigation,
+  onImageExpand,
+  threadId,
+}: {
+  readonly comment: ReviewCommentContext;
+  readonly cwd: string | undefined;
+  readonly messageId: string;
+  readonly onManualNavigation: () => void;
+  readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
+  readonly threadId: ThreadId | undefined;
+}) {
+  const fenceLanguage = comment.fenceLanguage ?? "diff";
+  return (
+    <view
+      className="transcript-review-comment"
+      data-review-comment={comment.id}
+      data-review-comment-file={comment.filePath}
+      data-review-comment-range={comment.rangeLabel}
+    >
+      <view className="transcript-review-comment__header">
+        <text className="transcript-review-comment__path" text-maxline="2">
+          {formatWorkspaceRelativePath(comment.filePath, cwd)}
+        </text>
+        <text className="transcript-review-comment__meta">
+          {comment.sectionTitle} · {comment.rangeLabel}
+        </text>
+      </view>
+      {comment.text.length > 0 ? (
+        <MarkdownRenderer
+          text={comment.text}
+          identity={`message:${messageId}:${comment.id}:comment`}
+          cwd={cwd}
+          onManualNavigation={onManualNavigation}
+          onImageExpand={onImageExpand}
+          threadId={threadId}
+        />
+      ) : null}
+      {comment.diff.trim().length > 0 ? (
+        <MarkdownRenderer
+          text={formatReviewCommentFence(fenceLanguage, comment.diff)}
+          identity={`message:${messageId}:${comment.id}:context`}
+          cwd={cwd}
+          onManualNavigation={onManualNavigation}
+          onImageExpand={onImageExpand}
+          threadId={threadId}
+        />
+      ) : null}
+    </view>
+  );
+}
+
 function CollapsibleLynxUserMessageBody({
   messageId,
   text,
@@ -574,6 +636,10 @@ function CollapsibleLynxUserMessageBody({
   useEffect(() => setExpanded(false), [messageId]);
   const canCollapse = shouldCollapseUserMessage(text);
   const collapsed = canCollapse && !expanded;
+  const reviewCommentSegments = parseReviewCommentMessageSegments(text);
+  const hasReviewComments = reviewCommentSegments.some(
+    (segment) => segment.kind === "review-comment",
+  );
   return (
     <view className="transcript-user-body-shell">
       <view
@@ -587,14 +653,44 @@ function CollapsibleLynxUserMessageBody({
         data-user-message-collapsed={collapsed ? "true" : "false"}
         data-user-message-collapsible={canCollapse ? "true" : "false"}
       >
-        <MarkdownRenderer
-          text={text}
-          identity={`message:${messageId}`}
-          cwd={cwd}
-          onManualNavigation={onManualNavigation}
-          onImageExpand={onImageExpand}
-          threadId={threadId}
-        />
+        {hasReviewComments ? (
+          <view className="transcript-review-comments">
+            {reviewCommentSegments.map((segment) =>
+              segment.kind === "text" ? (
+                segment.text.trim().length > 0 ? (
+                  <MarkdownRenderer
+                    key={segment.id}
+                    text={segment.text.trim()}
+                    identity={`message:${messageId}:${segment.id}`}
+                    cwd={cwd}
+                    onManualNavigation={onManualNavigation}
+                    onImageExpand={onImageExpand}
+                    threadId={threadId}
+                  />
+                ) : null
+              ) : (
+                <LynxUserMessageReviewCommentCard
+                  key={segment.comment.id}
+                  comment={segment.comment}
+                  cwd={cwd}
+                  messageId={messageId}
+                  onManualNavigation={onManualNavigation}
+                  onImageExpand={onImageExpand}
+                  threadId={threadId}
+                />
+              ),
+            )}
+          </view>
+        ) : (
+          <MarkdownRenderer
+            text={text}
+            identity={`message:${messageId}`}
+            cwd={cwd}
+            onManualNavigation={onManualNavigation}
+            onImageExpand={onImageExpand}
+            threadId={threadId}
+          />
+        )}
         {collapsed ? <view className="transcript-user-body-fade" event-through /> : null}
       </view>
       {canCollapse ? (
@@ -632,6 +728,10 @@ function buildLynxTranscriptRowElements(
   OrchestrationCheckpointSummary
 > {
   return {
+    messageVisibleText: ({ row }) =>
+      row.message.role === "user"
+        ? reviewCommentMessageVisibleText(deriveVisibleUserMessage(row.message.text).visibleText)
+        : row.message.text,
     userBubbleClassName: ({ row }) => {
       const visibleText = deriveVisibleUserMessage(row.message.text).visibleText;
       const estimatedInlineWidth = parseMarkdownInline(visibleText).reduce(

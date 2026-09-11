@@ -4260,6 +4260,44 @@
   overflow-wrap: anywhere;
   word-break: break-word;
 }
+.transcript-review-comments {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 12px;
+}
+.transcript-review-comment {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  gap: 8px;
+  padding: 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(var(--border-rgb), 0.7);
+  border-radius: 8px;
+  box-sizing: border-box;
+  background-color: rgba(var(--background-rgb), 0.7);
+}
+.transcript-review-comment__header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.transcript-review-comment__path {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+}
+.transcript-review-comment__meta {
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  line-height: 15px;
+}
 .inline-markdown-row {
   display: flex;
   flex-direction: row;

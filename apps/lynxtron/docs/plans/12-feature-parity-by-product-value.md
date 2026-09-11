@@ -280,6 +280,14 @@ following-end` with the jump affordance visible only while detached. That gate
   Web and Native now share the same long-message collapse threshold (more than
   600 characters or eight lines). Native resets expansion by message identity
   and detaches follow before Show full/Show less changes the row height.
+  Review-comment parsing and fence formatting now live in
+  `client-runtime/presentation/review-comment` instead of the Web renderer. Web
+  retains only its schema, serialization, and Pierre diff integration, while
+  Native renders the same provider payload as a structured path/range/comment/
+  context card instead of exposing raw `<review_comment>` tags. The shared row
+  semantic text hook now records renderer-visible content for user messages, so
+  hidden element/review wrappers no longer leak through transcript attributes.
+  Paired same-thread runtime evidence for these cards remains open.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

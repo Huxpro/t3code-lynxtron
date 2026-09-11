@@ -120,6 +120,7 @@ import {
 } from "./userMessageTerminalContexts";
 import { SkillInlineText } from "./SkillInlineText";
 import { formatWorkspaceRelativePath } from "../../filePathDisplay";
+import { reviewCommentMessageVisibleText } from "@t3tools/client-runtime/presentation/review-comment";
 import {
   buildReviewCommentRenderablePatch,
   formatReviewCommentFence,
@@ -814,6 +815,12 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
   const activity = use(TimelineRowActivityCtx);
   const elements = useMemo<TranscriptRowElements<ChatMessage, ProposedPlan, TurnDiffSummary>>(
     () => ({
+      messageVisibleText: ({ row: messageRow }) => {
+        if (messageRow.message.role !== "user") return messageRow.message.text;
+        return reviewCommentMessageVisibleText(
+          extractUserRowState(messageRow).elementContextState.promptText,
+        );
+      },
       renderUserBody: ({ row: messageRow }) => <UserTimelineMessageBody row={messageRow} />,
       renderUserExtras: ({ row: messageRow }) => <UserTimelineMessageExtras row={messageRow} />,
       renderUserMeta: ({ row: messageRow }) => <UserTimelineMessageMeta row={messageRow} />,

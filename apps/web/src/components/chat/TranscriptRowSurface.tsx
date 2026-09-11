@@ -58,6 +58,8 @@ export interface TranscriptRowElements<
 > {
   /** User message body inside the bubble (Web: collapsible body + contexts). */
   renderUserBody(input: { row: MessageRowOf<M, P, D> }): ReactNode;
+  /** Renderer-visible message text for semantic/test surfaces, without provider-only wrappers. */
+  messageVisibleText?(input: { row: MessageRowOf<M, P, D> }): string;
   /** Host-only bubble sizing compensation when platform intrinsic width differs. */
   userBubbleClassName?(input: { row: MessageRowOf<M, P, D> }): string | undefined;
   /** Assistant Markdown island. */
@@ -483,7 +485,11 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
       data-timeline-row-kind={row.kind}
       data-message-id={row.kind === "message" ? row.message.id : undefined}
       data-message-role={row.kind === "message" ? row.message.role : undefined}
-      data-timeline-row-text={row.kind === "message" ? row.message.text : undefined}
+      data-timeline-row-text={
+        row.kind === "message"
+          ? (elements.messageVisibleText?.({ row }) ?? row.message.text)
+          : undefined
+      }
     >
       {row.kind === "message" && row.message.role === "user" ? (
         <UserRow row={row} elements={elements} />

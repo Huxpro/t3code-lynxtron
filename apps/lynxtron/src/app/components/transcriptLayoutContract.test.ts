@@ -187,6 +187,17 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("<InlineMarkdownRenderer");
   });
 
+  it("renders review-comment provider payloads as structured native cards", () => {
+    expect(timelineSource).toContain("parseReviewCommentMessageSegments(text)");
+    expect(timelineSource).toContain('className="transcript-review-comment"');
+    expect(timelineSource).toContain("formatWorkspaceRelativePath(comment.filePath, cwd)");
+    expect(timelineSource).toContain("formatReviewCommentFence(fenceLanguage, comment.diff)");
+    expect(timelineSource).toContain("reviewCommentMessageVisibleText(");
+    expect(sharedRowSource).toContain("elements.messageVisibleText?.({ row })");
+    expect(overrides).toContain(".transcript-review-comment {");
+    expect(overrides).toContain("background-color: rgba(var(--background-rgb), 0.7);");
+  });
+
   it("lets the settled Composer banner grow without collapsing its action", () => {
     const bannerStart = overrides.indexOf(".composer-settled-banner {");
     const bannerBlock = overrides.slice(bannerStart, overrides.indexOf("}", bannerStart));
