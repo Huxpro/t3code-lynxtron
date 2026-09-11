@@ -343,6 +343,13 @@ describe("transcript layout contract", () => {
     expect(chatViewSource).toContain("messages={displayMessages}");
     expect(timelineSource).toContain("buildExpandedImagePreview(attachments, attachment.id)");
     expect(timelineSource).toContain('className="transcript-attachment-preview"');
+    expect(timelineSource).toContain("function TranscriptAttachmentCard");
+    expect(timelineSource).toContain("binderror={() => setFailed(true)}");
+    expect(timelineSource).toContain("[attachment.id, attachment.previewUrl]");
+    expect(timelineSource).not.toContain("attachment.mimeType");
+    expect(overrides).toContain(".transcript-attachment-card--image {");
+    expect(overrides).not.toContain(".transcript-attachment-copy {");
+    expect(overrides).not.toContain(".transcript-attachment-meta {");
   });
 
   it("resets recycled work disclosures and routes expansion through manual navigation", () => {

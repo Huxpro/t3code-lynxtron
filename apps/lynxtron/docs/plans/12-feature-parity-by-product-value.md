@@ -470,6 +470,10 @@ following-end` with the jump affordance visible only while detached. That gate
   of silently losing that interaction outside the transcript.
   Web now imports this preview model directly from `client-runtime`; its former
   renderer-local re-export has been deleted.
+  Native attachment cards now match Web's image-first anatomy: a resolved image
+  occupies the card without Native-only MIME/size copy, while missing or failed
+  previews fall back to the attachment name. Failure state resets by attachment
+  identity so recycled rows cannot blank a later image.
   Inline and expanded Native images now surface a visible load-failure fallback
   and reset that failure state when a virtualized block or selected image
   changes, rather than leaving a blank interactive frame.

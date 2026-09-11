@@ -509,6 +509,49 @@ function UserMessageMeta({
   );
 }
 
+function TranscriptAttachmentCard({
+  attachment,
+  attachments,
+  onImageExpand,
+}: {
+  readonly attachment: NonNullable<LynxChatMessage["attachments"]>[number];
+  readonly attachments: ReadonlyArray<NonNullable<LynxChatMessage["attachments"]>[number]>;
+  readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
+}) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [attachment.id, attachment.previewUrl]);
+  const canPreview = Boolean(attachment.previewUrl && !failed);
+  return (
+    <view
+      className={`transcript-attachment-card${canPreview ? " transcript-attachment-card--image" : ""}`}
+      data-message-attachment-type={attachment.type}
+      data-message-attachment-state={canPreview ? "preview" : failed ? "failed" : "fallback"}
+      aria-label={canPreview ? `Preview ${attachment.name}` : attachment.name}
+      bindtap={
+        canPreview && onImageExpand
+          ? () => {
+              const preview = buildExpandedImagePreview(attachments, attachment.id);
+              if (preview) onImageExpand(preview);
+            }
+          : undefined
+      }
+    >
+      {canPreview ? (
+        <image
+          className="transcript-attachment-preview"
+          src={attachment.previewUrl}
+          mode="aspectFill"
+          binderror={() => setFailed(true)}
+        />
+      ) : (
+        <text className="transcript-attachment-name" text-maxline="2">
+          {attachment.name}
+        </text>
+      )}
+    </view>
+  );
+}
+
 /** Platform islands handed to the shared transcript composition. */
 function buildLynxTranscriptRowElements(
   cwd: string | undefined,
@@ -546,41 +589,12 @@ function buildLynxTranscriptRowElements(
               data-message-attachment-count={String(attachments.length)}
             >
               {attachments.map((attachment) => (
-                <view
+                <TranscriptAttachmentCard
                   key={attachment.id}
-                  className="transcript-attachment-card"
-                  data-message-attachment-type={attachment.type}
-                  aria-label={
-                    attachment.previewUrl ? `Preview ${attachment.name}` : attachment.name
-                  }
-                  bindtap={
-                    attachment.previewUrl && onImageExpand
-                      ? () => {
-                          const preview = buildExpandedImagePreview(attachments, attachment.id);
-                          if (preview) onImageExpand(preview);
-                        }
-                      : undefined
-                  }
-                >
-                  {attachment.previewUrl ? (
-                    <image
-                      className="transcript-attachment-preview"
-                      src={attachment.previewUrl}
-                      mode="aspectFill"
-                    />
-                  ) : (
-                    <Icon name="file-json" size={14} color="#818181" />
-                  )}
-                  <view className="transcript-attachment-copy">
-                    <text className="transcript-attachment-name" text-maxline="1">
-                      {attachment.name}
-                    </text>
-                    <text className="transcript-attachment-meta">
-                      {attachment.mimeType} · {Math.max(1, Math.ceil(attachment.sizeBytes / 1024))}{" "}
-                      KB
-                    </text>
-                  </view>
-                </view>
+                  attachment={attachment}
+                  attachments={attachments}
+                  onImageExpand={onImageExpand}
+                />
               ))}
             </view>
           ) : null}
