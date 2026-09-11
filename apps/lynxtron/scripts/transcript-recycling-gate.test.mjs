@@ -45,6 +45,8 @@ describe("transcript recycling gate", () => {
     assert.equal(result.reboundNodeId, 11);
     assert.equal(result.reboundFromRowId, "row-1");
     assert.equal(result.reboundToRowId, "row-230");
+    assert.deepEqual(result.startRowIds, ["row-1", "row-2"]);
+    assert.deepEqual(result.endRowIds, ["row-230", "row-231"]);
   });
 
   it("rejects short or fully materialized transcripts", async () => {

@@ -81,5 +81,7 @@ export async function verifyTranscriptRecycling({
     reboundNodeId: last.rebound.nodeId,
     reboundFromRowId: firstRows.find((row) => row.nodeId === last.rebound.nodeId)?.rowId ?? null,
     reboundToRowId: last.rebound.rowId,
+    startRowIds: firstRows.map((row) => row.rowId).filter(Boolean),
+    endRowIds: last.rows.map((row) => row.rowId).filter(Boolean),
   };
 }
