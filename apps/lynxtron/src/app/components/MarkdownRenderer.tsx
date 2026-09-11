@@ -786,6 +786,7 @@ function renderBlock(
 
 interface MarkdownRendererProps {
   text: string;
+  identity?: string | undefined;
   streaming?: boolean;
   cwd?: string | undefined;
   onManualNavigation?: (() => void) | undefined;
@@ -878,6 +879,7 @@ export function InlineMarkdownRenderer({
 
 export function MarkdownRenderer({
   text,
+  identity,
   streaming,
   cwd,
   onManualNavigation,
@@ -885,11 +887,12 @@ export function MarkdownRenderer({
   threadId,
 }: MarkdownRendererProps) {
   const blocks = useMemo(() => parseMarkdownBlocks(text), [text]);
+  const blockKeyPrefix = identity ? `b:${identity}:` : "b";
 
   return (
     <view className="markdown-body">
       {blocks.map((block, idx) =>
-        renderBlock(block, idx, cwd, "b", onManualNavigation, onImageExpand, threadId),
+        renderBlock(block, idx, cwd, blockKeyPrefix, onManualNavigation, onImageExpand, threadId),
       )}
       {streaming ? <text className="md-cursor">▋</text> : null}
     </view>

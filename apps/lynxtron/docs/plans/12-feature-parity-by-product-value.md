@@ -299,6 +299,9 @@ following-end` with the jump affordance visible only while detached. That gate
   inline links remain interactive inside each item. The shared block projection
   normalizes both two-space and four-space indentation to structural nesting
   levels, so common Markdown styles do not over-indent Native rows.
+  Stateful Markdown blocks now include their owning message or plan identity in
+  their keys, preventing recycled details, image failures, wrap state, and copy
+  feedback from leaking between equal-position blocks in different rows.
   Images embedded between paragraph text are projected in source order through
   the existing image/fallback renderer instead of leaking their Markdown syntax
   as ordinary prose. Single-line prose containing an embedded image now also

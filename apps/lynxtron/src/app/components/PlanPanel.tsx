@@ -188,6 +188,7 @@ export function PlanPanel({
           >
             <MarkdownRenderer
               text={planMarkdown}
+              identity={planIdentity}
               streaming={false}
               cwd={cwd}
               onImageExpand={onImageExpand}

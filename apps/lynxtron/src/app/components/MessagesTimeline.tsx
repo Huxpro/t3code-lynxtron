@@ -281,7 +281,13 @@ function LynxProposedPlanCard({
         {title}
       </text>
       <view className="plan-row__preview">
-        <MarkdownRenderer text={preview} streaming={false} cwd={cwd} threadId={threadId} />
+        <MarkdownRenderer
+          text={preview}
+          identity={`plan:${plan.id}`}
+          streaming={false}
+          cwd={cwd}
+          threadId={threadId}
+        />
       </view>
       <text className="plan-row__open-label">Open full plan</text>
     </HostView>
@@ -602,6 +608,7 @@ function buildLynxTranscriptRowElements(
         <view className="transcript-user-body lynx-host-text whitespace-pre-wrap text-sm leading-6 text-foreground/92">
           <MarkdownRenderer
             text={displayed.visibleText}
+            identity={`message:${row.message.id}`}
             cwd={cwd}
             onManualNavigation={onManualNavigation}
             onImageExpand={onImageExpand}
@@ -628,6 +635,7 @@ function buildLynxTranscriptRowElements(
         shouldRenderBlockMarkdown(row.message.text) ? (
           <MarkdownRenderer
             text={row.message.text}
+            identity={`message:${row.message.id}`}
             streaming={row.message.streaming}
             cwd={cwd}
             onManualNavigation={onManualNavigation}

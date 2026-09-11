@@ -268,8 +268,9 @@ describe("transcript layout contract", () => {
 
   it("renders real proposed-plan content before opening the full panel", () => {
     expect(timelineSource).toContain("buildCollapsedProposedPlanPreviewMarkdown");
-    expect(timelineSource).toContain("<MarkdownRenderer text={preview}");
-    expect(timelineSource).toContain("cwd={cwd} threadId={threadId}");
+    expect(timelineSource).toContain("text={preview}");
+    expect(timelineSource).toContain("cwd={cwd}");
+    expect(timelineSource).toContain("threadId={threadId}");
     expect(timelineSource).toContain("Open full plan");
     expect(timelineSource).toContain('uiActions.openRightPanelSurface("plan");');
   });
@@ -298,6 +299,7 @@ describe("transcript layout contract", () => {
     expect(imagePreviewSource).toContain('aria-label="Previous image"');
     expect(imagePreviewSource).toContain('aria-label="Next image"');
     expect(markdownSource).toContain("function MarkdownImageBlock");
+    expect(markdownSource).toContain('const blockKeyPrefix = identity ? `b:${identity}:` : "b";');
     expect(markdownSource).toContain("binderror={() => setFailed(true)}");
     expect(markdownSource).toContain('_tag: "workspace-file", threadId, path: source.path');
     expect(markdownSource).toContain('data-markdown-image-loading="true"');
@@ -308,7 +310,10 @@ describe("transcript layout contract", () => {
     expect(rightPanelSource).toContain("onImageExpand={props.onImageExpand}");
     expect(planPanelSource).toContain("onImageExpand={onImageExpand}");
     expect(timelineSource).toContain("threadId={threadId}");
+    expect(timelineSource).toContain("identity={`message:${row.message.id}`}");
+    expect(timelineSource).toContain("identity={`plan:${plan.id}`}");
     expect(planPanelSource).toContain("threadId={threadId}");
+    expect(planPanelSource).toContain("identity={planIdentity}");
     expect(planPanelSource).toContain("normalizePlanMarkdownForExport(planMarkdown)");
     expect(planPanelSource).toContain('data-plan-copy-state={copyStatus ?? "idle"}');
     expect(planPanelSource).toContain("copyGenerationRef.current += 1");
