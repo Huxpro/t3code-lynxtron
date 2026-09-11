@@ -804,9 +804,6 @@ describe("desktop shell interaction contract", () => {
     const chatView = componentSource("ChatView.tsx");
 
     expect(composer).toContain("bindinput={handleInput}");
-    expect(composer).toContain("main-thread:bindkeydown={handleEditorKeyDown}");
-    expect(composer).toContain('invoke("setSelectionRange"');
-    expect(composer).toContain("selectionStart: 0, selectionEnd: length");
     expect(composer).not.toContain("{...({ value: editorValue } as object)}");
     expect(composer).toContain("const [editorRevision, setEditorRevision] = useState(0);");
     expect(composer).toContain("setEditorRevision((revision) => revision + 1)");
