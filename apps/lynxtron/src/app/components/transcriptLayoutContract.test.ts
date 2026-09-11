@@ -315,7 +315,9 @@ describe("transcript layout contract", () => {
     expect(planPanelSource).toContain("saveGenerationRef.current += 1");
     expect(planPanelSource).toContain("copyGenerationRef.current !== actionGeneration");
     expect(planPanelSource).toContain("setProposedExpanded(false)");
-    expect(planPanelSource).toContain("}, [planMarkdown]);");
+    expect(planPanelSource).toContain("const planIdentity = activeProposedPlan");
+    expect(planPanelSource).toContain("}, [planIdentity, planMarkdown]);");
+    expect(planPanelSource).not.toContain("}, [planMarkdown]);");
     expect(planPanelSource).toContain("savePlanToDefaultWorkspacePath");
     expect(planPanelSource).toContain('data-plan-save-state={saveStatus?.status ?? "idle"}');
     expect(planPanelSource).toContain("Saved: ${saveStatus.relativePath}");

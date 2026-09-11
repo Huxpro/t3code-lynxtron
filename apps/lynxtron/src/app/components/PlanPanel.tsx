@@ -57,6 +57,9 @@ export function PlanPanel({
   const copyGenerationRef = useRef(0);
   const saveGenerationRef = useRef(0);
   const planMarkdown = activeProposedPlan?.planMarkdown ?? null;
+  const planIdentity = activeProposedPlan
+    ? `${threadId ?? "no-thread"}:${activeProposedPlan.id}:${activeProposedPlan.turnId ?? "no-turn"}`
+    : `${threadId ?? "no-thread"}:no-plan`;
   const planTitle = planMarkdown ? proposedPlanTitle(planMarkdown) : null;
 
   const toggleProposed = useCallback(() => {
@@ -74,7 +77,7 @@ export function PlanPanel({
       saveGenerationRef.current += 1;
       if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
     };
-  }, [planMarkdown]);
+  }, [planIdentity, planMarkdown]);
   const copyPlan = useCallback(() => {
     if (!planMarkdown || copyStatus === "pending") return;
     const actionGeneration = ++copyGenerationRef.current;
