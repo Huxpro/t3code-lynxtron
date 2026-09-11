@@ -167,6 +167,10 @@
       "types": "./src/presentation/reviewComment.ts",
       "default": "./src/presentation/reviewComment.ts"
     },
+    "./presentation/preview-annotation": {
+      "types": "./src/presentation/previewAnnotation.ts",
+      "default": "./src/presentation/previewAnnotation.ts"
+    },
     "./presentation/file-context": {
       "types": "./src/presentation/fileContext.ts",
       "default": "./src/presentation/fileContext.ts"

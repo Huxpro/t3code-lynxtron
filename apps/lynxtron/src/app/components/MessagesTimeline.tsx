@@ -36,6 +36,10 @@ import {
   type ReviewCommentContext,
 } from "@t3tools/client-runtime/presentation/review-comment";
 import {
+  extractTrailingPreviewAnnotations,
+  type ParsedPreviewAnnotation,
+} from "@t3tools/client-runtime/presentation/preview-annotation";
+import {
   deriveVisibleUserMessage,
   shouldCollapseUserMessage,
 } from "@t3tools/client-runtime/presentation/user-message";
@@ -562,6 +566,57 @@ function TranscriptAttachmentCard({
   );
 }
 
+function LynxUserMessagePreviewAnnotationCard({
+  annotation,
+  image,
+  onImageExpand,
+}: {
+  readonly annotation: ParsedPreviewAnnotation;
+  readonly image: NonNullable<LynxChatMessage["attachments"]>[number] | null;
+  readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
+}) {
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [annotation.id, image?.id, image?.previewUrl]);
+  const canPreview = Boolean(image?.previewUrl && !failed);
+  return (
+    <view className="transcript-preview-annotation" data-preview-annotation={annotation.id}>
+      {canPreview && image ? (
+        <image
+          className="transcript-preview-annotation__image"
+          src={image.previewUrl}
+          mode="aspectFill"
+          aria-label={`Preview ${image.name}`}
+          bindtap={() => {
+            if (!onImageExpand) return;
+            const preview = buildExpandedImagePreview([image], image.id);
+            if (preview) onImageExpand(preview);
+          }}
+          binderror={() => setFailed(true)}
+        />
+      ) : null}
+      <view className="transcript-preview-annotation__copy">
+        {annotation.comment ? (
+          <text className="transcript-preview-annotation__comment" text-maxline="1">
+            {annotation.comment}
+          </text>
+        ) : null}
+        <view className="transcript-preview-annotation__meta">
+          {annotation.targetSummary ? (
+            <text className="transcript-preview-annotation__targets" text-maxline="1">
+              {annotation.targetSummary}
+            </text>
+          ) : null}
+          {annotation.styleChanges.length > 0 ? (
+            <text className="transcript-preview-annotation__styles">
+              ◇ {annotation.styleChanges.length}
+            </text>
+          ) : null}
+        </view>
+      </view>
+    </view>
+  );
+}
+
 function LynxUserMessageReviewCommentCard({
   comment,
   cwd,
@@ -712,6 +767,24 @@ function CollapsibleLynxUserMessageBody({
 }
 
 /** Platform islands handed to the shared transcript composition. */
+function extractLynxUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
+  const initiallyDisplayed = deriveVisibleUserMessage(row.message.text);
+  const previewState = extractTrailingPreviewAnnotations(initiallyDisplayed.visibleText);
+  const displayed = deriveVisibleUserMessage(previewState.promptText);
+  const attachments = row.message.attachments ?? [];
+  return {
+    visibleText: displayed.visibleText,
+    contextKinds: [...displayed.contextKinds, ...initiallyDisplayed.contextKinds],
+    previewAnnotations: previewState.annotations,
+    previewImages: attachments.filter((attachment) =>
+      attachment.name.startsWith("preview-annotation-"),
+    ),
+    regularAttachments: attachments.filter(
+      (attachment) => !attachment.name.startsWith("preview-annotation-"),
+    ),
+  };
+}
+
 function buildLynxTranscriptRowElements(
   cwd: string | undefined,
   latestTurnId: TurnId | null,
@@ -730,10 +803,10 @@ function buildLynxTranscriptRowElements(
   return {
     messageVisibleText: ({ row }) =>
       row.message.role === "user"
-        ? reviewCommentMessageVisibleText(deriveVisibleUserMessage(row.message.text).visibleText)
+        ? reviewCommentMessageVisibleText(extractLynxUserRowState(row).visibleText)
         : row.message.text,
     userBubbleClassName: ({ row }) => {
-      const visibleText = deriveVisibleUserMessage(row.message.text).visibleText;
+      const visibleText = extractLynxUserRowState(row).visibleText;
       const estimatedInlineWidth = parseMarkdownInline(visibleText).reduce(
         (width, span) => width + span.text.length * (span.code ? 7.25 : 6.9) + (span.code ? 16 : 0),
         0,
@@ -741,26 +814,38 @@ function buildLynxTranscriptRowElements(
       return estimatedInlineWidth > 590 ? "transcript-user-bubble--max" : undefined;
     },
     renderUserExtras: ({ row }) => {
-      const displayed = deriveVisibleUserMessage(row.message.text);
-      const attachments = row.message.attachments ?? [];
-      if (attachments.length === 0 && displayed.contextKinds.length === 0) return null;
+      const displayed = extractLynxUserRowState(row);
+      if (
+        displayed.regularAttachments.length === 0 &&
+        displayed.previewAnnotations.length === 0 &&
+        displayed.contextKinds.length === 0
+      )
+        return null;
       return (
         <view className="transcript-user-extras">
-          {attachments.length > 0 ? (
+          {displayed.regularAttachments.length > 0 ? (
             <view
               className="transcript-attachment-list"
-              data-message-attachment-count={String(attachments.length)}
+              data-message-attachment-count={String(displayed.regularAttachments.length)}
             >
-              {attachments.map((attachment) => (
+              {displayed.regularAttachments.map((attachment) => (
                 <TranscriptAttachmentCard
                   key={attachment.id}
                   attachment={attachment}
-                  attachments={attachments}
+                  attachments={displayed.regularAttachments}
                   onImageExpand={onImageExpand}
                 />
               ))}
             </view>
           ) : null}
+          {displayed.previewAnnotations.map((annotation, index) => (
+            <LynxUserMessagePreviewAnnotationCard
+              key={annotation.id}
+              annotation={annotation}
+              image={displayed.previewImages[index] ?? null}
+              onImageExpand={onImageExpand}
+            />
+          ))}
           {displayed.contextKinds.length > 0 ? (
             <view
               className="transcript-context-summary"
@@ -779,7 +864,7 @@ function buildLynxTranscriptRowElements(
       );
     },
     renderUserBody: ({ row }) => {
-      const displayed = deriveVisibleUserMessage(row.message.text);
+      const displayed = extractLynxUserRowState(row);
       if (displayed.visibleText.trim().length === 0) return null;
       return (
         <CollapsibleLynxUserMessageBody

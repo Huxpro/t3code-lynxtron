@@ -198,6 +198,16 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain("background-color: rgba(var(--background-rgb), 0.7);");
   });
 
+  it("renders preview annotations separately from regular attachments and authored text", () => {
+    expect(timelineSource).toContain("extractTrailingPreviewAnnotations(");
+    expect(timelineSource).toContain('attachment.name.startsWith("preview-annotation-")');
+    expect(timelineSource).toContain('className="transcript-preview-annotation"');
+    expect(timelineSource).toContain("displayed.previewAnnotations.map");
+    expect(timelineSource).toContain("displayed.regularAttachments.map");
+    expect(overrides).toContain(".transcript-preview-annotation {");
+    expect(overrides).toContain(".transcript-preview-annotation__image {");
+  });
+
   it("lets the settled Composer banner grow without collapsing its action", () => {
     const bannerStart = overrides.indexOf(".composer-settled-banner {");
     const bannerBlock = overrides.slice(bannerStart, overrides.indexOf("}", bannerStart));

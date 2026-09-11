@@ -288,6 +288,12 @@ following-end` with the jump affordance visible only while detached. That gate
   semantic text hook now records renderer-visible content for user messages, so
   hidden element/review wrappers no longer leak through transcript attributes.
   Paired same-thread runtime evidence for these cards remains open.
+  Preview-annotation presentation parsing is shared as well: both renderers peel
+  one or more trailing annotation payloads from authored text in the same order.
+  Native now pairs `preview-annotation-*` attachments with compact annotation
+  cards, keeps unrelated attachments in their normal list, and no longer exposes
+  the raw annotation or nested element-context payload in the visible message.
+  Paired annotated-preview evidence remains open.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

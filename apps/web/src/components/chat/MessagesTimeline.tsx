@@ -105,7 +105,7 @@ import {
   type ParsedElementContextEntry,
 } from "~/lib/elementContext";
 import {
-  extractTrailingPreviewAnnotation,
+  extractTrailingPreviewAnnotations,
   type ParsedPreviewAnnotation,
 } from "~/lib/previewAnnotation";
 import { cn } from "~/lib/utils";
@@ -960,19 +960,14 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
 function extractUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
   const userImages = row.message.attachments ?? [];
   const displayedUserMessage = deriveDisplayedUserMessageState(row.message.text);
-  const previewAnnotations: ParsedPreviewAnnotation[] = [];
-  let visibleText = displayedUserMessage.visibleText;
-  while (true) {
-    const extracted = extractTrailingPreviewAnnotation(visibleText);
-    if (!extracted.annotation) break;
-    previewAnnotations.unshift(extracted.annotation);
-    visibleText = extracted.promptText;
-  }
-  const elementContextState = extractTrailingElementContexts(visibleText);
+  const previewAnnotationState = extractTrailingPreviewAnnotations(
+    displayedUserMessage.visibleText,
+  );
+  const elementContextState = extractTrailingElementContexts(previewAnnotationState.promptText);
   return {
     displayedUserMessage,
     terminalContexts: displayedUserMessage.contexts,
-    previewAnnotations,
+    previewAnnotations: previewAnnotationState.annotations,
     elementContextState,
     elementContexts: [...displayedUserMessage.elementContexts, ...elementContextState.contexts],
     previewImages: userImages.filter((image) => image.name.startsWith("preview-annotation-")),
