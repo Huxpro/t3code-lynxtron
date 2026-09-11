@@ -49,7 +49,7 @@ import {
 } from "../../../../web/src/components/chat/TranscriptRowSurface";
 import { ChangedFilesCardSurface } from "../../../../web/src/components/chat/ChangedFilesCardSurface";
 import { hasNonZeroStat } from "../../../../web/src/components/chat/DiffStatLabel";
-import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
+import { HostButton, HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ActivityEntry, ChatMessage, SessionStatus } from "../bridge";
 import externalChevronDownUrl from "../assets/chevron-down.svg?external";
 import externalTerminalUrl from "../assets/terminal.svg?external";
@@ -598,16 +598,18 @@ function CollapsibleLynxUserMessageBody({
         {collapsed ? <view className="transcript-user-body-fade" event-through /> : null}
       </view>
       {canCollapse ? (
-        <HostView
+        <HostButton
+          type="button"
           className="transcript-user-body-toggle"
           aria-expanded={expanded}
+          data-scroll-anchor-ignore
           onClick={() => {
             onManualNavigation();
             setExpanded((value) => !value);
           }}
         >
           <HostText>{expanded ? "Show less" : "Show full message"}</HostText>
-        </HostView>
+        </HostButton>
       ) : null}
     </view>
   );

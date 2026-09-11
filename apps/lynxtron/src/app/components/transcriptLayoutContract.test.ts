@@ -444,6 +444,8 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("useEffect(() => setExpanded(false), [messageId])");
     expect(timelineSource).toContain('data-user-message-collapsed={collapsed ? "true" : "false"}');
     expect(timelineSource).toContain('expanded ? "Show less" : "Show full message"');
+    expect(timelineSource).toContain('type="button"');
+    expect(timelineSource).toContain("data-scroll-anchor-ignore");
     expect(timelineSource).toContain(
       'collapsed ? <view className="transcript-user-body-fade" event-through />',
     );
