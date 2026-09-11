@@ -277,6 +277,9 @@ following-end` with the jump affordance visible only while detached. That gate
   body below those extras.
   User-bubble width estimation also uses visible text, so hidden context payloads
   cannot stretch a short authored message to the maximum bubble width.
+  Web and Native now share the same long-message collapse threshold (more than
+  600 characters or eight lines). Native resets expansion by message identity
+  and detaches follow before Show full/Show less changes the row height.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

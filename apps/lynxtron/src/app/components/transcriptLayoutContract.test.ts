@@ -437,6 +437,18 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".timeline-row-root--user > .transcript-user-outer {");
   });
 
+  it("matches Web long user-message collapse semantics", () => {
+    expect(webTimelineSource).toContain("shouldCollapseUserMessage(props.text)");
+    expect(timelineSource).toContain("function CollapsibleLynxUserMessageBody");
+    expect(timelineSource).toContain("const canCollapse = shouldCollapseUserMessage(text)");
+    expect(timelineSource).toContain("useEffect(() => setExpanded(false), [messageId])");
+    expect(timelineSource).toContain('data-user-message-collapsed={collapsed ? "true" : "false"}');
+    expect(timelineSource).toContain('expanded ? "Show less" : "Show full message"');
+    expect(timelineSource).toContain("onManualNavigation();");
+    expect(overrides).toContain(".transcript-user-body--collapsed {");
+    expect(overrides).toContain("max-height: 176px;");
+  });
+
   it("retains the authority checkpoint border in light mode", () => {
     const start = overrides.indexOf(".theme-light .turn-diff-card {");
     const block = overrides.slice(start, overrides.indexOf("}", start));

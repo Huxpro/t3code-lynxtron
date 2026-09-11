@@ -4222,6 +4222,24 @@
   font-size: 14px;
   line-height: 23px;
 }
+.transcript-user-body--collapsed {
+  max-height: 176px;
+  overflow: hidden;
+}
+.transcript-user-body-toggle {
+  align-self: flex-start;
+  margin-top: 6px;
+  padding: 3px 6px;
+  border-radius: 6px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 18px;
+}
+.transcript-user-body-toggle:hover {
+  background-color: var(--muted);
+  color: var(--foreground);
+}
 .transcript-user-body .markdown-body,
 .transcript-user-body .md-paragraph {
   width: 100%;

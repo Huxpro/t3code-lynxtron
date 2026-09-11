@@ -28,7 +28,10 @@ import {
 } from "@t3tools/client-runtime/presentation/transcript";
 import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
-import { deriveVisibleUserMessage } from "@t3tools/client-runtime/presentation/user-message";
+import {
+  deriveVisibleUserMessage,
+  shouldCollapseUserMessage,
+} from "@t3tools/client-runtime/presentation/user-message";
 import {
   buildCollapsedProposedPlanPreviewMarkdown,
   proposedPlanTitle,
@@ -46,7 +49,7 @@ import {
 } from "../../../../web/src/components/chat/TranscriptRowSurface";
 import { ChangedFilesCardSurface } from "../../../../web/src/components/chat/ChangedFilesCardSurface";
 import { hasNonZeroStat } from "../../../../web/src/components/chat/DiffStatLabel";
-import { HostView } from "../../../../web/src/components/ui/hostElements";
+import { HostText, HostView } from "../../../../web/src/components/ui/hostElements";
 import type { ActivityEntry, ChatMessage, SessionStatus } from "../bridge";
 import externalChevronDownUrl from "../assets/chevron-down.svg?external";
 import externalTerminalUrl from "../assets/terminal.svg?external";
@@ -552,6 +555,63 @@ function TranscriptAttachmentCard({
   );
 }
 
+function CollapsibleLynxUserMessageBody({
+  messageId,
+  text,
+  cwd,
+  onManualNavigation,
+  onImageExpand,
+  threadId,
+}: {
+  readonly messageId: string;
+  readonly text: string;
+  readonly cwd: string | undefined;
+  readonly onManualNavigation: () => void;
+  readonly onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined;
+  readonly threadId: ThreadId | undefined;
+}) {
+  const [expanded, setExpanded] = useState(false);
+  useEffect(() => setExpanded(false), [messageId]);
+  const canCollapse = shouldCollapseUserMessage(text);
+  const collapsed = canCollapse && !expanded;
+  return (
+    <view className="transcript-user-body-shell">
+      <view
+        className={[
+          "transcript-user-body lynx-host-text whitespace-pre-wrap text-sm leading-6 text-foreground/92",
+          collapsed ? "transcript-user-body--collapsed" : null,
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        data-user-message-body="true"
+        data-user-message-collapsed={collapsed ? "true" : "false"}
+        data-user-message-collapsible={canCollapse ? "true" : "false"}
+      >
+        <MarkdownRenderer
+          text={text}
+          identity={`message:${messageId}`}
+          cwd={cwd}
+          onManualNavigation={onManualNavigation}
+          onImageExpand={onImageExpand}
+          threadId={threadId}
+        />
+      </view>
+      {canCollapse ? (
+        <HostView
+          className="transcript-user-body-toggle"
+          aria-expanded={expanded}
+          onClick={() => {
+            onManualNavigation();
+            setExpanded((value) => !value);
+          }}
+        >
+          <HostText>{expanded ? "Show less" : "Show full message"}</HostText>
+        </HostView>
+      ) : null}
+    </view>
+  );
+}
+
 /** Platform islands handed to the shared transcript composition. */
 function buildLynxTranscriptRowElements(
   cwd: string | undefined,
@@ -619,16 +679,14 @@ function buildLynxTranscriptRowElements(
       const displayed = deriveVisibleUserMessage(row.message.text);
       if (displayed.visibleText.trim().length === 0) return null;
       return (
-        <view className="transcript-user-body lynx-host-text whitespace-pre-wrap text-sm leading-6 text-foreground/92">
-          <MarkdownRenderer
-            text={displayed.visibleText}
-            identity={`message:${row.message.id}`}
-            cwd={cwd}
-            onManualNavigation={onManualNavigation}
-            onImageExpand={onImageExpand}
-            threadId={threadId}
-          />
-        </view>
+        <CollapsibleLynxUserMessageBody
+          messageId={row.message.id}
+          text={displayed.visibleText}
+          cwd={cwd}
+          onManualNavigation={onManualNavigation}
+          onImageExpand={onImageExpand}
+          threadId={threadId}
+        />
       );
     },
     renderUserMeta: ({ row }) => {
