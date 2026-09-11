@@ -199,6 +199,9 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   `FiberSetAttribute param 0 should be RefCounted` immediately after each tap.
   Those frames are invalid acceptance evidence, so final real-input closure is
   runtime-blocked rather than silently counted as passing.
+- Native Un-settle now scopes pending and failure feedback to the target thread,
+  disables duplicate requests, exposes retryable errors in the settled banner,
+  and rejects a missing bridge instead of silently reporting success.
 
 ## PF3: Complete transcript navigation and interaction
 

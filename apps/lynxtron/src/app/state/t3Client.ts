@@ -1540,7 +1540,7 @@ async function settleThread(threadId: string): Promise<void> {
 
 async function unsettleThread(threadId: string): Promise<void> {
   const bridge = getBridge();
-  if (!bridge?.unsettleThread) return;
+  if (!bridge?.unsettleThread) throw new Error("Thread un-settle is unavailable.");
   await bridge.unsettleThread({ threadId });
 }
 

@@ -35,6 +35,10 @@ const hostElementsSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/ui/hostElements.lynx.tsx"),
   "utf8",
 );
+const t3ClientSource = readFileSync(
+  path.resolve(import.meta.dirname, "../state/t3Client.ts"),
+  "utf8",
+);
 const menuSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
   "utf8",
@@ -2321,6 +2325,19 @@ describe("desktop shell interaction contract", () => {
     );
     expect(timelineSource).not.toContain(".catch(() => undefined)");
     expect(timelineSource).toContain("setRevertStatus(null), [messageId, revertTurnCount]");
+  });
+
+  it("surfaces thread-scoped un-settle progress and bridge failures", () => {
+    const chatView = componentSource("ChatView.tsx");
+    expect(chatView).toContain(
+      'data-thread-unsettle-state={activeUnsettleState?.status ?? "idle"}',
+    );
+    expect(chatView).toContain(
+      'activeUnsettleState?.status === "pending" ? undefined : handleUnsettle',
+    );
+    expect(chatView).toContain('status: "failed"');
+    expect(chatView).toContain("current?.threadId === targetThreadId");
+    expect(t3ClientSource).toContain('throw new Error("Thread un-settle is unavailable.")');
   });
 
   it("resets recycled checkpoint-card expansion for a new checkpoint identity", () => {

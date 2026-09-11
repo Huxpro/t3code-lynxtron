@@ -201,6 +201,11 @@ export function ChatView({ threadId }: ChatViewProps) {
   const [dismissedThreadErrorsById, setDismissedThreadErrorsById] = useState<
     Record<string, string>
   >({});
+  const [unsettleState, setUnsettleState] = useState<{
+    readonly threadId: string;
+    readonly status: "pending" | "failed";
+    readonly message?: string;
+  } | null>(null);
   const [pendingUserInputDraftsByRequestId, setPendingUserInputDraftsByRequestId] = useState<
     Record<string, Record<string, PendingUserInputDraftAnswer>>
   >({});
@@ -229,6 +234,26 @@ export function ChatView({ threadId }: ChatViewProps) {
     () => threads.find((thread) => thread.id === activeThreadId) ?? activeDraftThread,
     [threads, activeThreadId, activeDraftThread],
   );
+  const activeUnsettleState =
+    activeThreadId && unsettleState?.threadId === activeThreadId ? unsettleState : null;
+  const handleUnsettle = useCallback(() => {
+    if (!activeThreadId || activeUnsettleState?.status === "pending") return;
+    const targetThreadId = activeThreadId;
+    setUnsettleState({ threadId: targetThreadId, status: "pending" });
+    void t3ClientActions.unsettleThread(targetThreadId).then(
+      () => setUnsettleState((current) => (current?.threadId === targetThreadId ? null : current)),
+      (cause) =>
+        setUnsettleState((current) =>
+          current?.threadId === targetThreadId
+            ? {
+                threadId: targetThreadId,
+                status: "failed",
+                message: cause instanceof Error ? cause.message : "Failed to un-settle thread.",
+              }
+            : current,
+        ),
+    );
+  }, [activeThreadId, activeUnsettleState?.status]);
   const threadError = sessionError ?? modelSelectionError;
   const visibleThreadError =
     threadError && dismissedThreadErrorsById[activeThreadId ?? ""] !== threadError
@@ -866,18 +891,24 @@ export function ChatView({ threadId }: ChatViewProps) {
               <view className="composer-settled-banner__copy">
                 <text className="composer-settled-banner__title">This thread is settled</text>
                 <text className="composer-settled-banner__description">
-                  Sending a message moves it back to Active in the sidebar.
+                  {activeUnsettleState?.status === "failed"
+                    ? activeUnsettleState.message
+                    : "Sending a message moves it back to Active in the sidebar."}
                 </text>
               </view>
               <view
                 className="composer-settled-banner__action"
-                bindtap={() => {
-                  if (activeThread) {
-                    void t3ClientActions.unsettleThread(activeThread.id).catch(() => undefined);
-                  }
-                }}
+                data-thread-unsettle-state={activeUnsettleState?.status ?? "idle"}
+                aria-disabled={activeUnsettleState?.status === "pending" ? "true" : "false"}
+                bindtap={activeUnsettleState?.status === "pending" ? undefined : handleUnsettle}
               >
-                <text className="composer-settled-banner__action-label">Un-settle</text>
+                <text className="composer-settled-banner__action-label">
+                  {activeUnsettleState?.status === "pending"
+                    ? "Working…"
+                    : activeUnsettleState?.status === "failed"
+                      ? "Retry"
+                      : "Un-settle"}
+                </text>
               </view>
             </view>
           ) : undefined

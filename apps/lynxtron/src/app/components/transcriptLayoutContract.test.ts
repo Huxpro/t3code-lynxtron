@@ -203,6 +203,14 @@ describe("transcript layout contract", () => {
     expect(actionBlock).toContain("width: 70px;");
     expect(actionBlock).toContain("min-width: 70px;");
     expect(actionBlock).toContain("max-width: 70px;");
+    expect(chatViewSource).toContain(
+      'data-thread-unsettle-state={activeUnsettleState?.status ?? "idle"}',
+    );
+    expect(chatViewSource).toContain(
+      'activeUnsettleState?.status === "pending" ? undefined : handleUnsettle',
+    );
+    expect(chatViewSource).toContain('status: "failed"');
+    expect(chatViewSource).not.toContain("unsettleThread(activeThread.id).catch(() => undefined)");
   });
 
   it("stretches Review checkpoint cards across the transcript column", () => {
