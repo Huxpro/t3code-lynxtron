@@ -385,6 +385,22 @@ following-end` with the jump affordance visible only while detached. That gate
   historical window, proving only that the key reached a different process. The
   owned process was stopped by its captured session and the keyboard gate remains
   `pending-user-session` after this harness identity loss.
+  The retained launcher then moved from the removed pre-0.0.21 executable path
+  to `@lynx-js/lynxtron/native-paths`, allowing a new shell-owned run to resolve
+  the devtool runtime before creating disposable state. Computer Use listed two
+  same-bundle T3 windows, but a fresh state check pinned the new process to PID
+  `2931`, window `88438`; the screenshot and readiness report both showed the
+  dark 1280 x 820 `Long transcript 120 turns` fixture, main transport, and
+  `fidelity-long-transcript`. Real OS `Command+K` opened Quick Switch in that
+  exact window and real `Escape` closed it. From the same owned process,
+  `Command+,` opened Settings General and `Command+N` opened New Thread. The
+  readiness sequence advanced from 13 to 14, the final log scan found no
+  keyboard-delivery or runtime errors, and cleanup stopped only PID `2931`.
+  This closes physical acceptance for the bounded native-menu shortcuts; it
+  does not close renderer text-key events, focus traversal, drag, or the failed
+  `Command+A` selection path. The run regenerated the deterministic fixture as
+  snapshot `9b22607bc8619d78af1f86458de93e7ed2bb207396adbcd5c560ee1c3111ac8e`;
+  it is not presented as a new paired Electron/Native visual snapshot.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
@@ -504,8 +520,10 @@ following-end` with the jump affordance visible only while detached. That gate
 - Discrete keyboard coverage now spans all three layers: native menu packet
   encoding, the shared keybinding resolver, and a dependency-injected product
   action dispatcher for New Thread, Quick Switch, File Picker, Settings, Sidebar,
-  and thread/model jumps. This is command-path evidence, not physical keyboard
-  acceptance.
+  and thread/model jumps. The `Command+K`, `Escape`, `Command+,`, and `Command+N`
+  paths now also have exact-owned physical keyboard acceptance. File Picker,
+  Sidebar, thread/model jumps, and general renderer keyboard behavior retain
+  only command-path coverage.
 - Native code-block copy now follows the same pending/copied/failed contract,
   disables duplicate taps while the bridge write is in flight, and clears its
   feedback timer when a virtualized block unmounts.

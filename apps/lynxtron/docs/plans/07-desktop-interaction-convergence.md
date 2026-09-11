@@ -37,9 +37,10 @@ state.
 Progress (P3-S2, 2026-07-30): New Thread, Quick Switch, and Settings now use
 native Menu accelerators → renderer-neutral keyboard packets →
 `sendGlobalEvent` → the shared keybinding resolver. Automated packet and
-command fixtures pass; physical accelerator acceptance is
-`pending-user-session`. General renderer keyboard/focus support remains open,
-so this item stays pending.
+command fixtures pass. Follow-up exact-owned Computer Use acceptance passes for
+real `Command+K`, `Escape`, `Command+,`, and `Command+N` on the 0.0.21 runtime.
+File Picker, Sidebar, thread/model jumps, selection, and general renderer
+keyboard/focus support remain open, so this item stays pending.
 
 Exit criteria:
 

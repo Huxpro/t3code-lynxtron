@@ -464,7 +464,7 @@ R3 and R5 matrix rows and their upstream issue drafts now carry these probe
 facts. `clientCapabilities.keyboard` remains `available: false`; no product
 keyboard code was written in this slice.
 
-## P3-S2 discrete keyboard commands (complete; real-key acceptance pending-user-session)
+## P3-S2 discrete keyboard commands (complete; core real-key acceptance recorded)
 
 The first deliberately bounded R5 product path now uses Lynxtron's native
 application `Menu` accelerators for New Thread, Quick Switch, and Settings.
@@ -483,9 +483,15 @@ is the only accelerator affordance. Packet construction, validation,
 platform `mod` mapping, `when` evaluation, and all three command resolutions
 have focused fixtures. App/main/Web/shared/contracts typechecks, builds,
 scanner, and the slice capture are the automated certification boundary.
-Because R12 prevents DevTool key injection and Menu accelerators cannot be
-triggered headlessly, physical accelerator acceptance is explicitly
-`pending-user-session`.
+Because R12 prevents DevTool key injection, physical accelerator acceptance
+uses authorized Computer Use. An exact-owned 0.0.21 run pinned PID `2931` and
+window `88438` before every action: real `Command+K` opened Quick Switch,
+`Escape` closed it, `Command+,` opened Settings General, and `Command+N` opened
+New Thread. Main transport remained ready and advanced from sequence 13 to 14,
+with no keyboard-delivery or runtime errors. This closes the bounded core menu
+shortcut acceptance, not general renderer keyboard support: text selection,
+focus traversal, drag, File Picker, Sidebar, and thread/model jump acceptance
+remain open.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 
@@ -1155,11 +1161,12 @@ bundle — the price of deleting the second implementation).
 and navigation all work on shared compositions over the main-owned push
 transport (AR1/AR2 proved and cut over), so the port is not an
 `experimental-host`. It is not an `electron-replacement-candidate`: R5
-(renderer keyboard; physical-key acceptance `pending-user-session`), R11
+(renderer keyboard; bounded native-menu shortcuts pass physical acceptance,
+but selection and the remaining focus/shortcut matrix stay open), R11
 (async bundle URLs rejected upstream; the eager main bundle is the current
 mitigation), and the new R13 (light theme) remain open, and real
-keyboard/focus/wheel/drag/selection acceptance still requires an authorized
-user session (R5/R12).
+focus/drag/selection acceptance still requires an authorized user session
+(R5/R12).
 
 Open runtime gaps and removal conditions are tracked per ID in
 `compat-matrix.md` (R1–R13; R3 closed for the T3 architecture in AR2).
@@ -1172,8 +1179,8 @@ Open runtime gaps and removal conditions are tracked per ID in
   AR6 (this commit).
 - Release classification: `chat-first-preview` (see the AR6 section for the
   evidence matrix and the deletion/reuse finals).
-- Outstanding user-session work: physical keyboard/focus acceptance (R5) and
-  scroll-gesture acceptance (R12) stay `pending-user-session` and need an
+- Outstanding user-session work: the remaining keyboard/focus matrix (R5) and
+  drag/selection acceptance (R8/R12) stay `pending-user-session` and need an
   authorized interactive session; R11 needs the upstream bundle-URL fix;
   R13 (light theme) needs the two-theme CSS pipeline.
 - Follow-ups worth scheduling: visible connection-state treatment in the
