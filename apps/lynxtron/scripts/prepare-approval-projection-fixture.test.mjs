@@ -33,4 +33,11 @@ describe("approval projection fixture preparation", () => {
     assert.include(source, "interactionClaimed: false");
     assert.notInclude(source, "orchestration_events");
   });
+
+  it("pins the Native fixture theme and model selection", () => {
+    assert.include(source, '"lynxtron-prefs.json"');
+    assert.include(source, 'themePreference: "dark"');
+    assert.include(source, "clientSettings: {}");
+    assert.include(source, "modelSelection");
+  });
 });

@@ -1424,6 +1424,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'action.measurement.style.borderBottomColor === "rgb(212,212,216)"');
     assert.include(source, "outlineActions: [actions[1], actions[2]].map");
     assert.include(source, '"native-approval.png"');
+    assert.include(source, '"--approval-semantic-only"');
+    assert.include(source, 'semanticOnly ? "semantic-only" : "visual-and-semantic"');
+    assert.include(source, "const screenshot = semanticOnly");
     assert.include(source, '"--verify-approval-transcript-state"');
     assert.include(source, "fixtureManifest.pendingRequestFixture");
   });

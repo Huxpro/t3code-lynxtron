@@ -7015,6 +7015,7 @@ async function verifyApprovalTranscriptState({
   devToolCli,
   expectedTheme,
   outputDirectory,
+  semanticOnly,
 }) {
   const clientState = await readClientState(client);
   const frame = await readOptionalMeasurement(client, ".composer-frame");
@@ -7127,12 +7128,14 @@ async function verifyApprovalTranscriptState({
       })}`,
     );
   }
-  const screenshot = captureNativeScreenshot({
-    client,
-    devToolCli,
-    outputDirectory,
-    name: "native-approval.png",
-  });
+  const screenshot = semanticOnly
+    ? undefined
+    : captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: "native-approval.png",
+      });
   return {
     status: "pass",
     fixture: {
@@ -7169,6 +7172,7 @@ async function verifyApprovalTranscriptState({
       })),
     },
     screenshot,
+    evidenceKind: semanticOnly ? "semantic-only" : "visual-and-semantic",
   };
 }
 
@@ -13922,6 +13926,7 @@ async function runOnce({
             devToolCli,
             expectedTheme,
             outputDirectory,
+            semanticOnly: approvalSemanticOnly,
           })
         : undefined;
     let approvalDeclineMutation;
@@ -14414,6 +14419,7 @@ const shouldVerifyFailedTranscriptState = process.argv.includes("--verify-failed
 const shouldVerifyApprovalTranscriptState = process.argv.includes(
   "--verify-approval-transcript-state",
 );
+const approvalSemanticOnly = process.argv.includes("--approval-semantic-only");
 const shouldVerifyApprovalDeclineMutation = process.argv.includes(
   "--verify-approval-decline-mutation",
 );
@@ -14489,6 +14495,9 @@ if (shouldVerifyHeroComposerState && !expectedModelLabel) {
 }
 if (shouldVerifyComposerReconnect && !shouldVerifyLifecycleRecovery) {
   throw new Error("--verify-composer-reconnect requires --verify-lifecycle-recovery.");
+}
+if (approvalSemanticOnly && !shouldVerifyApprovalTranscriptState) {
+  throw new Error("--approval-semantic-only requires --verify-approval-transcript-state.");
 }
 if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
   throw new Error("--quick-switch-query requires --verify-quick-switch-default.");
