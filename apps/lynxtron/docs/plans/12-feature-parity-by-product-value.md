@@ -362,6 +362,13 @@ following-end` with the jump affordance visible only while detached. That gate
   commit `f799e6ead` was explicitly reverted by `d6feb98e0`. Selection remains
   an honest runtime gap; no tap-equivalent or programmatic value replacement is
   counted as acceptance.
+  A subsequent physical `Command+K` attempt is not retained as Native evidence:
+  immediately before the key event, Computer Use ignored the explicitly pinned
+  owned PID/window and returned historical PID `18465`, window `80843`, instead
+  of owned PID `37549`, window `88026`. The shortcut opened Quick Switch in that
+  historical window, proving only that the key reached a different process. The
+  owned process was stopped by its captured session and the keyboard gate remains
+  `pending-user-session` after this harness identity loss.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
