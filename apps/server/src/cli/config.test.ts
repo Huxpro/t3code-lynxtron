@@ -406,6 +406,42 @@ it.layer(NodeServices.layer)("cli config resolution", (it) => {
     }),
   );
 
+  it.effect("uses an explicit static directory only without a dev URL", () =>
+    Effect.gen(function* () {
+      const fs = yield* FileSystem.FileSystem;
+      const path = yield* Path.Path;
+      const baseDir = yield* fs.makeTempDirectoryScoped({ prefix: "t3-cli-config-static-" });
+      const staticDir = path.join(baseDir, "fresh-web-dist");
+      const flags = {
+        mode: Option.some("desktop" as const),
+        port: Option.some(4888),
+        host: Option.none(),
+        baseDir: Option.some(baseDir),
+        cwd: Option.none(),
+        devUrl: Option.none<URL>(),
+        noBrowser: Option.none(),
+        bootstrapFd: Option.none(),
+        autoBootstrapProjectFromCwd: Option.none(),
+        logWebSocketEvents: Option.none(),
+        tailscaleServeEnabled: Option.none(),
+        tailscaleServePort: Option.none(),
+      };
+      const provideConfig = (env: Record<string, string>) =>
+        Layer.mergeAll(ConfigProvider.layer(ConfigProvider.fromEnv({ env })), NetService.layer);
+
+      const production = yield* resolveServerConfig(flags, Option.none()).pipe(
+        Effect.provide(provideConfig({ T3CODE_STATIC_DIR: staticDir })),
+      );
+      const development = yield* resolveServerConfig(
+        { ...flags, devUrl: Option.some(new URL("http://127.0.0.1:5173")) },
+        Option.none(),
+      ).pipe(Effect.provide(provideConfig({ T3CODE_STATIC_DIR: staticDir })));
+
+      expect(production.staticDir).toBe(staticDir);
+      expect(development.staticDir).toBeUndefined();
+    }),
+  );
+
   it.effect("applies flag then env precedence over bootstrap envelope values", () =>
     Effect.gen(function* () {
       const { join } = yield* Path.Path;

@@ -49,6 +49,17 @@ const checks = {
   backendBehavior:
     electron.fixture?.backendBehaviorClaimed === true &&
     native.fixture?.backendBehaviorClaimed === true,
+  electronRendererIdentity:
+    electron.rendererIdentity?.entryAssetUrl?.startsWith("t3code://app/assets/index-") === true &&
+    /^[a-f0-9]{64}$/u.test(electron.rendererIdentity?.entryAssetSha256 ?? ""),
+  details:
+    electron.state?.details?.count === 1 &&
+    native.state?.details?.count === 1 &&
+    electron.state.details.open === true &&
+    native.state.details.open === true &&
+    electron.state.details.taskCount === 0 &&
+    native.state.details.taskCount === 0 &&
+    electron.state.details.text.trim() === native.state.details.text.trim(),
   nativeTransport: native.state?.transport?.kind === "main",
   nativeRendererClean: native.state?.rendererErrors === 0,
   nativeCleanup: native.isolatedStateDisposed === true,
@@ -66,6 +77,7 @@ const report = {
     relativePath: electron.fixture?.relativePath,
     viewport: electron.state?.viewport,
     theme: electron.state?.theme,
+    electronRendererIdentity: electron.rendererIdentity,
   },
   mutation: {
     before: electron.fixture?.before,
@@ -73,7 +85,7 @@ const report = {
     fileSha256: electron.state?.fileSha256,
   },
   limitation:
-    "Same-snapshot Electron semantic source-of-truth and exact-owned Native physical mutation correlation; no paired pixels or keyboard checkbox activation is claimed.",
+    "Same-snapshot fresh-renderer Electron semantic source-of-truth and exact-owned Native physical mutation correlation; no paired pixels or keyboard checkbox activation is claimed.",
 };
 writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
 process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);

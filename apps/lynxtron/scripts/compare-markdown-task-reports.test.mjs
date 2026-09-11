@@ -23,6 +23,8 @@ describe("paired Markdown task comparator", () => {
       "checked:",
       "fileHash:",
       "cleanSaves:",
+      "electronRendererIdentity:",
+      "details:",
       "nativeTransport:",
       "nativeRendererClean:",
       "nativeCleanup:",
@@ -31,6 +33,12 @@ describe("paired Markdown task comparator", () => {
     }
     assert.include(source, "expectedTaskCount");
     assert.include(source, "checked.every((checked) => checked === true)");
+    assert.include(source, "entryAssetUrl?.startsWith");
+    assert.include(source, "electron.state.details.taskCount === 0");
+    assert.include(
+      source,
+      "electron.state.details.text.trim() === native.state.details.text.trim()",
+    );
   });
   it("keeps behavior evidence distinct from pixels and keyboard activation", () => {
     assert.include(source, 'evidenceKind === "semantic-only"');

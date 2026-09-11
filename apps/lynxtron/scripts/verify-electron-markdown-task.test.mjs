@@ -16,8 +16,10 @@ describe("Electron Markdown task runner", () => {
     assert.include(source, 'localStorage.setItem("t3code:theme", "dark")');
     assert.include(source, "manifest.project.title");
     assert.include(source, "delete electronEnv.VITE_DEV_SERVER_URL");
+    assert.include(source, "T3CODE_STATIC_DIR: webStaticDir");
     assert.include(source, "location.protocol !== 't3code:'");
     assert.include(source, "assetScripts:");
+    assert.include(source, "entryAssetSha256: expectedEntrySha256");
   });
 
   it("uses the real Web file picker, rendered Markdown toggle, checkbox, and disk write", () => {
@@ -26,6 +28,10 @@ describe("Electron Markdown task runner", () => {
     assert.include(source, 'data-palette-row=\"true\"');
     assert.include(source, 'aria-label=\"Show rendered markdown\"');
     assert.include(source, 'input[name=\"markdown-task\"]');
+    assert.include(source, "'[data-markdown-details]'");
+    assert.include(source, "details.length !== 1");
+    assert.include(source, "data-markdown-details-open");
+    assert.include(source, "details[0].querySelector('input[name=\"markdown-task\"]')");
     assert.include(source, "for (const task of tasks) if (!task.checked) task.click()");
     assert.include(source, "before.taskCount !== expectedTaskCount");
     assert.include(source, 'readFileSync(workspaceFile, "utf8") === fixture.after');

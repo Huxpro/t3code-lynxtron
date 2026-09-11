@@ -14,6 +14,7 @@ import { selectElectronRendererTarget } from "./electron-cdp-target.mjs";
 const appRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const desktopRoot = path.join(repoRoot, "apps/desktop");
+const webStaticDir = path.join(repoRoot, "apps/web/dist");
 
 function argumentValue(name) {
   const index = process.argv.indexOf(name);
@@ -117,6 +118,13 @@ if (!argumentValue("--fixture-dir") || !argumentValue("--output")) {
   throw new Error("--fixture-dir and --output are required.");
 }
 const manifest = JSON.parse(readFileSync(path.join(fixtureDir, "visual-state.json"), "utf8"));
+const webIndex = readFileSync(path.join(webStaticDir, "index.html"), "utf8");
+const expectedEntryPath = webIndex.match(
+  /<script[^>]+type=["']module["'][^>]+src=["'](?<src>[^"']+)["']/u,
+)?.groups?.src;
+if (!expectedEntryPath) throw new Error("Fresh Web build has no module entry asset.");
+const expectedEntryFile = path.join(webStaticDir, expectedEntryPath.replace(/^\//u, ""));
+const expectedEntrySha256 = sha256(expectedEntryFile);
 const fixture = manifest.markdownTaskFixture;
 if (
   typeof fixture?.relativePath !== "string" ||
@@ -155,6 +163,7 @@ const electronEnv = {
   ...process.env,
   T3CODE_HOME: electronHome,
   T3CODE_PORT: String(backendPort),
+  T3CODE_STATIC_DIR: webStaticDir,
   T3CODE_DESKTOP_USER_DATA_DIR: profile,
   T3CODE_DISABLE_AUTO_UPDATE: "1",
 };
@@ -260,7 +269,7 @@ try {
       () =>
         evaluate(
           client,
-          `(() => { const tasks = [...document.querySelectorAll('input[name="markdown-task"]')]; if (location.protocol !== 't3code:' || tasks.length !== ${JSON.stringify(expectedTaskCount)} || tasks.every((task) => task.checked)) return null; return { href: location.href, assetScripts: [...document.scripts].map((script) => script.src).filter(Boolean), viewport: { width: innerWidth, height: innerHeight, devicePixelRatio }, theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', taskCount: tasks.length, initialChecked: tasks.map((task) => task.checked) }; })()`,
+          `(() => { const tasks = [...document.querySelectorAll('input[name="markdown-task"]')]; const details = [...document.querySelectorAll('[data-markdown-details]')]; if (location.protocol !== 't3code:' || tasks.length !== ${JSON.stringify(expectedTaskCount)} || tasks.every((task) => task.checked) || details.length !== 1 || details[0].getAttribute('data-markdown-details-open') !== 'true' || details[0].querySelector('input[name="markdown-task"]')) return null; return { href: location.href, assetScripts: [...document.scripts].map((script) => script.src).filter(Boolean), viewport: { width: innerWidth, height: innerHeight, devicePixelRatio }, theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', taskCount: tasks.length, initialChecked: tasks.map((task) => task.checked), details: { count: details.length, open: details[0].getAttribute('data-markdown-details-open') === 'true', taskCount: details[0].querySelectorAll('input[name="markdown-task"]').length, text: details[0].textContent } }; })()`,
         ),
       "Electron rendered Markdown tasks",
       timeoutMs,
@@ -268,10 +277,18 @@ try {
   } catch (error) {
     const diagnostic = await evaluate(
       client,
-      `(() => ({ bodyText: (document.body?.innerText ?? '').slice(0, 2000), taskCount: document.querySelectorAll('input[name="markdown-task"]').length, inputs: [...document.querySelectorAll('input[type="checkbox"]')].map((input) => ({ name: input.name, checked: input.checked, disabled: input.disabled })), details: [...document.querySelectorAll('details')].map((item) => ({ open: item.open, text: item.textContent })) }))()`,
+      `(() => ({ bodyText: (document.body?.innerText ?? '').slice(0, 2000), taskCount: document.querySelectorAll('input[name="markdown-task"]').length, inputs: [...document.querySelectorAll('input[type="checkbox"]')].map((input) => ({ name: input.name, checked: input.checked, disabled: input.disabled })), details: [...document.querySelectorAll('[data-markdown-details]')].map((item) => ({ open: item.getAttribute('data-markdown-details-open'), text: item.textContent })) }))()`,
     ).catch(() => null);
     throw new Error(
       `${error instanceof Error ? error.message : String(error)}; diagnostic=${JSON.stringify(diagnostic)}`,
+    );
+  }
+  const loadedEntryAssetUrl = before.assetScripts.find((asset) =>
+    new URL(asset).pathname.endsWith(expectedEntryPath),
+  );
+  if (!loadedEntryAssetUrl) {
+    throw new Error(
+      `Electron did not load the fresh Web entry asset: ${JSON.stringify({ expectedEntryPath, assetScripts: before.assetScripts })}`,
     );
   }
   await evaluate(
@@ -314,6 +331,11 @@ try {
       before: fixture.before,
       after: fixture.after,
       backendBehaviorClaimed: true,
+    },
+    rendererIdentity: {
+      staticDir: webStaticDir,
+      entryAssetUrl: loadedEntryAssetUrl,
+      entryAssetSha256: expectedEntrySha256,
     },
     state: { ...before, ...after, fileSha256: sha256(workspaceFile) },
     evidenceKind: "semantic-only",
