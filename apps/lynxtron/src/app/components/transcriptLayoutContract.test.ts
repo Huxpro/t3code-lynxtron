@@ -444,9 +444,17 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("useEffect(() => setExpanded(false), [messageId])");
     expect(timelineSource).toContain('data-user-message-collapsed={collapsed ? "true" : "false"}');
     expect(timelineSource).toContain('expanded ? "Show less" : "Show full message"');
+    expect(timelineSource).toContain(
+      'collapsed ? <view className="transcript-user-body-fade" event-through />',
+    );
+    const collapsibleStart = timelineSource.indexOf("function CollapsibleLynxUserMessageBody");
+    const fadeStart = timelineSource.indexOf("transcript-user-body-fade", collapsibleStart);
+    expect(fadeStart).toBeGreaterThan(collapsibleStart);
     expect(timelineSource).toContain("onManualNavigation();");
     expect(overrides).toContain(".transcript-user-body--collapsed {");
     expect(overrides).toContain("max-height: 176px;");
+    expect(overrides).toContain(".transcript-user-body-fade {");
+    expect(overrides).toContain("background-image: linear-gradient(0deg, var(--accent)");
   });
 
   it("retains the authority checkpoint border in light mode", () => {

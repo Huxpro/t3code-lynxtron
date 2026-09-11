@@ -595,6 +595,7 @@ function CollapsibleLynxUserMessageBody({
           onImageExpand={onImageExpand}
           threadId={threadId}
         />
+        {collapsed ? <view className="transcript-user-body-fade" event-through /> : null}
       </view>
       {canCollapse ? (
         <HostView

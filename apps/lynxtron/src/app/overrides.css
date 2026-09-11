@@ -4223,8 +4223,18 @@
   line-height: 23px;
 }
 .transcript-user-body--collapsed {
+  position: relative;
   max-height: 176px;
   overflow: hidden;
+}
+.transcript-user-body-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40px;
+  background-image: linear-gradient(0deg, var(--accent), rgba(var(--accent-rgb), 0));
+  pointer-events: none;
 }
 .transcript-user-body-toggle {
   align-self: flex-start;
