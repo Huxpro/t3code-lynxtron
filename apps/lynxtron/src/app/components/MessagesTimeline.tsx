@@ -1370,6 +1370,7 @@ export function MessagesTimeline({
       ) => void;
       __T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?: (index: number, alignTo: "bottom" | "top") => void;
       __T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__?: () => number;
+      __T3_LYNXTRON_TRANSCRIPT_MINIMAP_COUNT__?: () => number;
       __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
     };
     if (typeof diagnosticsGlobal.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
@@ -1388,14 +1389,16 @@ export function MessagesTimeline({
         .exec();
     };
     diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__ = () => rows.length;
+    diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_MINIMAP_COUNT__ = () => minimapItems.length;
     return () => {
       if (diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__ === probe) {
         delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__;
       }
       delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__;
+      delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_MINIMAP_COUNT__;
     };
-  }, [rows.length]);
+  }, [minimapItems.length, rows.length]);
 
   const handleJumpToLatest = useCallback(() => {
     setAnchorMessageId(null);

@@ -22,6 +22,7 @@ describe("long-transcript recycling runner", () => {
     assert.include(source, "value.activeThreadId === fixture.threadId");
     assert.include(source, "client.identity.bundleUrl !== expectedBundleUrl");
     assert.include(source, "verifyTranscriptRecycling({");
+    assert.include(source, "__T3_LYNXTRON_TRANSCRIPT_MINIMAP_COUNT__");
   });
 
   it("captures no screenshot and stops only its owned process", () => {

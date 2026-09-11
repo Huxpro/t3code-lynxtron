@@ -213,6 +213,14 @@ try {
     expectedRowCount: fixture.expectedTimelineRowCount,
     timeoutMs: Math.min(timeoutMs, 10_000),
   });
+  const geometryResponse = await client.runCdp("Runtime.evaluate", {
+    expression:
+      "JSON.stringify({minimapItemCount:globalThis.__T3_LYNXTRON_TRANSCRIPT_MINIMAP_COUNT__?.() ?? null})",
+    returnByValue: true,
+  });
+  const geometryValue =
+    geometryResponse?.result?.result?.value ?? geometryResponse?.result?.value ?? null;
+  const geometry = typeof geometryValue === "string" ? JSON.parse(geometryValue) : null;
   const errors = rendererErrors({
     clientId: client.identity.clientId,
     sessionId: client.identity.sessionId,
@@ -240,6 +248,7 @@ try {
     readiness,
     devtool: client.identity,
     recycling,
+    geometry,
     rendererErrors: [],
   };
   writeFileSync(output, `${JSON.stringify(report, null, 2)}\n`);
