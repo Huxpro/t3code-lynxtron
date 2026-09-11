@@ -328,6 +328,15 @@ following-end` with the jump affordance visible only while detached. That gate
   sequence 12, the canonical thread was active, renderer errors were empty, and
   pre/postflight found zero leaked processes. Physical wheel acceptance and
   paired Electron/Native position correlation remain open.
+  Programmatic paired correlation subsequently passed at `cf11365ae` with the
+  same snapshot, thread, dark theme, and 1280 × 820 viewport on both renderers.
+  Electron exposed all 120 turn identities through its minimap and materialized
+  the tail around turns 114–120; Native exposed the same 120 minimap turns and
+  240 canonical rows while keeping eight native rows materialized. The paired
+  report passed exact HEAD, snapshot, active-thread, viewport, first-turn,
+  last-turn, canonical-count, recycling, and zero-error checks. This closes the
+  programmatic same-thread position-correlation slice; physical wheel, keyboard,
+  focus, drag, and selection remain pending real OS input.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
