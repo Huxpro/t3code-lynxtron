@@ -71,6 +71,13 @@ real query typing plus ArrowDown and Enter closed the picker and opened
 `keyboardCommands.probe.test.ts` in the internal split Files surface. DevTool
 verified preview mode, a saved content revision, no console errors, and main
 sequence 13.
+Quick Switch command-query navigation now has the same physical acceptance. A
+first owned run lost its visible Computer Use window after typing and is retained
+only as harness loss. A fresh exact-owned PID `11393`, window `89856` run opened
+with `Command+K`, focused the search input, typed `open settings`, and exposed
+the single canonical action. Real ArrowDown highlighted it and Enter navigated
+to Settings General. DevTool confirmed the overlay closed, main sequence 15, and
+an empty error console before captured-PID cleanup.
 
 The same 1280 x 820 canonical-thread session also passes a real Sidebar resize
 drag through Computer Use. The divider moved from approximately 239 px to 319 px;

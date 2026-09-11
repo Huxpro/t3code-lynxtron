@@ -576,6 +576,13 @@ following-end` with the jump affordance visible only while detached. That gate
   `keyboardCommands.probe.test.ts` inside the split Files panel. Owned DevTool
   confirmed preview mode, saved content revision, no console errors, and main
   sequence 13.
+  Quick Switch command-query navigation was then accepted on exact-owned PID
+  `11393`, window `89856`. `Command+K`, a real focus click, literal
+  `open settings`, ArrowDown, and Enter highlighted and executed the single
+  canonical action, landing on Settings General. DevTool confirmed overlay
+  closure, main sequence 15, and no renderer errors. An earlier run that lost its
+  Computer Use window after typing is retained only as harness loss, not product
+  evidence.
   A separate exact-owned PID `60545`, window `89233` run then used Computer Use
   for a real Sidebar resize drag from the current-frame divider at about 239 px
   to 319 px. The visible Sidebar expanded, while owned DevTool client

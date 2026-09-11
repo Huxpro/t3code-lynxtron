@@ -535,6 +535,11 @@ and opens the existing internal file surface. Exact-owned PID `75404`, window
 `89773` accepted real ArrowDown and Enter for
 `keyboardCommands.probe.test.ts`; DevTool measured split layout, preview editor
 mode, saved content revision, zero console errors, and main sequence 13.
+Quick Switch command-query input now has a full real-key chain as well. On
+exact-owned PID `11393`, window `89856`, `Command+K`, a focus click, literal
+`open settings`, ArrowDown, and Enter selected the single canonical action and
+landed on Settings General. The overlay state closed, main transport advanced to
+sequence 15, the console remained clean, and cleanup stopped the captured PID.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 
