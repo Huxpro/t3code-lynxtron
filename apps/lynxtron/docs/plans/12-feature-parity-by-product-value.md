@@ -558,6 +558,15 @@ following-end` with the jump affordance visible only while detached. That gate
   transport were healthy, showing that the focused picker search field prevented
   the native Menu accelerator packet from reaching the renderer. This is retained
   as a real R5 failure, not papered over with programmatic selection.
+  File Picker input was then exercised on exact-owned PID `65032`, window
+  `89601`. `Command+P` opened the picker, a real click focused search, and literal
+  typing produced the exact Accessibility value `keyboardCommands.probe` while
+  visibly filtering to matching repository files; `Escape` closed the overlay.
+  `Command+A` plus Backspace removed only the final `e`, reproducing the earlier
+  Composer select-all failure in a second Native textarea. This closes File
+  Picker focus/query typing but strengthens the evidence that selection is a
+  shared runtime gap. Main transport remained ready at sequence 16 and the owned
+  PID was cleaned up.
   A separate exact-owned PID `60545`, window `89233` run then used Computer Use
   for a real Sidebar resize drag from the current-frame divider at about 239 px
   to 319 px. The visible Sidebar expanded, while owned DevTool client

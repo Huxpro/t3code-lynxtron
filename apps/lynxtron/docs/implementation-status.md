@@ -514,6 +514,13 @@ keyboard diagnostic remained `null`, while the picker state and main transport
 were healthy and the main log contained no delivery warning. The focused picker
 search field therefore prevents this native Menu accelerator from reaching the
 renderer; model-picker numeric jumps remain an explicit R5 runtime gap.
+File Picker query entry was separately accepted on exact-owned PID `65032`,
+window `89601`: `Command+P`, a real focus click, and literal typing produced the
+Accessibility value `keyboardCommands.probe` and visibly filtered repository
+results. `Escape` dismissed the picker. A real `Command+A` plus Backspace changed
+the value only to `keyboardCommands.prob`, so select-all remains broken across
+both Composer and File Picker rather than being a Composer-only defect. Main
+transport stayed ready at sequence 16 and cleanup stopped the captured PID.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 

@@ -53,6 +53,14 @@ dispatch snapshot remained `null` while the picker state and main transport were
 healthy, proving that the focused picker search field prevented the native Menu
 accelerator packet from reaching the renderer. No resolver or selection fix is
 claimed; this remains an R5 runtime gap.
+File Picker now also has real input-field coverage. On exact-owned PID `65032`,
+window `89601`, `Command+P` opened the picker, a real click focused its search
+field, and Computer Use typed `keyboardCommands.probe`; Accessibility exposed
+the exact value and the visible results filtered to the matching probe test and
+keyboard files. Real `Escape` dismissed the picker. `Command+A` followed by
+Backspace removed only the trailing `e`, reproducing the same selection failure
+already seen in Composer. Query focus/typing is accepted; selection remains an
+R8 runtime gap across both text surfaces.
 
 The same 1280 x 820 canonical-thread session also passes a real Sidebar resize
 drag through Computer Use. The divider moved from approximately 239 px to 319 px;
