@@ -151,15 +151,17 @@ const electronCommand = resolveElectronLaunchCommand([
   `--t3code-dev-root=${desktopRoot}`,
   "dist-electron/main.cjs",
 ]);
+const electronEnv = {
+  ...process.env,
+  T3CODE_HOME: electronHome,
+  T3CODE_PORT: String(backendPort),
+  T3CODE_DESKTOP_USER_DATA_DIR: profile,
+  T3CODE_DISABLE_AUTO_UPDATE: "1",
+};
+delete electronEnv.VITE_DEV_SERVER_URL;
 const child = spawn(electronCommand.electronPath, electronCommand.args, {
   cwd: desktopRoot,
-  env: {
-    ...process.env,
-    T3CODE_HOME: electronHome,
-    T3CODE_PORT: String(backendPort),
-    T3CODE_DESKTOP_USER_DATA_DIR: profile,
-    T3CODE_DISABLE_AUTO_UPDATE: "1",
-  },
+  env: electronEnv,
   stdio: ["ignore", "pipe", "pipe"],
 });
 let log = "";
@@ -258,7 +260,7 @@ try {
       () =>
         evaluate(
           client,
-          `(() => { const tasks = [...document.querySelectorAll('input[name="markdown-task"]')]; if (tasks.length !== ${JSON.stringify(expectedTaskCount)} || tasks.every((task) => task.checked)) return null; return { viewport: { width: innerWidth, height: innerHeight, devicePixelRatio }, theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', taskCount: tasks.length, initialChecked: tasks.map((task) => task.checked) }; })()`,
+          `(() => { const tasks = [...document.querySelectorAll('input[name="markdown-task"]')]; if (location.protocol !== 't3code:' || tasks.length !== ${JSON.stringify(expectedTaskCount)} || tasks.every((task) => task.checked)) return null; return { href: location.href, assetScripts: [...document.scripts].map((script) => script.src).filter(Boolean), viewport: { width: innerWidth, height: innerHeight, devicePixelRatio }, theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light', taskCount: tasks.length, initialChecked: tasks.map((task) => task.checked) }; })()`,
         ),
       "Electron rendered Markdown tasks",
       timeoutMs,

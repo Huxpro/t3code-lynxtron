@@ -15,6 +15,9 @@ describe("Electron Markdown task runner", () => {
     assert.include(source, "width: 1280, height: 820");
     assert.include(source, 'localStorage.setItem("t3code:theme", "dark")');
     assert.include(source, "manifest.project.title");
+    assert.include(source, "delete electronEnv.VITE_DEV_SERVER_URL");
+    assert.include(source, "location.protocol !== 't3code:'");
+    assert.include(source, "assetScripts:");
   });
 
   it("uses the real Web file picker, rendered Markdown toggle, checkbox, and disk write", () => {
