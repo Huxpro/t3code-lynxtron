@@ -540,6 +540,14 @@ following-end` with the jump affordance visible only while detached. That gate
   transport stayed ready at sequence 15 and the log remained free of keyboard
   or runtime warnings. Thread/model jumps and general renderer keyboard behavior
   retain only command-path coverage.
+  A separate exact-owned PID `60545`, window `89233` run then used Computer Use
+  for a real Sidebar resize drag from the current-frame divider at about 239 px
+  to 319 px. The visible Sidebar expanded, while owned DevTool client
+  `localhost:8904`, session 1 measured `data-sidebar-width="341"` and matching
+  341 px container/gap geometry. The canonical thread and Composer stayed stable,
+  the DevTool error console was empty, main transport remained ready at sequence
+  15, and cleanup stopped only PID `60545`. Other drag and selection paths remain
+  open.
 - Native code-block copy now follows the same pending/copied/failed contract,
   disables duplicate taps while the bridge write is in flight, and clears its
   feedback timer when a virtualized block unmounts.

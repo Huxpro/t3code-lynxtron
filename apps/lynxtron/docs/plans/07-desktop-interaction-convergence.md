@@ -44,6 +44,14 @@ directions of `Command+B` for Sidebar visibility. Thread/model jumps, selection,
 and general renderer keyboard/focus support remain open, so this item stays
 pending.
 
+The same 1280 x 820 canonical-thread session also passes a real Sidebar resize
+drag through Computer Use. The divider moved from approximately 239 px to 319 px;
+an exact-owned DevTool session for PID `60545` then reported
+`data-sidebar-width="341"` with 341 px Sidebar container and gap geometry. The
+thread and Composer remained stable, the error console was empty, main transport
+remained ready at sequence 15, and cleanup stopped only the captured PID. This
+closes Sidebar-resize drag acceptance, not unrelated drag or selection paths.
+
 Exit criteria:
 
 - The runtime probe records exact event support and version

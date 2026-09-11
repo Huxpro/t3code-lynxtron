@@ -490,11 +490,17 @@ window `88438` before every action: real `Command+K` opened Quick Switch,
 New Thread. Main transport remained ready and advanced from sequence 13 to 14,
 with no keyboard-delivery or runtime errors. This closes the bounded core menu
 shortcut acceptance, not general renderer keyboard support: text selection,
-focus traversal, drag, and thread/model jump acceptance remain open. A second
+focus traversal, non-Sidebar drag, and thread/model jump acceptance remain open. A second
 exact-owned run pinned PID `50651`, window `89189`: real `Command+P` opened the
 File Picker with repository results, `Escape` dismissed it, and `Command+B` hid
 then restored Sidebar. Main transport remained ready at sequence 15, no keyboard
 or runtime warnings appeared, and cleanup stopped only the captured PID.
+An additional exact-owned run pinned PID `60545`, window `89233` and used a
+real Computer Use drag on the current-frame Sidebar divider. The visible edge
+moved by roughly 80 px; DevTool resolved from the owned PID then measured
+`data-sidebar-width="341"` and matching 341 px gap/container geometry. The
+error console stayed empty and the canonical main transport remained ready at
+sequence 15.
 
 ## Lynxtron 0.0.7 upgrade and upstream issues (2026-07-29)
 
@@ -1183,7 +1189,7 @@ Open runtime gaps and removal conditions are tracked per ID in
 - Release classification: `chat-first-preview` (see the AR6 section for the
   evidence matrix and the deletion/reuse finals).
 - Outstanding user-session work: the remaining keyboard/focus matrix (R5) and
-  drag/selection acceptance (R8/R12) stay `pending-user-session` and need an
+  non-Sidebar drag/selection acceptance (R8/R12) stay `pending-user-session` and need an
   authorized interactive session; R11 needs the upstream bundle-URL fix;
   R13 (light theme) needs the two-theme CSS pipeline.
 - Follow-ups worth scheduling: visible connection-state treatment in the
