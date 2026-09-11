@@ -968,6 +968,8 @@ describe("packaged readiness Sidebar geometry", () => {
     );
     assert.include(source, 'measurement.text.includes("original review fixture")');
     assert.include(source, 'measurement.text.includes("updated by T3 review fixture")');
+    assert.include(source, '"--review-semantic-only"');
+    assert.include(source, 'semanticOnly ? "semantic-only" : "visual-and-semantic"');
   });
 
   it("verifies distinct Native Review checkpoint preview and expanded tree states", () => {

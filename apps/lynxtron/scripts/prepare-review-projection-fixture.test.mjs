@@ -35,4 +35,10 @@ describe("review projection fixture preparation", () => {
     assert.include(source, "has_actionable_proposed_plan, settled_override, settled_at");
     assert.include(source, "'settled', ?");
   });
+
+  it("writes deterministic Native preferences for the same theme and model", () => {
+    assert.include(source, '"lynxtron-prefs.json"');
+    assert.include(source, 'themePreference: "dark"');
+    assert.include(source, "clientSettings: {}, modelSelection");
+  });
 });

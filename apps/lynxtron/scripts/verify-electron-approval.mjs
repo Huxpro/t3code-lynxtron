@@ -122,6 +122,10 @@ const timeoutMs = Number(argumentValue("--timeout-ms") ?? "90000");
 const width = Number(argumentValue("--width") ?? "1280");
 const height = Number(argumentValue("--height") ?? "820");
 const verifyMessageCard = process.argv.includes("--message-card");
+const verifyReviewDiff = process.argv.includes("--review-diff");
+if (verifyMessageCard && verifyReviewDiff) {
+  throw new Error("--message-card and --review-diff are mutually exclusive.");
+}
 if (!argumentValue("--fixture-dir") || !argumentValue("--output")) {
   throw new Error("--fixture-dir and --output are required.");
 }
@@ -131,8 +135,23 @@ if (!existsSync(manifestPath) || !existsSync(sourceDatabase)) {
   throw new Error("Electron approval gate requires a prepared fixture.");
 }
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
-const fixture = verifyMessageCard ? manifest.messageCardFixture : manifest.pendingRequestFixture;
-if (verifyMessageCard) {
+const fixture = verifyReviewDiff
+  ? manifest.reviewFixture
+  : verifyMessageCard
+    ? manifest.messageCardFixture
+    : manifest.pendingRequestFixture;
+if (verifyReviewDiff) {
+  if (
+    typeof fixture?.threadId !== "string" ||
+    fixture.latestTurnState !== "completed" ||
+    typeof fixture?.checkpoint?.turnId !== "string" ||
+    fixture?.checkpoint?.status !== "ready" ||
+    !Array.isArray(fixture?.checkpoint?.files) ||
+    fixture.checkpoint.files.length !== 1
+  ) {
+    throw new Error("Fixture manifest has no valid review fixture.");
+  }
+} else if (verifyMessageCard) {
   if (
     typeof fixture?.threadId !== "string" ||
     typeof fixture?.review?.filePath !== "string" ||
@@ -149,7 +168,14 @@ if (verifyMessageCard) {
   throw new Error("Fixture manifest has no valid pending approval.");
 }
 const runRoot = mkdtempSync(
-  path.join(os.tmpdir(), verifyMessageCard ? "t3-electron-message-card-" : "t3-electron-approval-"),
+  path.join(
+    os.tmpdir(),
+    verifyReviewDiff
+      ? "t3-electron-review-"
+      : verifyMessageCard
+        ? "t3-electron-message-card-"
+        : "t3-electron-approval-",
+  ),
 );
 const electronHome = path.join(runRoot, "home");
 const profile = path.join(runRoot, "profile");
@@ -221,16 +247,72 @@ try {
   if (reloadingForTheme) await new Promise((resolveWait) => setTimeout(resolveWait, 500));
   const canonicalRoute = `/${encodeURIComponent(environmentId)}/${encodeURIComponent(fixture.threadId)}`;
   await evaluate(client, `(() => { location.hash = "#" + ${JSON.stringify(canonicalRoute)}; })()`);
-  const expectedDetail = verifyMessageCard ? undefined : fixture.activity.payload.detail;
+  const expectedDetail =
+    verifyMessageCard || verifyReviewDiff ? undefined : fixture.activity.payload.detail;
   const expectedActions = ["Cancel turn", "Decline", "Always allow this session", "Approve once"];
   let state;
   try {
-    state = verifyMessageCard
+    state = verifyReviewDiff
       ? await waitFor(
           () =>
             evaluate(
               client,
               `(() => {
+                const readComposedText = (element) => {
+                  if (!element) return '';
+                  const parts = [];
+                  const visit = (node) => {
+                    if (node.nodeType === 3) {
+                      parts.push(node.textContent ?? '');
+                      return;
+                    }
+                    if (node.nodeType !== 1 || node.tagName === 'STYLE' || node.tagName === 'SCRIPT') return;
+                    for (const child of node.childNodes) visit(child);
+                    if (node.shadowRoot) {
+                      for (const child of node.shadowRoot.childNodes) visit(child);
+                    }
+                  };
+                  visit(element);
+                  return parts.join(' ').trim().replace(/\s+/g, ' ');
+                };
+                const open = document.querySelector('[data-review-open-diff]');
+                if (!globalThis.__T3_ELECTRON_REVIEW_OPENED__) {
+                  if (!open) return null;
+                  globalThis.__T3_ELECTRON_REVIEW_OPENED__ = true;
+                  open.click();
+                  return null;
+                }
+                const surface = document.querySelector('[data-review-surface="diff"]');
+                const file = document.querySelector('[data-review-file-path=${JSON.stringify(fixture.checkpoint.files[0].path)}]');
+                const loading = document.querySelector('[data-review-patch-loading]');
+                const error = document.querySelector('[data-review-patch-error]');
+                const code = surface?.querySelector('.diff-render-surface');
+                const text = readComposedText(surface);
+                if (!surface || !file || !code || loading || error) return null;
+                return {
+                  href: location.href,
+                  viewport: { width: innerWidth, height: innerHeight, devicePixelRatio },
+                  theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+                  selectedTurn: surface.getAttribute('data-review-selected-turn'),
+                  checkpointCount: surface.getAttribute('data-review-checkpoint-count'),
+                  fileCount: surface.getAttribute('data-review-file-count'),
+                  filePath: file.getAttribute('data-review-file-path'),
+                  codeDiff: true,
+                  loading: Boolean(loading),
+                  error: Boolean(error),
+                  text
+                };
+              })()`,
+            ),
+          "Electron review diff",
+          timeoutMs,
+        )
+      : verifyMessageCard
+        ? await waitFor(
+            () =>
+              evaluate(
+                client,
+                `(() => {
               const review = document.querySelector('[data-review-comment-file=${JSON.stringify(fixture.review.filePath)}]');
               const preview = document.querySelector('[data-preview-annotation=${JSON.stringify(fixture.preview.id)}]');
               const element = document.querySelector('[data-message-context-kind="element"]');
@@ -255,15 +337,15 @@ try {
                 }
               };
             })()`,
-            ),
-          "Electron message cards",
-          timeoutMs,
-        )
-      : await waitFor(
-          () =>
-            evaluate(
-              client,
-              `(() => {
+              ),
+            "Electron message cards",
+            timeoutMs,
+          )
+        : await waitFor(
+            () =>
+              evaluate(
+                client,
+                `(() => {
           const pending = document.querySelector('[data-composer-pending-kind="approval"]');
           const summary = document.querySelector('.composer-pending-approval__summary');
           const detail = document.querySelector('[data-approval-detail="complete"]');
@@ -282,16 +364,28 @@ try {
             disabled: actions.map((action) => action.matches(':disabled'))
           };
             })()`,
-            ),
-          "Electron pending approval",
-          timeoutMs,
-        );
+              ),
+            "Electron pending approval",
+            timeoutMs,
+          );
   } catch (error) {
     const diagnostic = await evaluate(
       client,
       `(() => ({
         href: location.href,
         bodyText: (document.body?.innerText ?? '').slice(0, 1200),
+        reviewSurface: (() => {
+          const surface = document.querySelector('[data-review-surface="diff"]');
+          const code = surface?.querySelector('.diff-render-surface');
+          return surface ? {
+            html: surface.innerHTML.slice(0, 2400),
+            text: surface.textContent?.replace(/\s+/g, ' ').trim().slice(0, 1200) ?? '',
+            loading: Boolean(surface.querySelector('[data-review-patch-loading]')),
+            error: Boolean(surface.querySelector('[data-review-patch-error]')),
+            codePresent: Boolean(code),
+            codeShadowText: code?.shadowRoot?.textContent?.replace(/\s+/g, ' ').trim().slice(0, 1200) ?? ''
+          } : null;
+        })(),
         rowIds: Array.from(document.querySelectorAll('[data-timeline-row-id]')).map((row) => row.getAttribute('data-timeline-row-id')),
         reviewCount: document.querySelectorAll('.transcript-review-comment').length,
         previewCount: document.querySelectorAll('[data-preview-annotation]').length,
@@ -303,25 +397,33 @@ try {
     );
   }
   const identityMatches = state.href.includes(canonicalRoute) && state.theme === "dark";
-  const contentMatches = verifyMessageCard
-    ? state.review.filePath === fixture.review.filePath &&
-      state.review.rangeLabel === fixture.review.rangeLabel &&
-      state.preview.id === fixture.preview.id &&
-      state.element.kind === "element" &&
-      state.visiblePageText.includes("Keep the shared card semantics aligned.") &&
-      state.visiblePageText.includes(fixture.preview.comment) &&
-      state.visiblePageText.includes("1 selected element.") &&
-      state.visiblePageText.includes(fixture.element.header)
-    : state.composerState === "working" &&
-      state.pending.includes("PENDING APPROVAL") &&
-      state.summary.replace(/\s+/g, "") === "Commandapprovalrequested" &&
-      state.pending.includes(expectedDetail) &&
-      state.detail === expectedDetail &&
-      JSON.stringify(state.actions) === JSON.stringify(expectedActions) &&
-      state.disabled.every((disabled) => disabled === false);
+  const contentMatches = verifyReviewDiff
+    ? state.selectedTurn === fixture.checkpoint.turnId &&
+      state.checkpointCount === "1" &&
+      state.fileCount === "1" &&
+      state.filePath === fixture.checkpoint.files[0].path &&
+      state.loading === false &&
+      state.error === false &&
+      state.codeDiff === true
+    : verifyMessageCard
+      ? state.review.filePath === fixture.review.filePath &&
+        state.review.rangeLabel === fixture.review.rangeLabel &&
+        state.preview.id === fixture.preview.id &&
+        state.element.kind === "element" &&
+        state.visiblePageText.includes("Keep the shared card semantics aligned.") &&
+        state.visiblePageText.includes(fixture.preview.comment) &&
+        state.visiblePageText.includes("1 selected element.") &&
+        state.visiblePageText.includes(fixture.element.header)
+      : state.composerState === "working" &&
+        state.pending.includes("PENDING APPROVAL") &&
+        state.summary.replace(/\s+/g, "") === "Commandapprovalrequested" &&
+        state.pending.includes(expectedDetail) &&
+        state.detail === expectedDetail &&
+        JSON.stringify(state.actions) === JSON.stringify(expectedActions) &&
+        state.disabled.every((disabled) => disabled === false);
   if (!identityMatches || !contentMatches) {
     throw new Error(
-      `Electron ${verifyMessageCard ? "message-card" : "approval"} semantics drifted: ${JSON.stringify(state)}`,
+      `Electron ${verifyReviewDiff ? "review-diff" : verifyMessageCard ? "message-card" : "approval"} semantics drifted: ${JSON.stringify(state)}`,
     );
   }
   const report = {
@@ -337,9 +439,14 @@ try {
     fixture: {
       environmentId,
       threadId: fixture.threadId,
-      ...(verifyMessageCard
-        ? { turnId: fixture.turnId, userMessageId: fixture.userMessageId }
-        : { requestId: fixture.activity.payload.requestId, activeTurnId: fixture.activeTurnId }),
+      ...(verifyReviewDiff
+        ? {
+            turnId: fixture.checkpoint.turnId,
+            file: fixture.checkpoint.files[0],
+          }
+        : verifyMessageCard
+          ? { turnId: fixture.turnId, userMessageId: fixture.userMessageId }
+          : { requestId: fixture.activity.payload.requestId, activeTurnId: fixture.activeTurnId }),
       backendBehaviorClaimed: manifest.preparation?.backendBehaviorClaimed === true,
     },
     requestedWindow: { width, height },

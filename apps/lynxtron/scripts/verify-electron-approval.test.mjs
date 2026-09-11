@@ -35,4 +35,17 @@ describe("Electron approval semantic runner", () => {
     assert.include(source, "replace(/\\\\s+/g, ' ')");
     assert.include(source, "diagnostic=${JSON.stringify(diagnostic)}");
   });
+
+  it("reuses the lifecycle for same-snapshot review-diff semantics", () => {
+    assert.include(source, '"--review-diff"');
+    assert.include(source, "manifest.reviewFixture");
+    assert.include(source, "__T3_ELECTRON_REVIEW_OPENED__");
+    assert.include(source, "data-review-open-diff");
+    assert.include(source, 'data-review-surface=\"diff\"');
+    assert.include(source, "data-review-selected-turn");
+    assert.include(source, "const readComposedText = (element)");
+    assert.include(source, "if (node.shadowRoot)");
+    assert.include(source, "const code = surface?.querySelector('.diff-render-surface')");
+    assert.include(source, "state.codeDiff === true");
+  });
 });

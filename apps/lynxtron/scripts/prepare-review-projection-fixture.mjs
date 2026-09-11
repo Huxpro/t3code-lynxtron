@@ -220,6 +220,10 @@ export function prepareReviewProjectionFixture(baseDirectory) {
     },
   };
   writeFileSync(manifestPath, `${JSON.stringify(nextManifest, null, 2)}\n`);
+  writeFileSync(
+    path.join(baseDir, "lynxtron-prefs.json"),
+    `${JSON.stringify({ themePreference: "dark", clientSettings: {}, modelSelection }, null, 2)}\n`,
+  );
   return nextManifest;
 }
 

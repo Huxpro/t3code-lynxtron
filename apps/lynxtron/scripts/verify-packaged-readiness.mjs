@@ -7801,6 +7801,7 @@ async function verifyReviewDiffState({
   devToolCli,
   outputDirectory,
   reviewFixture,
+  semanticOnly,
   timeoutMs,
 }) {
   const checkpoint = reviewFixture.checkpoint;
@@ -7868,12 +7869,14 @@ async function verifyReviewDiffState({
     timeoutMs,
     predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
   });
-  const screenshot = captureNativeScreenshot({
-    client,
-    devToolCli,
-    outputDirectory,
-    name: "native-review-diff.png",
-  });
+  const screenshot = semanticOnly
+    ? undefined
+    : captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: "native-review-diff.png",
+      });
 
   return {
     status: "pass",
@@ -7905,6 +7908,7 @@ async function verifyReviewDiffState({
       state: composer.attributes["data-composer-state"],
     },
     screenshot,
+    evidenceKind: semanticOnly ? "semantic-only" : "visual-and-semantic",
   };
 }
 
@@ -14034,6 +14038,7 @@ async function runOnce({
           devToolCli,
           outputDirectory,
           reviewFixture,
+          semanticOnly: reviewSemanticOnly,
           timeoutMs,
         })
       : undefined;
@@ -14496,6 +14501,7 @@ const shouldVerifyQuestionTranscriptState = process.argv.includes(
   "--verify-question-transcript-state",
 );
 const shouldVerifyReviewDiffState = process.argv.includes("--verify-review-diff-state");
+const reviewSemanticOnly = process.argv.includes("--review-semantic-only");
 const shouldVerifyReviewCheckpointStates = process.argv.includes(
   "--verify-review-checkpoint-states",
 );
@@ -14567,6 +14573,9 @@ if (shouldVerifyComposerReconnect && !shouldVerifyLifecycleRecovery) {
 }
 if (approvalSemanticOnly && !shouldVerifyApprovalTranscriptState) {
   throw new Error("--approval-semantic-only requires --verify-approval-transcript-state.");
+}
+if (reviewSemanticOnly && !shouldVerifyReviewDiffState) {
+  throw new Error("--review-semantic-only requires --verify-review-diff-state.");
 }
 if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
   throw new Error("--quick-switch-query requires --verify-quick-switch-default.");
