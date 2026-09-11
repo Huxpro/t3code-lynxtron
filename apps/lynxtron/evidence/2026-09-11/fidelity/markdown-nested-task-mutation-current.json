@@ -4,7 +4,7 @@
   "stateId": "file-markdown-nested-task-mutation",
   "classification": "superseded-native-only-experiment",
   "supersedes": "schemaVersion 1 Native-only claim from commit 158b2a955",
-  "finding": "Electron source-of-truth exposes one interactive task checkbox for the blockquote task, while multiline details content remains literal Markdown text. The earlier Native-only experiment proved the technical ability to mutate both, but enabling details mutation diverged from Electron behavior and is reverted by the follow-up convergence commit.",
+  "finding": "Electron source-of-truth exposes one interactive task checkbox for the blockquote task, while raw HTML details content remains literal Markdown text. The sanitize schema previously dropped details/summary before the existing Web disclosure component could run; the schema now preserves the disclosure, but CommonMark still treats its raw HTML body as literal content. The earlier Native-only experiment proved the technical ability to mutate both, but enabling details mutation diverged from Electron behavior and is reverted by the follow-up convergence commit.",
   "retainedProductBehavior": {
     "blockquoteTaskMutation": true,
     "multilineDetailsTaskMutation": false,
@@ -13,7 +13,8 @@
   "evidence": {
     "electronDiagnostic": {
       "taskCount": 1,
-      "detailsElementCount": 0,
+      "detailsElementCountBeforeSanitizeFix": 0,
+      "detailsDisclosureReachableAfterSanitizeFix": true,
       "visibleDetailsText": "More - [ ] Detailed task"
     },
     "nativeExperiment": {
@@ -23,5 +24,5 @@
       "fileSha256": "7fc009ba3eb5999eb646fcccb90cd0ebcefea447dbfea961c1b0d4399e49c4bb"
     }
   },
-  "boundary": "Only behavior shared with Electron remains enabled. A same-snapshot paired follow-up covers the retained blockquote mutation; details task mutation stays open until Electron renders it as an interactive task."
+  "boundary": "Only behavior shared with Electron remains enabled. A same-snapshot paired follow-up covers the retained blockquote mutation. Both surfaces expose a details disclosure and keep its raw HTML body literal/read-only; details task mutation stays open until the source-of-truth parses Markdown inside raw HTML."
 }

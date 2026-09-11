@@ -337,6 +337,11 @@ following-end` with the jump affordance visible only while detached. That gate
   preserved `- [ ] Detailed task`, and produced the same SHA-256
   `b6292aa2765e06688ff2b70b98abc0c4df9fc431d697f50572719c3175fe0d52`.
   All 18 paired checks pass.
+  Web's existing `MarkdownDetails` component had also been unreachable because
+  the sanitizer omitted `details`, `summary`, and `open`. The allowlist now
+  preserves that disclosure. Its raw HTML body remains literal by CommonMark
+  semantics, and Native now matches that boundary instead of recursively parsing
+  an extra task checkbox.
   A reproducible same-snapshot comparator now adds the Electron source of truth.
   Snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`
   pins project `c6766ca3-4586-4812-b2ec-a50f324cae7e`, `README.md`, 1280 x

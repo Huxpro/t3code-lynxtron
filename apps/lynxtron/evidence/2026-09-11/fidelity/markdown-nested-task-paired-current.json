@@ -14,7 +14,7 @@
   "sourceOfTruth": {
     "electronInteractiveTaskCount": 1,
     "interactiveTask": "blockquote task",
-    "detailsTaskPresentation": "literal Markdown text, not a checkbox"
+    "detailsTaskPresentation": "details disclosure with literal Markdown body, not a checkbox"
   },
   "mutation": {
     "before": "# Nested tasks\n\n> - [ ] Quoted task\n\n<details open>\n<summary>More</summary>\n- [ ] Detailed task\n</details>\n",
@@ -38,5 +38,5 @@
     "electron": "CDP DOM behavior runner",
     "native": "Computer Use physical ArrowDown, Enter, Source/Rendered, and blockquote task click"
   },
-  "boundary": "Native retains only the blockquote mutation exposed by Electron. The prior Native-only multiline-details mutation was reverted because Electron renders that task as literal Markdown. Paired pixels and keyboard activation remain open."
+  "boundary": "Native retains only the blockquote mutation exposed by Electron. The prior Native-only multiline-details mutation was reverted because both surfaces keep raw HTML details bodies literal. Web's sanitize allowlist now preserves the existing details disclosure. Paired pixels and keyboard activation remain open."
 }

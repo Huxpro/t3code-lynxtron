@@ -684,6 +684,10 @@ same-snapshot comparator passed all 18 checks on snapshot
 `79f288f279f6e5d80001ef964f14cf5f23726048c8e4da5d630b681b9a565ef0`;
 both surfaces changed only the blockquote marker and preserved identical details
 bytes. This is behavioral convergence to Electron, not feature maximization.
+The Web sanitizer now also allows `details`, `summary`, and the `open` attribute,
+making the existing Web disclosure reachable. Raw HTML body text is intentionally
+not reparsed as Markdown; Native renders the same literal details body and no
+longer invents an extra interactive checkbox there.
 The mutation now also has reproducible same-snapshot Electron/Native evidence.
 Both surfaces consumed snapshot `517167c56a14503a347fff3010a4cdbe4b2881e77566d6ee9dfa4dc249cd5e59`,
 the same project and `README.md`, 1280 x 820 dark, and the same initial bytes.
