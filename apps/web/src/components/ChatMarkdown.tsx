@@ -135,10 +135,12 @@ const highlightedCodeCache = new LRUCache<string>(
 
 const CHAT_MARKDOWN_SANITIZE_SCHEMA = {
   ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), "details", "summary"],
   attributes: {
     ...defaultSchema.attributes,
     "*": (defaultSchema.attributes?.["*"] ?? []).filter((attribute) => attribute !== "title"),
     code: [...(defaultSchema.attributes?.code ?? []), "dataCodeMeta", "dataInlineCode"],
+    details: [...(defaultSchema.attributes?.details ?? []), "open"],
   },
   protocols: {
     ...defaultSchema.protocols,

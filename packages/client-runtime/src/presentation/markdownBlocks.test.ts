@@ -23,14 +23,14 @@ describe("parseMarkdownBlocks", () => {
     ].join("\n");
     const blocks = parseMarkdownBlocks(markdown);
     expect(blocks[0]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBe(4);
-    expect(blocks[2]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBeNull();
+    expect(blocks[2]).toMatchObject({ type: "details", text: "- [x] Detailed task" });
   });
 
   it("keeps inline-details task offsets read-only when the body is an inline slice", () => {
     const blocks = parseMarkdownBlocks(
       "<details><summary>More</summary>- [ ] Inline task</details>",
     );
-    expect(blocks[0]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBeNull();
+    expect(blocks[0]).toMatchObject({ type: "details", text: "- [ ] Inline task" });
   });
   it("preserves fenced-code language, title, and content", () => {
     expect(
@@ -268,19 +268,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: true,
         summary: "More context",
-        children: [
-          { type: "empty" },
-          {
-            type: "list",
-            items: [
-              expect.objectContaining({
-                kind: "unordered",
-                content: "nested item",
-              }),
-            ],
-          },
-          { type: "empty" },
-        ],
+        text: "\n- nested item\n",
       },
     ]);
   });
@@ -337,7 +325,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: true,
         summary: "More context",
-        children: [{ type: "paragraph", text: "Nested **content**." }],
+        text: "Nested **content**.",
       },
     ]);
   });
@@ -352,7 +340,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: true,
         summary: "More **important** `context`",
-        children: [{ type: "paragraph", text: "Body" }],
+        text: "Body",
       },
     ]);
     expect(
@@ -362,7 +350,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: true,
         summary: "_More_",
-        children: [{ type: "paragraph", text: "Body" }],
+        text: "Body",
       },
     ]);
     expect(
@@ -372,7 +360,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: true,
         summary: "`More`",
-        children: [{ type: "paragraph", text: "Body" }],
+        text: "Body",
       },
     ]);
     expect(
@@ -384,7 +372,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: true,
         summary: "**More**",
-        children: [{ type: "paragraph", text: "Body" }],
+        text: "Body",
       },
     ]);
     expect(
@@ -396,7 +384,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: false,
         summary: "More",
-        children: [{ type: "paragraph", text: "Body" }],
+        text: "Body",
       },
     ]);
   });
@@ -412,7 +400,7 @@ describe("parseMarkdownBlocks", () => {
         type: "details",
         open: false,
         summary: "More",
-        children: [{ type: "paragraph", text: "Body" }],
+        text: "Body",
       },
     ]);
   });

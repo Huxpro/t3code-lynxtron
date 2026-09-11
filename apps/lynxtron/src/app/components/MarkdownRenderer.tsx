@@ -381,17 +381,7 @@ function MarkdownDetailsBlock({
       </view>
       {open ? (
         <view className="md-details-content">
-          {(block.children ?? []).map((child, index) =>
-            renderBlock(
-              child,
-              index,
-              cwd,
-              `${blockKey}-detail`,
-              onManualNavigation,
-              onImageExpand,
-              threadId,
-            ),
-          )}
+          <text className="md-details-raw-content">{block.text ?? ""}</text>
         </view>
       ) : null}
     </view>

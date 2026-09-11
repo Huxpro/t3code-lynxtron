@@ -5629,6 +5629,13 @@
   flex-direction: column;
   padding: 0 0 10px 24px;
 }
+.md-details-raw-content {
+  color: rgba(var(--foreground-rgb), 0.8);
+  font-size: 14px;
+  line-height: 22px;
+  font-family: var(--font-sans);
+  white-space: pre-wrap;
+}
 .transcript-user-extras,
 .transcript-attachment-list {
   display: flex;

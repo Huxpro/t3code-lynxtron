@@ -238,7 +238,7 @@ export function parseMarkdownBlocks(
         type: "details",
         open: DETAILS_OPEN_ATTRIBUTE_PATTERN.test(inlineDetailsMatch[1] ?? ""),
         summary: normalizeDetailsSummary(inlineDetailsMatch[2]),
-        children: body ? parseMarkdownBlocks(body, { sourceLineOffsets: null }) : [],
+        text: body,
       });
       index++;
       continue;
@@ -266,7 +266,7 @@ export function parseMarkdownBlocks(
         type: "details",
         open,
         summary,
-        children: parseMarkdownBlocks(detailLines.join("\n"), { sourceLineOffsets: null }),
+        text: detailLines.join("\n"),
       });
       continue;
     }
