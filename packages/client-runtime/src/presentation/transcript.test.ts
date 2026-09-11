@@ -592,6 +592,38 @@ describe("timeline minimap projection", () => {
 
     expect(deriveTimelineMinimapItems(rows)[0]?.userText).toBe("Inspect this");
   });
+
+  it("keeps preview wrappers out of minimap previews while summarizing review cards", () => {
+    const rows = [
+      {
+        kind: "message",
+        id: "u-structured",
+        message: message({
+          id: "u-structured",
+          role: "user",
+          text: [
+            '<review_comment sectionId="turn:2" sectionTitle="Turn 2" filePath="src/app.ts" startIndex="0" endIndex="0" rangeLabel="+1">',
+            "Keep this compatible.",
+            "```diff",
+            "+new",
+            "```",
+            "</review_comment>",
+            "",
+            "<preview_annotation>",
+            "Preview annotation:",
+            "Id: one",
+            "Page: Example",
+            "Comment: Tighten the spacing.",
+            "</preview_annotation>",
+          ].join("\n"),
+        }),
+      },
+    ] as unknown as Parameters<typeof deriveTimelineMinimapItems>[0];
+
+    expect(deriveTimelineMinimapItems(rows)[0]?.userText).toBe(
+      "src/app.ts · Turn 2 · +1 Keep this compatible. +new",
+    );
+  });
 });
 
 describe("computeMessageDurationStart", () => {

@@ -294,6 +294,10 @@ following-end` with the jump affordance visible only while detached. That gate
   cards, keeps unrelated attachments in their normal list, and no longer exposes
   the raw annotation or nested element-context payload in the visible message.
   Paired annotated-preview evidence remains open.
+  The renderer-neutral user-message semantic projection now applies the same
+  context, preview-annotation, and review-comment pipeline to transcript row
+  attributes and minimap previews. Long-thread navigation therefore shows
+  authored text and readable review summaries instead of raw provider wrappers.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

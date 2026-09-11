@@ -192,7 +192,7 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain('className="transcript-review-comment"');
     expect(timelineSource).toContain("formatWorkspaceRelativePath(comment.filePath, cwd)");
     expect(timelineSource).toContain("formatReviewCommentFence(fenceLanguage, comment.diff)");
-    expect(timelineSource).toContain("reviewCommentMessageVisibleText(");
+    expect(timelineSource).toContain("deriveUserMessageSemanticText(row.message.text)");
     expect(sharedRowSource).toContain("elements.messageVisibleText?.({ row })");
     expect(overrides).toContain(".transcript-review-comment {");
     expect(overrides).toContain("background-color: rgba(var(--background-rgb), 0.7);");

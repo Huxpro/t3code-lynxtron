@@ -120,7 +120,7 @@ import {
 } from "./userMessageTerminalContexts";
 import { SkillInlineText } from "./SkillInlineText";
 import { formatWorkspaceRelativePath } from "../../filePathDisplay";
-import { reviewCommentMessageVisibleText } from "@t3tools/client-runtime/presentation/review-comment";
+import { deriveUserMessageSemanticText } from "@t3tools/client-runtime/presentation/user-message";
 import {
   buildReviewCommentRenderablePatch,
   formatReviewCommentFence,
@@ -817,9 +817,7 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
     () => ({
       messageVisibleText: ({ row: messageRow }) => {
         if (messageRow.message.role !== "user") return messageRow.message.text;
-        return reviewCommentMessageVisibleText(
-          extractUserRowState(messageRow).elementContextState.promptText,
-        );
+        return deriveUserMessageSemanticText(messageRow.message.text);
       },
       renderUserBody: ({ row: messageRow }) => <UserTimelineMessageBody row={messageRow} />,
       renderUserExtras: ({ row: messageRow }) => <UserTimelineMessageExtras row={messageRow} />,

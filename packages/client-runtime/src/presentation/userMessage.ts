@@ -1,3 +1,6 @@
+import { extractTrailingPreviewAnnotations } from "./previewAnnotation.ts";
+import { reviewCommentMessageVisibleText } from "./reviewComment.ts";
+
 const TRAILING_USER_CONTEXT_BLOCK_PATTERN =
   /\n*<(terminal_context|element_context)>\n[\s\S]*?\n<\/\1>\s*$/;
 
@@ -21,6 +24,14 @@ export function deriveVisibleUserMessage(prompt: string): VisibleUserMessage {
     visibleText = visibleText.slice(0, match.index).replace(/\n+$/u, "");
   }
   return { visibleText, copyText: prompt, contextKinds };
+}
+
+/** Visible user content used by renderer-neutral labels, search, and navigation previews. */
+export function deriveUserMessageSemanticText(prompt: string): string {
+  const outerContexts = deriveVisibleUserMessage(prompt);
+  const previewAnnotations = extractTrailingPreviewAnnotations(outerContexts.visibleText);
+  const innerContexts = deriveVisibleUserMessage(previewAnnotations.promptText);
+  return reviewCommentMessageVisibleText(innerContexts.visibleText);
 }
 
 export function shouldCollapseUserMessage(text: string): boolean {

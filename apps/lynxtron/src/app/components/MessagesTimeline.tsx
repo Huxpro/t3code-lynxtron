@@ -32,7 +32,6 @@ import { formatWorkspaceRelativePath } from "@t3tools/client-runtime/presentatio
 import {
   formatReviewCommentFence,
   parseReviewCommentMessageSegments,
-  reviewCommentMessageVisibleText,
   type ReviewCommentContext,
 } from "@t3tools/client-runtime/presentation/review-comment";
 import {
@@ -40,6 +39,7 @@ import {
   type ParsedPreviewAnnotation,
 } from "@t3tools/client-runtime/presentation/preview-annotation";
 import {
+  deriveUserMessageSemanticText,
   deriveVisibleUserMessage,
   shouldCollapseUserMessage,
 } from "@t3tools/client-runtime/presentation/user-message";
@@ -803,7 +803,7 @@ function buildLynxTranscriptRowElements(
   return {
     messageVisibleText: ({ row }) =>
       row.message.role === "user"
-        ? reviewCommentMessageVisibleText(extractLynxUserRowState(row).visibleText)
+        ? deriveUserMessageSemanticText(row.message.text)
         : row.message.text,
     userBubbleClassName: ({ row }) => {
       const visibleText = extractLynxUserRowState(row).visibleText;
