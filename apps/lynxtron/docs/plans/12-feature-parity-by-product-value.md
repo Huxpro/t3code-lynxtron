@@ -307,6 +307,11 @@ following-end` with the jump affordance visible only while detached. That gate
   context/review payloads are therefore parsed once per stable row instead of
   once for bubble sizing, extras, body, metadata, and navigation preview. This
   is implementation coverage; long-thread runtime measurement remains open.
+  The explicit transcript verifier now has a strict recycling step: it rejects
+  fixtures below 100 canonical rows, requires the materialized DOM row set to
+  stay smaller than canonical history, scrolls first-to-last through the owned
+  list probe, and requires one native node ID to rebind to a different row ID.
+  The gate remains pending until run against an exact-owned long-thread session.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested

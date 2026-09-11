@@ -17,4 +17,13 @@ describe("transcript scroll diagnostic", () => {
     expect(source).toContain("__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__");
     expect(source).not.toContain("Input.emulateTouchFromMouseEvent");
   });
+
+  it("requires a long canonical transcript and proves bounded node reuse", () => {
+    expect(source).toContain('readArgument("--minimum-row-count", "100")');
+    expect(source).toContain("__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__");
+    expect(source).toContain('selector: "[data-timeline-row-id]"');
+    expect(source).toContain("firstRows.length >= rowCount");
+    expect(source).toContain("previousByNode.get(row.nodeId) !== row.rowId");
+    expect(source).toContain("PASS recycling:");
+  });
 });

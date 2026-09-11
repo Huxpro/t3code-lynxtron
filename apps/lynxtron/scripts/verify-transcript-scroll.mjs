@@ -6,6 +6,8 @@
  *
  *   --step scroll-up   inject user-scroll-away and assert the jump pill appears
  *   --step jump        inject user-scroll-end and assert the pill disappears
+ *   --step recycling   prove a long transcript materializes a bounded row set
+ *                      and rebinds a native node while scrolling first-to-last
  *
  * Exits non-zero when an assertion fails.
  */
@@ -25,6 +27,7 @@ function readArgument(name, fallback) {
 const clientId = readArgument("--client-id", null);
 const sessionId = Number(readArgument("--session-id", ""));
 const step = readArgument("--step", "scroll-up");
+const minimumRowCount = Number(readArgument("--minimum-row-count", "100"));
 if (!clientId || !Number.isInteger(sessionId) || sessionId <= 0) {
   throw new Error("Explicit --client-id and --session-id are required.");
 }
@@ -71,6 +74,44 @@ async function waitForPill(present, label) {
   throw new Error(`Assertion failed: ${label}`);
 }
 
+async function evaluate(expression) {
+  const response = await runCdp("Runtime.evaluate", { expression, returnByValue: true });
+  if (response?.error) throw new Error(JSON.stringify(response.error));
+  return commandResult(response)?.result?.value ?? commandResult(response)?.value;
+}
+
+async function materializedRows() {
+  const response = await runCdp("DOM.querySelectorAll", {
+    nodeId: rootNodeId,
+    selector: "[data-timeline-row-id]",
+  });
+  const nodeIds = commandResult(response)?.nodeIds ?? [];
+  return Promise.all(
+    nodeIds.map(async (nodeId) => {
+      const attributesResponse = await runCdp("DOM.getAttributes", { nodeId });
+      const attributes = commandResult(attributesResponse)?.attributes ?? [];
+      const rowIdIndex = attributes.indexOf("data-timeline-row-id");
+      return { nodeId, rowId: rowIdIndex >= 0 ? attributes[rowIdIndex + 1] : null };
+    }),
+  );
+}
+
+async function waitForMaterializedRowsDifferentFrom(previousRows) {
+  const previousByNode = new Map(previousRows.map((row) => [row.nodeId, row.rowId]));
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    const currentRows = await materializedRows();
+    if (
+      currentRows.some(
+        (row) => previousByNode.has(row.nodeId) && previousByNode.get(row.nodeId) !== row.rowId,
+      )
+    ) {
+      return currentRows;
+    }
+    await new Promise((resolveWait) => setTimeout(resolveWait, 100));
+  }
+  throw new Error("Assertion failed: no materialized row node was rebound after scrolling");
+}
+
 if (step === "scroll-up") {
   await invokeScrollProbe("user-scroll-away");
   await waitForPill(true, "jump-to-latest pill should appear after a user scroll away");
@@ -79,6 +120,28 @@ if (step === "scroll-up") {
   await invokeScrollProbe("user-scroll-end");
   await waitForPill(false, "jump pill should disappear after tapping it");
   process.stdout.write("PASS diagnostic jump: follow restored, pill dismissed\n");
+} else if (step === "recycling") {
+  if (!Number.isInteger(minimumRowCount) || minimumRowCount < 2) {
+    throw new Error("--minimum-row-count must be an integer greater than one.");
+  }
+  const rowCount = await evaluate("globalThis.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__?.()");
+  if (!Number.isInteger(rowCount) || rowCount < minimumRowCount) {
+    throw new Error(
+      `Long-transcript fixture requires at least ${minimumRowCount} rows; observed ${String(rowCount)}.`,
+    );
+  }
+  await evaluate('globalThis.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?.(0, "top")');
+  const firstRows = await materializedRows();
+  if (firstRows.length === 0 || firstRows.length >= rowCount) {
+    throw new Error(
+      `Expected a bounded materialized row set smaller than ${rowCount}; observed ${firstRows.length}.`,
+    );
+  }
+  await evaluate(`globalThis.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?.(${rowCount - 1}, "bottom")`);
+  const lastRows = await waitForMaterializedRowsDifferentFrom(firstRows);
+  process.stdout.write(
+    `PASS recycling: ${rowCount} canonical rows, ${firstRows.length}/${lastRows.length} materialized, node reuse observed\n`,
+  );
 } else {
   throw new Error(`Unknown step: ${step}`);
 }

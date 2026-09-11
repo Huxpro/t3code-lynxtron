@@ -556,4 +556,12 @@ describe("transcript layout contract", () => {
     );
     expect(timelineSource).toContain("index: rowIndex + (!isWorking && !hasTopBanner ? 1 : 0),");
   });
+
+  it("exposes canonical row count for the explicit recycling verifier", () => {
+    expect(timelineSource).toContain("__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__");
+    expect(timelineSource).toContain("__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__ = () => rows.length");
+    expect(timelineSource).toContain(
+      "delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__",
+    );
+  });
 });
