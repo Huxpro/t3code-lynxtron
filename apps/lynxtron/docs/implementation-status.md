@@ -1202,7 +1202,8 @@ Open runtime gaps and removal conditions are tracked per ID in
 - Release classification: `chat-first-preview` (see the AR6 section for the
   evidence matrix and the deletion/reuse finals).
 - Outstanding user-session work: the remaining keyboard/focus matrix (R5) and
-  non-Sidebar drag/selection acceptance (R8/R12) stay `pending-user-session` and need an
+  remaining non-transcript selection/drag acceptance (R8/R12) stay
+  `pending-user-session` and need an
   authorized interactive session; R11 needs the upstream bundle-URL fix;
   R13 (light theme) needs the two-theme CSS pipeline.
 - Follow-ups worth scheduling: visible connection-state treatment in the

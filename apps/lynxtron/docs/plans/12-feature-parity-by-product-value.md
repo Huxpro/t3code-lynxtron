@@ -365,8 +365,14 @@ following-end` with the jump affordance visible only while detached. That gate
   the same real wheel path moved to turns 104–106, a real OS click returned to
   turns 119–120, the pill disappeared and remained absent after 800 ms, and the
   diagnostic postcondition confirmed follow restored. Composer focus and literal
-  typing are covered below; keyboard shortcuts, drag, and selection remain
-  pending. The visible runtime warning
+  typing are covered below; keyboard shortcuts and selection remain pending. A
+  later exact-owned PID `52163`, window `89524` run also used a real Computer
+  Use drag in the transcript viewport: visible rows moved from turns 119–120 to
+  turns 113–115 and exposed `Scroll to end`. A real click returned to turns
+  119–120 and removed the affordance. Owned DevTool confirmed 240 canonical
+  rows, main transport sequence 16, and an empty error console before cleanup.
+  This closes transcript drag/follow acceptance, not unrelated drag or selection.
+  The visible runtime warning
   `FiberSetAttribute param 0 should be RefCounted` remains a separate platform
   loss and is not counted as a zero-warning acceptance.
   That warning was subsequently traced to high-frequency main-thread hover and
