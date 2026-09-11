@@ -80,7 +80,7 @@ import {
   WORKING_LABEL_ATLAS,
   WORKING_LABEL_FULL_ATLAS,
 } from "./workingLabelAtlas";
-import { timelineRowReuseIdentifier } from "./timelineRowSize";
+import { resolveNativeTimelineScrollUpdate, timelineRowReuseIdentifier } from "./timelineRowSize";
 import { runMessageCopy, type MessageCopyStatus } from "./messageCopy";
 import { runMessageRevert, type MessageRevertStatus } from "./messageRevert";
 import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
@@ -1130,6 +1130,7 @@ export function MessagesTimeline({
   const pendingTurnFoldAnchorRef = useRef<string | null>(null);
   const newestUserMessageIdRef = useRef<string | null | undefined>(undefined);
   const [anchorMessageId, setAnchorMessageId] = useState<string | null>(null);
+  const jumpToLatestInFlightRef = useRef(false);
   const [activeMinimapItemId, setActiveMinimapItemId] = useState<string | null>(null);
 
   const isWorking = isSessionWorking(sessionStatus);
@@ -1341,24 +1342,21 @@ export function MessagesTimeline({
       };
     }) => {
       const { scrollTop, scrollHeight, listHeight, eventSource } = event.detail;
-      if (eventSource === LIST_EVENT_SOURCE_SCROLL) {
-        setAnchorMessageId(null);
-      }
       if (!Number.isFinite(listHeight) || listHeight <= 0) return;
       const contentFits = scrollHeight <= listHeight + 60;
       const atEnd = contentFits || scrollHeight - scrollTop - listHeight <= 60;
+      const update = resolveNativeTimelineScrollUpdate({
+        mode: timelineScrollModeRef.current,
+        eventSource,
+        userScrollEventSource: LIST_EVENT_SOURCE_SCROLL,
+        atEnd,
+        contentFits,
+        jumpToLatestInFlight: jumpToLatestInFlightRef.current,
+      });
+      jumpToLatestInFlightRef.current = update.jumpToLatestInFlight;
+      if (update.clearAnchor) setAnchorMessageId(null);
       setTimelineAtEnd(atEnd);
-      if (contentFits) {
-        setTimelineScrollMode((current) =>
-          reduceTimelineScrollMode(current, { kind: "follow-end" }),
-        );
-      } else if (eventSource === LIST_EVENT_SOURCE_SCROLL) {
-        setTimelineScrollMode((current) =>
-          reduceTimelineScrollMode(current, {
-            kind: atEnd ? "user-scroll-end" : "user-scroll-away",
-          }),
-        );
-      }
+      setTimelineScrollMode(update.mode);
     },
     [],
   );
@@ -1401,6 +1399,7 @@ export function MessagesTimeline({
   }, [minimapItems.length, rows.length]);
 
   const handleJumpToLatest = useCallback(() => {
+    jumpToLatestInFlightRef.current = true;
     setAnchorMessageId(null);
     setTimelineAtEnd(true);
     setTimelineScrollMode((current) => reduceTimelineScrollMode(current, { kind: "follow-end" }));

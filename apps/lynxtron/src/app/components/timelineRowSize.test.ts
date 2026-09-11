@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import { timelineRowReuseIdentifier } from "./timelineRowSize";
+import { resolveNativeTimelineScrollUpdate, timelineRowReuseIdentifier } from "./timelineRowSize";
 
 describe("timelineRowReuseIdentifier", () => {
   it("separates expandable checkpoint messages from plain assistant messages", () => {
@@ -26,5 +26,46 @@ describe("timelineRowReuseIdentifier", () => {
     ).toBe("message:user");
     expect(timelineRowReuseIdentifier({ kind: "work" })).toBe("work");
     expect(timelineRowReuseIdentifier({ kind: "working" })).toBe("working");
+  });
+});
+
+describe("resolveNativeTimelineScrollUpdate", () => {
+  it("detaches for a real user wheel away from the end", () => {
+    expect(
+      resolveNativeTimelineScrollUpdate({
+        mode: "following-end",
+        eventSource: 2,
+        userScrollEventSource: 2,
+        atEnd: false,
+        contentFits: false,
+        jumpToLatestInFlight: false,
+      }),
+    ).toEqual({ mode: "free-scrolling", clearAnchor: true, jumpToLatestInFlight: false });
+  });
+
+  it("does not reinterpret smooth jump frames as a fresh user scroll away", () => {
+    expect(
+      resolveNativeTimelineScrollUpdate({
+        mode: "following-end",
+        eventSource: 2,
+        userScrollEventSource: 2,
+        atEnd: false,
+        contentFits: false,
+        jumpToLatestInFlight: true,
+      }),
+    ).toEqual({ mode: "following-end", clearAnchor: false, jumpToLatestInFlight: true });
+  });
+
+  it("finishes a jump only after the list reaches the end", () => {
+    expect(
+      resolveNativeTimelineScrollUpdate({
+        mode: "following-end",
+        eventSource: 2,
+        userScrollEventSource: 2,
+        atEnd: true,
+        contentFits: false,
+        jumpToLatestInFlight: true,
+      }),
+    ).toEqual({ mode: "following-end", clearAnchor: false, jumpToLatestInFlight: false });
   });
 });
