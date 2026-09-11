@@ -352,6 +352,16 @@ following-end` with the jump affordance visible only while detached. That gate
   and selection remain pending. The visible runtime warning
   `FiberSetAttribute param 0 should be RefCounted` remains a separate platform
   loss and is not counted as a zero-warning acceptance.
+  A separate fresh exact-owned Computer Use session proved Composer focus and
+  literal typing: after a real OS click, Accessibility exposed the focused
+  textarea and `focus selection probe` appeared as both its value and visible
+  text. Real `Command+A` selection did not work: typing `X` afterward produced
+  `focus selection probeX` in two fresh runs. A textarea-local keydown plus the
+  documented Lynx `setSelectionRange(0, length)` UI method passed source tests,
+  typecheck, build, and MTS audit but still failed the real OS postcondition, so
+  commit `f799e6ead` was explicitly reverted by `d6feb98e0`. Selection remains
+  an honest runtime gap; no tap-equivalent or programmatic value replacement is
+  counted as acceptance.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
