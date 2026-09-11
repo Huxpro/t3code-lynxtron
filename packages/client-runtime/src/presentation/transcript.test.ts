@@ -624,6 +624,20 @@ describe("timeline minimap projection", () => {
       "src/app.ts · Turn 2 · +1 Keep this compatible. +new",
     );
   });
+
+  it("accepts a renderer-owned cached user-text projection", () => {
+    const rows = [
+      { kind: "message", id: "u1", message: message({ id: "u1", role: "user" }) },
+    ] as unknown as Parameters<typeof deriveTimelineMinimapItems>[0];
+    let projections = 0;
+    expect(
+      deriveTimelineMinimapItems(rows, () => {
+        projections += 1;
+        return "Cached visible text";
+      })[0]?.userText,
+    ).toBe("Cached visible text");
+    expect(projections).toBe(1);
+  });
 });
 
 describe("computeMessageDurationStart", () => {

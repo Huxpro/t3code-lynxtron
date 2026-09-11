@@ -334,7 +334,11 @@ export const MessagesTimeline = memo(function MessagesTimeline({
     ],
   );
   const rows = useStableRows(rawRows);
-  const minimapItems = useMemo(() => deriveTimelineMinimapItems(rows), [rows]);
+  const minimapItems = useMemo(
+    () =>
+      deriveTimelineMinimapItems(rows, (message) => extractUserMessageState(message).semanticText),
+    [rows],
+  );
   const [timelineViewportElement, setTimelineViewportElement] = useState<HTMLDivElement | null>(
     null,
   );
@@ -949,21 +953,30 @@ const TimelineRowContent = memo(function TimelineRowContent({ row }: { row: Time
   );
 });
 
-function extractUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
-  const userImages = row.message.attachments ?? [];
-  const presentation = deriveUserMessagePresentation(row.message.text);
-  return {
-    displayedUserMessage: {
-      visibleText: presentation.visibleText,
-      copyText: presentation.copyText,
-    },
-    terminalContexts: presentation.terminalContexts,
-    previewAnnotations: presentation.previewAnnotations,
-    elementContextState: { promptText: presentation.visibleText },
-    elementContexts: presentation.elementContexts,
+const webUserRowStateCache = new WeakMap<
+  TimelineMessage,
+  ReturnType<typeof deriveUserMessagePresentation> & {
+    readonly previewImages: ReadonlyArray<NonNullable<TimelineMessage["attachments"]>[number]>;
+    readonly regularImages: ReadonlyArray<NonNullable<TimelineMessage["attachments"]>[number]>;
+  }
+>();
+
+function extractUserMessageState(message: TimelineMessage) {
+  const cached = webUserRowStateCache.get(message);
+  if (cached) return cached;
+  const userImages = message.attachments ?? [];
+  const presentation = deriveUserMessagePresentation(message.text);
+  const state = {
+    ...presentation,
     previewImages: userImages.filter((image) => image.name.startsWith("preview-annotation-")),
     regularImages: userImages.filter((image) => !image.name.startsWith("preview-annotation-")),
   };
+  webUserRowStateCache.set(message, state);
+  return state;
+}
+
+function extractUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
+  return extractUserMessageState(row.message);
 }
 
 /** Attachments and context strips inside the user bubble (Web-only island). */
@@ -1030,10 +1043,10 @@ function UserTimelineMessageExtras({ row }: { row: Extract<TimelineRow, { kind: 
 /** Collapsible user message body with terminal contexts (Web-only island). */
 function UserTimelineMessageBody({ row }: { row: Extract<TimelineRow, { kind: "message" }> }) {
   const ctx = use(TimelineRowCtx);
-  const { terminalContexts, elementContextState } = extractUserRowState(row);
+  const { terminalContexts, visibleText } = extractUserRowState(row);
   return (
     <CollapsibleUserMessageBody
-      text={elementContextState.promptText}
+      text={visibleText}
       terminalContexts={terminalContexts}
       skills={ctx.skills}
       markdownCwd={ctx.markdownCwd}
@@ -1044,7 +1057,7 @@ function UserTimelineMessageBody({ row }: { row: Extract<TimelineRow, { kind: "m
 /** Hover meta row under the user bubble: timestamp, revert, copy (Web-only). */
 function UserTimelineMessageMeta({ row }: { row: Extract<TimelineRow, { kind: "message" }> }) {
   const ctx = use(TimelineRowCtx);
-  const { displayedUserMessage } = extractUserRowState(row);
+  const displayedUserMessage = extractUserRowState(row);
   const canRevertAgentWork = typeof row.revertTurnCount === "number";
   return (
     <div className="transcript-message-meta transcript-user-meta flex w-full max-w-[80%] items-center justify-end pe-1 text-xs tabular-nums opacity-0 transition-opacity duration-200 focus-within:opacity-100 group-hover:opacity-100">

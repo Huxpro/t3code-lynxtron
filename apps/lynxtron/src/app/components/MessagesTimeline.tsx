@@ -37,7 +37,6 @@ import {
 import { type ParsedPreviewAnnotation } from "@t3tools/client-runtime/presentation/preview-annotation";
 import {
   deriveUserMessagePresentation,
-  deriveUserMessageSemanticText,
   type ParsedUserContextEntry,
   shouldCollapseUserMessage,
 } from "@t3tools/client-runtime/presentation/user-message";
@@ -785,10 +784,20 @@ function CollapsibleLynxUserMessageBody({
 }
 
 /** Platform islands handed to the shared transcript composition. */
-function extractLynxUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
-  const presentation = deriveUserMessagePresentation(row.message.text);
-  const attachments = row.message.attachments ?? [];
-  return {
+const lynxUserRowStateCache = new WeakMap<
+  LynxChatMessage,
+  ReturnType<typeof deriveUserMessagePresentation> & {
+    readonly previewImages: ReadonlyArray<NonNullable<LynxChatMessage["attachments"]>[number]>;
+    readonly regularAttachments: ReadonlyArray<NonNullable<LynxChatMessage["attachments"]>[number]>;
+  }
+>();
+
+function extractLynxUserMessageState(message: LynxChatMessage) {
+  const cached = lynxUserRowStateCache.get(message);
+  if (cached) return cached;
+  const presentation = deriveUserMessagePresentation(message.text);
+  const attachments = message.attachments ?? [];
+  const state = {
     ...presentation,
     previewImages: attachments.filter((attachment) =>
       attachment.name.startsWith("preview-annotation-"),
@@ -797,6 +806,12 @@ function extractLynxUserRowState(row: Extract<TimelineRow, { kind: "message" }>)
       (attachment) => !attachment.name.startsWith("preview-annotation-"),
     ),
   };
+  lynxUserRowStateCache.set(message, state);
+  return state;
+}
+
+function extractLynxUserRowState(row: Extract<TimelineRow, { kind: "message" }>) {
+  return extractLynxUserMessageState(row.message);
 }
 
 function buildLynxTranscriptRowElements(
@@ -816,9 +831,7 @@ function buildLynxTranscriptRowElements(
 > {
   return {
     messageVisibleText: ({ row }) =>
-      row.message.role === "user"
-        ? deriveUserMessageSemanticText(row.message.text)
-        : row.message.text,
+      row.message.role === "user" ? extractLynxUserRowState(row).semanticText : row.message.text,
     userBubbleClassName: ({ row }) => {
       const visibleText = extractLynxUserRowState(row).visibleText;
       const estimatedInlineWidth = parseMarkdownInline(visibleText).reduce(
@@ -1228,7 +1241,14 @@ export function MessagesTimeline({
     stableRowsRef.current = next;
     return next.result;
   }, [derivedRows]);
-  const minimapItems = useMemo(() => deriveTimelineMinimapItems(rows), [rows]);
+  const minimapItems = useMemo(
+    () =>
+      deriveTimelineMinimapItems(
+        rows,
+        (message) => extractLynxUserMessageState(message).semanticText,
+      ),
+    [rows],
+  );
   const activeMinimapIndex = useMemo(
     () =>
       activeMinimapItemId === null

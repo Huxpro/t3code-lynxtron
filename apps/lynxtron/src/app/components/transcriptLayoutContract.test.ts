@@ -43,7 +43,7 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("const [timelineViewportWidth, setTimelineViewportWidth]");
     expect(timelineSource).toContain("timelineViewportWidth < 360");
     expect(timelineSource).toContain("timelineViewportWidth < 640");
-    expect(timelineSource).toContain("deriveTimelineMinimapItems(rows)");
+    expect(timelineSource).toContain("deriveTimelineMinimapItems(");
     expect(timelineSource).toContain("timelineViewportWidth >= 864");
     expect(timelineSource).toContain("data-timeline-minimap-item");
     expect(timelineSource).toContain("resolveTimelineMinimapHeightStyle(minimapItems.length)");
@@ -192,14 +192,15 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain('className="transcript-review-comment"');
     expect(timelineSource).toContain("formatWorkspaceRelativePath(comment.filePath, cwd)");
     expect(timelineSource).toContain("formatReviewCommentFence(fenceLanguage, comment.diff)");
-    expect(timelineSource).toContain("deriveUserMessageSemanticText(row.message.text)");
+    expect(timelineSource).toContain("extractLynxUserRowState(row).semanticText");
     expect(sharedRowSource).toContain("elements.messageVisibleText?.({ row })");
     expect(overrides).toContain(".transcript-review-comment {");
     expect(overrides).toContain("background-color: rgba(var(--background-rgb), 0.7);");
   });
 
   it("renders preview annotations separately from regular attachments and authored text", () => {
-    expect(timelineSource).toContain("deriveUserMessagePresentation(row.message.text)");
+    expect(timelineSource).toContain("deriveUserMessagePresentation(message.text)");
+    expect(timelineSource).toContain("lynxUserRowStateCache.get(message)");
     expect(timelineSource).toContain('attachment.name.startsWith("preview-annotation-")');
     expect(timelineSource).toContain('className="transcript-preview-annotation"');
     expect(timelineSource).toContain("displayed.previewAnnotations.map");
@@ -209,7 +210,7 @@ describe("transcript layout contract", () => {
   });
 
   it("renders the same parsed terminal and element context labels as Web", () => {
-    expect(timelineSource).toContain("deriveUserMessagePresentation(row.message.text)");
+    expect(timelineSource).toContain("deriveUserMessagePresentation(message.text)");
     expect(timelineSource).toContain("data-message-context-kind={kind}");
     expect(timelineSource).toContain("displayed.terminalContexts.map");
     expect(timelineSource).toContain("displayed.elementContexts.map");

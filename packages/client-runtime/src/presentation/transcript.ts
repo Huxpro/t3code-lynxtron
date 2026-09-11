@@ -240,8 +240,10 @@ function compactTimelineMinimapPreview(text: string | null | undefined): string 
   return compact.length > 0 ? compact : null;
 }
 
-export function deriveTimelineMinimapItems(
-  rows: ReadonlyArray<MessagesTimelineRow>,
+export function deriveTimelineMinimapItems<M extends TranscriptMessage = TranscriptMessage>(
+  rows: ReadonlyArray<MessagesTimelineRow<M>>,
+  projectUserText: (message: M) => string = (message) =>
+    deriveUserMessageSemanticText(message.text ?? ""),
 ): TimelineMinimapItem[] {
   const items: TimelineMinimapItem[] = [];
   for (let index = 0; index < rows.length; index += 1) {
@@ -259,9 +261,7 @@ export function deriveTimelineMinimapItems(
     items.push({
       id: row.id,
       rowIndex: index,
-      userText: compactTimelineMinimapPreview(
-        deriveUserMessageSemanticText(row.message.text ?? ""),
-      ),
+      userText: compactTimelineMinimapPreview(projectUserText(row.message)),
       assistantText,
     });
   }

@@ -302,6 +302,11 @@ following-end` with the jump affordance visible only while detached. That gate
   Native renders the real terminal range or element/component header for each
   attached context, with its body retained as accessible semantics, instead of
   collapsing all context into a generic type/count label.
+  Web and Native cache this full user-message presentation by stable message
+  object, and the minimap accepts the cached semantic-text projector. Large
+  context/review payloads are therefore parsed once per stable row instead of
+  once for bubble sizing, extras, body, metadata, and navigation preview. This
+  is implementation coverage; long-thread runtime measurement remains open.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
