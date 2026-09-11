@@ -48,33 +48,33 @@ classified as unsupported after the 0.0.8 macOS runtime probe.
 
 ## Rendering and events
 
-| Feature                      | Status      | Workaround                                                                                                                             |
-| ---------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| `div/span/button`            | rewrite     | `view/text` host layer                                                                                                                 |
-| click/input events           | rewrite     | `bindtap` / `bindinput`                                                                                                                |
-| renderer keyboard events     | runtime-gap | visible controls; R5                                                                                                                   |
-| preload push channel         | runtime-gap | main-owned connector: sequenced push via `lynxBridge` + `sendGlobalEvent` (R3 closed for the T3 architecture; upstream gap stays open) |
-| TanStack `RouterProvider`    | runtime-gap | core router + synchronous pathname switch; R4                                                                                          |
-| effect-atom hooks            | supported   | live `t3ClientStateAtom` + `AtomRegistry` renderer state                                                                               |
-| panel surface state          | supported   | shared generic reducer + host-specific surface payloads                                                                                |
-| session/sidebar view-models  | supported   | shared `client-runtime` semantics + host-specific styles                                                                               |
-| Sidebar V2 row composition   | supported   | shared card/slim hierarchy; bounded Web/Lynx state hosts                                                                               |
-| composer send-state          | supported   | shared `ComposerSurface` chrome + sendability projection + host editor island                                                          |
-| composer controls/dispatch   | supported   | canonical control order via `ComposerToolbarRow` + mode/options/context projection + canonical commands                                |
-| proposed-plan presentation   | supported   | shared title/preview/follow-up/export projection + host UI                                                                             |
-| model-picker view-models     | supported   | shared catalog/selection fallback/search/order + host rows                                                                             |
-| Markdown block models        | supported   | shared fence/table/list-depth projection + host UI                                                                                     |
-| Markdown inline/file links   | supported   | shared spans/path projection + host navigation                                                                                         |
-| changed-files view-models    | supported   | shared checkpoint tree/stats/preview projection + host UI                                                                              |
-| project-file list/read/write | supported   | shared entry/save state + Node-host canonical RPCs                                                                                     |
-| source-control discovery     | supported   | shared status projection + Node-host canonical RPC                                                                                     |
-| auth-access inventory        | supported   | shared stream reducer/projection + credential-free host DTO                                                                            |
-| command-palette view-models  | supported   | shared query parsing/ranking + host rows                                                                                               |
-| provider view-models         | supported   | shared instances/status/settings overlay + host styles                                                                                 |
-| general-settings projection  | supported   | shared grouping/restore semantics + schema-free defaults                                                                               |
-| Settings primitive contracts | adapter     | `.web`/`.lynx` leaves + generated tokens; R6/R7/R9                                                                                     |
-| server-config stream         | supported   | shared reducer in Node host; canonical config polled R3                                                                                |
-| transcript rows and folds    | supported   | shared `TranscriptRowSurface` composition + projection; native `<list>` and Markdown as Lynx islands                                   |
+| Feature                      | Status      | Workaround                                                                                                                                                       |
+| ---------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `div/span/button`            | rewrite     | `view/text` host layer                                                                                                                                           |
+| click/input events           | rewrite     | `bindtap` / `bindinput`                                                                                                                                          |
+| renderer keyboard events     | runtime-gap | visible controls; R5                                                                                                                                             |
+| preload push channel         | runtime-gap | main-owned connector: sequenced push via `lynxBridge` + `sendGlobalEvent` (R3 closed for the T3 architecture; upstream gap stays open)                           |
+| TanStack `RouterProvider`    | runtime-gap | core router + synchronous pathname switch; R4                                                                                                                    |
+| effect-atom hooks            | supported   | live `t3ClientStateAtom` + `AtomRegistry` renderer state                                                                                                         |
+| panel surface state          | supported   | shared generic reducer + host-specific surface payloads                                                                                                          |
+| session/sidebar view-models  | supported   | shared `client-runtime` semantics + host-specific styles                                                                                                         |
+| Sidebar V2 row composition   | supported   | shared card/slim hierarchy; bounded Web/Lynx state hosts                                                                                                         |
+| composer send-state          | supported   | shared `ComposerSurface` chrome + sendability projection + host editor island                                                                                    |
+| composer controls/dispatch   | supported   | canonical control order via `ComposerToolbarRow` + mode/options/context projection + canonical commands                                                          |
+| proposed-plan presentation   | supported   | shared title/preview/follow-up/export projection + host UI                                                                                                       |
+| model-picker view-models     | supported   | shared catalog/selection fallback/search/order + host rows                                                                                                       |
+| Markdown block models        | supported   | shared fence/table/list-depth/task-offset projection + host UI; Lynx Files Source/Rendered mode persists safe task mutations through the shared save coordinator |
+| Markdown inline/file links   | supported   | shared spans/path projection + host navigation                                                                                                                   |
+| changed-files view-models    | supported   | shared checkpoint tree/stats/preview projection + host UI                                                                                                        |
+| project-file list/read/write | supported   | shared entry/save state + Node-host canonical RPCs                                                                                                               |
+| source-control discovery     | supported   | shared status projection + Node-host canonical RPC                                                                                                               |
+| auth-access inventory        | supported   | shared stream reducer/projection + credential-free host DTO                                                                                                      |
+| command-palette view-models  | supported   | shared query parsing/ranking + host rows                                                                                                                         |
+| provider view-models         | supported   | shared instances/status/settings overlay + host styles                                                                                                           |
+| general-settings projection  | supported   | shared grouping/restore semantics + schema-free defaults                                                                                                         |
+| Settings primitive contracts | adapter     | `.web`/`.lynx` leaves + generated tokens; R6/R7/R9                                                                                                               |
+| server-config stream         | supported   | shared reducer in Node host; canonical config polled R3                                                                                                          |
+| transcript rows and folds    | supported   | shared `TranscriptRowSurface` composition + projection; native `<list>` and Markdown as Lynx islands                                                             |
 
 ## Runtime backlog
 

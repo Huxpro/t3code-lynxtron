@@ -311,6 +311,17 @@ following-end` with the jump affordance visible only while detached. That gate
   once for bubble sizing, extras, body, metadata, and navigation preview. This
   was initially implementation coverage and is now backed by the exact-owned
   long-thread runtime measurement below.
+  The shared block parser now also retains absolute source offsets for task-list
+  markers whose source prefixes are intact. Lynx Files adds the same explicit
+  Source/Rendered choice as Web for `.md`/`.mdx`, and rendered task markers use
+  the existing shared `setMarkdownTaskChecked` mutation plus the existing file
+  save coordinator. On exact-owned PID `15807`, window `90160`, physical
+  ArrowDown/Enter opened an isolated `README.md`, pointer input selected
+  Rendered and checked `First task`, and the file changed only from `[ ]` to
+  `[x]` at that marker. Native reported `saved`, no save error, main sequence
+  17, and zero renderer errors before cleanup. Transcript task markers remain
+  read-only, and blockquote/details tasks remain read-only until the shared AST
+  retains their absolute source ranges.
   A dedicated single-user-message fixture now drives the Web and Native renderers
   from snapshot `64dba57750d7eec265a7676fa8bdd32bdca600ce8fe27141c56337a6babdf7bd`
   at 1280 x 820 in dark theme and runtime evidence HEAD `fb1b06fd9`. The paired

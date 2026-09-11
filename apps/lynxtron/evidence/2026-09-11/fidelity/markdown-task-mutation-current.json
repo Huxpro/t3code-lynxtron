@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-11T06:36:00-04:00",
+  "stateId": "file-markdown-task-mutation",
+  "codeState": "working-tree-product-change",
+  "scope": {
+    "authority": "web-file-preview",
+    "candidate": "lynx-native-file-preview",
+    "viewport": "1280x820",
+    "theme": "dark",
+    "snapshotSha256": "25698626f0bea866582c62b9433cf13087e5b38e29ec92d19b8117ac08c87442",
+    "bundleSha256": "0cb17af8d14c2a4e3d0a78f30705a0ccf54ae1059864fffd7bab50d99ea2b8e8",
+    "file": "README.md"
+  },
+  "physicalInput": {
+    "channel": "Computer Use",
+    "ownedPid": 15807,
+    "windowId": 90160,
+    "steps": [
+      "ArrowDown selected README.md in File Picker",
+      "Enter opened the internal file surface",
+      "pointer click switched Source to Rendered",
+      "pointer click checked First task"
+    ]
+  },
+  "before": "# Tasks\n\n- [ ] First task\n- [x] Second task\n",
+  "after": "# Tasks\n\n- [x] First task\n- [x] Second task\n",
+  "postconditions": {
+    "fileSha256": "dc41af264092142dd5c4880c769fc2ce078ef43cdb610a7f019998a64674226a",
+    "saveStatus": "saved",
+    "saveError": null,
+    "transport": "main",
+    "lastSequence": 17,
+    "rendererErrors": 0,
+    "ownedProcessStopped": true,
+    "isolatedStateDisposed": true,
+    "screenshotsRetained": 0
+  },
+  "boundary": {
+    "proved": [
+      "Lynx Markdown files expose explicit Source and Rendered modes like Web",
+      "top-level and indentation-only task markers retain absolute source offsets",
+      "a physical task-marker click updates only the requested marker and persists through the shared save coordinator",
+      "transcript Markdown remains read-only because it does not provide the mutation callback"
+    ],
+    "notYetProved": [
+      "paired Web and Lynx pixels for the rendered Markdown file",
+      "task mutation inside blockquote or details content whose stripped prefixes do not yet retain absolute source ranges",
+      "keyboard activation of task markers"
+    ]
+  }
+}

@@ -661,8 +661,16 @@ fence, list, inline-span, and file-link projections while retaining only
 `<view>/<text>` rendering. Its host exposes clipboard plus native/external
 navigation, so code blocks copy and links activate without renderer-side
 Electron imports. The production Lynx bundle is 1,266.4 kB. Tables, nested
-block structure, task mutation, and other full Markdown AST parity remain in
-progress.
+block structure, and task-list state are now represented by the shared parser
+and rendered by Native. Markdown files also expose explicit Source/Rendered
+modes in Lynx Files. The rendered mode wires top-level and indentation-only
+task markers to the same shared source mutation and save coordinator as Web. An
+exact-owned physical run on PID `15807`, window `90160`, opened `README.md`,
+switched to Rendered, checked the first task, and persisted only the expected
+`[ ]` to `[x]` byte change with save status `saved`, main sequence 17, and zero
+renderer errors. Transcript tasks stay read-only by design. Tasks nested in
+stripped blockquote/details subtrees also remain read-only until absolute source
+ranges survive nested parsing; paired file preview pixels remain open.
 
 The changed-files extraction is a 233-line shared production module with six
 pure functions. Web consumes all six for its checkpoint card/tree, while Lynx
