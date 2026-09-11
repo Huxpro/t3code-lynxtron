@@ -633,6 +633,7 @@ function renderBlock(
   onManualNavigation?: () => void,
   onImageExpand?: (preview: ExpandedImagePreview) => void,
   threadId?: ThreadId,
+  onTaskListChange?: (input: { markerOffset: number; checked: boolean }) => void,
 ): ReactNode {
   const key = `${keyPrefix}${idx}`;
   switch (block.type) {
@@ -693,7 +694,27 @@ function renderBlock(
                   item.taskChecked === null ? "none" : item.taskChecked ? "checked" : "unchecked"
                 }
               >
-                <text className="md-list-marker">{marker}</text>
+                <text
+                  className={`md-list-marker${
+                    item.taskMarkerOffset !== null && onTaskListChange
+                      ? " md-list-marker--interactive"
+                      : ""
+                  }`}
+                  aria-label={
+                    item.taskMarkerOffset !== null && onTaskListChange ? "Toggle task" : undefined
+                  }
+                  bindtap={
+                    item.taskMarkerOffset !== null && item.taskChecked !== null && onTaskListChange
+                      ? () =>
+                          onTaskListChange({
+                            markerOffset: item.taskMarkerOffset!,
+                            checked: !item.taskChecked,
+                          })
+                      : undefined
+                  }
+                >
+                  {marker}
+                </text>
                 <view className="md-list-content">
                   {renderInline(
                     parseMarkdownInline(item.content),
@@ -726,6 +747,7 @@ function renderBlock(
                 onManualNavigation,
                 onImageExpand,
                 threadId,
+                onTaskListChange,
               ),
             )
           ) : (
@@ -792,6 +814,7 @@ interface MarkdownRendererProps {
   onManualNavigation?: (() => void) | undefined;
   onImageExpand?: ((preview: ExpandedImagePreview) => void) | undefined;
   threadId?: ThreadId | undefined;
+  onTaskListChange?: ((input: { markerOffset: number; checked: boolean }) => void) | undefined;
 }
 
 export function InlineMarkdownRenderer({
@@ -885,6 +908,7 @@ export function MarkdownRenderer({
   onManualNavigation,
   onImageExpand,
   threadId,
+  onTaskListChange,
 }: MarkdownRendererProps) {
   const blocks = useMemo(() => parseMarkdownBlocks(text), [text]);
   const blockKeyPrefix = identity ? `b:${identity}:` : "b";
@@ -892,7 +916,16 @@ export function MarkdownRenderer({
   return (
     <view className="markdown-body">
       {blocks.map((block, idx) =>
-        renderBlock(block, idx, cwd, blockKeyPrefix, onManualNavigation, onImageExpand, threadId),
+        renderBlock(
+          block,
+          idx,
+          cwd,
+          blockKeyPrefix,
+          onManualNavigation,
+          onImageExpand,
+          threadId,
+          onTaskListChange,
+        ),
       )}
       {streaming ? <text className="md-cursor">▋</text> : null}
     </view>

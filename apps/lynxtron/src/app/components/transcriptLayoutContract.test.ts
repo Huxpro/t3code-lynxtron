@@ -521,7 +521,10 @@ describe("transcript layout contract", () => {
     expect(markdownSource).toContain('className="md-list-item"');
     expect(markdownSource).toContain("data-markdown-list-depth={String(item.depth)}");
     expect(markdownSource).toContain("data-markdown-list-task=");
-    expect(markdownSource).toContain('className="md-list-marker"');
+    expect(markdownSource).toContain("className={`md-list-marker${");
+    expect(markdownSource).toContain('" md-list-marker--interactive"');
+    expect(markdownSource).toContain("item.taskMarkerOffset !== null && onTaskListChange");
+    expect(markdownSource).toContain('? "Toggle task" : undefined');
     expect(markdownSource).toContain('className="md-list-content"');
     expect(overrides).toContain(".md-list {\n  display: flex;");
     expect(overrides).toContain("flex-direction: column;");

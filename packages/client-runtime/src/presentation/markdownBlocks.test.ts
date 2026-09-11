@@ -3,6 +3,19 @@ import { describe, expect, it } from "vite-plus/test";
 import { parseMarkdownBlocks, shouldRenderBlockMarkdown } from "./markdownBlocks.ts";
 
 describe("parseMarkdownBlocks", () => {
+  it("retains absolute task marker offsets across list lines", () => {
+    const blocks = parseMarkdownBlocks("Intro\n\n- [ ] First\n  - [x] Nested");
+    const list = blocks.find((block) => block.type === "list");
+    expect(list?.items?.map((item) => [item.content, item.taskMarkerOffset])).toEqual([
+      ["First", 9],
+      ["Nested", 23],
+    ]);
+  });
+
+  it("keeps task offsets read-only when nested source prefixes were stripped", () => {
+    const blocks = parseMarkdownBlocks("> - [ ] Nested task");
+    expect(blocks[0]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBeNull();
+  });
   it("preserves fenced-code language, title, and content", () => {
     expect(
       parseMarkdownBlocks(

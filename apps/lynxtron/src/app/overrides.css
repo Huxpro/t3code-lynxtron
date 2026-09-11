@@ -5363,6 +5363,10 @@
   line-height: 23px;
   font-family: var(--font-sans);
 }
+.md-list-marker--interactive {
+  color: var(--foreground);
+  cursor: pointer;
+}
 .md-list-content {
   display: flex;
   flex-direction: row;
@@ -10505,6 +10509,36 @@
   min-height: 0;
   background-color: var(--background);
 }
+.file-panel__markdown-toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  height: 32px;
+  padding: 3px 10px;
+  border-bottom-width: 1px;
+  border-bottom-style: solid;
+  border-bottom-color: var(--border);
+  box-sizing: border-box;
+}
+.file-panel__markdown-toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 25px;
+  padding: 0 7px;
+  gap: 5px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.file-panel__markdown-toggle:active {
+  background-color: var(--accent);
+}
+.file-panel__markdown-toggle-label {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+}
 .file-panel__source-scroll {
   display: flex;
   flex-direction: column;
@@ -10554,6 +10588,11 @@
   height: 0;
   min-height: 0;
   background-color: var(--background);
+}
+.file-editor-preview--markdown .markdown-body {
+  width: 100%;
+  padding: 16px 20px 28px;
+  box-sizing: border-box;
 }
 .file-editor-preview__content {
   display: flex;

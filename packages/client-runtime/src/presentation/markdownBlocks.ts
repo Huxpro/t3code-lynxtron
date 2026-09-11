@@ -102,7 +102,7 @@ function appendParagraphWithImages(blocks: ParsedMarkdownBlock[], text: string):
       type: "image",
       alt: image.alt,
       href: image.href,
-      title: image.title,
+      ...(image.title !== undefined ? { title: image.title } : {}),
     });
     cursor = image.end;
   }
@@ -140,8 +140,18 @@ export function shouldRenderBlockMarkdown(text: string): boolean {
   );
 }
 
-export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
+export function parseMarkdownBlocks(
+  text: string,
+  options: { readonly sourceOffsetsReliable?: boolean } = {},
+): ParsedMarkdownBlock[] {
+  const sourceOffsetsReliable = options.sourceOffsetsReliable !== false;
   const lines = text.split("\n");
+  const lineOffsets: number[] = [];
+  let sourceOffset = 0;
+  for (const line of lines) {
+    lineOffsets.push(sourceOffset);
+    sourceOffset += line.length + 1;
+  }
   const blocks: ParsedMarkdownBlock[] = [];
   let index = 0;
 
@@ -165,8 +175,8 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
       if (index < lines.length) index++;
       blocks.push({
         type: "code",
-        language: fence.rawLanguage ? fence.language : undefined,
-        title: fence.title ?? undefined,
+        ...(fence.rawLanguage ? { language: fence.language } : {}),
+        ...(fence.title !== null ? { title: fence.title } : {}),
         code: codeLines.join("\n"),
       });
       continue;
@@ -222,7 +232,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         type: "details",
         open: DETAILS_OPEN_ATTRIBUTE_PATTERN.test(inlineDetailsMatch[1] ?? ""),
         summary: normalizeDetailsSummary(inlineDetailsMatch[2]),
-        children: body ? parseMarkdownBlocks(body) : [],
+        children: body ? parseMarkdownBlocks(body, { sourceOffsetsReliable: false }) : [],
       });
       index++;
       continue;
@@ -250,7 +260,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         type: "details",
         open,
         summary,
-        children: parseMarkdownBlocks(detailLines.join("\n")),
+        children: parseMarkdownBlocks(detailLines.join("\n"), { sourceOffsetsReliable: false }),
       });
       continue;
     }
@@ -271,7 +281,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         type: "blockquote",
         text: quoteText,
         quoteDepth,
-        children: parseMarkdownBlocks(quoteText),
+        children: parseMarkdownBlocks(quoteText, { sourceOffsetsReliable: false }),
       });
       continue;
     }
@@ -289,6 +299,7 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         readonly indentColumns: number;
       }> = [];
       while (index < lines.length) {
+        const itemLineIndex = index;
         const itemLine = lines[index]!;
         const item = parseMarkdownListItem(itemLine);
         if (!item) break;
@@ -307,6 +318,10 @@ export function parseMarkdownBlocks(text: string): ParsedMarkdownBlock[] {
         parsedItems.push({
           item: {
             ...item,
+            taskMarkerOffset:
+              item.taskMarkerOffset === null || !sourceOffsetsReliable
+                ? null
+                : lineOffsets[itemLineIndex]! + item.taskMarkerOffset,
             content: joinMarkdownParagraphLines([item.content, ...continuationLines]),
           },
           indentColumns: markdownListIndentColumns(itemLine),

@@ -975,6 +975,11 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("<FilesPanel selectedPath={path} />");
     expect(files).toContain('data-file-editor-mode="preview"');
     expect(files).toContain('data-file-editor-mode="editing"');
+    expect(files).toContain('data-file-editor-mode="rendered-markdown"');
+    expect(files).toContain("isMarkdownPreviewFile(path)");
+    expect(files).toContain("setMarkdownTaskChecked(contents, markerOffset, checked)");
+    expect(files).toContain("coordinator.change(nextContents)");
+    expect(files).toContain("onTaskListChange={handleTaskListChange}");
     expect(files).toContain('aria-label="Back to workspace files"');
     expect(files).toContain("bindtap={uiActions.returnToFilesSurface}");
     expect(files).not.toContain('className="files-panel__preview"');

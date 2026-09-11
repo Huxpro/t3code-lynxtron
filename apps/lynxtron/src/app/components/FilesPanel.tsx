@@ -2,8 +2,10 @@ import {
   buildProjectEntryTree,
   expandProjectFileTabsForDisplay,
   fileContentRevision,
+  isMarkdownPreviewFile,
   projectFileDetailLayout,
   projectFileLineTokens,
+  setMarkdownTaskChecked,
   type ProjectEntryTreeNode,
 } from "@t3tools/client-runtime/presentation/files";
 import { getProjectFilePickerMatches } from "@t3tools/client-runtime/presentation/file-picker";
@@ -27,6 +29,7 @@ import { clientCapabilities, showNativeContextMenu } from "../platform/clientCap
 import { Icon } from "./Icon";
 import { ProjectFileIcon } from "./ProjectFileIcon";
 import { OpenInPicker } from "./OpenInPicker";
+import { MarkdownRenderer } from "./MarkdownRenderer";
 
 interface ListingState {
   readonly cwd: string | null;
@@ -72,6 +75,7 @@ function EditableFilePreview({
 }) {
   const [contents, setContents] = useState(result.contents);
   const [editing, setEditing] = useState(false);
+  const [renderMarkdown, setRenderMarkdown] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"saved" | "pending" | "error">("saved");
   const [saveError, setSaveError] = useState<string | null>(null);
   const viewport = useViewportSnapshot();
@@ -114,6 +118,16 @@ function EditableFilePreview({
   const flush = useCallback(() => {
     void coordinator.flush();
   }, [coordinator]);
+  const handleTaskListChange = useCallback(
+    ({ markerOffset, checked }: { markerOffset: number; checked: boolean }) => {
+      const nextContents = setMarkdownTaskChecked(contents, markerOffset, checked);
+      if (nextContents === contents) return;
+      setContents(nextContents);
+      setSaveError(null);
+      coordinator.change(nextContents);
+    },
+    [contents, coordinator],
+  );
   useEffect(() => {
     if (!viewport.testResize) return;
     const target = globalThis as {
@@ -174,6 +188,20 @@ function EditableFilePreview({
       data-file-content-revision={fileContentRevision(contents)}
       data-file-save-status={saveStatus}
     >
+      {isMarkdownPreviewFile(path) && !editing ? (
+        <view className="file-panel__markdown-toolbar">
+          <view
+            className="file-panel__markdown-toggle"
+            aria-label={renderMarkdown ? "Show markdown source" : "Show rendered markdown"}
+            bindtap={() => setRenderMarkdown((current) => !current)}
+          >
+            <Icon name="eye" size={13} color="#a1a1aa" />
+            <text className="file-panel__markdown-toggle-label">
+              {renderMarkdown ? "Source" : "Rendered"}
+            </text>
+          </view>
+        </view>
+      ) : null}
       {editing ? (
         <textarea
           className="files-panel__editor"
@@ -185,6 +213,19 @@ function EditableFilePreview({
             setEditing(false);
           }}
         />
+      ) : renderMarkdown && isMarkdownPreviewFile(path) ? (
+        <scroll-view
+          className="file-editor-preview file-editor-preview--markdown"
+          data-file-editor-mode="rendered-markdown"
+          scroll-orientation="vertical"
+        >
+          <MarkdownRenderer
+            text={contents}
+            identity={`${path}:${fileContentRevision(contents)}`}
+            cwd={cwd}
+            onTaskListChange={handleTaskListChange}
+          />
+        </scroll-view>
       ) : (
         <scroll-view
           className="file-editor-preview"
