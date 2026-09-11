@@ -315,6 +315,8 @@ describe("transcript layout contract", () => {
     expect(planPanelSource).toContain("threadId={threadId}");
     expect(planPanelSource).toContain("identity={planIdentity}");
     expect(planPanelSource).toContain("normalizePlanMarkdownForExport(planMarkdown)");
+    expect(planPanelSource).toContain("stripDisplayedPlanMarkdown(planMarkdown)");
+    expect(planPanelSource).toContain('text={displayedPlanMarkdown ?? ""}');
     expect(planPanelSource).toContain('data-plan-copy-state={copyStatus ?? "idle"}');
     expect(planPanelSource).toContain("copyGenerationRef.current += 1");
     expect(planPanelSource).toContain("saveGenerationRef.current += 1");

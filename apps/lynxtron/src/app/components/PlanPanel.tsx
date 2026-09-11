@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "@lynx-js/react";
 import {
   normalizePlanMarkdownForExport,
   proposedPlanTitle,
+  stripDisplayedPlanMarkdown,
 } from "@t3tools/client-runtime/presentation/proposed-plan";
 import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import type { ThreadId } from "@t3tools/contracts";
@@ -61,6 +62,7 @@ export function PlanPanel({
     ? `${threadId ?? "no-thread"}:${activeProposedPlan.id}:${activeProposedPlan.turnId ?? "no-turn"}`
     : `${threadId ?? "no-thread"}:no-plan`;
   const planTitle = planMarkdown ? proposedPlanTitle(planMarkdown) : null;
+  const displayedPlanMarkdown = planMarkdown ? stripDisplayedPlanMarkdown(planMarkdown) : null;
 
   const toggleProposed = useCallback(() => {
     setProposedExpanded((v) => !v);
@@ -187,7 +189,7 @@ export function PlanPanel({
             }
           >
             <MarkdownRenderer
-              text={planMarkdown}
+              text={displayedPlanMarkdown ?? ""}
               identity={planIdentity}
               streaming={false}
               cwd={cwd}
