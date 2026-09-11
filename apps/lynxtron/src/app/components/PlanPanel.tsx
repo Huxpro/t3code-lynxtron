@@ -63,6 +63,7 @@ export function PlanPanel({
   }, []);
   useEffect(() => {
     actionGenerationRef.current += 1;
+    setProposedExpanded(false);
     setCopyStatus(null);
     setSaveStatus(null);
     if (resetTimerRef.current !== null) clearTimeout(resetTimerRef.current);
