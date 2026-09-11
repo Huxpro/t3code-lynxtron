@@ -337,6 +337,21 @@ following-end` with the jump affordance visible only while detached. That gate
   last-turn, canonical-count, recycling, and zero-error checks. This closes the
   programmatic same-thread position-correlation slice; physical wheel, keyboard,
   focus, drag, and selection remain pending real OS input.
+  A fresh exact-owned Native run then exercised the wheel path through Computer
+  Use against PID `77681`, window `87307`, the same 120-turn fixture, and a main
+  transport readiness receipt. Four real OS wheel pages moved the viewport from
+  turn 118 to turns 104–106 and exposed `Scroll to end`. This first exposed a
+  product race: smooth jump frames were reported with the user-scroll source and
+  immediately detached the just-restored follow mode. A pure scroll-update
+  decision now holds `following-end` while a jump is in flight and completes the
+  jump only when the list reaches the end. On the rebuilt bundle
+  `a42d9f4c81b76ad06fc15a4be4c12242d02cb187c15263d01e019f94e1320805`,
+  the same real wheel path moved to turns 104–106, a real OS click returned to
+  turns 119–120, the pill disappeared and remained absent after 800 ms, and the
+  diagnostic postcondition confirmed follow restored. Keyboard, focus, drag,
+  and selection remain pending. The visible runtime warning
+  `FiberSetAttribute param 0 should be RefCounted` remains a separate platform
+  loss and is not counted as a zero-warning acceptance.
 - The renderer-neutral block parser and block-routing predicate have moved out
   of the Lynx app into `client-runtime/presentation/markdown-blocks`. Lynx keeps
   only the native view mapping, while fenced code metadata, headings, nested
