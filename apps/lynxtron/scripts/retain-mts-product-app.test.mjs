@@ -1,14 +1,24 @@
 import { strict as assert } from "node:assert";
-import { mkdtempSync, mkdirSync, readFileSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 
 import { describe, it } from "vite-plus/test";
 
-import { createIsolatedState, isExpectedReadiness } from "./retain-mts-product-app.mjs";
+import {
+  createIsolatedState,
+  executablePath,
+  isExpectedReadiness,
+} from "./retain-mts-product-app.mjs";
 
 describe("retain MTS product app", () => {
+  it("resolves the runtime-selected 0.0.21 executable", () => {
+    const executable = executablePath();
+    assert.match(executable, /dist\/devtool\/lynxtron\.app\/Contents\/MacOS\/lynxtron$/iu);
+    assert.equal(existsSync(executable), true);
+  });
+
   it("passes an explicit pairing URL without persisting its credential", () => {
     const source = readFileSync(new URL("./retain-mts-product-app.mjs", import.meta.url), "utf8");
     assert.match(source, /T3_LYNXTRON_PAIRING_URL: pairingUrl/u);

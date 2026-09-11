@@ -18,6 +18,7 @@ import path from "node:path";
 import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { DatabaseSync } from "node:sqlite";
+import lynxtronNativePaths from "@lynx-js/lynxtron/native-paths";
 
 const appRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
@@ -40,7 +41,10 @@ function wait(milliseconds) {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-function executablePath() {
+export function executablePath() {
+  if (typeof lynxtronNativePaths.executablePath === "string") {
+    return lynxtronNativePaths.executablePath;
+  }
   const packageJson = import.meta.resolve("@lynx-js/lynxtron/package.json");
   const packageRoot = path.dirname(fileURLToPath(packageJson));
   return path.join(packageRoot, "dist/Lynxtron.app/Contents/MacOS/lynxtron");
@@ -204,6 +208,10 @@ async function main() {
   if (existsSync(retainedPath)) {
     throw new Error(`Retained MTS product state already exists: ${retainedPath}`);
   }
+  const runtimeExecutable = executablePath();
+  if (!existsSync(runtimeExecutable)) {
+    throw new Error(`Lynxtron runtime executable is missing: ${runtimeExecutable}`);
+  }
   const root = mkdtempSync(path.join(os.tmpdir(), "t3-mts-product-"));
   const desktopDir = path.join(root, "desktop");
   const stateDir = path.join(root, "state");
@@ -221,7 +229,7 @@ async function main() {
     throw error;
   }
   const logFd = openSync(logPath, "a");
-  const child = spawn(executablePath(), [desktopDir], {
+  const child = spawn(runtimeExecutable, [desktopDir], {
     cwd: appRoot,
     detached: true,
     env: {
