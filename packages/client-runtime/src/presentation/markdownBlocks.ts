@@ -142,16 +142,22 @@ export function shouldRenderBlockMarkdown(text: string): boolean {
 
 export function parseMarkdownBlocks(
   text: string,
-  options: { readonly sourceOffsetsReliable?: boolean } = {},
+  options: { readonly sourceLineOffsets?: ReadonlyArray<number> | null } = {},
 ): ParsedMarkdownBlock[] {
-  const sourceOffsetsReliable = options.sourceOffsetsReliable !== false;
   const lines = text.split("\n");
-  const lineOffsets: number[] = [];
-  let sourceOffset = 0;
-  for (const line of lines) {
-    lineOffsets.push(sourceOffset);
-    sourceOffset += line.length + 1;
-  }
+  const lineOffsets =
+    options.sourceLineOffsets === null
+      ? null
+      : (options.sourceLineOffsets ??
+        (() => {
+          const offsets: number[] = [];
+          let sourceOffset = 0;
+          for (const line of lines) {
+            offsets.push(sourceOffset);
+            sourceOffset += line.length + 1;
+          }
+          return offsets;
+        })());
   const blocks: ParsedMarkdownBlock[] = [];
   let index = 0;
 
@@ -232,7 +238,7 @@ export function parseMarkdownBlocks(
         type: "details",
         open: DETAILS_OPEN_ATTRIBUTE_PATTERN.test(inlineDetailsMatch[1] ?? ""),
         summary: normalizeDetailsSummary(inlineDetailsMatch[2]),
-        children: body ? parseMarkdownBlocks(body, { sourceOffsetsReliable: false }) : [],
+        children: body ? parseMarkdownBlocks(body, { sourceLineOffsets: null }) : [],
       });
       index++;
       continue;
@@ -242,6 +248,7 @@ export function parseMarkdownBlocks(
     if (detailsMatch) {
       const open = DETAILS_OPEN_ATTRIBUTE_PATTERN.test(detailsMatch[1] ?? "");
       const detailLines: string[] = [];
+      const detailLineOffsets: number[] = [];
       let summary = "Details";
       index++;
       if (index < lines.length) {
@@ -253,6 +260,7 @@ export function parseMarkdownBlocks(
       }
       while (index < lines.length && !/^<\/details>\s*$/i.test(lines[index]!.trim())) {
         detailLines.push(lines[index]!);
+        if (lineOffsets) detailLineOffsets.push(lineOffsets[index]!);
         index++;
       }
       if (index < lines.length) index++;
@@ -260,7 +268,9 @@ export function parseMarkdownBlocks(
         type: "details",
         open,
         summary,
-        children: parseMarkdownBlocks(detailLines.join("\n"), { sourceOffsetsReliable: false }),
+        children: parseMarkdownBlocks(detailLines.join("\n"), {
+          sourceLineOffsets: lineOffsets ? detailLineOffsets : null,
+        }),
       });
       continue;
     }
@@ -269,11 +279,13 @@ export function parseMarkdownBlocks(
     if (quoteMatch) {
       const quoteDepth = quoteMatch[1]!.match(/>/g)?.length ?? 1;
       const quoteLines: string[] = [];
+      const quoteLineOffsets: number[] = [];
       while (index < lines.length) {
         const nestedMatch = lines[index]!.match(/^((?:>\s*)+)(.*)$/);
         const nestedDepth = nestedMatch?.[1]?.match(/>/g)?.length ?? 0;
         if (!nestedMatch || nestedDepth !== quoteDepth) break;
         quoteLines.push(nestedMatch[2] ?? "");
+        if (lineOffsets) quoteLineOffsets.push(lineOffsets[index]! + nestedMatch[1]!.length);
         index++;
       }
       const quoteText = quoteLines.join("\n");
@@ -281,7 +293,9 @@ export function parseMarkdownBlocks(
         type: "blockquote",
         text: quoteText,
         quoteDepth,
-        children: parseMarkdownBlocks(quoteText, { sourceOffsetsReliable: false }),
+        children: parseMarkdownBlocks(quoteText, {
+          sourceLineOffsets: lineOffsets ? quoteLineOffsets : null,
+        }),
       });
       continue;
     }
@@ -319,7 +333,7 @@ export function parseMarkdownBlocks(
           item: {
             ...item,
             taskMarkerOffset:
-              item.taskMarkerOffset === null || !sourceOffsetsReliable
+              item.taskMarkerOffset === null || lineOffsets === null
                 ? null
                 : lineOffsets[itemLineIndex]! + item.taskMarkerOffset,
             content: joinMarkdownParagraphLines([item.content, ...continuationLines]),

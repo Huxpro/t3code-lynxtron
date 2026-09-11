@@ -12,8 +12,24 @@ describe("parseMarkdownBlocks", () => {
     ]);
   });
 
-  it("keeps task offsets read-only when nested source prefixes were stripped", () => {
-    const blocks = parseMarkdownBlocks("> - [ ] Nested task");
+  it("maps blockquote and multiline details tasks back to absolute source offsets", () => {
+    const markdown = [
+      "> - [ ] Quoted task",
+      "",
+      "<details>",
+      "<summary>More</summary>",
+      "- [x] Detailed task",
+      "</details>",
+    ].join("\n");
+    const blocks = parseMarkdownBlocks(markdown);
+    expect(blocks[0]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBe(4);
+    expect(blocks[2]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBe(57);
+  });
+
+  it("keeps inline-details task offsets read-only when the body is an inline slice", () => {
+    const blocks = parseMarkdownBlocks(
+      "<details><summary>More</summary>- [ ] Inline task</details>",
+    );
     expect(blocks[0]?.children?.[0]?.items?.[0]?.taskMarkerOffset).toBeNull();
   });
   it("preserves fenced-code language, title, and content", () => {

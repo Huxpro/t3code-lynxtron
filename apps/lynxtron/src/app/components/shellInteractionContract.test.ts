@@ -277,6 +277,7 @@ describe("desktop shell interaction contract", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
     expect(markdown).toContain("onManualNavigation?.();");
     expect(markdown).toContain("onManualNavigation={onManualNavigation}");
+    expect(markdown).toContain("onTaskListChange={onTaskListChange}");
     expect(timelineSource).toContain("onManualNavigation={onManualNavigation}");
   });
 
