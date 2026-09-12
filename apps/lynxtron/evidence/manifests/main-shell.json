@@ -261,21 +261,110 @@
       "label": "Composer · Hero",
       "requiredClients": ["web", "lynx", "native"],
       "state": {
-        "semanticRoute": "new-thread"
+        "semanticRoute": "new-thread",
+        "route": "/",
+        "selectedProject": "Gap3",
+        "selectedThread": null,
+        "selectedModel": null,
+        "lifecycle": "ready",
+        "overlay": null,
+        "overlayQuery": "",
+        "snapshotSha256": "2586cddb57ef947dd42e9450cd3c509da397febe6e700ff3bf51e5a5377c64d9"
       },
-      "verdict": "incomplete",
+      "verdict": "visual-certified",
       "evidence": {
         "web": {
-          "status": "pending",
-          "reason": "Final5 Web Composer geometry and controls have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/new-thread-hero/1280x820/web.png",
+          "allowEvidenceReuse": true,
+          "captureTier": "browser",
+          "buildSha256": "2840c6ca9566",
+          "snapshotSha256": "2586cddb57ef947dd42e9450cd3c509da397febe6e700ff3bf51e5a5377c64d9",
+          "image": { "width": 1280, "height": 820 },
+          "sha256": "70efa110af93372e5f9845f89a1397efd01fd544c6eee6005493f83b718cd3e9",
+          "assertions": "../2026-09-12/final5/new-thread-hero/1280x820/web-assertions.json",
+          "console": "../2026-09-12/final5/new-thread-hero/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "new-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": null,
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "pass",
+            "sourceReuse": "pass"
+          }
         },
         "lynx": {
-          "status": "pending",
-          "reason": "Final5 Lynx-for-Web Composer geometry and controls have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/new-thread-hero/1280x820/lynx.png",
+          "allowEvidenceReuse": true,
+          "captureTier": "browser",
+          "buildSha256": "c490d6c465f0",
+          "snapshotSha256": "2586cddb57ef947dd42e9450cd3c509da397febe6e700ff3bf51e5a5377c64d9",
+          "image": { "width": 1280, "height": 820 },
+          "sha256": "ea52771d164d8b1492ced459fd6e5149fdc70806f4e25dcc69173b33d615722d",
+          "assertions": "../2026-09-12/final5/new-thread-hero/1280x820/lynx-assertions.json",
+          "console": "../2026-09-12/final5/new-thread-hero/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "new-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": null,
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "pass",
+            "sourceReuse": "pass"
+          }
         },
         "native": {
-          "status": "pending",
-          "reason": "Final5 Native focus, input, send, and Stop interactions require fresh evidence."
+          "status": "retained",
+          "path": "../2026-09-12/final5/new-thread-hero/native-hero-dark.png",
+          "allowEvidenceReuse": true,
+          "captureTier": "native",
+          "buildSha256": "5336484666ff7f508dd117220e319f661ada0bc56099fdfd05c0d2b0aa42f31c",
+          "snapshotSha256": "2586cddb57ef947dd42e9450cd3c509da397febe6e700ff3bf51e5a5377c64d9",
+          "image": { "width": 2560, "height": 1640 },
+          "sha256": "430d35a7cfa8e3813ca62f8cb26c9de5a0585a0436708cb09db7a4a40cd640a2",
+          "assertions": "../2026-09-12/fidelity/composer-real-input-current.json",
+          "console": "../2026-09-12/final5/new-thread-hero/logs/run-1.log",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "new-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": null,
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "pass",
+            "sourceReuse": "pass"
+          }
         }
       }
     },
