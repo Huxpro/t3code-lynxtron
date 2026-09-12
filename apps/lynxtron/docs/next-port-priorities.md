@@ -4,7 +4,7 @@ Generated from: historical `reports/gap-atlas.json` ordering
 Evidence reconciled: 2026-08-18
 Status: prioritization input; parent gaps and final5 certification are not complete
 
-This list excludes the closed residuals GAP-001, GAP-004, GAP-005, GAP-006, GAP-008, and GAP-009. A
+This list excludes the closed residuals GAP-001, GAP-004, GAP-005, GAP-006, GAP-007, GAP-008, and GAP-009. A
 bounded Browser or shared-surface slice is progress only. A row becomes
 `completed` only when every success criterion below is proven by the strict
 manifest, production-resolver audit, focused tests, and Native evidence where
@@ -14,10 +14,9 @@ required.
 | ---: | ------- | ------------------------------- | ----: | ---------------------------------------------------------------------------------------- |
 |    1 | GAP-002 | Main shell / Sidebar / Composer |    66 | open                                                                                     |
 |    2 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
-|    3 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
-|    4 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
-|    5 | GAP-003 | Settings sections               |    45 | open                                                                                     |
-|    6 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
+|    3 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
+|    4 | GAP-003 | Settings sections               |    45 | open                                                                                     |
+|    5 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
 
 ## Baselines
 
@@ -169,6 +168,13 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - default, query, actions-only, and empty results/order/copy match;
   - visible open/select/dismiss and overlay geometry pass on Native;
   - keyboard behavior is claimed only after GAP-011 passes.
+- Status: `completed`. Shared command-palette search, thread presentation, and
+  surface primitives produce 36.2% module / 41.7% LOC reuse. Current exact-owned
+  Computer Use opens Quick Switch with `Command+K`, focuses the real input,
+  filters `settings` to the single Open settings row, and activates that row by
+  pointer into `/settings/general`. Existing current evidence covers default,
+  actions-only, empty, query, and Escape dismissal. Arrow/Enter remain solely
+  under GAP-011.
 
 ## 7 — GAP-010 Review / Changed Files
 

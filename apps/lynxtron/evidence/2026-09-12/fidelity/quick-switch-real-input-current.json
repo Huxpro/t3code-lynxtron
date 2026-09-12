@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-12T05:54:00-04:00",
+  "stateId": "quick-switch-real-input",
+  "status": "pass-with-runtime-boundary",
+  "scope": {
+    "viewport": "1280x820",
+    "theme": "dark",
+    "snapshotSha256": "a47eaf15e22e890bab3d51c53bc9c7c67cfa9dac7f4b354b11e9ccd8f996614d",
+    "nativeBundleSha256": "616c4519bb78ecd39a8d5aa8c0c7350fdcafde4ed7f506e7845c016854ac5386"
+  },
+  "native": {
+    "ownedProcessId": 78828,
+    "ownedWindowId": 94771,
+    "openInput": "Computer Use Command+K",
+    "queryInput": "Computer Use literal type_text settings",
+    "focusedInputValue": "settings",
+    "filteredRows": ["Open settings"],
+    "selectionInput": "Computer Use pointer click",
+    "resultRoute": "/settings/general",
+    "transport": { "kind": "main", "lastSeq": 13 },
+    "rendererErrors": 0,
+    "screenshotsRetained": 0
+  },
+  "existingStateCoverage": ["default", "query", "actions-only", "empty", "Escape dismissal"],
+  "boundary": "Physical ArrowUp, ArrowDown, and Enter remain blocked by the Lynxtron 0.0.21 focused-input keyboard bridge. They remain tracked under GAP-011 and are not counted as Quick Switch surface loss."
+}

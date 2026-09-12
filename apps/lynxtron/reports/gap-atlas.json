@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-12T09:47:41.619Z",
+  "generatedAt": "2026-09-12T09:58:01.037Z",
   "sources": {
     "manifest": "apps/lynxtron/evidence/manifests/main-shell.json",
     "reuse": "apps/lynxtron/reports/reuse/current.json",
@@ -36,7 +36,7 @@
       "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P0",
-      "userImpact": "28% module / 30% LOC reuse keeps the most visible product surfaces on divergent implementations and makes every fidelity fix expensive.",
+      "userImpact": "6.7% module / 4.8% LOC reuse keeps the most visible product surfaces on divergent implementations and makes every fidelity fix expensive.",
       "frequency": 5,
       "trustImpact": 5,
       "evidenceConfidence": 3,
@@ -52,8 +52,8 @@
       "evidence": ["reports/reuse/current.json", "docs/harness/h5-reuse-style-audit.md"],
       "screen": "app-shell-sidebar",
       "reuse": {
-        "modules": 28,
-        "lines": 30
+        "modules": 6.7,
+        "lines": 4.8
       },
       "weightedStyleRiskOccurrences": 4769,
       "priorityScore": 66
@@ -81,8 +81,8 @@
       "evidence": ["reports/gap-atlas.json", "docs/harness/h5-reuse-style-audit.md"],
       "screen": "new-thread-empty",
       "reuse": {
-        "modules": 29.3,
-        "lines": 29.4
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 61
@@ -94,7 +94,7 @@
       "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P1",
-      "userImpact": "The primary input surface has only 26% module / 29.3% LOC reuse at product-surface scope.",
+      "userImpact": "The primary input surface has only 5.9% module / 6.8% LOC reuse at product-surface scope.",
       "frequency": 5,
       "trustImpact": 5,
       "evidenceConfidence": 3,
@@ -115,8 +115,8 @@
       ],
       "screen": "composer",
       "reuse": {
-        "modules": 26,
-        "lines": 29.3
+        "modules": 5.9,
+        "lines": 6.8
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 58
@@ -149,8 +149,8 @@
       ],
       "screen": "new-thread-empty",
       "reuse": {
-        "modules": 29.3,
-        "lines": 29.4
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 56
@@ -162,7 +162,7 @@
       "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P1",
-      "userImpact": "Model selection is high-frequency and currently has 24.2% module / 31.2% LOC reuse.",
+      "userImpact": "Model selection is high-frequency and currently has 2.9% module / 3.1% LOC reuse.",
       "frequency": 4,
       "trustImpact": 5,
       "evidenceConfidence": 3,
@@ -184,8 +184,8 @@
       ],
       "screen": "model-picker",
       "reuse": {
-        "modules": 24.2,
-        "lines": 31.2
+        "modules": 2.9,
+        "lines": 3.1
       },
       "weightedStyleRiskOccurrences": 4557,
       "priorityScore": 55
@@ -217,8 +217,8 @@
       ],
       "screen": "existing-thread-transcript",
       "reuse": {
-        "modules": 29.3,
-        "lines": 29.4
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 55
@@ -245,10 +245,7 @@
       "disposition": "blocked-runtime",
       "evidence": ["compat-matrix.md#R5"],
       "screen": "quick-switch",
-      "reuse": {
-        "modules": 36.2,
-        "lines": 41.7
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 3854,
       "priorityScore": 52
     },
@@ -259,28 +256,27 @@
       "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P1",
-      "userImpact": "The global navigation overlay has 36.2% module / 41.7% LOC reuse; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.",
+      "userImpact": "The global navigation overlay has unavailable reuse metrics; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.",
       "frequency": 4,
       "trustImpact": 4,
       "evidenceConfidence": 3,
       "sourceOwner": "CommandPalette composition / QuickSwitch host",
-      "likelyRootCause": "Ranking semantics are shared but the Web palette composition is not compiled by Lynx.",
+      "likelyRootCause": "Closed by shared search, thread presentation, and surface composition with platform-specific input leaves.",
       "fixClass": "shared composition",
       "reuseLeverage": 4,
       "crossSurfaceLeverage": 3,
       "implementationCost": 3,
       "platformRisk": 3,
-      "nativeRequirement": "Native visible-control path and keyboard boundary",
-      "disposition": "open",
+      "nativeRequirement": "satisfied for Command+K, focus, literal query, pointer selection, and Escape; arrows/Enter remain GAP-011",
+      "disposition": "closed",
       "evidence": [
         "reports/reuse/current.json",
-        "evidence/manifests/main-shell.json#quick-switch-default"
+        "evidence/manifests/main-shell.json#quick-switch-default",
+        "evidence/2026-09-12/fidelity/quick-switch-real-input-current.json",
+        "evidence/2026-08-27/fidelity/quick-switch-native-filter-states.json"
       ],
       "screen": "quick-switch",
-      "reuse": {
-        "modules": 36.2,
-        "lines": 41.7
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 3854,
       "priorityScore": 51
     },
@@ -306,10 +302,7 @@
       "disposition": "open",
       "evidence": ["reports/reuse/current.json", "compat-matrix.md#R10"],
       "screen": "review-changed-files",
-      "reuse": {
-        "modules": 25.4,
-        "lines": 32.9
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 4085,
       "priorityScore": 50
     },
@@ -320,7 +313,7 @@
       "clients": ["web", "lynx", "native"],
       "category": "SOURCE_REUSE",
       "severity": "P2",
-      "userImpact": "Corrected production roots report 25% module / 31.6% LOC reuse for Connections, 27.6% module / 35.6% LOC reuse for Source Control, 26.5% module / 33.5% LOC reuse for Beta, and 22.4% module / 28.5% LOC reuse for Archive; route owners remain split despite meaningful shared anatomy.",
+      "userImpact": "Corrected production roots report unavailable reuse metrics for Connections, unavailable reuse metrics for Source Control, unavailable reuse metrics for Beta, and unavailable reuse metrics for Archive; route owners remain split despite meaningful shared anatomy.",
       "frequency": 3,
       "trustImpact": 4,
       "evidenceConfidence": 3,
@@ -335,10 +328,7 @@
       "disposition": "open",
       "evidence": ["reports/reuse/current.json"],
       "screen": "settings-connections",
-      "reuse": {
-        "modules": 25,
-        "lines": 31.6
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 4335,
       "priorityScore": 45
     },
@@ -364,10 +354,7 @@
       "disposition": "open",
       "evidence": ["reports/reuse/current.json", "compat-matrix.md#R13"],
       "screen": "settings-appearance",
-      "reuse": {
-        "modules": 20.7,
-        "lines": 26.4
-      },
+      "reuse": null,
       "weightedStyleRiskOccurrences": 4821,
       "priorityScore": 39
     },
@@ -398,8 +385,8 @@
       ],
       "screen": "new-thread-empty",
       "reuse": {
-        "modules": 29.3,
-        "lines": 29.4
+        "modules": 8.7,
+        "lines": 8.2
       },
       "weightedStyleRiskOccurrences": 5258,
       "priorityScore": 21

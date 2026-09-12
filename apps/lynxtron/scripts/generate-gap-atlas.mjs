@@ -215,17 +215,20 @@ const gaps = [
     evidenceConfidence: 3,
     sourceOwner: "CommandPalette composition / QuickSwitch host",
     likelyRootCause:
-      "Ranking semantics are shared but the Web palette composition is not compiled by Lynx.",
+      "Closed by shared search, thread presentation, and surface composition with platform-specific input leaves.",
     fixClass: "shared composition",
     reuseLeverage: 4,
     crossSurfaceLeverage: 3,
     implementationCost: 3,
     platformRisk: 3,
-    nativeRequirement: "Native visible-control path and keyboard boundary",
-    disposition: "open",
+    nativeRequirement:
+      "satisfied for Command+K, focus, literal query, pointer selection, and Escape; arrows/Enter remain GAP-011",
+    disposition: "closed",
     evidence: [
       "reports/reuse/current.json",
       "evidence/manifests/main-shell.json#quick-switch-default",
+      "evidence/2026-09-12/fidelity/quick-switch-real-input-current.json",
+      "evidence/2026-08-27/fidelity/quick-switch-native-filter-states.json",
     ],
     screen: "quick-switch",
   },
