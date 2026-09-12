@@ -154,15 +154,21 @@ const gaps = [
     evidenceConfidence: 3,
     sourceOwner: "ChatComposer / Composer shared composition",
     likelyRootCause:
-      "The Web ChatComposer route owner and draft/store graph remain separate from the Lynx host.",
+      "Closed by shared Composer surfaces and projections with the Native textarea retained as an explicit platform leaf.",
     fixClass: "shared composition",
     reuseLeverage: 5,
     crossSurfaceLeverage: 4,
     implementationCost: 5,
     platformRisk: 4,
-    nativeRequirement: "Native textarea/input/focus remains a bounded hard leaf",
-    disposition: "open",
-    evidence: ["reports/reuse/current.json"],
+    nativeRequirement:
+      "satisfied for focus, literal input, pointer send, and Stop; Return and text selection remain GAP-011",
+    disposition: "closed",
+    evidence: [
+      "reports/reuse/current.json",
+      "evidence/2026-09-12/fidelity/composer-real-input-current.json",
+      "evidence/2026-09-12/fidelity/composer-element-context-paired-current.json",
+      "evidence/2026-09-12/fidelity/composer-attachment-paired-current.json",
+    ],
     screen: "composer",
   },
   {

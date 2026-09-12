@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-12T05:43:30-04:00",
+  "stateId": "composer-real-input",
+  "status": "pass-with-runtime-boundary",
+  "scope": {
+    "viewport": "1280x820",
+    "theme": "dark",
+    "snapshotSha256": "a47eaf15e22e890bab3d51c53bc9c7c67cfa9dac7f4b354b11e9ccd8f996614d",
+    "provider": "opencode:opencode/big-pickle",
+    "nativeBundleSha256": "616c4519bb78ecd39a8d5aa8c0c7350fdcafde4ed7f506e7845c016854ac5386"
+  },
+  "native": {
+    "ownedProcessId": 58581,
+    "ownedWindowId": 94744,
+    "inputChannel": "Computer Use click plus literal type_text",
+    "sendChannel": "Computer Use pointer click",
+    "prompt": "Reply exactly COMPOSER_CANONICAL_OK. Do not use tools or modify files.",
+    "inputFocused": true,
+    "visibleInputMatched": true,
+    "canonicalDraftMatched": true,
+    "canonicalThreadCreated": true,
+    "canonicalUserMessageMatched": true,
+    "assistantResponse": "COMPOSER_CANONICAL_OK",
+    "draftClearedAfterSuccess": true,
+    "transport": { "kind": "main", "lastSeq": 40 },
+    "rendererErrors": 0,
+    "screenshotsRetained": 0
+  },
+  "diagnosticCorrection": "The diagnostic activeComposerDraftText lookup now uses the same projects[0] fallback as ChatView when no canonical thread is active. Physical bindinput already wrote the correct project-scoped draft.",
+  "boundary": "Physical Return invoked the Composer handler but did not submit on Lynxtron 0.0.21. Pointer Send is accepted for GAP-005; Return and text selection remain explicit GAP-011 runtime boundaries."
+}

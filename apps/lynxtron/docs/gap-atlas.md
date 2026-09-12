@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-12T09:09:02.527Z
+Generated: 2026-09-12T09:47:41.619Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -19,7 +19,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | ------- | -------- | ------------------ | ------------------------------------------------------ | ----: | --------------- | ------------------------------------------------------------- |
 | GAP-002 | P0       | SOURCE_REUSE       | Main shell / Sidebar / Composer                        |    66 | open            | Web route composition and Lynx platform leaves                |
 | GAP-004 | P1       | MATERIAL           | All ordinary UI                                        |    61 | closed          | Tailwind v3 compatibility layer and shared tokens/primitives  |
-| GAP-005 | P1       | SOURCE_REUSE       | Composer                                               |    58 | open            | ChatComposer / Composer shared composition                    |
+| GAP-005 | P1       | SOURCE_REUSE       | Composer                                               |    58 | closed          | ChatComposer / Composer shared composition                    |
 | GAP-009 | P1       | RUNTIME_CAPABILITY | Light theme                                            |    56 | closed          | generated Lynx tokens and runtime theme host                  |
 | GAP-006 | P1       | SOURCE_REUSE       | Model Picker                                           |    55 | closed          | ProviderModelPicker / ModelPicker composition                 |
 | GAP-008 | P1       | INTERACTION        | Existing thread / Transcript                           |    55 | closed          | MessagesTimeline shared rows and Native list host             |
@@ -71,14 +71,17 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - User impact: The primary input surface has only 26% module / 29.3% LOC reuse at product-surface scope.
 - Clients/states: web, lynx, native / hero, docked, sendable, working, disabled
 - Source owner: ChatComposer / Composer shared composition
-- Likely root cause: The Web ChatComposer route owner and draft/store graph remain separate from the Lynx host.
+- Likely root cause: Closed by shared Composer surfaces and projections with the Native textarea retained as an explicit platform leaf.
 - Fix class: `shared composition`
 - Physical reuse: 26% modules / 29.3% LOC
 - Weighted style risk occurrences: 5258
-- Native requirement: Native textarea/input/focus remains a bounded hard leaf
-- Disposition: `open`
+- Native requirement: satisfied for focus, literal input, pointer send, and Stop; Return and text selection remain GAP-011
+- Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`
+  - `evidence/2026-09-12/fidelity/composer-real-input-current.json`
+  - `evidence/2026-09-12/fidelity/composer-element-context-paired-current.json`
+  - `evidence/2026-09-12/fidelity/composer-attachment-paired-current.json`
 
 ## GAP-009 — Light theme
 

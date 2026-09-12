@@ -4,7 +4,7 @@ Generated from: historical `reports/gap-atlas.json` ordering
 Evidence reconciled: 2026-08-18
 Status: prioritization input; parent gaps and final5 certification are not complete
 
-This list excludes the closed residuals GAP-001, GAP-004, GAP-006, GAP-008, and GAP-009. A
+This list excludes the closed residuals GAP-001, GAP-004, GAP-005, GAP-006, GAP-008, and GAP-009. A
 bounded Browser or shared-surface slice is progress only. A row becomes
 `completed` only when every success criterion below is proven by the strict
 manifest, production-resolver audit, focused tests, and Native evidence where
@@ -13,12 +13,11 @@ required.
 | Rank | Gap     | Surface                         | Score | Current status                                                                           |
 | ---: | ------- | ------------------------------- | ----: | ---------------------------------------------------------------------------------------- |
 |    1 | GAP-002 | Main shell / Sidebar / Composer |    66 | open                                                                                     |
-|    2 | GAP-005 | Composer                        |    58 | open; Stop is proven, physical input/focus is R5                                         |
-|    3 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
-|    4 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
-|    5 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
-|    6 | GAP-003 | Settings sections               |    45 | open                                                                                     |
-|    7 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
+|    2 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
+|    3 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
+|    4 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
+|    5 | GAP-003 | Settings sections               |    45 | open                                                                                     |
+|    6 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
 
 ## Baselines
 
@@ -87,6 +86,13 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - control order and model/runtime/interaction state are exact;
   - Native textarea focus, input, send, and Stop use real input channels;
   - the editor remains a named, bounded Native leaf.
+- Status: `completed`. Current product-surface reuse is 26% modules / 29.3%
+  LOC; shared projections own sendability, controls, context payloads, and draft
+  lifecycle while the Native textarea remains the explicit platform leaf. An
+  exact-owned Computer Use run proves real focus, literal input, canonical
+  scoped-draft synchronization, pointer Send, canonical thread creation, exact
+  authenticated OpenCode response, and successful draft clearing. Physical
+  Return and text selection remain tracked under GAP-011.
 
 ## Closed — GAP-009 Light Theme
 
