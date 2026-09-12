@@ -11366,7 +11366,7 @@ async function verifyConnectionsMutation({
     client,
     selector: createSelector,
     timeoutMs,
-    predicate: (measurement) => measurement?.text.trim() === "Create",
+    predicate: (measurement) => measurement?.text.trim() === "Create link",
   });
 
   await tapSelector({ child, client, selector: createSelector, timeoutMs });
@@ -11427,7 +11427,7 @@ async function verifyConnectionsMutation({
     client,
     selector: createSelector,
     timeoutMs,
-    predicate: (measurement) => measurement?.text.trim() === "Create",
+    predicate: (measurement) => measurement?.text.trim() === "Create link",
   });
 
   const initialProcessId = child.pid;
@@ -11501,7 +11501,7 @@ async function verifyConnectionsMutation({
       client: restartedClient,
       selector: createSelector,
       timeoutMs,
-      predicate: (measurement) => measurement?.text.trim() === "Create",
+      predicate: (measurement) => measurement?.text.trim() === "Create link",
     });
 
     return {

@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-12T11:14:37.183Z
+Generated: 2026-09-12T11:37:08.042Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -26,7 +26,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | GAP-011 | P1       | RUNTIME_CAPABILITY | Native keyboard/focus                                  |    52 | blocked-runtime | Lynxtron host input and menu accelerator bridge               |
 | GAP-007 | P1       | SOURCE_REUSE       | Quick Switch                                           |    51 | closed          | CommandPalette composition / QuickSwitch host                 |
 | GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | closed          | DiffPanel / changed-files composition and R10 renderer island |
-| GAP-003 | P2       | SOURCE_REUSE       | Settings Connections / Source Control / Beta / Archive |    45 | open            | Settings route panels and platform host slots                 |
+| GAP-003 | P2       | SOURCE_REUSE       | Settings Connections / Source Control / Beta / Archive |    45 | closed          | Settings route panels and platform host slots                 |
 | GAP-012 | P2       | INTERACTION        | Settings Appearance                                    |    39 | closed          | AppearanceSettingsSurface and runtime preferences             |
 | GAP-001 | P3       | HARNESS_INVALID    | Main shell / New Thread                                |    21 | closed          | Plan 11C workbench state-echo selector                        |
 
@@ -198,17 +198,22 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P2` / `SOURCE_REUSE`
 - Priority score: 45
-- User impact: Corrected production roots report unavailable reuse metrics for Connections, unavailable reuse metrics for Source Control, unavailable reuse metrics for Beta, and unavailable reuse metrics for Archive; route owners remain split despite meaningful shared anatomy.
+- User impact: Closed: shared Settings anatomy and platform capability hosts cover Connections, Source Control, Archive, and the intentional Beta-to-General consolidation.
 - Clients/states: web, lynx, native / default, loading, error, mutation
 - Source owner: Settings route panels and platform host slots
-- Likely root cause: The original audit pointed at SettingsPage instead of OtherSettings; after correcting that harness error, route owners and capability hosts still remain split.
+- Likely root cause: Closed after correcting the production roots, measuring 22.4%-35.6% product-surface reuse, and verifying platform mutations and reverse states.
 - Fix class: `shared composition`
 - Physical reuse: not audited
 - Weighted style risk occurrences: 4335
-- Native requirement: Native route/navigation/mutation batch
-- Disposition: `open`
+- Native requirement: satisfied by loading, error/retry, mutation, reverse-state, and cold-restart checks
+- Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`
+  - `evidence/2026-09-12/fidelity/settings-platform-hosts-current.json`
+  - `evidence/2026-09-03/fidelity/settings-beta-mutation-native.json`
+  - `evidence/2026-08-16/fidelity/settings-archive-mutation-current-metrics.json`
+  - `evidence/2026-09-03/fidelity/settings-connections-authorized-actions.json`
+  - `evidence/2026-09-05/fidelity/settings-source-control-error-refresh.json`
 
 ## GAP-012 — Settings Appearance
 

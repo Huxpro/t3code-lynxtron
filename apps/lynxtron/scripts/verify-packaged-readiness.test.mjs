@@ -900,7 +900,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'const createSelector = ".settings-connections-create-pairing"');
     assert.include(source, "settings-connections-revoke-pairing--${createdPairingLinkId}");
     assert.include(source, 'measurement?.text.trim() === "Copy code"');
-    assert.include(source, 'measurement?.text.trim() === "Create"');
+    assert.include(source, 'measurement?.text.trim() === "Create link"');
     assert.include(source, "checked: true");
     assert.include(source, '"ui-switch--disabled"');
     assert.include(source, "restartedNetworkAccess");
