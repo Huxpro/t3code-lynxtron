@@ -689,7 +689,12 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain('method: "setValue"');
     expect(composer).toContain("[editorKey, editorRevision, editorValue]");
     expect(composer).toContain('className="composer-attachment-card"');
+    expect(composer).toContain('mode="aspectFill"');
     expect(composer).toContain("aria-label={`Remove ${attachment.name}`}");
+    expect(overrides).toMatch(/\.composer-attachment-card \{[^}]*border-radius: 10px;/u);
+    expect(overrides).toMatch(
+      /\.composer-attachment-remove \{[^}]*width: 24px;[^}]*height: 24px;/u,
+    );
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__");
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__");
     expect(composer).toContain("if (!current.hasSendableContent) return false");

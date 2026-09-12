@@ -899,7 +899,11 @@ export function Composer({
                           key={`${attachment.name}:${index}`}
                           className="composer-attachment-card"
                         >
-                          <image className="composer-attachment-preview" src={attachment.dataUrl} />
+                          <image
+                            className="composer-attachment-preview"
+                            src={attachment.dataUrl}
+                            mode="aspectFill"
+                          />
                           <view
                             className="composer-attachment-remove"
                             aria-label={`Remove ${attachment.name}`}
