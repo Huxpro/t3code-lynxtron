@@ -695,7 +695,9 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toMatch(
       /\.composer-attachment-remove \{[^}]*z-index: 1;[^}]*width: 24px;[^}]*height: 24px;/u,
     );
-    expect(overrides).toMatch(/\.composer-attachment-list \{[^}]*gap: 8px;/u);
+    expect(overrides).toMatch(
+      /\.composer-attachment-list \{[^}]*margin-bottom: 12px;[^}]*gap: 8px;/u,
+    );
     expect(overrides).not.toMatch(/\.composer-attachment-list \{[^}]*padding:/u);
     expect(overrides).toMatch(
       /\.composer-editor-area \{[^}]*display: flex;[^}]*flex-direction: column;/u,
