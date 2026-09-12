@@ -172,9 +172,9 @@ unfinished Plan 11 outcome.
   768 px frame, 766 px surface, 734 px attachment row, 64 px card, 62 px cover
   preview, 10 px corners, and a 24 px Remove target with a 5 px inset. Native now uses explicit column
   flow, `aspectFill`, and a remove overlay above the image. All 23 scoped checks
-  pass with zero Native renderer errors and main transport advancement. The
-  12 px whole-Composer height difference, runtime-blocked file dialog, and paired
-  pixels remain explicit residuals.
+  pass with exact frame/surface sizing, zero Native renderer errors, and main
+  transport advancement. The runtime-blocked file dialog and paired pixels
+  remain explicit boundaries.
 - Provider instance projection, status copy, settings-overlay semantics, and
   migrate-on-write patches are shared with Web. Lynx consumes canonical
   `ServerConfig.providers` / `ServerConfig.settings`, subscribes to the shared

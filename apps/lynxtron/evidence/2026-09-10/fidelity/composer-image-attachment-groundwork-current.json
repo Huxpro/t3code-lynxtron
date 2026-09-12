@@ -68,10 +68,6 @@
   "pairedFollowUp": {
     "evidence": "../2026-09-12/fidelity/composer-attachment-paired-current.json",
     "status": "attachment-anatomy-and-removal-correlated",
-    "remaining": [
-      "native file-dialog entry",
-      "12px whole-Composer surface-height delta",
-      "paired pixels"
-    ]
+    "remaining": ["native file-dialog entry", "paired pixels"]
   }
 }

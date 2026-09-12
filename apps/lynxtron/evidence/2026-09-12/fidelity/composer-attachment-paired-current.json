@@ -4,7 +4,7 @@
   "stateId": "composer-image-attachment",
   "status": "pass-with-explicit-residuals",
   "identity": {
-    "testedSourceHead": "ac651e6da3fd033f5c60288b97dd485ce78952d7",
+    "testedSourceHead": "7891595c37ce41a784222b39957780f0835a2f54",
     "snapshotSha256": "696e97e223c33b85715cf43ee7d28930bfb79641d179104538274e5489b35738",
     "projectId": "82df28bf-8333-42b7-a1c7-48e3fdc99858",
     "viewport": "1280x820",
@@ -12,7 +12,7 @@
     "attachmentName": "authority-pixel.png",
     "electronEntryAssetUrl": "t3code://app/assets/index-BxbOs3Ye.js",
     "electronEntryAssetSha256": "2bcc4c2ab79d2546c2f18e990e2da416fbd828557410067d43bc2e723cdb5a90",
-    "nativeBundleSha256": "03e198d3fef96cef74b0af3d2a9a3dab53194446af99fa3aefa58ecd8242c8d6"
+    "nativeBundleSha256": "efb780e3fed1938cb02237c6d3b401b32a495f6000c720431db45d4178382808"
   },
   "checks": {
     "count": 22,
@@ -31,7 +31,7 @@
     "nativePhysicalRemove": true,
     "nativeCanonicalStateCleared": true,
     "nativeDomCardRemoved": true,
-    "nativeTransport": "main, sequence 11 to 16",
+    "nativeTransport": "main, sequence 12 to 13",
     "nativeRendererErrors": 0,
     "nativeIsolatedStateDisposed": true,
     "screenshotsRetained": 0
@@ -47,7 +47,6 @@
     "Native Remove is layered above the aspectFill image, matches Web at 24x24, and physical input removes both canonical state and the rendered card."
   ],
   "residuals": [
-    "Electron Composer surface is 214px high while Native is 202px; whole-Composer height parity is outside this attachment slice.",
     "Native user-reachable image selection remains blocked by the Lynxtron 0.0.21 file-dialog FiberSetAttribute failure.",
     "No paired pixels are claimed because the screenshot budget remains exhausted."
   ]
