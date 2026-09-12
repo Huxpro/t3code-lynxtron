@@ -14,8 +14,8 @@
     "nativeBundleSha256": "2c0f261565397020327cf15127ded156ad5594f89eb3547042f2aae7837d27de"
   },
   "checks": {
-    "count": 17,
-    "passed": 17,
+    "count": 18,
+    "passed": 18,
     "sameHeadSnapshotProjectViewportTheme": true,
     "freshElectronRendererIdentity": true,
     "sameLabel": "<SubmitButton>",
@@ -28,6 +28,7 @@
     "nativePhysicalRemove": true,
     "nativeScopedPersistence": true,
     "nativeColdRestart": "PID 75421 to PID 87963",
+    "nativeConnectorReconnect": "server PID 26127 to PID 26520, sequence 12 to 21",
     "nativeFailedSendPreservedContext": true,
     "nativeRetrySerializedElementContext": true,
     "nativeSuccessfulSendClearedContext": true,
@@ -51,7 +52,8 @@
   "closedLosses": [
     "Web and Native share normalization, identity dedupe, labels, source labels, scoped restore, removal, and prompt serialization.",
     "Native renders a context-only sendable chip, persists it by scope, and restores it after an owned cold restart.",
-    "A failed Native send preserves the context; retry serializes element_context and clears the draft only after success."
+    "A failed Native send preserves the context; retry serializes element_context and clears the draft only after success.",
+    "A real owned-server SIGKILL and Reconnect cycle preserves the same route, local draft text, terminal context, and element context."
   ],
   "residuals": [
     "The user-reachable Preview picker entry was not exercised.",

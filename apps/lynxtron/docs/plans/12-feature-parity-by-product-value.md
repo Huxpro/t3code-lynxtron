@@ -151,8 +151,12 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
 - Draft text uses stable canonical-thread or local-project scope keys, is
   debounced into isolated preferences, strictly decoded, and survives an owned
   cold restart into a second exact-bundle process.
-- Connector reconnect restoration remains open; this checkpoint does not
-  satisfy the PF2 exit criteria by itself.
+- Connector reconnect restoration now preserves the same local route, draft
+  text, terminal context, and element context across a real owned-server
+  `SIGKILL` and replacement-server reconnect. The Composer is disabled during
+  the failure and returns to sendable only after the main sequence advances.
+  This checkpoint does not satisfy the remaining PF2 real-input criteria by
+  itself.
 - Attachment upload DTOs now cross the shared command builder, Browser live
   connector, Native main bridge, and server normalizer. Native draft state can
   render and remove the same 64 px image-card anatomy and preserves attachments

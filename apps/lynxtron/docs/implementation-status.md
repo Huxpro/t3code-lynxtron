@@ -183,6 +183,10 @@ unfinished Plan 11 outcome.
   preservation, retry serialization into the canonical user message, successful
   clearing, main transport advancement, and zero renderer errors. The Preview
   picker entry and paired pixels remain explicit residuals.
+  A separate owned-server `SIGKILL` and Reconnect gate preserves the same local
+  route, draft text, terminal context, and element context while the Composer is
+  disabled, then restores the sendable state after the replacement server advances
+  the main transport sequence from 12 to 21.
 - Provider instance projection, status copy, settings-overlay semantics, and
   migrate-on-write patches are shared with Web. Lynx consumes canonical
   `ServerConfig.providers` / `ServerConfig.settings`, subscribes to the shared
