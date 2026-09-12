@@ -120,7 +120,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P1` / `INTERACTION`
 - Priority score: 55
-- User impact: The main user journey lacks strict same-thread state evidence; Native list scroll/follow remains unverified.
+- User impact: Same-thread lifecycle evidence exists and Native physical wheel/follow is verified; streaming growth while detached and paired Web/Native position correlation remain open.
 - Clients/states: web, lynx, native / idle, working, completed, failed, approval, question
 - Source owner: MessagesTimeline shared rows and Native list host
 - Likely root cause: Browser state identity and Native list interaction were historically tested in separate runs.

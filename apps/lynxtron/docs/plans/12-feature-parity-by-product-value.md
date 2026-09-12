@@ -267,7 +267,11 @@ following-end` with the jump affordance visible only while detached. That gate
   also caught and fixed an asynchronous-hydration bug where empty startup state
   followed by canonical history was misclassified as a new turn. Long streaming
   update behavior remains open; programmatic paired position correlation and a
-  real wheel-away/return-to-end path are now covered below.
+  real wheel-away/return-to-end path are now covered below. A fresh 240-row
+  exact-owned Native run uses Computer Use wheel input to move the visible tail
+  from turns 119-120 to 105-108, enters `free-scrolling`, and exposes Jump to
+  latest. A real click on that control returns to turns 118-120, restores
+  `following-end`, hides the affordance, and leaves the renderer console clean.
   The standalone transcript-scroll verifier is now diagnostic-only: it requires
   an explicit owned DevTool client/session and injects renderer probes without
   claiming physical wheel or pointer acceptance.

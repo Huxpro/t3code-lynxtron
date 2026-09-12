@@ -116,7 +116,10 @@ host after the first Rspeedy compile instead of stalling before Rspack.
 - Goal: prove identical thread content across lifecycle states and real Native
   list behavior.
 - Progress: idle, working, completed, failed, approval, and question Browser
-  pairs exist; approval/question projection and anatomy are shared.
+  pairs exist; approval/question projection and anatomy are shared. A 240-row
+  exact-owned Native run now proves real Computer Use wheel-away and Jump to
+  latest behavior on one canonical thread. Streaming growth while detached and
+  paired Web/Native position correlation remain open.
 - Success:
   - selected thread, model, messages, and lifecycle content match;
   - Native switching, follow-tail, scroll-away, and return-to-bottom are proven
