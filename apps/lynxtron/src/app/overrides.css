@@ -2745,7 +2745,6 @@
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
-  padding: 12px 16px 0;
   gap: 8px;
   box-sizing: border-box;
 }

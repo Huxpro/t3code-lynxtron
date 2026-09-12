@@ -695,6 +695,8 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toMatch(
       /\.composer-attachment-remove \{[^}]*width: 24px;[^}]*height: 24px;/u,
     );
+    expect(overrides).toMatch(/\.composer-attachment-list \{[^}]*gap: 8px;/u);
+    expect(overrides).not.toMatch(/\.composer-attachment-list \{[^}]*padding:/u);
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__");
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__");
     expect(composer).toContain("if (!current.hasSendableContent) return false");

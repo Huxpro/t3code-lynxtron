@@ -25,6 +25,8 @@ describe("Electron Composer attachment runner", () => {
     assert.include(source, "event.defaultPrevented");
     assert.include(source, "Draft attachment may not persist");
     assert.include(source, "getBoundingClientRect()");
+    assert.include(source, "frame: rect(frame)");
+    assert.include(source, "attachmentList: rect(list)");
     assert.include(source, "getComputedStyle(element)");
     assert.include(source, "?.click()");
     assert.include(source, "removed: true");
