@@ -693,10 +693,13 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("aria-label={`Remove ${attachment.name}`}");
     expect(overrides).toMatch(/\.composer-attachment-card \{[^}]*border-radius: 10px;/u);
     expect(overrides).toMatch(
-      /\.composer-attachment-remove \{[^}]*width: 20px;[^}]*height: 20px;/u,
+      /\.composer-attachment-remove \{[^}]*z-index: 1;[^}]*width: 20px;[^}]*height: 20px;/u,
     );
     expect(overrides).toMatch(/\.composer-attachment-list \{[^}]*gap: 8px;/u);
     expect(overrides).not.toMatch(/\.composer-attachment-list \{[^}]*padding:/u);
+    expect(overrides).toMatch(
+      /\.composer-editor-area \{[^}]*display: flex;[^}]*flex-direction: column;/u,
+    );
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__");
     expect(composer).toContain("__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__");
     expect(composer).toContain("if (!current.hasSendableContent) return false");

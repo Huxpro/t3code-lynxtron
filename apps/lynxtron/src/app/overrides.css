@@ -2709,7 +2709,8 @@
 }
 .composer-editor-area {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
   width: 100%;
   padding-top: 16px;
   padding-right: 16px;
@@ -2767,6 +2768,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
