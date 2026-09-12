@@ -962,12 +962,14 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: "[data-review-open-diff]"');
     assert.include(source, 'selector: ".diff-panel"');
     assert.include(source, 'selector: ".diff-code-file"');
-    assert.include(
-      source,
-      'measurement?.attributes["data-review-file-path"] === expectedFile.path',
-    );
-    assert.include(source, 'measurement.text.includes("original review fixture")');
-    assert.include(source, 'measurement.text.includes("updated by T3 review fixture")');
+    assert.include(source, "const expectedFiles = checkpoint.files");
+    assert.include(source, '"review-secondary.ts"');
+    assert.include(source, "otherContent.every");
+    assert.include(source, 'value: "Split diff view"');
+    assert.include(source, 'value: "Enable diff line wrapping"');
+    assert.include(source, 'value: "Hide whitespace changes"');
+    assert.include(source, 'value: "Collapse all files"');
+    assert.include(source, 'measurement.attributes["data-review-file-expanded"] === "false"');
     assert.include(source, '"--review-semantic-only"');
     assert.include(source, 'semanticOnly ? "semantic-only" : "visual-and-semantic"');
   });

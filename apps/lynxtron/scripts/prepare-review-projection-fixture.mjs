@@ -39,7 +39,7 @@ function checkpointRef(threadId, turnCount) {
   return `refs/t3/checkpoints/${Buffer.from(threadId).toString("base64url")}/turn/${turnCount}`;
 }
 
-export function prepareReviewProjectionFixture(baseDirectory) {
+export function prepareReviewProjectionFixture(baseDirectory, options = {}) {
   const baseDir = path.resolve(baseDirectory);
   const manifestPath = path.join(baseDir, "visual-state.json");
   const databasePath = path.join(baseDir, "userdata", "state.sqlite");
@@ -56,11 +56,19 @@ export function prepareReviewProjectionFixture(baseDirectory) {
     throw new Error("Review projection fixture requires a Git workspace.");
   }
   const fixtureFile = path.join(workspaceRoot, "review-fixture.txt");
+  const secondaryFixtureFile = path.join(workspaceRoot, "review-secondary.ts");
   if (
     !existsSync(fixtureFile) ||
     readFileSync(fixtureFile, "utf8") !== "original review fixture\n"
   ) {
     throw new Error("Review projection fixture requires the canonical original review file.");
+  }
+  if (
+    options.multiFile === true &&
+    (!existsSync(secondaryFixtureFile) ||
+      readFileSync(secondaryFixtureFile, "utf8") !== "export const reviewState = 'before';\n")
+  ) {
+    throw new Error("Multi-file review fixture requires the canonical secondary file.");
   }
   if (runGit(workspaceRoot, ["status", "--porcelain"]) !== "") {
     throw new Error("Review projection fixture requires a clean workspace.");
@@ -75,7 +83,14 @@ export function prepareReviewProjectionFixture(baseDirectory) {
   const baselineCommit = runGit(workspaceRoot, ["rev-parse", "HEAD"]);
   runGit(workspaceRoot, ["update-ref", baselineRef, baselineCommit]);
   writeFileSync(fixtureFile, "updated by T3 review fixture\n");
-  runGit(workspaceRoot, ["add", "review-fixture.txt"]);
+  if (options.multiFile === true) {
+    writeFileSync(secondaryFixtureFile, "export const reviewState = 'after';\n");
+  }
+  const changedPaths = [
+    "review-fixture.txt",
+    ...(options.multiFile === true ? ["review-secondary.ts"] : []),
+  ];
+  runGit(workspaceRoot, ["add", ...changedPaths]);
   runGit(workspaceRoot, ["commit", "-m", "Create review checkpoint fixture"]);
   const checkpointCommit = runGit(workspaceRoot, ["rev-parse", "HEAD"]);
   runGit(workspaceRoot, ["update-ref", checkpointRefValue, checkpointCommit]);
@@ -93,6 +108,12 @@ export function prepareReviewProjectionFixture(baseDirectory) {
     additions: 1,
     deletions: 1,
   };
+  const checkpointFiles = [
+    checkpointFile,
+    ...(options.multiFile === true
+      ? [{ path: "review-secondary.ts", kind: "modified", additions: 1, deletions: 1 }]
+      : []),
+  ];
   const database = new DatabaseSync(databasePath);
   try {
     const projectCount = Number(
@@ -166,7 +187,7 @@ export function prepareReviewProjectionFixture(baseDirectory) {
         requestedAt,
         now,
         checkpointRefValue,
-        JSON.stringify([checkpointFile]),
+        JSON.stringify(checkpointFiles),
       );
     database
       .prepare(
@@ -199,7 +220,7 @@ export function prepareReviewProjectionFixture(baseDirectory) {
       checkpointTurnCount: 1,
       checkpointRef: checkpointRefValue,
       status: "ready",
-      files: [checkpointFile],
+      files: checkpointFiles,
       assistantMessageId,
       completedAt: now,
     },
@@ -211,7 +232,10 @@ export function prepareReviewProjectionFixture(baseDirectory) {
     threadCount: 1,
     reviewFixture,
     preparation: {
-      kind: "direct-projection-visual-fixture",
+      kind:
+        options.multiFile === true
+          ? "direct-projection-multi-file-review-fixture"
+          : "direct-projection-visual-fixture",
       backendBehaviorClaimed: false,
       baselineRef,
       checkpointRef: checkpointRefValue,
@@ -231,4 +255,12 @@ const baseDir = argumentValue("--base-dir");
 if (!baseDir) {
   throw new Error("--base-dir is required (a directory created by visual:prepare).");
 }
-process.stdout.write(`${JSON.stringify(prepareReviewProjectionFixture(baseDir), null, 2)}\n`);
+process.stdout.write(
+  `${JSON.stringify(
+    prepareReviewProjectionFixture(baseDir, {
+      multiFile: process.argv.includes("--multi-file"),
+    }),
+    null,
+    2,
+  )}\n`,
+);

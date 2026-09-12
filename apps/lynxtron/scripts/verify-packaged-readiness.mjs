@@ -533,6 +533,20 @@ async function waitForClientState({ child, client, predicate, timeoutMs }) {
   throw new Error(`Timed out waiting for client state: ${JSON.stringify({ latest })}`);
 }
 
+async function waitForValue({ child, predicate, read, timeoutMs }) {
+  const deadline = Date.now() + timeoutMs;
+  let latest = null;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the expected value reached its postcondition.");
+    }
+    latest = await read();
+    if (predicate(latest)) return latest;
+    await waitForChildExit(child, 100);
+  }
+  throw new Error(`Timed out waiting for value: ${JSON.stringify({ latest })}`);
+}
+
 async function waitForRuntimeValue({ child, client, expression, predicate, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest = null;
@@ -7866,7 +7880,8 @@ async function verifyReviewDiffState({
   timeoutMs,
 }) {
   const checkpoint = reviewFixture.checkpoint;
-  const expectedFile = checkpoint.files[0];
+  const expectedFiles = checkpoint.files;
+  const expectedFile = expectedFiles[0];
   const clientState = await waitForClientState({
     child,
     client,
@@ -7906,16 +7921,105 @@ async function verifyReviewDiffState({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
-  const diffFile = await waitForMeasurement({
+  const expectedContentByPath = new Map([
+    ["review-fixture.txt", ["original review fixture", "updated by T3 review fixture"]],
+    ["review-secondary.ts", ["reviewState = 'before'", "reviewState = 'after'"]],
+  ]);
+  const diffFiles = await waitForValue({
     child,
-    client,
-    selector: ".diff-code-file",
     timeoutMs,
-    predicate: (measurement) =>
-      measurement?.attributes["data-review-file-path"] === expectedFile.path &&
-      measurement.text.includes("original review fixture") &&
-      measurement.text.includes("updated by T3 review fixture"),
+    read: () => readSelectorMeasurements(client, ".diff-code-file"),
+    predicate: (measurements) =>
+      measurements.length === expectedFiles.length &&
+      expectedFiles.every((file) => {
+        const measurement = measurements.find(
+          (candidate) => candidate.attributes["data-review-file-path"] === file.path,
+        );
+        const expectedContent = expectedContentByPath.get(file.path);
+        const otherContent = expectedFiles
+          .filter((candidate) => candidate.path !== file.path)
+          .flatMap((candidate) => expectedContentByPath.get(candidate.path) ?? []);
+        return (
+          measurement &&
+          expectedContent?.every((content) => measurement.text.includes(content)) === true &&
+          otherContent.every((content) => !measurement.text.includes(content))
+        );
+      }),
   });
+  const toolStates = {};
+  if (expectedFiles.length > 1) {
+    await tapSelectorByAttribute({
+      attribute: "aria-label",
+      child,
+      client,
+      selector: ".diff-panel-header__segment",
+      timeoutMs,
+      value: "Split diff view",
+    });
+    toolStates.split = await waitForMeasurement({
+      child,
+      client,
+      selector: ".diff-panel-header__segment--active",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["aria-label"] === "Split diff view",
+    });
+    await tapSelectorByAttribute({
+      attribute: "aria-label",
+      child,
+      client,
+      selector: ".diff-panel-header__icon-button",
+      timeoutMs,
+      value: "Enable diff line wrapping",
+    });
+    toolStates.wrap = await waitForValue({
+      child,
+      timeoutMs,
+      read: () =>
+        readSelectorAttributeMeasurement(client, {
+          attribute: "aria-label",
+          selector: ".diff-panel-header__icon-button",
+          value: "Disable diff line wrapping",
+        }),
+      predicate: (measurement) => measurement !== null,
+    });
+    await tapSelectorByAttribute({
+      attribute: "aria-label",
+      child,
+      client,
+      selector: ".diff-panel-header__icon-button",
+      timeoutMs,
+      value: "Hide whitespace changes",
+    });
+    toolStates.whitespace = await waitForValue({
+      child,
+      timeoutMs,
+      read: () =>
+        readSelectorAttributeMeasurement(client, {
+          attribute: "aria-label",
+          selector: ".diff-panel-header__icon-button",
+          value: "Show whitespace changes",
+        }),
+      predicate: (measurement) => measurement !== null,
+    });
+    await tapSelectorByAttribute({
+      attribute: "aria-label",
+      child,
+      client,
+      selector: ".diff-panel-header__icon-button",
+      timeoutMs,
+      value: "Collapse all files",
+    });
+    toolStates.collapsedFiles = await waitForValue({
+      child,
+      timeoutMs,
+      read: () => readSelectorMeasurements(client, ".diff-code-file"),
+      predicate: (measurements) =>
+        measurements.length === expectedFiles.length &&
+        measurements.every(
+          (measurement) => measurement.attributes["data-review-file-expanded"] === "false",
+        ),
+    });
+  }
   const loading = await readOptionalMeasurement(client, "[data-review-patch-loading]");
   const error = await readOptionalMeasurement(client, "[data-review-patch-error]");
   if (loading || error) {
@@ -7944,7 +8048,7 @@ async function verifyReviewDiffState({
     fixture: {
       threadId: reviewFixture.threadId,
       turnId: checkpoint.turnId,
-      file: expectedFile,
+      files: expectedFiles,
     },
     clientState,
     checkpointCard: {
@@ -7959,10 +8063,17 @@ async function verifyReviewDiffState({
       rect: diffSurface.rect,
       selectedTurn: checkpoint.turnId,
     },
-    diffFile: {
+    diffFiles: diffFiles.map((diffFile) => ({
       rect: diffFile.rect,
       path: diffFile.attributes["data-review-file-path"],
+      expanded: diffFile.attributes["data-review-file-expanded"],
       text: diffFile.text,
+    })),
+    toolStates: {
+      split: Boolean(toolStates.split),
+      wrap: Boolean(toolStates.wrap),
+      ignoreWhitespace: Boolean(toolStates.whitespace),
+      collapsedFileCount: toolStates.collapsedFiles?.length ?? 0,
     },
     composer: {
       rect: composer.rect,

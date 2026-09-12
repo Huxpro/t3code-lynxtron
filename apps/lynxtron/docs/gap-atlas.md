@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-12T09:58:01.037Z
+Generated: 2026-09-12T10:30:58.472Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -25,7 +25,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | GAP-008 | P1       | INTERACTION        | Existing thread / Transcript                           |    55 | closed          | MessagesTimeline shared rows and Native list host             |
 | GAP-011 | P1       | RUNTIME_CAPABILITY | Native keyboard/focus                                  |    52 | blocked-runtime | Lynxtron host input and menu accelerator bridge               |
 | GAP-007 | P1       | SOURCE_REUSE       | Quick Switch                                           |    51 | closed          | CommandPalette composition / QuickSwitch host                 |
-| GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | open            | DiffPanel / changed-files composition and R10 renderer island |
+| GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | closed          | DiffPanel / changed-files composition and R10 renderer island |
 | GAP-003 | P2       | SOURCE_REUSE       | Settings Connections / Source Control / Beta / Archive |    45 | open            | Settings route panels and platform host slots                 |
 | GAP-012 | P2       | INTERACTION        | Settings Appearance                                    |    39 | open            | AppearanceSettingsSurface and runtime preferences             |
 | GAP-001 | P3       | HARNESS_INVALID    | Main shell / New Thread                                |    21 | closed          | Plan 11C workbench state-echo selector                        |
@@ -179,18 +179,20 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P1` / `RUNTIME_CAPABILITY`
 - Priority score: 50
-- User impact: Completed work cannot reach full patch review parity; current product-surface reuse is 3.3% / 3.0%.
+- User impact: Closed: checkpoint, tree, diff, empty, multi-file rendering, and visible diff tools are available through the Native fallback.
 - Clients/states: web, lynx, native / checkpoint, tree, diff, empty
 - Source owner: DiffPanel / changed-files composition and R10 renderer island
-- Likely root cause: DOM/Worker patch renderer is unavailable and surrounding review composition remains split.
+- Likely root cause: Closed by the Native diff renderer fallback plus repeatable multi-file semantic checks and exact-owned physical pointer evidence.
 - Fix class: `hard island`
 - Physical reuse: not audited
 - Weighted style risk occurrences: 4085
-- Native requirement: required explicit fallback or host-backed patch renderer
-- Disposition: `open`
+- Native requirement: satisfied by explicit Native fallback and real multi-file tool interaction
+- Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`
   - `compat-matrix.md#R10`
+  - `evidence/2026-09-11/fidelity/review-diff-semantic-current.json`
+  - `evidence/2026-09-12/fidelity/review-multi-file-real-input-current.json`
 
 ## GAP-003 — Settings Connections / Source Control / Beta / Archive
 

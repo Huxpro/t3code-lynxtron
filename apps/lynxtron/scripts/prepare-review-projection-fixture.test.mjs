@@ -25,7 +25,7 @@ describe("review projection fixture preparation", () => {
   });
 
   it("labels direct projection evidence without claiming backend behavior", () => {
-    assert.include(source, 'kind: "direct-projection-visual-fixture"');
+    assert.include(source, '"direct-projection-visual-fixture"');
     assert.include(source, "backendBehaviorClaimed: false");
     assert.include(source, "checkpoint_files_json");
     assert.notInclude(source, "orchestration_events");
@@ -40,5 +40,12 @@ describe("review projection fixture preparation", () => {
     assert.include(source, '"lynxtron-prefs.json"');
     assert.include(source, 'themePreference: "dark"');
     assert.include(source, "clientSettings: {}, modelSelection");
+  });
+
+  it("supports an explicit two-file checkpoint without changing the default fixture", () => {
+    assert.include(source, 'process.argv.includes("--multi-file")');
+    assert.include(source, '"review-secondary.ts"');
+    assert.include(source, '"direct-projection-multi-file-review-fixture"');
+    assert.include(source, "files: checkpointFiles");
   });
 });

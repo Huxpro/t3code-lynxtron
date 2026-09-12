@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-12T06:29:17-04:00",
+  "stateId": "review-multi-file-real-input",
+  "status": "pass",
+  "scope": {
+    "viewport": "1280x820",
+    "theme": "dark",
+    "snapshotSha256": "a6ba7d604c98849d796bc2f227a805d98b5a22efdfb3720d6aacdd2eb4bf8693",
+    "threadId": "fidelity-review-thread",
+    "turnId": "fidelity-review-turn-1",
+    "nativeBundleSha256": "616c4519bb78ecd39a8d5aa8c0c7350fdcafde4ed7f506e7845c016854ac5386"
+  },
+  "fixture": {
+    "kind": "direct-projection-multi-file-review-fixture",
+    "files": [
+      { "path": "review-fixture.txt", "additions": 1, "deletions": 1 },
+      { "path": "review-secondary.ts", "additions": 1, "deletions": 1 }
+    ]
+  },
+  "physicalInput": {
+    "channel": "built-in Computer Use",
+    "ownedProcessId": 6715,
+    "ownedWindowId": 94814,
+    "actions": [
+      "Open diff",
+      "Split diff view",
+      "Enable diff line wrapping",
+      "Hide whitespace changes",
+      "Collapse all files"
+    ],
+    "postconditions": {
+      "rightPanelKind": "diff",
+      "splitActive": true,
+      "wrapActive": true,
+      "ignoreWhitespaceActive": true,
+      "collapsedFiles": ["review-fixture.txt", "review-secondary.ts"]
+    }
+  },
+  "repeatableVerifier": {
+    "status": "pass",
+    "report": "/tmp/review-multi-verifier.json",
+    "filesRenderedWithoutCrossFileLeakage": 2,
+    "toolStates": {
+      "split": true,
+      "wrap": true,
+      "ignoreWhitespace": true,
+      "collapsedFileCount": 2
+    },
+    "transport": { "kind": "main", "lastSeqBefore": 3, "lastSeqAfter": 4 },
+    "rendererErrors": 0,
+    "isolatedStateDisposed": true,
+    "screenshotsRetained": 0
+  },
+  "evidenceBoundary": {
+    "proved": [
+      "Exact-owned Native physical pointer activation for Open diff and every visible diff tool",
+      "Two checkpoint files render their own before/after content without cross-file leakage",
+      "Split, wrap, ignore-whitespace, and collapse-all reach their observable postconditions",
+      "Main transport remains live, renderer errors remain zero, and disposable state is removed"
+    ],
+    "notClaimed": [
+      "Backend checkpoint ingestion because the fixture is direct projection",
+      "New screenshots because the retained screenshot budget is exhausted"
+    ]
+  }
+}
