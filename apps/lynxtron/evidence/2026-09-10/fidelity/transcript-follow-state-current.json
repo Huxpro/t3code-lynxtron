@@ -20,6 +20,11 @@
     "jumpHiddenWhenRestored": true,
     "physicalWheelAway": true,
     "physicalJumpToLatest": true,
+    "detachedIncomingGrowthPreservedPosition": true,
+    "messageGrowthWhileDetached": "240 to 242 messages",
+    "rowGrowthWhileDetached": "240 to 243 rows",
+    "visibleRowsDuringGrowth": "turns 105 through 108",
+    "incomingAssistantCompleted": true,
     "visibleRowsAfterWheel": "turns 105 through 108",
     "visibleRowsAfterJump": "turns 118 through 120",
     "interactionChannel": "Computer Use scroll and click on exact-owned PID 63742 / window 94494",
@@ -40,11 +45,10 @@
       "a user-scroll-away transition detaches and exposes the jump affordance",
       "a user-scroll-end transition restores follow mode and hides the jump affordance",
       "a real Computer Use wheel-up on the exact-owned long-thread window changes visible rows from 119-120 to 105-108 and enters free-scrolling",
-      "a real Computer Use click on the visible Jump to latest control restores following-end and visible rows 118-120"
+      "a real Computer Use click on the visible Jump to latest control restores following-end and visible rows 118-120",
+      "an authenticated OpenCode turn grows the same detached canonical thread from 240 to 242 messages and 240 to 243 rows while the visible range remains turns 105-108 and free-scrolling",
+      "a second real Jump to latest click exposes the new turn, restores following-end, and hides the jump control"
     ],
-    "notYetProved": [
-      "streaming row growth while detached on a long canonical transcript",
-      "paired Web and Lynx scroll-position correlation"
-    ]
+    "notYetProved": ["paired Web and Lynx scroll-position correlation"]
   }
 }

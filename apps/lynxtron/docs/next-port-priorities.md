@@ -118,8 +118,10 @@ host after the first Rspeedy compile instead of stalling before Rspack.
 - Progress: idle, working, completed, failed, approval, and question Browser
   pairs exist; approval/question projection and anatomy are shared. A 240-row
   exact-owned Native run now proves real Computer Use wheel-away and Jump to
-  latest behavior on one canonical thread. Streaming growth while detached and
-  paired Web/Native position correlation remain open.
+  latest behavior on one canonical thread. A real authenticated turn also grows
+  that thread from 240 to 242 messages while the detached visible range stays at
+  turns 105-108, then the real Jump action exposes the new tail. Paired
+  Web/Native position correlation remains open.
 - Success:
   - selected thread, model, messages, and lifecycle content match;
   - Native switching, follow-tail, scroll-away, and return-to-bottom are proven
