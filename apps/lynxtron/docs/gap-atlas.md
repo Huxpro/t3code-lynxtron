@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-08-17T20:33:35.450Z
+Generated: 2026-09-12T08:21:08.736Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -22,7 +22,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | GAP-005 | P1       | SOURCE_REUSE       | Composer                                               |    58 | open            | ChatComposer / Composer shared composition                    |
 | GAP-009 | P1       | RUNTIME_CAPABILITY | Light theme                                            |    56 | closed          | generated Lynx tokens and runtime theme host                  |
 | GAP-006 | P1       | SOURCE_REUSE       | Model Picker                                           |    55 | open            | ProviderModelPicker / ModelPicker composition                 |
-| GAP-008 | P1       | INTERACTION        | Existing thread / Transcript                           |    55 | open            | MessagesTimeline shared rows and Native list host             |
+| GAP-008 | P1       | INTERACTION        | Existing thread / Transcript                           |    55 | closed          | MessagesTimeline shared rows and Native list host             |
 | GAP-011 | P1       | RUNTIME_CAPABILITY | Native keyboard/focus                                  |    52 | blocked-runtime | Lynxtron host input and menu accelerator bridge               |
 | GAP-007 | P1       | SOURCE_REUSE       | Quick Switch                                           |    51 | open            | CommandPalette composition / QuickSwitch host                 |
 | GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | open            | DiffPanel / changed-files composition and R10 renderer island |
@@ -120,17 +120,18 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P1` / `INTERACTION`
 - Priority score: 55
-- User impact: Same-thread lifecycle, Native physical wheel/follow, and detached incoming-growth behavior are verified; paired Web/Native position correlation remains open.
+- User impact: Closed: same-thread lifecycle, Native physical wheel/follow, detached incoming growth, and same-snapshot Web/Native tail-position semantics are verified.
 - Clients/states: web, lynx, native / idle, working, completed, failed, approval, question
 - Source owner: MessagesTimeline shared rows and Native list host
-- Likely root cause: Browser state identity and Native list interaction were historically tested in separate runs.
+- Likely root cause: Closed by one canonical long-thread fixture plus Web CDP wheel and exact-owned Native Computer Use wheel/Jump evidence.
 - Fix class: `platform primitive`
 - Physical reuse: 8.7% modules / 8.2% LOC
 - Weighted style risk occurrences: 5258
-- Native requirement: required: real list wheel/drag/follow and state switching
-- Disposition: `open`
+- Native requirement: satisfied: real list wheel/follow and state switching
+- Disposition: `closed`
 - Evidence:
   - `evidence/manifests/main-shell.json#existing-thread-idle`
+  - `evidence/2026-09-10/fidelity/transcript-follow-state-current.json`
   - `compat-matrix.md#R12`
 
 ## GAP-011 — Native keyboard/focus

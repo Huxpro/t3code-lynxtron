@@ -4,7 +4,7 @@ Generated from: historical `reports/gap-atlas.json` ordering
 Evidence reconciled: 2026-08-18
 Status: prioritization input; parent gaps and final5 certification are not complete
 
-This list excludes the closed residuals GAP-001, GAP-004, and GAP-009. A
+This list excludes the closed residuals GAP-001, GAP-004, GAP-008, and GAP-009. A
 bounded Browser or shared-surface slice is progress only. A row becomes
 `completed` only when every success criterion below is proven by the strict
 manifest, production-resolver audit, focused tests, and Native evidence where
@@ -15,12 +15,11 @@ required.
 |    1 | GAP-002 | Main shell / Sidebar / Composer |    66 | open                                                                                     |
 |    2 | GAP-005 | Composer                        |    58 | open; Stop is proven, physical input/focus is R5                                         |
 |    3 | GAP-006 | Model Picker                    |    55 | open                                                                                     |
-|    4 | GAP-008 | Existing thread / Transcript    |    55 | open; Browser state matrix retained, Native list interaction absent                      |
-|    5 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
-|    6 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
-|    7 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
-|    8 | GAP-003 | Settings sections               |    45 | open                                                                                     |
-|    9 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
+|    4 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
+|    5 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
+|    6 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
+|    7 | GAP-003 | Settings sections               |    45 | open                                                                                     |
+|    8 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
 
 ## Baselines
 
@@ -128,6 +127,11 @@ host after the first Rspeedy compile instead of stalling before Rspack.
     with authorized wheel/drag input;
   - native list recycling is measured;
   - Browser evidence never substitutes for Native list interaction.
+- Status: `completed`. One 240-row canonical snapshot now has fresh Electron
+  entry-asset identity, Web CDP wheel-away, exact-owned Native Computer Use
+  wheel-away and Jump-to-latest, bounded Native recycling, detached authenticated
+  incoming growth, and zero Native renderer errors. Keyboard, focus, drag, and
+  selection remain tracked under GAP-011 rather than keeping GAP-008 open.
 
 ## 5 — GAP-011 Native Keyboard / Focus
 

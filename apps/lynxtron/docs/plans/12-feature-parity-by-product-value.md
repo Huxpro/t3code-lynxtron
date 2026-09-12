@@ -265,10 +265,9 @@ A working agent loop must remain usable across long output, structured Markdown,
   gate proves `following-end -> free-scrolling ->
 following-end` with the jump affordance visible only while detached. That gate
   also caught and fixed an asynchronous-hydration bug where empty startup state
-  followed by canonical history was misclassified as a new turn. Long streaming
-  paired position correlation remains open; the real wheel-away/return-to-end
-  and incoming-growth paths are now covered below.
-  real wheel-away/return-to-end path are now covered below. A fresh 240-row
+  followed by canonical history was misclassified as a new turn. Same-snapshot
+  position correlation and the real wheel-away/return-to-end and incoming-growth
+  paths are now covered below. A fresh 240-row
   exact-owned Native run uses Computer Use wheel input to move the visible tail
   from turns 119-120 to 105-108, enters `free-scrolling`, and exposes Jump to
   latest. A real click on that control returns to turns 118-120, restores
@@ -277,6 +276,10 @@ following-end` with the jump affordance visible only while detached. That gate
   OpenCode turn grows the projection to 242 messages and 243 rows without
   moving the visible 105-108 range or leaving `free-scrolling`; a second real
   Jump to latest click exposes the new turn and restores `following-end`.
+  The matching Electron gate loads the fresh `t3code:` entry asset and moves
+  from `scrollTop=21662` to `19862`, leaving turn 120 for turns 110-113 while
+  exposing its Jump affordance. Native leaves turn 120 for turns 105-108 under
+  real OS wheel input; exact offsets intentionally remain renderer-specific.
   The standalone transcript-scroll verifier is now diagnostic-only: it requires
   an explicit owned DevTool client/session and injects renderer probes without
   claiming physical wheel or pointer acceptance.

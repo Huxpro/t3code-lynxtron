@@ -49,6 +49,6 @@
       "an authenticated OpenCode turn grows the same detached canonical thread from 240 to 242 messages and 240 to 243 rows while the visible range remains turns 105-108 and free-scrolling",
       "a second real Jump to latest click exposes the new turn, restores following-end, and hides the jump control"
     ],
-    "notYetProved": ["paired Web and Lynx scroll-position correlation"]
+    "notYetProved": ["keyboard, focus, drag, and text-selection acceptance tracked under GAP-011"]
   }
 }
