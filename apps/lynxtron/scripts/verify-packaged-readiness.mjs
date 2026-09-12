@@ -5980,9 +5980,26 @@ async function verifyTerminalContextProviderSend({ child, client, projectId, tim
 
 async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
   const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
-  const refreshedConfig = await invokeConnector(client, "refreshProviders", {
-    instanceId: modelSelection.instanceId,
-  });
+  const providerDeadline = Date.now() + timeoutMs;
+  let refreshedConfig;
+  let providerRefreshError;
+  while (Date.now() < providerDeadline) {
+    try {
+      refreshedConfig = await invokeConnector(client, "refreshProviders", {
+        instanceId: modelSelection.instanceId,
+      });
+      break;
+    } catch (error) {
+      providerRefreshError = error;
+      if (!(error instanceof Error) || !error.message.includes("not connected")) throw error;
+      await waitForChildExit(child, 100);
+    }
+  }
+  if (!refreshedConfig) {
+    throw new Error(
+      `OpenCode provider did not connect before Composer retry acceptance: ${providerRefreshError instanceof Error ? providerRefreshError.message : String(providerRefreshError)}`,
+    );
+  }
   const provider = refreshedConfig?.providers?.find(
     (candidate) => candidate.instanceId === modelSelection.instanceId,
   );
@@ -6017,8 +6034,8 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
       child,
       client,
       expression:
-        "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__].join(':')",
-      predicate: (value) => value === "function:function:function:function:function",
+        "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__].join(':')",
+      predicate: (value) => value === "function:function:function:function:function:function",
       timeoutMs,
     });
     const promptToken = `T3_COMPOSER_RETRY_${Date.now()}`;
@@ -6040,6 +6057,24 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
       lineEnd: 1,
       text: promptToken,
     };
+    const elementContext = {
+      id: `${promptToken}:element`,
+      threadId,
+      pickedAt: "2026-09-12T00:00:00.000Z",
+      pageUrl: "https://example.com/dashboard",
+      pageTitle: "Dashboard",
+      tagName: "button",
+      selector: "button.submit",
+      htmlPreview: '<button class="submit">Save</button>',
+      componentName: "SubmitButton",
+      source: {
+        functionName: "SubmitButton",
+        fileName: "/repo/src/Button.tsx",
+        lineNumber: 12,
+        columnNumber: 5,
+      },
+      styles: ".submit { color: white; }",
+    };
     const fixtures = await client.runCdp("Runtime.evaluate", {
       expression: `JSON.stringify({text:globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
         prompt,
@@ -6047,11 +6082,18 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
         attachment,
       )}) ?? false,terminal:globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
         terminalContext,
+      )}) ?? false,element:globalThis.__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__?.(${JSON.stringify(
+        elementContext,
       )}) ?? false})`,
       returnByValue: true,
     });
     const applied = JSON.parse(commandResult(fixtures)?.value ?? "null");
-    if (applied?.text !== true || applied.attachment !== true || applied.terminal !== true) {
+    if (
+      applied?.text !== true ||
+      applied.attachment !== true ||
+      applied.terminal !== true ||
+      applied.element !== true
+    ) {
       throw new Error(`Composer retry fixtures were not applied: ${JSON.stringify(fixtures)}`);
     }
     await client.runCdp("Runtime.evaluate", {
@@ -6091,7 +6133,8 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
         state.activeComposerDraftText === prompt &&
         state.activeComposerDraftAttachments?.[0]?.name === attachment.name &&
         state.activeComposerTerminalContexts?.[0]?.id === terminalContext.id &&
-        state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt",
+        state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt" &&
+        state.activeComposerElementContexts?.[0]?.id === elementContext.id,
     });
     const firstSend = await client.runCdp("Runtime.evaluate", {
       expression: "globalThis.__T3_LYNXTRON_COMPOSER_SEND_FIXTURE__?.() ?? false",
@@ -6115,6 +6158,7 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
         state.activeComposerDraftAttachments?.[0]?.name === attachment.name &&
         state.activeComposerTerminalContexts?.[0]?.id === terminalContext.id &&
         state.activeComposerFileContexts?.[0]?.path === "review-fixture.txt" &&
+        state.activeComposerElementContexts?.[0]?.id === elementContext.id &&
         state.sessionError?.includes("Injected sendPrompt failure"),
     });
     const failedPreview = await waitForMeasurement({
@@ -6138,6 +6182,13 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
       selector: ".composer-file-context-chip",
       timeoutMs,
       predicate: (measurement) => measurement?.text.includes("review-fixture.txt") === true,
+    });
+    const failedElementChip = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-element-context-chip",
+      timeoutMs,
+      predicate: (measurement) => measurement?.text.includes("<SubmitButton>") === true,
     });
     const persistedThreadIdsAfterFailure = readPersistedThreadIds(baseDir);
     if (
@@ -6170,6 +6221,7 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
             message.role === "user" &&
             message.text.includes(promptToken) &&
             message.text.includes("<terminal_context>") &&
+            message.text.includes("<element_context>") &&
             message.text.includes("[review-fixture.txt](review-fixture.txt)") &&
             message.attachments?.some((candidate) => candidate.name === attachment.name),
         );
@@ -6187,6 +6239,7 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
           state.activeComposerDraftAttachments?.length === 0 &&
           state.activeComposerTerminalContexts?.length === 0 &&
           state.activeComposerFileContexts?.length === 0 &&
+          state.activeComposerElementContexts?.length === 0 &&
           (state.sessionStatus === "idle" || state.sessionStatus === "ready") &&
           state.activeTurnId == null &&
           user &&
@@ -6214,6 +6267,7 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
           attachment: { name: attachment.name, preview: failedPreview.rect },
           terminalContext: failedTerminalChip.text.trim(),
           fileContext: failedFileChip.text.trim(),
+          elementContext: failedElementChip.text.trim(),
         },
       },
       retry: {
@@ -6223,12 +6277,19 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
           id: canonicalUserMessage.id,
           attachmentName: canonicalUserMessage.attachments[0]?.name ?? null,
           hasTerminalContextBlock: canonicalUserMessage.text.includes("<terminal_context>"),
+          hasElementContextBlock: canonicalUserMessage.text.includes("<element_context>"),
           hasFileMention: canonicalUserMessage.text.includes(
             "[review-fixture.txt](review-fixture.txt)",
           ),
         },
         responseToken,
-        cleared: { text: true, attachment: true, terminalContext: true, fileContext: true },
+        cleared: {
+          text: true,
+          attachment: true,
+          terminalContext: true,
+          fileContext: true,
+          elementContext: true,
+        },
       },
       draftStateBeforeFailure: beforeFailure.draftThreadId,
       sequence: { beforeRetry: beforeRetry.lastSeq, afterRetry: afterRetry.lastSeq },
@@ -14822,6 +14883,13 @@ const fileEditingSaveOnlyEmptyFixture =
   !verifyComposerBranding &&
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
+const composerSendRetryOnlyEmptyFixture =
+  shouldVerifyComposerSendRetry &&
+  !verifySettingsNavigation &&
+  !verifySidebarScope &&
+  !verifyComposerBranding &&
+  !shouldVerifyModelPickerFidelity &&
+  !verifyPlan11SemanticOutcomes;
 if (
   !lifecycleOnlyEmptyFixture &&
   !heroOnlyEmptyFixture &&
@@ -14831,6 +14899,7 @@ if (
   !rightPanelAddMenuOnlyEmptyFixture &&
   !projectSettingsOnlyEmptyFixture &&
   !fileEditingSaveOnlyEmptyFixture &&
+  !composerSendRetryOnlyEmptyFixture &&
   !shouldVerifySettingsAppearance &&
   !shouldVerifySidebarProjectGroups &&
   !shouldVerifyNewThreadProjects &&
@@ -14889,6 +14958,7 @@ for (let index = 1; index <= runs; index += 1) {
         !rightPanelAddMenuOnlyEmptyFixture &&
         !projectSettingsOnlyEmptyFixture &&
         !fileEditingSaveOnlyEmptyFixture &&
+        !composerSendRetryOnlyEmptyFixture &&
         !shouldVerifySettingsAppearance &&
         !shouldVerifySidebarProjectGroups &&
         !shouldVerifyNewThreadProjects &&

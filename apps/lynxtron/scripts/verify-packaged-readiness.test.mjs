@@ -1042,17 +1042,18 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"--verify-composer-send-retry"');
     assert.include(source, 'T3_TEST_SEND_PROMPT_ERROR_ONCE: "1"');
     assert.include(source, "Injected Composer send unexpectedly succeeded");
+    assert.include(source, "OpenCode provider did not connect before Composer retry acceptance");
     assert.include(source, "canonicalThreadCreated: false");
     assert.include(source, "Failed Composer send persisted a canonical thread");
     assert.include(source, 'selector: ".composer-attachment-preview"');
+    assert.include(source, "__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__");
+    assert.include(source, 'selector: ".composer-element-context-chip"');
+    assert.include(source, 'message.text.includes("<element_context>")');
     assert.include(
       source,
       "message.attachments?.some((candidate) => candidate.name === attachment.name)",
     );
-    assert.include(
-      source,
-      "cleared: { text: true, attachment: true, terminalContext: true, fileContext: true }",
-    );
+    assert.include(source, "elementContext: true,");
     assert.include(source, "routeRoundTrip,");
     assert.include(source, "shouldVerifyNewThreadDraftLifecycle ||");
     assert.include(source, "Native Composer state did not persist before cold restart");
