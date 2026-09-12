@@ -12,6 +12,7 @@ describe("Electron long-transcript semantic runner", () => {
   it("copies the source snapshot and verifies its hash", () => {
     assert.include(source, "cpSync(fixtureDir, electronHome");
     assert.include(source, "copiedHash !== manifest.snapshotId");
+    assert.include(source, 'path.join(electronHome, "userdata/environment-id")');
   });
 
   it("pins window, thread, rows, minimap, and timeline geometry without screenshots", () => {
@@ -21,7 +22,16 @@ describe("Electron long-transcript semantic runner", () => {
     assert.include(source, "data-timeline-minimap-item");
     assert.include(source, "timelineRect");
     assert.include(source, "diagnostic=${JSON.stringify(diagnostic)}");
+    assert.include(source, "T3CODE_STATIC_DIR: webStaticDir");
+    assert.include(source, "entryAssetSha256: expectedEntrySha256");
     assert.notInclude(source, "Page.captureScreenshot");
+  });
+
+  it("uses a real Web wheel event and requires position plus jump-state changes", () => {
+    assert.include(source, 'type: "mouseWheel"');
+    assert.include(source, "current.scrollTop >=");
+    assert.include(source, "visibleRowIds");
+    assert.include(source, "jumpVisible !== true");
   });
 
   it("uses explicit ports and cleans only owned state and process", () => {

@@ -16,10 +16,18 @@ describe("long-transcript paired report comparison", () => {
     assert.include(source, "electron.state?.viewport?.width === native.viewport?.width");
   });
 
-  it("correlates canonical turns and end positions without claiming physical input", () => {
+  it("correlates canonical turns and end positions", () => {
     assert.include(source, "electron.state?.minimapItemCount * 2");
     assert.include(source, "fidelity-long-turn-001-user");
     assert.include(source, "fidelity-long-turn-120-user");
-    assert.include(source, "physical wheel, keyboard, focus, drag, and selection remain pending");
+  });
+
+  it("requires fresh Web identity and correlated physical Native scrolling", () => {
+    assert.include(source, "electronRendererIdentity:");
+    assert.include(source, "electronWheelAway:");
+    assert.include(source, "nativePhysicalWheelAway:");
+    assert.include(source, "nativePhysicalJump:");
+    assert.include(source, "Computer Use wheel");
+    assert.include(source, "Exact scroll pixels differ by renderer");
   });
 });

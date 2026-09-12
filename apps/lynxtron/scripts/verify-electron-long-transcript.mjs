@@ -14,6 +14,7 @@ import { selectElectronRendererTarget } from "./electron-cdp-target.mjs";
 const appRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
 const desktopRoot = path.join(repoRoot, "apps/desktop");
+const webStaticDir = path.join(repoRoot, "apps/web/dist");
 
 function argumentValue(name) {
   const index = process.argv.indexOf(name);
@@ -131,7 +132,12 @@ if (!existsSync(manifestPath) || !existsSync(sourceDatabase)) {
 }
 const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 const fixture = manifest.longTranscriptFixture;
-const environmentId = readFileSync(path.join(fixtureDir, "userdata/environment-id"), "utf8").trim();
+const webIndex = readFileSync(path.join(webStaticDir, "index.html"), "utf8");
+const expectedEntryPath = webIndex.match(
+  /<script[^>]+type=["']module["'][^>]+src=["'](?<src>[^"']+)["']/u,
+)?.groups?.src;
+if (!expectedEntryPath) throw new Error("Fresh Web build has no module entry asset.");
+const expectedEntrySha256 = sha256(path.join(webStaticDir, expectedEntryPath.replace(/^\//u, "")));
 if (typeof fixture?.threadId !== "string" || fixture.expectedTimelineRowCount < 100) {
   throw new Error("Fixture manifest has no valid longTranscriptFixture.");
 }
@@ -164,6 +170,7 @@ const child = spawn(electronCommand.electronPath, electronCommand.args, {
     ...process.env,
     T3CODE_HOME: electronHome,
     T3CODE_PORT: String(backendPort),
+    T3CODE_STATIC_DIR: webStaticDir,
     T3CODE_DESKTOP_USER_DATA_DIR: profile,
     T3CODE_DISABLE_AUTO_UPDATE: "1",
   },
@@ -196,6 +203,14 @@ try {
   client = new CdpClient(target.webSocketDebuggerUrl);
   await client.connect();
   await client.send("Runtime.enable");
+  const environmentId = await waitFor(
+    () => {
+      const environmentIdPath = path.join(electronHome, "userdata/environment-id");
+      return existsSync(environmentIdPath) ? readFileSync(environmentIdPath, "utf8").trim() : null;
+    },
+    "Electron environment identity",
+    timeoutMs,
+  );
   const reloadingForTheme = await evaluate(
     client,
     '(() => { if (localStorage.getItem("t3code:theme") === "dark") return false; localStorage.setItem("t3code:theme", "dark"); location.reload(); return true; })()',
@@ -230,7 +245,8 @@ try {
             firstMinimapItemId: minimap[0]?.getAttribute("data-timeline-minimap-item") ?? null,
             lastMinimapItemId: minimap.at(-1)?.getAttribute("data-timeline-minimap-item") ?? null,
             timelineRect: rect ? { x: rect.x, y: rect.y, width: rect.width, height: rect.height } : null,
-            theme: document.documentElement.classList.contains("dark") ? "dark" : "light"
+            theme: document.documentElement.classList.contains("dark") ? "dark" : "light",
+            assetScripts: [...document.scripts].map((script) => script.src).filter(Boolean)
           } : null;
         })()`,
         ),
@@ -263,6 +279,64 @@ try {
   ) {
     throw new Error(`Electron minimap identity drifted: ${JSON.stringify(state)}`);
   }
+  const loadedEntryAssetUrl = state.assetScripts.find((asset) =>
+    new URL(asset).pathname.endsWith(expectedEntryPath),
+  );
+  if (!loadedEntryAssetUrl) throw new Error("Electron did not load the fresh Web entry asset.");
+  const scrollTarget = await evaluate(
+    client,
+    `(() => {
+      const root = document.querySelector('[data-timeline-root]');
+      let current = root;
+      while (current) {
+        if (current.scrollHeight > current.clientHeight + 1) {
+          const rect = current.getBoundingClientRect();
+          return {
+            x: rect.x + rect.width / 2,
+            y: rect.y + Math.min(rect.height / 2, 240),
+            scrollTop: current.scrollTop,
+            scrollHeight: current.scrollHeight,
+            clientHeight: current.clientHeight
+          };
+        }
+        current = current.parentElement;
+      }
+      return null;
+    })()`,
+  );
+  if (!scrollTarget) throw new Error("Electron transcript has no scrollable ancestor.");
+  await client.send("Input.dispatchMouseEvent", {
+    type: "mouseWheel",
+    x: scrollTarget.x,
+    y: scrollTarget.y,
+    deltaX: 0,
+    deltaY: -1_800,
+  });
+  const scrolled = await waitFor(
+    () =>
+      evaluate(
+        client,
+        `(() => {
+          const root = document.querySelector('[data-timeline-root]');
+          let current = root;
+          while (current && !(current.scrollHeight > current.clientHeight + 1)) current = current.parentElement;
+          if (!current || current.scrollTop >= ${scrollTarget.scrollTop} - 1) return null;
+          const viewport = current.getBoundingClientRect();
+          const visibleRowIds = [...document.querySelectorAll('[data-timeline-row-id]')].filter((row) => {
+            const rect = row.getBoundingClientRect();
+            return rect.bottom > viewport.top && rect.top < viewport.bottom;
+          }).map((row) => row.getAttribute('data-timeline-row-id'));
+          const jump = [...document.querySelectorAll('button')].find((button) => /(?:Jump|Scroll) to (?:latest|end)/u.test(button.textContent ?? ''));
+          const leftTail = !visibleRowIds.some((rowId) => rowId?.startsWith('fidelity-long-turn-120-'));
+          return leftTail && jump ? { scrollTop: current.scrollTop, visibleRowIds, jumpVisible: true } : null;
+        })()`,
+      ),
+    "Electron transcript wheel-away",
+    timeoutMs,
+  );
+  if (scrolled.visibleRowIds.length === 0 || scrolled.jumpVisible !== true) {
+    throw new Error(`Electron wheel-away semantics drifted: ${JSON.stringify(scrolled)}`);
+  }
   const report = {
     schemaVersion: 1,
     status: "pass",
@@ -277,7 +351,12 @@ try {
     requestedWindow: { width, height },
     cdpPort,
     backendPort,
-    state,
+    rendererIdentity: {
+      staticDir: webStaticDir,
+      entryAssetUrl: loadedEntryAssetUrl,
+      entryAssetSha256: expectedEntrySha256,
+    },
+    state: { ...state, scroll: { initial: scrollTarget, afterWheel: scrolled } },
     backendBehaviorClaimed: false,
   };
   writeFileSync(output, `${JSON.stringify(report, null, 2)}\n`);

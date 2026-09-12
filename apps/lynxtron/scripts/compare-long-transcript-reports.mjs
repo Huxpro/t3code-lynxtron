@@ -37,6 +37,25 @@ const checks = {
     native.recycling?.endRowIds?.some((id) => id?.startsWith("fidelity-long-turn-120-")),
   nativeRecycling: native.recycling?.status === "pass",
   cleanRuntime: Array.isArray(native.rendererErrors) && native.rendererErrors.length === 0,
+  electronRendererIdentity:
+    electron.rendererIdentity?.entryAssetUrl?.startsWith("t3code://app/assets/index-") === true &&
+    /^[a-f0-9]{64}$/u.test(electron.rendererIdentity?.entryAssetSha256 ?? ""),
+  electronWheelAway:
+    electron.state?.scroll?.afterWheel?.scrollTop < electron.state?.scroll?.initial?.scrollTop &&
+    electron.state?.scroll?.afterWheel?.jumpVisible === true &&
+    !electron.state?.scroll?.afterWheel?.visibleRowIds?.some((rowId) =>
+      rowId?.startsWith("fidelity-long-turn-120-"),
+    ),
+  nativePhysicalWheelAway:
+    native.physicalScroll?.channel === "Computer Use wheel" &&
+    native.physicalScroll?.detachedMode === "free-scrolling" &&
+    native.physicalScroll?.jumpVisible === true &&
+    native.physicalScroll?.visibleTurns?.every((turn) => turn < 120),
+  nativePhysicalJump:
+    native.physicalScroll?.jumpChannel === "Computer Use click" &&
+    native.physicalScroll?.restoredMode === "following-end" &&
+    native.physicalScroll?.jumpHidden === true &&
+    native.physicalScroll?.restoredVisibleTurns?.includes(120),
 };
 const report = {
   schemaVersion: 1,
@@ -57,9 +76,11 @@ const report = {
     electronMaterializedRows: electron.state?.materializedRowIds ?? [],
     nativeStartRows: native.recycling?.startRowIds ?? [],
     nativeEndRows: native.recycling?.endRowIds ?? [],
+    electronWheel: electron.state?.scroll ?? null,
+    nativePhysicalScroll: native.physicalScroll ?? null,
   },
   limitation:
-    "Programmatic position correlation and native recycling evidence only; physical wheel, keyboard, focus, drag, and selection remain pending real OS input.",
+    "Same-snapshot Web CDP wheel and Native Computer Use wheel correlate direction, tail departure, jump visibility, and restored tail semantics. Exact scroll pixels differ by renderer; keyboard, focus, drag, and selection remain separate acceptance boundaries.",
 };
 writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
 process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
