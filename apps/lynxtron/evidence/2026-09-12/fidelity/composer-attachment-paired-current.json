@@ -15,8 +15,8 @@
     "nativeBundleSha256": "efb780e3fed1938cb02237c6d3b401b32a495f6000c720431db45d4178382808"
   },
   "checks": {
-    "count": 22,
-    "passed": 22,
+    "count": 23,
+    "passed": 23,
     "sameHeadSnapshotProjectViewportTheme": true,
     "freshElectronRendererIdentity": true,
     "sameFrameAndSurfaceWidth": true,
