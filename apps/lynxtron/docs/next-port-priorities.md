@@ -104,6 +104,12 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   anatomy with bounded platform input/menu leaves.
 - Progress: default, provider rail, query, empty, and selected Browser states
   are represented; catalog/ranking projections and several surfaces are shared.
+  Provider availability/lock ordering, model filtering, favorites grouping,
+  selected-key resolution, and jump-row ordering now come directly from one
+  `client-runtime` projection in both Web and Native; the former Native-local
+  projection module has been deleted. Fresh reuse measurement is 24.2% modules
+  / 31.2% LOC, and an exact-owned Native smoke still opens the picker, selects
+  Terra through a real click, persists it, and dismisses without renderer errors.
 - Success:
   - reuse materially exceeds 2.9% modules / 3.5% LOC;
   - provider/model ordering and selected state are exact;
