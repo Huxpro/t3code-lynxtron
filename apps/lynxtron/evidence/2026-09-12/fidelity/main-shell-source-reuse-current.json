@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "observedAt": "2026-09-12T07:41:29-04:00",
+  "stateId": "main-shell-source-reuse",
+  "status": "pass-with-platform-boundary",
+  "audit": {
+    "boundarySha256": "40adb6b14ccb9d29e17e09acfd58c1a02214176f037bc29942aa43da1331661a",
+    "report": "/tmp/reuse-final.json",
+    "eligibleModules": 350,
+    "sharedModules": 98,
+    "moduleReusePercent": 28,
+    "eligibleLines": 74100,
+    "sharedLines": 22216,
+    "lineReusePercent": 30
+  },
+  "sharedProductOwners": [
+    "apps/web/src/components/AppShellSurface.tsx",
+    "apps/web/src/components/AppSidebarComposition.tsx",
+    "apps/web/src/components/chat/ChatHeaderSurface.tsx",
+    "apps/web/src/components/chat/ChatHeaderTitle.tsx",
+    "apps/web/src/components/sidebar/SidebarChrome.tsx",
+    "apps/web/src/components/sidebar/SidebarChromeSurface.tsx",
+    "apps/web/src/components/sidebar/SidebarProjectsSurface.tsx",
+    "apps/web/src/components/sidebar/SidebarV2CompositionSurface.tsx",
+    "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+    "apps/web/src/components/sidebar/SidebarV2RowSurface.tsx",
+    "apps/web/src/components/chat/ComposerSurface.tsx",
+    "packages/client-runtime/src/presentation/sidebar.ts",
+    "packages/client-runtime/src/presentation/modelPicker.ts",
+    "packages/client-runtime/src/presentation/threadActions.ts"
+  ],
+  "remainingPlatformHosts": [
+    {
+      "path": "apps/web/src/components/Sidebar.tsx",
+      "reason": "legacy Web-only Sidebar retained behind the explicit legacy setting"
+    },
+    {
+      "path": "apps/web/src/components/SidebarV2.tsx",
+      "reason": "DOM keyboard, focus, hover, animation, and browser navigation host"
+    },
+    {
+      "path": "apps/web/src/components/SidebarV2.lynx.tsx",
+      "reason": "Lynx list, native menu, and connector action host"
+    },
+    {
+      "path": "apps/lynxtron/src/app/state/t3Client.ts",
+      "reason": "Native main-owned connector projection and diagnostics host"
+    }
+  ],
+  "verification": {
+    "sharedShellAndSidebarContractTests": 69,
+    "settingsAndReadinessContractTests": 77,
+    "nativeTypecheck": "pass",
+    "productionBuild": "pass",
+    "reactLynxScannerIssues": 0
+  },
+  "boundary": "Source reuse is closed when product-state decisions and visible composition are shared while renderer primitives, transport ownership, DOM keyboard/focus behavior, and the explicitly retained legacy Web surface remain platform hosts. The metric is not expected to reach 100 percent because the denominator includes those intentional hosts and transitive runtime modules."
+}

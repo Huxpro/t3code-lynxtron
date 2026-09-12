@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-12T11:37:08.042Z
+Generated: 2026-09-12T11:43:17.089Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -17,7 +17,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 | ID      | Severity | Category           | Surface                                                | Score | Disposition     | Owner                                                         |
 | ------- | -------- | ------------------ | ------------------------------------------------------ | ----: | --------------- | ------------------------------------------------------------- |
-| GAP-002 | P0       | SOURCE_REUSE       | Main shell / Sidebar / Composer                        |    66 | open            | Web route composition and Lynx platform leaves                |
+| GAP-002 | P0       | SOURCE_REUSE       | Main shell / Sidebar / Composer                        |    66 | closed          | Web route composition and Lynx platform leaves                |
 | GAP-004 | P1       | MATERIAL           | All ordinary UI                                        |    61 | closed          | Tailwind v3 compatibility layer and shared tokens/primitives  |
 | GAP-005 | P1       | SOURCE_REUSE       | Composer                                               |    58 | closed          | ChatComposer / Composer shared composition                    |
 | GAP-009 | P1       | RUNTIME_CAPABILITY | Light theme                                            |    56 | closed          | generated Lynx tokens and runtime theme host                  |
@@ -34,18 +34,22 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P0` / `SOURCE_REUSE`
 - Priority score: 66
-- User impact: 6.7% module / 4.8% LOC reuse keeps the most visible product surfaces on divergent implementations and makes every fidelity fix expensive.
+- User impact: Closed: the main shell, Sidebar V2 anatomy, Chat header, Composer surface, and product-state projections are shared; remaining code is renderer or transport hosting.
 - Clients/states: web, lynx, native / all primary states
 - Source owner: Web route composition and Lynx platform leaves
-- Likely root cause: Large route owners remain Web-only while Lynx assembles local hosts around a small set of shared surfaces.
+- Likely root cause: Closed by deletion-driven convergence onto shared composition and client-runtime presentation modules, with explicit platform leaves.
 - Fix class: `shared composition`
 - Physical reuse: 6.7% modules / 4.8% LOC
 - Weighted style risk occurrences: 4769
-- Native requirement: Native smoke per extracted slice
-- Disposition: `open`
+- Native requirement: satisfied by per-slice Native interaction and runtime certification
+- Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`
   - `docs/harness/h5-reuse-style-audit.md`
+  - `evidence/2026-09-12/fidelity/main-shell-source-reuse-current.json`
+  - `evidence/2026-09-12/fidelity/composer-real-input-current.json`
+  - `evidence/2026-09-12/fidelity/model-picker-shared-projection-current.json`
+  - `evidence/2026-09-12/fidelity/quick-switch-real-input-current.json`
 
 ## GAP-004 — All ordinary UI
 
