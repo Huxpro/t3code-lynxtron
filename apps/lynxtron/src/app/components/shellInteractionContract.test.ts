@@ -2417,6 +2417,7 @@ describe("desktop shell interaction contract", () => {
     expect(clientSource).toContain("__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__");
     expect(clientSource).toContain("__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__");
     expect(clientSource).toContain("activeComposerElementContexts: activeComposerDraftKey");
+    expect(clientSource).toContain("state.projects[0]");
     expect(clientSource).toContain("__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__");
     expect(clientSource).toContain("messages: state.messages");
     expect(componentSource("TerminalPanel.tsx")).toContain(

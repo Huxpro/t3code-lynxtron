@@ -820,7 +820,8 @@ function installTransportDevToolHook(): void {
     const activeThread =
       state.threads.find((thread) => thread.id === state.activeThreadId) ??
       (state.draftThread?.id === state.activeThreadId ? state.draftThread : undefined);
-    const activeProject = state.projects.find((project) => project.id === activeThread?.projectId);
+    const activeProject =
+      state.projects.find((project) => project.id === activeThread?.projectId) ?? state.projects[0];
     const activeComposerDraftKey = composerDraftScopeKey({
       threadId: state.activeThreadId,
       projectId: activeProject?.id,
