@@ -6346,6 +6346,8 @@ async function verifyModelPickerFidelity({
   devToolCli,
   expectedTheme,
   outputDirectory,
+  defaultOnly,
+  semanticOnly,
   timeoutMs,
   viewportHeight,
   viewportWidth,
@@ -6386,28 +6388,19 @@ async function verifyModelPickerFidelity({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
-  const dismissLayer = await waitForMeasurement({
-    child,
-    client,
-    selector: ".model-picker-dismiss-layer",
-    timeoutMs,
-    predicate: (measurement) =>
-      measurement !== null &&
-      Math.abs((measurement.rect?.x ?? -1) - 0) <= 1 &&
-      Math.abs((measurement.rect?.y ?? -1) - 0) <= 1 &&
-      Math.abs((measurement.rect?.width ?? 0) - viewportWidth) <= 1 &&
-      Math.abs((measurement.rect?.height ?? 0) - viewportHeight) <= 1 &&
-      measurement.style.backgroundColor === "rgba(0,0,0,0)",
-  });
+  const dismissLayer = await readOptionalMeasurement(client, ".model-picker-dismiss-layer");
+  if (dismissLayer !== null) {
+    throw new Error("Native model picker retained its removed modal dismiss layer.");
+  }
   const expectedColors =
     expectedTheme === "light"
       ? {
-          panel: "rgba(255,255,255,0.835294)",
+          panel: "rgb(255,255,255)",
           content: "rgba(250,250,250,0.4)",
           rail: "rgba(250,250,250,0.298039)",
         }
       : {
-          panel: "rgba(25,25,25,0.835294)",
+          panel: "rgb(25,25,25)",
           content: "rgba(255,255,255,0.0156863)",
           rail: "rgba(255,255,255,0.0117647)",
         };
@@ -6456,6 +6449,54 @@ async function verifyModelPickerFidelity({
         rail,
       })}`,
     );
+  }
+  if (defaultOnly) {
+    const rows = await readSelectorMeasurements(client, ".model-picker-row");
+    const screenshot = semanticOnly
+      ? undefined
+      : captureNativeScreenshot({
+          client,
+          devToolCli,
+          outputDirectory,
+          name: `native-model-picker-default-${expectedTheme ?? "system"}.png`,
+        });
+    await tapSelector({
+      child,
+      client,
+      selector: ".chat-body-reference",
+      point: "bottom-right",
+      timeoutMs,
+    });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".model-picker-panel",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+    return {
+      status: "pass",
+      input: "DevTool touch on the measured Native trigger and chat-surface outside dismissal",
+      panel: { rect: panel.rect, attributes: panel.attributes },
+      colors: resolvedColors,
+      checkoutLabel: checkout.text.trim(),
+      providerGeometry: {
+        rail: rail.rect,
+        content: content.rect,
+        items: providerItems.map((item) => ({
+          provider: item.attributes["data-model-picker-provider"],
+          rect: item.rect,
+        })),
+        firstRow: rows[0]?.rect ?? null,
+      },
+      rows: rows.map((row) => ({
+        key: row.attributes["data-model-picker-key"],
+        selected: row.attributes["data-model-picker-selected"] === "true",
+        text: row.text,
+      })),
+      dismissed: { outsideTap: true },
+      screenshot,
+    };
   }
   const beforeProvider = content.attributes["data-model-picker-selected-provider"];
   const targetProvider = providerItems.find(
@@ -6562,12 +6603,14 @@ async function verifyModelPickerFidelity({
     timeoutMs,
     predicate: (measurement) => measurement !== null,
   });
-  const providerScreenshot = captureNativeScreenshot({
-    client,
-    devToolCli,
-    outputDirectory,
-    name: `native-model-picker-provider-${expectedTheme ?? "system"}.png`,
-  });
+  const providerScreenshot = semanticOnly
+    ? undefined
+    : captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: `native-model-picker-provider-${expectedTheme ?? "system"}.png`,
+      });
   await setSearch("pickle");
   const queryState = await waitForPickerState(
     (state) =>
@@ -6614,12 +6657,14 @@ async function verifyModelPickerFidelity({
       })}`,
     );
   }
-  const queryScreenshot = captureNativeScreenshot({
-    client,
-    devToolCli,
-    outputDirectory,
-    name: `native-model-picker-query-${expectedTheme ?? "system"}.png`,
-  });
+  const queryScreenshot = semanticOnly
+    ? undefined
+    : captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: `native-model-picker-query-${expectedTheme ?? "system"}.png`,
+      });
   await setSearch("__t3_no_models__");
   const emptyState = await waitForPickerState(
     (state) => state?.search === "__t3_no_models__" && state.filteredModelKeys?.length === 0,
@@ -6667,42 +6712,18 @@ async function verifyModelPickerFidelity({
       })}`,
     );
   }
-  const emptyScreenshot = captureNativeScreenshot({
-    client,
-    devToolCli,
-    outputDirectory,
-    name: `native-model-picker-empty-${expectedTheme ?? "system"}.png`,
-  });
+  const emptyScreenshot = semanticOnly
+    ? undefined
+    : captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: `native-model-picker-empty-${expectedTheme ?? "system"}.png`,
+      });
   await tapSelector({
     child,
     client,
-    selector: ".model-picker-close",
-    timeoutMs,
-  });
-  await waitForMeasurement({
-    child,
-    client,
-    selector: ".model-picker-panel",
-    timeoutMs,
-    predicate: (measurement) => measurement === null,
-  });
-  await tapSelector({
-    child,
-    client,
-    selector: ".composer-toolbar-control--model",
-    timeoutMs,
-  });
-  await waitForMeasurement({
-    child,
-    client,
-    selector: ".model-picker-panel",
-    timeoutMs,
-    predicate: (measurement) => measurement !== null,
-  });
-  await tapSelector({
-    child,
-    client,
-    selector: ".model-picker-dismiss-layer",
+    selector: ".chat-body-reference",
     point: "bottom-right",
     timeoutMs,
   });
@@ -6716,15 +6737,12 @@ async function verifyModelPickerFidelity({
   return {
     status: "pass",
     input:
-      "DevTool Input.emulateTouchFromMouseEvent on measured Native trigger, provider rail, Close control, and outside dismiss layer",
+      "DevTool Input.emulateTouchFromMouseEvent on measured Native trigger, provider rail, and chat-surface outside dismissal",
     panel: {
       rect: panel.rect,
       attributes: panel.attributes,
     },
-    dismissLayer: {
-      rect: dismissLayer.rect,
-      backgroundColor: dismissLayer.style.backgroundColor,
-    },
+    dismissLayer: null,
     colors: resolvedColors,
     checkoutLabel: checkout.text.trim(),
     providerNavigation: {
@@ -6767,7 +6785,7 @@ async function verifyModelPickerFidelity({
       physicalKeyboard: "pending-user-session",
     },
     dismissed: {
-      closeButton: true,
+      closeButton: "not-rendered-by-design",
       outsideTap: true,
     },
     screenshot: providerScreenshot,
@@ -13992,6 +14010,8 @@ async function runOnce({
           devToolCli,
           expectedTheme,
           outputDirectory,
+          defaultOnly: modelPickerDefaultOnly,
+          semanticOnly: modelPickerSemanticOnly,
           timeoutMs,
         })
       : undefined;
@@ -14735,6 +14755,8 @@ const shouldVerifyNewThreadDraftLifecycle = process.argv.includes(
   "--verify-new-thread-draft-lifecycle",
 );
 const shouldVerifyModelPickerFidelity = process.argv.includes("--verify-model-picker-fidelity");
+const modelPickerSemanticOnly = process.argv.includes("--model-picker-semantic-only");
+const modelPickerDefaultOnly = process.argv.includes("--model-picker-default-only");
 const shouldVerifyModelSelectionMutation = process.argv.includes(
   "--verify-model-selection-mutation",
 );
@@ -14851,6 +14873,12 @@ if (reviewSemanticOnly && !shouldVerifyReviewDiffState) {
 }
 if (appearanceSemanticOnly && !shouldVerifySettingsAppearance) {
   throw new Error("--appearance-semantic-only requires --verify-settings-appearance.");
+}
+if (modelPickerSemanticOnly && !shouldVerifyModelPickerFidelity) {
+  throw new Error("--model-picker-semantic-only requires --verify-model-picker-fidelity.");
+}
+if (modelPickerDefaultOnly && !shouldVerifyModelPickerFidelity) {
+  throw new Error("--model-picker-default-only requires --verify-model-picker-fidelity.");
 }
 if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
   throw new Error("--quick-switch-query requires --verify-quick-switch-default.");

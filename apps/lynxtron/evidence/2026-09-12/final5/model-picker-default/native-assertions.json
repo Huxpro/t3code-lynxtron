@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "processId": 17087,
+  "windowId": 96011,
+  "devTool": {
+    "clientId": "localhost:8902",
+    "sessionId": 1,
+    "bundleUrl": "file:///private/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3-mts-product-kHNbjO/desktop/main.lynx.bundle"
+  },
+  "input": "built-in Computer Use pointer click on the exact-owned model trigger",
+  "state": {
+    "project": "Gap3",
+    "threadId": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+    "modelLabel": "Claude Fable 5",
+    "pickerProvider": "codex",
+    "filteredModelKeys": [
+      "codex:gpt-5.6-sol",
+      "codex:gpt-5.6-terra",
+      "codex:gpt-5.6-luna",
+      "codex:gpt-5.5",
+      "codex:gpt-5.3-codex-spark"
+    ]
+  },
+  "geometry": { "x": 397, "y": 375, "width": 360, "height": 346 },
+  "transport": { "kind": "main", "lastSeq": 12 },
+  "rendererErrors": 0,
+  "screenshotsRetained": 1
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "stateId": "model-picker-default",
+  "reference": "electron-web",
+  "candidate": "lynx-for-web",
+  "viewport": { "width": 1280, "height": 820, "devicePixelRatio": 1 },
+  "ssim": 0.952272,
+  "psnr": 25.089944,
+  "geometry": {
+    "overlayRectExact": true,
+    "stateIdentityMatch": true,
+    "contentMatch": true
+  },
+  "classification": "The exact 360 by 346 overlay geometry and model/provider content pass; remaining full-frame residual is renderer rasterization."
+}
