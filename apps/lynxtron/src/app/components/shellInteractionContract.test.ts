@@ -693,7 +693,7 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("aria-label={`Remove ${attachment.name}`}");
     expect(overrides).toMatch(/\.composer-attachment-card \{[^}]*border-radius: 10px;/u);
     expect(overrides).toMatch(
-      /\.composer-attachment-remove \{[^}]*width: 24px;[^}]*height: 24px;/u,
+      /\.composer-attachment-remove \{[^}]*width: 20px;[^}]*height: 20px;/u,
     );
     expect(overrides).toMatch(/\.composer-attachment-list \{[^}]*gap: 8px;/u);
     expect(overrides).not.toMatch(/\.composer-attachment-list \{[^}]*padding:/u);
