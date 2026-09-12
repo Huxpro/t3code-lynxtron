@@ -67,6 +67,7 @@ const checks = {
     electron.state.preview.styles.objectFit === "cover" &&
     native.state.preview.attributes.mode === "aspectFill",
   removeInset: JSON.stringify(electronRemoveInset) === JSON.stringify(nativeRemoveInset),
+  removeSize: equalRectSize(electron.state.remove.rect, native.state.remove.rect),
   removed: electron.state.removed === true && native.state.removed === true,
   nativeTransport: native.state.transport?.kind === "main",
   nativeRendererClean: native.state.rendererErrors === 0,
@@ -97,13 +98,6 @@ const report = {
   residual: {
     status: "open",
     items: [
-      {
-        kind: "remove-hit-target-size",
-        electron: electron.state.remove.rect,
-        native: native.state.remove.rect,
-        reason:
-          "The verified Native target remains 20x20 while Electron uses 24x24; z-index restores physical removal over aspectFill.",
-      },
       {
         kind: "composer-surface-height",
         electron: electron.state.surface.height,

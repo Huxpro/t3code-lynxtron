@@ -28,6 +28,7 @@ describe("paired Composer attachment comparator", () => {
       "previewOrigin:",
       "previewCover:",
       "removeInset:",
+      "removeSize:",
       "removed:",
       "nativeTransport:",
       "nativeRendererClean:",
@@ -37,8 +38,7 @@ describe("paired Composer attachment comparator", () => {
     }
   });
 
-  it("keeps the smaller Native remove target and picker blocker explicit", () => {
-    assert.include(source, 'kind: "remove-hit-target-size"');
+  it("keeps whole-Composer and picker residuals explicit", () => {
     assert.include(source, 'kind: "composer-surface-height"');
     assert.include(source, 'status: "open"');
     assert.include(source, "Native image selection remains blocked");
