@@ -19,7 +19,7 @@ describe("paired Composer attachment comparator", () => {
       "theme:",
       "electronRendererIdentity:",
       "frameWidth:",
-      "surface:",
+      "surfaceWidth:",
       "attachmentListWidth:",
       "cardSize:",
       "cardOrigin:",
@@ -39,6 +39,7 @@ describe("paired Composer attachment comparator", () => {
 
   it("keeps the smaller Native remove target and picker blocker explicit", () => {
     assert.include(source, 'kind: "remove-hit-target-size"');
+    assert.include(source, 'kind: "composer-surface-height"');
     assert.include(source, 'status: "open"');
     assert.include(source, "Native image selection remains blocked");
     assert.include(source, "without paired pixels");

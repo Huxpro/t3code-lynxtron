@@ -54,7 +54,7 @@ const checks = {
     electron.rendererIdentity?.entryAssetUrl?.startsWith("t3code://app/assets/index-") === true &&
     /^[a-f0-9]{64}$/u.test(electron.rendererIdentity?.entryAssetSha256 ?? ""),
   frameWidth: electron.state.frame.width === native.state.frame.width,
-  surface: equalRectSize(electron.state.surface, native.state.surface),
+  surfaceWidth: electron.state.surface.width === native.state.surface.width,
   attachmentListWidth: electron.state.attachmentList.width === native.state.attachmentList.width,
   cardSize: equalRectSize(electron.state.card.rect, native.state.card.rect),
   cardOrigin: JSON.stringify(electronCardOrigin) === JSON.stringify(nativeCardOrigin),
@@ -95,15 +95,25 @@ const report = {
     removeInset: electronRemoveInset,
   },
   residual: {
-    kind: "remove-hit-target-size",
-    electron: electron.state.remove.rect,
-    native: native.state.remove.rect,
     status: "open",
-    reason:
-      "Expanding the Native absolute overlay to 24x24 prevented the rendered subtree from committing removal under physical input; the verified 20x20 target remains.",
+    items: [
+      {
+        kind: "remove-hit-target-size",
+        electron: electron.state.remove.rect,
+        native: native.state.remove.rect,
+        reason:
+          "The verified Native target remains 20x20 while Electron uses 24x24; z-index restores physical removal over aspectFill.",
+      },
+      {
+        kind: "composer-surface-height",
+        electron: electron.state.surface.height,
+        native: native.state.surface.height,
+        reason: "The broader Composer shell height is outside the attachment anatomy slice.",
+      },
+    ],
   },
   limitation:
-    "Same-snapshot attachment anatomy and removal behavior correlation without paired pixels. Native image selection remains blocked by the Lynxtron 0.0.21 file-dialog runtime failure.",
+    "Same-snapshot attachment anatomy and removal behavior correlation without paired pixels or whole-Composer height parity. Native image selection remains blocked by the Lynxtron 0.0.21 file-dialog runtime failure.",
 };
 writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
 process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
