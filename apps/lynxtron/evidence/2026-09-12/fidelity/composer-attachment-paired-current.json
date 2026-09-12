@@ -4,15 +4,15 @@
   "stateId": "composer-image-attachment",
   "status": "pass-with-explicit-residuals",
   "identity": {
-    "testedSourceHead": "d620f08dd466471e47314f0131aa68c1b478e852",
-    "snapshotSha256": "713c57c55ffbdff7156d8df4defb4ea3e825fc0b6d4f007baf5f144a98da1e16",
-    "projectId": "4acecbb3-fd3a-4acd-b78e-70260e7df30c",
+    "testedSourceHead": "ac651e6da3fd033f5c60288b97dd485ce78952d7",
+    "snapshotSha256": "696e97e223c33b85715cf43ee7d28930bfb79641d179104538274e5489b35738",
+    "projectId": "82df28bf-8333-42b7-a1c7-48e3fdc99858",
     "viewport": "1280x820",
     "theme": "dark",
     "attachmentName": "authority-pixel.png",
     "electronEntryAssetUrl": "t3code://app/assets/index-BxbOs3Ye.js",
     "electronEntryAssetSha256": "2bcc4c2ab79d2546c2f18e990e2da416fbd828557410067d43bc2e723cdb5a90",
-    "nativeBundleSha256": "90d37f097ca8d2fcc2a92e198ed008e413a47dcd9741d4427b4e519d3934c37e"
+    "nativeBundleSha256": "03e198d3fef96cef74b0af3d2a9a3dab53194446af99fa3aefa58ecd8242c8d6"
   },
   "checks": {
     "count": 22,
@@ -26,11 +26,12 @@
     "samePreviewGeometry": "62x62 at card inset 1x1",
     "samePreviewCropMode": "Web object-fit cover / Native aspectFill",
     "sameRemoveInset": "top 5px / right 5px",
+    "sameRemoveGeometry": "24x24",
     "electronPasteAndRemove": true,
     "nativePhysicalRemove": true,
     "nativeCanonicalStateCleared": true,
     "nativeDomCardRemoved": true,
-    "nativeTransport": "main, sequence 11 to 12",
+    "nativeTransport": "main, sequence 11 to 16",
     "nativeRendererErrors": 0,
     "nativeIsolatedStateDisposed": true,
     "screenshotsRetained": 0
@@ -43,10 +44,9 @@
     "Native image preview now uses aspectFill like Web object-fit cover.",
     "Native attachment card radius now matches Web at 10px.",
     "Native attachment content now uses an explicit column flow, yielding the same 734px list width and preventing preview/textarea overlap.",
-    "Native Remove is layered above the aspectFill image and physical input removes both canonical state and the rendered card."
+    "Native Remove is layered above the aspectFill image, matches Web at 24x24, and physical input removes both canonical state and the rendered card."
   ],
   "residuals": [
-    "Electron Remove is 24x24 while the physically verified Native target remains 20x20.",
     "Electron Composer surface is 214px high while Native is 202px; whole-Composer height parity is outside this attachment slice.",
     "Native user-reachable image selection remains blocked by the Lynxtron 0.0.21 file-dialog FiberSetAttribute failure.",
     "No paired pixels are claimed because the screenshot budget remains exhausted."

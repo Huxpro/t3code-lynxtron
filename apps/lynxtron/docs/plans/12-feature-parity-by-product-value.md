@@ -194,10 +194,9 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   `713c57c55ffbdff7156d8df4defb4ea3e825fc0b6d4f007baf5f144a98da1e16`,
   both dark 1280 x 820 renderers use a 768 px Composer frame, 766 px surface,
   734 px attachment strip, 64 px card, 62 px cover preview, 10 px card corners,
-  and 5 px top/right remove inset. Native now uses explicit column flow instead
+  and a 24 px Remove target with a 5 px top/right inset. Native now uses explicit column flow instead
   of splitting attachment and editor children horizontally, and layers Remove
-  above the aspect-fill image. All 22 scoped checks pass; the 20 px Native versus
-  24 px Web remove target, 12 px whole-Composer height delta, file-dialog runtime
+  above the aspect-fill image. All 23 scoped checks pass; the 12 px whole-Composer height delta, file-dialog runtime
   blocker, and paired pixels remain explicit residuals.
 - A real owned-server `SIGKILL` and Reconnect cycle now proves the same local
   draft ID, chat route, draft text, and terminal context survive both the
