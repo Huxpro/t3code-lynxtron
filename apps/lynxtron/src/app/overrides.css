@@ -597,8 +597,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 6px;
 }
 .sidebar-project-sort-icon {
@@ -2770,8 +2770,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border-radius: 6px;
   background-color: rgba(var(--background-rgb), 0.8);
 }
