@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "stateId": "quick-switch-default",
+  "reference": "electron-web",
+  "candidate": "lynx-for-web",
+  "viewport": { "width": 1280, "height": 820, "devicePixelRatio": 1 },
+  "ssim": 0.934493,
+  "psnr": 24.194919,
+  "geometry": { "overlayRectExact": true, "stateIdentityMatch": true, "contentMatch": true },
+  "classification": "Overlay geometry and command/thread ordering pass; remaining full-frame residual is renderer rasterization."
+}

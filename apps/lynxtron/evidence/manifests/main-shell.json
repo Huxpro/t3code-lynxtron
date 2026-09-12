@@ -469,7 +469,10 @@
           "captureTier": "native",
           "buildSha256": "5336484666ff7f508dd117220e319f661ada0bc56099fdfd05c0d2b0aa42f31c",
           "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
-          "image": { "width": 2560, "height": 1640 },
+          "image": {
+            "width": 2560,
+            "height": 1640
+          },
           "sha256": "21916e6057bf4e69e064b5d9685b972240aa1ab59651fe44d449612975376521",
           "assertions": "../2026-09-12/final5/model-picker-default/native-assertions.json",
           "console": "../2026-09-12/final5/model-picker-default/native-console.txt",
@@ -500,22 +503,113 @@
       "label": "Quick Switch · Default",
       "requiredClients": ["web", "lynx", "native"],
       "state": {
-        "semanticRoute": "new-thread",
-        "overlay": "quick-switch"
+        "semanticRoute": "existing-thread",
+        "overlay": "quick-switch",
+        "route": "/",
+        "selectedProject": "Gap3",
+        "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+        "selectedModel": null,
+        "lifecycle": "ready",
+        "overlayQuery": "",
+        "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5"
       },
-      "verdict": "incomplete",
+      "verdict": "visual-certified",
       "evidence": {
         "web": {
-          "status": "pending",
-          "reason": "Final5 Web command ordering and overlay geometry have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/quick-switch-default/1280x820/web.png",
+          "captureTier": "browser",
+          "buildSha256": "2840c6ca9566",
+          "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
+          "image": {
+            "width": 1280,
+            "height": 820
+          },
+          "sha256": "da08e980e5224af0f80cefe3d53bdb12173b62da9f49e9a72336cd15e1d67d1f",
+          "assertions": "../2026-09-12/final5/quick-switch-default/1280x820/web-assertions.json",
+          "console": "../2026-09-12/final5/quick-switch-default/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": "quick-switch",
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "not-required",
+            "sourceReuse": "pass"
+          }
         },
         "lynx": {
-          "status": "pending",
-          "reason": "Final5 Lynx-for-Web command ordering and overlay geometry have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/quick-switch-default/1280x820/lynx.png",
+          "captureTier": "browser",
+          "buildSha256": "c490d6c465f0",
+          "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
+          "image": {
+            "width": 1280,
+            "height": 820
+          },
+          "sha256": "d5813ceb5b5edc4f980da73b38e3bb6f1063c60ec36b73709c8cde49e52cee48",
+          "assertions": "../2026-09-12/final5/quick-switch-default/1280x820/lynx-assertions.json",
+          "console": "../2026-09-12/final5/quick-switch-default/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": "quick-switch",
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "not-required",
+            "sourceReuse": "pass"
+          }
         },
         "native": {
-          "status": "pending",
-          "reason": "Final5 Native visible-control behavior has not been captured; keyboard remains pending an authorized session."
+          "status": "retained",
+          "path": "../2026-09-12/final5/quick-switch-default/native-quick-switch-default-dark.png",
+          "captureTier": "native",
+          "buildSha256": "5336484666ff7f508dd117220e319f661ada0bc56099fdfd05c0d2b0aa42f31c",
+          "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
+          "image": { "width": 2560, "height": 1640 },
+          "sha256": "c5abfac0351c272b0c9d5baa6c7c4b3afaae901235d7ed017a61deda0493ceab",
+          "assertions": "../2026-09-12/final5/quick-switch-default/native-report.json",
+          "console": "../2026-09-12/final5/quick-switch-default/logs/run-1.log",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": "quick-switch",
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "pass",
+            "sourceReuse": "pass"
+          }
         }
       }
     },

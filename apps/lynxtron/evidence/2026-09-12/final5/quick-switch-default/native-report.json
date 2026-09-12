@@ -1,0 +1,183 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "recordedAt": "2026-09-12T13:18:52.261Z",
+  "head": "1af9d39ccffecdac2984c02679a9144641f79691",
+  "executable": "/Users/bytedance/github/t3code-lynxtron-021-full/node_modules/.pnpm/@lynx-js+lynxtron@0.0.21/node_modules/@lynx-js/lynxtron/dist/devtool/lynxtron.app/Contents/MacOS/lynxtron",
+  "desktopDir": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop",
+  "bundle": {
+    "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "bytes": 6695745,
+    "sha256": "5336484666ff7f508dd117220e319f661ada0bc56099fdfd05c0d2b0aa42f31c"
+  },
+  "fixture": {
+    "source": "/tmp/t3-gap3-state.2aJl5F",
+    "snapshotId": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
+    "projectTitle": "Gap3",
+    "canonicalThreadTitle": "Finish the in-monorepo Lynxtron UI migration",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "expectedTheme": "dark",
+  "expectedEnvironmentIdentificationMode": null,
+  "results": [
+    {
+      "index": 1,
+      "status": "pass",
+      "startedAt": "2026-09-12T13:18:43.792Z",
+      "processId": 38448,
+      "isolatedState": {
+        "path": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-packaged-readiness-1-rzvn1E/state",
+        "disposed": true
+      },
+      "connection": {
+        "mode": "owned-local",
+        "serverOwned": true
+      },
+      "serverPort": 62518,
+      "client": {
+        "app": "@t3tools/lynxtron",
+        "clientId": "localhost:8902",
+        "port": 8902,
+        "sessionId": 1,
+        "bundleUrl": "file:///Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle"
+      },
+      "transport": {
+        "kind": "main",
+        "probe": "same-value model selection without thread mutation",
+        "beforeProbe": {
+          "kind": "main",
+          "lastSeq": 3
+        },
+        "afterProbe": {
+          "kind": "main",
+          "lastSeq": 5
+        }
+      },
+      "theme": {
+        "expected": "dark",
+        "actual": "dark"
+      },
+      "canonicalState": {
+        "canonicalThreadTitle": "Finish the in-monorepo Lynxtron UI migration",
+        "threadText": "Finish the in-monorepo Lynxtron UI migration",
+        "modelText": "Claude Fable 5"
+      },
+      "quickSwitchDefault": {
+        "status": "pass",
+        "state": "default",
+        "query": "",
+        "stateProbe": "initialOverlay product state",
+        "physicalKeyboard": "pending-user-session",
+        "input": "initialOverlay product state plus measured DevTool outside tap",
+        "panel": {
+          "x": 353,
+          "y": 82,
+          "width": 574,
+          "height": 418
+        },
+        "search": {
+          "x": 354,
+          "y": 83,
+          "width": 572,
+          "height": 48
+        },
+        "results": {
+          "x": 354,
+          "y": 131,
+          "width": 572,
+          "height": 384
+        },
+        "footer": {
+          "x": 354,
+          "y": 459,
+          "width": 572,
+          "height": 40
+        },
+        "footerText": "↑ ↓ Navigate Enter Select Esc Close",
+        "rows": [
+          {
+            "x": 362,
+            "y": 160,
+            "width": 556,
+            "height": 32
+          },
+          {
+            "x": 362,
+            "y": 192,
+            "width": 556,
+            "height": 32
+          },
+          {
+            "x": 362,
+            "y": 224,
+            "width": 556,
+            "height": 32
+          },
+          {
+            "x": 362,
+            "y": 256,
+            "width": 556,
+            "height": 32
+          },
+          {
+            "x": 362,
+            "y": 288,
+            "width": 556,
+            "height": 32
+          },
+          {
+            "x": 362,
+            "y": 320,
+            "width": 556,
+            "height": 32
+          },
+          {
+            "x": 362,
+            "y": 379,
+            "width": 556,
+            "height": 43
+          },
+          {
+            "x": 362,
+            "y": 422,
+            "width": 556,
+            "height": 43
+          },
+          {
+            "x": 362,
+            "y": 465,
+            "width": 556,
+            "height": 43
+          }
+        ],
+        "labels": [
+          "New thread in Gap3",
+          "New thread in...",
+          "Go to file",
+          "Search project contents",
+          "Add project",
+          "Open settings",
+          "Finish the in-monorepo Lynxtron UI migration",
+          "Investigate an intentionally long thread title that must truncate without moving actions",
+          "Global keyboard bridge and focus order"
+        ],
+        "empty": null,
+        "emptyText": null,
+        "screenshot": {
+          "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/evidence/2026-09-12/final5/quick-switch-default/native-quick-switch-default-dark.png",
+          "bytes": 534546,
+          "sha256": "c5abfac0351c272b0c9d5baa6c7c4b3afaae901235d7ed017a61deda0493ceab"
+        },
+        "dismissed": true
+      },
+      "rendererErrors": 0
+    }
+  ]
+}
