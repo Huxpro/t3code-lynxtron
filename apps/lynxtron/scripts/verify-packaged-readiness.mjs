@@ -2000,7 +2000,24 @@ async function verifyHeroComposerState({
   outputDirectory,
   timeoutMs,
 }) {
-  const hero = await readOptionalMeasurement(client, ".hero");
+  let hero = await readOptionalMeasurement(client, ".hero");
+  let enteredHero = false;
+  if (!hero) {
+    await tapSelector({
+      child,
+      client,
+      selector: "[data-testid=sidebar-v2-new-thread]",
+      timeoutMs,
+    });
+    hero = await waitForMeasurement({
+      child,
+      client,
+      selector: ".hero",
+      timeoutMs,
+      predicate: (measurement) => measurement !== null,
+    });
+    enteredHero = true;
+  }
   const overlay = await readOptionalMeasurement(client, ".composer-overlay");
   assertComposerRouteState({ hero, overlay }, "new-thread");
   await waitForMeasurement({
@@ -2093,6 +2110,7 @@ async function verifyHeroComposerState({
   return {
     status: "pass",
     route: "new-thread",
+    enteredHero,
     hero: hero.rect,
     headline: {
       rect: headline.rect,

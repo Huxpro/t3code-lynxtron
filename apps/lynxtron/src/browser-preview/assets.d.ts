@@ -3,4 +3,9 @@ declare module "*.woff2" {
   export default url;
 }
 
+declare module "*.woff2?inline" {
+  const dataUrl: string;
+  export default dataUrl;
+}
+
 declare module "*.css";

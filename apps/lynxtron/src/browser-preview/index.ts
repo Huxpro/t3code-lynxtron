@@ -2,8 +2,8 @@ import "@lynx-js/web-core/client";
 import "@lynx-js/web-elements/index.css";
 
 import type { LynxViewElement } from "@lynx-js/web-core/client";
-import dmSansUrl from "../app/assets/dm-sans.woff2";
-import jetBrainsMonoUrl from "../app/assets/jetbrains-mono-400.woff2";
+import dmSansUrl from "../app/assets/dm-sans.woff2?inline";
+import jetBrainsMonoUrl from "../app/assets/jetbrains-mono-400.woff2?inline";
 import {
   T3_VIEWPORT_EVENT,
   T3_VIEWPORT_READY_METHOD,

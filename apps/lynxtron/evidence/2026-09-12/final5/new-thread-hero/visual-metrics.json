@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "stateId": "new-thread-hero",
+  "reference": "electron-web",
+  "candidate": "lynx-for-web",
+  "viewport": { "width": 1280, "height": 820, "devicePixelRatio": 1 },
+  "ssim": 0.963983,
+  "psnr": 23.96466,
+  "geometry": {
+    "heroComposerFrameExact": true,
+    "editorExact": true,
+    "toolbarAllocationGate": true,
+    "stateIdentityMatch": true
+  },
+  "command": "ffmpeg -i web.png -i lynx.png -lavfi ssim;[0:v][1:v]psnr -f null -",
+  "classification": "The remaining full-frame residual is renderer text and material rasterization; content identity and required layout geometry pass."
+}

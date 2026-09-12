@@ -199,6 +199,17 @@ describe("LiveConnectorHost", () => {
     assert.include(previewSource, "view.url = bundleUrl");
   });
 
+  it("inlines Browser Preview fonts instead of emitting webpack URLs", () => {
+    const previewSource = readFileSync(path.join(srcRoot, "browser-preview/index.ts"), "utf8");
+    const generatedCssSource = readFileSync(
+      path.join(srcRoot, "../scripts/generate-lynx-css.mjs"),
+      "utf8",
+    );
+    assert.include(previewSource, 'dm-sans.woff2?inline"');
+    assert.include(previewSource, 'jetbrains-mono-400.woff2?inline"');
+    assert.notInclude(generatedCssSource, "@font-face");
+  });
+
   it("forwards turn-diff commands to the live orchestration RPC", () => {
     const source = readFileSync(path.join(srcRoot, "browser-preview/liveConnectorHost.ts"), "utf8");
     assert.include(source, 'if (request.method === "getTurnDiff")');

@@ -1002,6 +1002,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"--expected-model-label"');
     assert.include(source, '"--expect-no-composer-context"');
     assert.include(source, 'assertComposerRouteState({ hero, overlay }, "new-thread")');
+    assert.include(source, 'selector: "[data-testid=sidebar-v2-new-thread]"');
+    assert.include(source, "enteredHero");
     assert.include(source, "allowMissingContext: expectNoComposerContext");
     assert.include(source, "Non-repository Hero Composer rendered repository context.");
     assert.include(source, 'selector: ".hero__headline"');

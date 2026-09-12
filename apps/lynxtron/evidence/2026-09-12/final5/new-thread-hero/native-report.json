@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "recordedAt": "2026-09-12T12:24:16.750Z",
+  "head": "17a6e5e1fbfc0ff7ba0a740abd5cb01266b4396b",
+  "executable": "/Users/bytedance/github/t3code-lynxtron-021-full/node_modules/.pnpm/@lynx-js+lynxtron@0.0.21/node_modules/@lynx-js/lynxtron/dist/devtool/lynxtron.app/Contents/MacOS/lynxtron",
+  "desktopDir": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop",
+  "bundle": {
+    "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "bytes": 6695745,
+    "sha256": "5336484666ff7f508dd117220e319f661ada0bc56099fdfd05c0d2b0aa42f31c"
+  },
+  "fixture": {
+    "source": "/tmp/t3-final5-native-hero.wPF5nM",
+    "snapshotId": "2586cddb57ef947dd42e9450cd3c509da397febe6e700ff3bf51e5a5377c64d9",
+    "projectTitle": "Gap3",
+    "modelSelection": {
+      "instanceId": "claudeAgent",
+      "model": "claude-fable-5"
+    }
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "expectedTheme": "dark",
+  "expectedEnvironmentIdentificationMode": null,
+  "results": [
+    {
+      "index": 1,
+      "status": "pass",
+      "startedAt": "2026-09-12T12:24:09.364Z",
+      "processId": 31921,
+      "isolatedState": {
+        "path": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-packaged-readiness-1-S6LiVV/state",
+        "disposed": true
+      },
+      "connection": {
+        "mode": "owned-local",
+        "serverOwned": true
+      },
+      "serverPort": 59593,
+      "client": {
+        "app": "@t3tools/lynxtron",
+        "clientId": "localhost:8901",
+        "port": 8901,
+        "sessionId": 1,
+        "bundleUrl": "file:///Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle"
+      },
+      "transport": {
+        "kind": "main",
+        "probe": "same-value model selection without thread mutation",
+        "beforeProbe": {
+          "kind": "main",
+          "lastSeq": 3
+        },
+        "afterProbe": {
+          "kind": "main",
+          "lastSeq": 4
+        }
+      },
+      "theme": {
+        "expected": "dark",
+        "actual": "dark"
+      },
+      "canonicalState": {
+        "canonicalThreadTitle": null,
+        "threadText": null,
+        "modelText": null,
+        "skipped": "Outcome uses an explicit empty-thread fixture."
+      },
+      "heroComposerState": {
+        "status": "pass",
+        "route": "new-thread",
+        "enteredHero": false,
+        "hero": {
+          "x": 256,
+          "y": 52,
+          "width": 1024,
+          "height": 768
+        },
+        "headline": {
+          "rect": {
+            "x": 384,
+            "y": 271,
+            "width": 768,
+            "height": 36
+          },
+          "fontSize": "30px",
+          "lineHeight": "36px",
+          "letterSpacing": "-0.75px"
+        },
+        "model": "Claude Fable 5",
+        "screenshot": {
+          "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/evidence/2026-09-12/final5/new-thread-hero/native-hero-dark.png",
+          "bytes": 597732,
+          "sha256": "430d35a7cfa8e3813ca62f8cb26c9de5a0585a0436708cb09db7a4a40cd640a2"
+        },
+        "composer": {
+          "frame": {
+            "x": 384,
+            "y": 340,
+            "width": 768,
+            "height": 140
+          },
+          "surface": {
+            "x": 385,
+            "y": 341,
+            "width": 766,
+            "height": 138
+          },
+          "editor": {
+            "x": 401,
+            "y": 357,
+            "width": 734,
+            "height": 70
+          },
+          "footer": {
+            "x": 385,
+            "y": 435,
+            "width": 766,
+            "height": 44
+          },
+          "controls": ["Claude Fable 5", "High · 1M", "Full access", "Build"],
+          "context": ["Current checkout", "main"]
+        }
+      },
+      "rendererErrors": 0
+    }
+  ]
+}
