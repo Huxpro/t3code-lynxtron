@@ -175,6 +175,14 @@ unfinished Plan 11 outcome.
   pass with exact frame/surface sizing, zero Native renderer errors, and main
   transport advancement. The runtime-blocked file dialog and paired pixels
   remain explicit boundaries.
+- Composer element context now has a shared Web/Native presentation contract for
+  normalization, identity dedupe, labels, source labels, scoped restore, removal,
+  and prompt serialization. A same-snapshot 1280 x 820 dark gate proves the real
+  guarded Web draft action and Remove button, Native context-only sendability and
+  physical Computer Use Remove, scoped persistence, owned cold restart, failed-send
+  preservation, retry serialization into the canonical user message, successful
+  clearing, main transport advancement, and zero renderer errors. The Preview
+  picker entry and paired pixels remain explicit residuals.
 - Provider instance projection, status copy, settings-overlay semantics, and
   migrate-on-write patches are shared with Web. Lynx consumes canonical
   `ServerConfig.providers` / `ServerConfig.settings`, subscribes to the shared

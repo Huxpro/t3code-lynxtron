@@ -151,8 +151,7 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
 - Draft text uses stable canonical-thread or local-project scope keys, is
   debounced into isolated preferences, strictly decoded, and survives an owned
   cold restart into a second exact-bundle process.
-- Connector reconnect restoration, attachments, and terminal/element context
-  lifecycles remain open; this checkpoint does not
+- Connector reconnect restoration remains open; this checkpoint does not
   satisfy the PF2 exit criteria by itself.
 - Attachment upload DTOs now cross the shared command builder, Browser live
   connector, Native main bridge, and server normalizer. Native draft state can
@@ -181,6 +180,14 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
   but its assistant run was externally blocked by the account usage limit. PF2
   stays `in_progress` for final real-input closure and matched Web/Lynx
   attachment evidence.
+- Web and Native now also share element-context normalization, identity dedupe,
+  labels, source labels, scoped restoration, removal, and prompt serialization.
+  A same-snapshot 1280 x 820 dark gate proves the guarded real Web draft action,
+  Native context-only sendability and physical Computer Use removal, strict
+  persistence across an owned cold restart, failed-send preservation, and
+  serialization into the canonical user message on retry. The successful retry
+  clears the context only after the canonical turn is created. The user-facing
+  Preview picker entry and paired pixels remain explicit residuals.
 - Native file mentions now use the Web authority's canonical Markdown-link
   serializer while rendering as scoped Composer chips. The Composer `@` picker
   creates a chip, removal restores the disabled empty state, and strict
