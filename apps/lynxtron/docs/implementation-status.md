@@ -165,6 +165,16 @@ unfinished Plan 11 outcome.
   host-neutral projections. Lynx retains its native textarea and pill
   renderers, but every displayed control now reads or writes canonical thread
   state.
+- Composer image attachments now have a no-capture same-snapshot Electron/Native
+  gate. Electron uses its real ClipboardEvent paste and Remove paths against the
+  fresh `apps/web/dist` entry; exact-owned Native uses the same 1280 x 820 dark
+  snapshot and a physical Computer Use Remove click. The shared geometry is a
+  768 px frame, 766 px surface, 734 px attachment row, 64 px card, 62 px cover
+  preview, 10 px corners, and 5 px remove inset. Native now uses explicit column
+  flow, `aspectFill`, and a remove overlay above the image. All 22 scoped checks
+  pass with zero Native renderer errors and main transport advancement. The
+  20 px versus 24 px remove target, 12 px whole-Composer height difference,
+  runtime-blocked file dialog, and paired pixels remain explicit residuals.
 - Provider instance projection, status copy, settings-overlay semantics, and
   migrate-on-write patches are shared with Web. Lynx consumes canonical
   `ServerConfig.providers` / `ServerConfig.settings`, subscribes to the shared

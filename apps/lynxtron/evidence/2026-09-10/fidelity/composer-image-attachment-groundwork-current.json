@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "observedAt": "2026-09-10T06:42:06-04:00",
   "stateId": "composer-image-attachment",
   "codeState": "working-tree-product-change",
@@ -61,10 +61,18 @@
     ],
     "notYetProved": [
       "user-reachable image selection on Lynxtron 0.0.21",
-      "canonical server persistence and provider receipt from a real attachment send",
-      "upload failure and resend behavior",
       "matched Web and Lynx attachment pixels"
     ]
   },
-  "classification": "The attachment transport, Native draft presentation, removal, and scoped cold-restart restoration are independently verified. The only available native file dialog still crashes into a Lynxtron 0.0.21 Fiber attribute LogBox in three controlled variants, so the broken entry point remains hidden. This is verified groundwork plus a runtime blocker, not full user-visible attachment parity."
+  "classification": "The attachment transport, Native draft presentation, removal, and scoped cold-restart restoration are independently verified. The only available native file dialog still crashes into a Lynxtron 0.0.21 Fiber attribute LogBox in three controlled variants, so the broken entry point remains hidden. This is verified groundwork plus a runtime blocker, not full user-visible attachment parity.",
+  "pairedFollowUp": {
+    "evidence": "../2026-09-12/fidelity/composer-attachment-paired-current.json",
+    "status": "attachment-anatomy-and-removal-correlated",
+    "remaining": [
+      "native file-dialog entry",
+      "4px remove hit-target size delta",
+      "12px whole-Composer surface-height delta",
+      "paired pixels"
+    ]
+  }
 }
