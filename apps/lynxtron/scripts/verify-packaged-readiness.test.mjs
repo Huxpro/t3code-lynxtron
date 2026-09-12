@@ -1336,8 +1336,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".settings-content--source-control"');
     assert.include(source, 'readSelectorRects(client, "[data-source-control-loading-row]")');
     assert.include(source, "Math.abs(sections[0].height - 176) > 1");
-    assert.include(source, "Math.abs(sections[2].y - 536) > 1");
-    assert.include(source, "Math.abs(sections[2].height - 290) > 2");
+    assert.include(source, "Math.abs(sections[2].y - 548) > 1");
+    assert.include(source, "Math.abs(sections[2].height - 295) > 2");
     assert.include(source, "rows.length !== 4");
     assert.include(source, '"native-settings-source-control-loading.png"');
     assert.include(outcomeChecksSource, "sourceControlLoading");

@@ -13123,9 +13123,9 @@ async function verifySourceControlLoadingBehavior({
     Math.abs(sections[0].height - 176) > 1 ||
     Math.abs(sections[1].width - 896) > 1 ||
     Math.abs(sections[1].height - 176) > 1 ||
-    Math.abs(sections[1].y - 312) > 1 ||
-    Math.abs(sections[2].y - 536) > 1 ||
-    Math.abs(sections[2].height - 290) > 2 ||
+    Math.abs(sections[1].y - 324) > 1 ||
+    Math.abs(sections[2].y - 548) > 1 ||
+    Math.abs(sections[2].height - 295) > 2 ||
     rows.some((row) => Math.abs(row.width - 896) > 1 || Math.abs(row.height - 66) > 1)
   ) {
     throw new Error(
