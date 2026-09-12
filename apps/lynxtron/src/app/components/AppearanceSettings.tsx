@@ -4,29 +4,31 @@ import {
   resolveEnvironmentIdentificationPillLabel,
   useEnvironmentStageLabel,
 } from "../../../../web/src/components/SidebarStageBackdrop";
-import { SelectBox } from "./SettingsControls";
+import { GlassSlider, SelectBox, Toggle } from "./SettingsControls";
 import { Icon } from "./Icon";
-import { useThemePreferenceState } from "../state/prefsStore";
+import { useClientSettingsState, useThemePreferenceState } from "../state/prefsStore";
 import { LYNX_THEME_LABELS, NEXT_LYNX_THEME } from "../state/themePreference.logic";
+import {
+  MAX_GLASS_OPACITY,
+  MIN_GLASS_OPACITY,
+  PORTABLE_CLIENT_SETTINGS_DEFAULTS,
+} from "@t3tools/client-runtime/presentation/settings";
 
-const UNAVAILABLE_STATUS = "Not yet available in Lynxtron.";
+const ENVIRONMENT_IDENTIFICATION_LABELS = {
+  artwork: "Artwork",
+  pill: "Version pill",
+  none: "None",
+} as const;
+const NEXT_ENVIRONMENT_IDENTIFICATION_MODE = {
+  artwork: "pill",
+  pill: "none",
+  none: "artwork",
+} as const;
 
-function UnavailableControl({ width }: { readonly width: number }) {
-  return (
-    <text className="appearance-unavailable-control" style={{ width: `${width}px` }}>
-      {UNAVAILABLE_STATUS}
-    </text>
-  );
-}
-
-/**
- * Lynx keeps the complete Appearance information architecture visible without
- * presenting storage-only toggles as working product behavior. PF7 owns the
- * theme/input capability work; this panel can receive real controls when that
- * boundary is certified.
- */
+/** Lynx uses the shared Appearance anatomy with portable persisted controls. */
 export function AppearanceSettings() {
   const [themePreference, setThemePreference] = useThemePreferenceState();
+  const [clientSettings, updateClientSettings] = useClientSettingsState();
   const showEnvironmentIdentification =
     resolveEnvironmentIdentificationPillLabel(useEnvironmentStageLabel()) !== null;
 
@@ -52,13 +54,81 @@ export function AppearanceSettings() {
         themeStatus={
           themePreference === "system" ? "Follows the operating system appearance." : undefined
         }
-        glassOpacityControl={<UnavailableControl width={208} />}
-        glassOpacityUnavailable
-        environmentIdentificationStatus={UNAVAILABLE_STATUS}
-        environmentIdentificationUnavailable
+        glassOpacityResetAction={
+          clientSettings.glassOpacity !== PORTABLE_CLIENT_SETTINGS_DEFAULTS.glassOpacity ? (
+            <SettingResetButton
+              label="glass opacity"
+              icon={<Icon name="rotate-ccw" size={12} color="#818181" />}
+              onClick={() =>
+                updateClientSettings({
+                  glassOpacity: PORTABLE_CLIENT_SETTINGS_DEFAULTS.glassOpacity,
+                })
+              }
+            />
+          ) : null
+        }
+        glassOpacityControl={
+          <GlassSlider
+            percent={clientSettings.glassOpacity}
+            onTap={() =>
+              updateClientSettings({
+                glassOpacity:
+                  clientSettings.glassOpacity >= MAX_GLASS_OPACITY
+                    ? MIN_GLASS_OPACITY
+                    : clientSettings.glassOpacity + 5,
+              })
+            }
+          />
+        }
+        environmentIdentificationResetAction={
+          clientSettings.environmentIdentificationMode !==
+          PORTABLE_CLIENT_SETTINGS_DEFAULTS.environmentIdentificationMode ? (
+            <SettingResetButton
+              label="environment identification"
+              icon={<Icon name="rotate-ccw" size={12} color="#818181" />}
+              onClick={() =>
+                updateClientSettings({
+                  environmentIdentificationMode:
+                    PORTABLE_CLIENT_SETTINGS_DEFAULTS.environmentIdentificationMode,
+                })
+              }
+            />
+          ) : null
+        }
+        environmentIdentificationControl={
+          <SelectBox
+            label={ENVIRONMENT_IDENTIFICATION_LABELS[clientSettings.environmentIdentificationMode]}
+            width={160}
+            onTap={() =>
+              updateClientSettings({
+                environmentIdentificationMode:
+                  NEXT_ENVIRONMENT_IDENTIFICATION_MODE[
+                    clientSettings.environmentIdentificationMode
+                  ],
+              })
+            }
+          />
+        }
         showEnvironmentIdentification={showEnvironmentIdentification}
-        wordWrapControl={<UnavailableControl width={160} />}
-        wordWrapUnavailable
+        wordWrapResetAction={
+          clientSettings.wordWrap !== PORTABLE_CLIENT_SETTINGS_DEFAULTS.wordWrap ? (
+            <SettingResetButton
+              label="word wrapping"
+              icon={<Icon name="rotate-ccw" size={12} color="#818181" />}
+              onClick={() =>
+                updateClientSettings({ wordWrap: PORTABLE_CLIENT_SETTINGS_DEFAULTS.wordWrap })
+              }
+            />
+          ) : null
+        }
+        wordWrapControl={
+          <Toggle
+            ariaLabel="Wrap code, tables, diffs, and file previews by default"
+            settingControl="word-wrap"
+            value={clientSettings.wordWrap}
+            onChange={(wordWrap) => updateClientSettings({ wordWrap })}
+          />
+        }
       />
     </view>
   );

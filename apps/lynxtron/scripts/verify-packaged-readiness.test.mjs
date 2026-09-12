@@ -1252,7 +1252,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'readSelectorRects(client, ".source-control-item")');
     assert.include(source, 'readSelectorRects(client, ".source-control-writing-row")');
     assert.include(source, 'name: "native-settings-source-control.png"');
-    assert.include(source, 'assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 132)');
+    assert.include(source, 'assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 144)');
     assert.include(
       source,
       'assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 88)',
@@ -1274,7 +1274,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "navigationSelections.length !== expectedObservedRoutes.length");
   });
 
-  it("verifies unavailable Appearance rows as muted disabled capabilities", () => {
+  it("verifies working Appearance controls and their canonical mutations", () => {
     assert.include(source, "async function verifySettingsAppearance");
     assert.include(source, '"--verify-settings-appearance"');
     assert.include(source, 'selector: ".sidebar-settings-row"');
@@ -1284,18 +1284,22 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "readAppearanceSettingsEvidence");
     assert.include(source, 'selector: ".settings-content--appearance"');
     assert.include(source, "async function readSelectorMeasurements");
-    assert.include(source, "rows.length !== unavailableTitles.length + 1");
-    assert.include(source, "availableRows.length !== 1");
+    assert.include(source, "rows.length !== expectedRowCount");
+    assert.include(source, "availableRows.length !== expectedRowCount");
     assert.include(source, 'theme.attributes["aria-disabled"] === "true"');
-    assert.include(source, '"Glass opacity"');
-    assert.include(source, '"Environment identification"');
-    assert.include(source, '"Word wrap"');
     assert.include(source, 'row.attributes["data-settings-unavailable"] === "true"');
-    assert.include(source, "unavailableRows.length !== unavailableTitles.length");
-    assert.include(source, 'row.attributes["aria-disabled"] !== "true"');
-    assert.include(source, '".settings-content--appearance .settings-row--unavailable"');
-    assert.include(source, "Math.abs(Number(opacity) - 0.48) > 1 / 255");
-    assert.include(source, 'name: "native-settings-appearance-unavailable.png"');
+    assert.include(source, "unavailableRows.length !== 0");
+    assert.include(source, 'selector: ".glass-slider"');
+    assert.include(source, 'selector: ".settings-toggle--word-wrap"');
+    assert.include(source, 'selector: "#environment-identification .select-box"');
+    assert.include(source, "before.clientSettings.glassOpacity + 5");
+    assert.include(source, "before.clientSettings.environmentIdentificationMode");
+    assert.include(source, "!before.clientSettings.wordWrap");
+    assert.include(source, 'selector: ".app-theme-root"');
+    assert.include(source, '"data-glass-opacity"');
+    assert.include(source, "glass-opacity-${after.clientSettings.glassOpacity}");
+    assert.include(source, '"--appearance-semantic-only"');
+    assert.include(source, 'name: "native-settings-appearance.png"');
     assert.include(source, 'physicalKeyboard: "pending-user-session"');
     assert.include(source, "only titlebar/sidebar inset changes use the shared 200ms linear");
     assert.include(outcomeChecksSource, "settingsAppearance");

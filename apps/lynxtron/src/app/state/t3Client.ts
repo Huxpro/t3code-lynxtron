@@ -797,6 +797,7 @@ function installTransportDevToolHook(): void {
       vcsStatusCwd: string | null;
       vcsStatusPending: boolean;
       activeComposerElementContexts: ReadonlyArray<ElementContextDraft>;
+      clientSettings: ReturnType<typeof getClientSettingsState>;
     };
     __T3_LYNXTRON_SELECT_THREAD__?: (threadId: string) => void;
     __T3_LYNXTRON_CREATE_DRAFT_THREAD__?: (projectId: string) => Promise<boolean>;
@@ -858,6 +859,7 @@ function installTransportDevToolHook(): void {
       activeComposerElementContexts: activeComposerDraftKey
         ? (state.composerElementContextsByScopeKey[activeComposerDraftKey] ?? [])
         : [],
+      clientSettings: getClientSettingsState(),
       messages: state.messages,
       sessionStatus: state.sessionStatus,
       sessionError: state.sessionError,

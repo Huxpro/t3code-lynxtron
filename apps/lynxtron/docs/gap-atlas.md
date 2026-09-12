@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-12T10:30:58.472Z
+Generated: 2026-09-12T11:14:37.183Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -27,7 +27,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | GAP-007 | P1       | SOURCE_REUSE       | Quick Switch                                           |    51 | closed          | CommandPalette composition / QuickSwitch host                 |
 | GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | closed          | DiffPanel / changed-files composition and R10 renderer island |
 | GAP-003 | P2       | SOURCE_REUSE       | Settings Connections / Source Control / Beta / Archive |    45 | open            | Settings route panels and platform host slots                 |
-| GAP-012 | P2       | INTERACTION        | Settings Appearance                                    |    39 | open            | AppearanceSettingsSurface and runtime preferences             |
+| GAP-012 | P2       | INTERACTION        | Settings Appearance                                    |    39 | closed          | AppearanceSettingsSurface and runtime preferences             |
 | GAP-001 | P3       | HARNESS_INVALID    | Main shell / New Thread                                |    21 | closed          | Plan 11C workbench state-echo selector                        |
 
 ## GAP-002 — Main shell / Sidebar / Composer
@@ -214,18 +214,19 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P2` / `INTERACTION`
 - Priority score: 39
-- User impact: Appearance composition exists but controls remain labeled unavailable and have no strict state matrix.
+- User impact: Closed: theme, glass opacity, environment identification, and word wrap have real persisted Native controls.
 - Clients/states: web, lynx, native / General appearance, theme, wrap, identification
 - Source owner: AppearanceSettingsSurface and runtime preferences
-- Likely root cause: Shared anatomy landed before runtime theme/wrap capabilities.
+- Likely root cause: Closed by wiring the shared Appearance anatomy to canonical portable client settings and Native material/consumer hosts.
 - Fix class: `host adapter`
 - Physical reuse: not audited
 - Weighted style risk occurrences: 4821
-- Native requirement: theme/wrap persistence and restart
-- Disposition: `open`
+- Native requirement: satisfied by real pointer mutation, persistence, and cold restart
+- Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`
   - `compat-matrix.md#R13`
+  - `evidence/2026-09-12/fidelity/settings-appearance-real-controls-current.json`
 
 ## GAP-001 — Main shell / New Thread
 

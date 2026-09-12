@@ -2656,12 +2656,59 @@
   height: 363px;
   min-height: 363px;
 }
+.theme-dark {
+  --composer-frame-rgb: 30, 30, 30;
+  --composer-surface-rgb: 18, 18, 18;
+}
+.theme-light {
+  --composer-frame-rgb: 228, 228, 231;
+  --composer-surface-rgb: 255, 255, 255;
+}
+.glass-opacity-40 {
+  --glass-opacity-ratio: 0.4;
+}
+.glass-opacity-45 {
+  --glass-opacity-ratio: 0.45;
+}
+.glass-opacity-50 {
+  --glass-opacity-ratio: 0.5;
+}
+.glass-opacity-55 {
+  --glass-opacity-ratio: 0.55;
+}
+.glass-opacity-60 {
+  --glass-opacity-ratio: 0.6;
+}
+.glass-opacity-65 {
+  --glass-opacity-ratio: 0.65;
+}
+.glass-opacity-70 {
+  --glass-opacity-ratio: 0.7;
+}
+.glass-opacity-75 {
+  --glass-opacity-ratio: 0.75;
+}
+.glass-opacity-80 {
+  --glass-opacity-ratio: 0.8;
+}
+.glass-opacity-85 {
+  --glass-opacity-ratio: 0.85;
+}
+.glass-opacity-90 {
+  --glass-opacity-ratio: 0.9;
+}
+.glass-opacity-95 {
+  --glass-opacity-ratio: 0.95;
+}
+.glass-opacity-100 {
+  --glass-opacity-ratio: 1;
+}
 .composer-frame {
   display: block;
   flex-shrink: 0;
   width: 100%;
   border-radius: 22px;
-  background-color: var(--composer-frame);
+  background-color: rgba(var(--composer-frame-rgb), var(--glass-opacity-ratio));
   box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.4);
   box-sizing: border-box;
 }
@@ -3430,7 +3477,7 @@
 /* surface: composer card surface color; gap: none (token passthrough);
    remove-when: surface color compiles from the shared composition. */
 .composer-surface {
-  background-color: var(--composer-surface);
+  background-color: rgba(var(--composer-surface-rgb), var(--glass-opacity-ratio));
 }
 .composer-surface--approval {
   height: 245px;
@@ -11428,7 +11475,7 @@
   color: var(--primary-foreground);
 }
 .dropdown-glass {
-  background-color: var(--popover);
+  background-color: rgba(var(--popover-rgb), var(--glass-opacity-ratio));
   border-color: var(--border);
   border-style: solid;
   border-width: 1px;

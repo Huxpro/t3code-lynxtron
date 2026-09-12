@@ -113,10 +113,14 @@ export function SmallIconButton({
   );
 }
 
-export function GlassSlider({ percent }: { percent: number }) {
+export function GlassSlider({ percent, onTap }: { percent: number; onTap?: () => void }) {
   const fillPct = Math.max(0, Math.min(100, ((percent - 40) / 60) * 100));
   return (
-    <view className="glass-slider">
+    <view
+      className={onTap ? "glass-slider glass-slider--interactive" : "glass-slider"}
+      aria-label={`Glass opacity ${percent}%`}
+      bindtap={onTap}
+    >
       <view className="glass-slider__badge">
         <text className="glass-slider__badge-text">{percent}%</text>
       </view>

@@ -62,7 +62,7 @@ describe("Lynx Settings route projection", () => {
     }
     const contentStart = overrides.indexOf(".settings-content {");
     const contentBlock = overrides.slice(contentStart, overrides.indexOf("}", contentStart));
-    expect(contentBlock).toContain("padding: 36px 32px 40px 32px;");
+    expect(contentBlock).toContain("padding: 48px 32px 40px 32px;");
     expect(overrides).not.toContain(".settings-content--source-control {");
     expect(overrides).toContain(
       ".settings-content--connections > .settings-panel {\n  --align-self-row: start;\n  align-self: flex-start;",
@@ -94,16 +94,16 @@ describe("Lynx Settings route projection", () => {
     expect(settingsRouteHost).toContain("const contentHeight = Math.max(0, viewport.height - 52);");
     expect(settingsRouteHost).toContain("style={{ height: `${contentHeight}px` }}");
     const settingsRowMarker = overrides.indexOf("/* SettingsRow:");
-    const textStart = overrides.indexOf(".settings-row__text {", settingsRowMarker);
+    const textStart = overrides.indexOf("\n.settings-row__text {", settingsRowMarker) + 1;
     const textBlock = overrides.slice(textStart, overrides.indexOf("}", textStart));
     expect(textBlock).toContain("--lynx-linear-weight: 1;");
-    const descriptionStart = overrides.indexOf(".settings-row__desc {", settingsRowMarker);
+    const descriptionStart = overrides.indexOf("\n.settings-row__desc {", settingsRowMarker) + 1;
     const descriptionBlock = overrides.slice(
       descriptionStart,
       overrides.indexOf("}", descriptionStart),
     );
     expect(descriptionBlock).toContain("max-width: 576px;");
-    expect(descriptionBlock).toContain("line-height: 20px;");
+    expect(descriptionBlock).toContain("line-height: var(--settings-row-description-line-height);");
     expect(layout).toContain('"settings-section flex w-full min-w-0 flex-col self-stretch"');
     expect(layout).toContain('"settings-section__rows flex w-full min-w-0 flex-col self-stretch"');
     expect(layout).toContain('"settings-row__text flex min-w-0 flex-1 flex-col"');
@@ -124,7 +124,7 @@ describe("Lynx Settings route projection", () => {
     expect(routeHost).toContain("key={pathname}");
   });
 
-  it("marks unavailable Settings capabilities as disabled and visibly muted", () => {
+  it("wires Appearance capabilities to portable persisted controls", () => {
     const appearance = readFileSync(
       path.resolve(import.meta.dirname, "components/AppearanceSettings.tsx"),
       "utf8",
@@ -166,15 +166,14 @@ describe("Lynx Settings route projection", () => {
     );
     const overrides = readFileSync(path.resolve(import.meta.dirname, "overrides.css"), "utf8");
 
-    for (const unavailableProp of [
-      "glassOpacityUnavailable",
-      "environmentIdentificationUnavailable",
-      "wordWrapUnavailable",
-    ]) {
-      expect(appearance).toContain(unavailableProp);
-    }
-    expect(appearance).toContain("glassOpacityControl={<UnavailableControl width={208} />}");
-    expect(appearance).toContain("wordWrapControl={<UnavailableControl width={160} />}");
+    expect(appearance).not.toContain("UnavailableControl");
+    expect(appearance).not.toContain("Unavailable");
+    expect(appearance).toContain("useClientSettingsState");
+    expect(appearance).toContain("<GlassSlider");
+    expect(appearance).toContain("clientSettings.glassOpacity + 5");
+    expect(appearance).toContain("environmentIdentificationMode:");
+    expect(appearance).toContain("<Toggle");
+    expect(appearance).toContain("updateClientSettings({ wordWrap })");
     expect(appearance).toContain("width={160}");
     expect(overrides).toContain("#theme,\n#word-wrap {\n  height: 66.84375px;");
     expect(overrides).toContain("#setting-glass-opacity {\n  height: 85.6875px;");

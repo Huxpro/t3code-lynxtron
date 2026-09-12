@@ -34,6 +34,7 @@ import {
   resolveLynxTheme,
   setPref,
   useThemePreferenceState,
+  useClientSettingsState,
 } from "./state/prefsStore";
 import { readPreviewInitialState, t3ClientActions, useT3ClientState } from "./state/t3Client";
 import {
@@ -264,6 +265,7 @@ function RootOverlays() {
 
 function ThemedApp() {
   const [themePreference] = useThemePreferenceState();
+  const [clientSettings] = useClientSettingsState();
   const [systemTheme, setSystemTheme] = useState(getSystemThemeSnapshot);
   const theme = resolveLynxTheme(themePreference, systemTheme.theme);
   const fontReady = useDmSansReady();
@@ -279,12 +281,13 @@ function ThemedApp() {
   return (
     <ResolvedThemeContext.Provider value={theme}>
       <view
-        className={`app-theme-root theme-${theme} viewport-${tier} ${
+        className={`app-theme-root theme-${theme} viewport-${tier} glass-opacity-${clientSettings.glassOpacity} ${
           authorityViewport ? "viewport-authority" : "viewport-responsive"
         }${__T3_LYNXTRON_WEB_PREVIEW__ ? " lynx-web-preview" : ""}${
           fontReady ? " t3-dm-sans-ready" : ""
         }${monoFontReady ? " t3-jetbrains-mono-ready" : ""}`}
         data-theme={theme}
+        data-glass-opacity={String(clientSettings.glassOpacity)}
         data-viewport-height={String(viewport.height)}
         data-viewport-tier={tier}
         data-viewport-width={String(viewport.width)}

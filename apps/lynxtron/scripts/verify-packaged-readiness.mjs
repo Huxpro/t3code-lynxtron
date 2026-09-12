@@ -12046,6 +12046,7 @@ async function readAppearanceSettingsEvidence({
   client,
   devToolCli,
   outputDirectory,
+  semanticOnly = false,
   timeoutMs,
 }) {
   const appearancePanel = await waitForMeasurement({
@@ -12063,13 +12064,7 @@ async function readAppearanceSettingsEvidence({
     client,
     ".settings-content--appearance .settings-row",
   );
-  const unavailableTitles = [
-    "Glass opacity",
-    ...(appearancePanel.text.includes("Environment identification")
-      ? ["Environment identification"]
-      : []),
-    "Word wrap",
-  ];
+  const expectedRowCount = appearancePanel.text.includes("Environment identification") ? 4 : 3;
   const unavailableRows = rows.filter(
     (row) => row.attributes["data-settings-unavailable"] === "true",
   );
@@ -12077,10 +12072,10 @@ async function readAppearanceSettingsEvidence({
     (row) => row.attributes["data-settings-unavailable"] !== "true",
   );
   const [theme] = availableRows;
-  assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 132);
+  assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 144);
   if (
-    rows.length !== unavailableTitles.length + 1 ||
-    availableRows.length !== 1 ||
+    rows.length !== expectedRowCount ||
+    availableRows.length !== expectedRowCount ||
     theme.attributes["aria-disabled"] === "true" ||
     theme.attributes["data-settings-unavailable"] === "true"
   ) {
@@ -12088,55 +12083,59 @@ async function readAppearanceSettingsEvidence({
       `Appearance row availability is inconsistent: ${JSON.stringify({
         availableRows,
         rows,
-        unavailableTitles,
+        expectedRowCount,
       })}`,
     );
   }
-  if (
-    unavailableRows.length !== unavailableTitles.length ||
-    unavailableRows.some((row) => row.attributes["aria-disabled"] !== "true")
-  ) {
+  if (unavailableRows.length !== 0) {
     throw new Error(
-      `Appearance unavailable rows lost disabled semantics: ${JSON.stringify({
+      `Appearance retained unavailable rows after capability activation: ${JSON.stringify({
         unavailableRows,
-        unavailableTitles,
       })}`,
     );
   }
-  const unavailableOpacities = await readSelectorStyleValues(
+  const glassOpacity = await waitForMeasurement({
+    child,
     client,
-    ".settings-content--appearance .settings-row--unavailable",
-    "opacity",
+    selector: ".glass-slider",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["aria-label"]?.startsWith("Glass opacity "),
+  });
+  const environmentIdentification = await readOptionalMeasurement(
+    client,
+    "#environment-identification .select-box",
   );
-  if (
-    unavailableOpacities.length !== unavailableRows.length ||
-    unavailableOpacities.some(
-      (opacity) => opacity === null || Math.abs(Number(opacity) - 0.48) > 1 / 255,
-    )
-  ) {
-    throw new Error(
-      `Appearance unavailable rows are not visibly muted: ${JSON.stringify({
-        unavailableOpacities,
-        unavailableRows,
-      })}`,
-    );
-  }
+  const wordWrap = await waitForMeasurement({
+    child,
+    client,
+    selector: ".settings-toggle--word-wrap",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
   return {
     panel: appearancePanel.rect,
     text: appearancePanel.text,
     theme,
-    unavailableRows,
-    unavailableOpacities,
-    screenshot: captureNativeScreenshot({
-      client,
-      devToolCli,
-      outputDirectory,
-      name: "native-settings-appearance-unavailable.png",
-    }),
+    controls: { glassOpacity, environmentIdentification, wordWrap },
+    screenshot: semanticOnly
+      ? undefined
+      : captureNativeScreenshot({
+          client,
+          devToolCli,
+          outputDirectory,
+          name: "native-settings-appearance.png",
+        }),
   };
 }
 
-async function verifySettingsAppearance({ child, client, devToolCli, outputDirectory, timeoutMs }) {
+async function verifySettingsAppearance({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  semanticOnly,
+  timeoutMs,
+}) {
   await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
   await waitForRoutePanel({
     child,
@@ -12165,7 +12164,39 @@ async function verifySettingsAppearance({ child, client, devToolCli, outputDirec
     client,
     devToolCli,
     outputDirectory,
+    semanticOnly,
     timeoutMs,
+  });
+  const before = await readClientState(client);
+  await tapSelector({ child, client, selector: ".glass-slider", timeoutMs });
+  await tapSelector({
+    child,
+    client,
+    selector: "#environment-identification .select-box",
+    timeoutMs,
+  });
+  await tapSelector({ child, client, selector: ".settings-toggle--word-wrap", timeoutMs });
+  const after = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.clientSettings?.glassOpacity ===
+        (before.clientSettings.glassOpacity >= 100 ? 40 : before.clientSettings.glassOpacity + 5) &&
+      state?.clientSettings?.environmentIdentificationMode !==
+        before.clientSettings.environmentIdentificationMode &&
+      state?.clientSettings?.wordWrap === !before.clientSettings.wordWrap,
+  });
+  const rootMaterial = await waitForMeasurement({
+    child,
+    client,
+    selector: ".app-theme-root",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-glass-opacity"] === String(after.clientSettings.glassOpacity) &&
+      measurement.attributes.class?.includes(
+        `glass-opacity-${after.clientSettings.glassOpacity}`,
+      ) === true,
   });
   await tapSelector({ child, client, selector: ".settings-nav__back", timeoutMs });
   await waitForChatRoute({ child, client, timeoutMs });
@@ -12180,6 +12211,11 @@ async function verifySettingsAppearance({ child, client, devToolCli, outputDirec
       finalRoute: "/",
     },
     appearance,
+    mutation: {
+      before: before.clientSettings,
+      after: after.clientSettings,
+      rootMaterial,
+    },
     physicalKeyboard: "pending-user-session",
   };
 }
@@ -13991,6 +14027,7 @@ async function runOnce({
           client,
           devToolCli,
           outputDirectory,
+          semanticOnly: appearanceSemanticOnly,
           timeoutMs,
         })
       : undefined;
@@ -14642,6 +14679,7 @@ const expectedModelLabel = argumentValue("--expected-model-label");
 const expectNoComposerContext = process.argv.includes("--expect-no-composer-context");
 const verifySettingsNavigation = process.argv.includes("--verify-settings-navigation");
 const shouldVerifySettingsAppearance = process.argv.includes("--verify-settings-appearance");
+const appearanceSemanticOnly = process.argv.includes("--appearance-semantic-only");
 const shouldVerifyProvidersSettings = process.argv.includes("--verify-providers-settings");
 const shouldVerifyProviderInstanceDialog = process.argv.includes(
   "--verify-provider-instance-dialog",
@@ -14782,6 +14820,9 @@ if (approvalSemanticOnly && !shouldVerifyApprovalTranscriptState) {
 }
 if (reviewSemanticOnly && !shouldVerifyReviewDiffState) {
   throw new Error("--review-semantic-only requires --verify-review-diff-state.");
+}
+if (appearanceSemanticOnly && !shouldVerifySettingsAppearance) {
+  throw new Error("--appearance-semantic-only requires --verify-settings-appearance.");
 }
 if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
   throw new Error("--quick-switch-query requires --verify-quick-switch-default.");
