@@ -54,7 +54,7 @@ const checks = {
     electron.rendererIdentity?.entryAssetUrl?.startsWith("t3code://app/assets/index-") === true &&
     /^[a-f0-9]{64}$/u.test(electron.rendererIdentity?.entryAssetSha256 ?? ""),
   frameWidth: electron.state.frame.width === native.state.frame.width,
-  surfaceWidth: electron.state.surface.width === native.state.surface.width,
+  surface: equalRectSize(electron.state.surface, native.state.surface),
   attachmentListWidth: electron.state.attachmentList.width === native.state.attachmentList.width,
   cardSize: equalRectSize(electron.state.card.rect, native.state.card.rect),
   cardOrigin: JSON.stringify(electronCardOrigin) === JSON.stringify(nativeCardOrigin),
@@ -95,19 +95,8 @@ const report = {
     preview: electron.state.preview,
     removeInset: electronRemoveInset,
   },
-  residual: {
-    status: "open",
-    items: [
-      {
-        kind: "composer-surface-height",
-        electron: electron.state.surface.height,
-        native: native.state.surface.height,
-        reason: "The broader Composer shell height is outside the attachment anatomy slice.",
-      },
-    ],
-  },
   limitation:
-    "Same-snapshot attachment anatomy and removal behavior correlation without paired pixels or whole-Composer height parity. Native image selection remains blocked by the Lynxtron 0.0.21 file-dialog runtime failure.",
+    "Same-snapshot attachment anatomy and removal behavior correlation without paired pixels. Native image selection remains blocked by the Lynxtron 0.0.21 file-dialog runtime failure.",
 };
 writeFileSync(outputPath, `${JSON.stringify(report, null, 2)}\n`);
 process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);

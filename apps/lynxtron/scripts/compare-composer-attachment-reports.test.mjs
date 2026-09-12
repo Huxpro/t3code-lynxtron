@@ -19,7 +19,7 @@ describe("paired Composer attachment comparator", () => {
       "theme:",
       "electronRendererIdentity:",
       "frameWidth:",
-      "surfaceWidth:",
+      "surface:",
       "attachmentListWidth:",
       "cardSize:",
       "cardOrigin:",
@@ -38,9 +38,7 @@ describe("paired Composer attachment comparator", () => {
     }
   });
 
-  it("keeps whole-Composer and picker residuals explicit", () => {
-    assert.include(source, 'kind: "composer-surface-height"');
-    assert.include(source, 'status: "open"');
+  it("keeps the picker and pixel boundary explicit", () => {
     assert.include(source, "Native image selection remains blocked");
     assert.include(source, "without paired pixels");
   });
