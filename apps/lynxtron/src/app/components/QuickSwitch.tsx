@@ -44,6 +44,7 @@ import { HostText, HostView } from "../../../../web/src/components/ui/hostElemen
 import type { ProjectSummary, ThreadSummary } from "../bridge";
 import { navigate } from "../router";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import { searchOverlayReturnController } from "../state/searchOverlayKeyboard";
 import { uiActions } from "../state/uiState";
 import { Icon, type IconName } from "./Icon";
 import { ProjectFileIcon } from "./ProjectFileIcon";
@@ -125,6 +126,7 @@ export function QuickSwitch({
         : "root",
   );
   const [activeIndex, setActiveIndex] = useState(mode === "files" ? -1 : 0);
+  const submitActiveItemRef = useRef<() => boolean>(() => false);
   const [sourceControlDiscovery, setSourceControlDiscovery] =
     useState<SourceControlDiscoveryResult | null>(null);
   const [sourceControlPending, setSourceControlPending] = useState(false);
@@ -723,6 +725,14 @@ export function QuickSwitch({
       view,
     ],
   );
+  submitActiveItemRef.current = () => {
+    if (view === "add-project-remote") {
+      submitRemoteRepository();
+      return true;
+    }
+    return runActiveQuickSwitchItem(activeIndex, navigationItems);
+  };
+  useEffect(() => searchOverlayReturnController.mount(() => submitActiveItemRef.current()), []);
   const inputPlaceholder =
     view === "add-project-sources" || view === "new-thread-projects"
       ? "Search..."

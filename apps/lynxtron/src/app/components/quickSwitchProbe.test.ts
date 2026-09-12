@@ -21,6 +21,8 @@ describe("Quick Switch visual-state probe", () => {
     expect(source).toContain('setQuery(e.detail.value.replace(/[\\r\\n]+/gu, ""))');
     expect(source).not.toContain("clientCapabilities.navigation.openPath");
     expect(source).not.toContain('bindconfirm={() => handlePaletteKeyDown({ key: "Enter" })}');
+    expect(source).toContain("searchOverlayReturnController.mount");
+    expect(source).toContain("runActiveQuickSwitchItem(activeIndex, navigationItems)");
   });
 
   it("is available only in isolated viewport-test runs", () => {

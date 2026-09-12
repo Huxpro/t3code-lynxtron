@@ -2,12 +2,19 @@ import { isRendererNeutralKeyboardPacket } from "@t3tools/shared/keyboard";
 
 import { navigate } from "../router";
 import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";
-import { dismissOpenSearchOverlay, isModelPickerOpen, uiActions } from "./uiState";
+import {
+  dismissOpenSearchOverlay,
+  isModelPickerOpen,
+  isSearchOverlayOpen,
+  uiActions,
+} from "./uiState";
 import { resolveKeyboardPacketCommand } from "./keyboardCommandResolution";
 import { dispatchResolvedKeyboardCommand } from "./keyboardCommandDispatch";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
 import { requestModelPickerJump } from "./modelPickerJump";
 import { terminalReturnController } from "./terminalKeyboard";
+import { searchOverlayReturnController } from "./searchOverlayKeyboard";
+import { composerReturnController } from "./composerKeyboard";
 import { requestSidebarThreadJump } from "./sidebarThreadNavigation";
 import { updateLynxShortcutModifierState } from "./shortcutModifierState";
 
@@ -60,6 +67,28 @@ export function dispatchKeyboardPacket(input: unknown): boolean {
       key: input.key,
       modelPickerOpen,
       command: null,
+      handled: true,
+    });
+    return true;
+  }
+  if (searchOverlayReturnController.dispatch(input)) {
+    recordKeyboardDispatchProbe({
+      sequence: input.sequence,
+      type: input.type,
+      key: input.key,
+      modelPickerOpen,
+      command: "search-overlay.submit",
+      handled: true,
+    });
+    return true;
+  }
+  if (!modelPickerOpen && !isSearchOverlayOpen() && composerReturnController.dispatch(input)) {
+    recordKeyboardDispatchProbe({
+      sequence: input.sequence,
+      type: input.type,
+      key: input.key,
+      modelPickerOpen,
+      command: "composer.submit",
       handled: true,
     });
     return true;

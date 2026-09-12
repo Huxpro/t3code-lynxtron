@@ -178,7 +178,7 @@ const gaps = [
     implementationCost: 5,
     platformRisk: 4,
     nativeRequirement:
-      "satisfied for focus, literal input, pointer send, and Stop; Return and text selection remain GAP-011",
+      "satisfied for focus, literal input, physical Return send, pointer send, and Stop; text selection remains GAP-011",
     disposition: "closed",
     evidence: [
       "reports/reuse/current.json",
@@ -208,7 +208,7 @@ const gaps = [
     implementationCost: 3,
     platformRisk: 2,
     nativeRequirement:
-      "satisfied: real open/select/dismiss/focus/typing; numeric shortcuts tracked by GAP-011",
+      "satisfied: real open/select/dismiss/focus/typing; focused-input Arrow, Return, and numeric shortcuts remain GAP-011",
     disposition: "closed",
     evidence: [
       "reports/reuse/current.json",
@@ -239,7 +239,7 @@ const gaps = [
     implementationCost: 3,
     platformRisk: 3,
     nativeRequirement:
-      "satisfied for Command+K, focus, literal query, pointer selection, and Escape; arrows/Enter remain GAP-011",
+      "satisfied for Command+K, focus, literal query, pointer and Return selection, Arrow navigation, and Escape",
     disposition: "closed",
     evidence: [
       "reports/reuse/current.json",
@@ -341,25 +341,30 @@ const gaps = [
   {
     id: "GAP-011",
     surface: "Native keyboard/focus",
-    states: ["New Thread", "Quick Switch", "Settings", "Composer"],
+    states: ["Model Picker", "Composer selection"],
     clients: ["native"],
     category: "RUNTIME_CAPABILITY",
     severity: "P1",
     userImpact:
-      "Core keyboard workflows remain pending-user-session and cannot be certified headlessly.",
+      "Model Picker keyboard selection and Composer Command+A selection remain unavailable even though Quick Switch Arrow/Return, Composer Return, and Escape now pass physical input.",
     frequency: 5,
     trustImpact: 4,
     evidenceConfidence: 3,
     sourceOwner: "Lynxtron host input and menu accelerator bridge",
-    likelyRootCause: "Renderer global key API and DevTool key dispatch are incomplete.",
+    likelyRootCause:
+      "The focused Model Picker input does not propagate Arrow or Return to its container, while Lynxtron's macOS menu bridge cannot encode Arrow keys; focused Native text controls also do not receive Command+A selection.",
     fixClass: "runtime capability",
     reuseLeverage: 3,
     crossSurfaceLeverage: 5,
     implementationCost: 5,
     platformRisk: 5,
-    nativeRequirement: "required authorized real OS input session",
+    nativeRequirement:
+      "physical Arrow/Return is satisfied for Quick Switch and Return for Composer; Model Picker keyboard selection and Composer Command+A selection require an upstream runtime change",
     disposition: "blocked-runtime",
-    evidence: ["compat-matrix.md#R5"],
+    evidence: [
+      "compat-matrix.md#R5",
+      "evidence/2026-09-12/fidelity/native-return-bridge-current.json",
+    ],
     screen: "quick-switch",
   },
   {

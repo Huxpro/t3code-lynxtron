@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-12T11:43:17.089Z
+Generated: 2026-09-12T16:27:42.043Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -12,7 +12,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - P0: 1
 - P1: 8
 - P2: 2
-- Incomplete required evidence cells: 18
+- Incomplete required evidence cells: 0
 - Blocked required evidence cells: 0
 
 | ID      | Severity | Category           | Surface                                                | Score | Disposition     | Owner                                                         |
@@ -79,7 +79,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Fix class: `shared composition`
 - Physical reuse: 5.9% modules / 6.8% LOC
 - Weighted style risk occurrences: 5258
-- Native requirement: satisfied for focus, literal input, pointer send, and Stop; Return and text selection remain GAP-011
+- Native requirement: satisfied for focus, literal input, physical Return send, pointer send, and Stop; text selection remains GAP-011
 - Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`
@@ -117,7 +117,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Fix class: `shared composition`
 - Physical reuse: 2.9% modules / 3.1% LOC
 - Weighted style risk occurrences: 4557
-- Native requirement: satisfied: real open/select/dismiss/focus/typing; numeric shortcuts tracked by GAP-011
+- Native requirement: satisfied: real open/select/dismiss/focus/typing; focused-input Arrow, Return, and numeric shortcuts remain GAP-011
 - Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`
@@ -148,17 +148,18 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P1` / `RUNTIME_CAPABILITY`
 - Priority score: 52
-- User impact: Core keyboard workflows remain pending-user-session and cannot be certified headlessly.
-- Clients/states: native / New Thread, Quick Switch, Settings, Composer
+- User impact: Model Picker keyboard selection and Composer Command+A selection remain unavailable even though Quick Switch Arrow/Return, Composer Return, and Escape now pass physical input.
+- Clients/states: native / Model Picker, Composer selection
 - Source owner: Lynxtron host input and menu accelerator bridge
-- Likely root cause: Renderer global key API and DevTool key dispatch are incomplete.
+- Likely root cause: The focused Model Picker input does not propagate Arrow or Return to its container, while Lynxtron's macOS menu bridge cannot encode Arrow keys; focused Native text controls also do not receive Command+A selection.
 - Fix class: `runtime capability`
 - Physical reuse: not audited
 - Weighted style risk occurrences: 3854
-- Native requirement: required authorized real OS input session
+- Native requirement: physical Arrow/Return is satisfied for Quick Switch and Return for Composer; Model Picker keyboard selection and Composer Command+A selection require an upstream runtime change
 - Disposition: `blocked-runtime`
 - Evidence:
   - `compat-matrix.md#R5`
+  - `evidence/2026-09-12/fidelity/native-return-bridge-current.json`
 
 ## GAP-007 — Quick Switch
 
@@ -171,7 +172,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Fix class: `shared composition`
 - Physical reuse: not audited
 - Weighted style risk occurrences: 3854
-- Native requirement: satisfied for Command+K, focus, literal query, pointer selection, and Escape; arrows/Enter remain GAP-011
+- Native requirement: satisfied for Command+K, focus, literal query, pointer and Return selection, Arrow navigation, and Escape
 - Disposition: `closed`
 - Evidence:
   - `reports/reuse/current.json`

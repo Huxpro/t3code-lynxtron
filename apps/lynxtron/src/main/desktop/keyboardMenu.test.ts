@@ -7,7 +7,7 @@ describe("Lynxtron discrete keyboard menu", () => {
     assert.deepEqual(
       DISCRETE_KEYBOARD_ACCELERATORS.map((entry) => entry.id),
       [
-        "terminal-submit",
+        "submit-focused-input",
         "dismiss-overlay",
         "open-settings",
         "new-thread",
@@ -43,7 +43,7 @@ describe("Lynxtron discrete keyboard menu", () => {
 
   it("keeps physical Return disabled until Terminal focus is reported", () => {
     const accelerator = DISCRETE_KEYBOARD_ACCELERATORS.find(
-      (entry) => entry.id === "terminal-submit",
+      (entry) => entry.id === "submit-focused-input",
     );
     assert.deepInclude(accelerator!, {
       accelerator: "Return",

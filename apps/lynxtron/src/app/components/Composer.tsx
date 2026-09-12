@@ -73,6 +73,7 @@ import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { appendComposerText, onComposerTextInsertion } from "../state/composerCommandBus";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { t3ClientActions } from "../state/t3Client";
+import { composerReturnController } from "../state/composerKeyboard";
 import {
   compactControlsContentHeight,
   compactControlsPanelHeight,
@@ -682,6 +683,17 @@ export function Composer({
     }
     return sent;
   }, [onValueChange]);
+  const composerReturnSubmitRef = useRef(handleSend);
+  composerReturnSubmitRef.current = handleSend;
+  useEffect(() => {
+    composerReturnController.setSubmitHandler(() => {
+      const current = primaryActionRef.current;
+      if (!current.busy && (current.disabled || !current.hasSendableContent)) return false;
+      void composerReturnSubmitRef.current();
+      return true;
+    });
+    return () => composerReturnController.dispose();
+  }, []);
   useEffect(() => {
     const diagnosticsGlobal = globalThis as {
       __T3_LYNXTRON_COMPOSER_SEND_FIXTURE__?: () => Promise<boolean>;
@@ -965,6 +977,8 @@ export function Composer({
                   className="composer__input"
                   data-composer-editor="true"
                   bindinput={handleInput}
+                  bindfocus={() => composerReturnController.setFocused(true)}
+                  bindblur={() => composerReturnController.setFocused(false)}
                   confirm-type="send"
                   bindconfirm={handleSend}
                 />

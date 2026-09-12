@@ -8,7 +8,7 @@ export const T3_KEYBOARD_EVENT = "t3:keyboard";
 export interface DiscreteKeyboardAccelerator {
   readonly id:
     | "dismiss-overlay"
-    | "terminal-submit"
+    | "submit-focused-input"
     | "file-picker"
     | "new-thread"
     | "quick-switch"
@@ -29,8 +29,8 @@ export interface DiscreteKeyboardAccelerator {
 
 export const DISCRETE_KEYBOARD_ACCELERATORS: ReadonlyArray<DiscreteKeyboardAccelerator> = [
   {
-    id: "terminal-submit",
-    label: "Run Terminal Command",
+    id: "submit-focused-input",
+    label: "Submit Focused Input",
     accelerator: "Return",
     key: "Enter",
     code: "Enter",

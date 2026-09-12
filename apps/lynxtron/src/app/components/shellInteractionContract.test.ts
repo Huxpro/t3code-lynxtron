@@ -872,6 +872,7 @@ describe("desktop shell interaction contract", () => {
     const chatView = componentSource("ChatView.tsx");
     const panel = componentSource("RightPanel.tsx");
     const terminal = componentSource("TerminalPanel.tsx");
+    const composer = componentSource("Composer.tsx");
 
     expect(header).toContain("export function ChatLayoutControls");
     expect(header).toContain('aria-label="Open terminal panel"');
@@ -929,6 +930,10 @@ describe("desktop shell interaction contract", () => {
     expect(terminal).toContain("bindfocus={() => terminalReturnController.setFocused(true)}");
     expect(terminal).toContain("bindblur={() => terminalReturnController.setFocused(false)}");
     expect(terminal).toContain("terminalReturnController.dispose()");
+    expect(composer).toContain("composerReturnController.setSubmitHandler");
+    expect(composer).toContain("bindfocus={() => composerReturnController.setFocused(true)}");
+    expect(composer).toContain("bindblur={() => composerReturnController.setFocused(false)}");
+    expect(composer).toContain("composerReturnController.dispose()");
     expect(terminal).toContain('data-terminal-session-status={session?.status ?? "starting"}');
     expect(terminal).toContain('className="terminal-panel flex flex-col"');
     expect(terminal).not.toContain("Terminal sessions are not connected yet");

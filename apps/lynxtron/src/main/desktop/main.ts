@@ -18,6 +18,8 @@ import { T3_RELOAD_FOR_TEST_METHOD } from "../../shared/viewportProtocol.ts";
 import { startClipboardCapabilityHost, startConfirmCapabilityHost } from "./capabilityHost.ts";
 import { startContextMenuCapabilityHost } from "./contextMenuHost.ts";
 import { startTerminalKeyboardHost } from "./terminalKeyboardHost.ts";
+import { startSearchOverlayKeyboardHost } from "./searchOverlayKeyboardHost.ts";
+import { startComposerKeyboardHost } from "./composerKeyboardHost.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
@@ -50,7 +52,11 @@ interface GlobalEventWindow extends ResizableWindow {
 
 function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
   let sequence = 0;
+  let composerReturnEnabled = false;
+  let searchOverlayReturnEnabled = false;
   let terminalReturnEnabled = false;
+  const returnEnabled = () =>
+    composerReturnEnabled || searchOverlayReturnEnabled || terminalReturnEnabled;
   const dispatch = (accelerator: DiscreteKeyboardAccelerator) => {
     const keyDownDelivered = win.sendGlobalEvent(
       T3_KEYBOARD_EVENT,
@@ -80,7 +86,7 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
       accelerator: item.accelerator,
       visible: item.visible,
       acceleratorWorksWhenHidden: item.acceleratorWorksWhenHidden,
-      enabled: item.id === "terminal-submit" ? terminalReturnEnabled : item.enabled,
+      enabled: item.id === "submit-focused-input" ? returnEnabled() : item.enabled,
       click: () => dispatch(item),
     }));
   const install = () =>
@@ -118,6 +124,16 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
     );
   install();
   return {
+    setComposerReturnEnabled(enabled: boolean) {
+      if (composerReturnEnabled === enabled) return;
+      composerReturnEnabled = enabled;
+      install();
+    },
+    setSearchOverlayReturnEnabled(enabled: boolean) {
+      if (searchOverlayReturnEnabled === enabled) return;
+      searchOverlayReturnEnabled = enabled;
+      install();
+    },
     setTerminalReturnEnabled(enabled: boolean) {
       if (terminalReturnEnabled === enabled) return;
       terminalReturnEnabled = enabled;
@@ -300,6 +316,26 @@ app.whenReady().then(() => {
     });
   }
   const keyboardMenu = installDiscreteKeyboardMenu(win);
+  const composerKeyboardHost = startComposerKeyboardHost(
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, (_event, params) => handler(params));
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    (enabled) => keyboardMenu.setComposerReturnEnabled(enabled),
+  );
+  win.on("closed", () => composerKeyboardHost.dispose());
+  const searchOverlayKeyboardHost = startSearchOverlayKeyboardHost(
+    {
+      handle: (method, handler) => {
+        lynxBridge.handle(method, (_event, params) => handler(params));
+      },
+      removeHandler: (method) => lynxBridge.removeHandler(method),
+    },
+    (enabled) => keyboardMenu.setSearchOverlayReturnEnabled(enabled),
+  );
+  win.on("closed", () => searchOverlayKeyboardHost.dispose());
   const terminalKeyboardHost = startTerminalKeyboardHost(
     {
       handle: (method, handler) => {
