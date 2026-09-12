@@ -1091,6 +1091,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "Idle transcript placeholder lost the shared chat body");
     assert.include(source, "allowMissingContext: expectNoComposerContext");
     assert.include(source, "Non-repository idle thread rendered repository context.");
+    assert.include(source, 'name: "native-existing-thread-idle.png"');
   });
 
   it("verifies Native Quick Switch filter states and outside dismissal", () => {

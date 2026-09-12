@@ -2139,8 +2139,10 @@ async function verifyHeroComposerState({
 async function verifyIdleThreadState({
   child,
   client,
+  devToolCli,
   expectNoComposerContext,
   idleFixture,
+  outputDirectory,
   timeoutMs,
 }) {
   const clientState = await waitForClientState({
@@ -2241,6 +2243,12 @@ async function verifyIdleThreadState({
       editor: composer.anchors.editor.rect,
       footer: composer.anchors.footer.rect,
     },
+    screenshot: captureNativeScreenshot({
+      client,
+      devToolCli,
+      outputDirectory,
+      name: "native-existing-thread-idle.png",
+    }),
   };
 }
 
@@ -13959,8 +13967,10 @@ async function runOnce({
       ? await verifyIdleThreadState({
           child,
           client,
+          devToolCli,
           expectNoComposerContext,
           idleFixture,
+          outputDirectory,
           timeoutMs,
         })
       : undefined;

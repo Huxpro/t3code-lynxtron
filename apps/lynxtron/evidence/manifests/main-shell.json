@@ -147,22 +147,112 @@
       "requiredClients": ["web", "lynx", "native"],
       "state": {
         "semanticRoute": "existing-thread",
-        "selectedProject": "pending-final5-project",
-        "selectedThread": "pending-final5-thread"
+        "selectedProject": "Gap3",
+        "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+        "route": "/",
+        "selectedModel": null,
+        "lifecycle": "ready",
+        "overlay": null,
+        "overlayQuery": "",
+        "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5"
       },
-      "verdict": "incomplete",
+      "verdict": "visual-certified",
       "evidence": {
         "web": {
-          "status": "pending",
-          "reason": "Final5 Web thread identity and transcript content have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/existing-thread-idle/1280x820/web.png",
+          "captureTier": "browser",
+          "buildSha256": "2840c6ca9566",
+          "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
+          "image": {
+            "width": 1280,
+            "height": 820
+          },
+          "sha256": "409e91bc4cae000c238b9cb325e64907f53f830a12deb502f976c3d300e16352",
+          "assertions": "../2026-09-12/final5/existing-thread-idle/1280x820/web-assertions.json",
+          "console": "../2026-09-12/final5/existing-thread-idle/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "not-required",
+            "sourceReuse": "pass"
+          }
         },
         "lynx": {
-          "status": "pending",
-          "reason": "Final5 Lynx-for-Web thread identity and transcript content have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/existing-thread-idle/1280x820/lynx.png",
+          "captureTier": "browser",
+          "buildSha256": "c490d6c465f0",
+          "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
+          "image": {
+            "width": 1280,
+            "height": 820
+          },
+          "sha256": "7c8b86758f1a1191cd485dd2ca6a1bd1ce8c2af04ead48aceef52798e9233875",
+          "assertions": "../2026-09-12/final5/existing-thread-idle/1280x820/lynx-assertions.json",
+          "console": "../2026-09-12/final5/existing-thread-idle/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "not-required",
+            "sourceReuse": "pass"
+          }
         },
         "native": {
-          "status": "pending",
-          "reason": "Final5 Native thread identity, list behavior, and semantic readiness have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/existing-thread-idle/native-existing-thread-idle.png",
+          "captureTier": "native",
+          "buildSha256": "5336484666ff7f508dd117220e319f661ada0bc56099fdfd05c0d2b0aa42f31c",
+          "snapshotSha256": "1d947de7dfd74cb119e87b7a7578729d3f084caedb54aa389a5b1fcfff7d92c5",
+          "image": { "width": 2560, "height": 1640 },
+          "sha256": "47f87d772adac16ca683231b197f96da2e12e3f1744d01a3c7871d24fb780cc3",
+          "assertions": "../2026-09-12/final5/existing-thread-idle/native-report.json",
+          "console": "../2026-09-12/final5/existing-thread-idle/logs/run-1.log",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "Gap3",
+            "selectedThread": "f62bb634-ae88-44f4-a6da-b78343c5c1e2",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "not-required",
+            "sourceReuse": "pass"
+          }
         }
       }
     },
