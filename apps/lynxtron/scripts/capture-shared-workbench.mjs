@@ -2100,9 +2100,9 @@ function reviewDiffGeometryMatches(webMetrics, lynxMetrics, expectation) {
     panelRectMatches &&
     correspondingRectMatches(webDiff?.subheaderRect, lynxDiff?.subheaderRect) &&
     correspondingRectMatches(webDiff?.viewportRect, lynxDiff?.viewportRect) &&
-    webHeaders.length === 1 &&
-    lynxHeaders.length === 1 &&
-    correspondingRectMatches(webHeaders[0], lynxHeaders[0]) &&
+    webHeaders.length === (webDiff?.filePaths?.length ?? 0) &&
+    webHeaders.length === lynxHeaders.length &&
+    webHeaders.every((header, index) => correspondingRectMatches(header, lynxHeaders[index])) &&
     webLines.length > 0 &&
     webLines.length === lynxLines.length &&
     webLines.every(
@@ -3489,11 +3489,11 @@ function reviewPairMatches(webMetrics, lynxMetrics, expectation) {
       ));
   const diffLineColumnsReady =
     expectation !== "diff" ||
-    (webGutters.length === 2 &&
-      webContents.length === 2 &&
-      lynxNumbers.length === 2 &&
-      lynxMarkers.length === 2 &&
-      lynxContents.length === 2 &&
+    (webGutters.length > 0 &&
+      webGutters.length === webContents.length &&
+      webGutters.length === lynxNumbers.length &&
+      webGutters.length === lynxMarkers.length &&
+      webGutters.length === lynxContents.length &&
       lynxContents.every(
         (content, index) =>
           Math.abs(

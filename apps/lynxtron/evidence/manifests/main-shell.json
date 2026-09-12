@@ -619,23 +619,106 @@
       "requiredClients": ["web", "lynx", "native"],
       "state": {
         "semanticRoute": "existing-thread",
-        "selectedProject": "pending-final5-project",
-        "selectedThread": "pending-final5-thread",
-        "overlay": "review"
+        "selectedProject": "ElementContext",
+        "selectedThread": "fidelity-review-thread",
+        "overlay": null,
+        "route": "/",
+        "selectedModel": null,
+        "lifecycle": "ready",
+        "overlayQuery": "",
+        "snapshotSha256": "a6ba7d604c98849d796bc2f227a805d98b5a22efdfb3720d6aacdd2eb4bf8693"
       },
-      "verdict": "incomplete",
+      "verdict": "visual-certified",
       "evidence": {
         "web": {
-          "status": "pending",
-          "reason": "Final5 Web checkpoint, changed-file tree, and patch content have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/review-diff/1280x820/web.png",
+          "captureTier": "browser",
+          "buildSha256": "2840c6ca9566",
+          "snapshotSha256": "a6ba7d604c98849d796bc2f227a805d98b5a22efdfb3720d6aacdd2eb4bf8693",
+          "image": { "width": 1280, "height": 820 },
+          "sha256": "01afd89e7d4fbcefa6d2075998284d89899abea3b3ed961dcc012f5d9df39408",
+          "assertions": "../2026-09-12/final5/review-diff/1280x820/web-assertions.json",
+          "console": "../2026-09-12/final5/review-diff/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "ElementContext",
+            "selectedThread": "fidelity-review-thread",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "not-required",
+            "sourceReuse": "pass"
+          }
         },
         "lynx": {
-          "status": "pending",
-          "reason": "Final5 Lynx-for-Web checkpoint, changed-file tree, and fallback content have not been captured."
+          "status": "retained",
+          "path": "../2026-09-12/final5/review-diff/1280x820/lynx.png",
+          "captureTier": "browser",
+          "buildSha256": "3102f049612f",
+          "snapshotSha256": "a6ba7d604c98849d796bc2f227a805d98b5a22efdfb3720d6aacdd2eb4bf8693",
+          "image": { "width": 1280, "height": 820 },
+          "sha256": "25205980fb9fc771312e0fa7c9bd5eb6209ce906ab188578e7686cfe12295e47",
+          "assertions": "../2026-09-12/final5/review-diff/1280x820/lynx-assertions.json",
+          "console": "../2026-09-12/final5/review-diff/1280x820/console.txt",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "ElementContext",
+            "selectedThread": "fidelity-review-thread",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "not-required",
+            "sourceReuse": "pass"
+          }
         },
         "native": {
-          "status": "pending",
-          "reason": "Final5 Native review behavior has not been captured; the 2026-08-04 R10 report is historical runtime evidence only."
+          "status": "retained",
+          "path": "../2026-09-12/final5/review-diff/native-review-diff.png",
+          "captureTier": "native",
+          "buildSha256": "9757d69ea09f6a5305193e4801c0711839a5d74921013477876fec7da8cb48e4",
+          "snapshotSha256": "a6ba7d604c98849d796bc2f227a805d98b5a22efdfb3720d6aacdd2eb4bf8693",
+          "image": { "width": 2560, "height": 1640 },
+          "sha256": "667a0e0e964352e0462008f17666b3e19bf00ae148a722841482bf661fb70e58",
+          "assertions": "../2026-09-12/final5/review-diff/native-report.json",
+          "console": "../2026-09-12/final5/review-diff/logs/run-1.log",
+          "stateEcho": {
+            "route": "/",
+            "semanticRoute": "existing-thread",
+            "theme": "dark",
+            "density": "comfortable",
+            "selectedProject": "ElementContext",
+            "selectedThread": "fidelity-review-thread",
+            "selectedModel": null,
+            "lifecycle": "ready",
+            "overlay": null,
+            "overlayQuery": ""
+          },
+          "gates": {
+            "harness": "capture-valid",
+            "content": "pass",
+            "visual": "pass",
+            "interaction": "pass",
+            "sourceReuse": "pass"
+          }
         }
       }
     }

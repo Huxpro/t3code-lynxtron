@@ -7920,6 +7920,7 @@ async function verifyReviewDiffState({
   devToolCli,
   outputDirectory,
   reviewFixture,
+  defaultOnly,
   semanticOnly,
   timeoutMs,
 }) {
@@ -7990,8 +7991,16 @@ async function verifyReviewDiffState({
         );
       }),
   });
+  const screenshot = semanticOnly
+    ? undefined
+    : captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: "native-review-diff.png",
+      });
   const toolStates = {};
-  if (expectedFiles.length > 1) {
+  if (expectedFiles.length > 1 && !defaultOnly) {
     await tapSelectorByAttribute({
       attribute: "aria-label",
       child,
@@ -8078,15 +8087,6 @@ async function verifyReviewDiffState({
     timeoutMs,
     predicate: (measurement) => measurement?.attributes["data-composer-state"] === "idle",
   });
-  const screenshot = semanticOnly
-    ? undefined
-    : captureNativeScreenshot({
-        client,
-        devToolCli,
-        outputDirectory,
-        name: "native-review-diff.png",
-      });
-
   return {
     status: "pass",
     fixture: {
@@ -8125,6 +8125,7 @@ async function verifyReviewDiffState({
     },
     screenshot,
     evidenceKind: semanticOnly ? "semantic-only" : "visual-and-semantic",
+    defaultOnly,
   };
 }
 
@@ -14327,6 +14328,7 @@ async function runOnce({
           child,
           client,
           devToolCli,
+          defaultOnly: reviewDefaultOnly,
           outputDirectory,
           reviewFixture,
           semanticOnly: reviewSemanticOnly,
@@ -14796,6 +14798,7 @@ const shouldVerifyQuestionTranscriptState = process.argv.includes(
 );
 const shouldVerifyReviewDiffState = process.argv.includes("--verify-review-diff-state");
 const reviewSemanticOnly = process.argv.includes("--review-semantic-only");
+const reviewDefaultOnly = process.argv.includes("--review-default-only");
 const shouldVerifyReviewCheckpointStates = process.argv.includes(
   "--verify-review-checkpoint-states",
 );
@@ -14870,6 +14873,9 @@ if (approvalSemanticOnly && !shouldVerifyApprovalTranscriptState) {
 }
 if (reviewSemanticOnly && !shouldVerifyReviewDiffState) {
   throw new Error("--review-semantic-only requires --verify-review-diff-state.");
+}
+if (reviewDefaultOnly && !shouldVerifyReviewDiffState) {
+  throw new Error("--review-default-only requires --verify-review-diff-state.");
 }
 if (appearanceSemanticOnly && !shouldVerifySettingsAppearance) {
   throw new Error("--appearance-semantic-only requires --verify-settings-appearance.");

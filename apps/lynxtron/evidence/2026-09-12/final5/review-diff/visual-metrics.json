@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "stateId": "review-diff",
+  "reference": "electron-web",
+  "candidate": "lynx-for-web",
+  "viewport": { "width": 1280, "height": 820, "devicePixelRatio": 1 },
+  "ssim": 0.912648,
+  "psnr": 22.579253,
+  "geometry": {
+    "panelRectExact": true,
+    "fileHeaderRectsExact": true,
+    "lineBandsExact": true,
+    "stateIdentityMatch": true,
+    "contentMatch": true
+  },
+  "classification": "The two-file Review panel, headers, line bands, file identities, and patch content pass; remaining full-frame residual is renderer rasterization."
+}

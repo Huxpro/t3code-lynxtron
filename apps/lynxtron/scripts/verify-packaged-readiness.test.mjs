@@ -973,6 +973,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'value: "Collapse all files"');
     assert.include(source, 'measurement.attributes["data-review-file-expanded"] === "false"');
     assert.include(source, '"--review-semantic-only"');
+    assert.include(source, '"--review-default-only"');
     assert.include(source, 'semanticOnly ? "semantic-only" : "visual-and-semantic"');
   });
 

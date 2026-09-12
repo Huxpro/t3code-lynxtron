@@ -1,0 +1,538 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "recordedAt": "2026-09-12T13:43:11.752Z",
+  "head": "baed6b17d2920d0902fc331fee234407abeb0c45",
+  "executable": "/Users/bytedance/github/t3code-lynxtron-021-full/node_modules/.pnpm/@lynx-js+lynxtron@0.0.21/node_modules/@lynx-js/lynxtron/dist/devtool/lynxtron.app/Contents/MacOS/lynxtron",
+  "desktopDir": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop",
+  "bundle": {
+    "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "bytes": 6695746,
+    "sha256": "9757d69ea09f6a5305193e4801c0711839a5d74921013477876fec7da8cb48e4"
+  },
+  "fixture": {
+    "source": "/tmp/t3-review-multi-state.9gf9Ch",
+    "snapshotId": "a6ba7d604c98849d796bc2f227a805d98b5a22efdfb3720d6aacdd2eb4bf8693",
+    "projectTitle": "ElementContext",
+    "canonicalThreadTitle": "Review checkpoint baseline",
+    "modelSelection": {
+      "instanceId": "codex",
+      "model": "gpt-5.6-sol"
+    }
+  },
+  "viewport": {
+    "width": 1280,
+    "height": 820
+  },
+  "expectedTheme": "dark",
+  "expectedEnvironmentIdentificationMode": null,
+  "results": [
+    {
+      "index": 1,
+      "status": "pass",
+      "startedAt": "2026-09-12T13:43:04.818Z",
+      "processId": 648,
+      "isolatedState": {
+        "path": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-packaged-readiness-1-vSqa01/state",
+        "disposed": true
+      },
+      "connection": {
+        "mode": "owned-local",
+        "serverOwned": true
+      },
+      "serverPort": 57454,
+      "client": {
+        "app": "@t3tools/lynxtron",
+        "clientId": "localhost:8902",
+        "port": 8902,
+        "sessionId": 1,
+        "bundleUrl": "file:///Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle"
+      },
+      "transport": {
+        "kind": "main",
+        "probe": "same-value model selection without thread mutation",
+        "beforeProbe": {
+          "kind": "main",
+          "lastSeq": 3
+        },
+        "afterProbe": {
+          "kind": "main",
+          "lastSeq": 4
+        }
+      },
+      "theme": {
+        "expected": "dark",
+        "actual": "dark"
+      },
+      "canonicalState": {
+        "activeThreadId": "fidelity-review-thread",
+        "draftThreadId": null,
+        "environmentLabel": "MacBook Pro (3)",
+        "draftThreadIdsByProjectId": {},
+        "activeComposerDraftText": "",
+        "composerDraftTextByScopeKey": {},
+        "activeComposerDraftAttachments": [],
+        "activeComposerTerminalContexts": [],
+        "activeComposerFileContexts": [],
+        "activeComposerElementContexts": [],
+        "clientSettings": {
+          "autoOpenPlanSidebar": false,
+          "confirmThreadArchive": false,
+          "confirmThreadDelete": true,
+          "diffIgnoreWhitespace": true,
+          "environmentIdentificationMode": "artwork",
+          "favorites": [],
+          "glassOpacity": 80,
+          "legacySidebarEnabled": false,
+          "sidebarAutoSettleAfterDays": 3,
+          "sidebarProjectGroupingMode": "repository",
+          "timestampFormat": "locale",
+          "wordWrap": true
+        },
+        "messages": [
+          {
+            "id": "fidelity-review-user-1",
+            "role": "user",
+            "text": "Update review-fixture.txt.",
+            "attachments": [],
+            "turnId": "fidelity-review-turn-1",
+            "streaming": false,
+            "createdAt": "2026-08-19T15:09:00.000Z",
+            "updatedAt": "2026-08-19T15:09:00.000Z"
+          },
+          {
+            "id": "fidelity-review-assistant-1",
+            "role": "assistant",
+            "text": "Updated the review fixture.",
+            "attachments": [],
+            "turnId": "fidelity-review-turn-1",
+            "streaming": false,
+            "createdAt": "2026-08-19T15:10:00.000Z",
+            "updatedAt": "2026-08-19T15:10:00.000Z"
+          }
+        ],
+        "sessionStatus": "ready",
+        "sessionError": null,
+        "activeTurnId": null,
+        "latestTurn": {
+          "turnId": "fidelity-review-turn-1",
+          "state": "completed",
+          "requestedAt": "2026-08-19T15:09:00.000Z",
+          "startedAt": "2026-08-19T15:09:00.000Z",
+          "completedAt": "2026-08-19T15:10:00.000Z",
+          "assistantMessageId": "fidelity-review-assistant-1"
+        },
+        "threadIds": ["fidelity-review-thread"],
+        "archivedThreadIds": [],
+        "pairingLinkIds": [],
+        "pairingLinkCount": 0,
+        "approvalReceipts": [],
+        "userInputReceipts": [],
+        "pendingApprovalRequests": [],
+        "modelCount": 9,
+        "modelSelectionError": null,
+        "modelSelectionPending": false,
+        "providerCount": 5,
+        "providerEntryCount": 5,
+        "providerInstanceIds": [],
+        "providersRefreshPending": false,
+        "providerSettingsError": null,
+        "keybindingCommands": [
+          "sidebar.toggle",
+          "terminal.toggle",
+          "rightPanel.toggle",
+          "terminal.split",
+          "terminal.splitVertical",
+          "terminal.new",
+          "terminal.close",
+          "diff.toggle",
+          "preview.toggle",
+          "preview.refresh",
+          "preview.focusUrl",
+          "preview.zoomIn",
+          "preview.zoomIn",
+          "preview.zoomOut",
+          "preview.resetZoom",
+          "commandPalette.toggle",
+          "settings.open",
+          "filePicker.toggle",
+          "projectSearch.toggle",
+          "composer.stash",
+          "chat.new",
+          "chat.new",
+          "chat.newLocal",
+          "modelPicker.toggle",
+          "editor.openFavorite",
+          "thread.previous",
+          "thread.next",
+          "thread.jump.1",
+          "thread.jump.2",
+          "thread.jump.3",
+          "thread.jump.4",
+          "thread.jump.5",
+          "thread.jump.6",
+          "thread.jump.7",
+          "thread.jump.8",
+          "thread.jump.9",
+          "modelPicker.jump.1",
+          "modelPicker.jump.2",
+          "modelPicker.jump.3",
+          "modelPicker.jump.4",
+          "modelPicker.jump.5",
+          "modelPicker.jump.6",
+          "modelPicker.jump.7",
+          "modelPicker.jump.8",
+          "modelPicker.jump.9"
+        ],
+        "vcsStatus": null,
+        "vcsStatusCwd": "/tmp/t3-review-multi-workspace.0nxK26",
+        "vcsStatusPending": true,
+        "activeProject": {
+          "id": "59050ad9-f51d-4901-9e56-9c2715e3a8ce",
+          "title": "ElementContext",
+          "workspaceRoot": "/tmp/t3-review-multi-workspace.0nxK26",
+          "repositoryIdentity": null,
+          "defaultModelSelection": {
+            "instanceId": "codex",
+            "model": "gpt-5.6-sol"
+          },
+          "scripts": [],
+          "createdAt": "2026-09-12T06:38:00.292Z",
+          "updatedAt": "2026-09-12T06:38:00.292Z"
+        },
+        "activeThread": {
+          "id": "fidelity-review-thread",
+          "runtimeMode": "full-access",
+          "interactionMode": "default",
+          "branch": "main",
+          "worktreePath": null,
+          "latestTurn": {
+            "turnId": "fidelity-review-turn-1",
+            "state": "completed",
+            "requestedAt": "2026-08-19T15:09:00.000Z",
+            "startedAt": "2026-08-19T15:09:00.000Z",
+            "completedAt": "2026-08-19T15:10:00.000Z",
+            "assistantMessageId": "fidelity-review-assistant-1"
+          },
+          "createdAt": "2026-08-19T15:09:00.000Z",
+          "updatedAt": "2026-08-19T15:10:00.000Z",
+          "archivedAt": null,
+          "settledOverride": "settled",
+          "hasPendingApprovals": false,
+          "hasPendingUserInput": false,
+          "projectId": "59050ad9-f51d-4901-9e56-9c2715e3a8ce",
+          "title": "Review checkpoint baseline",
+          "modelSelection": {
+            "instanceId": "codex",
+            "model": "gpt-5.6-sol"
+          },
+          "settledAt": "2026-08-19T15:10:00.000Z",
+          "snoozedUntil": null,
+          "snoozedAt": null,
+          "titleRegeneration": null,
+          "session": {
+            "threadId": "fidelity-review-thread",
+            "status": "ready",
+            "providerName": "Codex",
+            "providerInstanceId": "codex",
+            "runtimeMode": "full-access",
+            "activeTurnId": null,
+            "lastError": null,
+            "updatedAt": "2026-08-19T15:10:00.000Z"
+          },
+          "latestUserMessageAt": "2026-08-19T15:09:00.000Z",
+          "hasActionableProposedPlan": false
+        },
+        "selectedProvider": {
+          "instanceId": "codex",
+          "showInteractionModeToggle": true,
+          "status": "warning",
+          "authStatus": "unknown",
+          "message": "Codex provider status has not been checked in this session yet."
+        }
+      },
+      "reviewDiffState": {
+        "status": "pass",
+        "fixture": {
+          "threadId": "fidelity-review-thread",
+          "turnId": "fidelity-review-turn-1",
+          "files": [
+            {
+              "path": "review-fixture.txt",
+              "kind": "modified",
+              "additions": 1,
+              "deletions": 1
+            },
+            {
+              "path": "review-secondary.ts",
+              "kind": "modified",
+              "additions": 1,
+              "deletions": 1
+            }
+          ]
+        },
+        "clientState": {
+          "activeThreadId": "fidelity-review-thread",
+          "draftThreadId": null,
+          "environmentLabel": "MacBook Pro (3)",
+          "draftThreadIdsByProjectId": {},
+          "activeComposerDraftText": "",
+          "composerDraftTextByScopeKey": {},
+          "activeComposerDraftAttachments": [],
+          "activeComposerTerminalContexts": [],
+          "activeComposerFileContexts": [],
+          "activeComposerElementContexts": [],
+          "clientSettings": {
+            "autoOpenPlanSidebar": false,
+            "confirmThreadArchive": false,
+            "confirmThreadDelete": true,
+            "diffIgnoreWhitespace": true,
+            "environmentIdentificationMode": "artwork",
+            "favorites": [],
+            "glassOpacity": 80,
+            "legacySidebarEnabled": false,
+            "sidebarAutoSettleAfterDays": 3,
+            "sidebarProjectGroupingMode": "repository",
+            "timestampFormat": "locale",
+            "wordWrap": true
+          },
+          "messages": [
+            {
+              "id": "fidelity-review-user-1",
+              "role": "user",
+              "text": "Update review-fixture.txt.",
+              "attachments": [],
+              "turnId": "fidelity-review-turn-1",
+              "streaming": false,
+              "createdAt": "2026-08-19T15:09:00.000Z",
+              "updatedAt": "2026-08-19T15:09:00.000Z"
+            },
+            {
+              "id": "fidelity-review-assistant-1",
+              "role": "assistant",
+              "text": "Updated the review fixture.",
+              "attachments": [],
+              "turnId": "fidelity-review-turn-1",
+              "streaming": false,
+              "createdAt": "2026-08-19T15:10:00.000Z",
+              "updatedAt": "2026-08-19T15:10:00.000Z"
+            }
+          ],
+          "sessionStatus": "ready",
+          "sessionError": null,
+          "activeTurnId": null,
+          "latestTurn": {
+            "turnId": "fidelity-review-turn-1",
+            "state": "completed",
+            "requestedAt": "2026-08-19T15:09:00.000Z",
+            "startedAt": "2026-08-19T15:09:00.000Z",
+            "completedAt": "2026-08-19T15:10:00.000Z",
+            "assistantMessageId": "fidelity-review-assistant-1"
+          },
+          "threadIds": ["fidelity-review-thread"],
+          "archivedThreadIds": [],
+          "pairingLinkIds": [],
+          "pairingLinkCount": 0,
+          "approvalReceipts": [],
+          "userInputReceipts": [],
+          "pendingApprovalRequests": [],
+          "modelCount": 9,
+          "modelSelectionError": null,
+          "modelSelectionPending": false,
+          "providerCount": 5,
+          "providerEntryCount": 5,
+          "providerInstanceIds": [],
+          "providersRefreshPending": false,
+          "providerSettingsError": null,
+          "keybindingCommands": [
+            "sidebar.toggle",
+            "terminal.toggle",
+            "rightPanel.toggle",
+            "terminal.split",
+            "terminal.splitVertical",
+            "terminal.new",
+            "terminal.close",
+            "diff.toggle",
+            "preview.toggle",
+            "preview.refresh",
+            "preview.focusUrl",
+            "preview.zoomIn",
+            "preview.zoomIn",
+            "preview.zoomOut",
+            "preview.resetZoom",
+            "commandPalette.toggle",
+            "settings.open",
+            "filePicker.toggle",
+            "projectSearch.toggle",
+            "composer.stash",
+            "chat.new",
+            "chat.new",
+            "chat.newLocal",
+            "modelPicker.toggle",
+            "editor.openFavorite",
+            "thread.previous",
+            "thread.next",
+            "thread.jump.1",
+            "thread.jump.2",
+            "thread.jump.3",
+            "thread.jump.4",
+            "thread.jump.5",
+            "thread.jump.6",
+            "thread.jump.7",
+            "thread.jump.8",
+            "thread.jump.9",
+            "modelPicker.jump.1",
+            "modelPicker.jump.2",
+            "modelPicker.jump.3",
+            "modelPicker.jump.4",
+            "modelPicker.jump.5",
+            "modelPicker.jump.6",
+            "modelPicker.jump.7",
+            "modelPicker.jump.8",
+            "modelPicker.jump.9"
+          ],
+          "vcsStatus": null,
+          "vcsStatusCwd": "/tmp/t3-review-multi-workspace.0nxK26",
+          "vcsStatusPending": true,
+          "activeProject": {
+            "id": "59050ad9-f51d-4901-9e56-9c2715e3a8ce",
+            "title": "ElementContext",
+            "workspaceRoot": "/tmp/t3-review-multi-workspace.0nxK26",
+            "repositoryIdentity": null,
+            "defaultModelSelection": {
+              "instanceId": "codex",
+              "model": "gpt-5.6-sol"
+            },
+            "scripts": [],
+            "createdAt": "2026-09-12T06:38:00.292Z",
+            "updatedAt": "2026-09-12T06:38:00.292Z"
+          },
+          "activeThread": {
+            "id": "fidelity-review-thread",
+            "runtimeMode": "full-access",
+            "interactionMode": "default",
+            "branch": "main",
+            "worktreePath": null,
+            "latestTurn": {
+              "turnId": "fidelity-review-turn-1",
+              "state": "completed",
+              "requestedAt": "2026-08-19T15:09:00.000Z",
+              "startedAt": "2026-08-19T15:09:00.000Z",
+              "completedAt": "2026-08-19T15:10:00.000Z",
+              "assistantMessageId": "fidelity-review-assistant-1"
+            },
+            "createdAt": "2026-08-19T15:09:00.000Z",
+            "updatedAt": "2026-08-19T15:10:00.000Z",
+            "archivedAt": null,
+            "settledOverride": "settled",
+            "hasPendingApprovals": false,
+            "hasPendingUserInput": false,
+            "projectId": "59050ad9-f51d-4901-9e56-9c2715e3a8ce",
+            "title": "Review checkpoint baseline",
+            "modelSelection": {
+              "instanceId": "codex",
+              "model": "gpt-5.6-sol"
+            },
+            "settledAt": "2026-08-19T15:10:00.000Z",
+            "snoozedUntil": null,
+            "snoozedAt": null,
+            "titleRegeneration": null,
+            "session": {
+              "threadId": "fidelity-review-thread",
+              "status": "ready",
+              "providerName": "Codex",
+              "providerInstanceId": "codex",
+              "runtimeMode": "full-access",
+              "activeTurnId": null,
+              "lastError": null,
+              "updatedAt": "2026-08-19T15:10:00.000Z"
+            },
+            "latestUserMessageAt": "2026-08-19T15:09:00.000Z",
+            "hasActionableProposedPlan": false
+          },
+          "selectedProvider": {
+            "instanceId": "codex",
+            "showInteractionModeToggle": true,
+            "status": "warning",
+            "authStatus": "unknown",
+            "message": "Codex provider status has not been checked in this session yet."
+          }
+        },
+        "checkpointCard": {
+          "rect": {
+            "x": 388,
+            "y": 286,
+            "width": 760,
+            "height": 112
+          },
+          "text": "2 changed files + 2 − 2 Hide files Open diff ◻ review-fixture.txt + 1 − 1 TS review-secondary.ts + 1 − 1"
+        },
+        "rightPanel": {
+          "rect": {
+            "x": 740,
+            "y": 0,
+            "width": 540,
+            "height": 820
+          },
+          "activeKind": "diff"
+        },
+        "diffSurface": {
+          "rect": {
+            "x": 741,
+            "y": 92,
+            "width": 539,
+            "height": 728
+          },
+          "selectedTurn": "fidelity-review-turn-1"
+        },
+        "diffFiles": [
+          {
+            "rect": {
+              "x": 749,
+              "y": 100,
+              "width": 523,
+              "height": 73
+            },
+            "path": "review-fixture.txt",
+            "expanded": "true",
+            "text": "review-fixture.txt+1−11−original review fixture1+updated by T3 review fixture"
+          },
+          {
+            "rect": {
+              "x": 749,
+              "y": 189,
+              "width": 523,
+              "height": 73
+            },
+            "path": "review-secondary.ts",
+            "expanded": "true",
+            "text": "review-secondary.ts+1−11−export const reviewState = 'before';1+export const reviewState = 'after';"
+          }
+        ],
+        "toolStates": {
+          "split": false,
+          "wrap": false,
+          "ignoreWhitespace": false,
+          "collapsedFileCount": 0
+        },
+        "composer": {
+          "rect": {
+            "x": 276,
+            "y": 628,
+            "width": 444,
+            "height": 140
+          },
+          "state": "idle"
+        },
+        "screenshot": {
+          "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/evidence/2026-09-12/final5/review-diff/native-review-diff.png",
+          "bytes": 731205,
+          "sha256": "667a0e0e964352e0462008f17666b3e19bf00ae148a722841482bf661fb70e58"
+        },
+        "evidenceKind": "visual-and-semantic",
+        "defaultOnly": true
+      },
+      "rendererErrors": 0
+    }
+  ]
+}
