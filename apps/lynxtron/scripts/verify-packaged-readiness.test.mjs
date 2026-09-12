@@ -1062,6 +1062,9 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
     assert.include(source, "state?.composerDraftTextByScopeKey?.[draftScopeKey] === draftText");
     assert.include(source, "coldRestart: {");
+    assert.include(source, 'id: "element-reconnect"');
+    assert.include(source, "state.activeComposerElementContexts?.[0]?.id ===");
+    assert.include(source, "elementContextId: reconnectFixture.elementContext.id");
     assert.include(
       source,
       "persistedThreadIdsAfterRuntimeRecovery = readPersistedThreadIds(baseDir)",

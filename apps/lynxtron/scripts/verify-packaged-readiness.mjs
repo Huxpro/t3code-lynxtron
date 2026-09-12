@@ -13147,8 +13147,8 @@ async function verifyLifecycleRecovery({
           child,
           client,
           expression:
-            "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__].join(':')",
-          predicate: (value) => value === "function:function",
+            "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__].join(':')",
+          predicate: (value) => value === "function:function:function",
           timeoutMs,
         });
         const text = "Reconnect-scoped Native draft";
@@ -13160,16 +13160,40 @@ async function verifyLifecycleRecovery({
           lineEnd: 8,
           text: "before reconnect\nafter reconnect",
         };
+        const elementContext = {
+          id: "element-reconnect",
+          threadId: draft.draftThreadId,
+          pickedAt: "2026-09-12T00:00:00.000Z",
+          pageUrl: "https://example.com/dashboard",
+          pageTitle: "Dashboard",
+          tagName: "button",
+          selector: "button.submit",
+          htmlPreview: '<button class="submit">Save</button>',
+          componentName: "SubmitButton",
+          source: {
+            functionName: "SubmitButton",
+            fileName: "/repo/src/Button.tsx",
+            lineNumber: 12,
+            columnNumber: 5,
+          },
+          styles: ".submit { color: white; }",
+        };
         const fixtureResponse = await client.runCdp("Runtime.evaluate", {
           expression: `JSON.stringify({text:globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
             text,
           )}) ?? false,context:globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?.(${JSON.stringify(
             context,
+          )}) ?? false,element:globalThis.__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__?.(${JSON.stringify(
+            elementContext,
           )}) ?? false})`,
           returnByValue: true,
         });
         const fixtureResult = JSON.parse(commandResult(fixtureResponse)?.value ?? "null");
-        if (fixtureResult?.text !== true || fixtureResult?.context !== true) {
+        if (
+          fixtureResult?.text !== true ||
+          fixtureResult?.context !== true ||
+          fixtureResult?.element !== true
+        ) {
           throw new Error(
             `Reconnect Composer fixtures were not applied: ${JSON.stringify(fixtureResponse)}`,
           );
@@ -13181,10 +13205,17 @@ async function verifyLifecycleRecovery({
           predicate: (candidate) =>
             candidate?.activeThreadId === draft.draftThreadId &&
             candidate.activeComposerDraftText === text &&
-            candidate.activeComposerTerminalContexts?.[0]?.id === context.id,
+            candidate.activeComposerTerminalContexts?.[0]?.id === context.id &&
+            candidate.activeComposerElementContexts?.[0]?.id === elementContext.id,
         });
         const route = await readRoutePanel(client);
-        return { threadId: state.activeThreadId, text, context, route: route.route };
+        return {
+          threadId: state.activeThreadId,
+          text,
+          context,
+          elementContext,
+          route: route.route,
+        };
       })()
     : null;
   const connectedProjection = await waitForSessionComposerProjection({
@@ -13243,7 +13274,8 @@ async function verifyLifecycleRecovery({
         predicate: (state) =>
           state?.activeThreadId === reconnectFixture.threadId &&
           state.activeComposerDraftText === reconnectFixture.text &&
-          state.activeComposerTerminalContexts?.[0]?.id === reconnectFixture.context.id,
+          state.activeComposerTerminalContexts?.[0]?.id === reconnectFixture.context.id &&
+          state.activeComposerElementContexts?.[0]?.id === reconnectFixture.elementContext.id,
       })
     : null;
   const failedRoute = reconnectFixture ? await readRoutePanel(client) : null;
@@ -13283,7 +13315,8 @@ async function verifyLifecycleRecovery({
         predicate: (state) =>
           state?.activeThreadId === reconnectFixture.threadId &&
           state.activeComposerDraftText === reconnectFixture.text &&
-          state.activeComposerTerminalContexts?.[0]?.id === reconnectFixture.context.id,
+          state.activeComposerTerminalContexts?.[0]?.id === reconnectFixture.context.id &&
+          state.activeComposerElementContexts?.[0]?.id === reconnectFixture.elementContext.id,
       })
     : null;
   const recoveredRoute = reconnectFixture ? await readRoutePanel(client) : null;
@@ -13339,6 +13372,7 @@ async function verifyLifecycleRecovery({
           route: reconnectFixture.route,
           draftText: reconnectFixture.text,
           terminalContextId: reconnectFixture.context.id,
+          elementContextId: reconnectFixture.elementContext.id,
           failureStatePreserved: failedReconnectState !== null,
           recoveredStatePreserved: recoveredReconnectState !== null,
         }
