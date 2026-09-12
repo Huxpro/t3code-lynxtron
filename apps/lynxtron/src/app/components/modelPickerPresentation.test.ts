@@ -4,19 +4,16 @@ import path from "node:path";
 import { describe, expect, it } from "vite-plus/test";
 import { ProviderDriverKind, ProviderInstanceId, type ServerProvider } from "@t3tools/contracts";
 import {
-  deriveModelPickerModels,
-  providerModelKey,
-} from "@t3tools/client-runtime/presentation/model-picker";
-import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentation/provider";
-
-import {
   modelPickerRowDisabledReason,
+  deriveModelPickerModels,
   projectModelPickerProviders,
   projectModelPickerJumpRows,
   projectModelPickerRows,
+  providerModelKey,
   resolveModelPickerSelectedKey,
   type ModelPickerContext,
-} from "./modelPickerPresentation";
+} from "@t3tools/client-runtime/presentation/model-picker";
+import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentation/provider";
 
 function provider(input: {
   readonly instanceId: string;

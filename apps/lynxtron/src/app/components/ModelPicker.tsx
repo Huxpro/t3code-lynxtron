@@ -16,6 +16,12 @@ import type {
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
 import { providerModelKey } from "@t3tools/client-runtime/presentation/model-picker";
 import {
+  projectModelPickerProviders,
+  projectModelPickerJumpRows,
+  projectModelPickerRows,
+  resolveModelPickerSelectedKey,
+} from "@t3tools/client-runtime/presentation/model-picker";
+import {
   ModelPickerEmptySurface,
   ModelPickerBodySurface,
   ModelPickerContentSurface,
@@ -39,12 +45,6 @@ import {
 import { Icon } from "./Icon";
 import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
-import {
-  projectModelPickerProviders,
-  projectModelPickerJumpRows,
-  projectModelPickerRows,
-  resolveModelPickerSelectedKey,
-} from "./modelPickerPresentation";
 
 interface ModelPickerProps {
   models: ReadonlyArray<ModelInfo>;

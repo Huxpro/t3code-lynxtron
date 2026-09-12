@@ -48,6 +48,32 @@ export interface ModelPickerModel extends ProviderModelItem, ModelPickerSearchab
   readonly isDefault?: boolean | undefined;
 }
 
+export type ModelPickerPresentationModel = ProviderModelItem &
+  ModelPickerSearchableModel & { readonly driverKind: ProviderDriverKind };
+
+export interface ModelPickerProviderPresentation {
+  readonly entry: ProviderInstanceEntry;
+  readonly disabledReason: string | null;
+}
+
+export interface ModelPickerRowPresentation<
+  T extends ModelPickerPresentationModel = ModelPickerModel,
+> {
+  readonly model: T;
+  readonly favorite: boolean;
+  readonly disabledReason: string | null;
+}
+
+export interface ModelPickerContext {
+  readonly providers: ReadonlyArray<ServerProvider>;
+  readonly providerEntries: ReadonlyArray<ProviderInstanceEntry>;
+  readonly currentModelSelection: ModelSelection | undefined;
+  readonly currentProviderInstanceId: ProviderInstanceId | null;
+  readonly hasStartedSession: boolean;
+  readonly lockedProvider: ProviderDriverKind | null;
+  readonly lockedContinuationGroupKey: string | null;
+}
+
 export interface ProviderModelCatalog {
   readonly entries: ReadonlyArray<ProviderInstanceEntry>;
   readonly models: ReadonlyArray<ModelPickerModel>;
@@ -354,6 +380,158 @@ export function sortProviderModelItems<T extends ProviderModelItem>(
     ...(options?.groupFavorites !== undefined ? { groupFavorites: options.groupFavorites } : {}),
     ...(options?.instanceOrder !== undefined ? { instanceOrder: options.instanceOrder } : {}),
   });
+}
+
+export function projectModelPickerJumpRows<T extends ModelPickerModel>(
+  models: ReadonlyArray<T>,
+  rows: ReadonlyArray<ModelPickerRowPresentation<T>>,
+): ReadonlyArray<ModelPickerRowPresentation<T>> {
+  const rowByKey = new Map(
+    rows.map((row) => [providerModelKey(row.model.instanceId, row.model.slug), row]),
+  );
+  return models.flatMap((model) => {
+    const row = rowByKey.get(providerModelKey(model.instanceId, model.slug));
+    return row ? [row] : [];
+  });
+}
+
+export function resolveModelPickerSelectedKey(
+  currentSelection: ModelSelection | undefined,
+  selectedModel: Pick<ModelPickerModel, "instanceId" | "slug"> | undefined,
+): string | undefined {
+  if (currentSelection) {
+    return providerModelKey(currentSelection.instanceId, currentSelection.model);
+  }
+  return selectedModel ? providerModelKey(selectedModel.instanceId, selectedModel.slug) : undefined;
+}
+
+export function projectModelPickerProviders(
+  entries: ReadonlyArray<ProviderInstanceEntry>,
+  context: Pick<ModelPickerContext, "lockedProvider" | "lockedContinuationGroupKey">,
+): ReadonlyArray<ModelPickerProviderPresentation> {
+  const presentations = entries
+    .filter((entry) => entry.enabled)
+    .map((entry) => ({
+      entry,
+      disabledReason:
+        providerInstanceSelectionBlockedReason(entry) ??
+        providerInstanceLockedReason(entry, {
+          driverKind: context.lockedProvider,
+          continuationGroupKey: context.lockedContinuationGroupKey,
+        }),
+    }));
+  if (context.lockedProvider === null) return presentations;
+  const available: ModelPickerProviderPresentation[] = [];
+  const disabled: ModelPickerProviderPresentation[] = [];
+  for (const presentation of presentations) {
+    if (presentation.disabledReason === null) available.push(presentation);
+    else disabled.push(presentation);
+  }
+  return [...available, ...disabled];
+}
+
+export function modelPickerRowDisabledReason(
+  model: ModelPickerPresentationModel,
+  context: ModelPickerContext,
+): string | null {
+  const providerEntry = context.providerEntries.find(
+    (entry) => entry.instanceId === model.instanceId,
+  );
+  if (providerEntry) {
+    const unavailableReason = providerInstanceSelectionBlockedReason(providerEntry);
+    if (unavailableReason) return unavailableReason;
+  }
+  const entry = context.providers.find((provider) => provider.instanceId === model.instanceId);
+  if (!entry) return `${model.providerDisplayName} is no longer configured.`;
+  const providerLockedReason = providerInstanceLockedReason(
+    {
+      displayName: model.providerDisplayName,
+      driverKind: model.driverKind,
+      continuationGroupKey: entry.continuation?.groupKey,
+    },
+    {
+      driverKind: context.lockedProvider,
+      continuationGroupKey: context.lockedContinuationGroupKey,
+    },
+  );
+  if (providerLockedReason) return providerLockedReason;
+  if (!context.currentModelSelection) return null;
+  const block = startedThreadModelChangeReason({
+    providers: context.providers,
+    hasStartedSession: context.hasStartedSession,
+    currentModelSelection: context.currentModelSelection,
+    currentProviderInstanceId: context.currentProviderInstanceId,
+    nextModelSelection: { instanceId: model.instanceId, model: model.slug },
+  });
+  return block ? `${block.description} Start a new thread to use this model.` : null;
+}
+
+export function projectModelPickerRows<T extends ModelPickerPresentationModel>(input: {
+  readonly models: ReadonlyArray<T>;
+  readonly selectedProviderId: ProviderInstanceId | "favorites";
+  readonly search: string;
+  readonly favoriteModelKeys: ReadonlySet<string>;
+  readonly instanceOrder: ReadonlyArray<ProviderInstanceId>;
+  readonly context: ModelPickerContext;
+  readonly getDisabledReason?: (model: T) => string | null;
+}): ReadonlyArray<ModelPickerRowPresentation<T>> {
+  const search = input.search.trim();
+  let models = [...input.models];
+  const matchesLockedProvider = (model: T): boolean => {
+    if (input.context.lockedProvider === null) return true;
+    const entry = input.context.providerEntries.find(
+      (candidate) => candidate.instanceId === model.instanceId,
+    );
+    return (
+      entry?.driverKind === input.context.lockedProvider &&
+      (!input.context.lockedContinuationGroupKey ||
+        entry.continuationGroupKey === input.context.lockedContinuationGroupKey)
+    );
+  };
+  if (search) {
+    models = rankModelPickerSearchResults(models, search, (model) => ({
+      name: model.name,
+      ...(model.shortName ? { shortName: model.shortName } : {}),
+      ...(model.subProvider ? { subProvider: model.subProvider } : {}),
+      driverKind: model.driverKind,
+      providerDisplayName: model.providerDisplayName,
+      isFavorite: input.favoriteModelKeys.has(providerModelKey(model.instanceId, model.slug)),
+    }));
+    if (input.context.lockedProvider !== null) models = models.filter(matchesLockedProvider);
+  } else if (input.context.lockedProvider !== null) {
+    models = models.filter(matchesLockedProvider);
+    if (input.selectedProviderId === "favorites") {
+      models = models.filter((model) =>
+        input.favoriteModelKeys.has(providerModelKey(model.instanceId, model.slug)),
+      );
+    } else {
+      models = models.filter((model) => model.instanceId === input.selectedProviderId);
+    }
+  } else if (input.selectedProviderId === "favorites") {
+    models = models.filter((model) =>
+      input.favoriteModelKeys.has(providerModelKey(model.instanceId, model.slug)),
+    );
+  } else {
+    models = models.filter((model) => model.instanceId === input.selectedProviderId);
+  }
+
+  if (!search) {
+    models = sortModelPickerItems(models, {
+      getInstanceId: (model) => model.instanceId,
+      getModelSlug: (model) => model.slug,
+      favoriteModelKeys: input.favoriteModelKeys,
+      groupFavorites: input.selectedProviderId !== "favorites",
+      instanceOrder: input.instanceOrder,
+    });
+  }
+
+  return models.map((model) => ({
+    model,
+    favorite: input.favoriteModelKeys.has(providerModelKey(model.instanceId, model.slug)),
+    disabledReason: input.getDisabledReason
+      ? input.getDisabledReason(model)
+      : modelPickerRowDisabledReason(model, input.context),
+  }));
 }
 
 function getModelPickerSearchFields(model: ModelPickerSearchableModel): string[] {
