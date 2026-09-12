@@ -689,6 +689,15 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain('method: "setValue"');
     expect(composer).toContain("[editorKey, editorRevision, editorValue]");
     expect(composer).toContain('className="composer-attachment-card"');
+    expect(composer).toContain('className="composer-element-context-chip"');
+    expect(composer).toContain("formatElementContextLabel(context)");
+    expect(composer).toContain("formatElementContextSourceLabel(context)");
+    expect(composer).toContain("onRemoveElementContext(context.id)");
+    expect(composer).toContain("fileContexts.length + elementContexts.length");
+    expect(chatView).toContain("appendElementContextsToPrompt(");
+    expect(chatView).toContain("clearComposerElementContexts(composerDraftKey)");
+    expect(overrides).toContain(".composer-element-context-chip");
+    expect(overrides).toContain(".composer-element-context-source");
     expect(composer).toContain('mode="aspectFill"');
     expect(composer).toContain("aria-label={`Remove ${attachment.name}`}");
     expect(overrides).toMatch(/\.composer-attachment-card \{[^}]*border-radius: 10px;/u);
@@ -2400,8 +2409,14 @@ describe("desktop shell interaction contract", () => {
       "composerTerminalContextsByScopeKey: savedComposerTerminalContexts",
     );
     expect(clientSource).toContain('setPref("composerTerminalContextsByScopeKey", next)');
+    expect(clientSource).toContain(
+      "composerElementContextsByScopeKey: savedComposerElementContexts",
+    );
+    expect(clientSource).toContain('setPref("composerElementContextsByScopeKey", next)');
     expect(clientSource).toContain("__T3_LYNXTRON_CREATE_DRAFT_THREAD__");
     expect(clientSource).toContain("__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__");
+    expect(clientSource).toContain("__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__");
+    expect(clientSource).toContain("activeComposerElementContexts: activeComposerDraftKey");
     expect(clientSource).toContain("__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__");
     expect(clientSource).toContain("messages: state.messages");
     expect(componentSource("TerminalPanel.tsx")).toContain(
@@ -2413,6 +2428,17 @@ describe("desktop shell interaction contract", () => {
     );
     expect(modelSelectionLogicSource).toContain(
       "return [currentSelection, projects[0]?.defaultModelSelection]",
+    );
+  });
+
+  it("keeps element context drafts until a send succeeds", () => {
+    const chatView = componentSource("ChatView.tsx");
+    expect(chatView).toContain("appendElementContextsToPrompt(");
+    expect(chatView).toContain("composerElementContexts,");
+    expect(chatView).toContain("if (sent && composerDraftKey) {");
+    expect(chatView).toContain("t3ClientActions.clearComposerElementContexts(composerDraftKey);");
+    expect(chatView.indexOf("if (sent && composerDraftKey) {")).toBeLessThan(
+      chatView.indexOf("t3ClientActions.clearComposerElementContexts(composerDraftKey);"),
     );
   });
 

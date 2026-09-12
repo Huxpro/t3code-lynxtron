@@ -1265,6 +1265,7 @@ function ChatViewContent(props: ChatViewProps) {
   const setComposerDraftElementContexts = useComposerDraftStore(
     (store) => store.setElementContexts,
   );
+  const addComposerDraftElementContext = useComposerDraftStore((store) => store.addElementContext);
   const setComposerDraftPreviewAnnotations = useComposerDraftStore(
     (store) => store.setPreviewAnnotations,
   );
@@ -1289,6 +1290,14 @@ function ChatViewContent(props: ChatViewProps) {
   const composerElementContextsRef = useRef<ElementContextDraft[]>([]);
   const localComposerRef = useRef<ChatComposerHandle | null>(null);
   const composerRef = useComposerHandleContext() ?? localComposerRef;
+  useEffect(() => {
+    if (!window.__T3_WORKBENCH_DESKTOP_VISUAL__) return;
+    window.__T3_WORKBENCH_ADD_ELEMENT_CONTEXT__ = (selection) =>
+      addComposerDraftElementContext(composerDraftTarget, selection);
+    return () => {
+      delete window.__T3_WORKBENCH_ADD_ELEMENT_CONTEXT__;
+    };
+  }, [addComposerDraftElementContext, composerDraftTarget]);
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const [expandedImage, setExpandedImage] = useState<ExpandedImagePreview | null>(null);
   const [optimisticUserMessages, setOptimisticUserMessages] = useState<ChatMessage[]>([]);

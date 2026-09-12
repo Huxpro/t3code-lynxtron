@@ -14,6 +14,11 @@ import {
 } from "@t3tools/client-runtime/presentation/terminal-context";
 import type { ComposerFileContext } from "@t3tools/client-runtime/presentation/file-context";
 import {
+  formatElementContextLabel,
+  formatElementContextSourceLabel,
+  type ElementContextDraft,
+} from "@t3tools/client-runtime/presentation/element-context";
+import {
   resolveCompactComposerControlsAlign,
   shouldUseCompactComposerFooter,
 } from "../../../../web/src/components/composerFooterLayout";
@@ -117,10 +122,12 @@ interface ComposerProps {
   attachments: ReadonlyArray<UploadChatAttachment>;
   terminalContexts: ReadonlyArray<ComposerTerminalContext>;
   fileContexts: ReadonlyArray<ComposerFileContext>;
+  elementContexts: ReadonlyArray<ElementContextDraft>;
   onAddAttachments: (attachments: ReadonlyArray<UploadChatAttachment>) => void;
   onRemoveAttachment: (index: number) => void;
   onRemoveTerminalContext: (contextId: string) => void;
   onRemoveFileContext: (contextId: string) => void;
+  onRemoveElementContext: (contextId: string) => void;
   onAddFileContext: (path: string) => void;
   onSend: (text: string, attachments: ReadonlyArray<UploadChatAttachment>) => Promise<boolean>;
   onStop: () => void;
@@ -203,10 +210,12 @@ export function Composer({
   attachments,
   terminalContexts,
   fileContexts,
+  elementContexts,
   onAddAttachments,
   onRemoveAttachment,
   onRemoveTerminalContext,
   onRemoveFileContext,
+  onRemoveElementContext,
   onAddFileContext,
   onSend,
   onStop,
@@ -542,7 +551,7 @@ export function Composer({
     prompt: value,
     imageCount: attachments.length,
     terminalContexts,
-    elementContextCount: fileContexts.length,
+    elementContextCount: fileContexts.length + elementContexts.length,
   });
   const primaryActionRef = useRef({
     disabled,
@@ -887,6 +896,34 @@ export function Composer({
                           </HostButton>
                         </view>
                       ))}
+                    </view>
+                  ) : null}
+                  {elementContexts.length > 0 ? (
+                    <view className="composer-element-context-list">
+                      {elementContexts.map((context) => {
+                        const label = formatElementContextLabel(context);
+                        const sourceLabel = formatElementContextSourceLabel(context);
+                        return (
+                          <view key={context.id} className="composer-element-context-chip">
+                            <Icon name="mouse-pointer-click" size={12} color="#818181" />
+                            <text className="composer-element-context-label" text-maxline="1">
+                              {label}
+                            </text>
+                            {sourceLabel ? (
+                              <text className="composer-element-context-source" text-maxline="1">
+                                {sourceLabel}
+                              </text>
+                            ) : null}
+                            <HostButton
+                              className="composer-element-context-remove"
+                              aria-label={`Remove ${label}`}
+                              onClick={() => onRemoveElementContext(context.id)}
+                            >
+                              <Icon name="x" size={11} color="#818181" />
+                            </HostButton>
+                          </view>
+                        );
+                      })}
                     </view>
                   ) : null}
                   {attachments.length > 0 ? (

@@ -22,6 +22,13 @@ import {
   type ComposerFileContextsByScopeKey,
 } from "@t3tools/client-runtime/presentation/file-context";
 import {
+  addComposerElementContext as addComposerElementContextToState,
+  normalizeComposerElementContextsByScopeKey,
+  removeComposerElementContext as removeComposerElementContextFromState,
+  type ComposerElementContextsByScopeKey,
+  type ElementContextDraft,
+} from "@t3tools/client-runtime/presentation/element-context";
+import {
   buildDraftThreadTurnBootstrap,
   addComposerDraftAttachments,
   composerDraftScopeKey,
@@ -201,6 +208,7 @@ export interface T3ClientState {
   readonly composerDraftAttachmentsByScopeKey: ComposerDraftAttachmentsByScopeKey;
   readonly composerTerminalContextsByScopeKey: ComposerTerminalContextsByScopeKey;
   readonly composerFileContextsByScopeKey: ComposerFileContextsByScopeKey;
+  readonly composerElementContextsByScopeKey: ComposerElementContextsByScopeKey;
   readonly messages: ReadonlyArray<ChatMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: SessionStatus;
@@ -243,6 +251,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   composerDraftAttachmentsByScopeKey: {},
   composerTerminalContextsByScopeKey: {},
   composerFileContextsByScopeKey: {},
+  composerElementContextsByScopeKey: {},
   messages: [],
   checkpoints: [],
   sessionStatus: "idle",
@@ -787,12 +796,14 @@ function installTransportDevToolHook(): void {
       vcsStatus: VcsStatusResult | null;
       vcsStatusCwd: string | null;
       vcsStatusPending: boolean;
+      activeComposerElementContexts: ReadonlyArray<ElementContextDraft>;
     };
     __T3_LYNXTRON_SELECT_THREAD__?: (threadId: string) => void;
     __T3_LYNXTRON_CREATE_DRAFT_THREAD__?: (projectId: string) => Promise<boolean>;
     __T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__?: (
       context: ComposerTerminalContext,
     ) => boolean;
+    __T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__?: (context: ElementContextDraft) => boolean;
     __T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?: (instanceId: string, model: string) => boolean;
     __T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?: (provider: ServerProvider) => boolean;
   };
@@ -842,6 +853,9 @@ function installTransportDevToolHook(): void {
         : [],
       activeComposerFileContexts: activeComposerDraftKey
         ? (state.composerFileContextsByScopeKey[activeComposerDraftKey] ?? [])
+        : [],
+      activeComposerElementContexts: activeComposerDraftKey
+        ? (state.composerElementContextsByScopeKey[activeComposerDraftKey] ?? [])
         : [],
       messages: state.messages,
       sessionStatus: state.sessionStatus,
@@ -964,6 +978,20 @@ function installTransportDevToolHook(): void {
       addComposerTerminalContext(scopeKey, context);
       return true;
     };
+    diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__ = (context) => {
+      const state = appAtomRegistry.get(t3ClientStateAtom);
+      const activeThread =
+        state.threads.find((thread) => thread.id === state.activeThreadId) ??
+        (state.draftThread?.id === state.activeThreadId ? state.draftThread : undefined);
+      const scopeKey = composerDraftScopeKey({
+        threadId: state.activeThreadId,
+        projectId: activeThread?.projectId ?? state.projects[0]?.id,
+        localDraft:
+          state.draftThread?.id === state.activeThreadId || state.activeThreadId === undefined,
+      });
+      if (!scopeKey) return false;
+      return addComposerElementContext(scopeKey, context);
+    };
     diagnosticsGlobal.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__ = (instanceId, model) => {
       const state = appAtomRegistry.get(t3ClientStateAtom);
       const selection = state.models.find(
@@ -1015,6 +1043,9 @@ async function bootstrapT3Client(): Promise<void> {
   const savedComposerFileContexts = normalizeComposerFileContextsByScopeKey(
     getPref<unknown>("composerFileContextsByScopeKey", null),
   );
+  const savedComposerElementContexts = normalizeComposerElementContextsByScopeKey(
+    getPref<unknown>("composerElementContextsByScopeKey", null),
+  );
   if (saved) {
     patchState({
       modelSelection: saved,
@@ -1022,6 +1053,7 @@ async function bootstrapT3Client(): Promise<void> {
       composerDraftAttachmentsByScopeKey: savedComposerDraftAttachments,
       composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
       composerFileContextsByScopeKey: savedComposerFileContexts,
+      composerElementContextsByScopeKey: savedComposerElementContexts,
     });
   } else {
     patchState({
@@ -1029,6 +1061,7 @@ async function bootstrapT3Client(): Promise<void> {
       composerDraftAttachmentsByScopeKey: savedComposerDraftAttachments,
       composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
       composerFileContextsByScopeKey: savedComposerFileContexts,
+      composerElementContextsByScopeKey: savedComposerElementContexts,
     });
   }
   let firstSnapshotApplied = false;
@@ -1265,6 +1298,7 @@ let composerDraftPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
 let composerAttachmentPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
 let composerTerminalContextPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
 let composerFileContextPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
+let composerElementContextPersistenceTimer: ReturnType<typeof setTimeout> | undefined;
 
 function persistComposerAttachments(next: ComposerDraftAttachmentsByScopeKey): void {
   if (composerAttachmentPersistenceTimer) clearTimeout(composerAttachmentPersistenceTimer);
@@ -1288,6 +1322,14 @@ function persistComposerFileContexts(next: ComposerFileContextsByScopeKey): void
   composerFileContextPersistenceTimer = setTimeout(() => {
     composerFileContextPersistenceTimer = undefined;
     setPref("composerFileContextsByScopeKey", next);
+  }, 300);
+}
+
+function persistComposerElementContexts(next: ComposerElementContextsByScopeKey): void {
+  if (composerElementContextPersistenceTimer) clearTimeout(composerElementContextPersistenceTimer);
+  composerElementContextPersistenceTimer = setTimeout(() => {
+    composerElementContextPersistenceTimer = undefined;
+    setPref("composerElementContextsByScopeKey", next);
   }, 300);
 }
 
@@ -1397,6 +1439,38 @@ function clearComposerFileContexts(scopeKey: string): void {
   const { [scopeKey]: _cleared, ...remaining } = state.composerFileContextsByScopeKey;
   patchState({ composerFileContextsByScopeKey: remaining });
   persistComposerFileContexts(remaining);
+}
+
+function addComposerElementContext(scopeKey: string, context: ElementContextDraft): boolean {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const next = addComposerElementContextToState(
+    state.composerElementContextsByScopeKey,
+    scopeKey,
+    context,
+  );
+  if (next === state.composerElementContextsByScopeKey) return false;
+  patchState({ composerElementContextsByScopeKey: next });
+  persistComposerElementContexts(next);
+  return true;
+}
+
+function removeComposerElementContext(scopeKey: string, contextId: string): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const next = removeComposerElementContextFromState(
+    state.composerElementContextsByScopeKey,
+    scopeKey,
+    contextId,
+  );
+  if (next === state.composerElementContextsByScopeKey) return;
+  patchState({ composerElementContextsByScopeKey: next });
+  persistComposerElementContexts(next);
+}
+
+function clearComposerElementContexts(scopeKey: string): void {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const { [scopeKey]: _cleared, ...remaining } = state.composerElementContextsByScopeKey;
+  patchState({ composerElementContextsByScopeKey: remaining });
+  persistComposerElementContexts(remaining);
 }
 
 function sendPrompt(
@@ -2327,6 +2401,7 @@ export const t3ClientActions = {
   clearComposerAttachments,
   clearComposerTerminalContexts,
   clearComposerFileContexts,
+  clearComposerElementContexts,
   settleThread,
   unsettleThread,
   unsnoozeThread,
@@ -2348,5 +2423,7 @@ export const t3ClientActions = {
   removeComposerAttachment,
   removeComposerTerminalContext,
   removeComposerFileContext,
+  removeComposerElementContext,
+  addComposerElementContext,
   writeProjectFile,
 } as const;

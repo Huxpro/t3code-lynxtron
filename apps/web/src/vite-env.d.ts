@@ -25,5 +25,8 @@ declare global {
     desktopBridge?: DesktopBridge;
     __T3_WORKBENCH_DESKTOP_VISUAL__?: boolean;
     __T3_WORKBENCH_OPEN_TERMINAL__?: (terminalId: string) => boolean;
+    __T3_WORKBENCH_ADD_ELEMENT_CONTEXT__?: (
+      selection: import("./lib/elementContext").ElementContextSelection,
+    ) => boolean;
   }
 }

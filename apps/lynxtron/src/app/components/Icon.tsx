@@ -62,6 +62,7 @@ function lightColor(color: string): string {
 }
 
 export type IconName =
+  | "mouse-pointer-click"
   | "plus"
   | "play"
   | "arrow-up"

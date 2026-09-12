@@ -15,6 +15,7 @@ import {
 } from "@t3tools/client-runtime/presentation/composer";
 import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
 import { appendTerminalContextsToPrompt } from "@t3tools/client-runtime/presentation/terminal-context";
+import { appendElementContextsToPrompt } from "@t3tools/client-runtime/presentation/element-context";
 import {
   appendFileContextsToPrompt,
   composerFileContext,
@@ -114,6 +115,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     composerDraftAttachmentsByScopeKey,
     composerTerminalContextsByScopeKey,
     composerFileContextsByScopeKey,
+    composerElementContextsByScopeKey,
     messages,
     sessionStatus,
     sessionError,
@@ -601,6 +603,9 @@ export function ChatView({ threadId }: ChatViewProps) {
   const composerFileContexts = composerDraftKey
     ? (composerFileContextsByScopeKey[composerDraftKey] ?? [])
     : [];
+  const composerElementContexts = composerDraftKey
+    ? (composerElementContextsByScopeKey[composerDraftKey] ?? [])
+    : [];
   const handleComposerDraftTextChange = useCallback(
     (text: string) => {
       if (composerDraftKey) t3ClientActions.setComposerDraftText(composerDraftKey, text);
@@ -1014,6 +1019,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         attachments={composerDraftAttachments}
         terminalContexts={composerTerminalContexts}
         fileContexts={composerFileContexts}
+        elementContexts={composerElementContexts}
         onAddAttachments={(attachments) => {
           if (composerDraftKey)
             t3ClientActions.addComposerAttachments(composerDraftKey, attachments);
@@ -1034,13 +1040,20 @@ export function ChatView({ threadId }: ChatViewProps) {
           if (composerDraftKey)
             t3ClientActions.removeComposerFileContext(composerDraftKey, contextId);
         }}
+        onRemoveElementContext={(contextId) => {
+          if (composerDraftKey)
+            t3ClientActions.removeComposerElementContext(composerDraftKey, contextId);
+        }}
         disabled={status !== "ready" || sessionStatus === "starting"}
         busy={sessionWorking}
         onSend={async (text, attachments) => {
           const sent = await handleSend(
-            appendTerminalContextsToPrompt(
-              appendFileContextsToPrompt(text, composerFileContexts),
-              composerTerminalContexts,
+            appendElementContextsToPrompt(
+              appendTerminalContextsToPrompt(
+                appendFileContextsToPrompt(text, composerFileContexts),
+                composerTerminalContexts,
+              ),
+              composerElementContexts,
             ),
             attachments,
           );
@@ -1048,6 +1061,7 @@ export function ChatView({ threadId }: ChatViewProps) {
             t3ClientActions.clearComposerAttachments(composerDraftKey);
             t3ClientActions.clearComposerTerminalContexts(composerDraftKey);
             t3ClientActions.clearComposerFileContexts(composerDraftKey);
+            t3ClientActions.clearComposerElementContexts(composerDraftKey);
           }
           return sent;
         }}

@@ -175,6 +175,10 @@
       "types": "./src/presentation/fileContext.ts",
       "default": "./src/presentation/fileContext.ts"
     },
+    "./presentation/element-context": {
+      "types": "./src/presentation/elementContext.ts",
+      "default": "./src/presentation/elementContext.ts"
+    },
     "./presentation/floating-relation": {
       "types": "./src/presentation/floatingRelation.ts",
       "default": "./src/presentation/floatingRelation.ts"
