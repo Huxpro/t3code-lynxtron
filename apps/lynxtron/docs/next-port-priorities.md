@@ -4,7 +4,7 @@ Generated from: historical `reports/gap-atlas.json` ordering
 Evidence reconciled: 2026-08-18
 Status: prioritization input; parent gaps and final5 certification are not complete
 
-This list excludes the closed residuals GAP-001, GAP-004, GAP-008, and GAP-009. A
+This list excludes the closed residuals GAP-001, GAP-004, GAP-006, GAP-008, and GAP-009. A
 bounded Browser or shared-surface slice is progress only. A row becomes
 `completed` only when every success criterion below is proven by the strict
 manifest, production-resolver audit, focused tests, and Native evidence where
@@ -14,12 +14,11 @@ required.
 | ---: | ------- | ------------------------------- | ----: | ---------------------------------------------------------------------------------------- |
 |    1 | GAP-002 | Main shell / Sidebar / Composer |    66 | open                                                                                     |
 |    2 | GAP-005 | Composer                        |    58 | open; Stop is proven, physical input/focus is R5                                         |
-|    3 | GAP-006 | Model Picker                    |    55 | open                                                                                     |
-|    4 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
-|    5 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
-|    6 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
-|    7 | GAP-003 | Settings sections               |    45 | open                                                                                     |
-|    8 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
+|    3 | GAP-011 | Native keyboard/focus           |    52 | blocked-runtime(R5)                                                                      |
+|    4 | GAP-007 | Quick Switch                    |    51 | open                                                                                     |
+|    5 | GAP-010 | Review / Changed Files          |    50 | open; one-file patch renderer and Native tap proven, multi-file/tool interactions remain |
+|    6 | GAP-003 | Settings sections               |    45 | open                                                                                     |
+|    7 | GAP-012 | Settings Appearance             |    39 | open                                                                                     |
 
 ## Baselines
 
@@ -115,6 +114,12 @@ host after the first Rspeedy compile instead of stalling before Rspack.
   - provider/model ordering and selected state are exact;
   - overlay geometry, query, empty, select, and dismiss pass;
   - Native open/select/dismiss uses real taps; keyboard claims require R5.
+- Status: `completed`. The route-level React owners remain platform-specific,
+  while catalog, provider availability/lock ordering, favorites/search rows,
+  selected-key and jump ordering, and the rendered surface anatomy are shared.
+  Current product-surface reuse is 24.2% modules / 31.2% LOC. Exact-owned Native
+  real taps still open the picker, select Terra, persist the selection, and
+  dismiss cleanly. Numeric keyboard jumps remain solely under GAP-011.
 
 ## 4 — GAP-008 Existing Thread / Transcript
 
