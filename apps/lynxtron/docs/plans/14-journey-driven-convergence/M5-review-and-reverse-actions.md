@@ -1,6 +1,6 @@
 # M5: Complete review and reverse actions
 
-- Status: `in_progress` (started 2026-09-29 after M4)
+- Status: `completed` (2026-09-29, Lynxtron 0.0.28; physical input and one geometry pin carried to M7)
 
 ## Objective
 
@@ -29,6 +29,39 @@ Lynxtron.
 - Failure never leaves UI and canonical state disagreeing.
 - No placeholder claims editing or patch capabilities it cannot perform.
 - PF5 is complete with R10 explicitly accepted or still blocked.
+
+## Outcome (2026-09-29)
+
+Evidence: `evidence/2026-09-29/M5/review-and-reverse.json`. Every run launched
+Lynxtron in the background (`T3_LYNXTRON_BACKGROUND=1`); the developer's front
+app never changed.
+
+Product and harness changes made during M5:
+
+- Probe runs answer native confirmations from `T3_TEST_CONFIRM_ANSWERS`, so
+  gates exercise the real confirm path without a dialog.
+- `--verify-checkpoint-revert`: a cancelled revert changes nothing; a
+  confirmed revert without a provider session surfaces the server's
+  "Checkpoint revert failed" row while the thread, card, and workspace stay.
+- `--verify-checkpoint-revert-live`: a real OpenCode turn creates a file; the
+  confirmed revert drops the turn's messages and card and removes the file.
+- The review-diff gate failure was fixture collision (two fixtures shared one
+  workspace checkpoint ref); on an isolated workspace it passes.
+
+| Requirement        | Status               | Evidence                                                                         | Remaining boundary                                                             |
+| ------------------ | -------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Product entry      | complete             | Checkpoint card preview/expand toggles both ways; review diff opens both files   | Expanded card is 82px vs a Native-only 79px pin from 0.0.21 (M7 visual matrix) |
+| Canonical state    | complete             | Live revert truncates messages and checkpoints through the shared thread reducer | none                                                                           |
+| Completion receipt | complete             | Workspace file created by the turn is removed by the revert                      | Source-control panel refresh not separately measured                           |
+| Failure/retry      | partial              | Refused revert is visible and moves nothing; cancel is a no-op                   | Retry after a refusal is not separately proven                                 |
+| Reverse action     | complete             | Revert targets the exact thread and checkpoint count from the shared helper      | none                                                                           |
+| Web/Lynx parity    | complete             | Revert copy and targets shared with Web (M4)                                     | none                                                                           |
+| Native interaction | pending-user-session | DevTool taps; background computer-use grant was not available                    | Physical clicks carry to M7                                                    |
+| Source reuse       | partial              | Diff selection and revert decisions shared (M4)                                  | Diff body states, file order, base-ref picker still differ (M4 record)         |
+| Cleanup            | complete             | Owned processes stopped by PID; mutated workspaces are scratch copies            | none                                                                           |
+
+R10 (full DOM patch renderer) stays a hard island; Lynx renders unified
+diffs with its own leaf and claims no patch editing.
 
 ## Goal prompt
 

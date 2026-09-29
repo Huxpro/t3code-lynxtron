@@ -69,6 +69,14 @@
         "bytes": 6956512,
         "sha256": "ed47b007d48bb27c6b6e4ecbb71df35b97adfdab4cd933888985d91979496ef5"
       }
+    },
+    "filesBrowser": {
+      "status": "pass",
+      "viewport": "1280x820"
+    },
+    "fileSheetBack": {
+      "status": "pass",
+      "viewport": "700x820 (sheet layout; at 1280 the desktop explorer is correctly visible)"
     }
   },
   "open": [
