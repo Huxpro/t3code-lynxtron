@@ -95,10 +95,12 @@ on the pre-slice commit too, although a direct probe finds it.
   and `isSidebarV2ThreadWoke`; Lynx gained Woke and Done and recedes
   in-flight rows like Web, on active and settled rows alike.
 
-Next divergences, recorded from the audit: the auto-settle window ignoring
-`sidebarAutoSettleAfterDays`, no snoozed shelf, project sort ignoring
-`sidebarProjectSortOrder`, the new-thread target, a Lynx-only project row
-menu, and "No matching threads" vs Web "No threads found".
+- The settle split uses `sidebarAutoSettleAfterDays`; search empty copy and
+  row/settled time labels are shared.
+
+Remaining divergences, recorded from the audit: no snoozed shelf, project
+sort ignoring `sidebarProjectSortOrder` and logical groups, the new-thread
+target, and a Lynx-only project row menu.
 
 ### Settings Providers
 

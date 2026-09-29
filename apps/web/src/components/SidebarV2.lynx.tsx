@@ -11,8 +11,6 @@ import {
   threadWokeAt,
 } from "@t3tools/client-runtime/state/thread-settled";
 import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
-import { DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS } from "@t3tools/contracts/settings";
-import { formatRelativeTimeLabel } from "../timestampFormat";
 import {
   shortcutLabelForCommand,
   shouldShowThreadJumpHintsForModifiers,
@@ -24,7 +22,6 @@ import { ProjectFavicon } from "./ProjectFavicon";
 import {
   resolveSidebarV2Status,
   resolveWorkingStartedAt,
-  resolveSettledTimestamp,
   formatWorkingDurationLabel,
   searchSidebarThreadsByTitle,
   shouldChooseProjectForNewThread,
@@ -34,6 +31,8 @@ import {
   buildSidebarV2ThreadContextMenuItems,
   isSidebarV2ThreadWoke,
   resolveSidebarV2RowPresentation,
+  sidebarV2SettledTimeLabel,
+  sidebarV2ThreadTimeLabel,
   type SidebarV2TopStatus,
 } from "./Sidebar.logic";
 import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
@@ -64,21 +63,12 @@ import {
   getClientSettingsState,
   getPref,
   setPref,
+  useClientSettingsState,
 } from "../../../lynxtron/src/app/state/prefsStore";
 import { onSidebarThreadJump } from "../../../lynxtron/src/app/state/sidebarThreadNavigation";
 import { useLynxShortcutModifierState } from "../../../lynxtron/src/app/state/shortcutModifierState";
 
 const THREAD_VISITED_TIMESTAMPS_PREF = "threadLastVisitedAtById";
-
-function compactSidebarTimeLabel(label: string): string {
-  if (label === "just now") return "now";
-  return label.endsWith(" ago") ? label.slice(0, -4) : label;
-}
-
-function settledTimeLabel(thread: ReturnType<typeof useThreadShells>[number]): string {
-  const timestamp = resolveSettledTimestamp(thread);
-  return timestamp === null ? "" : compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
-}
 
 function LynxWorkingDuration({
   thread,
@@ -374,6 +364,7 @@ export default function SidebarV2() {
     () => sortScopedProjectsForSidebar(projects, threads, "updated_at"),
     [projects, threads],
   );
+  const [clientSettings] = useClientSettingsState();
   const { activeThreads, settledThreads } = useMemo(() => {
     const visible = threads.filter(
       (thread) =>
@@ -393,7 +384,7 @@ export default function SidebarV2() {
       if (
         effectiveSettled(thread, {
           now,
-          autoSettleAfterDays: DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS,
+          autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays,
         })
       ) {
         settled.push(thread);
@@ -405,7 +396,7 @@ export default function SidebarV2() {
       activeThreads: sortThreadsForSidebarV2(active),
       settledThreads: sortSettledThreadsForSidebarV2(settled),
     };
-  }, [projectScopeKey, serverConfig, threads]);
+  }, [clientSettings.sidebarAutoSettleAfterDays, projectScopeKey, serverConfig, threads]);
   const searchableThreads = useMemo(
     () => [...activeThreads, ...settledThreads],
     [activeThreads, settledThreads],
@@ -680,7 +671,6 @@ export default function SidebarV2() {
         rows={[
           ...threadSearchResults.map((thread, index) => {
             const project = projectById.get(thread.projectId) ?? null;
-            const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
             const highlighted = index === activeSearchResultIndex;
             return (
               <view
@@ -714,7 +704,7 @@ export default function SidebarV2() {
                   {thread.title}
                 </HostText>
                 <HostText className="sidebar-v2-search-result__time">
-                  {compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
+                  {sidebarV2ThreadTimeLabel(thread)}
                 </HostText>
               </view>
             );
@@ -724,7 +714,6 @@ export default function SidebarV2() {
             const isActive = thread.id === activeThreadId;
             const disposableEmptyThread = isDisposableEmptyThread(thread);
             const project = projectById.get(thread.projectId) ?? null;
-            const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
             const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
             const actionMenuOpen = actionMenuThreadId === thread.id;
             const snoozeMenuOpen = snoozeMenuThreadId === thread.id;
@@ -770,7 +759,7 @@ export default function SidebarV2() {
                 projectTitle={project?.title ?? null}
                 threadTitle={thread.title}
                 branch={thread.branch ?? null}
-                threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
+                threadTimeLabel={sidebarV2ThreadTimeLabel(thread)}
                 settledTimeLabel=""
                 topStatus={lynxTopStatus(presentation.topStatus, thread)}
                 jumpLabel={jumpLabelByThreadId.get(thread.id) ?? null}
@@ -987,7 +976,7 @@ export default function SidebarV2() {
                 threadTitle={thread.title}
                 branch={thread.branch ?? null}
                 threadTimeLabel=""
-                settledTimeLabel={settledTimeLabel(thread)}
+                settledTimeLabel={sidebarV2SettledTimeLabel(thread)}
                 topStatus={lynxTopStatus(presentation.topStatus, thread)}
                 jumpLabel={jumpLabelByThreadId.get(thread.id) ?? null}
                 favicon={
@@ -1088,7 +1077,7 @@ export default function SidebarV2() {
         listAriaLabel={threadSearchQuery ? "Thread search results" : undefined}
         emptyState={
           threadSearchQuery ? (
-            <HostText className="sidebar-inline-search__empty">No matching threads</HostText>
+            <HostText className="sidebar-inline-search__empty">No threads found</HostText>
           ) : undefined
         }
         hasProjects={projects.length > 0}

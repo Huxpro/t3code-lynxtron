@@ -101,7 +101,6 @@ import {
   resolveActiveThreadRouteRef,
   resolveThreadRouteTarget,
 } from "../threadRoutes";
-import { formatRelativeTimeLabel } from "../timestampFormat";
 import type { SidebarThreadSummary } from "../types";
 import { cn } from "~/lib/utils";
 import {
@@ -112,7 +111,6 @@ import {
   isTrailingDoubleClick,
   orderItemsByPreferredIds,
   resolveAdjacentThreadId,
-  resolveSettledTimestamp,
   resolveSidebarV2Status,
   searchSidebarThreadsByTitle,
   resolveWorkingStartedAt,
@@ -124,6 +122,8 @@ import {
   buildSidebarV2ThreadContextMenuItems,
   isSidebarV2ThreadWoke,
   resolveSidebarV2RowPresentation,
+  sidebarV2SettledTimeLabel,
+  sidebarV2ThreadTimeLabel,
 } from "./Sidebar.logic";
 import {
   formatThreadActionConfirmationMessage,
@@ -182,24 +182,6 @@ const PROJECT_GROUPING_MODE_LABELS: Record<SidebarProjectGroupingMode, string> =
   repository_path: "Group by repository path",
   separate: "Keep separate",
 };
-
-function compactSidebarTimeLabel(label: string): string {
-  if (label === "just now") return "now";
-  return label.endsWith(" ago") ? label.slice(0, -4) : label;
-}
-
-function threadTimeLabel(thread: SidebarThreadSummary): string {
-  const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
-  return compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
-}
-
-// Settled rows read "how long ago did this wrap up", matching their sort
-// key: both go through resolveSettledTimestamp so label and order can't
-// disagree.
-function settledTimeLabel(thread: SidebarThreadSummary): string {
-  const timestamp = resolveSettledTimestamp(thread);
-  return timestamp === null ? "" : compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
-}
 
 // Self-ticking so only this span re-renders each second, not the whole row.
 function WorkingDuration(props: { startedAt: string | null }) {
@@ -753,8 +735,8 @@ const SidebarV2Row = memo(function SidebarV2Row(props: {
       projectTitle={props.projectTitle}
       threadTitle={thread.title}
       branch={thread.branch}
-      threadTimeLabel={threadTimeLabel(thread)}
-      settledTimeLabel={settledTimeLabel(thread)}
+      threadTimeLabel={sidebarV2ThreadTimeLabel(thread)}
+      settledTimeLabel={sidebarV2SettledTimeLabel(thread)}
       topStatus={topStatusSurface}
       jumpLabel={props.jumpLabel}
       favicon={
@@ -903,7 +885,7 @@ const SidebarV2SearchResultRow = memo(function SidebarV2SearchResultRow(props: {
           />
           <span className="min-w-0 flex-1 truncate">{thread.title}</span>
           <span className="shrink-0 text-xs text-muted-foreground/55 tabular-nums">
-            {threadTimeLabel(thread)}
+            {sidebarV2ThreadTimeLabel(thread)}
           </span>
         </TooltipTrigger>
         <SidebarV2ThreadTooltip

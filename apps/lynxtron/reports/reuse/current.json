@@ -155,7 +155,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 74207,
+            "lines": 74214,
             "modules": 350
           },
           "largestNonShared": [
@@ -171,7 +171,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -191,7 +191,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             },
             {
@@ -764,6 +764,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -1134,11 +1139,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -1196,11 +1196,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -2223,7 +2218,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 35686,
+            "eligibleLines": 35703,
             "eligibleModules": 183,
             "modulesOnlyInLynx": [
               {
@@ -2473,7 +2468,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -2659,11 +2654,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 22366,
+            "lines": 22391,
             "modules": 98
           },
           "reusePercent": {
-            "lines": 30.1,
+            "lines": 30.2,
             "modules": 28
           },
           "web": {
@@ -3410,6 +3405,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -4122,11 +4122,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -8097,7 +8092,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -8172,7 +8167,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -9663,7 +9658,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 69826,
+            "lines": 69851,
             "modules": 336
           },
           "largestNonShared": [
@@ -10239,6 +10234,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -11786,7 +11786,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 39647,
+            "eligibleLines": 39672,
             "eligibleModules": 200,
             "modulesOnlyInLynx": [
               {
@@ -12297,11 +12297,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26770,
+            "lines": 26795,
             "modules": 100
           },
           "reusePercent": {
-            "lines": 38.3,
+            "lines": 38.4,
             "modules": 29.8
           },
           "web": {
@@ -12950,6 +12950,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -17250,7 +17255,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -18770,7 +18775,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81705,
+            "lines": 81712,
             "modules": 393
           },
           "largestNonShared": [
@@ -18791,7 +18796,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -18836,7 +18841,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             },
             {
@@ -21604,6 +21609,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -21984,11 +21994,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -22046,11 +22051,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -23568,7 +23568,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 88067,
+            "eligibleLines": 88084,
             "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
@@ -24333,7 +24333,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -24636,7 +24636,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 34546,
+            "lines": 34571,
             "modules": 151
           },
           "reusePercent": {
@@ -26062,6 +26062,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -26774,11 +26779,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -31204,7 +31204,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -31279,7 +31279,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -32862,7 +32862,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109293,
+            "lines": 109300,
             "modules": 497
           },
           "largestNonShared": [
@@ -32888,7 +32888,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -32933,7 +32933,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             },
             {
@@ -34651,6 +34651,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -35021,11 +35026,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -35083,11 +35083,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -36200,7 +36195,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56573,
+            "eligibleLines": 56590,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36680,7 +36675,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -36861,7 +36856,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32634,
+            "lines": 32659,
             "modules": 147
           },
           "reusePercent": {
@@ -40407,6 +40402,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -41119,11 +41119,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -45789,7 +45784,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -45864,7 +45859,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -47675,7 +47670,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97229,
+            "lines": 97254,
             "modules": 452
           },
           "largestNonShared": [
@@ -47746,7 +47741,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -54057,6 +54052,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -58384,7 +58384,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -60116,7 +60116,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119859,
+            "lines": 119866,
             "modules": 550
           },
           "largestNonShared": [
@@ -60142,7 +60142,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -60192,7 +60192,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             }
           ],
@@ -61915,6 +61915,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -62285,11 +62290,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -62347,11 +62347,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -63464,7 +63459,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56614,
+            "eligibleLines": 56631,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63959,7 +63954,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -64126,7 +64121,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33025,
+            "lines": 33050,
             "modules": 150
           },
           "reusePercent": {
@@ -68622,6 +68617,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -69334,11 +69334,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -74609,7 +74604,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -74684,7 +74679,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -76611,7 +76606,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109293,
+            "lines": 109300,
             "modules": 497
           },
           "largestNonShared": [
@@ -76637,7 +76632,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -76682,7 +76677,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             },
             {
@@ -78400,6 +78395,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -78770,11 +78770,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -78832,11 +78827,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -79949,7 +79939,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56573,
+            "eligibleLines": 56590,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -80429,7 +80419,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -80610,7 +80600,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32634,
+            "lines": 32659,
             "modules": 147
           },
           "reusePercent": {
@@ -84156,6 +84146,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -84868,11 +84863,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -89538,7 +89528,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -89613,7 +89603,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -91424,7 +91414,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97229,
+            "lines": 97254,
             "modules": 452
           },
           "largestNonShared": [
@@ -91495,7 +91485,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -97809,6 +97799,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -102136,7 +102131,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -103871,7 +103866,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119868,
+            "lines": 119875,
             "modules": 550
           },
           "largestNonShared": [
@@ -103897,7 +103892,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -103947,7 +103942,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             }
           ],
@@ -105670,6 +105665,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -106040,11 +106040,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -106102,11 +106097,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -107219,7 +107209,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56614,
+            "eligibleLines": 56631,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107714,7 +107704,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -107881,7 +107871,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33025,
+            "lines": 33050,
             "modules": 150
           },
           "reusePercent": {
@@ -112377,6 +112367,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -113089,11 +113084,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -118374,7 +118364,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -118449,7 +118439,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -120376,7 +120366,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97229,
+            "lines": 97254,
             "modules": 452
           },
           "largestNonShared": [
@@ -120447,7 +120437,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -126761,6 +126751,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -131088,7 +131083,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -139519,7 +139514,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119859,
+            "lines": 119866,
             "modules": 550
           },
           "largestNonShared": [
@@ -139545,7 +139540,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -139595,7 +139590,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             }
           ],
@@ -141318,6 +141313,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -141688,11 +141688,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -141750,11 +141745,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -142867,7 +142857,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56614,
+            "eligibleLines": 56631,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -143362,7 +143352,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -143529,7 +143519,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33025,
+            "lines": 33050,
             "modules": 150
           },
           "reusePercent": {
@@ -148025,6 +148015,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -148737,11 +148732,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -154012,7 +154002,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -154087,7 +154077,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -168047,7 +168037,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119859,
+            "lines": 119866,
             "modules": 550
           },
           "largestNonShared": [
@@ -168073,7 +168063,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -168123,7 +168113,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             }
           ],
@@ -169846,6 +169836,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -170216,11 +170211,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -170278,11 +170268,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -171395,7 +171380,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56614,
+            "eligibleLines": 56631,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171890,7 +171875,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -172057,7 +172042,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33025,
+            "lines": 33050,
             "modules": 150
           },
           "reusePercent": {
@@ -176553,6 +176538,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -177265,11 +177255,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -182540,7 +182525,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -182615,7 +182600,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -201302,7 +201287,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 85069,
+            "lines": 85076,
             "modules": 408
           },
           "largestNonShared": [
@@ -201318,7 +201303,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -201338,7 +201323,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             },
             {
@@ -202006,6 +201991,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -202376,11 +202366,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -202438,11 +202423,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -203450,7 +203430,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 36377,
+            "eligibleLines": 36394,
             "eligibleModules": 193,
             "modulesOnlyInLynx": [
               {
@@ -203725,7 +203705,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -203887,11 +203867,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23517,
+            "lines": 23542,
             "modules": 108
           },
           "reusePercent": {
-            "lines": 27.6,
+            "lines": 27.7,
             "modules": 26.5
           },
           "web": {
@@ -205663,6 +205643,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -206375,11 +206360,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -210810,7 +210790,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -210885,7 +210865,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -212482,7 +212462,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66722,
+            "lines": 66747,
             "modules": 321
           },
           "largestNonShared": [
@@ -212518,7 +212498,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -215334,6 +215314,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -218924,7 +218909,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -220285,7 +220270,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64098,
+            "lines": 64123,
             "modules": 300
           },
           "largestNonShared": [
@@ -220316,7 +220301,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -222927,6 +222912,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -226347,7 +226337,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -227662,7 +227652,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 88864,
+            "lines": 88871,
             "modules": 426
           },
           "largestNonShared": [
@@ -227678,7 +227668,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -227703,7 +227693,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             },
             {
@@ -228406,6 +228396,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -228776,11 +228771,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -228838,11 +228828,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -229850,7 +229835,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 37288,
+            "eligibleLines": 37305,
             "eligibleModules": 196,
             "modulesOnlyInLynx": [
               {
@@ -230110,7 +230095,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -230297,11 +230282,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23660,
+            "lines": 23685,
             "modules": 109
           },
           "reusePercent": {
-            "lines": 26.6,
+            "lines": 26.7,
             "modules": 25.6
           },
           "web": {
@@ -232643,6 +232628,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -233355,11 +233345,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -237875,7 +237860,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -237950,7 +237935,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -239582,7 +239567,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60067,
+            "lines": 60092,
             "modules": 290
           },
           "largestNonShared": [
@@ -240041,6 +240026,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -240088,6 +240078,11 @@
                 "from": "apps/web/src/platform/clientCapabilities.lynx.ts",
                 "request": "../../../lynxtron/src/app/platform/clientCapabilities.lynx",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/timestampFormat.lynx.ts",
+                "request": "@t3tools/client-runtime/presentation/time",
+                "to": "packages/client-runtime/src/presentation/time.ts"
               },
               {
                 "from": "packages/client-runtime/src/authorization/remote.ts",
@@ -241190,8 +241185,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33060,
-            "eligibleModules": 146,
+            "eligibleLines": 33090,
+            "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -241365,6 +241360,11 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 5,
+                "path": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 410,
                 "path": "packages/client-runtime/src/presentation/draftThread.ts"
               },
@@ -241403,7 +241403,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 25104,
+            "lines": 25129,
             "modules": 105
           },
           "reusePercent": {
@@ -242076,6 +242076,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -245461,7 +245466,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -246796,7 +246801,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60067,
+            "lines": 60092,
             "modules": 290
           },
           "largestNonShared": [
@@ -247255,6 +247260,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -247302,6 +247312,11 @@
                 "from": "apps/web/src/platform/clientCapabilities.lynx.ts",
                 "request": "../../../lynxtron/src/app/platform/clientCapabilities.lynx",
                 "to": "apps/lynxtron/src/app/platform/clientCapabilities.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/timestampFormat.lynx.ts",
+                "request": "@t3tools/client-runtime/presentation/time",
+                "to": "packages/client-runtime/src/presentation/time.ts"
               },
               {
                 "from": "packages/client-runtime/src/authorization/remote.ts",
@@ -248404,8 +248419,8 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33060,
-            "eligibleModules": 146,
+            "eligibleLines": 33090,
+            "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -248579,6 +248594,11 @@
               },
               {
                 "classification": "EXCLUSIVE",
+                "lines": 5,
+                "path": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
                 "lines": 410,
                 "path": "packages/client-runtime/src/presentation/draftThread.ts"
               },
@@ -248617,7 +248637,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 25104,
+            "lines": 25129,
             "modules": 105
           },
           "reusePercent": {
@@ -249290,6 +249310,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -252675,7 +252700,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -254007,7 +254032,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81705,
+            "lines": 81712,
             "modules": 393
           },
           "largestNonShared": [
@@ -254023,7 +254048,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -254043,7 +254068,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             },
             {
@@ -254506,6 +254531,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -254876,11 +254906,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -254938,11 +254963,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -255940,7 +255960,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33397,
+            "eligibleLines": 33414,
             "eligibleModules": 172,
             "modulesOnlyInLynx": [
               {
@@ -256170,7 +256190,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -256331,7 +256351,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 21697,
+            "lines": 21722,
             "modules": 96
           },
           "reusePercent": {
@@ -257757,6 +257777,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -258469,11 +258494,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -262899,7 +262919,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -262974,7 +262994,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -264557,7 +264577,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64098,
+            "lines": 64123,
             "modules": 300
           },
           "largestNonShared": [
@@ -264583,7 +264603,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -267026,6 +267046,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -270446,7 +270471,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -271761,7 +271786,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64098,
+            "lines": 64123,
             "modules": 300
           },
           "largestNonShared": [
@@ -271787,7 +271812,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -274230,6 +274255,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -277650,7 +277680,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -278962,7 +278992,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64109,
+            "lines": 64134,
             "modules": 301
           },
           "largestNonShared": [
@@ -278988,7 +279018,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -281441,6 +281471,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -284866,7 +284901,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -332732,7 +332767,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64098,
+            "lines": 64123,
             "modules": 300
           },
           "largestNonShared": [
@@ -332758,7 +332793,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -335261,6 +335296,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -338681,7 +338721,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -339996,7 +340036,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64098,
+            "lines": 64123,
             "modules": 300
           },
           "largestNonShared": [
@@ -340022,7 +340062,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -342525,6 +342565,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -345945,7 +345990,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -347257,7 +347302,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64105,
+            "lines": 64130,
             "modules": 301
           },
           "largestNonShared": [
@@ -347283,7 +347328,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 954,
+              "lines": 979,
               "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
@@ -349796,6 +349841,11 @@
                 "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "../lib/utils",
                 "to": "apps/web/src/lib/utils.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
@@ -353221,7 +353271,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -367088,7 +367138,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119672,
+            "lines": 119679,
             "modules": 549
           },
           "largestNonShared": [
@@ -367114,7 +367164,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2809,
+              "lines": 2791,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -367164,7 +367214,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1111,
+              "lines": 1103,
               "path": "apps/web/src/components/SidebarV2.lynx.tsx"
             }
           ],
@@ -368887,6 +368937,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.lynx.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -369257,11 +369312,6 @@
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.lynx.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "./ProjectFavicon",
                 "to": "apps/web/src/components/ProjectFavicon.lynx.tsx"
               },
@@ -369319,11 +369369,6 @@
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
                 "request": "@t3tools/client-runtime/state/thread-settled",
                 "to": "packages/client-runtime/src/state/threadSettled.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.lynx.tsx",
-                "request": "@t3tools/contracts/settings",
-                "to": "packages/contracts/src/settings.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.lynx.tsx",
@@ -370436,7 +370481,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56605,
+            "eligibleLines": 56622,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370926,7 +370971,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1111,
+                "lines": 1103,
                 "path": "apps/web/src/components/SidebarV2.lynx.tsx"
               },
               {
@@ -371092,7 +371137,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33025,
+            "lines": 33050,
             "modules": 150
           },
           "reusePercent": {
@@ -375588,6 +375633,11 @@
               },
               {
                 "from": "apps/web/src/components/Sidebar.logic.ts",
+                "request": "../timestampFormat",
+                "to": "apps/web/src/timestampFormat.ts"
+              },
+              {
+                "from": "apps/web/src/components/Sidebar.logic.ts",
                 "request": "@t3tools/client-runtime/presentation/sidebar",
                 "to": "packages/client-runtime/src/presentation/sidebar.ts"
               },
@@ -376300,11 +376350,6 @@
                 "from": "apps/web/src/components/SidebarV2.tsx",
                 "request": "../threadSelectionStore",
                 "to": "apps/web/src/threadSelectionStore.ts"
-              },
-              {
-                "from": "apps/web/src/components/SidebarV2.tsx",
-                "request": "../timestampFormat",
-                "to": "apps/web/src/timestampFormat.ts"
               },
               {
                 "from": "apps/web/src/components/SidebarV2.tsx",
@@ -381500,7 +381545,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 954,
+                "lines": 979,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -381575,7 +381620,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2809,
+                "lines": 2791,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {

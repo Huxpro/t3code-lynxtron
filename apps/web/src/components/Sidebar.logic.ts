@@ -17,6 +17,7 @@ import type { SidebarThreadSummary, Thread } from "../types";
 import type { ThreadRouteTarget } from "../threadRoutes";
 import { cn } from "../lib/utils";
 import { resolveServerBackedAppStageLabel } from "../branding.logic";
+import { formatRelativeTimeLabel } from "../timestampFormat";
 
 export const THREAD_SELECTION_SAFE_SELECTOR = "[data-thread-item], [data-thread-selection-safe]";
 export const THREAD_JUMP_HINT_SHOW_DELAY_MS = 100;
@@ -544,6 +545,30 @@ export function resolveSettledTimestamp(thread: SettledTimestampInput): string |
     }
   }
   return latest ?? firstValidTimestamp(thread.updatedAt);
+}
+
+function compactSidebarTimeLabel(label: string): string {
+  if (label === "just now") return "now";
+  return label.endsWith(" ago") ? label.slice(0, -4) : label;
+}
+
+/** Compact relative label ("5m", "now") for a thread's latest activity. */
+export function sidebarV2ThreadTimeLabel(thread: {
+  readonly latestUserMessageAt?: string | null | undefined;
+  readonly updatedAt: string;
+}): string {
+  return compactSidebarTimeLabel(
+    formatRelativeTimeLabel(thread.latestUserMessageAt ?? thread.updatedAt),
+  );
+}
+
+/**
+ * Settled rows read "how long ago did this wrap up", matching their sort key:
+ * both go through resolveSettledTimestamp so label and order can't disagree.
+ */
+export function sidebarV2SettledTimeLabel(thread: SettledTimestampInput): string {
+  const timestamp = resolveSettledTimestamp(thread);
+  return timestamp === null ? "" : compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
 }
 
 // Settled rows are history, so they order by when the work ENDED, not when

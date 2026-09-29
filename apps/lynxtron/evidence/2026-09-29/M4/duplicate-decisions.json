@@ -227,6 +227,16 @@
         "renderedWithoutErrors": true
       },
       "coverage": "Pill ordering, recede rules, and the woke-visit rule are unit-tested in Sidebar.logic.test.ts; the m1 fixture has no unread or woken thread to show a pill natively."
+    },
+    {
+      "id": "sidebar-settle-window-and-labels",
+      "change": "Lynx splits active and settled threads with the user sidebarAutoSettleAfterDays setting instead of the hard-coded default, shows Web \"No threads found\" for an empty search, and reads row and settled time labels from shared sidebarV2ThreadTimeLabel / sidebarV2SettledTimeLabel.",
+      "gates": {
+        "sidebarScope": {
+          "status": "pass",
+          "rendererErrors": 0
+        }
+      }
     }
   ]
 }
