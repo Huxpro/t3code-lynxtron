@@ -247,6 +247,15 @@
         "jumpLabels": ["⌘1", "⌘2", "⌘3", "⌘4"],
         "labelsFollowDisplayOrder": true
       }
+    },
+    {
+      "id": "transcript-revert-and-streaming",
+      "change": "Revert targets per user message and the revert confirmation copy move to client-runtime (indexCheckpointSummariesByAssistantMessageId, deriveRevertTurnCountByUserMessageId, projectRevertCheckpointConfirmation); Web keeps its three-line dialog byte-identical. Lynx no longer shows \"Thinking…\" for an empty streaming reply (Web shows nothing via assistantMessageDisplayText), and its minimap uses the shared persistent-gutter and minimum-item rules.",
+      "gates": {
+        "messageCardState": {
+          "status": "pass"
+        }
+      }
     }
   ]
 }

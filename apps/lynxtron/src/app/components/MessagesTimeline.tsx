@@ -25,6 +25,9 @@ import {
   type MessagesTimelineRow,
   type StableMessagesTimelineRowsState,
   type TimelineScrollMode,
+  deriveRevertTurnCountByUserMessageId,
+  indexCheckpointSummariesByAssistantMessageId,
+  projectRevertCheckpointConfirmation,
 } from "@t3tools/client-runtime/presentation/transcript";
 import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
@@ -90,8 +93,10 @@ import { runMessageRevert, type MessageRevertStatus } from "./messageRevert";
 import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import { buildExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
 import {
+  resolveTimelineMinimapHasPersistentGutter,
   resolveTimelineMinimapHeightStyle,
   resolveTimelineMinimapTopPercent,
+  TIMELINE_MINIMAP_MIN_ITEMS,
 } from "../../../../web/src/components/chat/MessagesTimeline.logic";
 
 type LynxChatMessage = Omit<ChatMessage, "attachments"> & {
@@ -456,6 +461,15 @@ function MessageCopyControl({
   );
 }
 
+function nativeRevertConfirmation(turnCount: number) {
+  const confirmation = projectRevertCheckpointConfirmation(turnCount);
+  return {
+    message: confirmation.title,
+    detail: confirmation.consequences.join(" "),
+    confirmLabel: confirmation.confirmLabel,
+  };
+}
+
 function UserMessageMeta({
   messageId,
   createdAt,
@@ -478,13 +492,7 @@ function UserMessageMeta({
   const handleRevert = useCallback(() => {
     if (revertTurnCount === undefined || isWorking || revertPending) return;
     void runMessageRevert(
-      () =>
-        showNativeConfirm({
-          message: `Revert this thread to checkpoint ${revertTurnCount}?`,
-          detail:
-            "This will discard newer messages and turn diffs in this thread. This action cannot be undone.",
-          confirmLabel: "Revert",
-        }),
+      () => showNativeConfirm(nativeRevertConfirmation(revertTurnCount)),
       () => t3ClientActions.revertCheckpoint(revertTurnCount),
       setRevertStatus,
     );
@@ -949,8 +957,6 @@ function buildLynxTranscriptRowElements(
             onManualNavigation={onManualNavigation}
           />
         )
-      ) : row.message.streaming ? (
-        <text className="lynx-host-text text-sm text-muted-foreground/60">Thinking…</text>
       ) : (
         <InlineMarkdownRenderer
           text={assistantMessageDisplayText(row.message.text, row.message.streaming)}
@@ -1182,31 +1188,13 @@ export function MessagesTimeline({
       { status: sessionStatus, activeTurnId },
       null,
     );
-    const turnDiffSummaryByAssistantMessageId = new Map<string, OrchestrationCheckpointSummary>();
-    for (const checkpoint of checkpoints) {
-      if (checkpoint.assistantMessageId) {
-        turnDiffSummaryByAssistantMessageId.set(checkpoint.assistantMessageId, checkpoint);
-      }
-    }
-    const inferredCheckpointTurnCountByTurnId = inferCheckpointTurnCountByTurnId(checkpoints);
-    const revertTurnCountByUserMessageId = new Map<string, number>();
-    for (let index = 0; index < timelineEntries.length; index += 1) {
-      const entry = timelineEntries[index];
-      if (!entry || entry.kind !== "message" || entry.message.role !== "user") continue;
-      for (let cursor = index + 1; cursor < timelineEntries.length; cursor += 1) {
-        const next = timelineEntries[cursor];
-        if (!next || next.kind !== "message") continue;
-        if (next.message.role === "user") break;
-        const summary = turnDiffSummaryByAssistantMessageId.get(next.message.id);
-        if (!summary) continue;
-        const turnCount =
-          summary.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[summary.turnId];
-        if (typeof turnCount === "number") {
-          revertTurnCountByUserMessageId.set(entry.message.id, Math.max(0, turnCount - 1));
-        }
-        break;
-      }
-    }
+    const turnDiffSummaryByAssistantMessageId =
+      indexCheckpointSummariesByAssistantMessageId(checkpoints);
+    const revertTurnCountByUserMessageId = deriveRevertTurnCountByUserMessageId(
+      timelineEntries,
+      turnDiffSummaryByAssistantMessageId,
+      inferCheckpointTurnCountByTurnId(checkpoints),
+    );
     return deriveMessagesTimelineRows<
       ChatMessage,
       OrchestrationProposedPlan,
@@ -1534,7 +1522,8 @@ export function MessagesTimeline({
           </list-item>
         ) : null}
       </list>
-      {timelineViewportWidth >= 864 && minimapItems.length >= 2 ? (
+      {resolveTimelineMinimapHasPersistentGutter(timelineViewportWidth) &&
+      minimapItems.length >= TIMELINE_MINIMAP_MIN_ITEMS ? (
         <HostView
           className="timeline-minimap"
           data-timeline-minimap

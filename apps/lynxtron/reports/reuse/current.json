@@ -155,7 +155,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 74228,
+            "lines": 74289,
             "modules": 350
           },
           "largestNonShared": [
@@ -186,7 +186,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -9062,7 +9062,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -9663,7 +9663,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 69865,
+            "lines": 69926,
             "modules": 336
           },
           "largestNonShared": [
@@ -9684,7 +9684,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -18185,7 +18185,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -18785,7 +18785,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81726,
+            "lines": 81787,
             "modules": 393
           },
           "largestNonShared": [
@@ -18826,7 +18826,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -23578,7 +23578,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 88127,
+            "eligibleLines": 88178,
             "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
@@ -23728,7 +23728,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -24646,11 +24646,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 34605,
+            "lines": 34666,
             "modules": 151
           },
           "reusePercent": {
-            "lines": 42.3,
+            "lines": 42.4,
             "modules": 38.4
           },
           "web": {
@@ -32274,7 +32274,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -32877,13 +32877,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109314,
+            "lines": 109348,
             "modules": 497
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -32928,7 +32928,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -36210,7 +36210,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56633,
+            "eligibleLines": 56684,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36330,7 +36330,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -36871,11 +36871,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32693,
+            "lines": 32754,
             "modules": 147
           },
           "reusePercent": {
-            "lines": 29.9,
+            "lines": 30,
             "modules": 29.6
           },
           "web": {
@@ -45599,7 +45599,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -47039,7 +47039,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -47690,13 +47690,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97268,
+            "lines": 97302,
             "modules": 452
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -47731,7 +47731,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -50248,7 +50248,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48459,
+            "eligibleLines": 48510,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -50368,7 +50368,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -50756,7 +50756,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28850,
+            "lines": 28911,
             "modules": 119
           },
           "reusePercent": {
@@ -58259,7 +58259,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -59494,7 +59494,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -60141,13 +60141,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119880,
+            "lines": 119914,
             "modules": 550
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -60197,7 +60197,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -63484,7 +63484,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56674,
+            "eligibleLines": 56725,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63604,7 +63604,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -64146,7 +64146,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33084,
+            "lines": 33145,
             "modules": 150
           },
           "reusePercent": {
@@ -74304,7 +74304,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -75969,7 +75969,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -76636,13 +76636,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109314,
+            "lines": 109348,
             "modules": 497
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -76687,7 +76687,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -79969,7 +79969,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56633,
+            "eligibleLines": 56684,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -80089,7 +80089,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -80630,11 +80630,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32693,
+            "lines": 32754,
             "modules": 147
           },
           "reusePercent": {
-            "lines": 29.9,
+            "lines": 30,
             "modules": 29.6
           },
           "web": {
@@ -89358,7 +89358,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -90798,7 +90798,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -91449,13 +91449,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97268,
+            "lines": 97302,
             "modules": 452
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -91490,7 +91490,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -94007,7 +94007,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48459,
+            "eligibleLines": 48510,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -94127,7 +94127,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -94518,7 +94518,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28850,
+            "lines": 28911,
             "modules": 119
           },
           "reusePercent": {
@@ -102021,7 +102021,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -103256,7 +103256,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -103906,13 +103906,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119889,
+            "lines": 119923,
             "modules": 550
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -103962,7 +103962,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -107249,7 +107249,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56674,
+            "eligibleLines": 56725,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107369,7 +107369,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -107911,7 +107911,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33084,
+            "lines": 33145,
             "modules": 150
           },
           "reusePercent": {
@@ -118079,7 +118079,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -119744,7 +119744,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -120411,13 +120411,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97268,
+            "lines": 97302,
             "modules": 452
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -120452,7 +120452,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -122969,7 +122969,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48459,
+            "eligibleLines": 48510,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -123089,7 +123089,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -123480,7 +123480,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28850,
+            "lines": 28911,
             "modules": 119
           },
           "reusePercent": {
@@ -130983,7 +130983,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -132218,7 +132218,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -132868,7 +132868,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59718,
+            "lines": 59779,
             "modules": 286
           },
           "largestNonShared": [
@@ -132889,7 +132889,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -134333,7 +134333,7 @@
             "modules": 67
           },
           "reusePercent": {
-            "lines": 30.3,
+            "lines": 30.2,
             "modules": 23.4
           },
           "web": {
@@ -139022,7 +139022,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -139569,13 +139569,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119880,
+            "lines": 119914,
             "modules": 550
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -139625,7 +139625,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -142912,7 +142912,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56674,
+            "eligibleLines": 56725,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -143032,7 +143032,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -143574,7 +143574,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33084,
+            "lines": 33145,
             "modules": 150
           },
           "reusePercent": {
@@ -153732,7 +153732,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -155397,7 +155397,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -156064,7 +156064,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59718,
+            "lines": 59779,
             "modules": 286
           },
           "largestNonShared": [
@@ -156085,7 +156085,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -162376,7 +162376,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -162926,7 +162926,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 45383,
+            "lines": 45444,
             "modules": 205
           },
           "largestNonShared": [
@@ -162942,7 +162942,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -164281,7 +164281,7 @@
             "modules": 61
           },
           "reusePercent": {
-            "lines": 37.1,
+            "lines": 37,
             "modules": 29.8
           },
           "web": {
@@ -167645,7 +167645,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -168107,13 +168107,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119880,
+            "lines": 119914,
             "modules": 550
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -168163,7 +168163,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -171450,7 +171450,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56674,
+            "eligibleLines": 56725,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171570,7 +171570,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -172112,7 +172112,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33084,
+            "lines": 33145,
             "modules": 150
           },
           "reusePercent": {
@@ -182270,7 +182270,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -183935,7 +183935,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -184602,7 +184602,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27130,
+            "lines": 27191,
             "modules": 87
           },
           "largestNonShared": [
@@ -184613,7 +184613,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -185976,7 +185976,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -186208,7 +186208,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27130,
+            "lines": 27191,
             "modules": 87
           },
           "largestNonShared": [
@@ -186219,7 +186219,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -187582,7 +187582,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -187814,7 +187814,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27130,
+            "lines": 27191,
             "modules": 87
           },
           "largestNonShared": [
@@ -187825,7 +187825,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -189188,7 +189188,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -189426,7 +189426,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53042,
+            "lines": 53103,
             "modules": 253
           },
           "largestNonShared": [
@@ -189442,7 +189442,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -195108,7 +195108,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -195579,7 +195579,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50460,
+            "lines": 50521,
             "modules": 233
           },
           "largestNonShared": [
@@ -195595,7 +195595,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -200916,7 +200916,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -201387,7 +201387,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 85090,
+            "lines": 85151,
             "modules": 408
           },
           "largestNonShared": [
@@ -201418,7 +201418,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -211960,7 +211960,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -212567,7 +212567,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66761,
+            "lines": 66822,
             "modules": 321
           },
           "largestNonShared": [
@@ -212583,7 +212583,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -219804,7 +219804,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -220380,7 +220380,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64137,
+            "lines": 64198,
             "modules": 300
           },
           "largestNonShared": [
@@ -220396,7 +220396,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -227192,7 +227192,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -227767,7 +227767,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 88885,
+            "lines": 88946,
             "modules": 426
           },
           "largestNonShared": [
@@ -227798,7 +227798,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -239080,7 +239080,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -239687,7 +239687,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60106,
+            "lines": 60167,
             "modules": 290
           },
           "largestNonShared": [
@@ -239708,7 +239708,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -241527,7 +241527,7 @@
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.9,
+            "lines": 41.8,
             "modules": 36.2
           },
           "web": {
@@ -246341,7 +246341,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -246926,7 +246926,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60106,
+            "lines": 60167,
             "modules": 290
           },
           "largestNonShared": [
@@ -246947,7 +246947,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -248766,7 +248766,7 @@
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.9,
+            "lines": 41.8,
             "modules": 36.2
           },
           "web": {
@@ -253580,7 +253580,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -254162,7 +254162,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81726,
+            "lines": 81787,
             "modules": 393
           },
           "largestNonShared": [
@@ -254193,7 +254193,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -264109,7 +264109,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -264712,7 +264712,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64137,
+            "lines": 64198,
             "modules": 300
           },
           "largestNonShared": [
@@ -264728,7 +264728,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -266032,7 +266032,7 @@
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.4,
+            "lines": 26.3,
             "modules": 20.7
           },
           "web": {
@@ -271351,7 +271351,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -271926,7 +271926,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64137,
+            "lines": 64198,
             "modules": 300
           },
           "largestNonShared": [
@@ -271942,7 +271942,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -273246,7 +273246,7 @@
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.4,
+            "lines": 26.3,
             "modules": 20.7
           },
           "web": {
@@ -278565,7 +278565,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -279137,7 +279137,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64148,
+            "lines": 64209,
             "modules": 301
           },
           "largestNonShared": [
@@ -279153,7 +279153,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -280467,7 +280467,7 @@
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.4,
+            "lines": 26.3,
             "modules": 20.6
           },
           "web": {
@@ -285796,7 +285796,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -286374,7 +286374,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53203,
+            "lines": 53264,
             "modules": 244
           },
           "largestNonShared": [
@@ -286395,7 +286395,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -287784,7 +287784,7 @@
             "modules": 61
           },
           "reusePercent": {
-            "lines": 31.6,
+            "lines": 31.5,
             "modules": 25
           },
           "web": {
@@ -291898,7 +291898,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -292370,7 +292370,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53203,
+            "lines": 53264,
             "modules": 244
           },
           "largestNonShared": [
@@ -292391,7 +292391,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -293780,7 +293780,7 @@
             "modules": 61
           },
           "reusePercent": {
-            "lines": 31.6,
+            "lines": 31.5,
             "modules": 25
           },
           "web": {
@@ -297894,7 +297894,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -298366,7 +298366,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53210,
+            "lines": 53271,
             "modules": 245
           },
           "largestNonShared": [
@@ -298387,7 +298387,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -299786,7 +299786,7 @@
             "modules": 61
           },
           "reusePercent": {
-            "lines": 31.6,
+            "lines": 31.5,
             "modules": 24.9
           },
           "web": {
@@ -303910,7 +303910,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -304388,7 +304388,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49017,
+            "lines": 49078,
             "modules": 228
           },
           "largestNonShared": [
@@ -304404,7 +304404,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -305788,7 +305788,7 @@
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.6,
+            "lines": 35.5,
             "modules": 27.6
           },
           "web": {
@@ -309577,7 +309577,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -310082,7 +310082,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49017,
+            "lines": 49078,
             "modules": 228
           },
           "largestNonShared": [
@@ -310098,7 +310098,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -311482,7 +311482,7 @@
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.6,
+            "lines": 35.5,
             "modules": 27.6
           },
           "web": {
@@ -315271,7 +315271,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -315773,7 +315773,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49024,
+            "lines": 49085,
             "modules": 229
           },
           "largestNonShared": [
@@ -315789,7 +315789,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -317183,7 +317183,7 @@
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.6,
+            "lines": 35.5,
             "modules": 27.5
           },
           "web": {
@@ -320982,7 +320982,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -321490,7 +321490,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50461,
+            "lines": 50522,
             "modules": 234
           },
           "largestNonShared": [
@@ -321506,7 +321506,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -322895,7 +322895,7 @@
             "modules": 62
           },
           "reusePercent": {
-            "lines": 33.5,
+            "lines": 33.4,
             "modules": 26.5
           },
           "web": {
@@ -326724,7 +326724,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -327191,7 +327191,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50461,
+            "lines": 50522,
             "modules": 234
           },
           "largestNonShared": [
@@ -327207,7 +327207,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -328596,7 +328596,7 @@
             "modules": 62
           },
           "reusePercent": {
-            "lines": 33.5,
+            "lines": 33.4,
             "modules": 26.5
           },
           "web": {
@@ -332425,7 +332425,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -332957,7 +332957,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64137,
+            "lines": 64198,
             "modules": 300
           },
           "largestNonShared": [
@@ -332973,7 +332973,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -339656,7 +339656,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -340231,7 +340231,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64137,
+            "lines": 64198,
             "modules": 300
           },
           "largestNonShared": [
@@ -340247,7 +340247,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -346930,7 +346930,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -347502,7 +347502,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64144,
+            "lines": 64205,
             "modules": 301
           },
           "largestNonShared": [
@@ -347518,7 +347518,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -354221,7 +354221,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -354799,7 +354799,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51189,
+            "lines": 51250,
             "modules": 252
           },
           "largestNonShared": [
@@ -354815,7 +354815,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -360531,7 +360531,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -361076,7 +361076,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51189,
+            "lines": 51250,
             "modules": 252
           },
           "largestNonShared": [
@@ -361092,7 +361092,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
+              "lines": 1961,
               "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
@@ -366808,7 +366808,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
@@ -367353,13 +367353,13 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119693,
+            "lines": 119727,
             "modules": 549
           },
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 6280,
+              "lines": 6253,
               "path": "apps/web/src/components/ChatView.tsx"
             },
             {
@@ -367409,7 +367409,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1613,
+              "lines": 1603,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -370696,7 +370696,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56665,
+            "eligibleLines": 56716,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370816,7 +370816,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1613,
+                "lines": 1603,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -371352,11 +371352,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33084,
+            "lines": 33145,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.6,
+            "lines": 27.7,
             "modules": 27.3
           },
           "web": {
@@ -381435,7 +381435,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 6280,
+                "lines": 6253,
                 "path": "apps/web/src/components/ChatView.tsx"
               },
               {
@@ -383095,7 +383095,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 1900,
+                "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {

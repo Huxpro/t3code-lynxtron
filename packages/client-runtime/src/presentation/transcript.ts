@@ -1,5 +1,6 @@
 import * as Equal from "effect/Equal";
 import type {
+  MessageId,
   OrchestrationCheckpointSummary,
   OrchestrationLatestTurn,
   OrchestrationSession,
@@ -1897,4 +1898,64 @@ function isRowUnchanged<M extends TranscriptMessage, P extends TranscriptPropose
       );
     }
   }
+}
+
+export function indexCheckpointSummariesByAssistantMessageId(
+  summaries: ReadonlyArray<OrchestrationCheckpointSummary>,
+): Map<MessageId, OrchestrationCheckpointSummary> {
+  const byMessageId = new Map<MessageId, OrchestrationCheckpointSummary>();
+  for (const summary of summaries) {
+    if (summary.assistantMessageId) byMessageId.set(summary.assistantMessageId, summary);
+  }
+  return byMessageId;
+}
+
+/**
+ * The checkpoint each user message's Revert restores: one turn before the
+ * checkpoint of the first assistant reply with a diff, looking only until the
+ * next user message.
+ */
+export function deriveRevertTurnCountByUserMessageId<M extends TranscriptMessage>(
+  timelineEntries: ReadonlyArray<TimelineEntry<M>>,
+  summaryByAssistantMessageId: ReadonlyMap<string, OrchestrationCheckpointSummary>,
+  inferredCheckpointTurnCountByTurnId: Readonly<Record<string, number>>,
+): Map<M["id"], number> {
+  const byUserMessageId = new Map<M["id"], number>();
+  for (let index = 0; index < timelineEntries.length; index += 1) {
+    const entry = timelineEntries[index];
+    if (!entry || entry.kind !== "message" || entry.message.role !== "user") continue;
+    for (let cursor = index + 1; cursor < timelineEntries.length; cursor += 1) {
+      const next = timelineEntries[cursor];
+      if (!next || next.kind !== "message") continue;
+      if (next.message.role === "user") break;
+      const summary = summaryByAssistantMessageId.get(next.message.id);
+      if (!summary) continue;
+      const turnCount =
+        summary.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[summary.turnId];
+      if (typeof turnCount === "number") {
+        byUserMessageId.set(entry.message.id, Math.max(0, turnCount - 1));
+      }
+      break;
+    }
+  }
+  return byUserMessageId;
+}
+
+export interface RevertCheckpointConfirmation {
+  readonly title: string;
+  readonly consequences: ReadonlyArray<string>;
+  readonly confirmLabel: string;
+}
+
+export function projectRevertCheckpointConfirmation(
+  turnCount: number,
+): RevertCheckpointConfirmation {
+  return {
+    title: `Revert this thread to checkpoint ${turnCount}?`,
+    consequences: [
+      "This will discard newer messages and turn diffs in this thread.",
+      "This action cannot be undone.",
+    ],
+    confirmLabel: "Revert",
+  };
 }

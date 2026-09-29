@@ -39,8 +39,11 @@ describe("message hover actions contract", () => {
     expect(timelineSource).toContain("requestGenerationRef.current += 1");
     expect(timelineSource).toContain("}, [identity, text]);");
     expect(timelineSource).toContain("identity={row.message.id}");
-    expect(timelineSource).toContain("showNativeConfirm({");
-    expect(timelineSource).toContain('confirmLabel: "Revert"');
+    // Revert copy and counts come from the shared transcript presentation.
+    expect(timelineSource).toContain(
+      "showNativeConfirm(nativeRevertConfirmation(revertTurnCount))",
+    );
+    expect(timelineSource).toContain("deriveRevertTurnCountByUserMessageId(");
     expect(timelineSource).toContain("}, 1_000);");
     expect(timelineSource).toContain("createdAt={row.message.createdAt}");
     expect(timelineSource).toContain("formatShortTimestamp(createdAt, timestampFormat)");

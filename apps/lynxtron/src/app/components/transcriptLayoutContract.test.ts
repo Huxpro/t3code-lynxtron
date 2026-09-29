@@ -44,7 +44,9 @@ describe("transcript layout contract", () => {
     expect(timelineSource).toContain("timelineViewportWidth < 360");
     expect(timelineSource).toContain("timelineViewportWidth < 640");
     expect(timelineSource).toContain("deriveTimelineMinimapItems(");
-    expect(timelineSource).toContain("timelineViewportWidth >= 864");
+    expect(timelineSource).toContain(
+      "resolveTimelineMinimapHasPersistentGutter(timelineViewportWidth)",
+    );
     expect(timelineSource).toContain("data-timeline-minimap-item");
     expect(timelineSource).toContain("resolveTimelineMinimapHeightStyle(minimapItems.length)");
     expect(timelineSource).toContain(

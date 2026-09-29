@@ -24,6 +24,9 @@ import {
   type StableMessagesTimelineRowsState,
   type TimelineEntry,
   type TranscriptMessage,
+  deriveRevertTurnCountByUserMessageId,
+  indexCheckpointSummariesByAssistantMessageId,
+  projectRevertCheckpointConfirmation,
 } from "./transcript.ts";
 
 describe("assistantMessageDisplayText", () => {
@@ -912,5 +915,65 @@ describe("shouldShowAssistantChangedFiles", () => {
     expect(shouldShowAssistantChangedFiles(undefined)).toBe(false);
     expect(shouldShowAssistantChangedFiles({ files: [] })).toBe(false);
     expect(shouldShowAssistantChangedFiles({ files: [{ path: "src/app.ts" }] })).toBe(true);
+  });
+});
+
+describe("checkpoint revert targets", () => {
+  const message = (id: string, role: "user" | "assistant") => ({
+    id: `entry-${id}`,
+    kind: "message" as const,
+    createdAt: "2026-09-29T00:00:00.000Z",
+    message: {
+      id,
+      role,
+      streaming: false,
+      createdAt: "2026-09-29T00:00:00.000Z",
+      updatedAt: "2026-09-29T00:00:00.000Z",
+      text: id,
+    },
+  });
+  const summary = (assistantMessageId: string, turnId: string, checkpointTurnCount: number) =>
+    ({
+      turnId: TurnId.make(turnId),
+      checkpointTurnCount,
+      checkpointRef: `ref-${turnId}`,
+      status: "ready",
+      files: [],
+      assistantMessageId: MessageId.make(assistantMessageId),
+      completedAt: "2026-09-29T00:00:00.000Z",
+    }) as unknown as Parameters<typeof indexCheckpointSummariesByAssistantMessageId>[0][number];
+
+  it("reverts each user message to the checkpoint before its reply's diff", () => {
+    const byAssistant = indexCheckpointSummariesByAssistantMessageId([
+      summary("a1", "t1", 1),
+      summary("a3", "t3", 3),
+    ]);
+    const counts = deriveRevertTurnCountByUserMessageId(
+      [
+        message("u1", "user"),
+        message("a1", "assistant"),
+        message("u2", "user"),
+        message("a2", "assistant"),
+        message("u3", "user"),
+        message("a3", "assistant"),
+      ],
+      byAssistant,
+      {},
+    );
+    expect([...counts]).toEqual([
+      ["u1", 0],
+      ["u3", 2],
+    ]);
+  });
+
+  it("keeps the dialog copy as a title plus consequences", () => {
+    expect(projectRevertCheckpointConfirmation(2)).toEqual({
+      title: "Revert this thread to checkpoint 2?",
+      consequences: [
+        "This will discard newer messages and turn diffs in this thread.",
+        "This action cannot be undone.",
+      ],
+      confirmLabel: "Revert",
+    });
   });
 });

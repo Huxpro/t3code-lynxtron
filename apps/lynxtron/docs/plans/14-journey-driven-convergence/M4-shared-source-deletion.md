@@ -104,6 +104,18 @@ Remaining divergences, recorded from the audit: no snoozed shelf, project
 sort ignoring `sidebarProjectSortOrder` and logical groups, the new-thread
 target, and a Lynx-only project row menu.
 
+### Transcript rows
+
+- Revert targets and the revert confirmation copy are shared from
+  client-runtime; Web's dialog text is unchanged.
+- Empty streaming replies render nothing, like Web, instead of "Thinking…".
+- The minimap uses the shared persistent-gutter and minimum-item rules.
+
+Remaining divergences, recorded from the audit: the proposed-plan card
+(labels, collapse threshold, Copy/Download/Save actions), changed-files
+expand persistence per thread and turn, folding an interrupted turn when the
+next starts, terminal-context placement, and the user copy-button hide rule.
+
 ### Settings Providers
 
 - Driver labels, order, settings schemas, Early Access badges, the
