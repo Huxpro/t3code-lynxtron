@@ -31,6 +31,7 @@
     "prepare:cef-runtime": "node scripts/cef-frameworks.mjs",
     "report:provenance": "node scripts/provenance-report.mjs",
     "report:reuse": "node scripts/reuse-report.mjs",
+    "check:runtime-budget": "node scripts/check-runtime-budget.mjs",
     "report:components-lab": "node scripts/component-lab-inventory.mjs",
     "report:components-lab:check": "node scripts/component-lab-inventory.mjs --check",
     "report:style-coverage": "node scripts/style-coverage-report.mjs",

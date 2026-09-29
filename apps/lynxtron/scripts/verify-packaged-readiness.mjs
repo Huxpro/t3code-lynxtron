@@ -231,6 +231,27 @@ function waitForChildExit(child, timeoutMs) {
   });
 }
 
+// Resident memory of an owned process and all of its descendants, in KiB.
+function readProcessTreeRssKiB(rootPid) {
+  const table = spawnSync("ps", ["-A", "-o", "pid=,ppid=,rss="], { encoding: "utf8" }).stdout;
+  const rows = table
+    .trim()
+    .split("\n")
+    .map((line) => line.trim().split(/\s+/u).map(Number));
+  const tree = new Set([rootPid]);
+  let grew = true;
+  while (grew) {
+    grew = false;
+    for (const [pid, ppid] of rows) {
+      if (tree.has(ppid) && !tree.has(pid)) {
+        tree.add(pid);
+        grew = true;
+      }
+    }
+  }
+  return rows.reduce((sum, [pid, , rss]) => (tree.has(pid) ? sum + rss : sum), 0);
+}
+
 async function waitWhileAlive(child, durationMs) {
   if (await waitForChildExit(child, durationMs)) {
     throw new Error("Lynxtron exited while waiting for the interaction timing window.");
@@ -15307,6 +15328,11 @@ async function runOnce({
   let log = createLogCapture(child);
   let client;
   const startedAt = new Date().toISOString();
+  const spawnedAtMs = performance.now();
+  const timing = {};
+  const mark = (name) => {
+    timing[name] = Math.round(performance.now() - spawnedAtMs);
+  };
   try {
     client = await waitForOwnedSession({
       child,
@@ -15314,10 +15340,13 @@ async function runOnce({
       expectedBundleUrl: pathToFileURL(bundle).href,
       timeoutMs,
     });
+    mark("devToolSessionMs");
     if (!pairingUrl) {
       await waitForLogText(child, log, "T3 Code server is ready", timeoutMs);
+      mark("serverReadyMs");
     }
     const beforeProbe = await waitForMainTransport({ child, client, timeoutMs });
+    mark("mainTransportMs");
     const theme = await verifyExpectedTheme({
       child,
       client,
@@ -15348,6 +15377,8 @@ async function runOnce({
       initial: beforeProbe,
       timeoutMs,
     });
+    mark("semanticReadyMs");
+    const readyRssKiB = readProcessTreeRssKiB(child.pid);
     const transport = {
       kind: "main",
       probe: "same-value model selection without thread mutation",
@@ -16167,6 +16198,8 @@ async function runOnce({
       index,
       status: outcomeChecks.every((outcome) => outcome.status === "pass") ? "pass" : "fail",
       startedAt,
+      timing,
+      memory: { processTreeRssKiBAtSemanticReady: readyRssKiB },
       processId: child.pid,
       isolatedState: { path: pairingUrl ? null : baseDir, disposed: true },
       connection: {

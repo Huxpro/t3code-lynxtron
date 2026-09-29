@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-09-29",
+  "baseline": {
+    "runtime": "@lynx-js/lynxtron@0.0.28",
+    "viewport": "1280x820",
+    "runs": 5,
+    "semanticReadyMs": { "min": 1938, "max": 2065 },
+    "processTreeRssKiBAtSemanticReady": { "min": 688256, "max": 692304 },
+    "bundleBytes": 6956815
+  },
+  "budgets": {
+    "semanticReadyMs": 3000,
+    "processTreeRssKiBAtSemanticReady": 819200,
+    "bundleBytes": 7340032
+  }
+}
