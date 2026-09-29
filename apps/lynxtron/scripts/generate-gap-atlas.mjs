@@ -396,6 +396,35 @@ const gaps = [
     ],
     screen: "settings-appearance",
   },
+  {
+    id: "GAP-013",
+    surface: "Composer image input",
+    states: ["composer-image-attachment"],
+    clients: ["native"],
+    category: "RUNTIME_CAPABILITY",
+    severity: "P2",
+    userImpact:
+      "Native accepts pasted clipboard images like Web, but dropping an image file on the Composer does nothing because Lynx exposes no file-drop event.",
+    frequency: 2,
+    trustImpact: 2,
+    evidenceConfidence: 3,
+    sourceOwner: "Lynxtron host drag-and-drop bridge",
+    likelyRootCause:
+      "Lynxtron forwards no native drag/drop file events to the LynxView. Web has no picker either, so the 0.0.21 open-dialog FiberSetAttribute error is off the product path.",
+    fixClass: "runtime capability",
+    reuseLeverage: 2,
+    crossSurfaceLeverage: 2,
+    implementationCost: 4,
+    platformRisk: 4,
+    nativeRequirement:
+      "Command+V image paste is satisfied through the Edit menu handler; file drop requires an upstream drag/drop event",
+    disposition: "blocked-runtime",
+    evidence: [
+      "docs/plans/14-journey-driven-convergence/M1-local-composer-journey.md",
+      "evidence/2026-09-29/M1/local-journey.json",
+    ],
+    screen: "composer",
+  },
 ];
 
 const severityScore = { P0: 5, P1: 4, P2: 2, P3: 1 };

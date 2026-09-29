@@ -51,7 +51,7 @@ If an invariant regresses, fix it inside the active PF task and add a focused re
 | -------- | --- | ----------------------------------------------------- | ---------- | ------------- | --------------------------------------------------------------------------------------- |
 | P0       | PF0 | Rebaseline the complete Web feature journey           | Plan 11    | `completed`   | One fixed parity ledger identifies required, deferred, unsupported, and blocked paths   |
 | P1       | PF1 | Complete agent intervention and recovery              | PF0        | `completed`   | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
-| P1       | PF2 | Complete Composer input and context                   | PF1        | `in_progress` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
+| P1       | PF2 | Complete Composer input and context                   | PF1        | `completed`   | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
 | P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `in_progress` | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
 | P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `pending`     | A user can find, connect to, diagnose, and operate supported remote environments        |
 | P2       | PF5 | Complete change review, checkpoints, and files        | PF4        | `pending`     | A user can inspect the result and its source-control implications without Web           |
@@ -224,6 +224,18 @@ Plan 11 certifies the Composer shell. This task makes it a complete input surfac
 - Native Un-settle now scopes pending and failure feedback to the target thread,
   disables duplicate requests, exposes retryable errors in the settled banner,
   and rejects a missing bridge instead of silently reporting success.
+
+### PF2 closure (Plan 14 M1, 2026-09-29)
+
+PF2 is `completed` for supported inputs. The Plan 14 M1 journey
+(`evidence/2026-09-29/M1/local-journey.json`) carries a pasted image, a
+Terminal-panel context, a picked file mention, an element context, and text
+through remove/restore, a route round-trip, a cold restart, a reconnect, and a
+failed then retried send into exactly one canonical turn, with Web/Electron
+payload parity on the same snapshot. Bounded residuals: Command+A selection
+(`GAP-011`, Plan 14 M2), image drag-and-drop (`GAP-013`), the Native element
+picker entry (Plan 14 M6), and physical-input correlation
+(`pending-user-session`, Plan 14 M7).
 
 ## PF3: Complete transcript navigation and interaction
 

@@ -14,7 +14,7 @@ the phase files own implementation detail.
 
 - Content type: Master execution plan
 - Status: `in_progress`
-- Active phase: `M1`
+- Active phase: `M2`
 - Audience: Agents continuing the T3 Code Electron-to-Lynxtron convergence
 - Product authority: Current Web/Electron behavior in this checkout
 - Runtime authority: Exact-owned packaged Lynxtron using disposable realistic state
@@ -43,16 +43,16 @@ or classified as platform leaves or hard islands.
 
 ## Phase sequence
 
-| Phase | Plan | Status | Exit |
-| --- | --- | --- | --- |
-| M0 | [Reconcile plans and completion accounting](./14-journey-driven-convergence/M0-status-and-ledger-reset.md) | `completed` | User-directed skip: status reconciliation no longer blocks product work; M1 audits its own completion claims |
-| M1 | [Close the supported local Composer journey](./14-journey-driven-convergence/M1-local-composer-journey.md) | `in_progress` | One authenticated local turn carries supported draft/context inputs through retry and receipt |
-| M2 | [Close transcript and physical-input residuals](./14-journey-driven-convergence/M2-transcript-and-input-closure.md) | `pending` | Long-reading, link/context actions, and supported keyboard/menu paths are complete or explicitly runtime-blocked |
-| M3 | [Prove remote and multi-environment ownership](./14-journey-driven-convergence/M3-remote-environment-journey.md) | `pending` | One local and one supported remote journey complete a turn and reconnect without identity leakage |
-| M4 | [Delete duplicated product decisions](./14-journey-driven-convergence/M4-shared-source-deletion.md) | `pending` | Active journey surfaces improve physical reuse and duplicate-decision LOC without widening exclusions |
-| M5 | [Complete review and reverse actions](./14-journey-driven-convergence/M5-review-and-reverse-actions.md) | `pending` | Checkpoint, files, diff/fallback, and reverse actions form one canonical loop |
-| M6 | [Bound secondary surfaces and platform quality](./14-journey-driven-convergence/M6-secondary-surfaces-and-performance.md) | `pending` | Terminal/browser decisions are honest and startup, update, memory, and bundle budgets exist |
-| M7 | [Certify the complete product journey](./14-journey-driven-convergence/M7-phase-exit-certification.md) | `pending` | Local and remote phase-exit journeys pass the complete evidence matrix |
+| Phase | Plan                                                                                                                      | Status        | Exit                                                                                                             |
+| ----- | ------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
+| M0    | [Reconcile plans and completion accounting](./14-journey-driven-convergence/M0-status-and-ledger-reset.md)                | `completed`   | User-directed skip: status reconciliation no longer blocks product work; M1 audits its own completion claims     |
+| M1    | [Close the supported local Composer journey](./14-journey-driven-convergence/M1-local-composer-journey.md)                | `completed`   | One authenticated local turn carries supported draft/context inputs through retry and receipt                    |
+| M2    | [Close transcript and physical-input residuals](./14-journey-driven-convergence/M2-transcript-and-input-closure.md)       | `in_progress` | Long-reading, link/context actions, and supported keyboard/menu paths are complete or explicitly runtime-blocked |
+| M3    | [Prove remote and multi-environment ownership](./14-journey-driven-convergence/M3-remote-environment-journey.md)          | `pending`     | One local and one supported remote journey complete a turn and reconnect without identity leakage                |
+| M4    | [Delete duplicated product decisions](./14-journey-driven-convergence/M4-shared-source-deletion.md)                       | `pending`     | Active journey surfaces improve physical reuse and duplicate-decision LOC without widening exclusions            |
+| M5    | [Complete review and reverse actions](./14-journey-driven-convergence/M5-review-and-reverse-actions.md)                   | `pending`     | Checkpoint, files, diff/fallback, and reverse actions form one canonical loop                                    |
+| M6    | [Bound secondary surfaces and platform quality](./14-journey-driven-convergence/M6-secondary-surfaces-and-performance.md) | `pending`     | Terminal/browser decisions are honest and startup, update, memory, and bundle budgets exist                      |
+| M7    | [Certify the complete product journey](./14-journey-driven-convergence/M7-phase-exit-certification.md)                    | `pending`     | Local and remote phase-exit journeys pass the complete evidence matrix                                           |
 
 Only one phase may be `in_progress`. M4 is a cross-cutting rule, but its own phase
 is the point where accumulated source-reuse debt is audited and reduced deliberately.
@@ -140,17 +140,17 @@ Every phase goal must follow this sequence:
 
 Before completing any phase, publish this table in its evidence note:
 
-| Requirement | Status | Evidence | Remaining boundary |
-| --- | --- | --- | --- |
-| Product entry |  |  |  |
-| Canonical state |  |  |  |
-| Completion receipt |  |  |  |
-| Failure/retry |  |  |  |
-| Reverse action |  |  |  |
-| Web/Lynx parity |  |  |  |
-| Native interaction |  |  |  |
-| Source reuse |  |  |  |
-| Cleanup |  |  |  |
+| Requirement        | Status | Evidence | Remaining boundary |
+| ------------------ | ------ | -------- | ------------------ |
+| Product entry      |        |          |                    |
+| Canonical state    |        |          |                    |
+| Completion receipt |        |          |                    |
+| Failure/retry      |        |          |                    |
+| Reverse action     |        |          |                    |
+| Web/Lynx parity    |        |          |                    |
+| Native interaction |        |          |                    |
+| Source reuse       |        |          |                    |
+| Cleanup            |        |          |                    |
 
 The correct decision is `continue` whenever a safe authorized requirement remains.
 
@@ -161,4 +161,3 @@ Copy this when starting or resuming the complete program:
 > 在 `/Users/bytedance/github/t3code-lynxtron-021-full` 按 `apps/lynxtron/docs/plans/14-journey-driven-shared-source-convergence.md` 持续推进 T3 Code Electron/Web -> Lynxtron 收敛。先审计当前 artifacts 和阶段状态，不重复已完成工作；一次只激活一个 M 阶段，按依赖顺序推进。Electron/Web 是产品和视觉 source of truth，使用 Browser-first 双 renderer 迭代，并在阶段出口做 exact-owned Native correlation。每个 slice 优先删除 renderer-local 产品决策并复用共享 source；保留真实 platform leaf 和明确 hard island。commit、截图或单一 smoke 只是 checkpoint，不是终点。每次提交后继续下一个安全未完成项，直到当前阶段 exit criteria 全部满足、我暂停、或同一外部 runtime blocker 经过充分复现后正式标记 blocked。不得修改 live T3 数据，不得突破 100 张 retained screenshot 预算，不得把 DevTool 输入冒充物理输入。
 
 For narrower goals, use the copyable prompt in the active phase file.
-

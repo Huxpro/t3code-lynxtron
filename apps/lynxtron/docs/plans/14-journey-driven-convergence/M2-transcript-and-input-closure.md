@@ -1,5 +1,7 @@
 # M2: Close transcript and physical-input residuals
 
+- Status: `in_progress` (started 2026-09-29 after M1)
+
 ## Objective
 
 Finish the supported reading and interaction loop for long transcripts, structured
@@ -38,4 +40,3 @@ content, links, menus, and discrete keyboard commands.
 ## Goal prompt
 
 > 在 `/Users/bytedance/github/t3code-lynxtron-021-full` 执行 Plan 14 M2：读取 `apps/lynxtron/docs/plans/14-journey-driven-convergence/M2-transcript-and-input-closure.md`，用一个 canonical long-thread fixture 关闭 transcript 阅读和真实输入残余。覆盖 follow/detach/incoming growth/Jump、file/external link context menu、copy/open/failure、Command Palette/Quick Switch shared resolver，以及 Archive destructive mutation 的 shared primitive 审计。Web CDP 只证明 Browser，Native keyboard/wheel/menu 必须用 exact-owned Computer Use。GAP-011 不叠加本地 workaround。持续到 PF3 完成或所有剩余项正式 runtime-blocked。
-

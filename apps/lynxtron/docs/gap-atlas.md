@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-12T16:27:42.043Z
+Generated: 2026-09-29T17:34:35.506Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -8,10 +8,10 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 ## Summary
 
-- Gaps: 12
+- Gaps: 13
 - P0: 1
 - P1: 8
-- P2: 2
+- P2: 3
 - Incomplete required evidence cells: 0
 - Blocked required evidence cells: 0
 
@@ -28,6 +28,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | closed          | DiffPanel / changed-files composition and R10 renderer island |
 | GAP-003 | P2       | SOURCE_REUSE       | Settings Connections / Source Control / Beta / Archive |    45 | closed          | Settings route panels and platform host slots                 |
 | GAP-012 | P2       | INTERACTION        | Settings Appearance                                    |    39 | closed          | AppearanceSettingsSurface and runtime preferences             |
+| GAP-013 | P2       | RUNTIME_CAPABILITY | Composer image input                                   |    23 | blocked-runtime | Lynxtron host drag-and-drop bridge                            |
 | GAP-001 | P3       | HARNESS_INVALID    | Main shell / New Thread                                |    21 | closed          | Plan 11C workbench state-echo selector                        |
 
 ## GAP-002 — Main shell / Sidebar / Composer
@@ -237,6 +238,23 @@ three-client evidence lowers confidence; it does not silently pass a gap.
   - `reports/reuse/current.json`
   - `compat-matrix.md#R13`
   - `evidence/2026-09-12/fidelity/settings-appearance-real-controls-current.json`
+
+## GAP-013 — Composer image input
+
+- Severity/category: `P2` / `RUNTIME_CAPABILITY`
+- Priority score: 23
+- User impact: Native accepts pasted clipboard images like Web, but dropping an image file on the Composer does nothing because Lynx exposes no file-drop event.
+- Clients/states: native / composer-image-attachment
+- Source owner: Lynxtron host drag-and-drop bridge
+- Likely root cause: Lynxtron forwards no native drag/drop file events to the LynxView. Web has no picker either, so the 0.0.21 open-dialog FiberSetAttribute error is off the product path.
+- Fix class: `runtime capability`
+- Physical reuse: 5.9% modules / 6.8% LOC
+- Weighted style risk occurrences: 5258
+- Native requirement: Command+V image paste is satisfied through the Edit menu handler; file drop requires an upstream drag/drop event
+- Disposition: `blocked-runtime`
+- Evidence:
+  - `docs/plans/14-journey-driven-convergence/M1-local-composer-journey.md`
+  - `evidence/2026-09-29/M1/local-journey.json`
 
 ## GAP-001 — Main shell / New Thread
 
