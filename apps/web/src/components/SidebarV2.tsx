@@ -121,7 +121,12 @@ import {
   sortLogicalProjectsForSidebar,
   sortSettledThreadsForSidebarV2,
   sortThreadsForSidebarV2,
+  buildSidebarV2ThreadContextMenuItems,
 } from "./Sidebar.logic";
+import {
+  formatThreadActionConfirmationMessage,
+  projectThreadActionConfirmation,
+} from "@t3tools/client-runtime/presentation/thread-actions";
 import { resolveLocalCheckoutBranchMismatch } from "./BranchToolbar.logic";
 import {
   prStatusIndicator,
@@ -2112,52 +2117,17 @@ export default function SidebarV2() {
         const snoozePresets = resolveSnoozePresets(new Date());
         const clicked = await settlePromise(() =>
           api.contextMenu.show(
-            [
-              ...(thread.branch
-                ? [
-                    {
-                      id: "new-thread-on-branch",
-                      label: `New thread on ${thread.branch}`,
-                    },
-                  ]
-                : []),
-              ...(supportsSettlement
-                ? [
-                    isSettled
-                      ? { id: "unsettle", label: "Un-settle thread" }
-                      : { id: "settle", label: "Settle thread" },
-                  ]
-                : []),
-              ...(supportsSnooze
-                ? [
-                    isSnoozed
-                      ? { id: "unsnooze", label: "Wake thread" }
-                      : {
-                          id: "snooze",
-                          label: "Snooze",
-                          disabled: !canSnooze(thread, { now: new Date().toISOString() }),
-                          children: snoozePresets.map((preset) => ({
-                            id: `snooze:${preset.id}`,
-                            label: `${preset.label} (${preset.whenLabel})`,
-                          })),
-                        },
-                  ]
-                : []),
-              { id: "rename", label: "Rename thread" },
-              ...(supportsTitleRegeneration
-                ? [
-                    {
-                      id: "regenerate-title",
-                      label: isRegeneratingTitle ? "Regenerating…" : "Regenerate title",
-                      disabled: isRegeneratingTitle,
-                    },
-                  ]
-                : []),
-              { id: "mark-unread", label: "Mark unread" },
-              { id: "copy-path", label: "Copy path", icon: "copy" },
-              ...(thread.branch ? [{ id: "copy-branch", label: "Copy branch", icon: "copy" }] : []),
-              { id: "delete", label: "Delete", destructive: true, icon: "trash" },
-            ],
+            buildSidebarV2ThreadContextMenuItems({
+              branch: thread.branch,
+              supportsSettlement,
+              isSettled,
+              supportsSnooze,
+              isSnoozed,
+              canSnooze: canSnooze(thread, { now: new Date().toISOString() }),
+              snoozePresets,
+              supportsTitleRegeneration,
+              isRegeneratingTitle,
+            }),
             position,
           ),
         );
@@ -2248,10 +2218,12 @@ export default function SidebarV2() {
             if (confirmThreadDelete) {
               const confirmed = await settlePromise(() =>
                 api.dialogs.confirm(
-                  [
-                    `Delete thread "${thread.title}"?`,
-                    "This permanently clears conversation history for this thread.",
-                  ].join("\n"),
+                  formatThreadActionConfirmationMessage(
+                    projectThreadActionConfirmation({
+                      action: "delete",
+                      threadTitle: thread.title,
+                    }),
+                  ),
                 ),
               );
               if (confirmed._tag === "Failure" || !confirmed.value) return;

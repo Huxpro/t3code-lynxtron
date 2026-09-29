@@ -30,6 +30,7 @@ import {
   sortScopedProjectsForSidebar,
   sortSettledThreadsForSidebarV2,
   sortThreadsForSidebarV2,
+  buildSidebarV2ThreadContextMenuItems,
   type SidebarV2Status,
 } from "./Sidebar.logic";
 import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
@@ -44,7 +45,11 @@ import {
 } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
 import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
-import { isDisposableEmptyThread } from "@t3tools/client-runtime/presentation/thread-actions";
+import {
+  isDisposableEmptyThread,
+  projectThreadActionConfirmation,
+} from "@t3tools/client-runtime/presentation/thread-actions";
+import { toastManager } from "./ui/toast";
 import {
   hasUnseenThreadCompletion,
   markThreadUnreadInTimestampRecord,
@@ -52,7 +57,11 @@ import {
   projectSidebarThreadDetailsRows,
   sanitizeThreadVisitedTimestampRecord,
 } from "@t3tools/client-runtime/presentation/sidebar";
-import { getPref, setPref } from "../../../lynxtron/src/app/state/prefsStore";
+import {
+  getClientSettingsState,
+  getPref,
+  setPref,
+} from "../../../lynxtron/src/app/state/prefsStore";
 import { onSidebarThreadJump } from "../../../lynxtron/src/app/state/sidebarThreadNavigation";
 import { useLynxShortcutModifierState } from "../../../lynxtron/src/app/state/shortcutModifierState";
 
@@ -228,43 +237,26 @@ function LynxThreadDetails({
   );
 }
 
+/** Lynx leaf for the rename field and delete confirmation chosen from the native menu. */
 function LynxThreadActionMenu({
   thread,
-  projectPath,
-  settled,
-  settlementSupported,
-  onMarkUnread,
   onClose,
-  initialMode = "menu",
+  mode,
 }: {
   readonly thread: ReturnType<typeof useThreadShells>[number];
-  readonly projectPath: string | null;
-  readonly settled: boolean;
-  readonly settlementSupported: boolean;
-  readonly onMarkUnread: () => void;
   readonly onClose: () => void;
-  readonly initialMode?: "menu" | "rename" | "delete";
+  readonly mode: "rename" | "delete";
 }) {
-  const [renaming, setRenaming] = useState(initialMode === "rename");
   const [renameDraft, setRenameDraft] = useState(thread.title);
-  const [confirmingDelete, setConfirmingDelete] = useState(initialMode === "delete");
-  const workspacePath = thread.worktreePath ?? projectPath;
-  const actionCount =
-    (settlementSupported ? 1 : 0) + 2 + (workspacePath ? 1 : 0) + (thread.branch ? 1 : 0) + 2;
-  const menuHeight = actionCount * 30 + 10;
+  const confirmation = projectThreadActionConfirmation({
+    action: "delete",
+    threadTitle: thread.title,
+  });
 
   const run = (action: () => Promise<void>) => {
     void action()
       .catch(() => undefined)
       .finally(onClose);
-  };
-  const requestDelete = (event: unknown) => {
-    stopPropagation(event);
-    if (isDisposableEmptyThread(thread)) {
-      run(() => t3ClientActions.deleteThread(thread.id));
-      return;
-    }
-    setConfirmingDelete(true);
   };
   const confirmDelete = (event: unknown) => {
     stopPropagation(event);
@@ -277,10 +269,9 @@ function LynxThreadActionMenu({
       <view
         className="sidebar-v2-action-menu"
         data-sidebar-thread-menu={thread.id}
-        style={{ height: `${menuHeight}px`, minHeight: `${menuHeight}px` }}
         bindtap={stopPropagation}
       >
-        {renaming ? (
+        {mode === "rename" ? (
           <view className="sidebar-v2-action-menu__rename">
             <input
               className="sidebar-v2-action-menu__rename-input"
@@ -304,17 +295,16 @@ function LynxThreadActionMenu({
               <text className="sidebar-v2-action-menu__rename-save-label">Save</text>
             </view>
           </view>
-        ) : confirmingDelete ? (
+        ) : (
           <view className="sidebar-v2-action-menu__confirm">
-            <text className="sidebar-v2-action-menu__confirm-title">Delete this thread?</text>
-            <text className="sidebar-v2-action-menu__confirm-copy">
-              Conversation history will be removed.
-            </text>
+            <text className="sidebar-v2-action-menu__confirm-title">{confirmation.title}</text>
+            {confirmation.description ? (
+              <text className="sidebar-v2-action-menu__confirm-copy">
+                {confirmation.description}
+              </text>
+            ) : null}
             <view className="sidebar-v2-action-menu__confirm-actions">
-              <view
-                className="sidebar-v2-action-menu__confirm-button"
-                bindtap={() => setConfirmingDelete(false)}
-              >
+              <view className="sidebar-v2-action-menu__confirm-button" bindtap={onClose}>
                 <text className="sidebar-v2-action-menu__item-label">Cancel</text>
               </view>
               <view
@@ -326,85 +316,11 @@ function LynxThreadActionMenu({
                   className="sidebar-v2-action-menu__item-label sidebar-v2-action-menu__item-label--danger"
                   bindtap={confirmDelete}
                 >
-                  Delete
+                  {confirmation.confirmLabel}
                 </text>
               </view>
             </view>
           </view>
-        ) : (
-          <>
-            {settlementSupported ? (
-              <view
-                className="sidebar-v2-action-menu__item"
-                bindtap={() =>
-                  run(() =>
-                    settled
-                      ? t3ClientActions.unsettleThread(thread.id)
-                      : t3ClientActions.settleThread(thread.id),
-                  )
-                }
-              >
-                <Icon name={settled ? "rotate-ccw" : "check"} size={14} color="#818181" />
-                <text className="sidebar-v2-action-menu__item-label">
-                  {settled ? "Un-settle thread" : "Settle thread"}
-                </text>
-              </view>
-            ) : null}
-            <view className="sidebar-v2-action-menu__item" bindtap={() => setRenaming(true)}>
-              <Icon name="pencil-line" size={14} color="#818181" />
-              <text className="sidebar-v2-action-menu__item-label">Rename thread</text>
-            </view>
-            {workspacePath ? (
-              <view
-                className="sidebar-v2-action-menu__item"
-                bindtap={() => run(() => clientCapabilities.clipboard.writeText(workspacePath))}
-              >
-                <Icon name="folder" size={14} color="#818181" />
-                <text className="sidebar-v2-action-menu__item-label">Copy path</text>
-              </view>
-            ) : null}
-            {thread.branch ? (
-              <view
-                className="sidebar-v2-action-menu__item"
-                bindtap={() =>
-                  run(() => clientCapabilities.clipboard.writeText(thread.branch ?? ""))
-                }
-              >
-                <Icon name="git-branch" size={14} color="#818181" />
-                <text className="sidebar-v2-action-menu__item-label">Copy branch</text>
-              </view>
-            ) : null}
-            <view
-              className="sidebar-v2-action-menu__item"
-              bindtap={() => {
-                onMarkUnread();
-                onClose();
-              }}
-            >
-              <Icon name="message-square" size={14} color="#818181" />
-              <text className="sidebar-v2-action-menu__item-label">Mark unread</text>
-            </view>
-            <view
-              className="sidebar-v2-action-menu__item"
-              bindtap={() => run(() => t3ClientActions.archiveThread(thread.id))}
-            >
-              <Icon name="archive" size={14} color="#818181" />
-              <text className="sidebar-v2-action-menu__item-label">Archive</text>
-            </view>
-            <view
-              className="sidebar-v2-action-menu__item sidebar-v2-action-menu__item--danger"
-              data-sidebar-thread-delete={thread.id}
-              bindtap={requestDelete}
-            >
-              <Icon name="trash-2" size={14} color="#f87171" />
-              <text
-                className="sidebar-v2-action-menu__item-label sidebar-v2-action-menu__item-label--danger"
-                bindtap={requestDelete}
-              >
-                Delete
-              </text>
-            </view>
-          </>
         )}
       </view>
     </>
@@ -608,48 +524,19 @@ export default function SidebarV2() {
       const isSnoozed = effectiveSnoozed(thread, { now: new Date().toISOString() });
       const snoozePresets = resolveSnoozePresets(new Date());
       const isRegeneratingTitle = thread.titleRegeneration != null;
-      const selection = await showNativeContextMenu([
-        ...(thread.branch
-          ? [{ id: "new-thread-on-branch", label: `New thread on ${thread.branch}` }]
-          : []),
-        ...(settlementSupported
-          ? [
-              {
-                id: settled ? "unsettle" : "settle",
-                label: settled ? "Un-settle thread" : "Settle thread",
-              },
-            ]
-          : []),
-        ...(supportsSnooze
-          ? [
-              isSnoozed
-                ? { id: "unsnooze", label: "Wake thread" }
-                : {
-                    id: "snooze",
-                    label: "Snooze",
-                    children: snoozePresets.map((preset) => ({
-                      id: `snooze:${preset.id}`,
-                      label: `${preset.label} (${preset.whenLabel})`,
-                    })),
-                  },
-            ]
-          : []),
-        { id: "rename", label: "Rename thread" },
-        ...(supportsTitleRegeneration
-          ? [
-              {
-                id: "regenerate-title",
-                label: isRegeneratingTitle ? "Regenerating…" : "Regenerate title",
-                disabled: isRegeneratingTitle,
-              },
-            ]
-          : []),
-        ...(workspacePath ? [{ id: "copy-path", label: "Copy path" }] : []),
-        ...(thread.branch ? [{ id: "copy-branch", label: "Copy branch" }] : []),
-        { id: "mark-unread", label: "Mark unread" },
-        { id: "archive", label: "Archive" },
-        { id: "delete", label: "Delete", destructive: true },
-      ]);
+      const selection = await showNativeContextMenu(
+        buildSidebarV2ThreadContextMenuItems({
+          branch: thread.branch,
+          supportsSettlement: settlementSupported,
+          isSettled: settled,
+          supportsSnooze,
+          isSnoozed,
+          canSnooze: canSnooze(thread, { now: new Date().toISOString() }),
+          snoozePresets,
+          supportsTitleRegeneration,
+          isRegeneratingTitle,
+        }),
+      );
       if (selection?.startsWith("snooze:")) {
         const preset = snoozePresets.find((candidate) => `snooze:${candidate.id}` === selection);
         if (preset) await t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil);
@@ -665,7 +552,15 @@ export default function SidebarV2() {
       } else if (selection === "settle") await t3ClientActions.settleThread(thread.id);
       else if (selection === "unsettle") await t3ClientActions.unsettleThread(thread.id);
       else if (selection === "unsnooze") await t3ClientActions.unsnoozeThread(thread.id);
-      else if (selection === "copy-path" && workspacePath) {
+      else if (selection === "copy-path") {
+        if (!workspacePath) {
+          toastManager.add({
+            type: "error",
+            title: "Path unavailable",
+            description: "This thread does not have a workspace path to copy.",
+          });
+          return;
+        }
         await clientCapabilities.clipboard.writeText(workspacePath);
       } else if (selection === "copy-branch" && thread.branch) {
         await clientCapabilities.clipboard.writeText(thread.branch);
@@ -673,8 +568,9 @@ export default function SidebarV2() {
         markThreadUnread(thread);
       } else if (selection === "regenerate-title") {
         await t3ClientActions.regenerateThreadTitle(thread.id);
-      } else if (selection === "archive") await t3ClientActions.archiveThread(thread.id);
-      else if (selection === "rename" || selection === "delete") {
+      } else if (selection === "delete" && !getClientSettingsState().confirmThreadDelete) {
+        await t3ClientActions.deleteThread(thread.id);
+      } else if (selection === "rename" || selection === "delete") {
         setActionMenuThreadId(thread.id);
         setNativeFollowup({ kind: selection, threadId: thread.id });
       }
@@ -957,16 +853,10 @@ export default function SidebarV2() {
                         ))}
                       </view>
                     </>
-                  ) : actionMenuOpen ? (
+                  ) : actionMenuOpen && nativeFollowup?.threadId === thread.id ? (
                     <LynxThreadActionMenu
                       thread={thread}
-                      projectPath={project?.workspaceRoot ?? null}
-                      settled={false}
-                      settlementSupported={settlementSupported}
-                      onMarkUnread={() => markThreadUnread(thread)}
-                      initialMode={
-                        nativeFollowup?.threadId === thread.id ? nativeFollowup.kind : "menu"
-                      }
+                      mode={nativeFollowup.kind}
                       onClose={() => {
                         setActionMenuThreadId(null);
                         setNativeFollowup(null);
@@ -1137,16 +1027,10 @@ export default function SidebarV2() {
                 }
                 detailsRelationId={`sidebar-thread-details:${thread.id}`}
                 detailsOverlay={
-                  actionMenuOpen ? (
+                  actionMenuOpen && nativeFollowup?.threadId === thread.id ? (
                     <LynxThreadActionMenu
                       thread={thread}
-                      projectPath={project?.workspaceRoot ?? null}
-                      settled
-                      settlementSupported={settlementSupported}
-                      onMarkUnread={() => markThreadUnread(thread)}
-                      initialMode={
-                        nativeFollowup?.threadId === thread.id ? nativeFollowup.kind : "menu"
-                      }
+                      mode={nativeFollowup.kind}
                       onClose={() => {
                         setActionMenuThreadId(null);
                         setNativeFollowup(null);

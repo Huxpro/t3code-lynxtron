@@ -202,6 +202,21 @@
       "carried": [
         "--verify-model-picker-fidelity cannot find .model-picker-content although the picker renders it; the gate needs repair before it can certify the picker."
       ]
+    },
+    {
+      "id": "sidebar-thread-menu",
+      "change": "Sidebar V2 thread context-menu inventory is built by Web buildSidebarV2ThreadContextMenuItems for both renderers. Lynx loses its extra Archive item, follows Web order (Mark unread before copy actions), disables Snooze when the thread cannot snooze, always offers Copy path and toasts \"Path unavailable\" like Web. Delete honours the confirmThreadDelete setting and uses the shared projectThreadActionConfirmation copy on both renderers. The unreachable Lynx in-row action list (its trigger was already removed) and its CSS are deleted; the Lynx leaf keeps only the rename field and delete confirmation.",
+      "gates": {
+        "sidebarScope": {
+          "status": "pass"
+        }
+      },
+      "pendingUserSession": [
+        "Secondary-click the thread row to open the native menu and pick Delete with confirmation on and off (DevTool touches carry no mouse button)."
+      ],
+      "carried": [
+        "verifyShellInteractions still taps the removed [data-sidebar-thread-action-trigger]; that step was already stale before this slice."
+      ]
     }
   ]
 }

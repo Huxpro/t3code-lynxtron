@@ -1567,14 +1567,6 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("white-space: nowrap;");
   });
 
-  it("prevents Sidebar action rows from collapsing into one another", () => {
-    expect(sidebarSource).toContain("const actionCount =");
-    expect(sidebarSource).toContain("const menuHeight = actionCount * 30 + 10;");
-    expect(sidebarSource).toContain("style={{ height: `${menuHeight}px`");
-    expect(overrides).toContain("min-height: 30px;");
-    expect(overrides).toContain("flex-shrink: 0;");
-  });
-
   it("anchors Sidebar project controls to the live Sidebar width", () => {
     expect(sidebarControlsSource).toContain("readonly projectScopePopupWidth?: number;");
     expect(sidebarControlsSource).not.toContain("projectScopeControlWidth");
@@ -1686,25 +1678,23 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain(
       ".settings-topbar {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: space-between;\n  width: 100%;",
     );
-    expect(sidebarSource).toContain("settlementSupported={settlementSupported}");
     expect(sidebarSource).not.toContain('"data-sidebar-thread-action-trigger": thread.id');
     expect(sidebarSource).toContain("data-sidebar-snooze-trigger={thread.id}");
     expect(sidebarSource).toContain("data-sidebar-empty-thread-delete={thread.id}");
     expect(sidebarSource).toContain('aria-label="Delete empty thread"');
-    expect(sidebarSource).toContain("data-sidebar-thread-delete={thread.id}");
     expect(sidebarSource).toContain("data-sidebar-thread-delete-confirm={thread.id}");
-    expect(sidebarSource).toContain("bindtap={requestDelete}");
     expect(sidebarSource).toContain("bindtap={confirmDelete}");
     expect(sidebarSource).toContain("isDisposableEmptyThread(thread)");
-    expect(sidebarSource).toContain('{ id: "mark-unread", label: "Mark unread" }');
-    expect(sidebarSource).toContain("label: `New thread on ${thread.branch}`");
+    // The thread menu inventory and delete copy are shared with Web.
+    expect(sidebarSource).toContain("buildSidebarV2ThreadContextMenuItems({");
+    expect(sidebarSource).toContain("projectThreadActionConfirmation({");
+    expect(sidebarSource).toContain("getClientSettingsState().confirmThreadDelete");
+    expect(sidebarSource).not.toContain('{ id: "archive", label: "Archive" }');
     expect(sidebarSource).toContain("t3ClientActions.createThread(thread.projectId, {");
     expect(sidebarSource).toContain('envMode: thread.worktreePath ? "worktree" : "local"');
     expect(sidebarSource).toContain("startFromOrigin: false");
-    expect(sidebarSource).toContain('id: "regenerate-title"');
     expect(sidebarSource).toContain("t3ClientActions.regenerateThreadTitle(thread.id)");
     expect(sidebarSource).toContain("resolveSnoozePresets(new Date())");
-    expect(sidebarSource).toContain('label: "Snooze"');
     expect(sidebarSource).toContain("t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil)");
     expect(sidebarSource).toContain("t3ClientActions.unsnoozeThread(thread.id)");
     expect(sidebarRowSource).toMatch(
@@ -1721,7 +1711,6 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("hasUnseenThreadCompletion({");
     expect(sidebarSource).toContain("isUnread={isUnread}");
     expect(sidebarSource).toContain("setPref(THREAD_VISITED_TIMESTAMPS_PREF, next)");
-    expect(sidebarSource).toContain("t3ClientActions.archiveThread(thread.id)");
     expect(sidebarSource).toContain("t3ClientActions.deleteThread(thread.id)");
     expect(componentSource("OtherSettings.tsx")).toContain('data-settings-archive-error="true"');
     expect(componentSource("OtherSettings.tsx")).toContain('"Failed to unarchive thread"');
@@ -1985,7 +1974,6 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("aria-label={`Project actions for ${project.title}`}");
     expect(sidebarSource).toContain("showNativeContextMenu([");
     expect(sidebarSource).toContain("void showThreadContextMenu(");
-    expect(sidebarSource).toContain('{ id: "delete", label: "Delete", destructive: true }');
     expect(hostElementsSource).toContain("event.button === 2 && onContextMenu");
     expect(hostElementsSource).toContain('"main-thread:bindmousedown": handleMouseDown');
     expect(sidebarSource).toContain("<ProjectSettingsDialog");

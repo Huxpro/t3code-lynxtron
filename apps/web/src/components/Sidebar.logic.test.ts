@@ -30,6 +30,7 @@ import {
   sortThreadsForSidebarV2,
   sortProjectsForSidebar,
   sortScopedProjectsForSidebar,
+  buildSidebarV2ThreadContextMenuItems,
   THREAD_JUMP_HINT_SHOW_DELAY_MS,
 } from "./Sidebar.logic";
 import {
@@ -1489,5 +1490,53 @@ describe("sortLogicalProjectsForSidebar", () => {
         (project) => project.projectKey,
       ),
     ).toEqual(["logical-newer", "logical-older"]);
+  });
+});
+
+describe("buildSidebarV2ThreadContextMenuItems", () => {
+  const base = {
+    branch: null,
+    supportsSettlement: false,
+    isSettled: false,
+    supportsSnooze: false,
+    isSnoozed: false,
+    canSnooze: true,
+    snoozePresets: [{ id: "1h", label: "In an hour", whenLabel: "3:00 PM" }],
+    supportsTitleRegeneration: false,
+    isRegeneratingTitle: false,
+  };
+
+  it("offers only the always-available actions without environment capabilities", () => {
+    expect(buildSidebarV2ThreadContextMenuItems(base).map((item) => item.id)).toEqual([
+      "rename",
+      "mark-unread",
+      "copy-path",
+      "delete",
+    ]);
+  });
+
+  it("adds branch, lifecycle, and title items in menu order when supported", () => {
+    const items = buildSidebarV2ThreadContextMenuItems({
+      ...base,
+      branch: "feature/x",
+      supportsSettlement: true,
+      supportsSnooze: true,
+      canSnooze: false,
+      supportsTitleRegeneration: true,
+    });
+    expect(items.map((item) => item.id)).toEqual([
+      "new-thread-on-branch",
+      "settle",
+      "snooze",
+      "rename",
+      "regenerate-title",
+      "mark-unread",
+      "copy-path",
+      "copy-branch",
+      "delete",
+    ]);
+    const snooze = items.find((item) => item.id === "snooze");
+    expect(snooze?.disabled).toBe(true);
+    expect(snooze?.children?.map((child) => child.id)).toEqual(["snooze:1h"]);
   });
 });

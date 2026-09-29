@@ -81,6 +81,22 @@ once `providerIconUtils` separates its DOM icons.
 Carried: `--verify-model-picker-fidelity` times out on `.model-picker-content`
 on the pre-slice commit too, although a direct probe finds it.
 
+### App Shell / Sidebar
+
+- Thread context menu: `buildSidebarV2ThreadContextMenuItems` is the one
+  inventory. Lynx lost its extra Archive item, follows Web's order, disables
+  Snooze when a thread cannot snooze, and toasts "Path unavailable" like Web.
+- Delete honours `confirmThreadDelete` and uses the shared
+  `projectThreadActionConfirmation` copy in both renderers.
+- The unreachable Lynx in-row action list and its CSS are deleted; the Lynx
+  leaf keeps the rename field and delete confirmation.
+
+Next divergences, recorded from the audit: row status pills and recede rules
+(Lynx lacks Woke/Done), the auto-settle window ignoring
+`sidebarAutoSettleAfterDays`, no snoozed shelf, project sort ignoring
+`sidebarProjectSortOrder`, the new-thread target, a Lynx-only project row
+menu, and "No matching threads" vs Web "No threads found".
+
 ### Settings Providers
 
 - Driver labels, order, settings schemas, Early Access badges, the
