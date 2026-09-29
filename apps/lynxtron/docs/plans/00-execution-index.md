@@ -1,6 +1,6 @@
 # Execute the high-fidelity monorepo port
 
-This index turns the current `apps/lynxtron` worktree into four bounded phases. Use it to select one task at a time, preserve evidence, and stop a goal only at a defined phase exit.
+This index routes active work to Plan 14 and preserves the earlier certification model as historical context. Use it to select one task at a time, preserve evidence, and stop a goal only at a defined phase exit.
 
 ## Plan metadata
 
@@ -12,17 +12,28 @@ This index turns the current `apps/lynxtron` worktree into four bounded phases. 
 
 ## Active execution override
 
-Use [Prove the Lynxtron architecture through product outcomes](./11-outcome-driven-convergence.md) for work started after the 2026-08-01 AR6 review. Plan 11 keeps Plan 10's main-owned connector and shared-composition direction, but requires that architecture to close five trust failures observed in a real packaged session: Sidebar V2 layout, Settings route stability, visible lifecycle state, Composer adaptation, and stage branding. It also adds semantic cold-start readiness so a listening server or clean screenshot cannot be mistaken for a connected product.
+[Drive Lynxtron convergence through complete product journeys](./14-journey-driven-shared-source-convergence.md)
+is the active master plan after Final5. It reconciles the stale Plan 11/12 task
+states, closes the supported local Composer and transcript journeys, elevates remote
+and multi-environment operation to the main product gate, applies deletion-driven
+physical source convergence, completes review and bounded secondary surfaces, and
+runs one final local/remote phase-exit matrix. Use the copyable goal prompt in the
+master plan or one phase prompt under
+[`14-journey-driven-convergence/`](./14-journey-driven-convergence/). Plan 11, Plan
+12, and Plan 13 remain required technical inputs, but Plan 14 owns active ordering
+and completion status.
 
-[Establish a browser-first Web / Lynx UI loop](./11a-browser-dual-renderer-validation.md) is a bounded supporting experiment to run at the next safe Plan 11 task boundary and before OC7 is declared complete (or before Plan 12 PF0 if OC7 has already completed). It does not supersede the Plan 11 then Plan 12 product order. It uses the existing shared compositions to converge one main-shell slice in a fast Web-versus-Lynx-Web browser loop, then requires one Native Lynxtron correlation pass before the loop can be adopted for Plan 12 UI work.
+[Prove the Lynxtron architecture through product outcomes](./11-outcome-driven-convergence.md) is the historical trust-recovery plan. Use its outcome definitions, main-owned connector decisions, and semantic-readiness rules as Plan 14 inputs. Do not use its stale task table to choose the active phase.
+
+[Establish a browser-first Web / Lynx UI loop](./11a-browser-dual-renderer-validation.md) is the historical browser-loop experiment. Plan 14 retains its Browser-first iteration and exact-owned Native correlation rules.
 
 [Borrow Synara's harness discipline, reset stale context, and prioritize the next port phase](./11c-synara-harness-reset-and-gap-prioritization.md) is the historical Plan 11C design and prioritization record. The current authority is [the final5 state](../harness/current-state.md) and [archaeology completion audit](../harness/completion-audit.md). The current manifest is a planning matrix with required cells pending, not the old 39-state phase-exit certification. Plan 11A and [Plan 11B](./11b-single-server-dual-frontend-workbench.md) remain historical records of the browser-loop experiment and its real-Web correction; their `PASS` labels, evidence directories, and comparison implementations are not visual certification inputs.
 
-[Complete Lynxtron feature parity by product value](./12-feature-parity-by-product-value.md) is the queued successor. Start it only after Plan 11 OC7 passes. Plan 12 orders the remaining product gap by user value: complete agent intervention and Composer context, transcript interaction, remote/multi-environment operation, change review, secondary terminal/browser surfaces, and finally platform performance and polish.
+[Complete Lynxtron feature parity by product value](./12-feature-parity-by-product-value.md) defines the product capability requirements consumed by Plan 14. Plan 14 owns their active order and completion status.
 
 [Bring the builtin browser to Lynxtron parity](./13-cef-webview-browser-parity.md) is the executable PF6 browser sub-plan. It maps the official Lynxtron `<webview>` contract, Synara's proven native lifecycle, and every current Electron preview capability to explicit implementation and acceptance gates. CEF0 remains blocked by the documented 0.0.18 initialization and packaging gaps, while shared contract, policy, persistence, and Browser-chrome work may continue independently.
 
-Plan 11 supersedes Plan 10's completed task table and the task order in plans 06 and 09. Keep Plan 10 as architectural history. Plan 11C supersedes Plan 11A/11B as the Harness execution context and may revise the queued Plan 12 order after its residual atlas and priority roadmap are complete. Keep the certification tiers, compatibility ledger, strict reuse calculation, fidelity thresholds, and existing evidence defined in this index, but classify legacy evidence through Plan 11C before using it.
+Plan 14 supersedes the active task order in Plans 11 and 12. Keep Plans 10 and 11 as architectural and harness history. Keep Plan 12 as the product-requirement inventory and Plan 13 as the PF6 browser sub-plan. Preserve the certification tiers, compatibility ledger, strict reuse calculation, fidelity thresholds, and existing evidence defined in this index.
 
 ## Current baseline
 
@@ -68,6 +79,10 @@ A slice that has only passed slice-level acceptance must not be reported as
 by the phase-exit battery.
 
 ## Phase sequence
+
+The T5-T8 sequence below is the historical certification model. Plan 14 M0-M7
+owns the active execution sequence. Keep these exits as compatibility inputs when
+Plan 14 reaches the corresponding product surface.
 
 | Phase | Plan                                                                                       | Exit                                                                        |
 | ----- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- |
