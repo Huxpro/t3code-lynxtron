@@ -110,10 +110,13 @@ target, and a Lynx-only project row menu.
   client-runtime; Web's dialog text is unchanged.
 - Empty streaming replies render nothing, like Web, instead of "Thinking…".
 - The minimap uses the shared persistent-gutter and minimum-item rules.
+- The changed-files expand choice lives in uiState per thread and turn like
+  Web, so remounts and thread switches keep it (session-only; Web also
+  persists it).
 
 Remaining divergences, recorded from the audit: the proposed-plan card
-(labels, collapse threshold, Copy/Download/Save actions), changed-files
-expand persistence per thread and turn, folding an interrupted turn when the
+(labels, collapse threshold, Copy/Download/Save actions), folding an
+interrupted turn when the
 next starts, terminal-context placement, and the user copy-button hide rule.
 
 ### Settings Providers

@@ -256,6 +256,20 @@
           "status": "pass"
         }
       }
+    },
+    {
+      "id": "changed-files-expand-state",
+      "change": "The changed-files card expand choice lives in Lynx uiState per thread and turn (Web keeps it in uiStateStore.threadChangedFilesExpandedById), so it survives remounts and thread switches. A recycled card instance only re-snapshots its auto-expand default for the new checkpoint. Lynx keeps the choice for the session; Web also persists it to storage.",
+      "gates": {
+        "longTranscriptRecycling": {
+          "status": "pass"
+        },
+        "reviewCheckpointStates": {
+          "status": "fail",
+          "detail": "Collapse to preview passes; re-expand reaches data-changed-files-state=expanded but the card is 82px against a pinned 79px (1px taller toggle row plus a 28px tree row)."
+        }
+      },
+      "rediagnosis": "The M2 note \"checkpoint card toggle stays expanded\" was wrong: the toggle works both ways on 0.0.28. The gate fails on a 3px expanded-card height drift, which M5 owns."
     }
   ]
 }

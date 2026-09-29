@@ -200,6 +200,11 @@ const rightPanelStateAtom = Atom.make<RightPanelState>(INITIAL_RIGHT_PANEL_STATE
   Atom.withLabel("lynx-right-panel-state"),
 );
 
+/** Changed-files card choice per thread and turn; mirrors Web threadChangedFilesExpandedById. */
+const changedFilesExpandedAtom = Atom.make<
+  Readonly<Record<string, Readonly<Record<string, boolean>>>>
+>({}).pipe(Atom.withLabel("lynx-changed-files-expanded"));
+
 let nextSurfaceId = 1;
 
 function kindLabel(kind: RightPanelKind): string {
@@ -255,6 +260,10 @@ export function useGitPublishDialogOpen(): boolean {
 
 export function useAddProviderDialogOpen(): boolean {
   return useAtomValue(addProviderDialogOpenAtom);
+}
+
+export function useChangedFilesExpanded(threadId: string, turnId: string): boolean | undefined {
+  return useAtomValue(changedFilesExpandedAtom)[threadId]?.[turnId];
 }
 
 export function useProjectScopeKey(): string | null {
@@ -357,6 +366,13 @@ export const uiActions = {
   },
   openAddProviderDialog(): void {
     appAtomRegistry.set(addProviderDialogOpenAtom, true);
+  },
+  setChangedFilesExpanded(threadId: string, turnId: string, expanded: boolean): void {
+    const current = appAtomRegistry.get(changedFilesExpandedAtom);
+    appAtomRegistry.set(changedFilesExpandedAtom, {
+      ...current,
+      [threadId]: { ...current[threadId], [turnId]: expanded },
+    });
   },
   setProjectScopeKey(projectId: string | null): void {
     appAtomRegistry.set(projectScopeKeyAtom, projectId);

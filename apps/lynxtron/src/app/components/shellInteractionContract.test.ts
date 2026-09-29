@@ -2371,9 +2371,11 @@ describe("desktop shell interaction contract", () => {
 
   it("resets recycled checkpoint-card expansion for a new checkpoint identity", () => {
     const timelineSource = componentSource("MessagesTimeline.tsx");
-    expect(timelineSource).toContain("setExpandedOverride(null);");
-    expect(timelineSource).toContain("setAllDirectoriesExpanded(autoExpanded);");
-    expect(timelineSource).toContain("}, [autoExpanded, summary.checkpointRef, summary.turnId]);");
+    // The expand choice lives in uiState per thread and turn; a recycled card
+    // only re-snapshots its auto-expand default for the new checkpoint.
+    expect(timelineSource).toContain("useChangedFilesExpanded(threadId");
+    expect(timelineSource).toContain("setAllDirectoriesExpanded(next);");
+    expect(timelineSource).toContain("}, [summary.checkpointRef, summary.turnId]);");
   });
 
   it("detaches transcript follow before changing checkpoint-card height", () => {

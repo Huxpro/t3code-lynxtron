@@ -2218,7 +2218,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 35737,
+            "eligibleLines": 35753,
             "eligibleModules": 183,
             "modulesOnlyInLynx": [
               {
@@ -2363,7 +2363,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -11791,7 +11791,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 39706,
+            "eligibleLines": 39722,
             "eligibleModules": 200,
             "modulesOnlyInLynx": [
               {
@@ -11926,7 +11926,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -18826,7 +18826,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -23578,7 +23578,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 88178,
+            "eligibleLines": 88201,
             "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
@@ -23728,7 +23728,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -24033,7 +24033,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -32928,7 +32928,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -36210,7 +36210,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56684,
+            "eligibleLines": 56707,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36330,7 +36330,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -36560,7 +36560,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -47731,7 +47731,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -50248,7 +50248,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48510,
+            "eligibleLines": 48533,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -50368,7 +50368,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -50578,7 +50578,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -60197,7 +60197,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -63484,7 +63484,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56725,
+            "eligibleLines": 56748,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63604,7 +63604,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -63849,7 +63849,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -76687,7 +76687,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -79969,7 +79969,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56684,
+            "eligibleLines": 56707,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -80089,7 +80089,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -80319,7 +80319,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -91490,7 +91490,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -94007,7 +94007,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48510,
+            "eligibleLines": 48533,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -94127,7 +94127,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -94337,7 +94337,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -103962,7 +103962,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -107249,7 +107249,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56725,
+            "eligibleLines": 56748,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107369,7 +107369,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -107614,7 +107614,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -120452,7 +120452,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -122969,7 +122969,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48510,
+            "eligibleLines": 48533,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -123089,7 +123089,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -123299,7 +123299,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -139625,7 +139625,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -142912,7 +142912,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56725,
+            "eligibleLines": 56748,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -143032,7 +143032,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -143277,7 +143277,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -157407,7 +157407,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 28481,
+            "eligibleLines": 28497,
             "eligibleModules": 123,
             "modulesOnlyInLynx": [
               {
@@ -157547,7 +157547,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -162997,13 +162997,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 507,
-              "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
+              "lines": 518,
+              "path": "apps/lynxtron/src/app/state/uiState.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 502,
-              "path": "apps/lynxtron/src/app/state/uiState.ts"
+              "lines": 507,
+              "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
             }
           ],
           "lynx": {
@@ -164074,7 +164074,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23860,
+            "eligibleLines": 23876,
             "eligibleModules": 100,
             "modulesOnlyInLynx": [
               {
@@ -164169,7 +164169,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -168163,7 +168163,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -171450,7 +171450,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56725,
+            "eligibleLines": 56748,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171570,7 +171570,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -171815,7 +171815,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -190709,7 +190709,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25996,
+            "eligibleLines": 26012,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -190819,7 +190819,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -196852,7 +196852,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26080,
+            "eligibleLines": 26096,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -196962,7 +196962,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -203530,7 +203530,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 36432,
+            "eligibleLines": 36448,
             "eligibleModules": 193,
             "modulesOnlyInLynx": [
               {
@@ -203690,7 +203690,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -213880,7 +213880,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26968,
+            "eligibleLines": 26984,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -213980,7 +213980,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -221638,7 +221638,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26434,
+            "eligibleLines": 26450,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
@@ -221728,7 +221728,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -229950,7 +229950,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 37339,
+            "eligibleLines": 37355,
             "eligibleModules": 196,
             "modulesOnlyInLynx": [
               {
@@ -230100,7 +230100,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -239763,7 +239763,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 502,
+              "lines": 518,
               "path": "apps/lynxtron/src/app/state/uiState.ts"
             }
           ],
@@ -241305,7 +241305,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33124,
+            "eligibleLines": 33140,
             "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
@@ -241405,7 +241405,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -247002,7 +247002,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 502,
+              "lines": 518,
               "path": "apps/lynxtron/src/app/state/uiState.ts"
             }
           ],
@@ -248544,7 +248544,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33124,
+            "eligibleLines": 33140,
             "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
@@ -248644,7 +248644,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -256090,7 +256090,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33448,
+            "eligibleLines": 33464,
             "eligibleModules": 172,
             "modulesOnlyInLynx": [
               {
@@ -256220,7 +256220,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -356162,7 +356162,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28685,
+            "eligibleLines": 28701,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -356297,7 +356297,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -362439,7 +362439,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28685,
+            "eligibleLines": 28701,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -362574,7 +362574,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {
@@ -367409,7 +367409,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1603,
+              "lines": 1610,
               "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
             },
             {
@@ -370696,7 +370696,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56716,
+            "eligibleLines": 56739,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370816,7 +370816,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1603,
+                "lines": 1610,
                 "path": "apps/lynxtron/src/app/components/MessagesTimeline.tsx"
               },
               {
@@ -371056,7 +371056,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 502,
+                "lines": 518,
                 "path": "apps/lynxtron/src/app/state/uiState.ts"
               },
               {

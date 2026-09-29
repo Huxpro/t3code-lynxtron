@@ -73,7 +73,7 @@ import {
   markdownLinkContextMenuHandler,
 } from "./MarkdownRenderer";
 import { shouldRenderBlockMarkdown } from "@t3tools/client-runtime/presentation/markdown-blocks";
-import { uiActions } from "../state/uiState";
+import { uiActions, useChangedFilesExpanded } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
 import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { t3ClientActions } from "../state/t3Client";
@@ -143,29 +143,36 @@ function reuseIdentifierForRow(row: TimelineRow): string {
 
 /** Lynx checkpoint island: compact turn-diff card (full patch renderer is R10). */
 function LynxTurnDiffCard({
+  threadId,
   summary,
   isLatestTurn,
   compact,
   compactActions,
   onManualNavigation,
 }: {
+  threadId: ThreadId | undefined;
   summary: OrchestrationCheckpointSummary;
   isLatestTurn: boolean;
   compact: boolean;
   compactActions: boolean;
   onManualNavigation: () => void;
 }) {
-  const [expandedOverride, setExpandedOverride] = useState<boolean | null>(null);
-  const autoExpanded = useMemo(
-    () => shouldAutoExpandChangedFiles(summary.files, isLatestTurn),
-    [isLatestTurn, summary.files],
+  const persistedExpanded = useChangedFilesExpanded(threadId ?? "", summary.turnId);
+  const [autoExpanded, setAutoExpanded] = useState(() =>
+    shouldAutoExpandChangedFiles(summary.files, isLatestTurn),
   );
   const [allDirectoriesExpanded, setAllDirectoriesExpanded] = useState(autoExpanded);
   useEffect(() => {
-    setExpandedOverride(null);
-    setAllDirectoriesExpanded(autoExpanded);
-  }, [autoExpanded, summary.checkpointRef, summary.turnId]);
-  const expanded = expandedOverride ?? (isLatestTurn && autoExpanded);
+    // Native list recycling hands this instance another checkpoint: snapshot
+    // the auto-expand default again, as Web does once per mount.
+    const next = shouldAutoExpandChangedFiles(summary.files, isLatestTurn);
+    setAutoExpanded(next);
+    setAllDirectoriesExpanded(next);
+  }, [summary.checkpointRef, summary.turnId]);
+  const expanded = persistedExpanded ?? (isLatestTurn && autoExpanded);
+  const setExpanded = (value: boolean) => {
+    if (threadId) uiActions.setChangedFilesExpanded(threadId, summary.turnId, value);
+  };
   const stat = summarizeChangedFiles(summary.files);
   const preview = selectChangedFilePreview(summary.files);
   const scopeSummary = summarizeChangedFileScopes(summary.files);
@@ -262,11 +269,11 @@ function LynxTurnDiffCard({
       }
       onExpandedChange={(value) => {
         onManualNavigation();
-        setExpandedOverride(value);
+        setExpanded(value);
       }}
       onShowAll={() => {
         onManualNavigation();
-        setExpandedOverride(true);
+        setExpanded(true);
       }}
     />
   );
@@ -1001,6 +1008,7 @@ function buildLynxTranscriptRowElements(
       const summary = row.assistantTurnDiffSummary;
       return shouldShowAssistantChangedFiles(summary) && summary ? (
         <LynxTurnDiffCard
+          threadId={threadId}
           summary={summary}
           isLatestTurn={summary.turnId === latestTurnId}
           compact={compactChangedFiles}
