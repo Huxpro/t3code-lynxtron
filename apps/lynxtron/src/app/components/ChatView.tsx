@@ -38,7 +38,10 @@ import {
   togglePendingUserInputOptionSelection,
   type PendingUserInputDraftAnswer,
 } from "@t3tools/client-runtime/presentation/pending-user-input";
-import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
+import {
+  deriveModelPickerModels,
+  getTriggerDisplayModelName,
+} from "@t3tools/client-runtime/presentation/model-picker";
 import {
   deriveLatestContextWindowSnapshot,
   formatProviderDisplayName,
@@ -336,7 +339,9 @@ export function ChatView({ threadId }: ChatViewProps) {
     lastKnown: lastKnownModelSelection.current,
   });
   const projectName = activeProject?.title ?? "your project";
-  const persistedModelLabel = presentedSelectedModel?.name ?? presentedModelSelection?.model;
+  const persistedModelLabel = presentedSelectedModel
+    ? getTriggerDisplayModelName(presentedSelectedModel)
+    : presentedModelSelection?.model;
   const modelInstanceId = presentedSelectedModel?.instanceId ?? presentedModelSelection?.instanceId;
   const activeProviderInstanceId =
     activeThread?.session?.providerInstanceId ?? activeThread?.modelSelection.instanceId ?? null;

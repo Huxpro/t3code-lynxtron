@@ -14,7 +14,10 @@ import type {
   ServerProvider,
 } from "@t3tools/contracts";
 import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
-import { providerModelKey } from "@t3tools/client-runtime/presentation/model-picker";
+import {
+  getDisplayModelName,
+  providerModelKey,
+} from "@t3tools/client-runtime/presentation/model-picker";
 import {
   projectModelPickerProviders,
   projectModelPickerRows,
@@ -182,6 +185,7 @@ export function ModelPicker({
     [activeProvider, context, favoriteModelKeys, models, providers, search],
   );
   const selectedModelKey = resolveModelPickerSelectedKey(currentModelSelection, selectedModel);
+  const isLocked = lockedProvider !== null;
   const jumpTargets = useMemo(
     () => resolveModelPickerJumpTargets(rows, (row) => Boolean(row.disabledReason)),
     [rows],
@@ -417,7 +421,7 @@ export function ModelPicker({
                             ? () => showNotice("Model unavailable", disabledReason)
                             : clearNotice
                         }
-                        name={model.shortName ?? model.name}
+                        name={getDisplayModelName(model, { preferShortName: !isLocked })}
                         showNewBadge={isModelPickerNewModel(model.driverKind, model.slug)}
                         favoriteMarker={
                           favorite && activeProvider !== "favorites" ? (

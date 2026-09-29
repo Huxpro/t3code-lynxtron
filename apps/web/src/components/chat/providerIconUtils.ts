@@ -1,6 +1,10 @@
 import { ProviderDriverKind } from "@t3tools/contracts";
 import { ClaudeAI, CursorIcon, GrokIcon, Icon, OpenAI, OpenCodeIcon } from "../Icons";
 import { PROVIDER_OPTIONS } from "../../session-logic";
+import {
+  getDisplayModelName,
+  getTriggerDisplayModelName,
+} from "@t3tools/client-runtime/presentation/model-picker";
 
 export const PROVIDER_ICON_BY_PROVIDER: Partial<Record<ProviderDriverKind, Icon>> = {
   [ProviderDriverKind.make("codex")]: OpenAI,
@@ -28,31 +32,7 @@ export type ModelEsque = {
   subProvider?: string | undefined;
 };
 
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function stripLeadingQualifier(value: string, qualifier: string | null | undefined): string {
-  const trimmedQualifier = qualifier?.trim();
-  if (!trimmedQualifier) {
-    return value;
-  }
-
-  const pattern = new RegExp(`^${escapeRegExp(trimmedQualifier)}(?:\\s*[.:/-]\\s*|\\s+)`, "iu");
-  return value.replace(pattern, "").trim() || value;
-}
-
-export function getDisplayModelName(
-  model: ModelEsque,
-  options?: { preferShortName?: boolean },
-): string {
-  const name = options?.preferShortName && model.shortName ? model.shortName : model.name;
-  return stripLeadingQualifier(name, model.subProvider);
-}
-
-export function getTriggerDisplayModelName(model: ModelEsque): string {
-  return getDisplayModelName(model, { preferShortName: true });
-}
+export { getDisplayModelName, getTriggerDisplayModelName };
 
 export function getTriggerDisplayModelLabel(model: ModelEsque): string {
   return getTriggerDisplayModelName(model);

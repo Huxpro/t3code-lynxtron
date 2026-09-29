@@ -155,7 +155,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 74214,
+            "lines": 74228,
             "modules": 350
           },
           "largestNonShared": [
@@ -2218,7 +2218,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 35703,
+            "eligibleLines": 35737,
             "eligibleModules": 183,
             "modulesOnlyInLynx": [
               {
@@ -2654,7 +2654,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 22391,
+            "lines": 22425,
             "modules": 98
           },
           "reusePercent": {
@@ -2967,6 +2967,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -7992,7 +7997,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -8982,7 +8987,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -9658,7 +9663,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 69851,
+            "lines": 69865,
             "modules": 336
           },
           "largestNonShared": [
@@ -11786,7 +11791,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 39672,
+            "eligibleLines": 39706,
             "eligibleModules": 200,
             "modulesOnlyInLynx": [
               {
@@ -12297,7 +12302,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26795,
+            "lines": 26829,
             "modules": 100
           },
           "reusePercent": {
@@ -12525,6 +12530,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -17160,7 +17170,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -18110,7 +18120,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -18775,7 +18785,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81712,
+            "lines": 81726,
             "modules": 393
           },
           "largestNonShared": [
@@ -18826,7 +18836,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -23568,7 +23578,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 88084,
+            "eligibleLines": 88127,
             "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
@@ -23603,7 +23613,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -23723,7 +23733,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -24636,7 +24646,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 34571,
+            "lines": 34605,
             "modules": 151
           },
           "reusePercent": {
@@ -24974,6 +24984,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -30989,7 +31004,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -32179,7 +32194,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -32862,7 +32877,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109300,
+            "lines": 109314,
             "modules": 497
           },
           "largestNonShared": [
@@ -32923,7 +32938,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -36195,7 +36210,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56590,
+            "eligibleLines": 56633,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36225,7 +36240,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -36320,7 +36335,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -36856,7 +36871,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32659,
+            "lines": 32693,
             "modules": 147
           },
           "reusePercent": {
@@ -38374,6 +38389,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -45499,7 +45519,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -46934,7 +46954,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -47670,7 +47690,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97254,
+            "lines": 97268,
             "modules": 452
           },
           "largestNonShared": [
@@ -47721,7 +47741,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -50228,7 +50248,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48416,
+            "eligibleLines": 48459,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -50258,7 +50278,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -50353,7 +50373,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -50736,11 +50756,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28816,
+            "lines": 28850,
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.6,
+            "lines": 29.7,
             "modules": 26.3
           },
           "web": {
@@ -52164,6 +52184,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -58154,7 +58179,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -59399,7 +59424,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -60116,7 +60141,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119866,
+            "lines": 119880,
             "modules": 550
           },
           "largestNonShared": [
@@ -60182,7 +60207,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -63459,7 +63484,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56631,
+            "eligibleLines": 56674,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63489,7 +63514,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -63584,7 +63609,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -64121,7 +64146,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33050,
+            "lines": 33084,
             "modules": 150
           },
           "reusePercent": {
@@ -65759,6 +65784,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -74194,7 +74224,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -75844,7 +75874,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -76606,7 +76636,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109300,
+            "lines": 109314,
             "modules": 497
           },
           "largestNonShared": [
@@ -76667,7 +76697,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -79939,7 +79969,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56590,
+            "eligibleLines": 56633,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -79969,7 +79999,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -80064,7 +80094,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -80600,7 +80630,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32659,
+            "lines": 32693,
             "modules": 147
           },
           "reusePercent": {
@@ -82118,6 +82148,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -89243,7 +89278,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -90678,7 +90713,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -91414,7 +91449,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97254,
+            "lines": 97268,
             "modules": 452
           },
           "largestNonShared": [
@@ -91465,7 +91500,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -93972,7 +94007,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48416,
+            "eligibleLines": 48459,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -94002,7 +94037,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -94097,7 +94132,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -94483,11 +94518,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28816,
+            "lines": 28850,
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.6,
+            "lines": 29.7,
             "modules": 26.3
           },
           "web": {
@@ -95911,6 +95946,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -101901,7 +101941,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -103146,7 +103186,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -103866,7 +103906,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119875,
+            "lines": 119889,
             "modules": 550
           },
           "largestNonShared": [
@@ -103932,7 +103972,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -107209,7 +107249,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56631,
+            "eligibleLines": 56674,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107239,7 +107279,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -107334,7 +107374,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -107871,7 +107911,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33050,
+            "lines": 33084,
             "modules": 150
           },
           "reusePercent": {
@@ -109509,6 +109549,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -117954,7 +117999,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -119604,7 +119649,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -120366,7 +120411,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97254,
+            "lines": 97268,
             "modules": 452
           },
           "largestNonShared": [
@@ -120417,7 +120462,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -122924,7 +122969,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48416,
+            "eligibleLines": 48459,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -122954,7 +122999,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -123049,7 +123094,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -123435,11 +123480,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28816,
+            "lines": 28850,
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.6,
+            "lines": 29.7,
             "modules": 26.3
           },
           "web": {
@@ -124866,6 +124911,11 @@
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -130853,7 +130903,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -132098,7 +132148,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -132818,7 +132868,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59704,
+            "lines": 59718,
             "modules": 286
           },
           "largestNonShared": [
@@ -134041,7 +134091,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 26325,
+            "eligibleLines": 26359,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
@@ -134279,11 +134329,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18035,
+            "lines": 18069,
             "modules": 67
           },
           "reusePercent": {
-            "lines": 30.2,
+            "lines": 30.3,
             "modules": 23.4
           },
           "web": {
@@ -134982,6 +135032,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -138242,7 +138297,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -138912,7 +138967,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -139514,7 +139569,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119866,
+            "lines": 119880,
             "modules": 550
           },
           "largestNonShared": [
@@ -139580,7 +139635,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -142857,7 +142912,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56631,
+            "eligibleLines": 56674,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -142887,7 +142942,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -142982,7 +143037,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -143519,7 +143574,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33050,
+            "lines": 33084,
             "modules": 150
           },
           "reusePercent": {
@@ -145157,6 +145212,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -153592,7 +153652,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -155242,7 +155302,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -156004,7 +156064,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59704,
+            "lines": 59718,
             "modules": 286
           },
           "largestNonShared": [
@@ -157347,7 +157407,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 28443,
+            "eligibleLines": 28481,
             "eligibleModules": 123,
             "modulesOnlyInLynx": [
               {
@@ -157387,7 +157447,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -157623,7 +157683,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18918,
+            "lines": 18952,
             "modules": 70
           },
           "reusePercent": {
@@ -158326,6 +158386,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -161586,7 +161651,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -162256,7 +162321,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -162861,7 +162926,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 45369,
+            "lines": 45383,
             "modules": 205
           },
           "largestNonShared": [
@@ -162932,7 +162997,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 503,
+              "lines": 507,
               "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
             },
             {
@@ -164009,7 +164074,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23822,
+            "eligibleLines": 23860,
             "eligibleModules": 100,
             "modulesOnlyInLynx": [
               {
@@ -164024,7 +164089,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -164212,11 +164277,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16797,
+            "lines": 16831,
             "modules": 61
           },
           "reusePercent": {
-            "lines": 37,
+            "lines": 37.1,
             "modules": 29.8
           },
           "web": {
@@ -164430,6 +164495,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -167055,7 +167125,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -167535,7 +167605,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -168037,7 +168107,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119866,
+            "lines": 119880,
             "modules": 550
           },
           "largestNonShared": [
@@ -168103,7 +168173,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -171380,7 +171450,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56631,
+            "eligibleLines": 56674,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171410,7 +171480,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -171505,7 +171575,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -172042,7 +172112,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33050,
+            "lines": 33084,
             "modules": 150
           },
           "reusePercent": {
@@ -173680,6 +173750,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -182115,7 +182190,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -183765,7 +183840,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -184527,7 +184602,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27116,
+            "lines": 27130,
             "modules": 87
           },
           "largestNonShared": [
@@ -184583,13 +184658,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 625,
-              "path": "packages/contracts/src/server.ts"
+              "lines": 650,
+              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 616,
-              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
+              "lines": 625,
+              "path": "packages/contracts/src/server.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -184691,6 +184766,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -185691,7 +185771,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -185851,7 +185931,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -186128,7 +186208,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27116,
+            "lines": 27130,
             "modules": 87
           },
           "largestNonShared": [
@@ -186184,13 +186264,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 625,
-              "path": "packages/contracts/src/server.ts"
+              "lines": 650,
+              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 616,
-              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
+              "lines": 625,
+              "path": "packages/contracts/src/server.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -186292,6 +186372,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -187292,7 +187377,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -187452,7 +187537,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -187729,7 +187814,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27116,
+            "lines": 27130,
             "modules": 87
           },
           "largestNonShared": [
@@ -187785,13 +187870,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 625,
-              "path": "packages/contracts/src/server.ts"
+              "lines": 650,
+              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 616,
-              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
+              "lines": 625,
+              "path": "packages/contracts/src/server.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -187893,6 +187978,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -188893,7 +188983,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -189053,7 +189143,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -189336,7 +189426,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53028,
+            "lines": 53042,
             "modules": 253
           },
           "largestNonShared": [
@@ -190619,7 +190709,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25958,
+            "eligibleLines": 25996,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -190639,7 +190729,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -190850,7 +190940,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18553,
+            "lines": 18587,
             "modules": 71
           },
           "reusePercent": {
@@ -191088,6 +191178,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -194273,7 +194368,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -194968,7 +195063,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -195484,7 +195579,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50446,
+            "lines": 50460,
             "modules": 233
           },
           "largestNonShared": [
@@ -196757,7 +196852,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26042,
+            "eligibleLines": 26080,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -196777,7 +196872,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -196998,7 +197093,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18356,
+            "lines": 18390,
             "modules": 69
           },
           "reusePercent": {
@@ -197221,6 +197316,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -200171,7 +200271,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -200771,7 +200871,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -201287,7 +201387,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 85076,
+            "lines": 85090,
             "modules": 408
           },
           "largestNonShared": [
@@ -203430,7 +203530,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 36394,
+            "eligibleLines": 36432,
             "eligibleModules": 193,
             "modulesOnlyInLynx": [
               {
@@ -203450,7 +203550,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -203867,7 +203967,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23542,
+            "lines": 23576,
             "modules": 108
           },
           "reusePercent": {
@@ -204335,6 +204435,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -210535,7 +210640,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -211775,7 +211880,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -212462,7 +212567,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66747,
+            "lines": 66761,
             "modules": 321
           },
           "largestNonShared": [
@@ -213775,7 +213880,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26934,
+            "eligibleLines": 26968,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -214021,7 +214126,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18692,
+            "lines": 18726,
             "modules": 73
           },
           "reusePercent": {
@@ -214274,6 +214379,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -218729,7 +218839,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -219619,7 +219729,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -220270,7 +220380,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64123,
+            "lines": 64137,
             "modules": 300
           },
           "largestNonShared": [
@@ -221528,7 +221638,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26400,
+            "eligibleLines": 26434,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
@@ -221759,7 +221869,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18339,
+            "lines": 18373,
             "modules": 69
           },
           "reusePercent": {
@@ -221997,6 +222107,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -226212,7 +226327,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -227002,7 +227117,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -227652,7 +227767,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 88871,
+            "lines": 88885,
             "modules": 426
           },
           "largestNonShared": [
@@ -229835,7 +229950,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 37305,
+            "eligibleLines": 37339,
             "eligibleModules": 196,
             "modulesOnlyInLynx": [
               {
@@ -230282,7 +230397,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23685,
+            "lines": 23719,
             "modules": 109
           },
           "reusePercent": {
@@ -230750,6 +230865,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -237555,7 +237675,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -238870,7 +238990,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -239567,7 +239687,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60092,
+            "lines": 60106,
             "modules": 290
           },
           "largestNonShared": [
@@ -241185,7 +241305,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33090,
+            "eligibleLines": 33124,
             "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
@@ -241403,11 +241523,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 25129,
+            "lines": 25163,
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.8,
+            "lines": 41.9,
             "modules": 36.2
           },
           "web": {
@@ -241526,6 +241646,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -245391,7 +245516,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -246156,7 +246281,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -246801,7 +246926,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 60092,
+            "lines": 60106,
             "modules": 290
           },
           "largestNonShared": [
@@ -248419,7 +248544,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33090,
+            "eligibleLines": 33124,
             "eligibleModules": 147,
             "modulesOnlyInLynx": [
               {
@@ -248637,11 +248762,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 25129,
+            "lines": 25163,
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.8,
+            "lines": 41.9,
             "modules": 36.2
           },
           "web": {
@@ -248760,6 +248885,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -252625,7 +252755,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -253390,7 +253520,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -254032,7 +254162,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81712,
+            "lines": 81726,
             "modules": 393
           },
           "largestNonShared": [
@@ -255960,7 +256090,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33414,
+            "eligibleLines": 33448,
             "eligibleModules": 172,
             "modulesOnlyInLynx": [
               {
@@ -256351,7 +256481,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 21722,
+            "lines": 21756,
             "modules": 96
           },
           "reusePercent": {
@@ -256689,6 +256819,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -262704,7 +262839,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -263894,7 +264029,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -264577,7 +264712,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64123,
+            "lines": 64137,
             "modules": 300
           },
           "largestNonShared": [
@@ -265710,7 +265845,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23095,
+            "eligibleLines": 23129,
             "eligibleModules": 97,
             "modulesOnlyInLynx": [
               {
@@ -265893,11 +266028,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16871,
+            "lines": 16905,
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.3,
+            "lines": 26.4,
             "modules": 20.7
           },
           "web": {
@@ -266131,6 +266266,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -270346,7 +270486,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -271136,7 +271276,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -271786,7 +271926,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64123,
+            "lines": 64137,
             "modules": 300
           },
           "largestNonShared": [
@@ -272919,7 +273059,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23095,
+            "eligibleLines": 23129,
             "eligibleModules": 97,
             "modulesOnlyInLynx": [
               {
@@ -273102,11 +273242,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16871,
+            "lines": 16905,
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.3,
+            "lines": 26.4,
             "modules": 20.7
           },
           "web": {
@@ -273340,6 +273480,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -277555,7 +277700,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -278345,7 +278490,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -278992,7 +279137,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64134,
+            "lines": 64148,
             "modules": 301
           },
           "largestNonShared": [
@@ -280130,7 +280275,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23102,
+            "eligibleLines": 23136,
             "eligibleModules": 98,
             "modulesOnlyInLynx": [
               {
@@ -280318,11 +280463,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16871,
+            "lines": 16905,
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.3,
+            "lines": 26.4,
             "modules": 20.6
           },
           "web": {
@@ -280556,6 +280701,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -284776,7 +284926,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -285571,7 +285721,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -286224,7 +286374,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53189,
+            "lines": 53203,
             "modules": 244
           },
           "largestNonShared": [
@@ -287412,7 +287562,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -287630,11 +287780,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16760,
+            "lines": 16794,
             "modules": 61
           },
           "reusePercent": {
-            "lines": 31.5,
+            "lines": 31.6,
             "modules": 25
           },
           "web": {
@@ -287833,6 +287983,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -291048,7 +291203,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -291693,7 +291848,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -292215,7 +292370,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53189,
+            "lines": 53203,
             "modules": 244
           },
           "largestNonShared": [
@@ -293403,7 +293558,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -293621,11 +293776,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16760,
+            "lines": 16794,
             "modules": 61
           },
           "reusePercent": {
-            "lines": 31.5,
+            "lines": 31.6,
             "modules": 25
           },
           "web": {
@@ -293824,6 +293979,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -297039,7 +297199,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -297684,7 +297844,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -298206,7 +298366,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53196,
+            "lines": 53210,
             "modules": 245
           },
           "largestNonShared": [
@@ -299399,7 +299559,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25336,
+            "eligibleLines": 25370,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -299622,11 +299782,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16760,
+            "lines": 16794,
             "modules": 61
           },
           "reusePercent": {
-            "lines": 31.5,
+            "lines": 31.6,
             "modules": 24.9
           },
           "web": {
@@ -299825,6 +299985,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -303045,7 +303210,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -303695,7 +303860,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -304223,7 +304388,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49003,
+            "lines": 49017,
             "modules": 228
           },
           "largestNonShared": [
@@ -305411,7 +305576,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -305619,11 +305784,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 17410,
+            "lines": 17444,
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.5,
+            "lines": 35.6,
             "modules": 27.6
           },
           "web": {
@@ -305837,6 +306002,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -308812,7 +308982,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -309362,7 +309532,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -309912,7 +310082,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49003,
+            "lines": 49017,
             "modules": 228
           },
           "largestNonShared": [
@@ -311100,7 +311270,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -311308,11 +311478,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 17410,
+            "lines": 17444,
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.5,
+            "lines": 35.6,
             "modules": 27.6
           },
           "web": {
@@ -311526,6 +311696,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -314501,7 +314676,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -315051,7 +315226,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -315598,7 +315773,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49010,
+            "lines": 49024,
             "modules": 229
           },
           "largestNonShared": [
@@ -316791,7 +316966,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25336,
+            "eligibleLines": 25370,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -317004,11 +317179,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 17410,
+            "lines": 17444,
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.5,
+            "lines": 35.6,
             "modules": 27.5
           },
           "web": {
@@ -317222,6 +317397,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -320202,7 +320382,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -320757,7 +320937,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -321310,7 +321490,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50447,
+            "lines": 50461,
             "modules": 234
           },
           "largestNonShared": [
@@ -322498,7 +322678,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -322711,11 +322891,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16864,
+            "lines": 16898,
             "modules": 62
           },
           "reusePercent": {
-            "lines": 33.4,
+            "lines": 33.5,
             "modules": 26.5
           },
           "web": {
@@ -322934,6 +323114,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -325889,7 +326074,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -326494,7 +326679,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -327006,7 +327191,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50447,
+            "lines": 50461,
             "modules": 234
           },
           "largestNonShared": [
@@ -328194,7 +328379,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -328407,11 +328592,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16864,
+            "lines": 16898,
             "modules": 62
           },
           "reusePercent": {
-            "lines": 33.4,
+            "lines": 33.5,
             "modules": 26.5
           },
           "web": {
@@ -328630,6 +328815,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -331585,7 +331775,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -332190,7 +332380,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -332767,7 +332957,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64123,
+            "lines": 64137,
             "modules": 300
           },
           "largestNonShared": [
@@ -333955,7 +334145,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -334143,7 +334333,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18210,
+            "lines": 18244,
             "modules": 67
           },
           "reusePercent": {
@@ -334381,6 +334571,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -338596,7 +338791,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -339386,7 +339581,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -340036,7 +340231,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64123,
+            "lines": 64137,
             "modules": 300
           },
           "largestNonShared": [
@@ -341224,7 +341419,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25329,
+            "eligibleLines": 25363,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -341412,7 +341607,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18210,
+            "lines": 18244,
             "modules": 67
           },
           "reusePercent": {
@@ -341650,6 +341845,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -345865,7 +346065,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -346655,7 +346855,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -347302,7 +347502,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64130,
+            "lines": 64144,
             "modules": 301
           },
           "largestNonShared": [
@@ -348495,7 +348695,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25336,
+            "eligibleLines": 25370,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -348688,7 +348888,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18210,
+            "lines": 18244,
             "modules": 67
           },
           "reusePercent": {
@@ -348926,6 +349126,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -353146,7 +353351,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -353941,7 +354146,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -354594,7 +354799,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51175,
+            "lines": 51189,
             "modules": 252
           },
           "largestNonShared": [
@@ -355957,7 +356162,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28651,
+            "eligibleLines": 28685,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -356248,11 +356453,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16808,
+            "lines": 16842,
             "modules": 64
           },
           "reusePercent": {
-            "lines": 32.8,
+            "lines": 32.9,
             "modules": 25.4
           },
           "web": {
@@ -356416,6 +356621,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -359646,7 +359856,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -360271,7 +360481,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -360866,7 +361076,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51175,
+            "lines": 51189,
             "modules": 252
           },
           "largestNonShared": [
@@ -362229,7 +362439,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28651,
+            "eligibleLines": 28685,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -362520,11 +362730,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16808,
+            "lines": 16842,
             "modules": 64
           },
           "reusePercent": {
-            "lines": 32.8,
+            "lines": 32.9,
             "modules": 25.4
           },
           "web": {
@@ -362688,6 +362898,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -365918,7 +366133,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -366543,7 +366758,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -367138,7 +367353,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119679,
+            "lines": 119693,
             "modules": 549
           },
           "largestNonShared": [
@@ -367204,7 +367419,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1185,
+              "lines": 1190,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
             {
@@ -370481,7 +370696,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56622,
+            "eligibleLines": 56665,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370511,7 +370726,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1185,
+                "lines": 1190,
                 "path": "apps/lynxtron/src/app/components/ChatView.tsx"
               },
               {
@@ -370606,7 +370821,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 503,
+                "lines": 507,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -371137,7 +371352,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33050,
+            "lines": 33084,
             "modules": 150
           },
           "reusePercent": {
@@ -372775,6 +372990,11 @@
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/chat/providerIconUtils.ts",
+                "request": "@t3tools/client-runtime/presentation/model-picker",
+                "to": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
                 "from": "apps/web/src/components/chat/providerIconUtils.ts",
@@ -381135,7 +381355,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 59,
+                "lines": 39,
                 "path": "apps/web/src/components/chat/providerIconUtils.ts"
               },
               {
@@ -382780,7 +383000,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 616,
+                "lines": 650,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {

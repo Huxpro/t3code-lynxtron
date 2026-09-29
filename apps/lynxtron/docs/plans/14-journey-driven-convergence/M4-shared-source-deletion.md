@@ -75,8 +75,10 @@ Open product decisions to settle in client-runtime before moving code (the
 renderers disagree today): whether unavailable instances list as disabled
 rows (Lynx) or are hidden (Web); which disabled reasons apply; the initial
 rail tab; the Favorites empty copy; and Lynx-only "Unavailable" notice titles
-and ★ markers. Row display names should move with `getDisplayModelName`
-once `providerIconUtils` separates its DOM icons.
+and ★ markers.
+
+- Row and trigger display names come from client-runtime
+  `getDisplayModelName` / `getTriggerDisplayModelName`.
 
 Carried: `--verify-model-picker-fidelity` times out on `.model-picker-content`
 on the pre-slice commit too, although a direct probe finds it.

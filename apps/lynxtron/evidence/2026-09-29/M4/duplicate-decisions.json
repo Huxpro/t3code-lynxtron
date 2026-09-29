@@ -237,6 +237,16 @@
           "rendererErrors": 0
         }
       }
+    },
+    {
+      "id": "model-picker-display-names",
+      "change": "getDisplayModelName and getTriggerDisplayModelName move from Web providerIconUtils (which imports DOM icons) to client-runtime model-picker; Web re-exports them. Lynx rows use the short name only when unlocked and strip the sub-provider qualifier like Web, and the Composer trigger uses the trigger name instead of the full model name.",
+      "nativeProbe": {
+        "route": "model picker open at 1280x820",
+        "rows": 4,
+        "jumpLabels": ["⌘1", "⌘2", "⌘3", "⌘4"],
+        "labelsFollowDisplayOrder": true
+      }
     }
   ]
 }
