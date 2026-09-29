@@ -2,6 +2,8 @@ export const T3_VIEWPORT_EVENT = "t3:viewport-changed";
 export const T3_VIEWPORT_READY_METHOD = "t3:viewport.ready";
 export const T3_VIEWPORT_SET_FOR_TEST_METHOD = "t3:viewport.set-for-test";
 export const T3_RELOAD_FOR_TEST_METHOD = "t3:reload-for-test";
+/** Probe-only: clicks an application menu item by id, as its accelerator would. */
+export const T3_MENU_CLICK_FOR_TEST_METHOD = "t3:menu.click-for-test";
 
 export interface LynxtronViewportSnapshot {
   readonly width: number;

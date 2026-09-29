@@ -22,6 +22,7 @@ import {
 import type { ProviderInstanceId, TurnId } from "@t3tools/contracts";
 
 import { appAtomRegistry } from "./atomRegistry";
+import { requestMenuClickProbe } from "./menuClickProbe";
 import { requestSidebarToggle } from "../../../../web/src/components/ui/sidebarCommandBus.lynx";
 
 export type RightPanelKind = "plan" | "diff" | "files" | "file" | "browser" | "terminal";
@@ -455,7 +456,9 @@ export function installResponsiveUiProbe(enabled: boolean): void {
     ) => void;
     __T3_LYNXTRON_OPEN_DIFF_PROBE__?: (turnId: TurnId, filePath?: string) => void;
     __T3_LYNXTRON_SEARCH_OVERLAY_STATE__?: () => SearchOverlayState;
+    __T3_LYNXTRON_MENU_CLICK_PROBE__?: (id: string) => boolean;
   };
+  target.__T3_LYNXTRON_MENU_CLICK_PROBE__ = requestMenuClickProbe;
   target.__T3_LYNXTRON_RESPONSIVE_UI_PROBE__ = (action) => {
     if (action === "close-overlays") {
       uiActions.closeProjectActionDialog();

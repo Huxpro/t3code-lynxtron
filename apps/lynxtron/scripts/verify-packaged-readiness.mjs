@@ -2369,12 +2369,38 @@ async function verifyQuickSwitchState({
   query,
   timeoutMs,
 }) {
+  // Open through the Command+K menu item, which dispatches the discrete
+  // keyboard packet into the shared resolver exactly like the accelerator.
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression: "typeof globalThis.__T3_LYNXTRON_MENU_CLICK_PROBE__",
+    predicate: (value) => value === "function",
+    timeoutMs,
+  });
+  const menuClick = await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_MENU_CLICK_PROBE__?.('t3-quick-switch') ?? false",
+    returnByValue: true,
+  });
+  if (commandResult(menuClick)?.value !== true) {
+    throw new Error(`Quick Switch menu probe did not run: ${JSON.stringify(menuClick)}`);
+  }
   await waitForStableMeasurement({
     child,
     client,
     selector: ".palette-panel",
     timeoutMs,
     predicate: (measurement) => measurement?.attributes["data-search-overlay-mode"] === "command",
+  }).catch(async (error) => {
+    const overlay = await client
+      .runCdp("Runtime.evaluate", {
+        expression: "JSON.stringify(globalThis.__T3_LYNXTRON_SEARCH_OVERLAY_STATE__?.() ?? null)",
+        returnByValue: true,
+      })
+      .catch((cause) => ({ cause: String(cause) }));
+    throw new Error(
+      `${error instanceof Error ? error.message : String(error)} overlay=${commandResult(overlay)?.value ?? JSON.stringify(overlay)}`,
+    );
   });
   const state = query
     ? await setQuickSwitchQuery({ child, client, query, timeoutMs })
@@ -14675,11 +14701,7 @@ async function runOnce({
         {
           ...prefs,
           ...(expectedTheme ? { themePreference: expectedTheme } : {}),
-          ...(shouldVerifyAddProjectSources
-            ? { initialOverlay: "add-project" }
-            : shouldVerifyQuickSwitchDefault
-              ? { initialOverlay: "quick-switch" }
-              : {}),
+          ...(shouldVerifyAddProjectSources ? { initialOverlay: "add-project" } : {}),
           clientSettings: {
             ...prefs.clientSettings,
             ...(shouldVerifyNewThreadProjects ? { legacySidebarEnabled: false } : {}),

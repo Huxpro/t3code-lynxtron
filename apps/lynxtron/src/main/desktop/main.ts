@@ -27,7 +27,10 @@ import { startLynxtronViewportHost } from "./viewportHost.ts";
 import { startLynxtronThemeHost } from "./themeHost.ts";
 import { createSystemThemeSource } from "./systemThemeSource.ts";
 import { createReloadMenuItem, reloadApplication } from "./reloadWindow.ts";
-import { T3_RELOAD_FOR_TEST_METHOD } from "../../shared/viewportProtocol.ts";
+import {
+  T3_MENU_CLICK_FOR_TEST_METHOD,
+  T3_RELOAD_FOR_TEST_METHOD,
+} from "../../shared/viewportProtocol.ts";
 import { startClipboardCapabilityHost, startConfirmCapabilityHost } from "./capabilityHost.ts";
 import {
   createProbeContextMenuBuilder,
@@ -355,8 +358,16 @@ app.whenReady().then(() => {
   win.on("closed", () => contextMenuCapabilityHost.dispose());
   if (process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1") {
     lynxBridge.handle(T3_RELOAD_FOR_TEST_METHOD, () => reloadApplication(app));
+    lynxBridge.handle(T3_MENU_CLICK_FOR_TEST_METHOD, (_event, params) => {
+      const id = (params as { id?: unknown } | undefined)?.id;
+      const item = typeof id === "string" ? Menu.getApplicationMenu()?.getMenuItemById(id) : null;
+      if (!item) return false;
+      item.click(undefined, win);
+      return true;
+    });
     win.on("closed", () => {
       lynxBridge.removeHandler(T3_RELOAD_FOR_TEST_METHOD);
+      lynxBridge.removeHandler(T3_MENU_CLICK_FOR_TEST_METHOD);
     });
   }
   const keyboardMenu = installDiscreteKeyboardMenu(win);
