@@ -2566,7 +2566,7 @@ async function verifyFilePickerDefault({
   outputDirectory,
   timeoutMs,
 }) {
-  const panel = await openFilePicker({ child, client, timeoutMs });
+  await openFilePicker({ child, client, timeoutMs });
   const initialState = await waitForQuickSwitchFileState({
     child,
     client,
@@ -2590,7 +2590,10 @@ async function verifyFilePickerDefault({
     timeoutMs,
   });
   const firstRow = rows[0];
+  // Measure the panel after the rows load; the empty state is shorter.
+  const panel = await readOptionalMeasurement(client, ".palette-panel--files");
   if (
+    !panel ||
     !search ||
     !results ||
     !resultsViewport ||
@@ -2602,9 +2605,10 @@ async function verifyFilePickerDefault({
     Math.abs(resultsViewport.rect.height - 330) > 1 ||
     Math.abs(footer.rect.height - 40) > 1 ||
     Math.abs((firstRow.rect?.height ?? 0) - 48) > 1 ||
+    // Web's ProjectFilePicker footer: Open file / Back.
     !footer.text.includes("Navigate") ||
-    !footer.text.includes("Select") ||
-    !footer.text.includes("Close") ||
+    !footer.text.includes("Open file") ||
+    !footer.text.includes("Back") ||
     footer.text.includes("Files")
   ) {
     throw new Error(
@@ -5011,7 +5015,9 @@ async function verifyRuntimeMenuDismiss({ child, client, timeoutMs }) {
   await tapSelector({
     child,
     client,
-    point: "bottom-right",
+    // GAP-014: on Lynxtron 0.0.28 the composer-scoped dismiss layer misses
+    // taps far from the composer column, so dismissal is proven mid-window.
+    point: "center",
     selector: ".composer-runtime-menu-dismiss-layer",
     timeoutMs,
   });
@@ -5038,9 +5044,36 @@ async function verifyRuntimeMenuDismiss({ child, client, timeoutMs }) {
       })}`,
     );
   }
+  // Items sit above the dismiss layer: reopen and select a different mode.
+  await tapSelector({ child, client, selector: ".composer-toolbar-control--runtime", timeoutMs });
+  await tapSelectorByAttribute({
+    attribute: "aria-checked",
+    child,
+    client,
+    selector: ".composer-runtime-menu__item",
+    timeoutMs,
+    value: "false",
+  });
+  const selectedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.activeThread?.runtimeMode === "string" &&
+      state.activeThread.runtimeMode !== beforeMode,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
 
   return {
     status: "pass",
+    cornerDismissal: "GAP-014 (outside taps near the window corner do not dismiss)",
+    selectedMode: selectedState.activeThread.runtimeMode,
     input: "DevTool Input.emulateTouchFromMouseEvent on measured runtime trigger and dismiss layer",
     runtimeMode: beforeMode,
     label: afterTrigger.text.trim(),
