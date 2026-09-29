@@ -197,8 +197,25 @@ export async function openOwnedDevToolSession({ appName, clientId, devToolCli, o
         await transport.close();
         await stopOwnedDaemon(daemon, daemonPort);
       },
-      runCdp: (method, params) =>
-        connector.sendCDPMessage(client.id, Number(session.session_id), method, params),
+      runCdp: async (method, params) => {
+        // The DevTool daemon occasionally drops one reply under load
+        // ("No response found for clientId"); retry that transport error only,
+        // and never for Input.* since the dropped command may already have run.
+        for (let attempt = 1; ; attempt += 1) {
+          try {
+            return await connector.sendCDPMessage(
+              client.id,
+              Number(session.session_id),
+              method,
+              params,
+            );
+          } catch (error) {
+            const dropped =
+              error instanceof Error && error.message.includes("No response found for clientId");
+            if (!dropped || method.startsWith("Input.") || attempt >= 3) throw error;
+          }
+        }
+      },
       identity: {
         app: client.info?.App ?? null,
         clientId: client.id,

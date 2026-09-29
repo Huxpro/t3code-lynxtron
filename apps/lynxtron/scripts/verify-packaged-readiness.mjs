@@ -6339,6 +6339,701 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
   }
 }
 
+function readPersistedJourneyCounts(baseDir, threadId) {
+  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
+    readOnly: true,
+  });
+  try {
+    const count = (sql) => database.prepare(sql).get(threadId).count;
+    return {
+      userMessages: count(
+        "SELECT COUNT(*) AS count FROM projection_thread_messages WHERE thread_id = ? AND role = 'user'",
+      ),
+      assistantMessages: count(
+        "SELECT COUNT(*) AS count FROM projection_thread_messages WHERE thread_id = ? AND role = 'assistant'",
+      ),
+      turns: count("SELECT COUNT(*) AS count FROM projection_turns WHERE thread_id = ?"),
+      userMessageAttachments: database
+        .prepare(
+          "SELECT attachments_json AS attachments FROM projection_thread_messages WHERE thread_id = ? AND role = 'user'",
+        )
+        .all(threadId)
+        .map((row) => JSON.parse(row.attachments ?? "[]").length),
+      userMessage: (() => {
+        const row = database
+          .prepare(
+            "SELECT text, attachments_json AS attachments FROM projection_thread_messages WHERE thread_id = ? AND role = 'user' ORDER BY created_at LIMIT 1",
+          )
+          .get(threadId);
+        return row
+          ? {
+              text: row.text,
+              attachments: JSON.parse(row.attachments ?? "[]").map((attachment) => ({
+                name: attachment.name,
+                mimeType: attachment.mimeType,
+                sizeBytes: attachment.sizeBytes,
+              })),
+            }
+          : null;
+      })(),
+    };
+  } finally {
+    database.close();
+  }
+}
+
+const M1_FILE_CONTEXT_PATH = "README.md";
+
+function m1ComposerInputsMatch(state, expected) {
+  return (
+    state?.activeComposerDraftText === expected.text &&
+    state.activeComposerDraftAttachments?.length === 1 &&
+    state.activeComposerDraftAttachments[0]?.name === expected.attachmentName &&
+    state.activeComposerTerminalContexts?.length === 1 &&
+    state.activeComposerTerminalContexts[0]?.id === expected.terminalContextId &&
+    state.activeComposerFileContexts?.length === 1 &&
+    state.activeComposerFileContexts[0]?.path === M1_FILE_CONTEXT_PATH &&
+    state.activeComposerElementContexts?.length === 1 &&
+    state.activeComposerElementContexts[0]?.id === expected.elementContextId
+  );
+}
+
+async function pickM1FileContext({ child, client, timeoutMs }) {
+  await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.('@READ')",
+    returnByValue: true,
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__?.(5)",
+    returnByValue: true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-context-picker",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-context-picker"] === "path",
+  });
+  await tapSelectorByAttribute({
+    attribute: "data-composer-context-path",
+    child,
+    client,
+    selector: ".composer-context-picker__item",
+    timeoutMs,
+    value: M1_FILE_CONTEXT_PATH,
+  });
+}
+
+/**
+ * Plan 14 M1: one continuous local Composer journey on one snapshot. Inputs
+ * are added, one is removed and restored, the draft survives a route
+ * round-trip, a cold restart, and an owned-server reconnect, then one injected
+ * send failure is retried into exactly one canonical thread, user message, and
+ * turn with an authenticated assistant receipt.
+ */
+async function verifyM1LocalJourney({
+  fixtureDir,
+  outputDirectory,
+  baseDir,
+  bundle,
+  child,
+  client,
+  desktopDir,
+  devToolCli,
+  executable,
+  height,
+  projectCwd,
+  projectId,
+  timeoutMs,
+  width,
+}) {
+  const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
+  const providerDeadline = Date.now() + timeoutMs;
+  let provider;
+  while (Date.now() < providerDeadline) {
+    try {
+      const config = await invokeConnector(client, "refreshProviders", {
+        instanceId: modelSelection.instanceId,
+      });
+      provider = config?.providers?.find(
+        (candidate) => candidate.instanceId === modelSelection.instanceId,
+      );
+      break;
+    } catch (error) {
+      if (!(error instanceof Error) || !error.message.includes("not connected")) throw error;
+      await waitForChildExit(child, 100);
+    }
+  }
+  if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
+    throw new Error(
+      `OpenCode provider is not ready for the M1 journey: ${JSON.stringify(provider)}`,
+    );
+  }
+  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+
+  console.error("[m1: create draft]");
+  // 1. Select the canonical project and create the intended draft.
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const draft = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" &&
+      state.activeThreadId === state.draftThreadId &&
+      state.activeThread?.projectId === projectId,
+  });
+  const draftThreadId = draft.draftThreadId;
+  const draftScopeKey = `project:${projectId}`;
+  const persistedThreadIdsBefore = readPersistedThreadIds(baseDir);
+  // Pick the provider through the renderer's model-selection path, which
+  // stamps it on the active draft exactly like the Model Picker does.
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression: "typeof globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__",
+    predicate: (value) => value === "function",
+    timeoutMs,
+  });
+  const modelFixture = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?.(${JSON.stringify(
+      modelSelection.instanceId,
+    )}, ${JSON.stringify(modelSelection.model)}) ?? false`,
+    returnByValue: true,
+  });
+  if (commandResult(modelFixture)?.value !== true) {
+    throw new Error(`M1 model selection was not applied: ${JSON.stringify(modelFixture)}`);
+  }
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression:
+      "[typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_TERMINAL_CONTEXT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__].join(':')",
+    predicate: (value) => value === "function:function:function:function",
+    timeoutMs,
+  });
+
+  const promptToken = `T3_M1_JOURNEY_${Date.now()}`;
+  const responseToken = `${promptToken}_ACCEPTED`;
+  const prompt = `Reply exactly ${responseToken}. Do not use tools or modify files.`;
+  const elementContext = {
+    id: `${promptToken}:element`,
+    threadId: draftThreadId,
+    pickedAt: "2026-09-29T00:00:00.000Z",
+    pageUrl: "https://example.com/dashboard",
+    pageTitle: "Dashboard",
+    tagName: "button",
+    selector: "button.submit",
+    htmlPreview: '<button class="submit">Save</button>',
+    componentName: "SubmitButton",
+    source: {
+      functionName: "SubmitButton",
+      fileName: "/repo/src/Button.tsx",
+      lineNumber: 12,
+      columnNumber: 5,
+    },
+    styles: ".submit { color: white; }",
+  };
+  const pastedImageDataUrl =
+    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAA4CAIAAABYNb64AAAACXBIWXMAAAAAAAAAAQCEeRdzAAABLGlDQ1BfAAB4nH2Qv0vDUBSFP0tB1C6iooNDxi5qW7E/sA62atGxVahuaRqK2NaQRnTv6h/h7Ca4iNDZxUlwEnFxFwTXeNIMKUi9l5v7vfMOee8+iC2hiKeg0/XcaqVk1I9PjMkPJpTDMK2ew/iQ6+c19L6s/OMbF1NNu2epf6k8V4frl03xfCvkq4AbIV8HfOk5nvgmYPewWhbfi5OtEW6MsOW4gf9NXOy0L6zo3iTs7lFNva5apsK5skUbmzVqnHGKKUqxS4E86+rbyg1VmoyUAlmtUpQpkdM3x56UvPbS7AxZjuA9wyP777A18H3/MdIOBnCXhemHSEtuwmwCnp4jLXpjx3TNoRRXxewSfC9olFuY+4SZvtTFYHvMrMafWQ326WKxKspomjTZXwyUTdpwduwoAAAAsElEQVR4nL2QQQ4BQRBF688UEhORmViJAziAEzivxCWsXUBYskEQRMxMf1VtFhKx1Yt+qZ+uqt8fRVGIiEo8X4AINd6ikIQSrErgoqmAIlEJVO3k5WOv/dH0sJ5pNpgcN3Pt5mMg1XY2tB5NWz34a5/VbMAH0Ij46eX/sE/X5dXtPu9bT+JxWjlu+6XbvewWZNDqeRYDQ03W1hfBUDGKFd4Qj84m0qJjoMHCjOnSV70AR55QzMkwRuEAAAAASUVORK5CYII=";
+
+  console.error("[m1: add inputs]");
+  // 2. Supported inputs. Image: Edit > Paste in main with a probe image in
+  // place of the system clipboard, after focusing the real prompt editor.
+  await tapSelector({ child, client, selector: "#composer-prompt-editor", timeoutMs });
+  const pasteResponse = await client.runCdp("Runtime.evaluate", {
+    // Fire and forget: the draft state below is the postcondition, not the bridge reply.
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_IMAGE_PASTE_PROBE__?.(${JSON.stringify(
+      pastedImageDataUrl,
+    )}) ?? "missing"`,
+    returnByValue: true,
+  });
+  const pasted = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === draftThreadId &&
+      state.activeComposerDraftAttachments?.length === 1 &&
+      state.activeComposerDraftAttachments[0]?.name === "image.png" &&
+      state.activeComposerDraftAttachments[0]?.mimeType === "image/png",
+  }).catch((error) => {
+    throw new Error(
+      `Composer image paste did not reach the draft: ${JSON.stringify(commandResult(pasteResponse))} ${error instanceof Error ? error.message : String(error)}`,
+    );
+  });
+  const pastedCard = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-attachment-preview",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  // Terminal context: the real Terminal panel action on the draft's project.
+  await tapSelector({ child, client, selector: ".topbar__toggle--terminal", timeoutMs });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-right-panel-active-kind"] === "terminal",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".terminal-panel__add-context",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["aria-disabled"] === "false",
+  });
+  await tapSelector({ child, client, selector: ".terminal-panel__add-context", timeoutMs });
+  const withTerminal = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === draftThreadId && state.activeComposerTerminalContexts?.length === 1,
+  });
+  const terminalContext = withTerminal.activeComposerTerminalContexts[0];
+  await tapSelector({ child, client, selector: ".topbar__toggle--terminal", timeoutMs });
+  const contextFixtures = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__?.(${JSON.stringify(
+      elementContext,
+    )}) ?? false`,
+    returnByValue: true,
+  });
+  if (commandResult(contextFixtures)?.value !== true) {
+    throw new Error(
+      `M1 element context fixture was not applied: ${JSON.stringify(contextFixtures)}`,
+    );
+  }
+  await pickM1FileContext({ child, client, timeoutMs });
+
+  console.error("[m1: remove and restore]");
+  // 3. Remove and restore one input through the real chip and picker.
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeComposerFileContexts?.length === 1,
+  });
+  await tapSelector({ child, client, selector: ".composer-file-context-remove", timeoutMs });
+  const removed = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === draftThreadId && state.activeComposerFileContexts?.length === 0,
+  });
+  await pickM1FileContext({ child, client, timeoutMs });
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(prompt)})`,
+    returnByValue: true,
+  });
+  const expected = {
+    text: prompt,
+    attachmentName: "image.png",
+    terminalContextId: terminalContext.id,
+    elementContextId: elementContext.id,
+  };
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === draftThreadId && m1ComposerInputsMatch(state, expected),
+  });
+
+  console.error("[m1: route round-trip]");
+  // 4a. Route away to an existing thread and back to the same draft.
+  await tapSelectorByAttribute({
+    attribute: "data-thread-active",
+    child,
+    client,
+    descendantSelector: ".sidebar-v2-row-card",
+    selector: ".sidebar-v2-row-item",
+    timeoutMs,
+    value: "false",
+  });
+  const awayState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.activeThreadId === "string" && state.activeThreadId !== draftThreadId,
+  });
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const returned = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === draftThreadId &&
+      state.draftThreadId === draftThreadId &&
+      m1ComposerInputsMatch(state, expected),
+  });
+
+  console.error("[m1: cold restart]");
+  // 4b. Cold restart on the same isolated state.
+  const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
+  const persistenceDeadline = Date.now() + timeoutMs;
+  let persisted = null;
+  while (Date.now() < persistenceDeadline) {
+    const prefs = JSON.parse(readFileSync(prefsPath, "utf8"));
+    persisted = {
+      text: prefs.composerDraftTextByScopeKey?.[draftScopeKey] ?? null,
+      attachments: prefs.composerDraftAttachmentsByScopeKey?.[draftScopeKey]?.length ?? 0,
+      terminalContexts: prefs.composerTerminalContextsByScopeKey?.[draftScopeKey]?.length ?? 0,
+      fileContexts: prefs.composerFileContextsByScopeKey?.[draftScopeKey]?.length ?? 0,
+      elementContexts: prefs.composerElementContextsByScopeKey?.[draftScopeKey]?.length ?? 0,
+    };
+    if (
+      persisted.text === prompt &&
+      persisted.attachments === 1 &&
+      persisted.terminalContexts === 1 &&
+      persisted.fileContexts === 1 &&
+      persisted.elementContexts === 1
+    )
+      break;
+    await waitForChildExit(child, 50);
+  }
+  if (persisted?.text !== prompt || persisted.fileContexts !== 1 || persisted.attachments !== 1) {
+    throw new Error(`M1 draft did not persist before cold restart: ${JSON.stringify(persisted)}`);
+  }
+  const initialProcessId = child.pid;
+  await client.close();
+  await stopOwnedProcess(child);
+  const restartedChild = spawn(executable, [desktopDir], {
+    cwd: APP_ROOT,
+    env: {
+      ...process.env,
+      NODE_ENV: "production",
+      T3_LYNXTRON_BASE_DIR: baseDir,
+      T3_LYNXTRON_PROJECT_CWD: projectCwd,
+      T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
+      T3_LYNXTRON_VIEWPORT_HEIGHT: String(height),
+      T3_LYNXTRON_VIEWPORT_PROBE: "1",
+      T3_TEST_SEND_PROMPT_ERROR_ONCE: "1",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  if (!Number.isInteger(restartedChild.pid) || restartedChild.pid <= 0) {
+    throw new Error("M1 cold restart did not return an owned process id.");
+  }
+  const restartedLog = createLogCapture(restartedChild);
+  const restartedClient = await waitForOwnedSession({
+    child: restartedChild,
+    devToolCli,
+    expectedBundleUrl: pathToFileURL(bundle).href,
+    timeoutMs,
+  });
+  console.error(`[m1: restarted session ${JSON.stringify(restartedClient.identity)}]`);
+  const run = async () => {
+    await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
+    console.error("[m1: restarted server ready]");
+    await waitForMainTransport({ child: restartedChild, client: restartedClient, timeoutMs });
+    console.error("[m1: restarted main transport]");
+    await waitForRuntimeValue({
+      child: restartedChild,
+      client: restartedClient,
+      expression: "typeof globalThis.__T3_LYNXTRON_CREATE_DRAFT_THREAD__",
+      predicate: (value) => value === "function",
+      timeoutMs,
+    });
+    // Tap only once the user-visible sidebar is populated from the shell
+    // snapshot; before that the control has no project to open a draft in.
+    await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".sidebar-v2-row-card",
+      timeoutMs,
+      predicate: (measurement) => measurement !== null,
+    });
+    let restarted = null;
+    let restartTaps = 0;
+    while (!restarted && restartTaps < 3) {
+      restartTaps += 1;
+      await tapSelector({
+        child: restartedChild,
+        client: restartedClient,
+        selector: ".sidebar-v2-new-thread",
+        timeoutMs,
+      });
+      restarted = await waitForClientState({
+        child: restartedChild,
+        client: restartedClient,
+        timeoutMs: restartTaps < 3 ? 10_000 : timeoutMs,
+        predicate: (state) =>
+          typeof state?.draftThreadId === "string" &&
+          state.activeThreadId === state.draftThreadId &&
+          m1ComposerInputsMatch(state, expected),
+      }).catch((error) => {
+        if (restartTaps >= 3) throw error;
+        return null;
+      });
+    }
+    console.error(`[m1: restored draft after ${restartTaps} tap(s)]`);
+    const journeyThreadId = restarted.draftThreadId;
+    if (journeyThreadId !== draftThreadId) {
+      throw new Error(
+        `M1 cold restart changed the draft identity: ${JSON.stringify({ draftThreadId, journeyThreadId })}`,
+      );
+    }
+
+    console.error("[m1: reconnect]");
+    // 5. Interrupt the owned server and reconnect.
+    const ports = [...restartedLog.read().matchAll(/Listening on http:\/\/127\.0\.0\.1:(\d+)/gu)];
+    const server = resolveOwnedServerProcess({
+      appProcessId: restartedChild.pid,
+      baseDir,
+      port: Number(ports.at(-1)?.[1]),
+    });
+    const routeBeforeInterrupt = await readRoutePanel(restartedClient);
+    const beforeInterrupt = await readRendererReadiness(restartedClient);
+    process.kill(server.processId, "SIGKILL");
+    const failure = await waitForLifecycleBanner({
+      child: restartedChild,
+      client: restartedClient,
+      phase: "error",
+      timeoutMs,
+    }).catch(async (error) => {
+      const diagnostics = await restartedClient
+        .runCdp("Runtime.evaluate", {
+          expression:
+            "JSON.stringify(Object.fromEntries(Object.entries(globalThis.__T3_LYNXTRON_CLIENT_STATE__?.() ?? {}).filter(([key]) => !/messages|models|provider|clientSettings|composer|threadIds|checkpoints/i.test(key))))",
+          returnByValue: true,
+        })
+        .catch((cause) => ({ cause: String(cause) }));
+      const rightPanel = await readSelectorMeasurements(restartedClient, ".right-panel").catch(
+        () => null,
+      );
+      throw new Error(
+        `${error instanceof Error ? error.message : String(error)} ${JSON.stringify({
+          state: commandResult(diagnostics)?.value ?? diagnostics,
+          rightPanel: rightPanel?.map((entry) => entry.attributes),
+        })}`,
+      );
+    });
+    await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === journeyThreadId && m1ComposerInputsMatch(state, expected),
+    });
+    await tapSelector({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".connection-lifecycle-reconnect",
+      timeoutMs,
+    });
+    await waitForLogOccurrence(
+      restartedChild,
+      restartedLog,
+      "T3 Code server is ready",
+      2,
+      timeoutMs,
+    );
+    const afterRecovery = await waitForSequenceAdvance({
+      child: restartedChild,
+      client: restartedClient,
+      initial: beforeInterrupt,
+      timeoutMs,
+    });
+    await waitForLifecycleBannerToClear({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+    });
+    const reconnected = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === journeyThreadId && m1ComposerInputsMatch(state, expected),
+    });
+    const routeAfterReconnect = await readRoutePanel(restartedClient);
+    if (routeAfterReconnect.route !== routeBeforeInterrupt.route) {
+      throw new Error(
+        `Reconnect changed the M1 route: ${JSON.stringify({ routeBeforeInterrupt, routeAfterReconnect })}`,
+      );
+    }
+
+    console.error("[m1: send failure and retry]");
+    // 6. One injected send failure, then a retry through the real send control.
+    await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".composer-primary-action",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "send",
+    });
+    await tapSelector({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".composer-primary-action",
+      timeoutMs,
+    });
+    const failed = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs,
+      predicate: (state) =>
+        state?.activeThreadId === journeyThreadId &&
+        state.draftThreadId === journeyThreadId &&
+        m1ComposerInputsMatch(state, expected) &&
+        state.sessionError?.includes("Injected sendPrompt failure"),
+    });
+    const persistedAfterFailure = readPersistedThreadIds(baseDir);
+    if (JSON.stringify(persistedAfterFailure) !== JSON.stringify(persistedThreadIdsBefore)) {
+      throw new Error(
+        `Failed M1 send persisted a thread: ${JSON.stringify({ persistedThreadIdsBefore, persistedAfterFailure })}`,
+      );
+    }
+    await waitForMeasurement({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".composer-primary-action",
+      timeoutMs,
+      predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "send",
+    });
+    await tapSelector({
+      child: restartedChild,
+      client: restartedClient,
+      selector: ".composer-primary-action",
+      timeoutMs,
+    });
+    const completed = await waitForClientState({
+      child: restartedChild,
+      client: restartedClient,
+      timeoutMs: Math.max(timeoutMs, 180_000),
+      predicate: (state) =>
+        state?.activeThreadId === journeyThreadId &&
+        state.threadIds?.includes(journeyThreadId) &&
+        state.draftThreadId !== journeyThreadId &&
+        state.activeComposerDraftText === "" &&
+        state.activeComposerDraftAttachments?.length === 0 &&
+        state.activeComposerTerminalContexts?.length === 0 &&
+        state.activeComposerFileContexts?.length === 0 &&
+        state.activeComposerElementContexts?.length === 0 &&
+        state.activeTurnId == null &&
+        state.messages?.some(
+          (message) =>
+            message.role === "assistant" &&
+            message.streaming === false &&
+            message.text.includes(responseToken),
+        ),
+    });
+    const persistedAfterRetry = readPersistedThreadIds(baseDir);
+    const createdThreadIds = persistedAfterRetry.filter(
+      (threadId) => !persistedThreadIdsBefore.includes(threadId),
+    );
+    const counts = readPersistedJourneyCounts(baseDir, journeyThreadId);
+    const userMessages = completed.messages.filter(
+      (message) => message.role === "user" && message.text.includes(promptToken),
+    );
+    const canonicalUserMessage = userMessages[0];
+    const exactlyOnce =
+      JSON.stringify(createdThreadIds) === JSON.stringify([journeyThreadId]) &&
+      counts.userMessages === 1 &&
+      counts.turns === 1 &&
+      JSON.stringify(counts.userMessageAttachments) === "[1]" &&
+      userMessages.length === 1;
+    const serialized =
+      canonicalUserMessage?.text.includes("<terminal_context>") &&
+      canonicalUserMessage.text.includes("<element_context>") &&
+      canonicalUserMessage.text.includes(`[${M1_FILE_CONTEXT_PATH}](${M1_FILE_CONTEXT_PATH})`) &&
+      canonicalUserMessage.attachments?.[0]?.name === "image.png";
+    if (!exactlyOnce || !serialized) {
+      throw new Error(
+        `M1 retry was not canonical: ${JSON.stringify({ createdThreadIds, counts, userMessages })}`,
+      );
+    }
+    return {
+      status: "pass",
+      snapshot: {
+        projectId,
+        draftScopeKey,
+        provider: modelSelection,
+        fixtureStateSha256: createHash("sha256")
+          .update(readFileSync(path.join(fixtureDir, "userdata", "state.sqlite")))
+          .digest("hex"),
+      },
+      entry: { draftThreadId, projectId: draft.activeThread?.projectId },
+      inputs: {
+        text: { path: "renderer input fixture", physical: "pending-user-session" },
+        image: {
+          path: "main Edit > Paste handler with a probe NativeImage in place of the clipboard",
+          physical: "pending-user-session (Command+V and system clipboard read)",
+          attachment: pasted.activeComposerDraftAttachments[0].name,
+          previewRect: pastedCard.rect,
+        },
+        terminalContext: {
+          path: "Terminal panel add-context tap",
+          id: terminalContext.id,
+          label: terminalContext.terminalLabel,
+        },
+        fileContext: { path: "Composer @ picker tap", value: M1_FILE_CONTEXT_PATH },
+        elementContext: {
+          path: "renderer fixture (no Native picker entry)",
+          id: elementContext.id,
+        },
+      },
+      removeRestore: {
+        removed: "file context via chip remove tap",
+        remainingAfterRemove: removed.activeComposerFileContexts.length,
+        restored: "file context via @ picker tap",
+      },
+      routeRoundTrip: {
+        awayThreadId: awayState.activeThreadId,
+        returnedDraftThreadId: returned.activeThreadId,
+        sameDraft: returned.activeThreadId === draftThreadId,
+      },
+      coldRestart: {
+        initialProcessId,
+        restartedProcessId: restartedChild.pid,
+        persisted,
+        restoredDraftThreadId: journeyThreadId,
+        draftIdPreserved: journeyThreadId === draftThreadId,
+        newThreadTaps: restartTaps,
+      },
+      reconnect: {
+        interruptedServer: server,
+        failurePhase: failure.phase ?? "error",
+        route: routeAfterReconnect.route,
+        sequence: { before: beforeInterrupt.lastSeq, after: afterRecovery.lastSeq },
+        inputsPreserved: m1ComposerInputsMatch(reconnected, expected),
+      },
+      sendFailure: {
+        sessionError: failed.sessionError,
+        persistedThreadIdsUnchanged: true,
+        inputsPreserved: true,
+      },
+      retry: {
+        input: "DevTool tap on .composer-primary-action",
+        createdThreadIds,
+        counts,
+        canonicalUserMessageId: canonicalUserMessage.id,
+        promptToken,
+        responseToken,
+        clearedAfterReceipt: true,
+      },
+    };
+  };
+  const persistRestartLog = () =>
+    writeFileSync(path.join(outputDirectory, "m1-restarted-process.log"), restartedLog.read());
+  try {
+    const outcome = await run();
+    persistRestartLog();
+    return { outcome, child: restartedChild, client: restartedClient };
+  } catch (error) {
+    persistRestartLog();
+    await restartedClient.close().catch(() => undefined);
+    await stopOwnedProcess(restartedChild);
+    throw error;
+  }
+}
+
 async function verifyModelPickerFidelity({
   baseDir,
   child,
@@ -13671,6 +14366,7 @@ async function runOnce({
   verifyComposerStop,
   verifyTerminalContextProviderSend: shouldVerifyTerminalContextProviderSend,
   verifyComposerSendRetry: shouldVerifyComposerSendRetry,
+  verifyM1LocalJourney: shouldVerifyM1LocalJourney,
   verifyComposerWorkingState: shouldVerifyComposerWorkingState,
   verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
   verifyTranscriptFollowState: shouldVerifyTranscriptFollowState,
@@ -13782,6 +14478,7 @@ async function runOnce({
       shouldVerifyComposerReconnect ||
       shouldVerifyTerminalContextProviderSend ||
       shouldVerifyComposerSendRetry ||
+      shouldVerifyM1LocalJourney ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyMessageCardState ||
@@ -13795,7 +14492,9 @@ async function runOnce({
       ...(shouldVerifyModelSelectionSocketRecovery
         ? { T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE: "1" }
         : {}),
-      ...(shouldVerifyComposerSendRetry ? { T3_TEST_SEND_PROMPT_ERROR_ONCE: "1" } : {}),
+      ...(shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney
+        ? { T3_TEST_SEND_PROMPT_ERROR_ONCE: "1" }
+        : {}),
       ...(shouldVerifySourceControlLoading
         ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
         : {}),
@@ -14249,6 +14948,28 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    let m1LocalJourney;
+    if (shouldVerifyM1LocalJourney) {
+      const journey = await verifyM1LocalJourney({
+        fixtureDir,
+        outputDirectory,
+        baseDir,
+        bundle,
+        child,
+        client,
+        desktopDir,
+        devToolCli,
+        executable,
+        height,
+        projectCwd,
+        projectId: fixtureManifestProjectId,
+        timeoutMs,
+        width,
+      });
+      m1LocalJourney = journey.outcome;
+      child = journey.child;
+      client = journey.client;
+    }
     const composerWorkingState = shouldVerifyComposerWorkingState
       ? await verifyComposerWorkingState({
           client,
@@ -14582,6 +15303,7 @@ async function runOnce({
       composerStop,
       terminalContextProviderSend,
       composerSendRetry,
+      m1LocalJourney,
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
@@ -14657,6 +15379,7 @@ async function runOnce({
       composerStop,
       terminalContextProviderSend,
       composerSendRetry,
+      m1LocalJourney,
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
@@ -14779,6 +15502,7 @@ const shouldVerifyTerminalContextProviderSend = process.argv.includes(
   "--verify-terminal-context-provider-send",
 );
 const shouldVerifyComposerSendRetry = process.argv.includes("--verify-composer-send-retry");
+const shouldVerifyM1LocalJourney = process.argv.includes("--verify-m1-local-journey");
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
   "--verify-completed-transcript-state",
@@ -15059,6 +15783,9 @@ if (shouldVerifyTerminalContextProviderSend && typeof fixtureManifestProjectId !
     "--verify-terminal-context-provider-send requires visual-state.json project.projectId.",
   );
 }
+if (shouldVerifyM1LocalJourney && typeof fixtureManifestProjectId !== "string") {
+  throw new Error("--verify-m1-local-journey requires visual-state.json project.projectId.");
+}
 if (shouldVerifyComposerSendRetry && typeof fixtureManifestProjectId !== "string") {
   throw new Error("--verify-composer-send-retry requires visual-state.json project.projectId.");
 }
@@ -15132,7 +15859,7 @@ const fileEditingSaveOnlyEmptyFixture =
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
 const composerSendRetryOnlyEmptyFixture =
-  shouldVerifyComposerSendRetry &&
+  (shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney) &&
   !verifySettingsNavigation &&
   !verifySidebarScope &&
   !verifyComposerBranding &&
@@ -15249,6 +15976,7 @@ for (let index = 1; index <= runs; index += 1) {
       verifyComposerStop,
       verifyTerminalContextProviderSend: shouldVerifyTerminalContextProviderSend,
       verifyComposerSendRetry: shouldVerifyComposerSendRetry,
+      verifyM1LocalJourney: shouldVerifyM1LocalJourney,
       verifyComposerWorkingState: shouldVerifyComposerWorkingState,
       verifyCompletedTranscriptState: shouldVerifyCompletedTranscriptState,
       verifyTranscriptFollowState: shouldVerifyTranscriptFollowState,
