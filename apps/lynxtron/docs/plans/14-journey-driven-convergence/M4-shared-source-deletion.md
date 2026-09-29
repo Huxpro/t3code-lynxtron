@@ -119,6 +119,20 @@ Remaining divergences, recorded from the audit: the proposed-plan card
 interrupted turn when the
 next starts, terminal-context placement, and the user copy-button hide rule.
 
+### Review
+
+- Turn ordering with inferred counts, stale-turn fallback, and scope labels
+  are shared in client-runtime diff presentation; Lynx lists non-ready
+  checkpoints like Web and starts word wrap/whitespace from settings.
+
+Remaining divergences, recorded from the audit: default scope (Web opens
+Working tree when the checkout has changes), diff body empty/loading/fallback
+states and copy, file order, collapse scoping, the base-ref picker, and the
+right-panel add-surface availability rules.
+
+Carried: `--verify-review-diff-state` times out waiting for more code files
+on the pre-slice build too.
+
 ### Settings Providers
 
 - Driver labels, order, settings schemas, Early Access badges, the

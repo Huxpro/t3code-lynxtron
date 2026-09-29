@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  describeDiffSelection,
+  orderTurnDiffSummariesNewestFirst,
+  resolveSelectedTurnDiff,
   buildChangedFilesTree,
   changedFileName,
   selectChangedFilePreview,
@@ -196,5 +199,61 @@ describe("changed-files presentation", () => {
       "README.md",
     ]);
     expect(changedFileName("apps\\web\\src\\App.tsx")).toBe("App.tsx");
+  });
+});
+
+describe("diff selection", () => {
+  const turn = (id: string, checkpointTurnCount: number | undefined, completedAt: string) => ({
+    turnId: id as never,
+    checkpointTurnCount,
+    completedAt,
+  });
+  const turns = [
+    turn("turn-1", 1, "2026-08-19T23:00:00.000Z"),
+    turn("turn-3", undefined, "2026-08-21T00:00:00.000Z"),
+    turn("turn-2", 2, "2026-08-20T00:00:00.000Z"),
+  ];
+
+  it("orders newest first using inferred counts when a checkpoint has none", () => {
+    expect(
+      orderTurnDiffSummariesNewestFirst(turns, { "turn-3": 3 }).map((entry) => entry.turnId),
+    ).toEqual(["turn-3", "turn-2", "turn-1"]);
+  });
+
+  it("falls back a stale turn selection to the latest turn", () => {
+    const ordered = orderTurnDiffSummariesNewestFirst(turns, { "turn-3": 3 });
+    expect(resolveSelectedTurnDiff(ordered, "missing" as never)?.turnId).toBe("turn-3");
+    expect(resolveSelectedTurnDiff(ordered, null)).toBeUndefined();
+  });
+
+  it("labels Git scopes, the latest turn, and historical turns", () => {
+    const latest = turns[1];
+    expect(
+      describeDiffSelection({
+        gitScope: "unstaged",
+        selectedTurn: undefined,
+        latestTurn: latest,
+        selectedTurnCount: undefined,
+        turnSelected: false,
+      }),
+    ).toEqual({ scopeLabel: "Working tree", sectionTitle: "Working tree" });
+    expect(
+      describeDiffSelection({
+        gitScope: "branch",
+        selectedTurn: latest,
+        latestTurn: latest,
+        selectedTurnCount: 3,
+        turnSelected: true,
+      }),
+    ).toEqual({ scopeLabel: "Latest turn", sectionTitle: "Turn 3" });
+    expect(
+      describeDiffSelection({
+        gitScope: "branch",
+        selectedTurn: turns[0],
+        latestTurn: latest,
+        selectedTurnCount: 1,
+        turnSelected: true,
+      }),
+    ).toEqual({ scopeLabel: "Turn 1", sectionTitle: "Turn 1" });
   });
 });

@@ -270,6 +270,23 @@
         }
       },
       "rediagnosis": "The M2 note \"checkpoint card toggle stays expanded\" was wrong: the toggle works both ways on 0.0.28. The gate fails on a 3px expanded-card height drift, which M5 owns."
+    },
+    {
+      "id": "review-diff-selection",
+      "change": "Turn diff ordering (newest first with inferred counts), stale-turn fallback, and the scope label and section title move to client-runtime diff presentation; Web DiffPanel and Lynx DiffPanel both use them. Lynx stops hiding non-ready checkpoints from the turn menu, numbers turns with inferred counts like Web, and starts word wrap and whitespace from the user settings instead of false.",
+      "gates": {
+        "diffScopeMenu": {
+          "status": "pass"
+        },
+        "reviewDiffState": {
+          "status": "fail (pre-existing)",
+          "detail": "Same timeout on the pre-slice build: only review-fixture.txt renders where the gate waits for more files."
+        }
+      },
+      "remaining": [
+        "Default scope: Web opens Working tree when the checkout has changes; Lynx opens Branch changes because it does not read VCS working-tree status yet.",
+        "Diff body empty/loading/fallback states and copy, file order (Web sorts by path), collapse scoping, and the base-ref picker still differ."
+      ]
     }
   ]
 }

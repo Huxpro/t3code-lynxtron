@@ -1,4 +1,4 @@
-import type { OrchestrationCheckpointFile } from "@t3tools/contracts";
+import type { OrchestrationCheckpointFile, TurnId } from "@t3tools/contracts";
 
 export type ChangedFile = OrchestrationCheckpointFile;
 
@@ -232,4 +232,62 @@ export function selectChangedFilePreview(
   }
 
   return selected;
+}
+
+interface TurnDiffSummaryLike {
+  readonly turnId: TurnId;
+  readonly checkpointTurnCount?: number | undefined;
+  readonly completedAt: string;
+}
+
+/** A turn's checkpoint count, falling back to the count inferred from completion order. */
+export function resolveTurnDiffCheckpointCount(
+  summary: TurnDiffSummaryLike,
+  inferredTurnCountByTurnId: Readonly<Record<string, number>>,
+): number | undefined {
+  return summary.checkpointTurnCount ?? inferredTurnCountByTurnId[summary.turnId];
+}
+
+/** Turn diffs newest first: by checkpoint count, then by completion time. */
+export function orderTurnDiffSummariesNewestFirst<S extends TurnDiffSummaryLike>(
+  summaries: ReadonlyArray<S>,
+  inferredTurnCountByTurnId: Readonly<Record<string, number>>,
+): S[] {
+  return [...summaries].toSorted((left, right) => {
+    const leftCount = resolveTurnDiffCheckpointCount(left, inferredTurnCountByTurnId) ?? 0;
+    const rightCount = resolveTurnDiffCheckpointCount(right, inferredTurnCountByTurnId) ?? 0;
+    if (leftCount !== rightCount) return rightCount - leftCount;
+    return right.completedAt.localeCompare(left.completedAt);
+  });
+}
+
+/** The selected turn's diff; a turn that no longer exists falls back to the latest. */
+export function resolveSelectedTurnDiff<S extends TurnDiffSummaryLike>(
+  orderedNewestFirst: ReadonlyArray<S>,
+  selectedTurnId: TurnId | null,
+): S | undefined {
+  if (selectedTurnId === null) return undefined;
+  return (
+    orderedNewestFirst.find((summary) => summary.turnId === selectedTurnId) ?? orderedNewestFirst[0]
+  );
+}
+
+/** Diff panel scope-menu label and review-section title for the current selection. */
+export function describeDiffSelection(input: {
+  readonly gitScope: "unstaged" | "branch";
+  readonly selectedTurn: TurnDiffSummaryLike | undefined;
+  readonly latestTurn: TurnDiffSummaryLike | undefined;
+  readonly selectedTurnCount: number | undefined;
+  readonly turnSelected: boolean;
+}): { readonly scopeLabel: string; readonly sectionTitle: string } {
+  const gitLabel = input.gitScope === "unstaged" ? "Working tree" : "Branch changes";
+  const turnLabel = `Turn ${input.selectedTurnCount ?? "?"}`;
+  return {
+    scopeLabel: !input.turnSelected
+      ? gitLabel
+      : input.selectedTurn?.turnId === input.latestTurn?.turnId
+        ? "Latest turn"
+        : turnLabel,
+    sectionTitle: input.selectedTurn ? turnLabel : gitLabel,
+  };
 }

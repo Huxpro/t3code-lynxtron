@@ -5,7 +5,13 @@ import {
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
 import { safeErrorLogAttributes } from "@t3tools/client-runtime/errors";
-import { summarizeChangedFiles } from "@t3tools/client-runtime/presentation/diff";
+import {
+  describeDiffSelection,
+  orderTurnDiffSummariesNewestFirst,
+  resolveSelectedTurnDiff,
+  resolveTurnDiffCheckpointCount,
+  summarizeChangedFiles,
+} from "@t3tools/client-runtime/presentation/diff";
 import type { ScopedThreadRef, TurnId } from "@t3tools/contracts";
 import {
   ArrowRightIcon,
@@ -251,17 +257,7 @@ export default function DiffPanel({
   const { turnDiffSummaries, inferredCheckpointTurnCountByTurnId } =
     useTurnDiffSummaries(activeThread);
   const orderedTurnDiffSummaries = useMemo(
-    () =>
-      [...turnDiffSummaries].toSorted((left, right) => {
-        const leftTurnCount =
-          left.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[left.turnId] ?? 0;
-        const rightTurnCount =
-          right.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[right.turnId] ?? 0;
-        if (leftTurnCount !== rightTurnCount) {
-          return rightTurnCount - leftTurnCount;
-        }
-        return right.completedAt.localeCompare(left.completedAt);
-      }),
+    () => orderTurnDiffSummariesNewestFirst(turnDiffSummaries, inferredCheckpointTurnCountByTurnId),
     [inferredCheckpointTurnCountByTurnId, turnDiffSummaries],
   );
 
@@ -279,23 +275,19 @@ export default function DiffPanel({
   const selectedFilePath = diffSelection.kind === "turn" ? diffSelection.filePath : null;
   const selectedFileRevealRequestId =
     diffSelection.kind === "turn" ? diffSelection.revealRequestId : 0;
-  const selectedTurn =
-    selectedTurnId === null
-      ? undefined
-      : (orderedTurnDiffSummaries.find((summary) => summary.turnId === selectedTurnId) ??
-        orderedTurnDiffSummaries[0]);
+  const selectedTurn = resolveSelectedTurnDiff(orderedTurnDiffSummaries, selectedTurnId);
   const selectedCheckpointTurnCount =
     selectedTurn &&
-    (selectedTurn.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[selectedTurn.turnId]);
+    resolveTurnDiffCheckpointCount(selectedTurn, inferredCheckpointTurnCountByTurnId);
   const latestTurn = orderedTurnDiffSummaries[0];
-  const selectedScopeLabel =
-    selectedTurnId === null
-      ? selectedGitScope === "unstaged"
-        ? "Working tree"
-        : "Branch changes"
-      : selectedTurn?.turnId === latestTurn?.turnId
-        ? "Latest turn"
-        : `Turn ${selectedCheckpointTurnCount ?? "?"}`;
+  const { scopeLabel: selectedScopeLabel, sectionTitle: reviewSectionTitle } =
+    describeDiffSelection({
+      gitScope: selectedGitScope,
+      selectedTurn,
+      latestTurn,
+      selectedTurnCount: selectedCheckpointTurnCount,
+      turnSelected: selectedTurnId !== null,
+    });
   const reviewSectionId = selectedTurn ? `turn:${selectedTurn.turnId}` : selectedGitScope;
   const collapseScopeKey = routeThreadRef
     ? `${routeThreadRef.environmentId}:${routeThreadRef.threadId}:${reviewSectionId}`
@@ -304,11 +296,6 @@ export default function DiffPanel({
     collapsedDiffFiles.scopeKey === collapseScopeKey
       ? collapsedDiffFiles.fileKeys
       : EMPTY_COLLAPSED_DIFF_FILE_KEYS;
-  const reviewSectionTitle = selectedTurn
-    ? `Turn ${selectedCheckpointTurnCount ?? "?"}`
-    : selectedGitScope === "unstaged"
-      ? "Working tree"
-      : "Branch changes";
   const selectedCheckpointRange = useMemo(
     () =>
       typeof selectedCheckpointTurnCount === "number"

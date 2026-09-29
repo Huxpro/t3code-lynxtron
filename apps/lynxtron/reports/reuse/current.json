@@ -19289,6 +19289,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -19316,6 +19321,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -23578,7 +23588,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 88201,
+            "eligibleLines": 88254,
             "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
@@ -23648,12 +23658,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -24543,7 +24553,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -32877,7 +32887,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109348,
+            "lines": 109394,
             "modules": 497
           },
           "largestNonShared": [
@@ -33341,6 +33351,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -33368,6 +33383,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -36210,7 +36230,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56707,
+            "eligibleLines": 56760,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36270,12 +36290,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -36871,7 +36891,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32754,
+            "lines": 32813,
             "modules": 147
           },
           "reusePercent": {
@@ -45649,7 +45669,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -46924,7 +46944,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -47690,7 +47710,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97302,
+            "lines": 97348,
             "modules": 452
           },
           "largestNonShared": [
@@ -47756,7 +47776,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 996,
+              "lines": 983,
               "path": "apps/web/src/components/DiffPanel.tsx"
             },
             {
@@ -48154,6 +48174,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -48181,6 +48206,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -50248,7 +50278,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48533,
+            "eligibleLines": 48586,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -50308,12 +50338,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -50756,11 +50786,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28911,
+            "lines": 28970,
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.7,
+            "lines": 29.8,
             "modules": 26.3
           },
           "web": {
@@ -58274,7 +58304,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -59394,7 +59424,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -60141,7 +60171,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119914,
+            "lines": 119960,
             "modules": 550
           },
           "largestNonShared": [
@@ -60605,6 +60635,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -60632,6 +60667,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -63484,7 +63524,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56748,
+            "eligibleLines": 56801,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63544,12 +63584,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -64146,11 +64186,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33145,
+            "lines": 33204,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.6,
+            "lines": 27.7,
             "modules": 27.3
           },
           "web": {
@@ -74409,7 +74449,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -75839,7 +75879,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -76636,7 +76676,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109348,
+            "lines": 109394,
             "modules": 497
           },
           "largestNonShared": [
@@ -77100,6 +77140,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -77127,6 +77172,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -79969,7 +80019,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56707,
+            "eligibleLines": 56760,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -80029,12 +80079,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -80630,7 +80680,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32754,
+            "lines": 32813,
             "modules": 147
           },
           "reusePercent": {
@@ -89408,7 +89458,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -90683,7 +90733,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -91449,7 +91499,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97302,
+            "lines": 97348,
             "modules": 452
           },
           "largestNonShared": [
@@ -91515,7 +91565,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 996,
+              "lines": 983,
               "path": "apps/web/src/components/DiffPanel.tsx"
             },
             {
@@ -91913,6 +91963,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -91940,6 +91995,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -94007,7 +94067,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48533,
+            "eligibleLines": 48586,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -94067,12 +94127,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -94518,11 +94578,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28911,
+            "lines": 28970,
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.7,
+            "lines": 29.8,
             "modules": 26.3
           },
           "web": {
@@ -102036,7 +102096,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -103156,7 +103216,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -103906,7 +103966,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119923,
+            "lines": 119969,
             "modules": 550
           },
           "largestNonShared": [
@@ -104370,6 +104430,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -104397,6 +104462,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -107249,7 +107319,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56748,
+            "eligibleLines": 56801,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107309,12 +107379,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -107911,11 +107981,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33145,
+            "lines": 33204,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.6,
+            "lines": 27.7,
             "modules": 27.3
           },
           "web": {
@@ -118184,7 +118254,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -119614,7 +119684,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -120411,7 +120481,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97302,
+            "lines": 97348,
             "modules": 452
           },
           "largestNonShared": [
@@ -120477,7 +120547,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 996,
+              "lines": 983,
               "path": "apps/web/src/components/DiffPanel.tsx"
             },
             {
@@ -120875,6 +120945,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -120902,6 +120977,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -122969,7 +123049,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48533,
+            "eligibleLines": 48586,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -123029,12 +123109,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -123480,11 +123560,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28911,
+            "lines": 28970,
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.7,
+            "lines": 29.8,
             "modules": 26.3
           },
           "web": {
@@ -130998,7 +131078,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -132118,7 +132198,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -139569,7 +139649,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119914,
+            "lines": 119960,
             "modules": 550
           },
           "largestNonShared": [
@@ -140033,6 +140113,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -140060,6 +140145,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -142912,7 +143002,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56748,
+            "eligibleLines": 56801,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -142972,12 +143062,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -143574,11 +143664,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33145,
+            "lines": 33204,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.6,
+            "lines": 27.7,
             "modules": 27.3
           },
           "web": {
@@ -153837,7 +153927,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -155267,7 +155357,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -168107,7 +168197,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119914,
+            "lines": 119960,
             "modules": 550
           },
           "largestNonShared": [
@@ -168571,6 +168661,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -168598,6 +168693,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -171450,7 +171550,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56748,
+            "eligibleLines": 56801,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171510,12 +171610,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -172112,11 +172212,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33145,
+            "lines": 33204,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.6,
+            "lines": 27.7,
             "modules": 27.3
           },
           "web": {
@@ -182375,7 +182475,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -183805,7 +183905,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -354792,14 +354892,14 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 188,
+            "EXCLUSIVE": 183,
             "PATCHED": 0,
-            "SHARED": 64,
+            "SHARED": 69,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51250,
+            "lines": 51296,
             "modules": 252
           },
           "largestNonShared": [
@@ -354815,17 +354915,12 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1961,
-              "path": "packages/client-runtime/src/presentation/transcript.ts"
-            },
-            {
-              "classification": "EXCLUSIVE",
               "lines": 1165,
               "path": "packages/client-runtime/src/presentation/markdown.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 996,
+              "lines": 983,
               "path": "apps/web/src/components/DiffPanel.tsx"
             },
             {
@@ -354877,6 +354972,11 @@
               "classification": "EXCLUSIVE",
               "lines": 622,
               "path": "apps/web/src/connection/platform.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 599,
+              "path": "packages/client-runtime/src/state/threadReducer.ts"
             }
           ],
           "lynx": {
@@ -354885,6 +354985,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../../../../web/src/components/DiffPanelSurface",
                 "to": "apps/web/src/components/DiffPanelSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
@@ -354915,6 +355020,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -355567,6 +355677,26 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./userMessage.ts",
+                "to": "packages/client-runtime/src/presentation/userMessage.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/userMessage.ts",
+                "request": "./previewAnnotation.ts",
+                "to": "packages/client-runtime/src/presentation/previewAnnotation.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/userMessage.ts",
+                "request": "./reviewComment.ts",
+                "to": "packages/client-runtime/src/presentation/reviewComment.ts"
+              },
+              {
                 "from": "packages/contracts/src/assets.ts",
                 "request": "./baseSchemas.ts",
                 "to": "packages/contracts/src/baseSchemas.ts"
@@ -356162,17 +356292,17 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28701,
-            "eligibleModules": 120,
+            "eligibleLines": 31089,
+            "eligibleModules": 125,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -356453,12 +356583,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16842,
-            "modules": 64
+            "lines": 19236,
+            "modules": 69
           },
           "reusePercent": {
-            "lines": 32.9,
-            "modules": 25.4
+            "lines": 37.5,
+            "modules": 27.4
           },
           "web": {
             "edges": [
@@ -359866,7 +359996,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -360471,7 +360601,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -360495,7 +360625,7 @@
                 "path": "packages/client-runtime/src/presentation/pendingRequests.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 63,
                 "path": "packages/client-runtime/src/presentation/previewAnnotation.ts"
               },
@@ -360505,12 +360635,12 @@
                 "path": "packages/client-runtime/src/presentation/provider.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 113,
                 "path": "packages/client-runtime/src/presentation/reviewComment.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 43,
                 "path": "packages/client-runtime/src/presentation/session.ts"
               },
@@ -360530,12 +360660,12 @@
                 "path": "packages/client-runtime/src/presentation/time.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 155,
                 "path": "packages/client-runtime/src/presentation/userMessage.ts"
               },
@@ -361069,14 +361199,14 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 188,
+            "EXCLUSIVE": 183,
             "PATCHED": 0,
-            "SHARED": 64,
+            "SHARED": 69,
             "SPLIT": 0
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51250,
+            "lines": 51296,
             "modules": 252
           },
           "largestNonShared": [
@@ -361092,17 +361222,12 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1961,
-              "path": "packages/client-runtime/src/presentation/transcript.ts"
-            },
-            {
-              "classification": "EXCLUSIVE",
               "lines": 1165,
               "path": "packages/client-runtime/src/presentation/markdown.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 996,
+              "lines": 983,
               "path": "apps/web/src/components/DiffPanel.tsx"
             },
             {
@@ -361154,6 +361279,11 @@
               "classification": "EXCLUSIVE",
               "lines": 622,
               "path": "apps/web/src/connection/platform.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 599,
+              "path": "packages/client-runtime/src/state/threadReducer.ts"
             }
           ],
           "lynx": {
@@ -361162,6 +361292,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../../../../web/src/components/DiffPanelSurface",
                 "to": "apps/web/src/components/DiffPanelSurface.tsx"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
@@ -361192,6 +361327,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -361844,6 +361984,26 @@
                 "to": "packages/contracts/src/settingsDefaults.ts"
               },
               {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./session.ts",
+                "to": "packages/client-runtime/src/presentation/session.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/transcript.ts",
+                "request": "./userMessage.ts",
+                "to": "packages/client-runtime/src/presentation/userMessage.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/userMessage.ts",
+                "request": "./previewAnnotation.ts",
+                "to": "packages/client-runtime/src/presentation/previewAnnotation.ts"
+              },
+              {
+                "from": "packages/client-runtime/src/presentation/userMessage.ts",
+                "request": "./reviewComment.ts",
+                "to": "packages/client-runtime/src/presentation/reviewComment.ts"
+              },
+              {
                 "from": "packages/contracts/src/assets.ts",
                 "request": "./baseSchemas.ts",
                 "to": "packages/contracts/src/baseSchemas.ts"
@@ -362439,17 +362599,17 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28701,
-            "eligibleModules": 120,
+            "eligibleLines": 31089,
+            "eligibleModules": 125,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -362730,12 +362890,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16842,
-            "modules": 64
+            "lines": 19236,
+            "modules": 69
           },
           "reusePercent": {
-            "lines": 32.9,
-            "modules": 25.4
+            "lines": 37.5,
+            "modules": 27.4
           },
           "web": {
             "edges": [
@@ -366143,7 +366303,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -366748,7 +366908,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {
@@ -366772,7 +366932,7 @@
                 "path": "packages/client-runtime/src/presentation/pendingRequests.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 63,
                 "path": "packages/client-runtime/src/presentation/previewAnnotation.ts"
               },
@@ -366782,12 +366942,12 @@
                 "path": "packages/client-runtime/src/presentation/provider.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 113,
                 "path": "packages/client-runtime/src/presentation/reviewComment.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 43,
                 "path": "packages/client-runtime/src/presentation/session.ts"
               },
@@ -366807,12 +366967,12 @@
                 "path": "packages/client-runtime/src/presentation/time.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 1961,
                 "path": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
-                "classification": "EXCLUSIVE",
+                "classification": "SHARED",
                 "lines": 155,
                 "path": "packages/client-runtime/src/presentation/userMessage.ts"
               },
@@ -367353,7 +367513,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119727,
+            "lines": 119773,
             "modules": 549
           },
           "largestNonShared": [
@@ -367817,6 +367977,11 @@
               },
               {
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "../state/prefsStore",
+                "to": "apps/lynxtron/src/app/state/prefsStore.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "../state/t3Client",
                 "to": "apps/lynxtron/src/app/state/t3Client.ts"
               },
@@ -367844,6 +368009,11 @@
                 "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
                 "request": "@t3tools/client-runtime/presentation/diff",
                 "to": "packages/client-runtime/src/presentation/diff.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/DiffPanel.tsx",
+                "request": "@t3tools/client-runtime/presentation/transcript",
+                "to": "packages/client-runtime/src/presentation/transcript.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/FilesPanel.tsx",
@@ -370696,7 +370866,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56739,
+            "eligibleLines": 56792,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370756,12 +370926,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 565,
+                "lines": 585,
                 "path": "apps/lynxtron/src/app/components/DiffPanel.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 44,
+                "lines": 18,
                 "path": "apps/lynxtron/src/app/components/diffScope.logic.ts"
               },
               {
@@ -371352,7 +371522,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 33145,
+            "lines": 33204,
             "modules": 150
           },
           "reusePercent": {
@@ -381540,7 +381710,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 996,
+                "lines": 983,
                 "path": "apps/web/src/components/DiffPanel.tsx"
               },
               {
@@ -382965,7 +383135,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 235,
+                "lines": 294,
                 "path": "packages/client-runtime/src/presentation/diff.ts"
               },
               {

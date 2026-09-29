@@ -1,38 +1,7 @@
-import {
-  CheckpointRef,
-  TurnId,
-  type OrchestrationCheckpointSummary,
-  type ReviewDiffPreviewSource,
-} from "@t3tools/contracts";
+import { TurnId, type ReviewDiffPreviewSource } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
-import {
-  diffScopeLabel,
-  initialDiffScope,
-  selectedDiffCheckpoint,
-  selectedDiffPreviewSource,
-} from "./diffScope.logic.ts";
-
-const checkpoints = [
-  {
-    turnId: TurnId.make("turn-2"),
-    checkpointTurnCount: 2,
-    checkpointRef: CheckpointRef.make("refs/t3/turn-2"),
-    status: "ready",
-    files: [],
-    assistantMessageId: null,
-    completedAt: "2026-08-20T00:00:00.000Z",
-  },
-  {
-    turnId: TurnId.make("turn-1"),
-    checkpointTurnCount: 1,
-    checkpointRef: CheckpointRef.make("refs/t3/turn-1"),
-    status: "ready",
-    files: [],
-    assistantMessageId: null,
-    completedAt: "2026-08-19T23:00:00.000Z",
-  },
-] satisfies ReadonlyArray<OrchestrationCheckpointSummary>;
+import { initialDiffScope, selectedDiffPreviewSource } from "./diffScope.logic.ts";
 
 describe("Lynx Diff scope projection", () => {
   it("defaults header entry to branch changes and preserves explicit turns", () => {
@@ -41,34 +10,6 @@ describe("Lynx Diff scope projection", () => {
       kind: "turn",
       turnId: "turn-1",
     });
-  });
-
-  it("labels every authority root scope and historical turns", () => {
-    expect(diffScopeLabel(checkpoints, { kind: "unstaged" })).toBe("Working tree");
-    expect(diffScopeLabel(checkpoints, { kind: "branch" })).toBe("Branch changes");
-    expect(diffScopeLabel(checkpoints, { kind: "turn", turnId: TurnId.make("turn-2") })).toBe(
-      "Latest turn",
-    );
-    expect(diffScopeLabel(checkpoints, { kind: "turn", turnId: TurnId.make("turn-1") })).toBe(
-      "Turn 1",
-    );
-  });
-
-  it("falls back stale turn selections to the latest checkpoint", () => {
-    expect(
-      selectedDiffCheckpoint(checkpoints, {
-        kind: "turn",
-        turnId: TurnId.make("missing"),
-      }),
-    ).toBe(checkpoints[0]);
-  });
-
-  it("keeps ready turns without file changes addressable in the scope menu", () => {
-    expect(checkpoints).toHaveLength(2);
-    expect(checkpoints.every((checkpoint) => checkpoint.files.length === 0)).toBe(true);
-    expect(diffScopeLabel(checkpoints, { kind: "turn", turnId: checkpoints[1]!.turnId })).toBe(
-      "Turn 1",
-    );
   });
 
   it("maps Git scopes to the canonical preview source kinds", () => {

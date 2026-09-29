@@ -15,9 +15,9 @@ describe("diff panel header contract", () => {
     expect(styles).toContain(".lynx-diff-stat__additions,\n.lynx-diff-stat__deletions");
   });
 
-  it("keeps every ready checkpoint in the turn scope menu", () => {
-    expect(source).toContain('.filter((checkpoint) => checkpoint.status === "ready")');
-    expect(source).not.toContain('checkpoint.status === "ready" && checkpoint.files.length > 0');
+  it("lists every checkpoint in the turn scope menu, like Web", () => {
+    expect(source).toContain("orderTurnDiffSummariesNewestFirst(checkpoints, inferredTurnCounts)");
+    expect(source).not.toContain('checkpoint.status === "ready"');
   });
 
   it("keeps source lines single-line while wrapping is disabled", () => {

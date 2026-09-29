@@ -1,4 +1,11 @@
-import { summarizeChangedFiles } from "@t3tools/client-runtime/presentation/diff";
+import {
+  describeDiffSelection,
+  orderTurnDiffSummariesNewestFirst,
+  resolveSelectedTurnDiff,
+  resolveTurnDiffCheckpointCount,
+  summarizeChangedFiles,
+} from "@t3tools/client-runtime/presentation/diff";
+import { inferCheckpointTurnCountByTurnId } from "@t3tools/client-runtime/presentation/transcript";
 import type { OrchestrationCheckpointSummary } from "@t3tools/contracts";
 import type { ThreadId, TurnId } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
@@ -8,13 +15,8 @@ import { useT3ClientState } from "../state/t3Client";
 import { t3ClientActions } from "../state/t3Client";
 import { Icon } from "./Icon";
 import { LynxChangedFilesTree } from "./LynxChangedFilesTree";
-import {
-  diffScopeLabel,
-  initialDiffScope,
-  selectedDiffCheckpoint,
-  selectedDiffPreviewSource,
-  type LynxDiffScope,
-} from "./diffScope.logic";
+import { getClientSettingsState } from "../state/prefsStore";
+import { initialDiffScope, selectedDiffPreviewSource, type LynxDiffScope } from "./diffScope.logic";
 import { parseUnifiedDiff, type UnifiedDiffFile } from "./unifiedDiff";
 
 type DiffRenderMode = "stacked" | "split";
@@ -34,18 +36,6 @@ function LynxDiffStatLabel({
   );
 }
 
-function latestFirst(
-  checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>,
-): OrchestrationCheckpointSummary[] {
-  return checkpoints
-    .filter((checkpoint) => checkpoint.status === "ready")
-    .sort(
-      (left, right) =>
-        right.checkpointTurnCount - left.checkpointTurnCount ||
-        right.completedAt.localeCompare(left.completedAt),
-    );
-}
-
 export function DiffPanel({
   turnId,
   filePath,
@@ -55,13 +45,22 @@ export function DiffPanel({
 }) {
   const { activeThreadId, checkpoints, draftThread, projects, sessionStatus, threads } =
     useT3ClientState();
-  const orderedCheckpoints = useMemo(() => latestFirst(checkpoints), [checkpoints]);
+  const inferredTurnCounts = useMemo(
+    () => inferCheckpointTurnCountByTurnId(checkpoints),
+    [checkpoints],
+  );
+  const orderedCheckpoints = useMemo(
+    () => orderTurnDiffSummariesNewestFirst(checkpoints, inferredTurnCounts),
+    [checkpoints, inferredTurnCounts],
+  );
   const [scope, setScope] = useState<LynxDiffScope>(() => initialDiffScope(turnId));
   const [scopeMenuOpen, setScopeMenuOpen] = useState(false);
   const [turnMenuOpen, setTurnMenuOpen] = useState(false);
   const [diffRenderMode, setDiffRenderMode] = useState<DiffRenderMode>("stacked");
-  const [wordWrap, setWordWrap] = useState(false);
-  const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
+  const [wordWrap, setWordWrap] = useState(() => getClientSettingsState().wordWrap);
+  const [ignoreWhitespace, setIgnoreWhitespace] = useState(
+    () => getClientSettingsState().diffIgnoreWhitespace,
+  );
   const [collapsedFiles, setCollapsedFiles] = useState<ReadonlySet<string>>(new Set());
   const [patch, setPatch] = useState("");
   const [patchStatus, setPatchStatus] = useState<"idle" | "loading" | "ready" | "error">("idle");
@@ -71,7 +70,12 @@ export function DiffPanel({
       setScope({ kind: "turn", turnId });
     }
   }, [turnId]);
-  const selectedCheckpoint = selectedDiffCheckpoint(orderedCheckpoints, scope);
+  const selectedCheckpoint = resolveSelectedTurnDiff(
+    orderedCheckpoints,
+    scope.kind === "turn" ? scope.turnId : null,
+  );
+  const selectedTurnCount =
+    selectedCheckpoint && resolveTurnDiffCheckpointCount(selectedCheckpoint, inferredTurnCounts);
   const activeThread =
     threads.find((thread) => thread.id === activeThreadId) ??
     (draftThread?.id === activeThreadId ? draftThread : undefined);
@@ -96,7 +100,7 @@ export function DiffPanel({
   }, [filePath, parsedFiles]);
 
   useEffect(() => {
-    if (!activeThreadId || (scope.kind === "turn" ? !selectedCheckpoint : !activeCwd)) {
+    if (!activeThreadId || (scope.kind === "turn" ? selectedTurnCount === undefined : !activeCwd)) {
       setPatch("");
       setPatchStatus("idle");
       setPatchError(null);
@@ -106,11 +110,11 @@ export function DiffPanel({
     setPatchStatus("loading");
     setPatchError(null);
     const request =
-      scope.kind === "turn" && selectedCheckpoint
+      scope.kind === "turn" && selectedTurnCount !== undefined
         ? t3ClientActions.getTurnDiff({
             threadId: activeThreadId as ThreadId,
-            fromTurnCount: Math.max(0, selectedCheckpoint.checkpointTurnCount - 1),
-            toTurnCount: selectedCheckpoint.checkpointTurnCount,
+            fromTurnCount: Math.max(0, selectedTurnCount - 1),
+            toTurnCount: selectedTurnCount,
             ignoreWhitespace,
           })
         : t3ClientActions
@@ -147,7 +151,7 @@ export function DiffPanel({
     ignoreWhitespace,
     scope.kind,
     scope.kind === "turn" ? scope.turnId : null,
-    selectedCheckpoint?.checkpointTurnCount,
+    selectedTurnCount,
     selectedCheckpoint?.turnId,
   ]);
 
@@ -166,7 +170,13 @@ export function DiffPanel({
       return next;
     });
   };
-  const selectedScopeLabel = diffScopeLabel(orderedCheckpoints, scope);
+  const selectedScopeLabel = describeDiffSelection({
+    gitScope: scope.kind === "unstaged" ? "unstaged" : "branch",
+    selectedTurn: selectedCheckpoint,
+    latestTurn: orderedCheckpoints[0],
+    selectedTurnCount,
+    turnSelected: scope.kind === "turn",
+  }).scopeLabel;
   const selectScope = (nextScope: LynxDiffScope) => {
     setScope(nextScope);
     setScopeMenuOpen(false);
@@ -217,7 +227,8 @@ export function DiffPanel({
               </view>
               <view
                 className={`diff-panel-header__scope-item${
-                  scope.kind === "turn" && selectedCheckpoint === orderedCheckpoints[0]
+                  scope.kind === "turn" &&
+                  selectedCheckpoint?.turnId === orderedCheckpoints[0]?.turnId
                     ? " diff-panel-header__scope-item--active"
                     : ""
                 }`}
@@ -249,11 +260,13 @@ export function DiffPanel({
                           ? " diff-panel-header__scope-item--active"
                           : ""
                       }`}
-                      data-diff-scope-turn={String(checkpoint.checkpointTurnCount)}
+                      data-diff-scope-turn={String(
+                        resolveTurnDiffCheckpointCount(checkpoint, inferredTurnCounts) ?? "?",
+                      )}
                       bindtap={() => selectScope({ kind: "turn", turnId: checkpoint.turnId })}
                     >
                       <text className="diff-panel-header__scope-item-label">
-                        Turn {checkpoint.checkpointTurnCount}
+                        Turn {resolveTurnDiffCheckpointCount(checkpoint, inferredTurnCounts) ?? "?"}
                       </text>
                     </view>
                   ))}
@@ -375,7 +388,7 @@ export function DiffPanel({
                       </text>
                       <text className="diff-panel__summary-note">
                         {scope.kind === "turn"
-                          ? `Checkpoint for turn ${selectedCheckpoint?.checkpointTurnCount}`
+                          ? `Checkpoint for turn ${selectedTurnCount ?? "?"}`
                           : selectedScopeLabel}
                       </text>
                     </view>
