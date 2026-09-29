@@ -40,6 +40,10 @@ export const T3_CONNECTOR_METHODS = {
   ready: "t3:connector.ready",
   /** Sequence-gap recovery: returns one current snapshot plus the latest sequence. */
   resync: "t3:connector.resync",
+  /** Explicit local connector/server recovery after a terminal failure. */
+  reconnect: "t3:connector.reconnect",
+  /** Callback-independent startup: main pushes one sequenced snapshot event. */
+  subscribe: "t3:connector.subscribe",
   /** Typed command dispatch into the connector. */
   command: "t3:connector.command",
 } as const;
@@ -75,9 +79,17 @@ export interface ConnectorThreadPayload {
   readonly activeTurnId?: TurnId | null;
 }
 
-export type ConnectorEventKind = "status" | "config" | "access" | "shell" | "thread" | "log";
+export type ConnectorEventKind =
+  | "snapshot"
+  | "status"
+  | "config"
+  | "access"
+  | "shell"
+  | "thread"
+  | "log";
 
 export type ConnectorEventPayload =
+  | { readonly kind: "snapshot"; readonly payload: ConnectorSnapshot }
   | { readonly kind: "status"; readonly payload: ConnectorStatusPayload }
   | { readonly kind: "config"; readonly payload: ServerConfig }
   | { readonly kind: "access"; readonly payload: AuthAccessPresentation }
@@ -113,6 +125,10 @@ export const CONNECTOR_COMMAND_NAMES = [
   "selectThread",
   "sendPrompt",
   "interrupt",
+  "respondToApproval",
+  "respondToUserInput",
+  "implementProposedPlan",
+  "implementProposedPlanInNewThread",
   "setModelSelection",
   "setThreadRuntimeMode",
   "setThreadInteractionMode",
@@ -124,6 +140,7 @@ export const CONNECTOR_COMMAND_NAMES = [
   "listProjectEntries",
   "readProjectFile",
   "writeProjectFile",
+  "refreshVcsStatus",
   "discoverSourceControl",
   "createPairingCredential",
   "revokePairingLink",
@@ -169,7 +186,7 @@ export function isConnectorEventEnvelope(value: unknown): value is ConnectorEven
     Number.isInteger(candidate.seq) &&
     candidate.seq > 0 &&
     typeof candidate.kind === "string" &&
-    ["status", "config", "access", "shell", "thread", "log"].includes(candidate.kind)
+    ["snapshot", "status", "config", "access", "shell", "thread", "log"].includes(candidate.kind)
   );
 }
 

@@ -29,7 +29,8 @@ import {
   type ConnectorThreadPayload,
 } from "../../shared/connectorProtocol.ts";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
-import type { ServerConfig } from "@t3tools/contracts";
+import type { ServerConfig, ServerProvider, ServerProviderModel } from "@t3tools/contracts";
+import { projectDiscreteMenuKeybindings } from "./keyboardMenu.ts";
 
 export interface MainConnectorWindow {
   sendGlobalEvent(eventName: string, ...args: unknown[]): boolean;
@@ -67,6 +68,63 @@ const EMPTY_ACCESS: AuthAccessPresentation = {
   clientSessionCount: 0,
   hasEntries: false,
 };
+
+function projectRendererModel(model: ServerProviderModel): ServerProviderModel {
+  const capabilities = model.capabilities?.optionDescriptors
+    ? {
+        optionDescriptors: model.capabilities.optionDescriptors.map((descriptor) => {
+          const { description: _description, ...compactDescriptor } = descriptor;
+          if (compactDescriptor.type !== "select") return compactDescriptor;
+          return {
+            ...compactDescriptor,
+            options: compactDescriptor.options.map((option) => {
+              const { description: _optionDescription, ...compactOption } = option;
+              return compactOption;
+            }),
+          };
+        }),
+      }
+    : model.capabilities;
+  return {
+    slug: model.slug,
+    name: model.name,
+    ...(model.shortName ? { shortName: model.shortName } : {}),
+    ...(model.subProvider ? { subProvider: model.subProvider } : {}),
+    isCustom: model.isCustom,
+    ...(model.isDefault ? { isDefault: true } : {}),
+    capabilities,
+  };
+}
+
+function projectRendererProvider(provider: ServerProvider): ServerProvider {
+  return {
+    instanceId: provider.instanceId,
+    driver: provider.driver,
+    ...(provider.displayName ? { displayName: provider.displayName } : {}),
+    ...(provider.accentColor ? { accentColor: provider.accentColor } : {}),
+    ...(provider.continuation ? { continuation: provider.continuation } : {}),
+    enabled: provider.enabled,
+    installed: provider.installed,
+    version: provider.version,
+    status: provider.status,
+    auth: provider.auth,
+    checkedAt: provider.checkedAt,
+    ...(provider.message ? { message: provider.message } : {}),
+    ...(provider.availability ? { availability: provider.availability } : {}),
+    ...(provider.unavailableReason ? { unavailableReason: provider.unavailableReason } : {}),
+    models: provider.models.map(projectRendererModel),
+    slashCommands: [],
+    skills: [],
+  };
+}
+
+export function projectRendererServerConfig(config: ServerConfig): ServerConfig {
+  return {
+    ...config,
+    keybindings: projectDiscreteMenuKeybindings(config.keybindings),
+    providers: config.providers.map(projectRendererProvider),
+  };
+}
 
 /**
  * Dispatch one allowlisted command to the connector. Request shapes mirror
@@ -108,6 +166,7 @@ export class MainConnectorHost {
   private readonly options: MainConnectorHostOptions;
   private connector: ConnectorLike | undefined;
   private connectPromise: Promise<unknown> | undefined;
+  private connectorGeneration = 0;
   private disposed = false;
   private seq = 0;
   private status: ConnectorStatusPayload = { status: "idle" };
@@ -124,7 +183,12 @@ export class MainConnectorHost {
   attach(): void {
     const { registerHandler } = this.options;
     registerHandler(T3_CONNECTOR_METHODS.ready, () => this.syncReply());
+    registerHandler(T3_CONNECTOR_METHODS.subscribe, () => {
+      this.emit({ kind: "snapshot", payload: this.snapshot() });
+      return null;
+    });
     registerHandler(T3_CONNECTOR_METHODS.resync, () => this.syncReply());
+    registerHandler(T3_CONNECTOR_METHODS.reconnect, () => this.reconnect());
     registerHandler(T3_CONNECTOR_METHODS.command, (params) => this.handleCommand(params));
   }
 
@@ -132,22 +196,30 @@ export class MainConnectorHost {
   connect(): Promise<unknown> {
     if (this.disposed) return Promise.reject(new Error("connector host is disposed"));
     if (this.connectPromise) return this.connectPromise;
+    const generation = ++this.connectorGeneration;
+    const emitCurrent = (event: ConnectorEventPayload) => {
+      if (generation === this.connectorGeneration) this.emit(event);
+    };
     this.connector = this.options.createConnector({
       onStatus: (status, detail) =>
-        this.emit({
+        emitCurrent({
           kind: "status",
           payload:
             detail === undefined
               ? { status: status as ConnectorStatusPayload["status"] }
               : { status: status as ConnectorStatusPayload["status"], detail },
         }),
-      onConfig: (config) => this.emit({ kind: "config", payload: config }),
-      onAccess: (access) => this.emit({ kind: "access", payload: access }),
-      onShell: (payload) => this.emit({ kind: "shell", payload }),
-      onThread: (threadId, payload) => this.emit({ kind: "thread", threadId, payload }),
+      onConfig: (config) => {
+        const projected = projectRendererServerConfig(config);
+        emitCurrent({ kind: "config", payload: projected });
+      },
+      onAccess: (access) => emitCurrent({ kind: "access", payload: access }),
+      onShell: (payload) => emitCurrent({ kind: "shell", payload }),
+      onThread: (threadId, payload) => emitCurrent({ kind: "thread", threadId, payload }),
       onLog: (line) => {
+        if (generation !== this.connectorGeneration) return;
         this.options.onLog?.(line);
-        this.emit({ kind: "log", payload: line });
+        emitCurrent({ kind: "log", payload: line });
       },
     });
     this.connectPromise = this.connector.connect();
@@ -159,16 +231,30 @@ export class MainConnectorHost {
     return this.seq;
   }
 
+  private async reconnect(): Promise<ConnectorSyncReply> {
+    if (this.disposed) throw new Error("connector host is disposed");
+    this.connectorGeneration += 1;
+    this.connector?.dispose();
+    this.connector = undefined;
+    this.connectPromise = undefined;
+    await this.connect();
+    return this.syncReply();
+  }
+
   private syncReply(): ConnectorSyncReply {
     return {
       seq: this.seq,
-      snapshot: {
-        status: this.status,
-        config: this.config,
-        access: this.access,
-        shell: this.shell,
-        threads: { ...this.threads },
-      },
+      snapshot: this.snapshot(),
+    };
+  }
+
+  private snapshot(): ConnectorSnapshot {
+    return {
+      status: this.status,
+      config: this.config,
+      access: this.access,
+      shell: this.shell,
+      threads: { ...this.threads },
     };
   }
 
@@ -198,6 +284,8 @@ export class MainConnectorHost {
   private emit(event: ConnectorEventPayload): void {
     if (this.disposed) return;
     switch (event.kind) {
+      case "snapshot":
+        break;
       case "status":
         this.status = event.payload;
         break;
@@ -230,6 +318,7 @@ export class MainConnectorHost {
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
+    this.connectorGeneration += 1;
     for (const method of Object.values(T3_CONNECTOR_METHODS)) {
       this.options.removeHandler?.(method);
     }

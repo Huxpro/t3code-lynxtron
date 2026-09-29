@@ -13,6 +13,12 @@ import {
   FileTreeFileRowSurface,
 } from "../../../../web/src/components/chat/FileTreeSurface";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import {
+  addComposerFileContext,
+  composerDraftKey,
+  persistComposerDrafts,
+} from "../state/composerDraftRegistry";
+import { getPref, setPref } from "../state/prefsStore";
 
 interface ListingState {
   readonly cwd: string | null;
@@ -207,6 +213,15 @@ export function FilesPanel() {
   }, [activeThreadId, projects, threads]);
   const activeThread = threads.find((thread) => thread.id === activeThreadId);
   const cwd = activeThread?.worktreePath ?? project?.workspaceRoot ?? null;
+  const addPreviewToComposer = useCallback(() => {
+    if (!preview.path || !preview.result) return;
+    addComposerFileContext(composerDraftKey({ projectId: project?.id, threadId: activeThreadId }), {
+      path: preview.path,
+      contents: preview.result.contents,
+      truncated: preview.result.truncated,
+    });
+    persistComposerDrafts({ get: getPref, set: setPref });
+  }, [activeThreadId, preview.path, preview.result, project?.id]);
 
   useEffect(() => {
     if (!cwd) {
@@ -336,6 +351,11 @@ export function FilesPanel() {
             {preview.path ? (
               <view className="files-panel__preview">
                 <text className="files-panel__preview-path">{preview.path}</text>
+                {preview.result ? (
+                  <view className="files-panel__save" bindtap={addPreviewToComposer}>
+                    <text className="files-panel__save-label">Add to Composer</text>
+                  </view>
+                ) : null}
                 {preview.pending ? (
                   <text className="files-panel__preview-status">Loading file…</text>
                 ) : preview.error ? (

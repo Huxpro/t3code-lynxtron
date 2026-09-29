@@ -22,13 +22,10 @@ declare const lynx: {
 export const CAPABILITY_PROBE_EVENT = "t3-capability-probe";
 
 export function registerCapabilityProbe(): void {
+  "background only";
   try {
-    const emitter =
-      typeof lynx !== "undefined" ? lynx.getJSModule?.("GlobalEventEmitter") : undefined;
-    if (!emitter?.addListener) {
-      return;
-    }
-    emitter.addListener(CAPABILITY_PROBE_EVENT, (...args: unknown[]) => {
+    const emitter = lynx.getJSModule?.("GlobalEventEmitter");
+    emitter?.addListener?.(CAPABILITY_PROBE_EVENT, (...args: unknown[]) => {
       console.log(
         `[capability-probe] renderer received ${CAPABILITY_PROBE_EVENT}: ${JSON.stringify(args)}`,
       );

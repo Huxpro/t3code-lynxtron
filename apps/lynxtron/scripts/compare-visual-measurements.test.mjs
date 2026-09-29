@@ -84,6 +84,10 @@ describe("visual measurement comparison", () => {
     assert.equal(normalizeCssColor("oklch(0.145 0 0)"), "rgba(10,10,10,1)");
     assert.equal(normalizeCssColor("oklch(0.97 0 0)"), "rgba(245,245,245,1)");
     assert.equal(normalizeCssColor("rgba(0, 0, 0, 0)"), "rgba(0,0,0,0)");
+    assert.equal(
+      normalizeCssColor("color(srgb 0.0778016 0.0778173 0.0778187 / 0.8)"),
+      "rgba(20,20,20,0.8)",
+    );
 
     const webEntry = fixture({ x: 0, y: 0, width: 10, height: 10 }, "14px", "", "oklch(0.145 0 0)");
     const lynxEntry = fixture({ x: 0, y: 0, width: 10, height: 10 }, "14px", "", "rgb(10,10,10)");

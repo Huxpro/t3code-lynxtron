@@ -43,6 +43,9 @@ export default function createCapabilities() {
         Object.assign(preferences, patch || {});
         return { ...preferences };
       },
+      writeClipboardText(value) {
+        void String(value);
+      },
     },
   };
 }

@@ -73,9 +73,44 @@ const diagnostics: BrowserPreviewDiagnostics = {
 };
 window.__T3_LYNX_WEB_PREVIEW__ = diagnostics;
 
+const constrainImageContents = (shadowRoot: ShadowRoot): void => {
+  for (const image of shadowRoot.querySelectorAll("x-image")) {
+    const imageShadow = image.shadowRoot;
+    if (!imageShadow || imageShadow.querySelector("#t3-browser-preview-image-compat")) continue;
+    const style = document.createElement("style");
+    style.id = "t3-browser-preview-image-compat";
+    style.textContent =
+      "img { display: block !important; width: 100% !important; height: 100% !important; object-fit: contain; }";
+    imageShadow.append(style);
+  }
+};
+
 const updateReadiness = () => {
   const shadowRoot = view.shadowRoot;
   if (!shadowRoot?.querySelector("x-view")) return false;
+  if (!shadowRoot.querySelector("#t3-browser-preview-layout-compat")) {
+    const style = document.createElement("style");
+    style.id = "t3-browser-preview-layout-compat";
+    style.textContent = `
+      .chat-view-surface-reference { display: flex; flex: 1 1 0%; min-width: 0; min-height: 0; }
+      .lynx-chat-route-column { display: flex; flex: 1 1 0%; flex-direction: column; min-width: 0; min-height: 0; }
+      .lynx-chat-route-body, .lynx-chat-route-content { display: flex; flex: 1 1 0%; min-width: 0; min-height: 0; }
+      .lynx-chat-route-content { flex-direction: column; }
+      .topbar__content, .topbar__crumb { display: flex; flex: 1 1 0%; flex-direction: row; min-width: 0; width: auto; }
+      .topbar__actions { display: flex; flex: 0 0 auto; flex-direction: row; }
+      .topbar__thread { flex: 1 1 0%; min-width: 0; }
+      .lynx-connector-lifecycle {
+        display: flex; flex: 0 0 auto; flex-direction: row; align-items: flex-start;
+        min-height: 52px; margin: 8px 12px 0; padding: 10px 12px;
+      }
+      .timeline-host { display: flex; flex: 1 1 0%; flex-direction: column; height: auto; min-height: 0; overflow: hidden; }
+      .timeline-list { display: flex; flex: 1 1 0%; height: auto; min-height: 0; }
+      .composer-overlay { display: flex; flex: 0 0 auto; flex-direction: column; width: 100%; }
+      x-image { display: block !important; flex: 0 0 auto !important; overflow: hidden; }
+    `;
+    shadowRoot.append(style);
+  }
+  constrainImageContents(shadowRoot);
   diagnostics.rendered = true;
   status.value = "rendered";
   return true;
@@ -105,10 +140,10 @@ const observeProductRender = (): void => {
     return;
   }
   const observer = new MutationObserver(() => {
-    if (updateReadiness()) observer.disconnect();
+    updateReadiness();
   });
   observer.observe(shadowRoot, { childList: true, subtree: true });
-  if (updateReadiness()) observer.disconnect();
+  updateReadiness();
 };
 observeProductRender();
 

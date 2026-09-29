@@ -39,6 +39,7 @@ import { applyThreadDetailEvent } from "@t3tools/client-runtime/state/threads";
 import {
   deriveActivePlanState,
   findLatestProposedPlan,
+  hasActionableProposedPlan,
 } from "@t3tools/client-runtime/presentation/thread";
 import {
   applyProviderInstanceSettings,
@@ -59,8 +60,13 @@ import {
   type OrchestrationShellSnapshot,
   type OrchestrationShellStreamItem,
   type OrchestrationThread,
+  type OrchestrationProposedPlanId,
   type OrchestrationThreadShell,
   type ProviderInteractionMode,
+  type ApprovalRequestId,
+  type ProviderApprovalDecision,
+  type ProviderUserInputAnswers,
+  type UploadChatAttachment,
   type OrchestrationThreadStreamItem,
   type ProviderInstanceId,
   type ProjectListEntriesResult,
@@ -72,6 +78,7 @@ import {
   type ServerSettingsPatch,
   type SourceControlDiscoveryResult,
   type RuntimeMode,
+  type VcsStatusResult,
 } from "@t3tools/contracts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -156,6 +163,7 @@ export class T3Connector {
   private defaultProjectId: string | undefined;
   private ready = false;
   private serverExited = false;
+  private disposing = false;
 
   constructor(events: ConnectorEvents) {
     this.events = events;
@@ -166,6 +174,9 @@ export class T3Connector {
   }
 
   async connect(): Promise<ConnectorConnectResult> {
+    this.disposing = false;
+    this.ready = false;
+    this.serverExited = false;
     const serverBin = resolveServerBin({
       explicitPath: process.env.T3_SERVER_BIN,
       connectorDirectory: __dirname,
@@ -206,7 +217,7 @@ export class T3Connector {
     this.child.on("exit", (code, signal) => {
       this.log(`[srv] exited code=${code} signal=${signal}`);
       this.serverExited = true;
-      if (!this.ready) {
+      if (!this.disposing) {
         this.events.onStatus("error", `Server exited (code=${code} signal=${signal}).`);
       }
     });
@@ -578,10 +589,13 @@ export class T3Connector {
       thread.activities,
       thread.latestTurn?.turnId ?? undefined,
     );
-    const activeProposedPlan = findLatestProposedPlan(
+    const latestProposedPlan = findLatestProposedPlan(
       thread.proposedPlans,
       thread.latestTurn?.turnId,
     );
+    const activeProposedPlan = hasActionableProposedPlan(latestProposedPlan)
+      ? latestProposedPlan
+      : null;
     this.events.onThread(threadId, {
       threadId,
       messages: thread.messages,
@@ -651,7 +665,11 @@ export class T3Connector {
     return { threadId };
   }
 
-  async sendPrompt(input: { threadId: string; text: string }): Promise<void> {
+  async sendPrompt(input: {
+    threadId: string;
+    text: string;
+    attachments?: ReadonlyArray<UploadChatAttachment>;
+  }): Promise<void> {
     if (!this.client) throw new Error("not connected");
     const thread =
       this.shellSnapshot?.threads.find((candidate) => candidate.id === input.threadId) ??
@@ -671,7 +689,7 @@ export class T3Connector {
         messageId: crypto.randomUUID(),
         role: "user",
         text: input.text,
-        attachments: [],
+        attachments: [...(input.attachments ?? [])],
       },
       ...dispatchState,
       createdAt: new Date().toISOString(),
@@ -690,6 +708,135 @@ export class T3Connector {
     await this.runClient(this.client[ORCHESTRATION_WS_METHODS.dispatchCommand](command)).catch(
       () => {},
     );
+  }
+
+  async respondToApproval(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    decision: ProviderApprovalDecision;
+  }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.approval.respond",
+        commandId: crypto.randomUUID(),
+        ...input,
+        createdAt: new Date().toISOString(),
+      }),
+    );
+  }
+
+  async respondToUserInput(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    answers: ProviderUserInputAnswers;
+  }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.user-input.respond",
+        commandId: crypto.randomUUID(),
+        ...input,
+        createdAt: new Date().toISOString(),
+      }),
+    );
+  }
+
+  async implementProposedPlan(input: {
+    threadId: string;
+    planId: OrchestrationProposedPlanId;
+    prompt: string;
+  }): Promise<void> {
+    if (!this.client) throw new Error("not connected");
+    const thread =
+      this.shellSnapshot?.threads.find((candidate) => candidate.id === input.threadId) ??
+      this.threadSnapshots.get(input.threadId);
+    if (!thread)
+      throw new Error(`thread ${input.threadId} is not present in the canonical snapshot`);
+    const dispatchState = projectThreadTurnDispatchState(
+      thread,
+      this.pendingThreadModelSelections.get(input.threadId),
+    );
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.turn.start",
+        commandId: crypto.randomUUID(),
+        threadId: input.threadId,
+        message: {
+          messageId: crypto.randomUUID(),
+          role: "user",
+          text: input.prompt,
+          attachments: [],
+        },
+        ...dispatchState,
+        interactionMode: "default",
+        sourceProposedPlan: { threadId: input.threadId, planId: input.planId },
+        createdAt: new Date().toISOString(),
+      }),
+    );
+  }
+
+  async implementProposedPlanInNewThread(input: {
+    sourceThreadId: string;
+    planId: OrchestrationProposedPlanId;
+    prompt: string;
+    title: string;
+  }): Promise<{ threadId: string }> {
+    if (!this.client) throw new Error("not connected");
+    const source =
+      this.shellSnapshot?.threads.find((candidate) => candidate.id === input.sourceThreadId) ??
+      this.threadSnapshots.get(input.sourceThreadId);
+    if (!source) {
+      throw new Error(`thread ${input.sourceThreadId} is not present in the canonical snapshot`);
+    }
+    const threadId = crypto.randomUUID();
+    const createdAt = new Date().toISOString();
+    await this.runClient(
+      this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+        type: "thread.create",
+        commandId: crypto.randomUUID(),
+        threadId,
+        projectId: source.projectId,
+        title: input.title,
+        modelSelection: source.modelSelection,
+        runtimeMode: source.runtimeMode,
+        interactionMode: "default",
+        branch: source.branch,
+        worktreePath: source.worktreePath,
+        createdAt,
+      }),
+    );
+    try {
+      await this.runClient(
+        this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+          type: "thread.turn.start",
+          commandId: crypto.randomUUID(),
+          threadId,
+          message: {
+            messageId: crypto.randomUUID(),
+            role: "user",
+            text: input.prompt,
+            attachments: [],
+          },
+          modelSelection: source.modelSelection,
+          runtimeMode: source.runtimeMode,
+          interactionMode: "default",
+          sourceProposedPlan: { threadId: input.sourceThreadId, planId: input.planId },
+          createdAt,
+        }),
+      );
+    } catch (error) {
+      await this.runClient(
+        this.client[ORCHESTRATION_WS_METHODS.dispatchCommand]({
+          type: "thread.delete",
+          commandId: crypto.randomUUID(),
+          threadId,
+        }),
+      ).catch(() => undefined);
+      throw error;
+    }
+    this.selectThread(threadId);
+    return { threadId };
   }
 
   async deleteThread(input: { threadId: string }): Promise<void> {
@@ -767,6 +914,13 @@ export class T3Connector {
     if (!this.client) throw new Error("not connected");
     return this.runClient<SourceControlDiscoveryResult>(
       this.client[WS_METHODS.serverDiscoverSourceControl]({}),
+    );
+  }
+
+  async refreshVcsStatus(input: { cwd: string }): Promise<VcsStatusResult> {
+    if (!this.client) throw new Error("not connected");
+    return this.runClient<VcsStatusResult>(
+      this.client[WS_METHODS.vcsRefreshStatus]({ cwd: input.cwd }),
     );
   }
 
@@ -935,6 +1089,7 @@ export class T3Connector {
   }
 
   dispose(): void {
+    this.disposing = true;
     for (const fiber of this.threadFibers.values()) {
       Effect.runFork(Fiber.interrupt(fiber));
     }

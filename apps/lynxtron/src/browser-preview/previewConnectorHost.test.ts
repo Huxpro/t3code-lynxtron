@@ -1,6 +1,10 @@
 import { assert, describe, it } from "vite-plus/test";
 
-import { T3_CONNECTOR_EVENT, T3_CONNECTOR_METHODS } from "../shared/connectorProtocol.ts";
+import {
+  T3_CONNECTOR_EVENT,
+  T3_CONNECTOR_METHODS,
+  type ConnectorEventEnvelope,
+} from "../shared/connectorProtocol.ts";
 import { BrowserPreviewConnectorHost } from "./previewConnectorHost.ts";
 import { BROWSER_PREVIEW_SCENARIOS } from "./previewScenarios.ts";
 
@@ -30,6 +34,35 @@ describe("BrowserPreviewConnectorHost", () => {
     assert.equal(resync.seq, 0);
     assert.equal(host.diagnostics.readyCalls, 1);
     assert.equal(host.diagnostics.resyncCalls, 1);
+  });
+
+  it("serves a deterministic recoverable connection error", () => {
+    const host = new BrowserPreviewConnectorHost(
+      BROWSER_PREVIEW_SCENARIOS["connection-error"],
+      () => {},
+    );
+    const ready = host.handleNativeCall(T3_CONNECTOR_METHODS.ready, {}, "bridge") as {
+      snapshot: { status: { status: string; detail?: string } };
+    };
+
+    assert.deepEqual(ready.snapshot.status, {
+      status: "error",
+      detail: "The local server stopped before the workspace was ready.",
+    });
+  });
+
+  it("serves a bounded long-transcript fixture with a terminal marker", () => {
+    const host = new BrowserPreviewConnectorHost(
+      BROWSER_PREVIEW_SCENARIOS["long-transcript"],
+      () => {},
+    );
+    const ready = host.handleNativeCall(T3_CONNECTOR_METHODS.ready, {}, "bridge") as {
+      snapshot: { threads: Record<string, { messages: Array<{ text: string }> }> };
+    };
+    const messages = ready.snapshot.threads["browser-preview-thread"]?.messages ?? [];
+    assert.equal(messages.length, 80);
+    assert.include(messages.at(-1)?.text ?? "", "Long transcript terminal marker");
+    assert.include(messages.at(-1)?.text ?? "", "![Parity proof](./evidence/parity.png)");
   });
 
   it("publishes strictly monotonic connector events", () => {
@@ -80,6 +113,124 @@ describe("BrowserPreviewConnectorHost", () => {
         ),
       /unavailable in the isolated browser preview/,
     );
+  });
+
+  it("publishes canonical request resolution after an intervention command", () => {
+    const events: Array<{ eventName: string; params: unknown[] }> = [];
+    const host = new BrowserPreviewConnectorHost(
+      BROWSER_PREVIEW_SCENARIOS["pending-approval"],
+      (eventName, params) => events.push({ eventName, params }),
+    );
+    host.handleNativeCall(
+      T3_CONNECTOR_METHODS.command,
+      {
+        method: "respondToApproval",
+        params: {
+          threadId: "browser-preview-thread",
+          requestId: "browser-preview-approval-request",
+          decision: "accept",
+        },
+      },
+      "bridge",
+    );
+    const envelope = events.at(-1)?.params[0] as ConnectorEventEnvelope;
+    assert.equal(envelope.kind, "thread");
+    if (envelope.kind !== "thread") assert.fail("expected thread event");
+    assert.equal(envelope.payload.activities?.at(-1)?.kind, "approval.resolved");
+  });
+
+  it("fails one send and advances canonical turn state on retry", async () => {
+    const events: Array<{ eventName: string; params: unknown[] }> = [];
+    const host = new BrowserPreviewConnectorHost(
+      BROWSER_PREVIEW_SCENARIOS["send-recovery"],
+      (eventName, params) => events.push({ eventName, params }),
+    );
+    const request = {
+      method: "sendPrompt",
+      params: { threadId: "browser-preview-thread", text: "Retry this turn" },
+    };
+
+    let failure: unknown;
+    try {
+      await Promise.resolve(host.handleNativeCall(T3_CONNECTOR_METHODS.command, request, "bridge"));
+    } catch (error) {
+      failure = error;
+    }
+    assert.match(String(failure), /retry is available/);
+    host.handleNativeCall(T3_CONNECTOR_METHODS.command, request, "bridge");
+
+    assert.equal(
+      host.diagnostics.commands.filter((entry) => entry.method === "sendPrompt").length,
+      2,
+    );
+    const envelope = events.at(-1)?.params[0] as ConnectorEventEnvelope;
+    assert.equal(envelope.kind, "thread");
+    if (envelope.kind !== "thread") assert.fail("expected thread event");
+    assert.equal(envelope.payload.sessionStatus, "running");
+    assert.equal(envelope.payload.activeTurnId, "browser-preview-retry-turn");
+    assert.equal(envelope.payload.messages.at(-1)?.text, "Retry this turn");
+  });
+
+  it("projects attachment-only retry into canonical thread state", async () => {
+    const events: Array<{ eventName: string; params: unknown[] }> = [];
+    const host = new BrowserPreviewConnectorHost(
+      BROWSER_PREVIEW_SCENARIOS["send-recovery"],
+      (eventName, params) => events.push({ eventName, params }),
+    );
+    const attachment = {
+      type: "image" as const,
+      name: "proof.png",
+      mimeType: "image/png",
+      sizeBytes: 4,
+      dataUrl: "data:image/png;base64,dGVzdA==",
+    };
+    const request = {
+      method: "sendPrompt",
+      params: { threadId: "browser-preview-thread", text: "", attachments: [attachment] },
+    };
+
+    let failure: unknown;
+    try {
+      await Promise.resolve(host.handleNativeCall(T3_CONNECTOR_METHODS.command, request, "bridge"));
+    } catch (error) {
+      failure = error;
+    }
+    assert.match(String(failure), /retry is available/);
+    host.handleNativeCall(T3_CONNECTOR_METHODS.command, request, "bridge");
+
+    const envelope = events.at(-1)?.params[0] as ConnectorEventEnvelope;
+    assert.equal(envelope.kind, "thread");
+    if (envelope.kind !== "thread") assert.fail("expected thread event");
+    const message = envelope.payload.messages.at(-1);
+    assert.equal(message?.text, "");
+    assert.deepEqual(message?.attachments, [
+      {
+        type: "image",
+        id: "preview-image-2-0",
+        name: "proof.png",
+        mimeType: "image/png",
+        sizeBytes: 4,
+      },
+    ]);
+  });
+
+  it("publishes canonical interrupted turn state after stop", () => {
+    const events: Array<{ eventName: string; params: unknown[] }> = [];
+    const host = new BrowserPreviewConnectorHost(
+      BROWSER_PREVIEW_SCENARIOS["running-turn"],
+      (eventName, params) => events.push({ eventName, params }),
+    );
+    host.handleNativeCall(
+      T3_CONNECTOR_METHODS.command,
+      { method: "interrupt", params: { threadId: "browser-preview-thread" } },
+      "bridge",
+    );
+    const envelope = events.at(-1)?.params[0] as ConnectorEventEnvelope;
+    assert.equal(envelope.kind, "thread");
+    if (envelope.kind !== "thread") assert.fail("expected thread event");
+    assert.equal(envelope.payload.sessionStatus, "interrupted");
+    assert.equal(envelope.payload.latestTurn?.state, "interrupted");
+    assert.isNull(envelope.payload.activeTurnId);
   });
 
   it("rejects unknown modules and commands", () => {

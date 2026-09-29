@@ -13,18 +13,24 @@ import type {
   OrchestrationCheckpointSummary,
   OrchestrationLatestTurn,
   OrchestrationProposedPlan,
+  OrchestrationProposedPlanId,
   ProviderInteractionMode,
   ProjectListEntriesResult,
   ProjectReadFileResult,
   ProjectWriteFileResult,
   ProviderInstanceId,
+  ApprovalRequestId,
+  ProviderApprovalDecision,
+  ProviderUserInputAnswers,
   ServerConfig,
   ServerProvider,
   ServerSettings,
   ServerSettingsPatch,
   SourceControlDiscoveryResult,
   RuntimeMode,
+  VcsStatusResult,
   TurnId,
+  UploadChatAttachment,
 } from "@t3tools/contracts";
 
 import type {
@@ -54,7 +60,13 @@ import {
   type GlobalEventListenerRegistry,
   type MainConnectorTransport,
 } from "./mainConnectorTransport";
-import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
+import {
+  CONNECTOR_COMMAND_NAMES,
+  T3_CONNECTOR_METHODS,
+  isConnectorSyncReply,
+} from "../../shared/connectorProtocol.ts";
+import { sendPromptWithThreadCreation } from "./sendPromptWithThreadCreation.ts";
+import { composerDraftKey, moveComposerDraft } from "./composerDraftRegistry.ts";
 import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
@@ -153,6 +165,15 @@ function getPreloadBridge(): Partial<PollBridge> | undefined {
   }
 }
 
+function getMainBridgeModule(): BridgeCallModule | undefined {
+  "background only";
+  try {
+    return typeof NativeModules !== "undefined" ? NativeModules.bridge : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
 function getBridge(): Partial<PollBridge> | undefined {
   "background only";
   const preload = getPreloadBridge();
@@ -173,6 +194,11 @@ function patchState(partial: Partial<T3ClientState>): void {
 export function installT3ClientFixtureForDevTool(partial: Partial<T3ClientState>): void {
   started = true;
   patchState(partial);
+}
+
+export function installT3ClientSnapshotForDevTool(snapshot: ConnectorSnapshot): void {
+  started = true;
+  applyConnectorSnapshot(snapshot);
 }
 
 function resetActiveThreadState(activeThreadId?: string): void {
@@ -384,7 +410,15 @@ function installTransportDevToolHook(): void {
 function startT3Client(): void {
   if (started) return;
   started = true;
-  void bootstrapT3Client();
+  installTransportDevToolHook();
+  void bootstrapT3Client().catch((error) => {
+    const detail = error instanceof Error ? error.message : String(error);
+    installTransportDevToolHook();
+    patchState({
+      status: "error",
+      statusDetail: `Main-owned connector bootstrap failed: ${detail}`,
+    });
+  });
 }
 
 async function bootstrapT3Client(): Promise<void> {
@@ -403,7 +437,7 @@ async function bootstrapT3Client(): Promise<void> {
   const saved = getPref<ModelSelection | null>("modelSelection", null);
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
-    bridge: NativeModules?.bridge,
+    bridge: getMainBridgeModule(),
     eventRegistry,
     applySnapshot: (snapshot) => {
       // The first snapshot applies the locally saved model selection as the
@@ -453,12 +487,31 @@ async function createThread(projectId?: string): Promise<void> {
   if (result?.threadId) selectThread(result.threadId);
 }
 
-function sendPrompt(text: string): void {
+function sendPrompt(
+  text: string,
+  attachments: ReadonlyArray<UploadChatAttachment> = [],
+): Promise<void> {
   const trimmed = text.trim();
-  const threadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
+  const state = appAtomRegistry.get(t3ClientStateAtom);
   const bridge = getBridge();
-  if (!trimmed || !threadId || !bridge?.sendPrompt) return;
-  void bridge.sendPrompt({ threadId, text: trimmed });
+  if (!trimmed && attachments.length === 0) return Promise.resolve();
+  if (!bridge) {
+    return Promise.reject(new Error("Sending a message is unavailable."));
+  }
+  return sendPromptWithThreadCreation({
+    text: trimmed,
+    activeThreadId: state.activeThreadId,
+    projectId: state.projects[0]?.id,
+    attachments,
+    bridge,
+    onThreadCreated: (threadId) => {
+      moveComposerDraft(
+        composerDraftKey({ projectId: state.projects[0]?.id }),
+        composerDraftKey({ projectId: state.projects[0]?.id, threadId }),
+      );
+      selectThread(threadId);
+    },
+  });
 }
 
 function interrupt(): void {
@@ -466,6 +519,77 @@ function interrupt(): void {
   const bridge = getBridge();
   if (!threadId || !bridge?.interrupt) return;
   void bridge.interrupt({ threadId });
+}
+
+function respondToApproval(
+  requestId: ApprovalRequestId,
+  decision: ProviderApprovalDecision,
+): Promise<void> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const bridge = getBridge();
+  if (!state.activeThreadId || !bridge?.respondToApproval) {
+    return Promise.reject(new Error("Approval response is unavailable."));
+  }
+  return bridge.respondToApproval({ threadId: state.activeThreadId, requestId, decision });
+}
+
+function respondToUserInput(
+  requestId: ApprovalRequestId,
+  answers: ProviderUserInputAnswers,
+): Promise<void> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const bridge = getBridge();
+  if (!state.activeThreadId || !bridge?.respondToUserInput) {
+    return Promise.reject(new Error("User-input response is unavailable."));
+  }
+  return bridge.respondToUserInput({ threadId: state.activeThreadId, requestId, answers });
+}
+
+function implementProposedPlan(planId: OrchestrationProposedPlanId, prompt: string): Promise<void> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const bridge = getBridge();
+  if (!state.activeThreadId || !bridge?.implementProposedPlan) {
+    return Promise.reject(new Error("Plan implementation is unavailable."));
+  }
+  return bridge.implementProposedPlan({ threadId: state.activeThreadId, planId, prompt });
+}
+
+async function implementProposedPlanInNewThread(
+  planId: OrchestrationProposedPlanId,
+  prompt: string,
+  title: string,
+): Promise<void> {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const bridge = getBridge();
+  if (!state.activeThreadId || !bridge?.implementProposedPlanInNewThread) {
+    throw new Error("Plan implementation in a new thread is unavailable.");
+  }
+  const result = await bridge.implementProposedPlanInNewThread({
+    sourceThreadId: state.activeThreadId,
+    planId,
+    prompt,
+    title,
+  });
+  selectThread(result.threadId);
+}
+
+async function reconnectConnector(): Promise<void> {
+  if (!mainTransport) {
+    patchState({
+      status: "error",
+      statusDetail: "Main-owned connector transport is unavailable. Restart T3 Code to retry.",
+    });
+    return;
+  }
+  patchState({ status: "connecting", statusDetail: "Restarting the local server…" });
+  try {
+    await mainTransport.reconnect();
+  } catch (error) {
+    patchState({
+      status: "error",
+      statusDetail: error instanceof Error ? error.message : String(error),
+    });
+  }
 }
 
 async function deleteThread(threadId: string): Promise<void> {
@@ -526,6 +650,14 @@ function discoverSourceControl(): Promise<SourceControlDiscoveryResult> {
     return Promise.reject(new Error("Source-control discovery is unavailable."));
   }
   return bridge.discoverSourceControl();
+}
+
+function refreshVcsStatus(cwd: string): Promise<VcsStatusResult> {
+  const bridge = getBridge();
+  if (!bridge?.refreshVcsStatus) {
+    return Promise.reject(new Error("Version-control status is unavailable."));
+  }
+  return bridge.refreshVcsStatus({ cwd });
 }
 
 function createPairingCredential(label?: string): Promise<PairingCredentialResult> {
@@ -671,8 +803,14 @@ export const t3ClientActions = {
   deleteThread,
   discoverSourceControl,
   interrupt,
+  implementProposedPlan,
+  implementProposedPlanInNewThread,
   listProjectEntries,
   readProjectFile,
+  refreshVcsStatus,
+  reconnectConnector,
+  respondToApproval,
+  respondToUserInput,
   renameThread,
   revokeClientSession,
   revokeOtherClientSessions,

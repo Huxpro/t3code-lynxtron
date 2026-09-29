@@ -116,7 +116,7 @@ function measurementExpression(spec) {
         throw new Error("Required visual selector did not match: " + entry.web);
       }
       const rect = element.getBoundingClientRect();
-      const style = getComputedStyle(element);
+      const style = getComputedStyle(element, entry.webPseudo ?? null);
       return {
         selector: entry.web,
         rect: {
@@ -313,6 +313,8 @@ const theme = argumentValue("--theme", "dark");
 const pathname = argumentValue("--pathname");
 const interactionState = argumentValue("--interaction-state", "none");
 const clearComposerDrafts = process.argv.includes("--clear-composer-drafts");
+const sidebarWidthArgument = argumentValue("--sidebar-width");
+const sidebarWidth = sidebarWidthArgument === undefined ? null : Number(sidebarWidthArgument);
 const specPath = resolve(
   argumentValue("--measurement-spec", "scripts/visual-measurement-spec.json"),
 );
@@ -327,6 +329,9 @@ if (
   deviceScaleFactor <= 0
 ) {
   throw new Error("Width, height, and device scale factor must be positive.");
+}
+if (sidebarWidth !== null && (!Number.isFinite(sidebarWidth) || sidebarWidth <= 0)) {
+  throw new Error("Sidebar width must be a positive number.");
 }
 
 const page = await discoverPage(endpoint);
@@ -373,6 +378,14 @@ try {
   await client.send("Page.bringToFront");
   if (clearComposerDrafts) {
     await evaluate(client, `localStorage.removeItem("t3code:composer-drafts:v1"); true`);
+  }
+  if (sidebarWidth !== null) {
+    await evaluate(
+      client,
+      `localStorage.setItem("chat_thread_sidebar_width", ${JSON.stringify(
+        String(sidebarWidth),
+      )}); true`,
+    );
   }
   if (pathname) {
     await evaluate(
@@ -500,6 +513,7 @@ try {
         pathname,
         interactionState,
         clearComposerDrafts,
+        sidebarWidth,
         rendererHref,
         theme,
         snapshot,

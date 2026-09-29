@@ -8,7 +8,7 @@ import {
 } from "@t3tools/client-runtime/presentation/settings";
 import { Atom } from "effect/unstable/reactivity";
 
-import { clientCapabilities } from "../platform/clientCapabilities";
+import { clientCapabilities, isClientStorageAvailable } from "../platform/clientCapabilities";
 import { appAtomRegistry } from "./atomRegistry";
 
 const cache = new Map<string, unknown>();
@@ -26,6 +26,22 @@ export function getPref<T>(key: string, fallback: T): T {
   } catch {
     return fallback;
   }
+}
+
+export function refreshPref<T>(key: string, fallback: T): T {
+  try {
+    const raw = clientCapabilities.storage.getItem(key);
+    if (raw === null) return cache.has(key) ? (cache.get(key) as T) : fallback;
+    const value = JSON.parse(raw) as T;
+    cache.set(key, value);
+    return value;
+  } catch {
+    return cache.has(key) ? (cache.get(key) as T) : fallback;
+  }
+}
+
+export function isPrefStorageAvailable(): boolean {
+  return isClientStorageAvailable();
 }
 
 export function setPref(key: string, value: unknown): void {

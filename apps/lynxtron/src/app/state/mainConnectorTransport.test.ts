@@ -38,6 +38,7 @@ interface Harness {
   snapshots: ConnectorSnapshot[];
   commandLog: Array<{ method: string; params: Record<string, unknown> }>;
   replyWith: (method: string, reply: unknown) => void;
+  bootstrapWith: (seq: number, snapshot: ConnectorSnapshot) => void;
   logs: string[];
 }
 
@@ -86,6 +87,14 @@ function createHarness(): Harness {
       for (const listener of listeners.get(T3_CONNECTOR_EVENT) ?? []) listener(envelope);
     },
     replyWith: (method, reply) => replies.set(method, reply),
+    bootstrapWith: (seq, snapshot) =>
+      replies.set(T3_CONNECTOR_METHODS.subscribe, () => {
+        queueMicrotask(() => {
+          for (const listener of listeners.get(T3_CONNECTOR_EVENT) ?? []) {
+            listener({ seq, kind: "snapshot", payload: snapshot });
+          }
+        });
+      }),
   };
 }
 
@@ -116,12 +125,12 @@ describe("main connector transport", () => {
     const harness = createHarness(); // no ready reply registered
     const result = await startHarness(harness, 20);
     assert.isNull(result);
-    assert.isFalse(harness.registry.listeners.has(T3_CONNECTOR_EVENT));
+    assert.lengthOf(harness.registry.listeners.get(T3_CONNECTOR_EVENT) ?? [], 0);
   });
 
   it("applies the ready snapshot once and processes sequenced events", async () => {
     const harness = createHarness();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 3, snapshot: makeSnapshot("t1") });
+    harness.bootstrapWith(3, makeSnapshot("t1"));
     const transport = await startHarness(harness);
     assert.isNotNull(transport);
     assert.equal(transport!.lastSeq, 3);
@@ -138,7 +147,7 @@ describe("main connector transport", () => {
 
   it("drops duplicates and out-of-band junk", async () => {
     const harness = createHarness();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 1, snapshot: makeSnapshot("t1") });
+    harness.bootstrapWith(1, makeSnapshot("t1"));
     const transport = await startHarness(harness);
 
     harness.emit({ seq: 1, kind: "status", payload: { status: "ready" } });
@@ -150,7 +159,7 @@ describe("main connector transport", () => {
 
   it("recovers a sequence gap with a full resync", async () => {
     const harness = createHarness();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 2, snapshot: makeSnapshot("t1") });
+    harness.bootstrapWith(2, makeSnapshot("t1"));
     harness.replyWith(T3_CONNECTOR_METHODS.resync, { seq: 6, snapshot: makeSnapshot("t2") });
     const transport = await startHarness(harness);
 
@@ -169,7 +178,7 @@ describe("main connector transport", () => {
 
   it("routes typed commands through the command method", async () => {
     const harness = createHarness();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 0, snapshot: makeSnapshot("t1") });
+    harness.bootstrapWith(1, makeSnapshot("t1"));
     harness.replyWith(T3_CONNECTOR_METHODS.command, { threadId: "t9" });
     const transport = await startHarness(harness);
 
@@ -183,7 +192,7 @@ describe("main connector transport", () => {
 
   it("stops listening after dispose", async () => {
     const harness = createHarness();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 0, snapshot: makeSnapshot("t1") });
+    harness.bootstrapWith(1, makeSnapshot("t1"));
     const transport = await startHarness(harness);
     transport!.dispose();
     harness.emit({ seq: 1, kind: "status", payload: { status: "ready" } });
@@ -192,7 +201,7 @@ describe("main connector transport", () => {
 
   it("supports a renderer reload cycle: a fresh transport resyncs from the current sequence", async () => {
     const harness = createHarness();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 4, snapshot: makeSnapshot("t1") });
+    harness.bootstrapWith(4, makeSnapshot("t1"));
     const first = await startHarness(harness);
     assert.isNotNull(first);
     harness.emit({ seq: 5, kind: "status", payload: { status: "ready" } });
@@ -201,7 +210,7 @@ describe("main connector transport", () => {
     // Renderer reloads (window reload / bundle refresh): the old transport is
     // disposed and a new one bootstraps from main's current snapshot.
     first!.dispose();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 9, snapshot: makeSnapshot("t2") });
+    harness.bootstrapWith(9, makeSnapshot("t2"));
     const second = await startHarness(harness);
     assert.isNotNull(second);
     assert.equal(second!.lastSeq, 9);

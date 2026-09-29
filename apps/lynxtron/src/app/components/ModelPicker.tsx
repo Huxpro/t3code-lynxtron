@@ -68,13 +68,12 @@ export function ModelPicker({ models, selectedModel, onSelect, onClose }: ModelP
     setSearch(e.detail.value);
   }, []);
 
-  const handleOverlayTap = useCallback(() => {
-    onClose();
-  }, [onClose]);
-
-  const handlePanelTap = useCallback((e: any) => {
-    e?.stopPropagation?.();
-  }, []);
+  const handleOverlayTap = useCallback(
+    (event: { target?: unknown; currentTarget?: unknown }) => {
+      if (event.target === event.currentTarget) onClose();
+    },
+    [onClose],
+  );
 
   // Group models by provider
   const providers = useMemo(() => {
@@ -144,7 +143,7 @@ export function ModelPicker({ models, selectedModel, onSelect, onClose }: ModelP
 
   return (
     <view className="picker-overlay" bindtap={handleOverlayTap}>
-      <view className="picker-panel" bindtap={handlePanelTap}>
+      <view className="picker-panel">
         <view className="picker-body">
           <ModelPickerRailSurface>
             {hasFavorites ? (

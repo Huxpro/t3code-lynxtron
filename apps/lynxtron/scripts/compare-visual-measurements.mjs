@@ -102,6 +102,20 @@ export function normalizeCssColor(value) {
     }
   }
 
+  const srgbMatch = normalized.match(/^color\(srgb\s+(.+)\)$/u);
+  if (srgbMatch) {
+    const [components, slashAlpha = "1"] = srgbMatch[1].split("/").map((part) => part.trim());
+    const values = components.split(/\s+/u).filter(Boolean);
+    const channels = values.map((channel) => cssNumber(channel, 1));
+    const alpha = cssNumber(slashAlpha);
+    if (channels.every((channel) => channel !== null) && alpha !== null) {
+      return formatRgba([
+        ...channels.map((channel) => Math.round(clamp(channel, 0, 1) * 255)),
+        alpha,
+      ]);
+    }
+  }
+
   const oklch = functionalColorParts(normalized, "oklch");
   if (oklch && oklch.values.length === 3) {
     const lightness = cssNumber(oklch.values[0]);

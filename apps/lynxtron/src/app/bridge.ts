@@ -21,6 +21,7 @@ import type {
   OrchestrationCheckpointSummary,
   OrchestrationProjectShell,
   OrchestrationProposedPlan,
+  OrchestrationProposedPlanId,
   OrchestrationSessionStatus,
   OrchestrationThreadActivity,
   OrchestrationThreadActivityTone,
@@ -28,6 +29,10 @@ import type {
   TurnId,
   ProviderInteractionMode,
   ProviderInstanceId,
+  ApprovalRequestId,
+  ProviderApprovalDecision,
+  ProviderUserInputAnswers,
+  UploadChatAttachment,
   ProjectListEntriesInput,
   ProjectListEntriesResult,
   ProjectReadFileInput,
@@ -39,6 +44,7 @@ import type {
   SourceControlDiscoveryResult,
   RuntimeMode,
   ModelSelection,
+  VcsStatusResult,
 } from "@t3tools/contracts";
 import type { ModelPickerModel } from "@t3tools/client-runtime/presentation/model-picker";
 import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
@@ -112,8 +118,33 @@ export interface PairingCredentialResult {
 export interface T3ConnectorCommandBridge {
   createThread(input: { projectId?: string; title?: string }): Promise<{ threadId: string }>;
   selectThread(threadId: string): Promise<void>;
-  sendPrompt(input: { threadId: string; text: string }): Promise<void>;
+  sendPrompt(input: {
+    threadId: string;
+    text: string;
+    attachments?: ReadonlyArray<UploadChatAttachment>;
+  }): Promise<void>;
   interrupt(input: { threadId: string }): Promise<void>;
+  respondToApproval(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    decision: ProviderApprovalDecision;
+  }): Promise<void>;
+  respondToUserInput(input: {
+    threadId: string;
+    requestId: ApprovalRequestId;
+    answers: ProviderUserInputAnswers;
+  }): Promise<void>;
+  implementProposedPlan(input: {
+    threadId: string;
+    planId: OrchestrationProposedPlanId;
+    prompt: string;
+  }): Promise<void>;
+  implementProposedPlanInNewThread(input: {
+    sourceThreadId: string;
+    planId: OrchestrationProposedPlanId;
+    prompt: string;
+    title: string;
+  }): Promise<{ threadId: string }>;
   setModelSelection(input: { threadId?: string; selection: ModelSelection }): Promise<void>;
   setThreadRuntimeMode(input: { threadId: string; runtimeMode: RuntimeMode }): Promise<void>;
   setThreadInteractionMode(input: {
@@ -131,6 +162,7 @@ export interface T3ConnectorCommandBridge {
   listProjectEntries(input: ProjectListEntriesInput): Promise<ProjectListEntriesResult>;
   readProjectFile(input: ProjectReadFileInput): Promise<ProjectReadFileResult>;
   writeProjectFile(input: ProjectWriteFileInput): Promise<ProjectWriteFileResult>;
+  refreshVcsStatus(input: { cwd: string }): Promise<VcsStatusResult>;
   discoverSourceControl(): Promise<SourceControlDiscoveryResult>;
   createPairingCredential(input?: { readonly label?: string }): Promise<PairingCredentialResult>;
   revokePairingLink(input: { readonly id: string }): Promise<boolean>;

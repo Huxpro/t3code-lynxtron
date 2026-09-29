@@ -26,8 +26,12 @@ export interface BridgeCallModule {
 }
 
 export interface GlobalEventListenerRegistry {
-  addListener(eventName: string, listener: (...args: unknown[]) => void): void;
-  removeListener?(eventName: string, listener: (...args: unknown[]) => void): void;
+  addListener(eventName: string, listener: (...args: unknown[]) => void, context?: unknown): void;
+  removeListener?(
+    eventName: string,
+    listener: (...args: unknown[]) => void,
+    context?: unknown,
+  ): void;
 }
 
 export interface MainConnectorTransportOptions {
@@ -44,6 +48,7 @@ export interface MainConnectorTransport {
   readonly kind: "main";
   readonly lastSeq: number;
   invoke(method: ConnectorCommandName, params?: unknown): Promise<unknown>;
+  reconnect(): Promise<void>;
   /** Force a full resync; used by tests and the DevTool hook. */
   resync(): Promise<void>;
   dispose(): void;
@@ -98,6 +103,9 @@ export async function startMainConnectorTransport(
   let lastSeq = 0;
   let resyncInFlight = false;
   let disposed = false;
+  let bootstrapping = true;
+  const bufferedEvents: ConnectorEventEnvelope[] = [];
+  let resolveBootstrap: ((ready: boolean) => void) | undefined;
 
   const invoke = (method: ConnectorCommandName, params?: unknown): Promise<unknown> =>
     callBridge(bridgeModule, T3_CONNECTOR_METHODS.command, {
@@ -139,6 +147,19 @@ export async function startMainConnectorTransport(
     if (disposed) return;
     const envelope = args[0];
     if (!isConnectorEventEnvelope(envelope)) return;
+    if (envelope.kind === "snapshot") {
+      if (envelope.seq < lastSeq) return;
+      options.applySnapshot(envelope.payload);
+      lastSeq = envelope.seq;
+      bootstrapping = false;
+      resolveBootstrap?.(true);
+      resolveBootstrap = undefined;
+      return;
+    }
+    if (bootstrapping) {
+      bufferedEvents.push(envelope);
+      return;
+    }
     const disposition = classifyConnectorSequence(lastSeq, envelope.seq);
     if (disposition === "duplicate") return;
     if (disposition === "gap") {
@@ -150,21 +171,26 @@ export async function startMainConnectorTransport(
     options.applyEvent(envelope);
   };
 
-  // Readiness probe: one current snapshot exchange. A timer guards only this
-  // probe so a missing main handler degrades to the polling path instead of
-  // hanging the renderer.
+  registry.addListener(T3_CONNECTOR_EVENT, listener);
   const readyTimeoutMs = options.readyTimeoutMs ?? DEFAULT_READY_TIMEOUT_MS;
   let timeout: ReturnType<typeof setTimeout> | undefined;
-  const ready = await Promise.race([
-    requestSync(T3_CONNECTOR_METHODS.ready),
-    new Promise<boolean>((resolve) => {
-      timeout = setTimeout(() => resolve(false), readyTimeoutMs);
-    }),
-  ]);
+  const readyPromise = new Promise<boolean>((resolve) => {
+    resolveBootstrap = resolve;
+    timeout = setTimeout(() => resolve(false), readyTimeoutMs);
+  });
+  // The Lynxtron callback reply path can fail independently from one-way
+  // invokes. Startup therefore depends only on the sequenced snapshot push.
+  bridgeModule.call(T3_CONNECTOR_METHODS.subscribe, { lastSeq }, () => {});
+  const ready = await readyPromise;
   clearTimeout(timeout);
-  if (!ready) return null;
-
-  registry.addListener(T3_CONNECTOR_EVENT, listener);
+  if (!ready) {
+    registry.removeListener?.(T3_CONNECTOR_EVENT, listener);
+    return null;
+  }
+  bootstrapping = false;
+  bufferedEvents.sort((left, right) => left.seq - right.seq);
+  for (const envelope of bufferedEvents) listener(envelope);
+  bufferedEvents.length = 0;
   log(`[main-transport] push transport active at seq=${lastSeq}`);
 
   return {
@@ -173,6 +199,14 @@ export async function startMainConnectorTransport(
       return lastSeq;
     },
     invoke,
+    reconnect: async () => {
+      const reply = await callBridge(bridgeModule, T3_CONNECTOR_METHODS.reconnect, { lastSeq });
+      if (!isConnectorSyncReply(reply)) {
+        throw new Error("Main connector reconnect returned a malformed sync reply");
+      }
+      options.applySnapshot(reply.snapshot);
+      lastSeq = reply.seq;
+    },
     resync,
     dispose: () => {
       if (disposed) return;

@@ -1,4 +1,8 @@
-import type { ClientUiCapabilities } from "@t3tools/client-runtime/platform";
+import {
+  matchesViewportMediaQuery,
+  type ClientUiCapabilities,
+  type ViewportSnapshot,
+} from "@t3tools/client-runtime/platform";
 
 import { appAtomRegistry } from "../state/atomRegistry";
 import { connectionStatusAtom } from "../state/connectionStatus";
@@ -6,6 +10,7 @@ import { connectionStatusAtom } from "../state/connectionStatus";
 interface PlatformBridge {
   getPrefs?: () => Record<string, unknown>;
   setPrefs?: (patch: Record<string, unknown>) => Record<string, unknown>;
+  getViewport?: () => ViewportSnapshot;
   writeClipboardText?: (value: string) => void;
   openExternal?: (url: string) => Promise<void>;
   openPath?: (path: string) => Promise<void>;
@@ -24,6 +29,12 @@ function bridge(): PlatformBridge | undefined {
   }
 }
 
+export function isClientStorageAvailable(): boolean {
+  "background only";
+  const target = bridge();
+  return Boolean(target?.getPrefs && target.setPrefs);
+}
+
 const storage = {
   getItem(key: string): string | null {
     "background only";
@@ -39,6 +50,12 @@ const storage = {
     bridge()?.setPrefs?.({ [key]: null });
   },
 };
+const FALLBACK_VIEWPORT: ViewportSnapshot = { width: 1280, height: 820, pointer: "fine" };
+
+function getViewport(): ViewportSnapshot {
+  "background only";
+  return bridge()?.getViewport?.() ?? FALLBACK_VIEWPORT;
+}
 
 export const clientCapabilities: ClientUiCapabilities = {
   storage,
@@ -68,8 +85,13 @@ export const clientCapabilities: ClientUiCapabilities = {
     subscribe: () => () => {},
   },
   mediaQuery: {
-    // Lynxtron currently targets a fixed desktop window.
-    matches: (query) => !query.includes("max-width"),
+    // Lynxtron exposes an explicit launch viewport. Runtime resize events are
+    // not available yet, so subscriptions are intentionally inert until the
+    // host can publish a measured viewport update.
+    matches: (query) => matchesViewportMediaQuery(getViewport(), query),
+    getViewport,
+    subscribe: () => () => {},
+    subscribeViewport: () => () => {},
   },
   navigation: {
     canOpenExternal: () => {

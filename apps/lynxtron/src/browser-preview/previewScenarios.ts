@@ -5,8 +5,10 @@ import {
   ProjectId,
   ProviderDriverKind,
   ProviderInstanceId,
+  OrchestrationProposedPlanId,
   ThreadId,
   TurnId,
+  EventId,
   type DesktopAppBranding,
   type OrchestrationProjectShell,
   type OrchestrationThreadShell,
@@ -146,6 +148,102 @@ const threadPayload: ConnectorSnapshot["threads"][string] = {
   activeTurnId: null,
 };
 
+const longTranscriptMessages: ConnectorSnapshot["threads"][string]["messages"] = Array.from(
+  { length: 80 },
+  (_, index) => ({
+    id: MessageId.make(`browser-preview-long-message-${index + 1}`),
+    role: index % 2 === 0 ? ("user" as const) : ("assistant" as const),
+    text:
+      index === 79
+        ? [
+            "Long transcript terminal marker",
+            "",
+            "| Renderer | Result |",
+            "| :--- | ---: |",
+            "| Web | pass |",
+            "| Lynx | pass |",
+            "",
+            "- Parent item",
+            "  - Nested item",
+            "",
+            "```ts title=src/example.ts",
+            "export const parity = true;",
+            "```",
+            "",
+            "[Open docs](https://example.com/docs)",
+            "",
+            "![Parity proof](./evidence/parity.png)",
+          ].join("\n")
+        : `Long transcript message ${index + 1}: preserve order while reading history.`,
+    turnId: TurnId.make(`browser-preview-long-turn-${Math.floor(index / 2) + 1}`),
+    streaming: false,
+    createdAt: new Date(Date.parse(EARLIER) + index * 1_000).toISOString(),
+    updatedAt: new Date(Date.parse(EARLIER) + index * 1_000).toISOString(),
+  }),
+);
+
+const approvalActivity = {
+  id: EventId.make("browser-preview-approval"),
+  sequence: 1,
+  kind: "approval.requested",
+  summary: "Command approval requested",
+  tone: "approval" as const,
+  payload: {
+    requestId: "browser-preview-approval-request",
+    requestKind: "command",
+    detail: "pnpm test --filter composer",
+  },
+  turnId: TURN_ID,
+  createdAt: NOW,
+};
+
+const userInputActivity = {
+  id: EventId.make("browser-preview-user-input"),
+  sequence: 1,
+  kind: "user-input.requested",
+  summary: "User input requested",
+  tone: "info" as const,
+  payload: {
+    requestId: "browser-preview-user-input-request",
+    questions: [
+      {
+        id: "scope",
+        header: "Scope",
+        question: "Which renderer should this change target?",
+        options: [
+          { label: "Lynx", description: "Use the native renderer" },
+          { label: "Web", description: "Use the browser renderer" },
+        ],
+        multiSelect: false,
+      },
+    ],
+  },
+  turnId: TURN_ID,
+  createdAt: NOW,
+};
+
+const proposedPlan = {
+  id: OrchestrationProposedPlanId.make("browser-preview-plan"),
+  turnId: TURN_ID,
+  planMarkdown:
+    "# Complete intervention parity\n\n- Wire the canonical command\n- Verify the resolved state",
+  implementedAt: null,
+  implementationThreadId: null,
+  createdAt: NOW,
+  updatedAt: NOW,
+};
+
+const runningWorkActivity = {
+  id: EventId.make("browser-preview-running-work"),
+  sequence: 1,
+  kind: "tool.completed",
+  summary: "Inspected recovery state",
+  tone: "tool" as const,
+  payload: { status: "completed", data: { toolCallId: "browser-preview-running-tool" } },
+  turnId: TURN_ID,
+  createdAt: NOW,
+};
+
 const access: ConnectorSnapshot["access"] = {
   pairingLinks: [],
   clientSessions: [],
@@ -154,7 +252,16 @@ const access: ConnectorSnapshot["access"] = {
   hasEntries: false,
 };
 
-export type BrowserPreviewScenarioId = "populated-ready" | "populated-connecting";
+export type BrowserPreviewScenarioId =
+  | "populated-ready"
+  | "populated-connecting"
+  | "connection-error"
+  | "long-transcript"
+  | "send-recovery"
+  | "running-turn"
+  | "pending-approval"
+  | "pending-user-input"
+  | "proposed-plan";
 
 export interface BrowserPreviewScenario {
   readonly id: BrowserPreviewScenarioId;
@@ -173,6 +280,9 @@ export interface BrowserPreviewScenario {
 function scenario(
   id: BrowserPreviewScenarioId,
   status: ConnectorSnapshot["status"],
+  activities: NonNullable<ConnectorSnapshot["threads"][string]["activities"]> = [],
+  proposedPlans: NonNullable<ConnectorSnapshot["threads"][string]["proposedPlans"]> = [],
+  threadOverrides: Partial<ConnectorSnapshot["threads"][string]> = {},
 ): BrowserPreviewScenario {
   return {
     id,
@@ -192,7 +302,15 @@ function scenario(
       config,
       access,
       shell: { projects: [project], threads: [thread], archivedThreads: [] },
-      threads: { [THREAD_ID]: threadPayload },
+      threads: {
+        [THREAD_ID]: {
+          ...threadPayload,
+          activities,
+          proposedPlans,
+          activeProposedPlan: proposedPlans[0] ?? null,
+          ...threadOverrides,
+        },
+      },
     },
   };
 }
@@ -205,6 +323,29 @@ export const BROWSER_PREVIEW_SCENARIOS: Readonly<
     status: "connecting",
     detail: "Attaching the deterministic preview connector",
   }),
+  "connection-error": scenario("connection-error", {
+    status: "error",
+    detail: "The local server stopped before the workspace was ready.",
+  }),
+  "long-transcript": scenario("long-transcript", { status: "ready" }, [], [], {
+    messages: longTranscriptMessages,
+  }),
+  "send-recovery": scenario("send-recovery", { status: "ready" }),
+  "running-turn": scenario("running-turn", { status: "ready" }, [runningWorkActivity], [], {
+    sessionStatus: "running",
+    activeTurnId: TURN_ID,
+    latestTurn: {
+      turnId: TURN_ID,
+      state: "running",
+      requestedAt: EARLIER,
+      startedAt: NOW,
+      completedAt: null,
+      assistantMessageId: null,
+    },
+  }),
+  "pending-approval": scenario("pending-approval", { status: "ready" }, [approvalActivity]),
+  "pending-user-input": scenario("pending-user-input", { status: "ready" }, [userInputActivity]),
+  "proposed-plan": scenario("proposed-plan", { status: "ready" }, [], [proposedPlan]),
 };
 
 export const DEFAULT_BROWSER_PREVIEW_SCENARIO_ID: BrowserPreviewScenarioId = "populated-connecting";

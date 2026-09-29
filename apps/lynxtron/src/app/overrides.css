@@ -337,6 +337,7 @@
 
 /* ======================= Sidebar (256px) ======================= */
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 256px;
@@ -348,6 +349,57 @@
   border-right-width: 1px;
   border-right-style: solid;
   border-right-color: var(--sidebar-border);
+}
+.sidebar-v2-scope-anchor {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  min-width: 0;
+  z-index: 101;
+}
+.sidebar-v2-scope-anchor > [data-testid="sidebar-v2-project-scope-trigger"] {
+  width: 100%;
+}
+.sidebar-v2-scope-popup {
+  position: absolute;
+  left: 0;
+  top: 32px;
+  display: flex;
+  flex-direction: column;
+  width: 210px;
+  padding: 4px;
+  background-color: var(--popover);
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 8px;
+  z-index: 102;
+}
+.sidebar-v2-scope-popup > [data-slot="menu-radio-group"] {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.sidebar-v2-scope-popup [data-slot="menu-radio-item"] {
+  display: flex;
+  flex-direction: row;
+  flex-shrink: 0;
+  align-items: center;
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 6px;
+  color: var(--popover-foreground);
+  background-color: var(--popover);
+}
+.lynx-sidebar-scope-menu-backdrop {
+  position: absolute;
+  left: 0;
+  top: 52px;
+  width: 256px;
+  height: 768px;
+  background-color: rgba(0, 0, 0, 0.01);
+  z-index: 100;
 }
 .sidebar-shell {
   position: relative;
@@ -934,6 +986,18 @@
   align-items: center;
 }
 /* ======================= Composer card ======================= */
+/* surface: Composer shell; gap: R9 (Tailwind v3 max-w-3xl is 672px while
+   Web Tailwind v4 resolves the shared token to 768px); remove-when: both
+   renderer builds resolve max-w-3xl from one token scale. */
+.composer-shell {
+  max-width: 768px;
+}
+/* surface: Composer frame; gap: R9 (Tailwind v3 spacing resolves the shared
+   editor/footer stack 8px shorter); remove-when: both renderer builds resolve
+   the shared spacing scale identically. */
+.composer-frame {
+  min-height: 140px;
+}
 .composer-overlay {
   display: flex;
   flex-direction: column;
@@ -948,6 +1012,214 @@
   line-height: 23px;
   font-family: var(--font-sans);
   background-color: transparent;
+}
+.composer-approval-banner {
+  border-bottom-width: 1px;
+  border-color: var(--border);
+  background-color: rgba(39, 39, 42, 0.2);
+}
+.composer-approval-panel {
+  padding: 14px 20px;
+}
+.composer-approval-heading,
+.composer-approval-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.composer-approval-detail {
+  margin-top: 12px;
+  padding: 12px;
+  border-width: 1px;
+  border-color: var(--border);
+  border-radius: 8px;
+  background-color: rgba(10, 10, 10, 0.7);
+}
+.composer-approval-detail-text {
+  margin-top: 8px;
+}
+.composer-approval-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.composer-approval-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: 0 12px;
+  border-width: 1px;
+  border-color: var(--border);
+  border-radius: 8px;
+  color: var(--foreground);
+  font-size: 12px;
+}
+.composer-approval-action-label {
+  color: inherit;
+  font-size: 12px;
+  line-height: 16px;
+}
+.composer-approval-action--primary {
+  color: var(--primary-foreground);
+  background-color: var(--primary);
+}
+.composer-approval-action--danger {
+  color: var(--destructive);
+}
+.composer-approval-error {
+  padding: 0 20px 10px 20px;
+  color: var(--destructive);
+  font-size: 12px;
+}
+.composer-send-error {
+  margin: 0 16px 8px 16px;
+  color: var(--destructive);
+  font-size: 12px;
+}
+.composer-attachments {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.composer-attachment {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  max-width: 240px;
+  padding: 6px 8px;
+  gap: 8px;
+  border-width: 1px;
+  border-color: var(--border);
+  border-radius: 8px;
+  background-color: rgba(39, 39, 42, 0.55);
+}
+.composer-attachment-name {
+  flex: 1;
+  color: var(--foreground);
+  font-size: 12px;
+}
+.composer-attachment-remove {
+  color: var(--muted-foreground);
+  font-size: 11px;
+}
+.composer-image-attachment {
+  width: 64px;
+  height: 64px;
+  border-width: 1px;
+  border-color: var(--border);
+  border-radius: 8px;
+}
+.composer-image-attachment-preview,
+.composer-image-attachment-image {
+  width: 64px;
+  height: 64px;
+}
+.composer-image-attachment-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background-color: rgba(10, 10, 10, 0.82);
+}
+.composer-image-attachment-remove-glyph {
+  color: var(--foreground);
+  font-size: 14px;
+}
+.composer-user-input-banner {
+  border-bottom-width: 1px;
+  border-color: var(--border);
+  background-color: rgba(39, 39, 42, 0.2);
+}
+.composer-user-input-panel {
+  padding: 12px 20px;
+}
+.composer-user-input-heading,
+.composer-user-input-actions,
+.composer-user-input-option {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.composer-user-input-heading,
+.composer-user-input-actions {
+  gap: 8px;
+}
+.composer-user-input-progress {
+  color: var(--muted-foreground);
+  font-size: 10px;
+}
+.composer-user-input-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+}
+.composer-user-input-option {
+  min-height: 38px;
+  justify-content: space-between;
+  padding: 7px 12px;
+  border-width: 1px;
+  border-color: transparent;
+  border-radius: 8px;
+  background-color: rgba(39, 39, 42, 0.22);
+}
+.composer-user-input-option--selected {
+  border-color: var(--primary);
+  background-color: rgba(39, 39, 42, 0.45);
+}
+.composer-user-input-option-copy {
+  display: flex;
+  flex-direction: column;
+}
+.composer-user-input-option-label {
+  color: var(--foreground);
+  font-size: 14px;
+}
+.composer-user-input-option-description,
+.composer-user-input-hint {
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.composer-user-input-check {
+  color: var(--primary);
+}
+.composer-plan-follow-up-banner {
+  border-bottom-width: 1px;
+  border-color: var(--border);
+  background-color: rgba(39, 39, 42, 0.2);
+}
+.composer-plan-follow-up {
+  padding: 14px 20px;
+}
+.composer-plan-follow-up-heading {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.composer-plan-follow-up-badge {
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--primary);
+  background-color: rgba(59, 130, 246, 0.14);
+  font-size: 11px;
+  font-weight: 600;
+}
+.composer-plan-follow-up-title {
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 500;
+}
+.composer-plan-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
 }
 /* Toolbar pill */
 .pill {
@@ -1005,6 +1277,7 @@
 /* surface: composer context strip; gap: R7 (tucked overlap/bottom radius);
    remove-when: the shared ComposerContextStrip anatomy covers tucked overlap. */
 .composer-context-strip {
+  min-height: 48px;
   margin: -16px 12px 0 12px;
   padding: 20px 4px 4px 4px;
   background-color: var(--strip-surface);
@@ -1026,7 +1299,10 @@
 /* surface: composer card surface color; gap: none (token passthrough);
    remove-when: surface color compiles from the shared composition. */
 .composer-surface {
-  background-color: var(--composer-surface);
+  /* surface: Composer glass; gap: R9 (Lynx cannot render Web's backdrop
+     pseudo-element, so the native surface owns the same 80% translucent
+     foreground layer); remove-when: Lynx supports the shared glass pseudo. */
+  background-color: rgba(20, 20, 20, 0.8);
 }
 
 /* surface: composer hero headline slot; gap: R7 (absolute slot positioning);
@@ -1230,6 +1506,39 @@
 .md-link {
   color: var(--primary);
   text-decoration: underline;
+}
+.md-image-block,
+.md-image-fallback {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 8px 0;
+}
+.md-image {
+  width: 100%;
+  height: 240px;
+  border-radius: 8px;
+  background-color: var(--muted);
+}
+.md-image-caption,
+.md-image-fallback-source {
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+}
+.md-image-fallback {
+  padding: 10px 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 8px;
+  background-color: var(--muted);
+}
+.md-image-fallback-label {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 600;
 }
 .md-code-block {
   display: flex;
@@ -3159,4 +3468,100 @@
   font-size: 13px;
   font-weight: 600;
   font-family: var(--font-sans);
+}
+/* Lynx Web does not currently retain Tailwind's flex-col/flex-1 declarations
+ * on the shared chat route. Keep the product anatomy shared and pin only the
+ * platform layout contract here so lifecycle banners occupy their own row. */
+.lynx-chat-route-column {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.lynx-chat-route-body,
+.lynx-chat-route-content {
+  display: flex;
+  flex: 1 1 0%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.lynx-chat-route-content {
+  flex-direction: column;
+}
+
+.lynx-connector-lifecycle {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  flex-shrink: 0;
+  min-height: 52px;
+  margin: 8px 12px 0;
+  padding: 10px 12px;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 8px;
+}
+.lynx-connector-lifecycle--neutral {
+  color: var(--foreground);
+  background-color: rgba(var(--muted-rgb), 0.55);
+  border-color: var(--border);
+}
+.lynx-connector-lifecycle--warning {
+  color: var(--foreground);
+  background-color: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.25);
+}
+.lynx-connector-lifecycle--error {
+  color: var(--foreground);
+  background-color: rgba(var(--destructive-rgb), 0.08);
+  border-color: rgba(var(--destructive-rgb), 0.35);
+}
+.lynx-connector-lifecycle__marker-slot {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 8px;
+  height: 16px;
+  margin-right: 10px;
+}
+.lynx-connector-lifecycle__marker {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+}
+.lynx-connector-lifecycle--error .lynx-connector-lifecycle__marker {
+  background-color: var(--destructive);
+}
+.lynx-connector-lifecycle__body {
+  flex-grow: 1;
+  min-width: 0;
+}
+.lynx-connector-lifecycle__title {
+  color: var(--foreground);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+.lynx-connector-lifecycle__description {
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 16px;
+}
+.lynx-connector-lifecycle__action {
+  flex-shrink: 0;
+  min-height: 26px;
+  margin-left: 12px;
+  padding: 4px 10px;
+  color: var(--foreground);
+  font-size: 11px;
+  font-weight: 500;
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(var(--destructive-rgb), 0.3);
+  border-radius: 6px;
+  background-color: var(--background);
 }

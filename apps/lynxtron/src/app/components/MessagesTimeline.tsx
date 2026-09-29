@@ -346,6 +346,23 @@ export function MessagesTimeline({
     scrollToEnd(true);
   }, [scrollToEnd]);
 
+  useEffect(() => {
+    (
+      globalThis as typeof globalThis & {
+        __T3_LYNXTRON_TRANSCRIPT_FOLLOW__?: {
+          following: boolean;
+          atEnd: boolean;
+          rowCount: number;
+          anchorMessageId: string | null;
+        };
+      }
+    ).__T3_LYNXTRON_TRANSCRIPT_FOLLOW__ = {
+      ...followState,
+      rowCount: rows.length,
+      anchorMessageId,
+    };
+  }, [anchorMessageId, followState, rows.length]);
+
   const handleToggleTurn = useCallback((turnId: TurnId) => {
     setExpandedTurnIds((current) => {
       const next = new Set(current);
@@ -380,7 +397,12 @@ export function MessagesTimeline({
   }
 
   return (
-    <view className="timeline-host">
+    <view
+      className="timeline-host"
+      data-transcript-following={followState.following ? "true" : "false"}
+      data-transcript-at-end={followState.atEnd ? "true" : "false"}
+      data-transcript-row-count={String(rows.length)}
+    >
       <list
         ref={listRef}
         className="timeline-list"

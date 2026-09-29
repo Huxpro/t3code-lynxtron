@@ -18,11 +18,11 @@
     {
       "id": "composer",
       "web": ".chat-composer-glass-shell",
-      "lynx": ".composer-card"
+      "lynx": ".composer-shell"
     },
     {
       "id": "sidebarSearch",
-      "web": "[data-sidebar-version=\"v2\"] [data-slot=\"command-dialog-trigger\"]",
+      "web": "[data-sidebar-version=\"v2\"] .sidebar-v2-search",
       "lynx": ".sidebar-v2-search"
     },
     {
@@ -39,7 +39,7 @@
     },
     {
       "id": "sidebarSearch",
-      "web": "[data-sidebar-version=\"v2\"] [data-slot=\"command-dialog-trigger\"]",
+      "web": "[data-sidebar-version=\"v2\"] input[aria-label=\"Search threads\"]",
       "lynx": ".sidebar-v2-search-label"
     },
     {
@@ -52,7 +52,8 @@
     {
       "id": "appBackground",
       "web": "body",
-      "lynx": ".app-root"
+      "lynx": ".app-root",
+      "properties": ["backgroundColor"]
     },
     {
       "id": "sidebarBackground",
@@ -61,13 +62,16 @@
     },
     {
       "id": "composerBackground",
-      "web": "[data-chat-composer-form=\"true\"]",
-      "lynx": ".composer"
+      "web": ".chat-composer-glass-shell",
+      "webPseudo": "::before",
+      "lynx": ".composer-surface",
+      "properties": ["backgroundColor"]
     },
     {
       "id": "sidebarSearchBackground",
-      "web": "[data-sidebar-version=\"v2\"] [data-slot=\"command-dialog-trigger\"]",
-      "lynx": ".sidebar-v2-search"
+      "web": "[data-sidebar-version=\"v2\"] .sidebar-v2-search",
+      "lynx": ".sidebar-v2-search",
+      "properties": ["backgroundColor"]
     }
   ]
 }

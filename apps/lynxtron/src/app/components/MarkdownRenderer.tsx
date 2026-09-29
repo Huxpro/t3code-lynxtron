@@ -2,10 +2,12 @@ import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx
 import {
   parseMarkdownFenceInfo,
   parseMarkdownInline,
+  parseMarkdownImage,
   parseMarkdownListItem,
   parseMarkdownTable,
   resolveMarkdownFileLinkMeta,
   type MarkdownInlinePresentation,
+  type MarkdownImagePresentation,
   type MarkdownListItemPresentation,
   type MarkdownTablePresentation,
 } from "@t3tools/client-runtime/presentation/markdown";
@@ -15,7 +17,16 @@ import { clientCapabilities } from "../platform/clientCapabilities";
 // formatting used in AI assistant responses.
 
 interface ParsedBlock {
-  type: "heading" | "paragraph" | "code" | "list" | "blockquote" | "table" | "hr" | "empty";
+  type:
+    | "heading"
+    | "paragraph"
+    | "image"
+    | "code"
+    | "list"
+    | "blockquote"
+    | "table"
+    | "hr"
+    | "empty";
   level?: number; // heading level
   items?: MarkdownListItemPresentation[]; // list items
   text?: string; // paragraph or blockquote text
@@ -24,6 +35,7 @@ interface ParsedBlock {
   title?: string; // code block filename/title
   quoteDepth?: number;
   table?: MarkdownTablePresentation;
+  image?: MarkdownImagePresentation;
 }
 
 function activateMarkdownLink(href: string, cwd: string | undefined): void {
@@ -158,6 +170,13 @@ function parseBlocks(text: string): ParsedBlock[] {
       continue;
     }
 
+    const image = parseMarkdownImage(line);
+    if (image) {
+      blocks.push({ type: "image", image });
+      i++;
+      continue;
+    }
+
     // List
     if (parseMarkdownListItem(line)) {
       const items: MarkdownListItemPresentation[] = [];
@@ -180,6 +199,7 @@ function parseBlocks(text: string): ParsedBlock[] {
       !lines[i]!.match(/^(#{1,6})\s/) &&
       !lines[i]!.match(/^((?:>\s*)+)(.*)$/) &&
       !parseMarkdownTable(lines.slice(i)) &&
+      !parseMarkdownImage(lines[i]!) &&
       !parseMarkdownListItem(lines[i]!) &&
       !/^(-{3,}|\*{3,}|_{3,})\s*$/.test(lines[i]!.trim())
     ) {
@@ -207,7 +227,12 @@ function MarkdownCodeBlock({ block, blockKey }: { block: ParsedBlock; blockKey: 
   }, [block.code]);
 
   return (
-    <view key={blockKey} className="md-code-block">
+    <view
+      key={blockKey}
+      className="md-code-block"
+      data-code-length={String((block.code ?? "").length)}
+      data-copy-state={copied ? "copied" : "idle"}
+    >
       <view className="md-code-header">
         <text className="md-code-lang">{block.title ?? block.language ?? "Code"}</text>
         <text className="md-code-copy" bindtap={handleCopy}>
@@ -248,6 +273,25 @@ function renderBlock(block: ParsedBlock, idx: number, cwd: string | undefined): 
 
     case "code":
       return <MarkdownCodeBlock key={key} block={block} blockKey={key} />;
+
+    case "image": {
+      const image = block.image;
+      if (!image) return <view key={key} />;
+      if (/^(?:https?:|data:)/i.test(image.src)) {
+        return (
+          <view key={key} className="md-image-block">
+            <image className="md-image" src={image.src} mode="aspectFit" />
+            {image.alt ? <text className="md-image-caption">{image.alt}</text> : null}
+          </view>
+        );
+      }
+      return (
+        <view key={key} className="md-image-fallback">
+          <text className="md-image-fallback-label">Image: {image.alt || "Untitled"}</text>
+          <text className="md-image-fallback-source">{image.src}</text>
+        </view>
+      );
+    }
 
     case "list": {
       const items = block.items ?? [];

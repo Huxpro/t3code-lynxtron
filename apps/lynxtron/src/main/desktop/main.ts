@@ -9,6 +9,7 @@ import {
 } from "./keyboardMenu.ts";
 import { MainConnectorHost } from "./mainConnectorHost.ts";
 import { resolveLynxtronViewport } from "./windowViewport.ts";
+import { startLynxtronWindow } from "./windowStartup.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
@@ -133,8 +134,6 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
     host.dispose();
   });
   host.connect().catch((error: unknown) => {
-    // The connector already surfaced the failure through its status events;
-    // this catch only keeps an unhandled rejection out of main.
     console.log(
       `[main-connector] connect failed: ${error instanceof Error ? error.message : String(error)}`,
     );
@@ -155,11 +154,19 @@ app.whenReady().then(() => {
     },
   });
 
+  startLynxtronWindow({
+    attachConnectorHost: () => {
+      if (process.env.T3_LYNXTRON_WITHHOLD_CONNECTOR_BRIDGE === "1") {
+        console.log("[main-connector] connector bridge withheld by readiness harness");
+        return undefined;
+      }
+      return startMainConnectorHost(win);
+    },
+    loadRenderer: () => win.loadFile(LYNX_BUNDLE_PATH),
+  });
   win.show();
-  win.loadFile(LYNX_BUNDLE_PATH);
   nudgeFramedWindowViewport(win);
   installDiscreteKeyboardMenu(win);
-  startMainConnectorHost(win);
 
   // P3-S1 capability probe (R3/R5): prove at runtime whether the declared
   // LynxWindow.sendGlobalEvent delivers from main to the renderer. Only runs
