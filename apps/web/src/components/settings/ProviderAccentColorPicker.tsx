@@ -8,15 +8,7 @@ import { Button } from "../ui/button";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
 import { normalizeProviderAccentColor } from "@t3tools/client-runtime/presentation/provider";
 import { cn } from "../../lib/utils";
-
-const PROVIDER_ACCENT_SWATCHES = [
-  "#2563eb",
-  "#16a34a",
-  "#ea580c",
-  "#dc2626",
-  "#7c3aed",
-  "#0891b2",
-] as const;
+import { PROVIDER_ACCENT_SWATCHES } from "./providerDriverCatalog";
 
 const FALLBACK_ACCENT_COLOR = PROVIDER_ACCENT_SWATCHES[0];
 

@@ -18801,11 +18801,6 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1205,
-              "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
-            },
-            {
-              "classification": "EXCLUSIVE",
               "lines": 1185,
               "path": "apps/lynxtron/src/app/components/ChatView.tsx"
             },
@@ -18813,6 +18808,11 @@
               "classification": "EXCLUSIVE",
               "lines": 1165,
               "path": "packages/client-runtime/src/presentation/markdown.ts"
+            },
+            {
+              "classification": "EXCLUSIVE",
+              "lines": 1146,
+              "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
             },
             {
               "classification": "EXCLUSIVE",
@@ -19976,6 +19976,11 @@
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "../../../../web/src/components/settings/AddProviderInstanceDialog.logic",
                 "to": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
@@ -21446,6 +21451,11 @@
                 "from": "apps/web/src/components/settings/KeybindingsSettings.logic.ts",
                 "request": "@t3tools/shared/keybindings",
                 "to": "packages/shared/src/keybindings.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/settingsLayout.lynx.tsx",
@@ -23528,8 +23538,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 87993,
-            "eligibleModules": 362,
+            "eligibleLines": 88054,
+            "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -23738,7 +23748,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1205,
+                "lines": 1146,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
@@ -24183,7 +24193,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
@@ -24210,6 +24220,11 @@
                 "classification": "EXCLUSIVE",
                 "lines": 375,
                 "path": "apps/web/src/components/settings/KeybindingsSettings.logic.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "classification": "SPLIT",
@@ -212342,13 +212357,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 240,
             "PATCHED": 0,
-            "SHARED": 72,
+            "SHARED": 73,
             "SPLIT": 8
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66574,
-            "modules": 320
+            "lines": 66579,
+            "modules": 321
           },
           "largestNonShared": [
             {
@@ -212368,7 +212383,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1205,
+              "lines": 1146,
               "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
             },
             {
@@ -212443,6 +212458,11 @@
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "../../../../web/src/components/settings/AddProviderInstanceDialog.logic",
                 "to": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
@@ -212823,6 +212843,11 @@
                 "from": "apps/web/src/components/settings/generalSettingsStore.ts",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/settingsLayout.lynx.tsx",
@@ -213650,8 +213675,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26884,
-            "eligibleModules": 119,
+            "eligibleLines": 26945,
+            "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -213665,7 +213690,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1205,
+                "lines": 1146,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
@@ -213896,12 +213921,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18585,
-            "modules": 72
+            "lines": 18705,
+            "modules": 73
           },
           "reusePercent": {
-            "lines": 27.9,
-            "modules": 22.5
+            "lines": 28.1,
+            "modules": 22.7
           },
           "web": {
             "edges": [
@@ -214417,6 +214442,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -214607,13 +214637,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -218649,12 +218694,12 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -218679,12 +218724,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -220110,13 +220160,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 224,
             "PATCHED": 0,
-            "SHARED": 68,
+            "SHARED": 69,
             "SPLIT": 7
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63950,
-            "modules": 299
+            "lines": 63955,
+            "modules": 300
           },
           "largestNonShared": [
             {
@@ -220136,7 +220186,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1205,
+              "lines": 1146,
               "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
             },
             {
@@ -220211,6 +220261,11 @@
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "../../../../web/src/components/settings/AddProviderInstanceDialog.logic",
                 "to": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
@@ -220564,6 +220619,11 @@
               },
               {
                 "from": "apps/lynxtron/src/shared/connectorProtocol.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
                 "request": "@t3tools/contracts",
                 "to": "packages/contracts/src/index.ts"
               },
@@ -221363,8 +221423,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26350,
-            "eligibleModules": 112,
+            "eligibleLines": 26411,
+            "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -221378,7 +221438,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1205,
+                "lines": 1146,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
@@ -221594,12 +221654,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18232,
-            "modules": 68
+            "lines": 18352,
+            "modules": 69
           },
           "reusePercent": {
-            "lines": 28.5,
-            "modules": 22.7
+            "lines": 28.7,
+            "modules": 23
           },
           "web": {
             "edges": [
@@ -222035,6 +222095,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -222215,13 +222280,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -226067,12 +226147,12 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -226087,12 +226167,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -227452,13 +227537,13 @@
           "classificationCounts": {
             "EXCLUSIVE": 309,
             "PATCHED": 0,
-            "SHARED": 108,
+            "SHARED": 109,
             "SPLIT": 8
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 88802,
-            "modules": 425
+            "lines": 88807,
+            "modules": 426
           },
           "largestNonShared": [
             {
@@ -227498,7 +227583,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1205,
+              "lines": 1146,
               "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
             },
             {
@@ -227578,6 +227663,11 @@
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
                 "request": "../../../../web/src/components/settings/AddProviderInstanceDialog.logic",
                 "to": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
+              },
+              {
+                "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
+                "request": "../../../../web/src/components/settings/providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/lynxtron/src/app/components/ProviderSettings.tsx",
@@ -228068,6 +228158,11 @@
                 "from": "apps/web/src/components/settings/generalSettingsStore.ts",
                 "request": "react",
                 "to": "apps/lynxtron/src/app/react-tanstack-shim.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/settingsLayout.lynx.tsx",
@@ -229625,8 +229720,8 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 37020,
-            "eligibleModules": 193,
+            "eligibleLines": 37081,
+            "eligibleModules": 194,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
@@ -229645,7 +229740,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1205,
+                "lines": 1146,
                 "path": "apps/lynxtron/src/app/components/ProviderSettings.tsx"
               },
               {
@@ -230062,12 +230157,12 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23390,
-            "modules": 108
+            "lines": 23510,
+            "modules": 109
           },
           "reusePercent": {
-            "lines": 26.3,
-            "modules": 25.4
+            "lines": 26.5,
+            "modules": 25.6
           },
           "web": {
             "edges": [
@@ -231588,6 +231683,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -231823,13 +231923,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -237495,12 +237610,12 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -237535,12 +237650,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
+                "classification": "SHARED",
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -264260,15 +264380,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 234,
+            "EXCLUSIVE": 235,
             "PATCHED": 0,
             "SHARED": 62,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63950,
-            "modules": 299
+            "lines": 63955,
+            "modules": 300
           },
           "largestNonShared": [
             {
@@ -266024,6 +266144,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -266204,13 +266329,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -270056,12 +270196,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -270076,12 +270216,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -271439,15 +271584,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 234,
+            "EXCLUSIVE": 235,
             "PATCHED": 0,
             "SHARED": 62,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63950,
-            "modules": 299
+            "lines": 63955,
+            "modules": 300
           },
           "largestNonShared": [
             {
@@ -273203,6 +273348,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -273383,13 +273533,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -277235,12 +277400,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -277255,12 +277420,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -278615,15 +278785,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 235,
+            "EXCLUSIVE": 236,
             "PATCHED": 0,
             "SHARED": 62,
             "SPLIT": 3
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63961,
-            "modules": 300
+            "lines": 63966,
+            "modules": 301
           },
           "largestNonShared": [
             {
@@ -279953,7 +280123,7 @@
           },
           "reusePercent": {
             "lines": 26.4,
-            "modules": 20.7
+            "modules": 20.6
           },
           "web": {
             "edges": [
@@ -280389,6 +280559,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -280569,13 +280744,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -284426,12 +284616,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -284446,12 +284636,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -332360,15 +332555,15 @@
       "graphs": {
         "productSurface": {
           "classificationCounts": {
-            "EXCLUSIVE": 228,
+            "EXCLUSIVE": 229,
             "PATCHED": 0,
             "SHARED": 67,
             "SPLIT": 4
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63950,
-            "modules": 299
+            "lines": 63955,
+            "modules": 300
           },
           "largestNonShared": [
             {
@@ -333748,7 +333943,7 @@
           },
           "reusePercent": {
             "lines": 28.5,
-            "modules": 22.4
+            "modules": 22.3
           },
           "web": {
             "edges": [
@@ -334184,6 +334379,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -334364,13 +334564,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -338216,12 +338431,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -338236,12 +338451,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -339599,15 +339819,15 @@
         },
         "rendererLocal": {
           "classificationCounts": {
-            "EXCLUSIVE": 228,
+            "EXCLUSIVE": 229,
             "PATCHED": 0,
             "SHARED": 67,
             "SPLIT": 4
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63950,
-            "modules": 299
+            "lines": 63955,
+            "modules": 300
           },
           "largestNonShared": [
             {
@@ -340987,7 +341207,7 @@
           },
           "reusePercent": {
             "lines": 28.5,
-            "modules": 22.4
+            "modules": 22.3
           },
           "web": {
             "edges": [
@@ -341423,6 +341643,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -341603,13 +341828,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -345455,12 +345695,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -345475,12 +345715,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -346835,15 +347080,15 @@
         },
         "route": {
           "classificationCounts": {
-            "EXCLUSIVE": 229,
+            "EXCLUSIVE": 230,
             "PATCHED": 0,
             "SHARED": 67,
             "SPLIT": 4
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63957,
-            "modules": 300
+            "lines": 63962,
+            "modules": 301
           },
           "largestNonShared": [
             {
@@ -348669,6 +348914,11 @@
               },
               {
                 "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx",
                 "request": "./providerDriverMeta",
                 "to": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
@@ -348849,13 +349099,28 @@
               },
               {
                 "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx",
                 "request": "@t3tools/client-runtime/presentation/provider",
                 "to": "packages/client-runtime/src/presentation/provider.ts"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverCatalog.ts",
+                "request": "@t3tools/contracts",
+                "to": "packages/contracts/src/index.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
                 "request": "../Icons",
                 "to": "apps/web/src/components/Icons.tsx"
+              },
+              {
+                "from": "apps/web/src/components/settings/providerDriverMeta.ts",
+                "request": "./providerDriverCatalog",
+                "to": "apps/web/src/components/settings/providerDriverCatalog.ts"
               },
               {
                 "from": "apps/web/src/components/settings/providerDriverMeta.ts",
@@ -352706,12 +352971,12 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 36,
+                "lines": 74,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.logic.ts"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 440,
+                "lines": 376,
                 "path": "apps/web/src/components/settings/AddProviderInstanceDialog.tsx"
               },
               {
@@ -352726,12 +352991,17 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 335,
+                "lines": 327,
                 "path": "apps/web/src/components/settings/ProviderAccentColorPicker.tsx"
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 90,
+                "lines": 82,
+                "path": "apps/web/src/components/settings/providerDriverCatalog.ts"
+              },
+              {
+                "classification": "EXCLUSIVE",
+                "lines": 47,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {

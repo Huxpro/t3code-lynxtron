@@ -161,6 +161,19 @@
       "carried": [
         "--verify-compact-controls fails at 900x820 with the Files panel on the pre-M4 baseline (9600de35c) too: the compact menu never appears after the trigger tap. At 700x820 the menu opens and lists traits, Mode, and Access."
       ]
+    },
+    {
+      "id": "settings-providers-catalog",
+      "change": "Provider driver labels, order, settings schemas, Early Access badges, the coming-soon list, accent swatches, and instance-id derive/validate move to Web providerDriverCatalog.ts and AddProviderInstanceDialog.logic.ts. Web layers icons on top; Lynx deletes its copies. Lynx now applies Web rule that instance ids longer than 64 characters report \"Instance ID must be 64 characters or fewer.\"",
+      "gates": {
+        "providersSettings": {
+          "status": "fail (pre-existing)",
+          "detail": "Panel top is y=100 against a pinned 88 on the pre-slice commit too; cards, Early Access badges, and actions render for all five drivers."
+        }
+      },
+      "carried": [
+        "--verify-providers-settings pins the settings panel top at y=88; the current shell places it at y=100 on the pre-slice commit as well."
+      ]
     }
   ]
 }

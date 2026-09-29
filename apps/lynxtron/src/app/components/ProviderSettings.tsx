@@ -20,16 +20,10 @@ import {
   readProviderConfigBoolean,
   readProviderConfigString,
   readProviderConfigStringArray,
-  type ProviderSettingsSchema,
 } from "@t3tools/client-runtime/presentation/provider-settings-fields";
 import { withProviderCustomModels } from "@t3tools/client-runtime/presentation/provider-settings";
 import {
   DEFAULT_SERVER_SETTINGS,
-  ClaudeSettings,
-  CodexSettings,
-  CursorSettings,
-  GrokSettings,
-  OpenCodeSettings,
   ProviderDriverKind,
   ProviderInstanceId,
   type ProviderInstanceConfig,
@@ -43,8 +37,16 @@ import {
 import * as Duration from "effect/Duration";
 import {
   ADD_PROVIDER_WIZARD_STEPS,
+  deriveProviderInstanceId,
   resolveWizardNavigation,
+  validateProviderInstanceId,
 } from "../../../../web/src/components/settings/AddProviderInstanceDialog.logic";
+import {
+  COMING_SOON_PROVIDER_DRIVERS,
+  PROVIDER_ACCENT_SWATCHES,
+  PROVIDER_DRIVER_DEFINITION_BY_VALUE,
+  PROVIDER_DRIVER_DEFINITIONS,
+} from "../../../../web/src/components/settings/providerDriverCatalog";
 import { ProviderInstanceCardSurface } from "../../../../web/src/components/settings/SettingsSurfaces";
 import {
   backgroundActivityOverrideSettings,
@@ -114,71 +116,11 @@ const PROVIDER_STATUS_DOT_CLASSES: Record<ProviderStatusKey, string> = {
   warning: "provider-card__status-dot--warn",
 };
 
-const PROVIDER_SETTINGS_SCHEMAS: Readonly<Record<string, ProviderSettingsSchema>> = {
-  codex: CodexSettings,
-  claudeAgent: ClaudeSettings,
-  cursor: CursorSettings,
-  grok: GrokSettings,
-  opencode: OpenCodeSettings,
-};
-
-const PROVIDER_SETTINGS_DRIVER_ORDER = Object.keys(PROVIDER_SETTINGS_SCHEMAS).map((driver) =>
-  ProviderDriverKind.make(driver),
+const PROVIDER_SETTINGS_DRIVER_ORDER = PROVIDER_DRIVER_DEFINITIONS.map(
+  (definition) => definition.value,
 );
 
-const PROVIDER_ACCENT_SWATCHES = [
-  "#2563eb",
-  "#16a34a",
-  "#ea580c",
-  "#dc2626",
-  "#7c3aed",
-  "#0891b2",
-] as const;
-
-const COMING_SOON_PROVIDER_DRIVERS = [
-  { driver: ProviderDriverKind.make("githubCopilot"), label: "Github Copilot" },
-  { driver: ProviderDriverKind.make("gemini"), label: "Gemini" },
-  { driver: ProviderDriverKind.make("acpRegistry"), label: "ACP Registry" },
-  { driver: ProviderDriverKind.make("piAgent"), label: "Pi Agent" },
-] as const;
-
 const PROVIDER_MOTION_DURATION_MS = 200;
-
-const PROVIDER_DRIVER_LABELS: Readonly<Record<string, string>> = {
-  codex: "Codex",
-  claudeAgent: "Claude",
-  cursor: "Cursor",
-  grok: "Grok",
-  opencode: "OpenCode",
-};
-
-function providerLabel(driver: ProviderDriverKind): string {
-  return PROVIDER_DRIVER_LABELS[driver] ?? String(driver);
-}
-
-function deriveProviderInstanceId(driver: ProviderDriverKind, label: string): string {
-  const slug = label
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "")
-    .slice(0, 48);
-  return slug ? `${driver}_${slug}` : "";
-}
-
-function validateProviderInstanceId(
-  instanceId: string,
-  existingIds: ReadonlyArray<string>,
-): string | null {
-  if (!instanceId) return "Instance ID is required.";
-  if (!/^[a-zA-Z][a-zA-Z0-9_-]{0,63}$/.test(instanceId)) {
-    return "Instance ID must start with a letter and use only letters, digits, '-', or '_'.";
-  }
-  if (existingIds.includes(instanceId)) {
-    return `An instance named '${instanceId}' already exists.`;
-  }
-  return null;
-}
 
 function prefersReducedMotion(): boolean {
   const target = globalThis as {
@@ -277,7 +219,7 @@ function ProviderConfigFields({
   instance: ProviderInstanceConfig;
   onChange: (next: ProviderInstanceConfig) => void;
 }) {
-  const schema = PROVIDER_SETTINGS_SCHEMAS[driver];
+  const schema = PROVIDER_DRIVER_DEFINITION_BY_VALUE[driver]?.settingsSchema;
   const fields = useMemo(() => (schema ? deriveProviderSettingsFields(schema) : []), [schema]);
   if (fields.length === 0) return null;
   return (
@@ -434,6 +376,7 @@ function ProviderCard({
     [entry],
   );
   const statusKey: ProviderStatusKey = entry.enabled ? entry.status : "disabled";
+  const driverBadgeLabel = PROVIDER_DRIVER_DEFINITION_BY_VALUE[entry.driverKind]?.badgeLabel;
   const summary = getProviderSummary({
     ...entry.snapshot,
     enabled: entry.enabled,
@@ -490,8 +433,8 @@ function ProviderCard({
       }
       title={entry.displayName}
       badge={
-        entry.driverKind === "cursor" || entry.driverKind === "grok" ? (
-          <text className="provider-card__badge">Early Access</text>
+        driverBadgeLabel ? (
+          <text className="provider-card__badge">{driverBadgeLabel}</text>
         ) : undefined
       }
       version={
@@ -729,7 +672,7 @@ export function AddProviderInstanceDialog({
     wasOpenRef.current = open;
   }, [open]);
   const instanceId = instanceIdDraft.trim() || deriveProviderInstanceId(driver, label);
-  const existingIds = Object.keys(settings?.providerInstances ?? {});
+  const existingIds = new Set(Object.keys(settings?.providerInstances ?? {}));
   const instanceIdError = validateProviderInstanceId(instanceId, existingIds);
   const configDraft = configByDriver[driver];
   const instanceDraft: ProviderInstanceConfig = {
@@ -845,7 +788,7 @@ export function AddProviderInstanceDialog({
                   <text className="provider-instance-dialog__label">Driver</text>
                 </view>
                 <view className="provider-instance-dialog__drivers">
-                  {PROVIDER_SETTINGS_DRIVER_ORDER.map((option) => (
+                  {PROVIDER_DRIVER_DEFINITIONS.map(({ value: option, label, badgeLabel }) => (
                     <view
                       key={option}
                       className={
@@ -857,26 +800,24 @@ export function AddProviderInstanceDialog({
                       bindtap={() => setDriver(option)}
                     >
                       <ProviderBrandIcon driverKind={option} size={16} />
-                      <text className="provider-instance-dialog__driver-label">
-                        {providerLabel(option)}
-                      </text>
+                      <text className="provider-instance-dialog__driver-label">{label}</text>
                       {option === driver ? (
                         <view className="provider-instance-dialog__driver-check">
                           <Icon name="check" size={14} color="#ffffff" />
                         </view>
                       ) : null}
-                      {option === "cursor" || option === "grok" ? (
-                        <text className="provider-instance-dialog__early-access">Early Access</text>
+                      {badgeLabel ? (
+                        <text className="provider-instance-dialog__early-access">{badgeLabel}</text>
                       ) : null}
                     </view>
                   ))}
                   {COMING_SOON_PROVIDER_DRIVERS.map((option) => (
                     <view
-                      key={option.driver}
+                      key={option.value}
                       className="provider-instance-dialog__driver provider-instance-dialog__driver--disabled"
                       aria-disabled="true"
                     >
-                      <ProviderBrandIcon driverKind={option.driver} size={16} />
+                      <ProviderBrandIcon driverKind={option.value} size={16} />
                       <text className="provider-instance-dialog__driver-label">{option.label}</text>
                       <text className="provider-instance-dialog__coming-soon">Coming Soon</text>
                     </view>

@@ -492,8 +492,8 @@ describe("desktop shell interaction contract", () => {
     const uiState = readFileSync(path.resolve(import.meta.dirname, "../state/uiState.ts"), "utf8");
 
     expect(providers).toContain("deriveProviderSettingsFields(schema)");
-    expect(providers).toContain("CodexSettings");
-    expect(providers).toContain("ClaudeSettings");
+    // Driver labels, order, schemas, and badges come from Web's shared catalog.
+    expect(providers).toContain("PROVIDER_DRIVER_DEFINITION_BY_VALUE[driver]?.settingsSchema");
     expect(providers).toContain("ProviderEnvironmentFields");
     expect(providers).toContain("sortProviderInstanceEntries");
     expect(providers).toContain("PROVIDER_SETTINGS_DRIVER_ORDER");
@@ -597,7 +597,7 @@ describe("desktop shell interaction contract", () => {
     expect(providers).toContain("ADD_PROVIDER_WIZARD_STEPS");
     expect(providers).toContain("resolveWizardNavigation");
     expect(providers).toContain("COMING_SOON_PROVIDER_DRIVERS");
-    expect(providers).toContain("<ProviderBrandIcon driverKind={option.driver} size={16} />");
+    expect(providers).toContain("<ProviderBrandIcon driverKind={option.value} size={16} />");
     expect(componentSource("ProviderBrandIcon.tsx")).toContain('case "githubCopilot":');
     expect(componentSource("ProviderBrandIcon.tsx")).toContain('case "gemini":');
     expect(componentSource("ProviderBrandIcon.tsx")).toContain('case "acpRegistry":');
