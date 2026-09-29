@@ -221,20 +221,19 @@ describe("desktop shell interaction contract", () => {
       "onClick={() => activateMarkdownLink(href, cwd, onManualNavigation)}",
     );
     expect(markdown).toContain("showMarkdownFileLinkContextMenu");
-    expect(markdown).toContain('{ id: "open", label: "Open in editor" }');
-    expect(markdown).toContain('{ id: "copy-relative", label: "Copy relative path" }');
-    expect(markdown).toContain('{ id: "copy-full", label: "Copy full path" }');
+    // Menu items and feedback text come from the shared Web link-menu contracts.
+    expect(markdown).toContain("buildFileLinkContextMenuItems({ canOpenInBrowser: false })");
     expect(markdown).toContain(
       'throw new Error("Opening files in an external editor is unavailable.")',
     );
     expect(markdown).toContain("await clientCapabilities.navigation.openPath(fileLink.filePath)");
-    expect(markdown).toContain("clientCapabilities.clipboard.writeText(fileLink.displayPath)");
-    expect(markdown).toContain("clientCapabilities.clipboard.writeText(fileLink.targetPath)");
+    expect(markdown).toContain("fileLinkCopiedToast(label, value)");
+    expect(markdown).toContain('fileLinkFailureToast({ kind: "copy", label, cause })');
     expect(markdown).toContain("resolveExternalWebLinkHost(href)");
-    expect(markdown).toContain('{ id: "open-external", label: "Open in system browser" }');
-    expect(markdown).toContain('{ id: "copy-link", label: "Copy Link" }');
-    expect(markdown).toContain("clientCapabilities.navigation.openExternal(href)");
-    expect(markdown).toContain("clientCapabilities.clipboard.writeText(href)");
+    expect(markdown).toContain("showExternalLinkContextMenu({");
+    expect(markdown).toContain("includePreview: false");
+    expect(markdown).toContain("clientCapabilities.navigation.openExternal(target)");
+    expect(markdown).toContain("clientCapabilities.clipboard.writeText(target)");
     expect(markdown.indexOf("uiActions.openFileSurface")).toBeLessThan(
       markdown.indexOf("clientCapabilities.navigation.canOpenPath()"),
     );

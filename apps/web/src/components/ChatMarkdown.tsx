@@ -58,6 +58,12 @@ import {
   resolveExternalWebLinkHost,
   showExternalLinkContextMenu,
 } from "./chat/externalLinkContextMenu";
+import {
+  buildFileLinkContextMenuItems,
+  FILE_LINK_COPY_LABELS,
+  fileLinkCopiedToast,
+  fileLinkFailureToast,
+} from "./chat/fileLinkContextMenu";
 import { hasSpecificPierreIconForFileName, syntheticFileNameForLanguageId } from "../pierre-icons";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 import { Button } from "./ui/button";
@@ -947,11 +953,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         );
         const error = squashAtomCommandFailure(result);
         toastManager.add(
-          stackedThreadToast({
-            type: "error",
-            title: "Unable to open file",
-            description: error instanceof Error ? error.message : "An error occurred.",
-          }),
+          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-editor", cause: error })),
         );
       } catch (cause) {
         reportMarkdownActionFailure(
@@ -959,11 +961,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           cause,
         );
         toastManager.add(
-          stackedThreadToast({
-            type: "error",
-            title: "Unable to open file",
-            description: cause instanceof Error ? cause.message : "An error occurred.",
-          }),
+          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-editor", cause })),
         );
       }
     })();
@@ -993,11 +991,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         );
         const error = squashAtomCommandFailure(result);
         toastManager.add(
-          stackedThreadToast({
-            type: "error",
-            title: "Unable to open file in browser",
-            description: error instanceof Error ? error.message : "An error occurred.",
-          }),
+          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-browser", cause: error })),
         );
       } catch (cause) {
         reportMarkdownActionFailure(
@@ -1005,11 +999,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           cause,
         );
         toastManager.add(
-          stackedThreadToast({
-            type: "error",
-            title: "Unable to open file in browser",
-            description: cause instanceof Error ? cause.message : "An error occurred.",
-          }),
+          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-browser", cause })),
         );
       }
     })();
@@ -1030,11 +1020,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
 
       void navigator.clipboard.writeText(value).then(
         () => {
-          toastManager.add({
-            type: "success",
-            title: `${title} copied`,
-            description: value,
-          });
+          toastManager.add(fileLinkCopiedToast(title, value));
         },
         (error) => {
           reportMarkdownActionFailure(
@@ -1042,11 +1028,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
             error,
           );
           toastManager.add(
-            stackedThreadToast({
-              type: "error",
-              title: `Failed to copy ${title.toLowerCase()}`,
-              description: error instanceof Error ? error.message : "An error occurred.",
-            }),
+            stackedThreadToast(fileLinkFailureToast({ kind: "copy", label: title, cause: error })),
           );
         },
       );
@@ -1064,14 +1046,7 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
 
       try {
         const clicked = await api.contextMenu.show(
-          [
-            { id: "open", label: "Open in editor" },
-            ...(onOpenInBrowser
-              ? ([{ id: "open-in-browser", label: "Open in integrated browser" }] as const)
-              : []),
-            { id: "copy-relative", label: "Copy relative path" },
-            { id: "copy-full", label: "Copy full path" },
-          ] as const,
+          buildFileLinkContextMenuItems({ canOpenInBrowser: Boolean(onOpenInBrowser) }),
           { x: event.clientX, y: event.clientY },
         );
 
@@ -1084,11 +1059,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           return;
         }
         if (clicked === "copy-relative") {
-          handleCopy(displayPath, "Relative path");
+          handleCopy(displayPath, FILE_LINK_COPY_LABELS["copy-relative"]);
           return;
         }
         if (clicked === "copy-full") {
-          handleCopy(targetPath, "Full path");
+          handleCopy(targetPath, FILE_LINK_COPY_LABELS["copy-full"]);
         }
       } catch (cause) {
         reportMarkdownActionFailure(

@@ -23,6 +23,8 @@ const EXTERNAL_LINK_CONTEXT_MENU_ITEMS = [
 interface ShowExternalLinkContextMenuOptions {
   readonly href: string;
   readonly position: { readonly x: number; readonly y: number };
+  /** False on hosts without an integrated browser; the preview item is omitted. */
+  readonly includePreview?: boolean;
   readonly showContextMenu: (
     items: readonly ContextMenuItem<ExternalLinkContextMenuAction>[],
     position: { readonly x: number; readonly y: number },
@@ -50,6 +52,7 @@ export function resolveExternalWebLinkHost(href: string | undefined): string | n
 export async function showExternalLinkContextMenu({
   href,
   position,
+  includePreview = true,
   showContextMenu,
   openInPreview,
   openExternal,
@@ -58,7 +61,12 @@ export async function showExternalLinkContextMenu({
 }: ShowExternalLinkContextMenuOptions): Promise<void> {
   let action: ExternalLinkContextMenuAction | null;
   try {
-    action = await showContextMenu(EXTERNAL_LINK_CONTEXT_MENU_ITEMS, position);
+    action = await showContextMenu(
+      includePreview
+        ? EXTERNAL_LINK_CONTEXT_MENU_ITEMS
+        : EXTERNAL_LINK_CONTEXT_MENU_ITEMS.filter((item) => item.id !== "open-in-preview"),
+      position,
+    );
   } catch (cause) {
     reportFailure("show-link-context-menu", cause);
     return;

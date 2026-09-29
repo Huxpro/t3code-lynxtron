@@ -41,6 +41,25 @@ describe("external chat link context menu", () => {
     expect(harness.copyLink).not.toHaveBeenCalled();
   });
 
+  it("omits the integrated browser on hosts without one", async () => {
+    const harness = createHarness(null);
+
+    await showExternalLinkContextMenu({
+      href: "https://example.com",
+      position: { x: 0, y: 0 },
+      includePreview: false,
+      ...harness,
+    });
+
+    expect(harness.showContextMenu).toHaveBeenCalledWith(
+      [
+        { id: "open-external", label: "Open in system browser" },
+        { id: "copy-link", label: "Copy Link" },
+      ],
+      { x: 0, y: 0 },
+    );
+  });
+
   it("copies the exact destination without opening it", async () => {
     const harness = createHarness("copy-link");
     const href = "https://example.com/docs?topic=menus#copy";
@@ -121,6 +140,10 @@ describe("external chat link context menu", () => {
     ["file:///tmp/example.txt", null],
     ["javascript:void(0)", null],
     ["not a URL", null],
+    ["https://User@Example.COM:8443/docs?q=1#top", "example.com"],
+    ["https://[::1]:3000/", "[::1]"],
+    ["https://lynxjs.org/next/lynxtron", "lynxjs.org"],
+    ["https://", null],
     [undefined, null],
   ])("resolves the external web-link host for %s as %s", (href, expected) => {
     expect(resolveExternalWebLinkHost(href)).toBe(expected);

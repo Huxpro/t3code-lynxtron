@@ -12,7 +12,17 @@ import { clientCapabilities, showNativeContextMenu } from "../platform/clientCap
 import { getClientSettingsState } from "../state/prefsStore";
 import { uiActions } from "../state/uiState";
 import { HostInlineText, HostText, HostView } from "../../../../web/src/components/ui/hostElements";
-import { resolveExternalWebLinkHost } from "../../../../web/src/components/chat/externalLinkContextMenu";
+import {
+  resolveExternalWebLinkHost,
+  showExternalLinkContextMenu,
+} from "../../../../web/src/components/chat/externalLinkContextMenu";
+import {
+  buildFileLinkContextMenuItems,
+  FILE_LINK_COPY_LABELS,
+  fileLinkCopiedToast,
+  fileLinkFailureToast,
+} from "../../../../web/src/components/chat/fileLinkContextMenu";
+import { toastManager } from "../../../../web/src/components/ui/toast";
 import {
   parseMarkdownBlocks,
   type ParsedMarkdownBlock,
@@ -58,20 +68,27 @@ async function showMarkdownFileLinkContextMenu(
 ): Promise<void> {
   const fileLink = resolveMarkdownFileLinkMeta(href, cwd);
   if (!fileLink) return;
-  const selection = await showNativeContextMenu([
-    { id: "open", label: "Open in editor" },
-    { id: "copy-relative", label: "Copy relative path" },
-    { id: "copy-full", label: "Copy full path" },
-  ]);
+  const selection = await showNativeContextMenu(
+    buildFileLinkContextMenuItems({ canOpenInBrowser: false }),
+  );
   if (selection === "open") {
-    if (!clientCapabilities.navigation.canOpenPath()) {
-      throw new Error("Opening files in an external editor is unavailable.");
+    try {
+      if (!clientCapabilities.navigation.canOpenPath()) {
+        throw new Error("Opening files in an external editor is unavailable.");
+      }
+      await clientCapabilities.navigation.openPath(fileLink.filePath);
+    } catch (cause) {
+      toastManager.add(fileLinkFailureToast({ kind: "open-in-editor", cause }));
     }
-    await clientCapabilities.navigation.openPath(fileLink.filePath);
-  } else if (selection === "copy-relative") {
-    await clientCapabilities.clipboard.writeText(fileLink.displayPath);
-  } else if (selection === "copy-full") {
-    await clientCapabilities.clipboard.writeText(fileLink.targetPath);
+  } else if (selection === "copy-relative" || selection === "copy-full") {
+    const label = FILE_LINK_COPY_LABELS[selection];
+    const value = selection === "copy-relative" ? fileLink.displayPath : fileLink.targetPath;
+    try {
+      await clientCapabilities.clipboard.writeText(value);
+      toastManager.add(fileLinkCopiedToast(label, value));
+    } catch (cause) {
+      toastManager.add(fileLinkFailureToast({ kind: "copy", label, cause }));
+    }
   }
 }
 
@@ -87,19 +104,26 @@ function fileLinkContextMenuHandler(
   };
 }
 
-async function showMarkdownExternalLinkContextMenu(href: string): Promise<void> {
-  const selection = await showNativeContextMenu([
-    { id: "open-external", label: "Open in system browser" },
-    { id: "copy-link", label: "Copy Link" },
-  ]);
-  if (selection === "open-external") {
-    await clientCapabilities.navigation.openExternal(href);
-  } else if (selection === "copy-link") {
-    await clientCapabilities.clipboard.writeText(href);
-  }
+function showMarkdownExternalLinkContextMenu(href: string): Promise<void> {
+  return showExternalLinkContextMenu({
+    href,
+    position: { x: 0, y: 0 },
+    includePreview: false,
+    showContextMenu: (items) =>
+      showNativeContextMenu(items) as Promise<
+        "open-in-preview" | "open-external" | "copy-link" | null
+      >,
+    openInPreview: async () => {},
+    openExternal: (target) => clientCapabilities.navigation.openExternal(target),
+    copyLink: (target) => clientCapabilities.clipboard.writeText(target),
+    reportFailure: (operation, cause) => {
+      console.error("[lynx-markdown] external link action failed", { operation, href, cause });
+    },
+  });
 }
 
-function markdownLinkContextMenuHandler(
+/** The link's secondary-click action; also driven by the transcript probe. */
+export function markdownLinkContextMenuHandler(
   href: string | null,
   cwd: string | undefined,
 ): (() => void) | undefined {
