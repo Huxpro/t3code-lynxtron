@@ -53,7 +53,7 @@ If an invariant regresses, fix it inside the active PF task and add a focused re
 | P1       | PF1 | Complete agent intervention and recovery              | PF0        | `completed` | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
 | P1       | PF2 | Complete Composer input and context                   | PF1        | `completed` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
 | P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `completed` | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
-| P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `pending`   | A user can find, connect to, diagnose, and operate supported remote environments        |
+| P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `completed` | A user can find, connect to, diagnose, and operate supported remote environments        |
 | P2       | PF5 | Complete change review, checkpoints, and files        | PF4        | `pending`   | A user can inspect the result and its source-control implications without Web           |
 | P2       | PF6 | Expand terminal and browser work surfaces             | PF5        | `pending`   | Approved placeholder surfaces are replaced only where the runtime can support them      |
 | P2       | PF7 | Close performance, theme, and remaining platform gaps | PF6        | `pending`   | Long sessions remain fast and required theme/input/runtime gates have evidence          |
@@ -855,6 +855,13 @@ Remote readiness is a core product property. A Lynxtron desktop shell that works
 - Wrong-environment file or command execution is covered by focused tests.
 - Failure states explain whether the problem is pairing, authentication, transport, server readiness, or product synchronization.
 - Relay/tunnel behavior remains compatible with Web and mobile clients.
+
+### PF4 closure (Plan 14 M3, 2026-09-29)
+
+PF4 is `completed` for the named supported modes: owned local, desktop
+rendezvous, and direct pairing URL (`evidence/2026-09-29/M3/remote-environment.json`).
+Several simultaneous environments, in-app pairing, relay/T3 Connect, and
+tunnels are explicit non-goals for Lynx rather than implied parity.
 
 ## PF5: Complete change review, checkpoints, and files
 

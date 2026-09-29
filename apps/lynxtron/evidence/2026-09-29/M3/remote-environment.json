@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "phase": "Plan 14 M3",
+  "observedAt": "2026-09-29",
+  "runtime": "@lynx-js/lynxtron@0.0.28",
+  "localJourney": "evidence/2026-09-29/M1/local-journey.json (owned-local: turn, cold restart, reconnect)",
+  "remoteJourney": {
+    "schemaVersion": 1,
+    "status": "pass",
+    "recordedAt": "2026-09-29T19:44:34.183Z",
+    "mode": "direct remote (loopback pairing URL to a server owned by another process)",
+    "ownerPort": 62018,
+    "connection": {
+      "mode": "existing-environment",
+      "serverOwned": false
+    },
+    "rendererErrors": 0,
+    "bundle": {
+      "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+      "bytes": 6816594,
+      "sha256": "42ee0ba9ca0fdcae32cf3503d5619729dec64bc4a7be17cb5f52017e9721a66a"
+    },
+    "journey": {
+      "status": "pass",
+      "input": "DevTool taps on New thread and Send; renderer fixtures for model and text; connector reconnect",
+      "threadId": "fe45158c-4555-46dd-807e-2d63a050adb4",
+      "provider": {
+        "instanceId": "opencode",
+        "model": "opencode/big-pickle"
+      },
+      "responseToken": "T3_M3_REMOTE_1790711061048",
+      "reconnect": {
+        "route": "/",
+        "sequence": {
+          "before": 43,
+          "after": 51
+        },
+        "draftPreserved": true
+      }
+    },
+    "ownerThread": {
+      "id": "fe45158c-4555-46dd-807e-2d63a050adb4",
+      "projectId": "a7d275a9-1609-4bd2-b6d1-de853b463c5a",
+      "title": "Reply with T3_M3_REMOTE_1790711061048"
+    },
+    "error": null
+  },
+  "remoteReconnectSmoke": {
+    "command": "pnpm --dir apps/lynxtron run smoke:remote-reconnect",
+    "result": "initial, two reconnects ready; after owner revokes other sessions the reconnect reports the pair-again error"
+  },
+  "focusedTests": [
+    "apps/lynxtron/src/main/desktop/connector.test.ts targetResolvesPathsLocally",
+    "apps/lynxtron/src/app/platform/clientCapabilities.test.ts",
+    "apps/lynxtron/src/shared/connectorProtocol.test.ts classifyConnectorFailure",
+    "packages/client-runtime/src/connection/presentation.test.ts failure layers"
+  ],
+  "supportedModes": {
+    "owned-local": "supported (M1 journey)",
+    "desktop-rendezvous": "supported (existing default-electron-environment evidence)",
+    "direct pairing URL": "supported; proven on loopback against a server owned by another process; LAN/HTTPS hosts use the same code path but are not separately proven"
+  },
+  "unsupportedModes": {
+    "multiple simultaneous environments": "not supported: one environment per Lynx window, fixed at launch",
+    "in-app discovery/pairing (Add environment)": "not supported: the Connections control stays disabled",
+    "relay / T3 Connect": "not supported in Lynx",
+    "tunnel": "not claimed: a tunnel pairing URL is an HTTPS pairing URL but is unproven"
+  }
+}

@@ -1,6 +1,6 @@
 # M3: Prove remote and multi-environment ownership
 
-- Status: `in_progress` (started 2026-09-29 after M2)
+- Status: `completed` (2026-09-29, Lynxtron 0.0.28; single environment per window)
 
 ## Objective
 
@@ -36,6 +36,51 @@ journey against one supported remote environment without cross-environment leaka
 - Connections explains the exact failure layer and recovery action.
 - PF4 is complete for the named supported connection modes; unsupported modes have
   explicit decisions rather than implied parity.
+
+## Outcome (2026-09-29)
+
+Evidence: `evidence/2026-09-29/M3/remote-environment.json`.
+
+Product changes made during M3:
+
+- Reconnect to a paired remote reused the single-use pairing credential, so
+  it always failed with `401 invalid_credential`. The connector now keeps the
+  exchanged session per pairing target, pins the environment identity, and
+  reports a distinct pair-again error after revocation.
+- Main reports the connection kind and whether environment paths are local.
+  The shared lifecycle projection names the failing layer (pairing,
+  authentication, transport, server readiness, product sync) and its recovery
+  action; remote windows say "remote environment", not "local backend".
+- Lynx refuses local path navigation for remote environments (owned,
+  rendezvous, and loopback pairing stay local).
+
+Compatibility decisions:
+
+| Mode                                                 | Lynx decision                                                                                                                     |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Owned local server                                   | supported (M1 journey)                                                                                                            |
+| Desktop rendezvous (Electron server on this machine) | supported (existing evidence)                                                                                                     |
+| Direct pairing URL                                   | supported; proven on loopback against another process's server; LAN/HTTPS hosts share the code path but are not separately proven |
+| Several environments at once                         | not supported: one environment per window, fixed at launch; Web/mobile keep their catalogs                                        |
+| In-app discovery and pairing                         | not supported: Connections "Add environment" stays disabled                                                                       |
+| Relay / T3 Connect                                   | not supported in Lynx                                                                                                             |
+| Tunnel                                               | not claimed                                                                                                                       |
+
+Contracts are unchanged; the new status fields travel only on the Lynx
+main-to-renderer protocol. Web gains the optional failure-layer copy only when
+a caller passes a layer.
+
+| Requirement        | Status               | Evidence                                                                                | Remaining boundary                                                         |
+| ------------------ | -------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Product entry      | complete             | Native pairs through `T3_LYNXTRON_PAIRING_URL`; `existing-environment`, no owned server | In-app pairing is unsupported                                              |
+| Canonical state    | complete             | New thread on the remote project; the owner process sees the same thread id             | Single environment per window                                              |
+| Completion receipt | complete             | Authenticated OpenCode reply received on the remote environment                         | none                                                                       |
+| Failure/retry      | complete             | Pairing, authentication, transport, readiness, and sync layers classified and presented | Layer copy proven by unit tests; revoked-session reconnect proven by smoke |
+| Reverse action     | complete             | Reconnect keeps route, thread, draft; revoked session asks to pair again                | none                                                                       |
+| Web/Lynx parity    | partial              | Shared lifecycle projection                                                             | Web supports multi-environment catalogs; Lynx does not                     |
+| Native interaction | pending-user-session | DevTool taps for New thread/Send                                                        | Physical checks carry to M7                                                |
+| Source reuse       | partial              | Failure-layer copy lives in client-runtime                                              | Lynx does not adopt the client-runtime environment catalog                 |
+| Cleanup            | complete             | Owner process, owned Native, and temporary state are disposed                           | none                                                                       |
 
 ## Goal prompt
 
