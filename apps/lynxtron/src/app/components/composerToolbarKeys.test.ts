@@ -9,9 +9,8 @@ const source = readFileSync(path.join(import.meta.dirname, "Composer.tsx"), "utf
 
 describe("Composer toolbar reconciliation", () => {
   it("keys every conditional top-level control island", () => {
-    assert.include(source, '<view key="model" className="model-picker-anchor">');
-    assert.include(source, 'key="model-option"');
-    assert.include(source, '<view key="runtime" className="composer-runtime-control-wrap">');
-    assert.include(source, 'key="interaction"');
+    for (const key of ["model", "model-option", "runtime", "interaction"]) {
+      assert.include(source, `key="${key}"`);
+    }
   });
 });

@@ -1260,8 +1260,8 @@ export function Composer({
                                             <text className="composer-compact-controls-menu__label">
                                               {item.label}
                                             </text>
-                                            {item.selected ? (
-                                              <text className="composer-compact-controls-menu__badge">
+                                            {item.isDefault ? (
+                                              <text className="composer-option-default-badge">
                                                 Default
                                               </text>
                                             ) : null}
@@ -1340,165 +1340,98 @@ export function Composer({
                       modelOptionLabel &&
                       modelOptionSections.length > 0 &&
                       onSelectModelOption ? (
-                      <view key="model-option" className="composer-model-option-control-wrap">
-                        <ComposerToolbarControl
-                          className="composer-toolbar-control--model-option"
-                          controlId="model-option"
-                          label={modelOptionLabel}
-                          labelStyle={{
-                            letterSpacing: getComposerModelOptionLetterSpacing(modelOptionLabel),
-                          }}
-                          trailing={
-                            <Icon
-                              name="chevron-down"
-                              size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
-                              color="#818181"
-                              className="pill__chevron-img"
-                            />
-                          }
-                          onClick={() => {
-                            toggleComposerMenu("model-option");
-                          }}
-                        />
-                        {modelOptionMenuOpen ? (
-                          <>
-                            <scroll-view
-                              className="composer-model-option-menu"
-                              aria-label="Model options"
-                              data-composer-model-option-menu
-                              main-thread:ref={modelOptionMenuScrollRef}
-                              main-thread:global-bindwheel={handleModelOptionMenuWheel}
-                              scroll-y
-                              scroll-orientation="vertical"
-                            >
-                              <view className="composer-model-option-menu__content">
-                                {modelOptionSections.map((section) => (
-                                  <view
-                                    key={section.id}
-                                    className="composer-model-option-menu__section"
-                                    data-composer-model-option-section={section.id}
-                                  >
-                                    <text className="composer-model-option-menu__section-label">
-                                      {section.label}
-                                    </text>
-                                    {section.items.map((item) => (
-                                      <view
-                                        key={item.id}
-                                        className={`composer-model-option-menu__item${
-                                          item.selected
-                                            ? " composer-model-option-menu__item--selected"
-                                            : " composer-model-option-menu__item--unselected"
-                                        }`}
-                                        aria-checked={item.selected ? "true" : "false"}
-                                        data-composer-model-option-descriptor={section.id}
-                                        data-composer-model-option-value={String(item.value)}
-                                        data-composer-model-option-value-type={typeof item.value}
-                                        bindtap={() => {
-                                          onSelectModelOption?.(section.id, item.value);
-                                          setOpenComposerMenu(null);
-                                        }}
-                                      >
-                                        <view className="composer-model-option-menu__copy">
-                                          <text className="composer-model-option-menu__label">
-                                            {item.label}
-                                          </text>
-                                          {item.description ? (
-                                            <text className="composer-model-option-menu__description">
-                                              {item.description}
-                                            </text>
-                                          ) : null}
-                                        </view>
-                                        {item.selected ? (
-                                          <Icon name="check" size={14} color="#818181" />
-                                        ) : null}
-                                      </view>
-                                    ))}
-                                  </view>
-                                ))}
-                                {showInteractionModeToggle ? (
-                                  <view
-                                    className="composer-model-option-menu__section"
-                                    data-composer-model-option-section="mode"
-                                  >
-                                    <text className="composer-model-option-menu__section-label">
-                                      Mode
-                                    </text>
-                                    {(["default", "plan"] as const).map((mode) => (
-                                      <view
-                                        key={mode}
-                                        className={`composer-model-option-menu__item${
-                                          interactionMode === mode
-                                            ? " composer-model-option-menu__item--selected"
-                                            : " composer-model-option-menu__item--unselected"
-                                        }`}
-                                        aria-checked={interactionMode === mode ? "true" : "false"}
-                                        bindtap={() => {
-                                          if (interactionMode !== mode) onInteractionModeTap();
-                                          setOpenComposerMenu(null);
-                                        }}
-                                      >
-                                        <view className="composer-model-option-menu__copy">
-                                          <text className="composer-model-option-menu__label">
-                                            {mode === "default" ? "Build" : "Plan"}
-                                          </text>
-                                          <text className="composer-model-option-menu__description">
-                                            {mode === "default"
-                                              ? "Work directly on the task"
-                                              : "Plan the approach before making changes"}
-                                          </text>
-                                        </view>
-                                        {interactionMode === mode ? (
-                                          <Icon name="check" size={14} color="#818181" />
-                                        ) : null}
-                                      </view>
-                                    ))}
-                                  </view>
-                                ) : null}
+                      <Menu
+                        key="model-option"
+                        open={modelOptionMenuOpen}
+                        onOpenChange={(open) => {
+                          if (open) toggleComposerMenu("model-option");
+                          else setOpenComposerMenu(null);
+                        }}
+                      >
+                        <MenuTrigger
+                          className="composer-model-option-control-wrap"
+                          data-floating-anchor="composer-model-option-menu"
+                        >
+                          <ComposerToolbarControl
+                            className="composer-toolbar-control--model-option"
+                            controlId="model-option"
+                            label={modelOptionLabel}
+                            labelStyle={{
+                              letterSpacing: getComposerModelOptionLetterSpacing(modelOptionLabel),
+                            }}
+                            trailing={
+                              <Icon
+                                name="chevron-down"
+                                size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
+                                color="#818181"
+                                className="pill__chevron-img"
+                              />
+                            }
+                          />
+                        </MenuTrigger>
+                        <MenuPopup
+                          relationId="composer-model-option-menu"
+                          side="top"
+                          align="start"
+                          className="composer-model-option-menu"
+                          aria-label="Model options"
+                          data-composer-model-option-menu
+                        >
+                          <scroll-view
+                            className="composer-model-option-menu__scroll"
+                            main-thread:ref={modelOptionMenuScrollRef}
+                            main-thread:global-bindwheel={handleModelOptionMenuWheel}
+                            scroll-y
+                            scroll-orientation="vertical"
+                          >
+                            <view className="composer-model-option-menu__content">
+                              {modelOptionSections.map((section) => (
                                 <view
+                                  key={section.id}
                                   className="composer-model-option-menu__section"
-                                  data-composer-model-option-section="access"
+                                  data-composer-model-option-section={section.id}
                                 >
                                   <text className="composer-model-option-menu__section-label">
-                                    Access
+                                    {section.label}
                                   </text>
-                                  {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
-                                    <view
-                                      key={option.mode}
+                                  {section.items.map((item) => (
+                                    <MenuItem
+                                      key={item.id}
                                       className={`composer-model-option-menu__item${
-                                        option.mode === runtimeMode
+                                        item.selected
                                           ? " composer-model-option-menu__item--selected"
                                           : " composer-model-option-menu__item--unselected"
                                       }`}
-                                      aria-checked={option.mode === runtimeMode ? "true" : "false"}
-                                      bindtap={() => {
-                                        onRuntimeModeChange(option.mode);
-                                        setOpenComposerMenu(null);
-                                      }}
+                                      aria-checked={item.selected ? "true" : "false"}
+                                      data-composer-model-option-descriptor={section.id}
+                                      data-composer-model-option-value={String(item.value)}
+                                      data-composer-model-option-value-type={typeof item.value}
+                                      onClick={() => onSelectModelOption?.(section.id, item.value)}
                                     >
-                                      <view className="composer-model-option-menu__copy">
-                                        <text className="composer-model-option-menu__label">
-                                          {option.label}
+                                      <text className="composer-model-option-menu__label">
+                                        {item.label}
+                                      </text>
+                                      {item.isDefault ? (
+                                        <text className="composer-option-default-badge">
+                                          Default
                                         </text>
-                                        <text className="composer-model-option-menu__description">
-                                          {option.description}
-                                        </text>
-                                      </view>
-                                      {option.mode === runtimeMode ? (
-                                        <Icon name="check" size={14} color="#818181" />
                                       ) : null}
-                                    </view>
+                                      {item.selected ? (
+                                        <Icon
+                                          name="check"
+                                          size={14}
+                                          color="#818181"
+                                          className="composer-model-option-menu__check"
+                                        />
+                                      ) : null}
+                                    </MenuItem>
                                   ))}
                                 </view>
-                              </view>
-                            </scroll-view>
-                            <view
-                              className="composer-model-option-menu-dismiss-layer"
-                              aria-label="Dismiss model options"
-                              bindtap={() => setOpenComposerMenu(null)}
-                            />
-                          </>
-                        ) : null}
-                      </view>
+                              ))}
+                            </view>
+                          </scroll-view>
+                        </MenuPopup>
+                      </Menu>
                     ) : null,
                     !compactFooter && !questionMode ? (
                       <Menu

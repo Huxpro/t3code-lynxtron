@@ -147,7 +147,9 @@ describe("transcript layout contract", () => {
     expect(composerSource).toContain('target.setAttribute("data-scroll-offset", `${nextOffset}`)');
     expect(composerSource).toContain('scroll-orientation="vertical"');
     expect(composerSource).toContain('mode === "default" ? "Chat" : "Plan"');
-    expect(composerSource).toContain("composer-compact-controls-menu__badge");
+    // Web badges the option the provider marks as default, not the selection.
+    expect(composerSource).toContain("{item.isDefault ? (");
+    expect(composerSource).toContain('className="composer-option-default-badge"');
     const modeHeader = composerSource.search(
       /composer-compact-controls-menu__section-label">\s*Mode\s*<\/text>/,
     );

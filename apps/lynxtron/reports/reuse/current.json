@@ -18751,7 +18751,7 @@
           "largestNonShared": [
             {
               "classification": "EXCLUSIVE",
-              "lines": 13717,
+              "lines": 13699,
               "path": "apps/lynxtron/src/app/overrides.css"
             },
             {
@@ -18781,7 +18781,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -23528,7 +23528,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 88080,
+            "eligibleLines": 87993,
             "eligibleModules": 362,
             "modulesOnlyInLynx": [
               {
@@ -23573,7 +23573,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -23833,7 +23833,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 13717,
+                "lines": 13699,
                 "path": "apps/lynxtron/src/app/overrides.css"
               },
               {
@@ -32853,7 +32853,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -36145,7 +36145,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56608,
+            "eligibleLines": 56539,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36185,7 +36185,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -47646,7 +47646,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -50173,7 +50173,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48479,
+            "eligibleLines": 48410,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -50213,7 +50213,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -60102,7 +60102,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -63399,7 +63399,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56649,
+            "eligibleLines": 56580,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63439,7 +63439,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -76582,7 +76582,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -79874,7 +79874,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56608,
+            "eligibleLines": 56539,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -79914,7 +79914,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -91375,7 +91375,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -93902,7 +93902,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48479,
+            "eligibleLines": 48410,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -93942,7 +93942,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -103837,7 +103837,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -107134,7 +107134,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56649,
+            "eligibleLines": 56580,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107174,7 +107174,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -120317,7 +120317,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -122844,7 +122844,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48479,
+            "eligibleLines": 48410,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -122884,7 +122884,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -132754,13 +132754,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
-              "path": "apps/lynxtron/src/app/components/Composer.tsx"
+              "lines": 1900,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
-              "path": "packages/client-runtime/src/presentation/transcript.ts"
+              "lines": 1842,
+              "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
               "classification": "EXCLUSIVE",
@@ -133956,7 +133956,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 26405,
+            "eligibleLines": 26336,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
@@ -133966,7 +133966,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -139475,7 +139475,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -142772,7 +142772,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56649,
+            "eligibleLines": 56580,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -142812,7 +142812,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -155935,13 +155935,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
-              "path": "apps/lynxtron/src/app/components/Composer.tsx"
+              "lines": 1900,
+              "path": "packages/client-runtime/src/presentation/transcript.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1900,
-              "path": "packages/client-runtime/src/presentation/transcript.ts"
+              "lines": 1842,
+              "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
               "classification": "EXCLUSIVE",
@@ -157257,7 +157257,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 28506,
+            "eligibleLines": 28437,
             "eligibleModules": 123,
             "modulesOnlyInLynx": [
               {
@@ -157267,7 +157267,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -167993,7 +167993,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -171290,7 +171290,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56649,
+            "eligibleLines": 56580,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171330,7 +171330,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {
@@ -366694,7 +366694,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 1911,
+              "lines": 1842,
               "path": "apps/lynxtron/src/app/components/Composer.tsx"
             },
             {
@@ -369991,7 +369991,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56640,
+            "eligibleLines": 56571,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370031,7 +370031,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 1911,
+                "lines": 1842,
                 "path": "apps/lynxtron/src/app/components/Composer.tsx"
               },
               {

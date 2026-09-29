@@ -63,6 +63,104 @@
           "status": "pass"
         }
       }
+    },
+    {
+      "id": "composer-model-options-menu",
+      "change": "The Lynx model-options menu renders through the shared Lynx Menu and lists provider traits only, like Web TraitsMenuContent. Its Lynx-only Mode (\"Build\"/\"Plan\" with invented descriptions) and Access sections are deleted; both stay on their own footer controls. Lynx menus badge the provider default option (shared projection isDefault) instead of the selected option.",
+      "bundle": {
+        "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+        "bytes": 6811982,
+        "sha256": "90a371330324bdcf0405caf69e2eed035879b1f3e8fc2124fcf143a8c4fc4ce9"
+      },
+      "gates": {
+        "modelOptionMenuMutation": {
+          "status": "pass",
+          "menu": {
+            "rect": {
+              "x": 541,
+              "y": 409,
+              "width": 264,
+              "height": 312
+            },
+            "text": "Reasoning High Extra High Default Context window 200k 1M Default Thinking On Off",
+            "scroll": {
+              "overflows": false,
+              "contentHeight": 302,
+              "viewHeight": 302,
+              "beforeThinkingY": 644,
+              "afterThinkingY": 644,
+              "wheelOffset": 0
+            }
+          },
+          "selections": {
+            "before": [],
+            "after": [
+              {
+                "id": "reasoningEffort",
+                "value": "high"
+              },
+              {
+                "id": "contextWindow",
+                "value": "1m"
+              },
+              {
+                "id": "thinking",
+                "value": false
+              }
+            ],
+            "persisted": [
+              {
+                "id": "reasoningEffort",
+                "value": "high"
+              },
+              {
+                "id": "contextWindow",
+                "value": "1m"
+              },
+              {
+                "id": "thinking",
+                "value": false
+              }
+            ],
+            "afterThinking": [
+              {
+                "id": "reasoningEffort",
+                "value": "high"
+              },
+              {
+                "id": "contextWindow",
+                "value": "1m"
+              },
+              {
+                "id": "thinking",
+                "value": true
+              }
+            ],
+            "persistedThinking": [
+              {
+                "id": "reasoningEffort",
+                "value": "high"
+              },
+              {
+                "id": "contextWindow",
+                "value": "1m"
+              },
+              {
+                "id": "thinking",
+                "value": true
+              }
+            ]
+          },
+          "rendererErrors": 0
+        },
+        "runtimeMenuDismiss": {
+          "status": "pass",
+          "cornerDismissals": ["bottom-right", "top-left"]
+        }
+      },
+      "carried": [
+        "--verify-compact-controls fails at 900x820 with the Files panel on the pre-M4 baseline (9600de35c) too: the compact menu never appears after the trigger tap. At 700x820 the menu opens and lists traits, Mode, and Access."
+      ]
     }
   ]
 }

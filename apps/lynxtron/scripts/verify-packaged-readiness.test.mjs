@@ -420,8 +420,8 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies the runtime permission menu dismisses without changing value", () => {
     assert.include(source, "async function verifyRuntimeMenuDismiss");
     assert.include(source, '"--verify-runtime-menu-dismiss"');
-    assert.include(source, 'selector: ".composer-runtime-menu-dismiss-layer"');
-    assert.include(source, 'point: "bottom-right"');
+    assert.include(source, 'selector: ".lynx-menu-dismiss-layer"');
+    assert.include(source, 'for (const point of ["bottom-right", "top-left"])');
     assert.include(source, "afterState?.activeThread?.runtimeMode !== beforeMode");
     assert.include(source, "valueUnchanged: true");
   });
@@ -469,7 +469,11 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'expectedLetterSpacing: "-0.44px"');
     assert.include(source, 'name: "native-composer-model-option-tracking.png"');
     assert.include(source, 'selector: ".composer-model-option-menu__item--selected"');
-    assert.include(source, 'selector: ".composer-model-option-menu-dismiss-layer"');
+    assert.include(source, 'selector: ".lynx-menu-dismiss-layer"');
+    assert.include(
+      source,
+      'readOptionalMeasurement(client, ".composer-model-option-menu__scroll")',
+    );
     assert.include(source, "reopenedSelected: true");
   });
 
@@ -1100,7 +1104,7 @@ describe("packaged readiness Sidebar geometry", () => {
   it("verifies Native Quick Switch filter states and outside dismissal", () => {
     assert.include(source, "async function verifyQuickSwitchState");
     assert.include(source, '"--verify-quick-switch-default"');
-    assert.include(source, 'initialOverlay: "quick-switch"');
+    assert.include(source, "__T3_LYNXTRON_MENU_CLICK_PROBE__?.('t3-quick-switch')");
     assert.include(source, '"--quick-switch-query"');
     assert.include(source, '"--quick-switch-query requires --verify-quick-switch-default."');
     assert.include(source, "__T3_LYNXTRON_QUICK_SWITCH_QUERY__");

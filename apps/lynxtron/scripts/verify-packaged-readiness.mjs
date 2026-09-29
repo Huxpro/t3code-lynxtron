@@ -5419,47 +5419,58 @@ async function verifyModelOptionMenuMutation({
     timeoutMs,
     value: "thinking",
   });
-  const wheelProbe = await client.runCdp("Runtime.evaluate", {
-    expression: "globalThis.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?.(120)",
-    awaitPromise: true,
-    returnByValue: true,
-  });
-  if (commandResult(wheelProbe)?.exceptionDetails) {
-    throw new Error(`Model-option wheel probe failed: ${JSON.stringify(wheelProbe)}`);
-  }
-  const scrollDeadline = Date.now() + timeoutMs;
-  let thinkingAfterScroll = null;
-  let scrolledMenu = null;
-  while (Date.now() < scrollDeadline) {
-    thinkingAfterScroll = await readSelectorAttributeMeasurement(client, {
-      attribute: "data-composer-model-option-descriptor",
-      selector: ".composer-model-option-menu__item--unselected",
-      value: "thinking",
+  // The traits menu sizes to its content; wheel scrolling is proven only when
+  // the options overflow the menu's maximum height.
+  const scrollView = await readOptionalMeasurement(client, ".composer-model-option-menu__scroll");
+  const scrollContent = await readOptionalMeasurement(
+    client,
+    ".composer-model-option-menu__content",
+  );
+  const overflows =
+    (scrollContent?.rect?.height ?? 0) > (scrollView?.rect?.height ?? Number.POSITIVE_INFINITY);
+  let thinkingAfterScroll = thinkingBeforeScroll;
+  let scrolledMenu = scrollView;
+  if (overflows) {
+    const wheelProbe = await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?.(120)",
+      awaitPromise: true,
+      returnByValue: true,
     });
-    scrolledMenu = await readOptionalMeasurement(client, ".composer-model-option-menu");
-    if (
-      thinkingAfterScroll &&
-      scrolledMenu &&
-      thinkingAfterScroll.rect.y < thinkingBeforeScroll.rect.y &&
-      Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0) > 0
-    ) {
-      break;
+    if (commandResult(wheelProbe)?.exceptionDetails) {
+      throw new Error(`Model-option wheel probe failed: ${JSON.stringify(wheelProbe)}`);
     }
-    await waitForChildExit(child, 100);
-  }
-  if (
-    !thinkingAfterScroll ||
-    !scrolledMenu ||
-    thinkingAfterScroll.rect.y >= thinkingBeforeScroll.rect.y ||
-    Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0) <= 0
-  ) {
-    throw new Error(
-      `Model-option menu did not scroll: ${JSON.stringify({
-        thinkingBeforeScroll,
-        thinkingAfterScroll,
-        scrolledMenu,
-      })}`,
-    );
+    const scrollDeadline = Date.now() + timeoutMs;
+    while (Date.now() < scrollDeadline) {
+      thinkingAfterScroll = await readSelectorAttributeMeasurement(client, {
+        attribute: "data-composer-model-option-descriptor",
+        selector: ".composer-model-option-menu__item--unselected",
+        value: "thinking",
+      });
+      scrolledMenu = await readOptionalMeasurement(client, ".composer-model-option-menu__scroll");
+      if (
+        thinkingAfterScroll &&
+        scrolledMenu &&
+        thinkingAfterScroll.rect.y < thinkingBeforeScroll.rect.y &&
+        Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0) > 0
+      ) {
+        break;
+      }
+      await waitForChildExit(child, 100);
+    }
+    if (
+      !thinkingAfterScroll ||
+      !scrolledMenu ||
+      thinkingAfterScroll.rect.y >= thinkingBeforeScroll.rect.y ||
+      Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0) <= 0
+    ) {
+      throw new Error(
+        `Model-option menu did not scroll: ${JSON.stringify({
+          thinkingBeforeScroll,
+          thinkingAfterScroll,
+          scrolledMenu,
+        })}`,
+      );
+    }
   }
   const target = await waitForMeasurement({
     child,
@@ -5637,7 +5648,7 @@ async function verifyModelOptionMenuMutation({
   const dismissLayer = await waitForMeasurement({
     child,
     client,
-    selector: ".composer-model-option-menu-dismiss-layer",
+    selector: ".lynx-menu-dismiss-layer",
     timeoutMs,
     predicate: (measurement) =>
       (measurement?.rect?.width ?? 0) >= 1280 && (measurement?.rect?.height ?? 0) >= 820,
@@ -5646,7 +5657,7 @@ async function verifyModelOptionMenuMutation({
     child,
     client,
     point: "bottom-right",
-    selector: ".composer-model-option-menu-dismiss-layer",
+    selector: ".lynx-menu-dismiss-layer",
     timeoutMs,
   });
   await waitForMeasurement({
@@ -5676,9 +5687,12 @@ async function verifyModelOptionMenuMutation({
       rect: menu.rect,
       text: menu.text.trim(),
       scroll: {
+        overflows,
+        contentHeight: scrollContent?.rect?.height ?? null,
+        viewHeight: scrollView?.rect?.height ?? null,
         beforeThinkingY: thinkingBeforeScroll.rect.y,
-        afterThinkingY: thinkingAfterScroll.rect.y,
-        wheelOffset: Number(scrolledMenu.attributes["data-wheel-offset"] ?? 0),
+        afterThinkingY: thinkingAfterScroll?.rect.y ?? null,
+        wheelOffset: Number(scrolledMenu?.attributes["data-wheel-offset"] ?? 0),
       },
     },
     selectedOption: {

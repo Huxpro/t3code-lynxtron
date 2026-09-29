@@ -3005,24 +3005,11 @@
   flex-shrink: 0;
   z-index: 52;
 }
-.composer-model-option-menu-dismiss-layer {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 0;
-}
 .composer-model-option-menu {
-  position: absolute;
-  left: 0;
-  bottom: 34px;
-  z-index: 1;
   display: flex;
   flex-direction: column;
   width: 264px;
-  height: 480px;
-  max-height: calc(100vh - 140px);
+  max-height: 480px;
   padding: 4px;
   border-width: 1px;
   border-style: solid;
@@ -3031,7 +3018,9 @@
   background-color: var(--popover);
   box-shadow: 0 14px 38px rgba(0, 0, 0, 0.28);
   box-sizing: border-box;
-  overflow-y: auto;
+}
+.composer-model-option-menu__scroll {
+  max-height: 470px;
 }
 .composer-model-option-menu__content {
   display: flex;
@@ -3062,33 +3051,26 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  height: auto;
   min-height: 34px;
   padding: 6px 8px;
   gap: 8px;
   border-radius: 7px;
   box-sizing: border-box;
 }
+.composer-model-option-menu__check {
+  margin-left: auto;
+}
 .composer-model-option-menu__item--selected {
   background-color: var(--accent);
 }
-.composer-model-option-menu__copy {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  min-width: 0;
-}
 .composer-model-option-menu__label {
+  min-width: 0;
   color: var(--foreground);
   font-family: var(--font-sans);
   font-size: 13px;
   font-weight: 500;
   line-height: 18px;
-}
-.composer-model-option-menu__description {
-  color: var(--muted-foreground);
-  font-family: var(--font-sans);
-  font-size: 11px;
-  line-height: 16px;
 }
 .composer-toolbar-control--runtime {
   width: auto;
@@ -3216,8 +3198,8 @@
   font-size: 14px;
   line-height: 20px;
 }
-.composer-compact-controls-menu__badge {
-  margin-left: auto;
+.composer-option-default-badge {
+  margin-left: 6px;
   color: var(--muted-foreground);
   font-family: var(--font-sans);
   font-size: 10px;

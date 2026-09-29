@@ -271,7 +271,7 @@ describe("composer controls presentation", () => {
               label: "Context window",
               type: "select",
               options: [
-                { id: "200k", label: "200k" },
+                { id: "200k", label: "200k", isDefault: true },
                 { id: "1m", label: "1M" },
               ],
             },
@@ -301,7 +301,7 @@ describe("composer controls presentation", () => {
         id: "contextWindow",
         label: "Context window",
         items: [
-          { id: "200k", label: "200k", selected: false, value: "200k" },
+          { id: "200k", label: "200k", isDefault: true, selected: false, value: "200k" },
           { id: "1m", label: "1M", selected: true, value: "1m" },
         ],
       },

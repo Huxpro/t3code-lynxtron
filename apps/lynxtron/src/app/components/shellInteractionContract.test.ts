@@ -656,30 +656,26 @@ describe("desktop shell interaction contract", () => {
     const chatView = componentSource("ChatView.tsx");
     const modelPicker = componentSource("ModelPicker.tsx");
 
-    expect(composer).toContain('className="composer-model-option-menu-dismiss-layer"');
-    expect(composer).toContain('aria-label="Dismiss model options"');
-    expect(composer.indexOf('className="composer-model-option-menu"')).toBeLessThan(
-      composer.indexOf('className="composer-model-option-menu-dismiss-layer"'),
-    );
+    // The shared Lynx Menu owns the fixed popup and full-window dismiss layer.
+    expect(composer).toContain('relationId="composer-model-option-menu"');
+    expect(composer).toContain("open={modelOptionMenuOpen}");
+    expect(composer).not.toContain("composer-model-option-menu-dismiss-layer");
     expect(composer).toContain("modelOptionSections.map");
     expect(composer).toContain("onSelectModelOption?.(section.id, item.value)");
     expect(chatView).toContain("projectComposerTraitsMenu");
     expect(chatView).toContain("selectComposerTraitOption");
     expect(chatView).not.toContain("handleModelOptionTap");
     expect(overrides).toContain(".composer-model-option-menu {");
-    expect(overrides).toContain("height: 480px;");
+    expect(overrides).toContain("max-height: 480px;");
     expect(composer).toContain('className="composer-model-option-menu__content"');
     expect(overrides).toContain(".composer-model-option-menu__content {");
     expect(overrides).toContain("flex-shrink: 0;");
     expect(overrides).toContain(".composer-model-option-menu__item--selected {");
-    expect(composer).toContain('data-composer-model-option-section="mode"');
-    expect(composer).toContain('data-composer-model-option-section="access"');
-    expect(composer.indexOf("{section.label}")).toBeLessThan(
-      composer.indexOf('data-composer-model-option-section="mode"'),
-    );
-    expect(composer.indexOf('data-composer-model-option-section="mode"')).toBeLessThan(
-      composer.indexOf('data-composer-model-option-section="access"'),
-    );
+    // Like Web's traits menu, it lists provider traits only; Mode and Access
+    // stay on their own footer controls.
+    expect(composer).not.toContain('data-composer-model-option-section="mode"');
+    expect(composer).not.toContain('data-composer-model-option-section="access"');
+    expect(composer).not.toContain("Work directly on the task");
     expect(composer).toContain("getComposerModelOptionLetterSpacing(modelOptionLabel)");
     expect(overrides).toContain(".composer-primary-action--send {");
     expect(overrides).toContain("background-color: rgba(var(--primary-rgb), 0.9);");

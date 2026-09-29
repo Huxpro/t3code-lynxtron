@@ -198,7 +198,7 @@ export interface ComposerPrimaryOptionProjection {
 export interface ComposerTraitsMenuItemPresentation {
   readonly id: string;
   readonly label: string;
-  readonly description?: string | undefined;
+  readonly isDefault?: boolean;
   readonly selected: boolean;
   readonly value: string | boolean;
 }
@@ -224,7 +224,7 @@ export function projectComposerTraitsMenu(options: {
       const items = descriptor.options.map((option) => ({
         id: option.id,
         label: option.label,
-        ...(option.description ? { description: option.description } : {}),
+        ...(option.isDefault ? { isDefault: true } : {}),
         selected: option.id === currentValue,
         value: option.id,
       }));
