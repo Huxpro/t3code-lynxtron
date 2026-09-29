@@ -14776,7 +14776,9 @@ async function verifyLifecycleRecovery({
   baseDir,
   child,
   client,
+  devToolCli,
   log,
+  outputDirectory,
   projectId,
   timeoutMs,
   verifyComposerReconnect,
@@ -14903,11 +14905,8 @@ async function verifyLifecycleRecovery({
     client,
     selector: ".composer-frame",
     timeoutMs,
-    predicate: (measurement) =>
-      measurement?.attributes["data-composer-state"] ===
-      (reconnectFixture
-        ? "disabled"
-        : connectedProjection.composer.attributes["data-composer-state"]),
+    // The composer is blocked whenever the connector is not ready.
+    predicate: (measurement) => measurement?.attributes["data-composer-state"] === "disabled",
   });
   const disabledPrimaryAction = await waitForMeasurement({
     child,
@@ -14943,6 +14942,29 @@ async function verifyLifecycleRecovery({
     phase: "reconnecting",
     timeoutMs,
   });
+  // "Reconnecting..." is the longest action label; both actions stay one line.
+  const actionGeometry = {};
+  for (const [key, selector] of [
+    ["reconnect", ".connection-lifecycle-reconnect"],
+    ["connections", ".connection-lifecycle-connections"],
+  ]) {
+    const button = await readOptionalMeasurement(client, selector);
+    const label = await readOptionalMeasurement(client, `${selector} .lynx-host-text`);
+    if (!button || !label || button.rect.height > 24.5 || label.rect.height > 16.5) {
+      throw new Error(
+        `Lifecycle action wrapped or is missing: ${JSON.stringify({ key, button, label })}`,
+      );
+    }
+    actionGeometry[key] = { text: label.text.trim(), button: button.rect, label: label.rect };
+  }
+  const reconnectingScreenshot = devToolCli
+    ? captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: "native-lifecycle-reconnecting.png",
+      })
+    : null;
   await waitForLogOccurrence(child, log, "T3 Code server is ready", 2, timeoutMs);
   const afterRecovery = await waitForSequenceAdvance({
     child,
@@ -15010,6 +15032,8 @@ async function verifyLifecycleRecovery({
     },
     recoveryInput: "DevTool Input.emulateTouchFromMouseEvent on measured semantic selector",
     reconnecting,
+    reconnectingActions: actionGeometry,
+    reconnectingScreenshot,
     recoveredComposer: {
       sessionStatus: recoveredProjection.sessionStatus,
       state: recoveredProjection.composer.attributes["data-composer-state"],
@@ -16061,7 +16085,9 @@ async function runOnce({
             baseDir,
             child,
             client,
+            devToolCli,
             log,
+            outputDirectory,
             projectId: fixtureManifestProjectId,
             timeoutMs,
             verifyComposerReconnect: shouldVerifyComposerReconnect,
