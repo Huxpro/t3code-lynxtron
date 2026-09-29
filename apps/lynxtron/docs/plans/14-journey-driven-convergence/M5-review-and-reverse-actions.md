@@ -1,5 +1,7 @@
 # M5: Complete review and reverse actions
 
+- Status: `in_progress` (started 2026-09-29 after M4)
+
 ## Objective
 
 Let the user understand, inspect, and safely reverse completed work without leaving
@@ -31,4 +33,3 @@ Lynxtron.
 ## Goal prompt
 
 > 在 `/Users/bytedance/github/t3code-lynxtron-021-full` 执行 Plan 14 M5：读取 `apps/lynxtron/docs/plans/14-journey-driven-convergence/M5-review-and-reverse-actions.md`，从一个真实 completed turn 完成 checkpoint -> changed files -> diff/fallback -> file detail -> transcript round-trip，并验证 restore/revert/reopen 的 confirmation、pending、failure、retry、receipt。远程对象必须保留 environment ownership。R10 保持明确 hard island，不做 DOM shim。持续到用户无需回 Web 即可理解并安全反向操作结果。
-

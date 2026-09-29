@@ -1,6 +1,6 @@
 # M4: Delete duplicated product decisions
 
-- Status: `in_progress` (started 2026-09-29 after M3)
+- Status: `completed` (2026-09-29; 70% physical reuse not reached, gap quantified below for a maintainer decision)
 
 ## Objective
 
@@ -143,6 +143,41 @@ on the pre-slice build too.
 
 Carried: `--verify-providers-settings` pins the panel top at y=88; the shell
 places it at y=100 on the pre-slice commit too.
+
+## Outcome (2026-09-29)
+
+Every audited surface lost duplicated product decisions (11 slices, evidence
+in `evidence/2026-09-29/M4/duplicate-decisions.json`). Several deletions fixed
+visible Lynx divergences: corner dismissal (`GAP-014`), clipped top-side
+popups, invented Mode/Access menu sections, wrong Default badges, jump
+shortcuts that selected a different model than their label, a menu item Web
+does not offer, missing Woke/Done pills, an ignored auto-settle setting, and
+lost changed-files choices.
+
+| Exit gate                                         | Status   | Evidence                                                                                         |
+| ------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| Duplicate-decision LOC decreases on every surface | complete | Composer, Model Picker, Shell/Sidebar, Settings Providers, Transcript, Review slices above       |
+| Platform-leaf LOC bounded and explainable         | complete | Leaves left in Lynx: native editor bridge, list recycling, wheel scroll, measurement, bridge IPC |
+| No product decision branches on renderer identity | complete | No renderer checks in `packages/client-runtime` or shared Web modules                            |
+| Web behaviour unchanged                           | complete | Web typecheck errors stay at the pre-M4 13; moved Web copy stays byte-identical                  |
+| 70% physical reuse or approved hard islands       | open     | See gap analysis; needs a maintainer decision                                                    |
+
+### Physical-reuse gap
+
+Line reuse per screen is 26–42% (settings feature panel 3.7%). The existing
+hard islands (terminal, Lexical editor, embedded preview, full patch
+renderer) are already outside the denominator. Removing nine further Web
+orchestration modules (ChatView, composerDraftStore, ChatComposer, Sidebar,
+SidebarV2, CommandPalette, ConnectionsSettings, GitActionsControl,
+MessagesTimeline: 29,165 lines) would only lift screens to 28–46%.
+The rest of the gap is about 250 Web-only modules built on DOM, base-ui, and
+Effect-atom stores that Lynx cannot load.
+
+Reaching 70% therefore needs one of two maintainer decisions, recorded for
+M7: make Web's state and primitive layer platform-neutral (a multi-surface
+architecture programme, not a Lynx port task), or set a Lynx-specific
+physical-reuse target that counts shared decisions rather than shared files.
+Exclusions were not widened.
 
 ## Goal prompt
 
