@@ -280,6 +280,24 @@ export type ConnectorLaunchTarget =
       readonly expectedEnvironmentId?: string;
     };
 
+/**
+ * Sessions exchanged from single-use pairing credentials, keyed by server and
+ * credential. The Reconnect action rebuilds the connector from the same launch
+ * target, so it must reuse the session instead of re-spending the credential,
+ * and it must land on the same environment identity.
+ */
+const pairedSessions = new Map<
+  string,
+  { readonly bearer: string; readonly environmentId: string }
+>();
+
+export const REMOTE_SESSION_EXPIRED_MESSAGE =
+  "This device's session with the remote environment expired or was revoked. Pair this device again.";
+
+function pairedSessionKey(httpBaseUrl: string, credential: string): string {
+  return `${httpBaseUrl}\u0000${credential}`;
+}
+
 export function resolveConnectorLaunchTarget(
   env: Readonly<Record<string, string | undefined>> = process.env,
   discoverLocalEnvironment: typeof discoverDesktopLocalEnvironment = discoverDesktopLocalEnvironment,
@@ -468,22 +486,35 @@ export class T3Connector {
     this.ownsServer = false;
     this.serverExited = false;
     this.events.onStatus("connecting", "Connecting to existing T3 environment…");
-    if (target.expectedEnvironmentId) {
-      const descriptor = await httpRequest(
-        this.httpBaseUrl,
-        "/.well-known/t3/environment",
-        "GET",
-        {},
+    const descriptor = await httpRequest(
+      this.httpBaseUrl,
+      "/.well-known/t3/environment",
+      "GET",
+      {},
+    );
+    if (descriptor.status !== 200) {
+      throw new Error(`environment descriptor failed (${descriptor.status})`);
+    }
+    const environmentId = (JSON.parse(descriptor.body) as { environmentId?: unknown })
+      .environmentId;
+    const sessionKey = pairedSessionKey(target.httpBaseUrl, target.credential);
+    const session = pairedSessions.get(sessionKey);
+    const expectedEnvironmentId = target.expectedEnvironmentId ?? session?.environmentId;
+    if (expectedEnvironmentId !== undefined && environmentId !== expectedEnvironmentId) {
+      throw new Error(
+        `environment identity mismatch (expected ${expectedEnvironmentId}, received ${String(environmentId)})`,
       );
-      if (descriptor.status !== 200) {
-        throw new Error(`environment descriptor failed (${descriptor.status})`);
-      }
-      const environmentId = (JSON.parse(descriptor.body) as { environmentId?: unknown })
-        .environmentId;
-      if (environmentId !== target.expectedEnvironmentId) {
-        throw new Error(
-          `environment identity mismatch (expected ${target.expectedEnvironmentId}, received ${String(environmentId)})`,
-        );
+    }
+    if (session) {
+      this.bearer = session.bearer;
+      try {
+        return await this.finishConnection({ ensureProject: false });
+      } catch (error) {
+        if (error instanceof Error && /ws ticket failed \((401|403)\)/u.test(error.message)) {
+          pairedSessions.delete(sessionKey);
+          throw new Error(REMOTE_SESSION_EXPIRED_MESSAGE);
+        }
+        throw error;
       }
     }
     const form = new URLSearchParams({
@@ -508,6 +539,9 @@ export class T3Connector {
       throw new Error(`token exchange failed (${exchange.status}): ${exchange.body.slice(0, 200)}`);
     }
     this.bearer = JSON.parse(exchange.body).access_token as string;
+    if (typeof environmentId === "string") {
+      pairedSessions.set(sessionKey, { bearer: this.bearer, environmentId });
+    }
     return this.finishConnection({ ensureProject: false });
   }
 
