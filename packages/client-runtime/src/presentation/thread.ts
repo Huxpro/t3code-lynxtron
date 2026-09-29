@@ -118,3 +118,7 @@ export function findLatestProposedPlan(
       : undefined) ?? ordered[ordered.length - 1];
   return latest ?? null;
 }
+
+export function hasActionableProposedPlan(proposedPlan: LatestProposedPlanState | null): boolean {
+  return proposedPlan !== null && proposedPlan.implementedAt === null;
+}

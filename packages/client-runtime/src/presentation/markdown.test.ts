@@ -8,6 +8,7 @@ import {
   normalizeMarkdownLinkHrefKey,
   parseMarkdownFenceInfo,
   parseMarkdownInline,
+  parseMarkdownImage,
   parseMarkdownListItem,
   parseMarkdownTable,
   resolveInlineCodeFileLinkMeta,
@@ -208,6 +209,27 @@ describe("parseMarkdownInline", () => {
         href: "https://t3.tools/docs",
       },
     ]);
+  });
+});
+
+describe("parseMarkdownImage", () => {
+  it("preserves image alt, source, and optional title", () => {
+    expect(
+      parseMarkdownImage('![Architecture](https://example.com/arch.png "System map")'),
+    ).toEqual({
+      alt: "Architecture",
+      src: "https://example.com/arch.png",
+      title: "System map",
+    });
+    expect(parseMarkdownImage("![Proof](./proof.png)")).toEqual({
+      alt: "Proof",
+      src: "./proof.png",
+      title: null,
+    });
+  });
+
+  it("rejects prose containing an image instead of silently consuming it", () => {
+    expect(parseMarkdownImage("See ![Proof](./proof.png) here")).toBeNull();
   });
 });
 

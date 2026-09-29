@@ -74,6 +74,22 @@ export interface MarkdownInlinePresentation {
   readonly href: string | null;
 }
 
+export interface MarkdownImagePresentation {
+  readonly alt: string;
+  readonly src: string;
+  readonly title: string | null;
+}
+
+export function parseMarkdownImage(line: string): MarkdownImagePresentation | null {
+  const match = line
+    .trim()
+    .match(/^!\[([^\]]*)]\((<[^>\n]+>|[^\s\n)]+)(?:\s+(?:"([^"]*)"|'([^']*)'))?\)$/);
+  if (!match?.[2]) return null;
+  const src = normalizeMarkdownLinkHrefKey(match[2]);
+  if (!src) return null;
+  return { alt: match[1] ?? "", src, title: match[3] ?? match[4] ?? null };
+}
+
 export interface MarkdownFileLinkMeta {
   readonly filePath: string;
   readonly targetPath: string;

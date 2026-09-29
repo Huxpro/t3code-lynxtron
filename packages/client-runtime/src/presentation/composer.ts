@@ -1,5 +1,7 @@
 import type {
   ModelCapabilities,
+  ProviderDriverKind,
+  ProviderOptionDescriptor,
   ProviderOptionSelection,
   ProviderInteractionMode,
   RuntimeMode,
@@ -12,6 +14,12 @@ import {
 } from "@t3tools/shared/providerOptions";
 
 const INLINE_TERMINAL_CONTEXT_PLACEHOLDER = "\uFFFC";
+
+export function getComposerUnavailablePlaceholder(
+  status: "error" | "connecting" | "starting-server" | "idle" | "ready",
+): string {
+  return status === "error" ? "Connection unavailable" : "Connecting to T3 Code…";
+}
 
 export interface ComposerRuntimeModePresentation {
   readonly mode: RuntimeMode;
@@ -121,6 +129,62 @@ export interface ComposerPrimaryOptionProjection {
   readonly nextSelections: ReadonlyArray<ProviderOptionSelection>;
 }
 
+export interface ComposerTraitsTriggerPresentation {
+  readonly label: string;
+  readonly showFastModeIcon: boolean;
+}
+
+/**
+ * Build the canonical compact summary for all server-declared model options.
+ * Fast mode uses an icon when other traits provide the readable label, while
+ * every other descriptor contributes its current presentation in declaration
+ * order.
+ */
+export function buildComposerTraitsTriggerPresentation(input: {
+  readonly provider: ProviderDriverKind;
+  readonly descriptors: ReadonlyArray<ProviderOptionDescriptor>;
+  readonly primarySelectDescriptorId: string | null;
+  readonly ultrathinkPromptControlled: boolean;
+}): ComposerTraitsTriggerPresentation {
+  let hasFastMode = false;
+  let fastModeEnabled = false;
+  const labels: Array<string> = [];
+  for (const descriptor of input.descriptors) {
+    if (descriptor.id === "fastMode" && descriptor.type === "boolean") {
+      hasFastMode = true;
+      fastModeEnabled = descriptor.currentValue === true;
+      continue;
+    }
+    if (
+      input.provider === "codex" &&
+      descriptor.id === "serviceTier" &&
+      descriptor.type === "select"
+    ) {
+      const currentValue = getProviderOptionCurrentValue(descriptor);
+      const fastTier = descriptor.options.find(({ label }) => label === "Fast");
+      if (fastTier && (currentValue === "default" || currentValue === fastTier.id)) {
+        hasFastMode = true;
+        fastModeEnabled = currentValue === fastTier.id;
+        continue;
+      }
+    }
+    const label =
+      input.ultrathinkPromptControlled && descriptor.id === input.primarySelectDescriptorId
+        ? "Ultrathink"
+        : descriptor.type === "boolean"
+          ? `${descriptor.label} ${descriptor.currentValue === true ? "On" : "Off"}`
+          : getProviderOptionCurrentLabel(descriptor);
+    if (typeof label === "string" && label.length > 0) {
+      labels.push(label);
+    }
+  }
+
+  if (labels.length === 0 && hasFastMode) {
+    return { label: fastModeEnabled ? "Fast" : "Normal", showFastModeIcon: false };
+  }
+  return { label: labels.join(" · "), showFastModeIcon: fastModeEnabled };
+}
+
 /**
  * Project the first server-declared provider option into a compact host
  * control. Hosts that cannot render a full traits picker can cycle this real
@@ -188,6 +252,30 @@ export interface ComposerSendState<TerminalContext> {
   readonly sendableTerminalContexts: ReadonlyArray<TerminalContext>;
   readonly expiredTerminalContextCount: number;
   readonly hasSendableContent: boolean;
+}
+
+export interface ComposerFileContext {
+  readonly path: string;
+  readonly contents: string;
+  readonly truncated?: boolean;
+}
+
+export function appendFileContextsToPrompt(
+  prompt: string,
+  contexts: ReadonlyArray<ComposerFileContext>,
+): string {
+  const blocks = contexts
+    .filter((context) => context.path.trim() && context.contents.length > 0)
+    .map((context) =>
+      [
+        `<file_context path=${JSON.stringify(context.path)}${context.truncated ? ' truncated="true"' : ""}>`,
+        context.contents,
+        "</file_context>",
+      ].join("\n"),
+    );
+  const trimmed = prompt.trim();
+  if (blocks.length === 0) return trimmed;
+  return trimmed ? `${trimmed}\n\n${blocks.join("\n\n")}` : blocks.join("\n\n");
 }
 
 /**

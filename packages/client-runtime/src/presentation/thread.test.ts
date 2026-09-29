@@ -2,7 +2,11 @@ import { describe, expect, it } from "vite-plus/test";
 
 import { EventId, ThreadId, TurnId, type OrchestrationThreadActivity } from "@t3tools/contracts";
 
-import { deriveActivePlanState, findLatestProposedPlan } from "./thread.ts";
+import {
+  deriveActivePlanState,
+  findLatestProposedPlan,
+  hasActionableProposedPlan,
+} from "./thread.ts";
 
 function planActivity(input: {
   readonly id: string;
@@ -86,5 +90,12 @@ describe("shared thread presentation", () => {
 
     expect(findLatestProposedPlan(proposedPlans, TurnId.make("turn-1"))?.id).toBe("plan-1");
     expect(findLatestProposedPlan(proposedPlans, null)?.id).toBe("plan-2");
+    expect(hasActionableProposedPlan(findLatestProposedPlan(proposedPlans, null))).toBe(true);
+    expect(
+      hasActionableProposedPlan({
+        ...proposedPlans[1]!,
+        implementedAt: "2026-01-01T00:00:00.000Z",
+      }),
+    ).toBe(false);
   });
 });

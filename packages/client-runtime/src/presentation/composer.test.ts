@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  appendFileContextsToPrompt,
+  buildComposerTraitsTriggerPresentation,
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
   deriveComposerSendState,
   getComposerInteractionModePresentation,
+  getComposerUnavailablePlaceholder,
   getComposerRuntimeModePresentation,
   getNextComposerRuntimeMode,
   projectComposerContext,
@@ -11,7 +14,23 @@ import {
   toggleComposerInteractionMode,
 } from "./composer.ts";
 
+describe("appendFileContextsToPrompt", () => {
+  it("materializes canonical file blocks after the visible prompt", () => {
+    expect(
+      appendFileContextsToPrompt("Review this", [
+        { path: "src/a.ts", contents: "export const a = 1;" },
+      ]),
+    ).toBe('Review this\n\n<file_context path="src/a.ts">\nexport const a = 1;\n</file_context>');
+  });
+});
+import { ProviderDriverKind, type ProviderOptionDescriptor } from "@t3tools/contracts";
+
 describe("composer controls presentation", () => {
+  it("does not describe a terminal connection failure as still connecting", () => {
+    expect(getComposerUnavailablePlaceholder("error")).toBe("Connection unavailable");
+    expect(getComposerUnavailablePlaceholder("connecting")).toBe("Connecting to T3 Code…");
+  });
+
   it("owns the canonical runtime-mode copy and cycle order", () => {
     expect(COMPOSER_RUNTIME_MODE_PRESENTATIONS.map(({ mode }) => mode)).toEqual([
       "approval-required",
@@ -84,6 +103,60 @@ describe("composer controls presentation", () => {
 
   it("omits the compact option control when the provider declares none", () => {
     expect(projectComposerPrimaryOption({ capabilities: {}, selections: undefined })).toBeNull();
+  });
+
+  it("summarizes every current model option in declaration order", () => {
+    const descriptors: ReadonlyArray<ProviderOptionDescriptor> = [
+      {
+        id: "reasoningEffort",
+        label: "Reasoning",
+        type: "select",
+        options: [
+          { id: "low", label: "Low" },
+          { id: "high", label: "High" },
+        ],
+        currentValue: "high",
+      },
+      {
+        id: "contextWindow",
+        label: "Context window",
+        type: "select",
+        options: [
+          { id: "200k", label: "200k" },
+          { id: "1m", label: "1M" },
+        ],
+        currentValue: "1m",
+      },
+    ];
+
+    expect(
+      buildComposerTraitsTriggerPresentation({
+        provider: ProviderDriverKind.make("codex"),
+        descriptors,
+        primarySelectDescriptorId: "reasoningEffort",
+        ultrathinkPromptControlled: false,
+      }),
+    ).toEqual({ label: "High · 1M", showFastModeIcon: false });
+  });
+
+  it("uses fast mode as an icon when another trait supplies the label", () => {
+    expect(
+      buildComposerTraitsTriggerPresentation({
+        provider: ProviderDriverKind.make("codex"),
+        descriptors: [
+          {
+            id: "reasoningEffort",
+            label: "Reasoning",
+            type: "select",
+            options: [{ id: "high", label: "High" }],
+            currentValue: "high",
+          },
+          { id: "fastMode", label: "Fast Mode", type: "boolean", currentValue: true },
+        ],
+        primarySelectDescriptorId: "reasoningEffort",
+        ultrathinkPromptControlled: false,
+      }),
+    ).toEqual({ label: "High", showFastModeIcon: true });
   });
 });
 

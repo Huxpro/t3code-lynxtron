@@ -119,13 +119,29 @@
       "types": "./src/presentation/proposedPlan.ts",
       "default": "./src/presentation/proposedPlan.ts"
     },
+    "./presentation/pending-requests": {
+      "types": "./src/presentation/pendingRequests.ts",
+      "default": "./src/presentation/pendingRequests.ts"
+    },
+    "./presentation/pending-user-input": {
+      "types": "./src/presentation/pendingUserInput.ts",
+      "default": "./src/presentation/pendingUserInput.ts"
+    },
     "./presentation/settings": {
       "types": "./src/presentation/settings.ts",
       "default": "./src/presentation/settings.ts"
     },
+    "./presentation/stage-branding": {
+      "types": "./src/presentation/stageBranding.ts",
+      "default": "./src/presentation/stageBranding.ts"
+    },
     "./presentation/composer": {
       "types": "./src/presentation/composer.ts",
       "default": "./src/presentation/composer.ts"
+    },
+    "./presentation/connector-lifecycle": {
+      "types": "./src/presentation/connectorLifecycle.ts",
+      "default": "./src/presentation/connectorLifecycle.ts"
     },
     "./relay": {
       "types": "./src/relay/index.ts",

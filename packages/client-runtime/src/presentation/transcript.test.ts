@@ -168,6 +168,46 @@ describe("deriveTimelineEntries", () => {
 
     expect(entries.map((entry) => entry.kind)).toEqual(["message", "work", "proposed-plan"]);
   });
+
+  it("keeps message, reasoning, tool error, plan, and assistant output in canonical time order", () => {
+    const workEntries = deriveWorkLogEntries([
+      activity({
+        id: "reasoning",
+        kind: "reasoning.updated",
+        tone: "info",
+        summary: "Considered renderer constraints",
+        createdAt: "2026-01-01T00:00:02.000Z",
+      }),
+      activity({
+        id: "tool-error",
+        kind: "tool.completed",
+        tone: "error",
+        summary: "Build failed",
+        payload: { status: "failed", detail: "exit code: 1" },
+        createdAt: "2026-01-01T00:00:03.000Z",
+      }),
+    ]);
+    const entries = deriveTimelineEntries(
+      [
+        message({ id: "user", role: "user", createdAt: "2026-01-01T00:00:01.000Z" }),
+        message({
+          id: "assistant",
+          role: "assistant",
+          createdAt: "2026-01-01T00:00:05.000Z",
+        }),
+      ],
+      [{ id: "plan", createdAt: "2026-01-01T00:00:04.000Z" }],
+      workEntries,
+    );
+
+    expect(entries.map(({ id, kind }) => `${kind}:${id}`)).toEqual([
+      "message:user",
+      "work:reasoning",
+      "work:tool-error",
+      "proposed-plan:plan",
+      "message:assistant",
+    ]);
+  });
 });
 
 describe("deriveMessagesTimelineRows", () => {
