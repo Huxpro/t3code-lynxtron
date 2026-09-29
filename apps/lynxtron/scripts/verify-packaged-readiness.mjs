@@ -7653,6 +7653,246 @@ async function verifyCompletedTranscriptState({ child, client, devToolCli, outpu
   };
 }
 
+/**
+ * Plan 14 M2: transcript file and external link context menus. DevTool
+ * touches carry no mouse button, so a renderer probe invokes the link's own
+ * secondary-click handler; main's probe menu selects Copy relative path, then
+ * Copy Link, and records copies instead of touching the system clipboard. The
+ * file copy must raise the shared toast.
+ */
+async function verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs }) {
+  // Shared formatWorkspaceRelativePath prefixes the workspace folder name.
+  const relativePath = `${path.basename(projectCwd)}/src/greet.ts`;
+  const findLink = async (text) => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const links = await readSelectorMeasurements(client, ".md-link-hit-target");
+      const link = links.find((entry) => entry.text.includes(text));
+      if (link) return link;
+      await waitForChildExit(child, 100);
+    }
+    throw new Error(`No rendered transcript link contains ${text}.`);
+  };
+  const openMenu = async (href) => {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_LINK_CONTEXT_MENU_PROBE__?.(${JSON.stringify(href)}) ?? "missing"`,
+      returnByValue: true,
+    });
+    if (commandResult(response)?.value !== true) {
+      throw new Error(
+        `Link context menu probe did not run for ${href}: ${JSON.stringify(response)}`,
+      );
+    }
+  };
+  await findLink("src/greet.ts");
+  await openMenu("src/greet.ts");
+  await waitForLogText(
+    child,
+    log,
+    '[context-menu-probe] offered=["Open in editor","Copy relative path","Copy full path"] select=copy-relative',
+    timeoutMs,
+  );
+  await waitForLogText(child, log, `[clipboard-sink] ${JSON.stringify(relativePath)}`, timeoutMs);
+  const toast = await waitForMeasurement({
+    child,
+    client,
+    selector: ".ui-toast",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("Relative path copied") === true,
+  });
+  await findLink("Lynx docs");
+  await openMenu("https://lynxjs.org/next/lynxtron");
+  await waitForLogText(
+    child,
+    log,
+    '[context-menu-probe] offered=["Open in system browser","Copy Link"] select=copy-link',
+    timeoutMs,
+  );
+  await waitForLogText(
+    child,
+    log,
+    '[clipboard-sink] "https://lynxjs.org/next/lynxtron"',
+    timeoutMs,
+  );
+  return {
+    status: "pass",
+    input:
+      "renderer probe invokes the rendered link's secondary-click handler; main probe menu selects the item; clipboard sink",
+    fileLink: {
+      offered: ["Open in editor", "Copy relative path", "Copy full path"],
+      copied: relativePath,
+      toast: { text: toast.text.trim(), type: toast.attributes["data-toast-type"] ?? null },
+    },
+    externalLink: {
+      offered: ["Open in system browser", "Copy Link"],
+      copied: "https://lynxjs.org/next/lynxtron",
+    },
+    physical: "pending-user-session (native NSMenu and real secondary click)",
+  };
+}
+
+async function readTopVisibleTimelineRow(client) {
+  const [host] = await readSelectorMeasurements(client, ".timeline-host");
+  if (!host?.rect) throw new Error("Transcript host is not measurable.");
+  const rows = await readSelectorMeasurements(client, "[data-timeline-row-id]");
+  const top = rows
+    .filter(
+      (row) =>
+        row.rect && row.rect.y <= host.rect.y + 1 && row.rect.y + row.rect.height > host.rect.y + 1,
+    )
+    .sort((left, right) => right.rect.y - left.rect.y)[0];
+  return top
+    ? { rowId: top.attributes["data-timeline-row-id"], offset: top.rect.y - host.rect.y }
+    : null;
+}
+
+/**
+ * Plan 14 M2: a detached reader keeps their place while a real provider turn
+ * grows the thread, and Jump re-sticks to the tail afterwards.
+ */
+async function verifyTranscriptIncomingGrowth({ child, client, timeoutMs }) {
+  const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression:
+      "[typeof globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__, typeof globalThis.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__].join(':')",
+    predicate: (value) => value === "function:function:function",
+    timeoutMs,
+  });
+  const before = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => typeof state?.activeThreadId === "string" && state.messages?.length > 0,
+  });
+  const threadId = before.activeThreadId;
+  const modelFixture = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?.(${JSON.stringify(
+      modelSelection.instanceId,
+    )}, ${JSON.stringify(modelSelection.model)}) ?? false`,
+    returnByValue: true,
+  });
+  if (commandResult(modelFixture)?.value !== true) {
+    throw new Error(`Growth model selection was not applied: ${JSON.stringify(modelFixture)}`);
+  }
+  const rowCountBefore = commandResult(
+    await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__?.()",
+      returnByValue: true,
+    }),
+  )?.value;
+  const token = `T3_M2_GROWTH_${Date.now()}`;
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
+      `Count from 1 to 40, one number per line, then write ${token} on its own line. Do not use tools or modify files.`,
+    )})`,
+    returnByValue: true,
+  });
+  // Sending anchors the new turn by design; detach only once the provider is
+  // replying, which is the growth a reader must not be moved by.
+  await tapSelector({ child, client, selector: ".composer-primary-action", timeoutMs });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeThreadId === threadId && state.activeTurnId != null,
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: "globalThis.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__?.('user-scroll-away')",
+    returnByValue: true,
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?.(${Math.floor(
+      rowCountBefore / 2,
+    )}, "top")`,
+    returnByValue: true,
+  });
+  const turnNumber = (rowId) => Number(/fidelity-long-turn-(\d+)/u.exec(rowId ?? "")?.[1] ?? NaN);
+  const anchorDeadline = Date.now() + timeoutMs;
+  let anchor = null;
+  while (Date.now() < anchorDeadline) {
+    const candidate = await readTopVisibleTimelineRow(client);
+    if (candidate && turnNumber(candidate.rowId) < 100) {
+      anchor = candidate;
+      break;
+    }
+    await waitForChildExit(child, 100);
+  }
+  if (!anchor) throw new Error("The detached reader could not be parked mid-thread.");
+  const grown = await waitForClientState({
+    child,
+    client,
+    timeoutMs: Math.max(timeoutMs, 180_000),
+    predicate: (state) =>
+      state?.activeThreadId === threadId &&
+      state.activeTurnId == null &&
+      state.messages?.some(
+        (message) =>
+          message.role === "assistant" &&
+          message.streaming === false &&
+          message.text.includes(token),
+      ),
+  });
+  const rowCountAfter = commandResult(
+    await client.runCdp("Runtime.evaluate", {
+      expression: "globalThis.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__?.()",
+      returnByValue: true,
+    }),
+  )?.value;
+  const detachedHost = await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-host",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-transcript-scroll-mode"] === "free-scrolling",
+  });
+  const anchorAfter = await readTopVisibleTimelineRow(client);
+  if (
+    !(rowCountAfter > rowCountBefore) ||
+    anchorAfter?.rowId !== anchor.rowId ||
+    Math.abs(anchorAfter.offset - anchor.offset) > 8
+  ) {
+    throw new Error(
+      `Incoming growth moved the detached reader: ${JSON.stringify({
+        rowCountBefore,
+        rowCountAfter,
+        anchor,
+        anchorAfter,
+      })}`,
+    );
+  }
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-jump",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-transcript-jump-visible"] === "true",
+  });
+  await tapSelector({ child, client, selector: ".timeline-jump", timeoutMs });
+  const restuck = await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-host",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-transcript-scroll-mode"] === "following-end" &&
+      measurement.attributes["data-transcript-following"] === "true",
+  });
+  return {
+    status: "pass",
+    input: "OpenCode turn sent with the Composer send control while detached; Jump tapped",
+    threadId,
+    provider: modelSelection,
+    rowCount: { before: rowCountBefore, after: rowCountAfter },
+    anchor: { before: anchor, after: anchorAfter },
+    detachedMode: detachedHost.attributes["data-transcript-scroll-mode"],
+    restuckMode: restuck.attributes["data-transcript-scroll-mode"],
+    assistantMessages: grown.messages.filter((message) => message.role === "assistant").length,
+  };
+}
+
 async function verifyTranscriptFollowState({ child, client, timeoutMs }) {
   await waitForRuntimeValue({
     child,
@@ -7709,9 +7949,13 @@ async function verifyTranscriptFollowState({ child, client, timeoutMs }) {
     timeoutMs,
     predicate: (measurement) => measurement?.attributes["data-transcript-jump-visible"] === "false",
   });
+  const incomingGrowth = shouldVerifyTranscriptIncomingGrowth
+    ? await verifyTranscriptIncomingGrowth({ child, client, timeoutMs })
+    : undefined;
   return {
     status: "pass",
     input: "renderer probe through the shared transcript scroll-mode reducer",
+    incomingGrowth,
     initialMode: initial.attributes["data-transcript-scroll-mode"],
     detachedMode: detached.attributes["data-transcript-scroll-mode"],
     jumpVisible: visibleJump.attributes["data-transcript-jump-visible"],
@@ -14495,6 +14739,13 @@ async function runOnce({
       ...(shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney
         ? { T3_TEST_SEND_PROMPT_ERROR_ONCE: "1" }
         : {}),
+      ...(shouldVerifyLinkContextMenu
+        ? {
+            T3_LYNXTRON_VIEWPORT_PROBE: "1",
+            T3_TEST_CONTEXT_MENU_SELECT: "copy-relative,copy-link",
+            T3_TEST_CLIPBOARD_SINK: "1",
+          }
+        : {}),
       ...(shouldVerifySourceControlLoading
         ? { T3_TEST_SOURCE_CONTROL_DISCOVERY_PENDING: "1" }
         : {}),
@@ -14989,6 +15240,9 @@ async function runOnce({
     const transcriptFollowState = shouldVerifyTranscriptFollowState
       ? await verifyTranscriptFollowState({ child, client, timeoutMs })
       : undefined;
+    const linkContextMenu = shouldVerifyLinkContextMenu
+      ? await verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs })
+      : undefined;
     const failedTranscriptState = shouldVerifyFailedTranscriptState
       ? await verifyFailedTranscriptState({
           child,
@@ -15307,6 +15561,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      linkContextMenu,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -15383,6 +15638,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      linkContextMenu,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -15508,6 +15764,10 @@ const shouldVerifyCompletedTranscriptState = process.argv.includes(
   "--verify-completed-transcript-state",
 );
 const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transcript-follow-state");
+const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context-menu");
+const shouldVerifyTranscriptIncomingGrowth = process.argv.includes(
+  "--verify-transcript-incoming-growth",
+);
 const shouldVerifyFailedTranscriptState = process.argv.includes("--verify-failed-transcript-state");
 const shouldVerifyApprovalTranscriptState = process.argv.includes(
   "--verify-approval-transcript-state",

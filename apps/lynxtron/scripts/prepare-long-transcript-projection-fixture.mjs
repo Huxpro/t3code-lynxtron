@@ -19,6 +19,33 @@ function fixtureTimestamp(index, offsetSeconds = 0) {
   return new Date(Date.UTC(2026, 8, 10, 12, 0, index * 2 + offsetSeconds)).toISOString();
 }
 
+// Every RICH_PERIOD-th turn of a `--rich` fixture carries structured content so
+// one canonical long thread exercises links, Markdown, tools, plans, errors,
+// and checkpoints alongside plain reading history.
+const RICH_PERIOD = 10;
+
+export function richAssistantText(turnNumber) {
+  return [
+    `Completed transcript turn ${turnNumber} with structured output.`,
+    "",
+    "Open [src/greet.ts](src/greet.ts) or the [Lynx docs](https://lynxjs.org/next/lynxtron) for context; `greet()` is exported.",
+    "",
+    "```ts",
+    "export function greet(name: string) {",
+    "  return `hello ${name}`;",
+    "}",
+    "```",
+    "",
+    "- [x] Stable row identity",
+    "- [ ] Follow-up check",
+    "",
+    "| Surface | Status |",
+    "| --- | --- |",
+    "| Links | ready |",
+    "| Tools | ready |",
+  ].join("\n");
+}
+
 export function prepareLongTranscriptProjectionFixture(baseDirectory, options = {}) {
   const baseDir = path.resolve(baseDirectory);
   const manifestPath = path.join(baseDir, "visual-state.json");
@@ -41,6 +68,9 @@ export function prepareLongTranscriptProjectionFixture(baseDirectory, options = 
   const threadId = "fidelity-long-transcript";
   const title = `Long transcript ${turnCount} turns`;
   const database = new DatabaseSync(databasePath);
+  // Each rich turn adds one grouped work row; each proposed plan adds one row.
+  let richTurnCount = 0;
+  let planCount = 0;
   try {
     const projectCount = Number(
       database.prepare("SELECT COUNT(*) AS count FROM projection_projects").get().count,
@@ -64,6 +94,26 @@ export function prepareLongTranscriptProjectionFixture(baseDirectory, options = 
         checkpoint_files_json, source_proposed_plan_thread_id, source_proposed_plan_id
       ) VALUES (?, ?, NULL, ?, 'completed', ?, ?, ?, NULL, NULL, NULL, '[]', NULL, NULL)`,
     );
+    const rich = options.rich === true;
+    const insertActivity = database.prepare(
+      `INSERT INTO projection_thread_activities (
+        activity_id, thread_id, turn_id, tone, kind, summary, payload_json, sequence, created_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, NULL, ?)`,
+    );
+    const insertCheckpointTurn = database.prepare(
+      `INSERT INTO projection_turns (
+        thread_id, turn_id, pending_message_id, assistant_message_id, state, requested_at,
+        started_at, completed_at, checkpoint_turn_count, checkpoint_ref, checkpoint_status,
+        checkpoint_files_json, source_proposed_plan_thread_id, source_proposed_plan_id
+      ) VALUES (?, ?, NULL, ?, 'completed', ?, ?, ?, ?, ?, 'ready', ?, NULL, NULL)`,
+    );
+    const insertPlan = database.prepare(
+      `INSERT INTO projection_thread_proposed_plans (
+        plan_id, thread_id, turn_id, plan_markdown, created_at, updated_at, implemented_at,
+        implementation_thread_id
+      ) VALUES (?, ?, ?, ?, ?, ?, NULL, NULL)`,
+    );
+
     database.exec("BEGIN IMMEDIATE");
     for (let index = 0; index < turnCount; index += 1) {
       const turnId = `fidelity-long-turn-${String(index + 1).padStart(3, "0")}`;
@@ -80,22 +130,82 @@ export function prepareLongTranscriptProjectionFixture(baseDirectory, options = 
         requestedAt,
         requestedAt,
       );
+      const richTurn = rich && (index + 1) % RICH_PERIOD === 0;
       insertMessage.run(
         assistantMessageId,
         threadId,
         turnId,
         "assistant",
-        [
-          `Completed transcript turn ${index + 1}.`,
-          "",
-          "- Stable row identity",
-          "- Bounded native list materialization",
-          "- Deterministic first-to-last navigation",
-        ].join("\n"),
+        richTurn
+          ? richAssistantText(index + 1)
+          : [
+              `Completed transcript turn ${index + 1}.`,
+              "",
+              "- Stable row identity",
+              "- Bounded native list materialization",
+              "- Deterministic first-to-last navigation",
+            ].join("\n"),
         completedAt,
         completedAt,
       );
-      insertTurn.run(threadId, turnId, assistantMessageId, requestedAt, requestedAt, completedAt);
+      if (!richTurn) {
+        insertTurn.run(threadId, turnId, assistantMessageId, requestedAt, requestedAt, completedAt);
+        continue;
+      }
+      richTurnCount += 1;
+      const toolAt = fixtureTimestamp(index, 0.5);
+      insertActivity.run(
+        `${turnId}-tool`,
+        threadId,
+        turnId,
+        "tool",
+        "tool.completed",
+        "Ran pnpm test",
+        JSON.stringify({
+          itemType: "command_execution",
+          status: "completed",
+          detail: "exit code: 0",
+        }),
+        toolAt,
+      );
+      if (richTurnCount % 3 === 0) {
+        insertActivity.run(
+          `${turnId}-error`,
+          threadId,
+          turnId,
+          "error",
+          "tool.completed",
+          "Build failed",
+          JSON.stringify({
+            itemType: "command_execution",
+            status: "failed",
+            detail: "exit code: 1",
+          }),
+          toolAt,
+        );
+      }
+      if (richTurnCount % 4 === 0) {
+        planCount += 1;
+        insertPlan.run(
+          `${turnId}-plan`,
+          threadId,
+          turnId,
+          `# Plan for turn ${index + 1}\n\n1. Inspect the transcript.\n2. Keep the scroll anchor stable.`,
+          completedAt,
+          completedAt,
+        );
+      }
+      insertCheckpointTurn.run(
+        threadId,
+        turnId,
+        assistantMessageId,
+        requestedAt,
+        requestedAt,
+        completedAt,
+        richTurnCount,
+        `refs/t3/checkpoints/${threadId}/turn/${richTurnCount}`,
+        JSON.stringify([{ path: "src/greet.ts", kind: "modified", additions: 1, deletions: 1 }]),
+      );
     }
     const createdAt = fixtureTimestamp(0);
     const updatedAt = fixtureTimestamp(turnCount - 1, 1);
@@ -145,9 +255,13 @@ export function prepareLongTranscriptProjectionFixture(baseDirectory, options = 
     title,
     turnCount,
     messageCount,
-    expectedTimelineRowCount: messageCount,
+    expectedTimelineRowCount: messageCount + richTurnCount + planCount,
     modelSelection,
     latestTurnState: "completed",
+    rich: options.rich === true,
+    richPeriod: options.rich === true ? RICH_PERIOD : null,
+    fileLinkPath: options.rich === true ? "src/greet.ts" : null,
+    externalLinkHref: options.rich === true ? "https://lynxjs.org/next/lynxtron" : null,
   };
   const nextManifest = {
     ...manifest,
@@ -174,6 +288,7 @@ if (!baseDir) {
   throw new Error("--base-dir is required (a directory created by visual:prepare).");
 }
 const turnCount = Number(argumentValue("--turn-count") ?? "120");
+const rich = process.argv.includes("--rich");
 process.stdout.write(
-  `${JSON.stringify(prepareLongTranscriptProjectionFixture(baseDir, { turnCount }), null, 2)}\n`,
+  `${JSON.stringify(prepareLongTranscriptProjectionFixture(baseDir, { turnCount, rich }), null, 2)}\n`,
 );

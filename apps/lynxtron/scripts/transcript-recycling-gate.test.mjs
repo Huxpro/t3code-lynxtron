@@ -26,7 +26,8 @@ function fakeCdp({ rowCount = 240, bounded = true, rebind = true } = {}) {
       if (String(params.expression).includes("ROW_COUNT")) {
         return { result: { result: { value: rowCount } } };
       }
-      if (String(params.expression).includes("bottom")) atEnd = true;
+      const target = /LIST_PROBE__\?\.\((\d+),/u.exec(String(params.expression));
+      if (target && Number(target[1]) > 0) atEnd = true;
       return { result: { result: { value: true } } };
     }
     throw new Error(`Unexpected CDP method ${method}`);

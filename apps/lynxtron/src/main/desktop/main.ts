@@ -29,7 +29,10 @@ import { createSystemThemeSource } from "./systemThemeSource.ts";
 import { createReloadMenuItem, reloadApplication } from "./reloadWindow.ts";
 import { T3_RELOAD_FOR_TEST_METHOD } from "../../shared/viewportProtocol.ts";
 import { startClipboardCapabilityHost, startConfirmCapabilityHost } from "./capabilityHost.ts";
-import { startContextMenuCapabilityHost } from "./contextMenuHost.ts";
+import {
+  createProbeContextMenuBuilder,
+  startContextMenuCapabilityHost,
+} from "./contextMenuHost.ts";
 import { startTerminalKeyboardHost } from "./terminalKeyboardHost.ts";
 import { startSearchOverlayKeyboardHost } from "./searchOverlayKeyboardHost.ts";
 import { startComposerKeyboardHost } from "./composerKeyboardHost.ts";
@@ -306,7 +309,10 @@ app.whenReady().then(() => {
       },
       removeHandler: (method) => lynxBridge.removeHandler(method),
     },
-    (value) => clipboard.writeText(value),
+    // Probe runs record copies instead of replacing the user's clipboard.
+    process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1" && process.env.T3_TEST_CLIPBOARD_SINK === "1"
+      ? (value) => console.log(`[clipboard-sink] ${JSON.stringify(value)}`)
+      : (value) => clipboard.writeText(value),
   );
   win.on("closed", () => {
     clipboardCapabilityHost.dispose();
@@ -340,7 +346,11 @@ app.whenReady().then(() => {
       removeHandler: (method) => lynxBridge.removeHandler(method),
     },
     win,
-    (template) => Menu.buildFromTemplate(template),
+    process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1" && process.env.T3_TEST_CONTEXT_MENU_SELECT
+      ? createProbeContextMenuBuilder(process.env.T3_TEST_CONTEXT_MENU_SELECT, (line) =>
+          console.log(line),
+        )
+      : (template) => Menu.buildFromTemplate(template),
   );
   win.on("closed", () => contextMenuCapabilityHost.dispose());
   if (process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1") {

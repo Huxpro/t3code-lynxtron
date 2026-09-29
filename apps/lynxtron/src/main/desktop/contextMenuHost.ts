@@ -57,3 +57,32 @@ export function startContextMenuCapabilityHost(
   });
   return { dispose: () => bridge.removeHandler(T3_CONTEXT_MENU_SHOW_METHOD) };
 }
+
+/**
+ * Probe-only menu builder: records the offered labels and immediately selects
+ * the next id from `selections` (comma-separated, consumed in order) instead
+ * of showing a blocking native menu, so headless runs can prove a context-menu
+ * action and its feedback without desktop input.
+ */
+export function createProbeContextMenuBuilder(
+  selections: string,
+  log: (line: string) => void,
+): (template: MenuItemConstructorOptions[]) => NativeMenuLike {
+  const queue = selections
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  return (template) => ({
+    popup: ({ callback }) => {
+      const selectId = queue.shift() ?? "";
+      const labels = template.flatMap((item) => (item.label ? [item.label] : []));
+      log(`[context-menu-probe] offered=${JSON.stringify(labels)} select=${selectId}`);
+      const selected = template.find((item) => item.id === selectId);
+      if (selected?.click && selected.enabled !== false) {
+        selected.click(undefined as never, undefined, undefined);
+      } else {
+        callback();
+      }
+    },
+  });
+}

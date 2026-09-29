@@ -64,7 +64,11 @@ import externalTerminalUrl from "../assets/terminal.svg?external";
 import workingLabelFullAtlasUrl from "../assets/working-label-64-71h@2x.png?external";
 import workingLabelAtlasUrl from "../assets/working-label-atlas@2x.png?external";
 import { Icon } from "./Icon";
-import { InlineMarkdownRenderer, MarkdownRenderer } from "./MarkdownRenderer";
+import {
+  InlineMarkdownRenderer,
+  MarkdownRenderer,
+  markdownLinkContextMenuHandler,
+} from "./MarkdownRenderer";
 import { shouldRenderBlockMarkdown } from "@t3tools/client-runtime/presentation/markdown-blocks";
 import { uiActions } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
@@ -1369,6 +1373,7 @@ export function MessagesTimeline({
       __T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?: (index: number, alignTo: "bottom" | "top") => void;
       __T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__?: () => number;
       __T3_LYNXTRON_TRANSCRIPT_MINIMAP_COUNT__?: () => number;
+      __T3_LYNXTRON_LINK_CONTEXT_MENU_PROBE__?: (href: string) => boolean;
       __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
     };
     if (typeof diagnosticsGlobal.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
@@ -1378,6 +1383,13 @@ export function MessagesTimeline({
       setTimelineScrollMode((current) => reduceTimelineScrollMode(current, { kind: action }));
     };
     diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_SCROLL_PROBE__ = probe;
+    // DevTool touches carry no mouse button, so the probe invokes the same
+    // secondary-click handler a transcript link registers.
+    diagnosticsGlobal.__T3_LYNXTRON_LINK_CONTEXT_MENU_PROBE__ = (href) => {
+      const handler = markdownLinkContextMenuHandler(href, cwd);
+      handler?.();
+      return handler !== undefined;
+    };
     diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__ = (index, alignTo) => {
       listRef.current
         ?.invoke({
@@ -1395,8 +1407,9 @@ export function MessagesTimeline({
       delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__;
       delete diagnosticsGlobal.__T3_LYNXTRON_TRANSCRIPT_MINIMAP_COUNT__;
+      delete diagnosticsGlobal.__T3_LYNXTRON_LINK_CONTEXT_MENU_PROBE__;
     };
-  }, [minimapItems.length, rows.length]);
+  }, [cwd, minimapItems.length, rows.length]);
 
   const handleJumpToLatest = useCallback(() => {
     jumpToLatestInFlightRef.current = true;

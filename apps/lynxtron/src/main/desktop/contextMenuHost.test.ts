@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vite-plus/test";
 import type { MenuItemConstructorOptions } from "@lynx-js/lynxtron";
 
 import { T3_CONTEXT_MENU_SHOW_METHOD } from "../../shared/capabilityProtocol";
-import { startContextMenuCapabilityHost } from "./contextMenuHost";
+import { createProbeContextMenuBuilder, startContextMenuCapabilityHost } from "./contextMenuHost";
 
 describe("startContextMenuCapabilityHost", () => {
   it("builds a native menu and resolves the selected id", async () => {
@@ -45,5 +45,43 @@ describe("startContextMenuCapabilityHost", () => {
 
     host.dispose();
     expect(removeHandler).toHaveBeenCalledWith(T3_CONTEXT_MENU_SHOW_METHOD);
+  });
+});
+
+describe("probe context menu builder", () => {
+  it("records the offered labels and selects the requested item", () => {
+    const lines: string[] = [];
+    const clicked: string[] = [];
+    let dismissed = false;
+    createProbeContextMenuBuilder("copy", (line) => lines.push(line))([
+      { id: "open", label: "Open", click: () => clicked.push("open") },
+      { id: "copy", label: "Copy", click: () => clicked.push("copy") },
+    ]).popup({ window: null, callback: () => (dismissed = true) });
+    expect(clicked).toEqual(["copy"]);
+    expect(dismissed).toBe(false);
+    expect(lines).toEqual(['[context-menu-probe] offered=["Open","Copy"] select=copy']);
+  });
+
+  it("dismisses when the requested item is absent", () => {
+    let dismissed = false;
+    createProbeContextMenuBuilder("missing", () => {})([{ id: "open", label: "Open" }]).popup({
+      window: null,
+      callback: () => (dismissed = true),
+    });
+    expect(dismissed).toBe(true);
+  });
+});
+
+describe("probe context menu sequence", () => {
+  it("consumes one selection per popup", () => {
+    const clicked: string[] = [];
+    const build = createProbeContextMenuBuilder("copy, open", () => {});
+    const template = [
+      { id: "open", label: "Open", click: () => clicked.push("open") },
+      { id: "copy", label: "Copy", click: () => clicked.push("copy") },
+    ];
+    build(template).popup({ window: null, callback: () => {} });
+    build(template).popup({ window: null, callback: () => {} });
+    expect(clicked).toEqual(["copy", "open"]);
   });
 });

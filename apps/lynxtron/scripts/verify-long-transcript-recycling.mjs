@@ -195,7 +195,18 @@ try {
     "semantic Native readiness",
     timeoutMs,
   );
-  const ownedPorts = readOwnedListeningTcpPorts(child.pid);
+  // DebugRouter can open its port after semantic readiness; wait for it.
+  const ownedPorts = await waitFor(
+    async () => {
+      try {
+        return readOwnedListeningTcpPorts(child.pid);
+      } catch {
+        return null;
+      }
+    },
+    "owned DevTool port",
+    timeoutMs,
+  );
   client = await openOwnedDevToolSession({
     appName: "@t3tools/lynxtron",
     devToolCli,

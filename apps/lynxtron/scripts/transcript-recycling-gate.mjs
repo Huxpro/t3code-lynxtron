@@ -27,15 +27,22 @@ async function materializedRows(runCdp, rootNodeId) {
 async function waitForReboundRows(runCdp, rootNodeId, previousRows, timeoutMs) {
   const previousByNode = new Map(previousRows.map((row) => [row.nodeId, row.rowId]));
   const deadline = Date.now() + timeoutMs;
+  let currentRows = [];
   while (Date.now() < deadline) {
-    const currentRows = await materializedRows(runCdp, rootNodeId);
+    currentRows = await materializedRows(runCdp, rootNodeId);
     const rebound = currentRows.find(
       (row) => previousByNode.has(row.nodeId) && previousByNode.get(row.nodeId) !== row.rowId,
     );
     if (rebound) return { rows: currentRows, rebound };
     await new Promise((resolveWait) => setTimeout(resolveWait, 100));
   }
-  throw new Error("Assertion failed: no materialized row node was rebound after scrolling");
+  throw new Error(
+    `Assertion failed: no materialized row node was rebound after scrolling ${JSON.stringify({
+      startRows: previousRows.map((row) => row.rowId),
+      endRows: currentRows.map((row) => row.rowId),
+      sharedNodes: currentRows.filter((row) => previousByNode.has(row.nodeId)).length,
+    })}`,
+  );
 }
 
 export async function verifyTranscriptRecycling({
@@ -52,7 +59,14 @@ export async function verifyTranscriptRecycling({
   const root = commandResult(documentResponse)?.root;
   const rootNodeId = root?.children?.[0]?.nodeId ?? root?.nodeId;
   if (!rootNodeId) throw new Error("DOM.getDocument returned no root node.");
-  const rowCount = await evaluate(runCdp, "globalThis.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__?.()");
+  // The transcript list registers its probes once it mounts; wait for them.
+  let rowCount;
+  const rowCountDeadline = Date.now() + timeoutMs;
+  do {
+    rowCount = await evaluate(runCdp, "globalThis.__T3_LYNXTRON_TRANSCRIPT_ROW_COUNT__?.()");
+    if (Number.isInteger(rowCount) && rowCount >= minimumRowCount) break;
+    await new Promise((resolveWait) => setTimeout(resolveWait, 100));
+  } while (Date.now() < rowCountDeadline);
   if (!Number.isInteger(rowCount) || rowCount < minimumRowCount) {
     throw new Error(
       `Long-transcript fixture requires at least ${minimumRowCount} rows; observed ${String(rowCount)}.`,
@@ -68,9 +82,12 @@ export async function verifyTranscriptRecycling({
       `Expected a bounded materialized row set smaller than ${rowCount}; observed ${firstRows.length}.`,
     );
   }
+  // The list first renders at the tail, so its tail nodes may still be
+  // live after the jump to the top. The middle of the thread is materialized
+  // in neither place, which forces the list to rebind an existing node.
   await evaluate(
     runCdp,
-    `globalThis.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?.(${rowCount - 1}, "bottom")`,
+    `globalThis.__T3_LYNXTRON_TRANSCRIPT_LIST_PROBE__?.(${Math.floor(rowCount / 2)}, "top")`,
   );
   const last = await waitForReboundRows(runCdp, rootNodeId, firstRows, timeoutMs);
   return {
