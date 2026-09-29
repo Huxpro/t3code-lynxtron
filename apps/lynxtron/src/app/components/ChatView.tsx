@@ -13,7 +13,11 @@ import {
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
 } from "@t3tools/client-runtime/presentation/composer";
-import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
+import {
+  composerDraftScopeKey,
+  composerImagePreparationErrorMessage,
+  planComposerImageAdditions,
+} from "@t3tools/client-runtime/presentation/draft-thread";
 import { appendTerminalContextsToPrompt } from "@t3tools/client-runtime/presentation/terminal-context";
 import { appendElementContextsToPrompt } from "@t3tools/client-runtime/presentation/element-context";
 import {
@@ -88,6 +92,10 @@ import { useT3ProjectFileScripts } from "../hooks/useT3ProjectFileScripts";
 import { ThreadId, type ProjectScript } from "@t3tools/contracts";
 import type { UploadChatAttachment } from "@t3tools/contracts";
 import { runProjectScriptInTerminal } from "./projectActionImports.logic";
+import {
+  T3_COMPOSER_IMAGE_PASTE_EVENT,
+  isComposerImagePastePacket,
+} from "../../shared/composerImagePasteProtocol.ts";
 
 interface ChatViewProps {
   threadId?: string;
@@ -256,7 +264,14 @@ export function ChatView({ threadId }: ChatViewProps) {
         ),
     );
   }, [activeThreadId, activeUnsettleState?.status]);
-  const threadError = sessionError ?? modelSelectionError;
+  const [composerImageErrorsByThreadKey, setComposerImageErrorsByThreadKey] = useState<
+    Readonly<Record<string, string>>
+  >({});
+  const threadError =
+    sessionError ??
+    modelSelectionError ??
+    composerImageErrorsByThreadKey[activeThreadId ?? ""] ??
+    null;
   const visibleThreadError =
     threadError && dismissedThreadErrorsById[activeThreadId ?? ""] !== threadError
       ? threadError
@@ -600,6 +615,54 @@ export function ChatView({ threadId }: ChatViewProps) {
   const composerTerminalContexts = composerDraftKey
     ? (composerTerminalContextsByScopeKey[composerDraftKey] ?? [])
     : [];
+  const composerImagePasteTargetRef = useRef({
+    draftKey: composerDraftKey,
+    threadKey: activeThreadId ?? "",
+    reservedCount: composerDraftAttachments.length,
+    hasPendingUserInput: activePendingQuestion !== null,
+  });
+  composerImagePasteTargetRef.current = {
+    draftKey: composerDraftKey,
+    threadKey: activeThreadId ?? "",
+    reservedCount: composerDraftAttachments.length,
+    hasPendingUserInput: activePendingQuestion !== null,
+  };
+  // Command+V with an image on the clipboard arrives from the main-process
+  // Edit menu; acceptance and error text come from the shared draft planner.
+  useEffect(() => {
+    const emitter =
+      typeof lynx !== "undefined" ? lynx.getJSModule?.("GlobalEventEmitter") : undefined;
+    const listener = (packet: unknown) => {
+      if (!isComposerImagePastePacket(packet)) return;
+      const { draftKey, threadKey, reservedCount, hasPendingUserInput } =
+        composerImagePasteTargetRef.current;
+      if (!draftKey) return;
+      const setError = (message: string | null) =>
+        setComposerImageErrorsByThreadKey((errors) => {
+          if (message !== null) return { ...errors, [threadKey]: message };
+          if (!(threadKey in errors)) return errors;
+          const { [threadKey]: _cleared, ...remaining } = errors;
+          return remaining;
+        });
+      if (packet.kind === "failure") {
+        setError(composerImagePreparationErrorMessage(packet.name, packet.reason));
+        return;
+      }
+      const plan = planComposerImageAdditions({
+        candidates: [packet.attachment],
+        reservedCount,
+        hasPendingUserInput,
+      });
+      if (plan.kind === "blocked-by-pending-user-input") {
+        setError(plan.message);
+        return;
+      }
+      if (plan.accepted.length > 0) t3ClientActions.addComposerAttachments(draftKey, plan.accepted);
+      setError(plan.error);
+    };
+    emitter?.addListener?.(T3_COMPOSER_IMAGE_PASTE_EVENT, listener);
+    return () => emitter?.removeListener?.(T3_COMPOSER_IMAGE_PASTE_EVENT, listener);
+  }, []);
   const composerFileContexts = composerDraftKey
     ? (composerFileContextsByScopeKey[composerDraftKey] ?? [])
     : [];

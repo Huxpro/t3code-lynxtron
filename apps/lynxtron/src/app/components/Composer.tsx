@@ -74,6 +74,7 @@ import { appendComposerText, onComposerTextInsertion } from "../state/composerCo
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { t3ClientActions } from "../state/t3Client";
 import { composerReturnController } from "../state/composerKeyboard";
+import { requestComposerImagePasteProbe } from "../state/composerImagePasteProbe";
 import {
   compactControlsContentHeight,
   compactControlsPanelHeight,
@@ -467,6 +468,7 @@ export function Composer({
       __T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?: (value: string) => boolean;
       __T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__?: (cursor: number) => boolean;
       __T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__?: (attachment: UploadChatAttachment) => boolean;
+      __T3_LYNXTRON_COMPOSER_IMAGE_PASTE_PROBE__?: (dataUrl: string) => boolean;
       __T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__?: (deltaY: number) => Promise<unknown>;
       __T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__?: (offset: number) => Promise<unknown>;
     };
@@ -496,6 +498,7 @@ export function Composer({
       onAddAttachments([attachment]);
       return true;
     };
+    diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_IMAGE_PASTE_PROBE__ = requestComposerImagePasteProbe;
     diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__ = (deltaY) =>
       runOnMainThread(handleModelOptionMenuWheel)({ deltaY } as MainThread.WheelEvent);
     diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__ = (offset) =>
@@ -504,6 +507,7 @@ export function Composer({
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__;
+      delete diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_IMAGE_PASTE_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_MODEL_OPTION_MENU_WHEEL_PROBE__;
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__;
     };

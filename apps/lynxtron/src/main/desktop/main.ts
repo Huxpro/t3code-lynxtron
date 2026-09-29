@@ -1,4 +1,12 @@
-import { app, clipboard, dialog, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
+import {
+  app,
+  clipboard,
+  dialog,
+  LynxWindow,
+  Menu,
+  lynxBridge,
+  nativeImage,
+} from "@lynx-js/lynxtron";
 import cefWebview from "@lynx-js/cef-webview/lynxtron";
 import path from "path";
 
@@ -8,7 +16,12 @@ import {
   createDiscreteKeyboardPacket,
   type DiscreteKeyboardAccelerator,
 } from "./keyboardMenu.ts";
+import { createComposerPasteMenuItem, type PastedImage } from "./composerImagePaste.ts";
 import { MainConnectorHost, settleMainConnectorHandler } from "./mainConnectorHost.ts";
+import {
+  T3_COMPOSER_IMAGE_PASTE_EVENT,
+  T3_COMPOSER_IMAGE_PASTE_TEST_METHOD,
+} from "../../shared/composerImagePasteProtocol.ts";
 import { resolveLynxtronViewport, resolveLynxtronWindowPosition } from "./windowViewport.ts";
 import { startLynxtronViewportHost } from "./viewportHost.ts";
 import { startLynxtronThemeHost } from "./themeHost.ts";
@@ -89,6 +102,13 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
       enabled: item.id === "submit-focused-input" ? returnEnabled() : item.enabled,
       click: () => dispatch(item),
     }));
+  const composerPaste = (readClipboardImage: () => PastedImage) =>
+    createComposerPasteMenuItem({
+      isComposerFocused: () => composerReturnEnabled,
+      readClipboardImage,
+      deliver: (packet) => win.sendGlobalEvent(T3_COMPOSER_IMAGE_PASTE_EVENT, packet),
+      pasteNatively: () => Menu.sendActionToFirstResponder("paste:"),
+    });
   const install = () =>
     Menu.setApplicationMenu(
       Menu.buildFromTemplate([
@@ -116,7 +136,9 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
             { type: "separator" },
             { role: "cut" },
             { role: "copy" },
-            { role: "paste" },
+            process.platform === "darwin"
+              ? composerPaste(() => clipboard.readImage() as unknown as PastedImage)
+              : { role: "paste" },
             { role: "selectAll" },
           ],
         },
@@ -124,6 +146,10 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow) {
     );
   install();
   return {
+    /** Runs Edit > Paste with a probe image in place of the system clipboard. */
+    pasteImageForTest(dataUrl: string) {
+      composerPaste(() => nativeImage.createFromDataURL(dataUrl) as unknown as PastedImage).click();
+    },
     setComposerReturnEnabled(enabled: boolean) {
       if (composerReturnEnabled === enabled) return;
       composerReturnEnabled = enabled;
@@ -316,6 +342,15 @@ app.whenReady().then(() => {
     });
   }
   const keyboardMenu = installDiscreteKeyboardMenu(win);
+  if (process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1") {
+    lynxBridge.handle(T3_COMPOSER_IMAGE_PASTE_TEST_METHOD, (_event, params) => {
+      const dataUrl = (params as { dataUrl?: unknown } | undefined)?.dataUrl;
+      if (typeof dataUrl !== "string") return false;
+      keyboardMenu.pasteImageForTest(dataUrl);
+      return true;
+    });
+    win.on("closed", () => lynxBridge.removeHandler(T3_COMPOSER_IMAGE_PASTE_TEST_METHOD));
+  }
   const composerKeyboardHost = startComposerKeyboardHost(
     {
       handle: (method, handler) => {
