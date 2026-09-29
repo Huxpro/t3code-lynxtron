@@ -208,6 +208,14 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
   win.on("closed", () => {
     host.dispose();
   });
+  // A signal otherwise terminates main without running exit handlers and
+  // leaves the connector-owned server orphaned.
+  for (const signal of ["SIGINT", "SIGTERM"] as const) {
+    process.once(signal, () => {
+      host.dispose();
+      app.quit();
+    });
+  }
   // Backstop: quitting the app without a window close must still release the
   // connector-owned server process and port. Dispose is idempotent.
   app.on("will-quit", () => {
