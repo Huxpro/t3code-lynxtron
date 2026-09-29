@@ -1,5 +1,7 @@
 # M3: Prove remote and multi-environment ownership
 
+- Status: `in_progress` (started 2026-09-29 after M2)
+
 ## Objective
 
 Make remote readiness a real product property by completing the essential agent
@@ -38,4 +40,3 @@ journey against one supported remote environment without cross-environment leaka
 ## Goal prompt
 
 > 在 `/Users/bytedance/github/t3code-lynxtron-021-full` 执行 Plan 14 M3：读取 `apps/lynxtron/docs/plans/14-journey-driven-convergence/M3-remote-environment-journey.md`，建立一个 disposable local environment 和一个受支持 remote environment，完成 discover/pair/select project/create thread/send/response/disconnect/reconnect 的连续旅程。所有 project/thread/file/attachment/terminal/preview/action 必须携带 environment ownership，并添加 wrong-environment negative tests。区分 pairing、auth、transport、server readiness 和 product sync 错误。不得使用 live `~/.t3/userdata`，不得把 remote policy smoke 当成完整 remote journey。持续到 PF4 exit gates 满足。
-

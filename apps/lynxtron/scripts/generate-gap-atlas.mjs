@@ -425,6 +425,32 @@ const gaps = [
     ],
     screen: "composer",
   },
+  {
+    id: "GAP-014",
+    surface: "Composer runtime menu",
+    states: ["composer-runtime-menu"],
+    clients: ["native"],
+    category: "SHARED_PRIMITIVE",
+    severity: "P3",
+    userImpact:
+      "An outside tap near the window corner does not close the runtime (permission) menu on Lynxtron 0.0.28; taps elsewhere, Escape, and item selection still work.",
+    frequency: 2,
+    trustImpact: 2,
+    evidenceConfidence: 3,
+    sourceOwner: "Composer runtime menu (local popup and dismiss layer)",
+    likelyRootCause:
+      "The menu keeps an absolute popup and a z-index 0 fixed dismiss layer inside the Composer; raising the layer covers the popup items because Lynx does not order a fixed layer against an absolute sibling's stacking context.",
+    fixClass: "shared primitive",
+    reuseLeverage: 3,
+    crossSurfaceLeverage: 2,
+    implementationCost: 3,
+    platformRisk: 2,
+    nativeRequirement:
+      "move the runtime menu onto the shared Lynx Menu primitive, whose popup and dismiss layer are both fixed (161/160)",
+    disposition: "open",
+    evidence: ["evidence/2026-09-29/M2/transcript-and-input.json"],
+    screen: "composer",
+  },
 ];
 
 const severityScore = { P0: 5, P1: 4, P2: 2, P3: 1 };

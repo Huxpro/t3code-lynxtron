@@ -1,6 +1,6 @@
 # M2: Close transcript and physical-input residuals
 
-- Status: `in_progress` (started 2026-09-29 after M1)
+- Status: `completed` (2026-09-29, Lynxtron 0.0.28; physical-input checks pending a user session)
 
 ## Objective
 
@@ -36,6 +36,44 @@ content, links, menus, and discrete keyboard commands.
 - Every remaining input gap is either fixed at the shared primitive or formally
   blocked with upstream evidence and a usable visible fallback.
 - PF3 leaves `in_progress`.
+
+## Outcome (2026-09-29)
+
+Evidence: `evidence/2026-09-29/M2/transcript-and-input.json`. The canonical
+long thread is `prepare-long-transcript-projection-fixture --rich`: 120 turns,
+255 timeline rows, with every tenth turn carrying workspace and external
+links, code, a task list, a table, tool and error activity, proposed plans, and
+a checkpoint. Images and pending approval/question keep their dedicated
+fixtures because they need stored attachments or change the thread state.
+
+Product and platform changes made during M2:
+
+- Lynx core ships a partial `URL` (only `href`/`searchParams`); the pre-entry
+  now installs core-js's WHATWG URL. Before this, external-link menus never
+  opened and every shared helper reading `hostname`/`pathname` misread.
+- `toast.lynx` was a silent stub; it now renders the shared toast manager.
+- Transcript file and external link menus use the shared Web contracts,
+  including copy and failure toasts.
+- Probe-only main hooks: menu-item click by id, context-menu selection, and a
+  clipboard sink, so headless gates exercise the real handlers.
+
+| Requirement        | Status               | Evidence                                                                                                                    | Remaining boundary                                                                                             |
+| ------------------ | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Product entry      | complete             | Rich thread opens, recycles (node rebinding on 255 rows), follows the tail                                                  | none                                                                                                           |
+| Canonical state    | complete             | A reader parked at turn 60 keeps the same top row (offset 0) while a real OpenCode reply grows the thread 255→258 rows      | none                                                                                                           |
+| Completion receipt | complete             | Jump re-sticks to `following-end` after growth                                                                              | none                                                                                                           |
+| Failure/retry      | partial              | Transcript error rows render in the rich fixture; message cards, approval, review diff, and diff scope gates pass on 0.0.28 | Checkpoint card toggle stays expanded on 0.0.28 (carried to M5)                                                |
+| Reverse action     | complete             | Detach → Jump, menu open → outside dismiss, runtime mode select                                                             | Corner outside-taps miss the runtime menu layer (`GAP-014`, M4)                                                |
+| Web/Lynx parity    | complete             | Link menus share items and toast text with Web; file picker footer matches Web's ProjectFilePicker                          | Web shows the external-link menu only with an integrated browser; Lynx always offers system browser + copy     |
+| Native interaction | pending-user-session | Menu/context-menu probes drive the real main handlers; DevTool touches carry no mouse button                                | Physical wheel, secondary click, Command+K/Arrow/Return, and nested-label clicks on Delete confirm carry to M7 |
+| Source reuse       | partial              | Link menus and toasts moved onto shared source                                                                              | Runtime menu should move to the shared Menu primitive (M4)                                                     |
+| Cleanup            | complete             | Probe hooks are gated by `T3_LYNXTRON_VIEWPORT_PROBE`; the clipboard sink never touches the system clipboard                | none                                                                                                           |
+
+Exit gates: reading history is never stolen (proven headlessly); accelerators
+reach the shared resolver (Command+K menu item → packet → resolver); remaining
+input gaps are either fixed at a shared primitive (URL, toasts, link menus) or
+recorded (`GAP-011` held upstream, `GAP-014` for M4, physical checks for M7).
+PF3 leaves `in_progress`.
 
 ## Goal prompt
 

@@ -14,7 +14,7 @@ the phase files own implementation detail.
 
 - Content type: Master execution plan
 - Status: `in_progress`
-- Active phase: `M2`
+- Active phase: `M3`
 - Audience: Agents continuing the T3 Code Electron-to-Lynxtron convergence
 - Product authority: Current Web/Electron behavior in this checkout
 - Runtime authority: Exact-owned packaged Lynxtron using disposable realistic state
@@ -47,8 +47,8 @@ or classified as platform leaves or hard islands.
 | ----- | ------------------------------------------------------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------- |
 | M0    | [Reconcile plans and completion accounting](./14-journey-driven-convergence/M0-status-and-ledger-reset.md)                | `completed`   | User-directed skip: status reconciliation no longer blocks product work; M1 audits its own completion claims     |
 | M1    | [Close the supported local Composer journey](./14-journey-driven-convergence/M1-local-composer-journey.md)                | `completed`   | One authenticated local turn carries supported draft/context inputs through retry and receipt                    |
-| M2    | [Close transcript and physical-input residuals](./14-journey-driven-convergence/M2-transcript-and-input-closure.md)       | `in_progress` | Long-reading, link/context actions, and supported keyboard/menu paths are complete or explicitly runtime-blocked |
-| M3    | [Prove remote and multi-environment ownership](./14-journey-driven-convergence/M3-remote-environment-journey.md)          | `pending`     | One local and one supported remote journey complete a turn and reconnect without identity leakage                |
+| M2    | [Close transcript and physical-input residuals](./14-journey-driven-convergence/M2-transcript-and-input-closure.md)       | `completed`   | Long-reading, link/context actions, and supported keyboard/menu paths are complete or explicitly runtime-blocked |
+| M3    | [Prove remote and multi-environment ownership](./14-journey-driven-convergence/M3-remote-environment-journey.md)          | `in_progress` | One local and one supported remote journey complete a turn and reconnect without identity leakage                |
 | M4    | [Delete duplicated product decisions](./14-journey-driven-convergence/M4-shared-source-deletion.md)                       | `pending`     | Active journey surfaces improve physical reuse and duplicate-decision LOC without widening exclusions            |
 | M5    | [Complete review and reverse actions](./14-journey-driven-convergence/M5-review-and-reverse-actions.md)                   | `pending`     | Checkpoint, files, diff/fallback, and reverse actions form one canonical loop                                    |
 | M6    | [Bound secondary surfaces and platform quality](./14-journey-driven-convergence/M6-secondary-surfaces-and-performance.md) | `pending`     | Terminal/browser decisions are honest and startup, update, memory, and bundle budgets exist                      |

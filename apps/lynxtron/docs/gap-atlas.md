@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-29T17:34:35.506Z
+Generated: 2026-09-29T19:23:41.091Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -8,7 +8,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 ## Summary
 
-- Gaps: 13
+- Gaps: 14
 - P0: 1
 - P1: 8
 - P2: 3
@@ -28,6 +28,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | closed          | DiffPanel / changed-files composition and R10 renderer island |
 | GAP-003 | P2       | SOURCE_REUSE       | Settings Connections / Source Control / Beta / Archive |    45 | closed          | Settings route panels and platform host slots                 |
 | GAP-012 | P2       | INTERACTION        | Settings Appearance                                    |    39 | closed          | AppearanceSettingsSurface and runtime preferences             |
+| GAP-014 | P3       | SHARED_PRIMITIVE   | Composer runtime menu                                  |    24 | open            | Composer runtime menu (local popup and dismiss layer)         |
 | GAP-013 | P2       | RUNTIME_CAPABILITY | Composer image input                                   |    23 | blocked-runtime | Lynxtron host drag-and-drop bridge                            |
 | GAP-001 | P3       | HARNESS_INVALID    | Main shell / New Thread                                |    21 | closed          | Plan 11C workbench state-echo selector                        |
 
@@ -238,6 +239,22 @@ three-client evidence lowers confidence; it does not silently pass a gap.
   - `reports/reuse/current.json`
   - `compat-matrix.md#R13`
   - `evidence/2026-09-12/fidelity/settings-appearance-real-controls-current.json`
+
+## GAP-014 — Composer runtime menu
+
+- Severity/category: `P3` / `SHARED_PRIMITIVE`
+- Priority score: 24
+- User impact: An outside tap near the window corner does not close the runtime (permission) menu on Lynxtron 0.0.28; taps elsewhere, Escape, and item selection still work.
+- Clients/states: native / composer-runtime-menu
+- Source owner: Composer runtime menu (local popup and dismiss layer)
+- Likely root cause: The menu keeps an absolute popup and a z-index 0 fixed dismiss layer inside the Composer; raising the layer covers the popup items because Lynx does not order a fixed layer against an absolute sibling's stacking context.
+- Fix class: `shared primitive`
+- Physical reuse: 5.9% modules / 6.8% LOC
+- Weighted style risk occurrences: 5258
+- Native requirement: move the runtime menu onto the shared Lynx Menu primitive, whose popup and dismiss layer are both fixed (161/160)
+- Disposition: `open`
+- Evidence:
+  - `evidence/2026-09-29/M2/transcript-and-input.json`
 
 ## GAP-013 — Composer image input
 
