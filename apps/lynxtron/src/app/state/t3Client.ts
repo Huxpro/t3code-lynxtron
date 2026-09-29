@@ -178,6 +178,7 @@ import type {
   ProjectRepoContext,
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
+import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
 
 interface PollBridge extends T3Bridge {}
 
@@ -195,6 +196,7 @@ declare const lynx:
 export interface T3ClientState {
   readonly status: ConnectionStatus;
   readonly statusDetail?: string;
+  readonly connectionKind?: "owned-local" | "existing-environment";
   readonly connectorCommandsReady: boolean;
   readonly vcsStatus: VcsStatusResult | null;
   readonly vcsStatusCwd: string | null;
@@ -513,9 +515,20 @@ function applyServerConfig(config: ServerConfig, preferredSelection?: ModelSelec
 
 function applyStatusPayload(status: StatusEventPayload): void {
   const current = appAtomRegistry.get(t3ClientStateAtom);
+  if (typeof status.pathsResolveLocally === "boolean") {
+    setEnvironmentPathsResolveLocally(status.pathsResolveLocally);
+  }
   reportConnectionStatus(status.status);
-  if (status.status !== current.status || status.detail !== current.statusDetail) {
-    patchState({ status: status.status, statusDetail: status.detail });
+  if (
+    status.status !== current.status ||
+    status.detail !== current.statusDetail ||
+    (status.connectionKind !== undefined && status.connectionKind !== current.connectionKind)
+  ) {
+    patchState({
+      status: status.status,
+      statusDetail: status.detail,
+      ...(status.connectionKind === undefined ? {} : { connectionKind: status.connectionKind }),
+    });
   }
 }
 

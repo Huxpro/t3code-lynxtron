@@ -208,6 +208,56 @@ describe("connection lifecycle presentation", () => {
     ).toMatchObject({ phase, title, visible });
   });
 
+  it.each([
+    [
+      "pairing",
+      "Remote: Pairing expired",
+      "Pair this device with the remote environment again from Connections.",
+    ],
+    [
+      "authentication",
+      "Remote: Access denied",
+      "The remote environment rejected this client's session. Reconnect or pair again.",
+    ],
+    [
+      "transport",
+      "Remote: Unreachable",
+      "Cannot reach the remote environment. Check the network and that it is running, then reconnect.",
+    ],
+    [
+      "server-readiness",
+      "Remote: Server not ready",
+      "The remote environment did not finish starting. Reconnect to try again.",
+    ],
+    [
+      "product-sync",
+      "Remote: Sync failed",
+      "Connected to the remote environment, but loading its state failed. Reconnect to resync.",
+    ],
+  ] as const)("names the %s failure layer and its recovery", (failureLayer, title, description) => {
+    expect(
+      projectConnectionLifecycle({
+        phase: "error",
+        targetLabel: "Remote",
+        detail: "raw connector detail",
+        recoverySubject: "the remote environment",
+        failureLayer,
+      }),
+    ).toMatchObject({ phase: "error", title, description });
+  });
+
+  it("keeps the generic failure copy when the layer is unknown", () => {
+    expect(
+      projectConnectionLifecycle({
+        phase: "error",
+        targetLabel: "T3 Code",
+        detail: "Something odd.",
+        recoverySubject: "the local backend",
+        failureLayer: null,
+      }),
+    ).toMatchObject({ title: "T3 Code: Connection failed", description: "Something odd." });
+  });
+
   it("preserves reconnect detail and disables duplicate retry", () => {
     expect(
       projectConnectionLifecycle({

@@ -55,9 +55,47 @@ export type ConnectorConnectionStatus =
   | "ready"
   | "error";
 
+export type ConnectorConnectionKind = "owned-local" | "existing-environment";
+
 export interface ConnectorStatusPayload {
   readonly status: ConnectorConnectionStatus;
   readonly detail?: string;
+  /** Whether main owns the server or is paired to an existing environment. */
+  readonly connectionKind?: ConnectorConnectionKind;
+  /** False when environment file paths do not name files on this machine. */
+  readonly pathsResolveLocally?: boolean;
+}
+
+export type ConnectorFailureLayer =
+  | "pairing"
+  | "authentication"
+  | "transport"
+  | "server-readiness"
+  | "product-sync";
+
+const CONNECTOR_FAILURE_PATTERNS: ReadonlyArray<readonly [ConnectorFailureLayer, RegExp]> = [
+  [
+    "pairing",
+    /Pair this device again|token exchange failed \((?:400|401|403)\)|environment identity mismatch|pairing (?:url|link|token)/iu,
+  ],
+  ["authentication", /(?:ws ticket|access request) failed \((?:401|403)\)/iu],
+  [
+    "transport",
+    /ECONNREFUSED|ENOTFOUND|EHOSTUNREACH|ECONNRESET|ETIMEDOUT|socket hang up|fetch failed|network|timed out/iu,
+  ],
+  [
+    "server-readiness",
+    /did not become ready|exited before becoming ready|Server exited|server is not running|environment descriptor failed \(5\d\d\)/iu,
+  ],
+  ["product-sync", /snapshot|subscribe|subscription|decode|schema|RPC/iu],
+];
+
+/** Names the layer a connector failure detail belongs to, if recognizable. */
+export function classifyConnectorFailure(
+  detail: string | null | undefined,
+): ConnectorFailureLayer | null {
+  if (!detail) return null;
+  return CONNECTOR_FAILURE_PATTERNS.find(([, pattern]) => pattern.test(detail))?.[0] ?? null;
 }
 
 export interface ConnectorShellPayload {

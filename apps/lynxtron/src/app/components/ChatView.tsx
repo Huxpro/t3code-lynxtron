@@ -92,6 +92,7 @@ import { useT3ProjectFileScripts } from "../hooks/useT3ProjectFileScripts";
 import { ThreadId, type ProjectScript } from "@t3tools/contracts";
 import type { UploadChatAttachment } from "@t3tools/contracts";
 import { runProjectScriptInTerminal } from "./projectActionImports.logic";
+import { classifyConnectorFailure } from "../../shared/connectorProtocol.ts";
 import {
   T3_COMPOSER_IMAGE_PASTE_EVENT,
   isComposerImagePastePacket,
@@ -110,6 +111,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   const {
     status,
     statusDetail,
+    connectionKind,
     connectorCommandsReady,
     vcsStatus,
     vcsStatusCwd,
@@ -462,9 +464,13 @@ export function ChatView({ threadId }: ChatViewProps) {
         phase: status,
         targetLabel: serverConfig?.environment.label ?? "T3 Code",
         detail: statusDetail,
-        recoverySubject: "the local backend",
+        recoverySubject:
+          connectionKind === "existing-environment"
+            ? "the remote environment"
+            : "the local backend",
+        failureLayer: status === "error" ? classifyConnectorFailure(statusDetail) : null,
       }),
-    [serverConfig?.environment.label, status, statusDetail],
+    [connectionKind, serverConfig?.environment.label, status, statusDetail],
   );
   const showInteractionModeToggle =
     providerEntries.find((entry) => entry.instanceId === modelInstanceId)?.snapshot

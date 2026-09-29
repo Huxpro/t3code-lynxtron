@@ -280,6 +280,22 @@ export type ConnectorLaunchTarget =
       readonly expectedEnvironmentId?: string;
     };
 
+const LOOPBACK_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]", "::1"]);
+
+/**
+ * Whether file paths reported by the target environment name files on this
+ * machine: true for an owned server, the desktop rendezvous, and loopback
+ * pairing URLs; false for any other host (LAN, relay, tunnel).
+ */
+export function targetResolvesPathsLocally(target: ConnectorLaunchTarget): boolean {
+  if (target.kind === "owned-local" || target.source === "desktop-rendezvous") return true;
+  try {
+    return LOOPBACK_HOSTS.has(new URL(target.httpBaseUrl).hostname.toLowerCase());
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Sessions exchanged from single-use pairing credentials, keyed by server and
  * credential. The Reconnect action rebuilds the connector from the same launch
@@ -335,6 +351,10 @@ export class T3Connector {
   private httpBaseUrl = "";
   private wsBaseUrl = "";
   private ownsServer = false;
+  /** The launch target kind resolved by the latest connect(). */
+  connectionKind: "owned-local" | "existing-environment" | undefined;
+  /** Whether environment file paths are paths on this machine. */
+  pathsResolveLocally: boolean | undefined;
   private bearer: string | undefined;
   private events: ConnectorEvents;
   private client: any;
@@ -374,6 +394,8 @@ export class T3Connector {
 
   async connect(): Promise<ConnectorConnectResult> {
     const target = resolveConnectorLaunchTarget();
+    this.connectionKind = target.kind;
+    this.pathsResolveLocally = targetResolvesPathsLocally(target);
     if (target.kind === "existing-environment") {
       return this.connectExistingEnvironment(target);
     }

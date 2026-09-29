@@ -49,11 +49,50 @@ export interface ConnectionLifecyclePresentation {
  * Renderer-neutral lifecycle copy and recovery contract shared by Web's
  * environment banner and the Lynxtron local-connector banner.
  */
+/** The layer a connection failure belongs to, when the client can tell. */
+export type ConnectionFailureLayer =
+  | "pairing"
+  | "authentication"
+  | "transport"
+  | "server-readiness"
+  | "product-sync";
+
+const FAILURE_LAYER_PRESENTATION: Record<
+  ConnectionFailureLayer,
+  { readonly title: string; readonly recovery: (subject: string) => string }
+> = {
+  pairing: {
+    title: "Pairing expired",
+    recovery: (subject) => `Pair this device with ${subject} again from Connections.`,
+  },
+  authentication: {
+    title: "Access denied",
+    recovery: (subject) => `${subject} rejected this client's session. Reconnect or pair again.`,
+  },
+  transport: {
+    title: "Unreachable",
+    recovery: (subject) =>
+      `Cannot reach ${subject}. Check the network and that it is running, then reconnect.`,
+  },
+  "server-readiness": {
+    title: "Server not ready",
+    recovery: (subject) => `${subject} did not finish starting. Reconnect to try again.`,
+  },
+  "product-sync": {
+    title: "Sync failed",
+    recovery: (subject) =>
+      `Connected to ${subject}, but loading its state failed. Reconnect to resync.`,
+  },
+};
+
+const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
+
 export function projectConnectionLifecycle(input: {
   readonly phase: ConnectionLifecycleSourcePhase;
   readonly targetLabel: string;
   readonly detail?: string | null;
   readonly recoverySubject: string;
+  readonly failureLayer?: ConnectionFailureLayer | null;
 }): ConnectionLifecyclePresentation {
   const detail = input.detail?.trim() || null;
   const recoveryDescription = `Reconnect ${input.recoverySubject} before sending messages or running actions.`;
@@ -130,15 +169,19 @@ export function projectConnectionLifecycle(input: {
         description: detail ?? recoveryDescription,
         recovery: recovery(false),
       };
-    case "error":
+    case "error": {
+      const layer = input.failureLayer ? FAILURE_LAYER_PRESENTATION[input.failureLayer] : null;
       return {
         phase: "error",
         visible: true,
         tone: "error",
-        title: `${input.targetLabel}: Connection failed`,
-        description: detail ?? recoveryDescription,
+        title: `${input.targetLabel}: ${layer?.title ?? "Connection failed"}`,
+        description: layer
+          ? capitalize(layer.recovery(input.recoverySubject))
+          : (detail ?? recoveryDescription),
         recovery: recovery(false),
       };
+    }
   }
 }
 

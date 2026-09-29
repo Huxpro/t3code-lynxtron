@@ -111,6 +111,8 @@ export type ModelInfo = ModelPickerModel;
 export interface StatusEventPayload {
   readonly status: ConnectionStatus;
   readonly detail?: string;
+  readonly connectionKind?: "owned-local" | "existing-environment";
+  readonly pathsResolveLocally?: boolean;
 }
 
 /** A coalesced shell snapshot (projects + threads) pushed to the UI. */

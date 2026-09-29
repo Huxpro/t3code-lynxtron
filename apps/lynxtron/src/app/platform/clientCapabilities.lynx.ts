@@ -77,6 +77,15 @@ export async function showNativeContextMenu(
   return typeof value === "string" ? value : null;
 }
 
+// Environment file paths name files on this machine unless the connector
+// reports a remote environment; see setEnvironmentPathsResolveLocally.
+let pathsResolveLocally = true;
+
+/** Main reports whether environment paths are local; remote paths never open here. */
+export function setEnvironmentPathsResolveLocally(value: boolean): void {
+  pathsResolveLocally = value;
+}
+
 const storage = {
   getItem(key: string): string | null {
     "background only";
@@ -137,7 +146,7 @@ export const clientCapabilities: ClientUiCapabilities = {
     },
     canOpenPath: () => {
       "background only";
-      return Boolean(bridge()?.openPath);
+      return pathsResolveLocally && Boolean(bridge()?.openPath);
     },
     openExternal: async (url) => {
       "background only";
@@ -147,6 +156,9 @@ export const clientCapabilities: ClientUiCapabilities = {
     },
     openPath: async (path) => {
       "background only";
+      if (!pathsResolveLocally) {
+        throw new Error("Files in a remote environment cannot be opened on this device.");
+      }
       const target = bridge();
       if (!target?.openPath) throw new Error("Native path navigation is unavailable");
       await target.openPath(path);

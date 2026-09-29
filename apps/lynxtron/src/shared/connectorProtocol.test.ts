@@ -8,6 +8,7 @@ import {
 import * as Duration from "effect/Duration";
 
 import {
+  classifyConnectorFailure,
   classifyConnectorSequence,
   decodeConnectorCommandParams,
   decodeConnectorCommandResult,
@@ -247,5 +248,25 @@ describe("connector protocol guards", () => {
     assert.isFalse(isConnectorSyncReply({ seq: 1, snapshot: null }));
     assert.isFalse(isConnectorSyncReply({ seq: 1, snapshot: { status: { status: "ready" } } }));
     assert.isFalse(isConnectorSyncReply(null));
+  });
+});
+
+describe("classifyConnectorFailure", () => {
+  it.each([
+    ['token exchange failed (401): {"code":"auth_invalid"}', "pairing"],
+    [
+      "This device's session with the remote environment expired or was revoked. Pair this device again.",
+      "pairing",
+    ],
+    ["environment identity mismatch (expected a, received b)", "pairing"],
+    ["ws ticket failed (401): denied", "authentication"],
+    ["connect ECONNREFUSED 127.0.0.1:5173", "transport"],
+    ["t3 server did not become ready", "server-readiness"],
+    ["Server exited (code=1 signal=null).", "server-readiness"],
+    ["shell subscription failed to decode the snapshot", "product-sync"],
+    ["Something else entirely", null],
+    [undefined, null],
+  ] as const)("classifies %s as %s", (detail, layer) => {
+    assert.equal(classifyConnectorFailure(detail), layer);
   });
 });

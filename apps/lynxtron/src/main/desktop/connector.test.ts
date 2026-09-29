@@ -7,6 +7,7 @@ import {
   materializeTurnBootstrap,
   resolveConnectorLaunchTarget,
   retryRpcTransportOpen,
+  targetResolvesPathsLocally,
 } from "./connector";
 
 describe("connector launch target", () => {
@@ -309,5 +310,34 @@ describe("dispatchWithTransportRecovery", () => {
     );
     assert.equal(dispatchCount, 1);
     assert.equal(recovered, 0);
+  });
+});
+
+describe("targetResolvesPathsLocally", () => {
+  const pairing = (httpBaseUrl: string) =>
+    ({
+      kind: "existing-environment",
+      httpBaseUrl,
+      wsBaseUrl: httpBaseUrl.replace(/^http/u, "ws"),
+      credential: "c",
+      source: "explicit-pairing-url",
+    }) as const;
+
+  it("treats owned servers, the desktop rendezvous, and loopback pairing as local", () => {
+    assert.isTrue(targetResolvesPathsLocally({ kind: "owned-local", baseDir: "/tmp/t3" }));
+    assert.isTrue(
+      targetResolvesPathsLocally({
+        ...pairing("http://192.168.1.20:3773"),
+        source: "desktop-rendezvous",
+      }),
+    );
+    assert.isTrue(targetResolvesPathsLocally(pairing("http://127.0.0.1:3773")));
+    assert.isTrue(targetResolvesPathsLocally(pairing("http://localhost:3773")));
+  });
+
+  it("never resolves a remote environment's paths on this machine", () => {
+    assert.isFalse(targetResolvesPathsLocally(pairing("http://192.168.1.20:3773")));
+    assert.isFalse(targetResolvesPathsLocally(pairing("https://box.tailnet.ts.net")));
+    assert.isFalse(targetResolvesPathsLocally(pairing("not a url")));
   });
 });

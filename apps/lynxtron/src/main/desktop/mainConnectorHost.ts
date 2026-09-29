@@ -58,6 +58,8 @@ export async function settleMainConnectorHandler(
 
 export interface ConnectorLike {
   connect(): Promise<unknown>;
+  readonly connectionKind?: "owned-local" | "existing-environment";
+  readonly pathsResolveLocally?: boolean;
   recoverTransport?(): Promise<void>;
   dispose(): void;
   [method: string]: unknown;
@@ -282,9 +284,20 @@ export class MainConnectorHost {
           reconnecting && (status === "starting-server" || status === "connecting")
             ? "reconnecting"
             : (status as ConnectorStatusPayload["status"]);
+        const connectionKind = connector.connectionKind as
+          | "owned-local"
+          | "existing-environment"
+          | undefined;
         emitCurrent({
           kind: "status",
-          payload: detail === undefined ? { status: nextStatus } : { status: nextStatus, detail },
+          payload: {
+            status: nextStatus,
+            ...(detail === undefined ? {} : { detail }),
+            ...(connectionKind === undefined ? {} : { connectionKind }),
+            ...(typeof connector.pathsResolveLocally === "boolean"
+              ? { pathsResolveLocally: connector.pathsResolveLocally }
+              : {}),
+          },
         });
       },
       onConfig: (config) =>
