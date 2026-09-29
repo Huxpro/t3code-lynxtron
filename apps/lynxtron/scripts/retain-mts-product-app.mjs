@@ -235,6 +235,7 @@ async function main() {
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: stateDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       ...(pairingUrl ? { T3_LYNXTRON_PAIRING_URL: pairingUrl } : {}),

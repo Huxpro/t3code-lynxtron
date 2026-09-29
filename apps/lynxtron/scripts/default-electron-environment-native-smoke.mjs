@@ -190,6 +190,7 @@ try {
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_PAIRING_URL: "",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: "",
       T3_LYNXTRON_PREFS_PATH: path.join(fixtureDir, "lynxtron-prefs.json"),
       T3_LYNXTRON_PROJECT_CWD: target.workspaceRoot,

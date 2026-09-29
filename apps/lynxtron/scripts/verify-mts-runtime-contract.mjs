@@ -300,6 +300,7 @@ async function main() {
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: path.join(outputRoot, "state"),
       T3_LYNXTRON_BUNDLE_PATH: stagedBundle,
       T3_LYNXTRON_PROJECT_CWD: repoRoot,

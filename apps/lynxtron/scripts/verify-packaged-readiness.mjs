@@ -4062,6 +4062,7 @@ async function verifyNewThreadDraftLifecycle({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -6793,6 +6794,7 @@ async function verifyM1LocalJourney({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -8587,6 +8589,7 @@ async function verifyApprovalDeclineMutation({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -11741,6 +11744,7 @@ async function verifyProjectActionKeybindingMutation({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -11987,6 +11991,7 @@ async function verifyBetaMutation({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -12212,6 +12217,7 @@ async function verifyArchiveMutation({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -12646,6 +12652,7 @@ async function verifyConnectionsMutation({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -14914,6 +14921,7 @@ async function runOnce({
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),

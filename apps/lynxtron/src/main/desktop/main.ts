@@ -248,6 +248,10 @@ app.whenReady().then(() => {
   } else {
     console.log("[cef-webview] disabled; set T3_LYNXTRON_CEF_WEBVIEW=1 to enable");
   }
+  // Verification runs launch in the background: no Dock activation and no
+  // focus steal, so agents can drive the window without raising it.
+  const launchInBackground = process.env.T3_LYNXTRON_BACKGROUND === "1";
+  if (launchInBackground && process.platform === "darwin") app.setActivationPolicy("accessory");
   const viewport = resolveLynxtronViewport();
   const windowPosition = resolveLynxtronWindowPosition();
   const win = new LynxWindow({
@@ -271,7 +275,8 @@ app.whenReady().then(() => {
     },
   });
 
-  win.show();
+  if (launchInBackground) win.showInactive();
+  else win.show();
   const viewportHost = startLynxtronViewportHost(
     win,
     {

@@ -536,6 +536,7 @@ async function runVariant(variant, options) {
     env: {
       ...process.env,
       NODE_ENV: "production",
+      T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
       T3_LYNXTRON_BASE_DIR: stateDirectory,
       T3_LYNXTRON_BUNDLE_PATH: bundle,
       T3_LYNXTRON_PROJECT_CWD: repoRoot,

@@ -77,6 +77,7 @@ const child = spawn(executable, [path.join(appRoot, "dist/desktop")], {
   env: {
     ...process.env,
     NODE_ENV: "production",
+    T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
     T3_LYNXTRON_BASE_DIR: baseDir,
     T3_LYNXTRON_PROJECT_CWD: projectCwd,
     T3_LYNXTRON_VIEWPORT_WIDTH: "1280",

@@ -140,6 +140,8 @@ Treat retained evidence as invalid, not as a product regression, when the client
 
 ### Computer Use and DevTool roles
 
+- **Never raise verification windows over the developer's work.** Launch owned Lynxtron processes with `T3_LYNXTRON_BACKGROUND=1` (accessory activation policy plus `showInactive`; the harness scripts default it on) and confirm with `lsappinfo front` that focus did not move. Drive visible interaction with the background per-app tools (`app_screenshot`, `app_click`, `app_type`, `app_key`, `app_scroll`), which act on a window without bringing it forward; never use display-scope screenshot/click tools for certification. If background control is not granted, prove behavior through DevTool and env-gated main-process probes and mark the physical check `pending-user-session`.
+
 - Ask permission before computer control. Once authorized, prefer Computer Use to inspect and operate an already-running owned app for visible route changes, menus, theme changes, scrolling, focus, and real OS keyboard input. Use DevTool for exact LynxView screenshots, DOM/component geometry, runtime evaluation, and console capture. Record which channel proved each interaction.
 - The launch harness owns lifecycle and identity; Computer Use owns visible interaction only. Start the workspace build with explicit arguments and environment from the shell harness, record its PID, then attach Computer Use to that exact window. Never let Computer Use implicitly launch or restart an app because it cannot prove which executable, bundle, arguments, or state directory it selected.
 - Verify the exact process and staged bundle before reusing a visible app. Computer Use acting on an installed or stale app with the same display name is a harness failure.
