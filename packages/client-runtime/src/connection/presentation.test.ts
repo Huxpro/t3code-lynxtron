@@ -227,7 +227,7 @@ describe("connection lifecycle presentation", () => {
     [
       "server-readiness",
       "Remote: Server not ready",
-      "The remote environment did not finish starting. Reconnect to try again.",
+      "The remote environment is not running. Reconnect to start it again.",
     ],
     [
       "product-sync",
@@ -243,7 +243,7 @@ describe("connection lifecycle presentation", () => {
         recoverySubject: "the remote environment",
         failureLayer,
       }),
-    ).toMatchObject({ phase: "error", title, description });
+    ).toMatchObject({ phase: "error", title, description: `raw connector detail ${description}` });
   });
 
   it("keeps the generic failure copy when the layer is unknown", () => {

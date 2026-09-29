@@ -196,11 +196,14 @@ describe("desktop shell interaction contract", () => {
     expect(chatView).toContain('targetLabel: serverConfig?.environment.label ?? "T3 Code"');
     expect(overrides).toContain(".connection-lifecycle-banner-reference--warning");
     expect(overrides).toContain(".composer-lifecycle-banner .connection-lifecycle-reconnect,");
-    expect(overrides).toContain("width: 101px;");
+    // Actions size to their label so "Reconnecting..." never wraps.
+    expect(overrides).toContain(
+      ".composer-lifecycle-banner .connection-lifecycle-reconnect .lynx-host-text,",
+    );
+    expect(overrides).toContain("white-space: nowrap;");
     expect(overrides).toContain("opacity: 0.64;");
     expect(overrides).toContain(".connection-lifecycle-actions");
     expect(overrides).toContain("gap: 4px;");
-    expect(overrides).toContain("width: 88px;");
     expect(chatView).not.toContain(
       'status === "ready" &&\n    resolveSelectableProviderInstanceEntry',
     );

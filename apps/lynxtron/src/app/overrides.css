@@ -2487,8 +2487,12 @@
 .composer-lifecycle-banner .connection-lifecycle-actions {
   gap: 4px;
 }
+/* Buttons size to their label like Web; "Reconnecting..." must not wrap. */
+.composer-lifecycle-banner .connection-lifecycle-reconnect .lynx-host-text,
+.composer-lifecycle-banner .connection-lifecycle-connections .lynx-host-text {
+  white-space: nowrap;
+}
 .composer-lifecycle-banner .connection-lifecycle-reconnect {
-  width: 101px;
   border-color: rgb(var(--primary-rgb));
   background-color: rgb(var(--primary-rgb));
   color: #fff;
@@ -2497,7 +2501,6 @@
   opacity: 0.64;
 }
 .composer-lifecycle-banner .connection-lifecycle-connections {
-  width: 88px;
   border-color: rgba(var(--foreground-rgb), 0.08);
   background-color: rgba(var(--foreground-rgb), 0.026);
   color: var(--foreground);

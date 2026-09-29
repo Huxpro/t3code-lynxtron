@@ -76,7 +76,7 @@ const FAILURE_LAYER_PRESENTATION: Record<
   },
   "server-readiness": {
     title: "Server not ready",
-    recovery: (subject) => `${subject} did not finish starting. Reconnect to try again.`,
+    recovery: (subject) => `${subject} is not running. Reconnect to start it again.`,
   },
   "product-sync": {
     title: "Sync failed",
@@ -176,8 +176,9 @@ export function projectConnectionLifecycle(input: {
         visible: true,
         tone: "error",
         title: `${input.targetLabel}: ${layer?.title ?? "Connection failed"}`,
+        // The layer names the recovery; the detail keeps the actual reason.
         description: layer
-          ? capitalize(layer.recovery(input.recoverySubject))
+          ? [detail, capitalize(layer.recovery(input.recoverySubject))].filter(Boolean).join(" ")
           : (detail ?? recoveryDescription),
         recovery: recovery(false),
       };
