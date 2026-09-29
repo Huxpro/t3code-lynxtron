@@ -310,6 +310,25 @@ export function modelPickerJumpCommandForIndex(
   return MODEL_PICKER_JUMP_KEYBINDING_COMMANDS[index] ?? null;
 }
 
+/**
+ * Pair each enabled model, in the order the picker lists it, with its jump
+ * command. The shortcut labels and the jump action both read this list.
+ */
+export function resolveModelPickerJumpTargets<T>(
+  items: ReadonlyArray<T>,
+  isDisabled: (item: T) => boolean,
+): ReadonlyArray<{ readonly item: T; readonly command: ModelPickerJumpKeybindingCommand }> {
+  const targets: Array<{ readonly item: T; readonly command: ModelPickerJumpKeybindingCommand }> =
+    [];
+  for (const item of items) {
+    if (isDisabled(item)) continue;
+    const command = modelPickerJumpCommandForIndex(targets.length);
+    if (!command) break;
+    targets.push({ item, command });
+  }
+  return targets;
+}
+
 export function modelPickerJumpIndexFromCommand(command: string): number | null {
   const index = MODEL_PICKER_JUMP_KEYBINDING_COMMANDS.indexOf(
     command as ModelPickerJumpKeybindingCommand,

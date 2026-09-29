@@ -21,8 +21,8 @@ import { isModelPickerNewModel } from "./modelPickerModelHighlights";
 import { Combobox, ComboboxEmpty, ComboboxInput, ComboboxListVirtualized } from "../ui/combobox";
 import { ModelEsque } from "./providerIconUtils";
 import {
-  modelPickerJumpCommandForIndex,
   modelPickerJumpIndexFromCommand,
+  resolveModelPickerJumpTargets,
   resolveShortcutCommand,
   shortcutLabelForCommand,
 } from "../../keybindings";
@@ -308,25 +308,15 @@ export const ModelPickerContent = memo(function ModelPickerContent(props: {
     [favorites, updateSettings],
   );
 
-  const modelJumpCommandByKey = useMemo(() => {
-    const mapping = new Map<
-      string,
-      NonNullable<ReturnType<typeof modelPickerJumpCommandForIndex>>
-    >();
-    let selectableModelIndex = 0;
-    for (const model of filteredModels) {
-      if (getModelDisabledReason?.(model.instanceId, model.slug)) {
-        continue;
-      }
-      const jumpCommand = modelPickerJumpCommandForIndex(selectableModelIndex);
-      if (!jumpCommand) {
-        return mapping;
-      }
-      mapping.set(`${model.instanceId}:${model.slug}`, jumpCommand);
-      selectableModelIndex += 1;
-    }
-    return mapping;
-  }, [filteredModels, getModelDisabledReason]);
+  const modelJumpCommandByKey = useMemo(
+    () =>
+      new Map(
+        resolveModelPickerJumpTargets(filteredModels, (model) =>
+          Boolean(getModelDisabledReason?.(model.instanceId, model.slug)),
+        ).map(({ item, command }) => [`${item.instanceId}:${item.slug}`, command] as const),
+      ),
+    [filteredModels, getModelDisabledReason],
+  );
   const modelJumpModelKeys = useMemo(
     () => [...modelJumpCommandByKey.keys()],
     [modelJumpCommandByKey],

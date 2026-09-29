@@ -382,19 +382,6 @@ export function sortProviderModelItems<T extends ProviderModelItem>(
   });
 }
 
-export function projectModelPickerJumpRows<T extends ModelPickerModel>(
-  models: ReadonlyArray<T>,
-  rows: ReadonlyArray<ModelPickerRowPresentation<T>>,
-): ReadonlyArray<ModelPickerRowPresentation<T>> {
-  const rowByKey = new Map(
-    rows.map((row) => [providerModelKey(row.model.instanceId, row.model.slug), row]),
-  );
-  return models.flatMap((model) => {
-    const row = rowByKey.get(providerModelKey(model.instanceId, model.slug));
-    return row ? [row] : [];
-  });
-}
-
 export function resolveModelPickerSelectedKey(
   currentSelection: ModelSelection | undefined,
   selectedModel: Pick<ModelPickerModel, "instanceId" | "slug"> | undefined,

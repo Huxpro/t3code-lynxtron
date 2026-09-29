@@ -7,13 +7,13 @@ import {
   modelPickerRowDisabledReason,
   deriveModelPickerModels,
   projectModelPickerProviders,
-  projectModelPickerJumpRows,
   projectModelPickerRows,
   providerModelKey,
   resolveModelPickerSelectedKey,
   type ModelPickerContext,
 } from "@t3tools/client-runtime/presentation/model-picker";
 import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentation/provider";
+import { resolveModelPickerJumpTargets } from "../../../../web/src/keybindings";
 
 function provider(input: {
   readonly instanceId: string;
@@ -312,7 +312,7 @@ describe("Lynx model picker presentation", () => {
     ).toEqual(["gpt-5.5", "gpt-5.6"]);
   });
 
-  it("keeps jump shortcuts in canonical catalog order while search rows are ranked", () => {
+  it("assigns jump shortcuts in the ranked order the picker lists", () => {
     const rankedRows = projectModelPickerRows({
       models,
       selectedProviderId: ProviderInstanceId.make("codex"),
@@ -322,10 +322,10 @@ describe("Lynx model picker presentation", () => {
       context: context(),
     });
 
-    expect(projectModelPickerJumpRows(models, rankedRows).map((row) => row.model.slug)).toEqual(
-      models
-        .filter((model) => rankedRows.some((row) => row.model.slug === model.slug))
-        .map((model) => model.slug),
-    );
+    expect(
+      resolveModelPickerJumpTargets(rankedRows, (row) => Boolean(row.disabledReason)).map(
+        ({ item }) => item.model.slug,
+      ),
+    ).toEqual(rankedRows.filter((row) => !row.disabledReason).map((row) => row.model.slug));
   });
 });

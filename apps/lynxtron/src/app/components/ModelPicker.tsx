@@ -17,7 +17,6 @@ import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation
 import { providerModelKey } from "@t3tools/client-runtime/presentation/model-picker";
 import {
   projectModelPickerProviders,
-  projectModelPickerJumpRows,
   projectModelPickerRows,
   resolveModelPickerSelectedKey,
 } from "@t3tools/client-runtime/presentation/model-picker";
@@ -39,7 +38,7 @@ import { readModelPickerNavigation } from "../state/uiState";
 import { onModelPickerJump } from "../state/modelPickerJump";
 import { useT3ClientState } from "../state/t3Client";
 import {
-  modelPickerJumpCommandForIndex,
+  resolveModelPickerJumpTargets,
   shortcutLabelForCommand,
 } from "../../../../web/src/keybindings";
 import { Icon } from "./Icon";
@@ -183,22 +182,21 @@ export function ModelPicker({
     [activeProvider, context, favoriteModelKeys, models, providers, search],
   );
   const selectedModelKey = resolveModelPickerSelectedKey(currentModelSelection, selectedModel);
+  const jumpTargets = useMemo(
+    () => resolveModelPickerJumpTargets(rows, (row) => Boolean(row.disabledReason)),
+    [rows],
+  );
   const jumpLabelByKey = useMemo(() => {
     const mapping = new Map<string, string>();
-    let selectableIndex = 0;
-    for (const row of projectModelPickerJumpRows(models, rows)) {
-      if (row.disabledReason) continue;
-      const command = modelPickerJumpCommandForIndex(selectableIndex);
-      if (!command) break;
+    for (const { item, command } of jumpTargets) {
       const label = shortcutLabelForCommand(serverConfig?.keybindings ?? [], command, {
         platform: "MacIntel",
         context: { modelPickerOpen: true },
       });
-      if (label) mapping.set(modelKey(row.model), label);
-      selectableIndex += 1;
+      if (label) mapping.set(modelKey(item.model), label);
     }
     return mapping;
-  }, [models, rows, serverConfig?.keybindings]);
+  }, [jumpTargets, serverConfig?.keybindings]);
 
   const handleSelect = useCallback(
     (m: ModelInfo) => {
@@ -210,12 +208,12 @@ export function ModelPicker({
   useEffect(
     () =>
       onModelPickerJump((index) => {
-        const row = rows.filter((candidate) => candidate.disabledReason === null)[index];
-        if (!row) return false;
-        handleSelect(row.model);
+        const target = jumpTargets[index];
+        if (!target) return false;
+        handleSelect(target.item.model);
         return true;
       }),
-    [handleSelect, rows],
+    [handleSelect, jumpTargets],
   );
   const showNotice = useCallback((title: string, message: string) => {
     setNotice({ title, message });

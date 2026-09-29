@@ -64,6 +64,23 @@ editor primitive that supports inline mention chips and selection ranges.
 Carried: `--verify-compact-controls` fails at 900 x 820 with the Files panel
 on the pre-M4 baseline too; at 700 x 820 the compact menu opens correctly.
 
+### Model Picker
+
+- Jump shortcuts: Lynx labelled them in catalog order but jumped in display
+  order. Web `resolveModelPickerJumpTargets` pairs enabled rows in listed
+  order with their command; both renderers' labels and actions read it, and
+  the Lynx-only `projectModelPickerJumpRows` is deleted.
+
+Open product decisions to settle in client-runtime before moving code (the
+renderers disagree today): whether unavailable instances list as disabled
+rows (Lynx) or are hidden (Web); which disabled reasons apply; the initial
+rail tab; the Favorites empty copy; and Lynx-only "Unavailable" notice titles
+and ★ markers. Row display names should move with `getDisplayModelName`
+once `providerIconUtils` separates its DOM icons.
+
+Carried: `--verify-model-picker-fidelity` times out on `.model-picker-content`
+on the pre-slice commit too, although a direct probe finds it.
+
 ### Settings Providers
 
 - Driver labels, order, settings schemas, Early Access badges, the

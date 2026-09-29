@@ -155,7 +155,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 74143,
+            "lines": 74149,
             "modules": 350
           },
           "largestNonShared": [
@@ -2213,7 +2213,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 35479,
+            "eligibleLines": 35485,
             "eligibleModules": 181,
             "modulesOnlyInLynx": [
               {
@@ -2639,7 +2639,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 22216,
+            "lines": 22222,
             "modules": 98
           },
           "reusePercent": {
@@ -8437,7 +8437,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -8962,7 +8962,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -9638,7 +9638,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 69676,
+            "lines": 69682,
             "modules": 336
           },
           "largestNonShared": [
@@ -11761,7 +11761,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 39495,
+            "eligibleLines": 39501,
             "eligibleModules": 200,
             "modulesOnlyInLynx": [
               {
@@ -12272,7 +12272,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26620,
+            "lines": 26626,
             "modules": 100
           },
           "reusePercent": {
@@ -17555,7 +17555,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -18080,7 +18080,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -18745,7 +18745,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81641,
+            "lines": 81647,
             "modules": 393
           },
           "largestNonShared": [
@@ -23538,7 +23538,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 88054,
+            "eligibleLines": 88058,
             "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
@@ -23693,7 +23693,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -24606,7 +24606,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 34396,
+            "lines": 34402,
             "modules": 151
           },
           "reusePercent": {
@@ -31559,7 +31559,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -32144,7 +32144,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -32827,7 +32827,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109239,
+            "lines": 109235,
             "modules": 497
           },
           "largestNonShared": [
@@ -36160,7 +36160,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56539,
+            "eligibleLines": 56543,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36285,7 +36285,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -36821,7 +36821,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32484,
+            "lines": 32490,
             "modules": 147
           },
           "reusePercent": {
@@ -45419,7 +45419,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -46184,7 +46184,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -46894,7 +46894,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -47630,7 +47630,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97089,
+            "lines": 97085,
             "modules": 452
           },
           "largestNonShared": [
@@ -50188,7 +50188,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48410,
+            "eligibleLines": 48414,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -50313,7 +50313,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -50696,7 +50696,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28810,
+            "lines": 28816,
             "modules": 119
           },
           "reusePercent": {
@@ -58069,7 +58069,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -58684,7 +58684,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -59354,7 +59354,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -60071,7 +60071,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119805,
+            "lines": 119801,
             "modules": 550
           },
           "largestNonShared": [
@@ -63414,7 +63414,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56580,
+            "eligibleLines": 56584,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63539,7 +63539,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -64076,7 +64076,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32875,
+            "lines": 32881,
             "modules": 150
           },
           "reusePercent": {
@@ -74104,7 +74104,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -75024,7 +75024,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -75794,7 +75794,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -76556,7 +76556,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109239,
+            "lines": 109235,
             "modules": 497
           },
           "largestNonShared": [
@@ -79889,7 +79889,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56539,
+            "eligibleLines": 56543,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -80014,7 +80014,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -80550,7 +80550,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32484,
+            "lines": 32490,
             "modules": 147
           },
           "reusePercent": {
@@ -89148,7 +89148,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -89913,7 +89913,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -90623,7 +90623,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -91359,7 +91359,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97089,
+            "lines": 97085,
             "modules": 452
           },
           "largestNonShared": [
@@ -93917,7 +93917,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48410,
+            "eligibleLines": 48414,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -94042,7 +94042,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -94428,7 +94428,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28810,
+            "lines": 28816,
             "modules": 119
           },
           "reusePercent": {
@@ -101801,7 +101801,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -102416,7 +102416,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -103086,7 +103086,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -103806,7 +103806,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119814,
+            "lines": 119810,
             "modules": 550
           },
           "largestNonShared": [
@@ -107149,7 +107149,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56580,
+            "eligibleLines": 56584,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107274,7 +107274,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -107811,7 +107811,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32875,
+            "lines": 32881,
             "modules": 150
           },
           "reusePercent": {
@@ -117849,7 +117849,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -118769,7 +118769,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -119539,7 +119539,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -120301,7 +120301,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97089,
+            "lines": 97085,
             "modules": 452
           },
           "largestNonShared": [
@@ -122859,7 +122859,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48410,
+            "eligibleLines": 48414,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -122984,7 +122984,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -123370,7 +123370,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 28810,
+            "lines": 28816,
             "modules": 119
           },
           "reusePercent": {
@@ -130743,7 +130743,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -131358,7 +131358,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -132028,7 +132028,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -132748,7 +132748,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59708,
+            "lines": 59704,
             "modules": 286
           },
           "largestNonShared": [
@@ -133971,7 +133971,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 26336,
+            "eligibleLines": 26323,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
@@ -134209,7 +134209,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18048,
+            "lines": 18035,
             "modules": 67
           },
           "reusePercent": {
@@ -138147,7 +138147,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -138402,7 +138402,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -138842,7 +138842,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -139444,7 +139444,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119805,
+            "lines": 119801,
             "modules": 550
           },
           "largestNonShared": [
@@ -142787,7 +142787,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56580,
+            "eligibleLines": 56584,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -142912,7 +142912,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -143449,7 +143449,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32875,
+            "lines": 32881,
             "modules": 150
           },
           "reusePercent": {
@@ -153477,7 +153477,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -154397,7 +154397,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -155167,7 +155167,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -155929,7 +155929,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59708,
+            "lines": 59704,
             "modules": 286
           },
           "largestNonShared": [
@@ -157272,7 +157272,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 28437,
+            "eligibleLines": 28441,
             "eligibleModules": 123,
             "modulesOnlyInLynx": [
               {
@@ -157312,7 +157312,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -157548,7 +157548,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18912,
+            "lines": 18918,
             "modules": 70
           },
           "reusePercent": {
@@ -161486,7 +161486,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -161741,7 +161741,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -162181,7 +162181,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -162786,7 +162786,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 45373,
+            "lines": 45369,
             "modules": 205
           },
           "largestNonShared": [
@@ -162852,12 +162852,12 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 590,
+              "lines": 580,
               "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 505,
+              "lines": 503,
               "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
             },
             {
@@ -163934,7 +163934,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23816,
+            "eligibleLines": 23820,
             "eligibleModules": 100,
             "modulesOnlyInLynx": [
               {
@@ -163949,7 +163949,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -164137,7 +164137,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16791,
+            "lines": 16797,
             "modules": 61
           },
           "reusePercent": {
@@ -166960,7 +166960,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -167130,7 +167130,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -167460,7 +167460,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -167962,7 +167962,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119805,
+            "lines": 119801,
             "modules": 550
           },
           "largestNonShared": [
@@ -171305,7 +171305,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56580,
+            "eligibleLines": 56584,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171430,7 +171430,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -171967,7 +171967,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32875,
+            "lines": 32881,
             "modules": 150
           },
           "reusePercent": {
@@ -181995,7 +181995,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -182915,7 +182915,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -183685,7 +183685,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -184447,7 +184447,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27129,
+            "lines": 27116,
             "modules": 87
           },
           "largestNonShared": [
@@ -184503,13 +184503,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 629,
-              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
+              "lines": 625,
+              "path": "packages/contracts/src/server.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 625,
-              "path": "packages/contracts/src/server.ts"
+              "lines": 616,
+              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -185771,7 +185771,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -186048,7 +186048,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27129,
+            "lines": 27116,
             "modules": 87
           },
           "largestNonShared": [
@@ -186104,13 +186104,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 629,
-              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
+              "lines": 625,
+              "path": "packages/contracts/src/server.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 625,
-              "path": "packages/contracts/src/server.ts"
+              "lines": 616,
+              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -187372,7 +187372,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -187649,7 +187649,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 27129,
+            "lines": 27116,
             "modules": 87
           },
           "largestNonShared": [
@@ -187705,13 +187705,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 629,
-              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
+              "lines": 625,
+              "path": "packages/contracts/src/server.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 625,
-              "path": "packages/contracts/src/server.ts"
+              "lines": 616,
+              "path": "packages/client-runtime/src/presentation/modelPicker.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -188973,7 +188973,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -189256,7 +189256,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53032,
+            "lines": 53028,
             "modules": 253
           },
           "largestNonShared": [
@@ -190539,7 +190539,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25952,
+            "eligibleLines": 25956,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -190559,7 +190559,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -190770,7 +190770,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18547,
+            "lines": 18553,
             "modules": 71
           },
           "reusePercent": {
@@ -194173,7 +194173,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -194533,7 +194533,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -194888,7 +194888,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -195404,7 +195404,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50450,
+            "lines": 50446,
             "modules": 233
           },
           "largestNonShared": [
@@ -195480,7 +195480,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 590,
+              "lines": 580,
               "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
             }
           ],
@@ -196677,7 +196677,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26036,
+            "eligibleLines": 26040,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -196697,7 +196697,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -196918,7 +196918,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18350,
+            "lines": 18356,
             "modules": 69
           },
           "reusePercent": {
@@ -200071,7 +200071,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -200346,7 +200346,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -200691,7 +200691,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -201207,7 +201207,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 85015,
+            "lines": 85011,
             "modules": 408
           },
           "largestNonShared": [
@@ -203345,7 +203345,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 36172,
+            "eligibleLines": 36176,
             "eligibleModules": 191,
             "modulesOnlyInLynx": [
               {
@@ -203365,7 +203365,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -203772,7 +203772,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23367,
+            "lines": 23373,
             "modules": 108
           },
           "reusePercent": {
@@ -210410,7 +210410,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -211090,7 +211090,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -211675,7 +211675,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -212362,7 +212362,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66579,
+            "lines": 66578,
             "modules": 321
           },
           "largestNonShared": [
@@ -213675,7 +213675,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26945,
+            "eligibleLines": 26932,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -213921,7 +213921,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18705,
+            "lines": 18692,
             "modules": 73
           },
           "reusePercent": {
@@ -218604,7 +218604,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -218734,7 +218734,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -219079,7 +219079,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -219514,7 +219514,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -220165,7 +220165,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63955,
+            "lines": 63954,
             "modules": 300
           },
           "largestNonShared": [
@@ -221423,7 +221423,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26411,
+            "eligibleLines": 26398,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
@@ -221654,7 +221654,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18352,
+            "lines": 18339,
             "modules": 69
           },
           "reusePercent": {
@@ -226082,7 +226082,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -226177,7 +226177,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -226467,7 +226467,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -226892,7 +226892,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -227542,7 +227542,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 88807,
+            "lines": 88806,
             "modules": 426
           },
           "largestNonShared": [
@@ -229720,7 +229720,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 37081,
+            "eligibleLines": 37087,
             "eligibleModules": 194,
             "modulesOnlyInLynx": [
               {
@@ -230157,7 +230157,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23510,
+            "lines": 23516,
             "modules": 109
           },
           "reusePercent": {
@@ -237400,7 +237400,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -237660,7 +237660,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -238155,7 +238155,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -238740,7 +238740,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -239437,7 +239437,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59917,
+            "lines": 59923,
             "modules": 290
           },
           "largestNonShared": [
@@ -241045,7 +241045,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32908,
+            "eligibleLines": 32914,
             "eligibleModules": 146,
             "modulesOnlyInLynx": [
               {
@@ -241258,11 +241258,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 24954,
+            "lines": 24960,
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.6,
+            "lines": 41.7,
             "modules": 36.2
           },
           "web": {
@@ -245501,7 +245501,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -246006,7 +246006,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -246651,7 +246651,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59917,
+            "lines": 59923,
             "modules": 290
           },
           "largestNonShared": [
@@ -248259,7 +248259,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32908,
+            "eligibleLines": 32914,
             "eligibleModules": 146,
             "modulesOnlyInLynx": [
               {
@@ -248472,11 +248472,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 24954,
+            "lines": 24960,
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.6,
+            "lines": 41.7,
             "modules": 36.2
           },
           "web": {
@@ -252715,7 +252715,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -253220,7 +253220,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -253862,7 +253862,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81641,
+            "lines": 81647,
             "modules": 393
           },
           "largestNonShared": [
@@ -255785,7 +255785,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33190,
+            "eligibleLines": 33196,
             "eligibleModules": 170,
             "modulesOnlyInLynx": [
               {
@@ -256166,7 +256166,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 21547,
+            "lines": 21553,
             "modules": 96
           },
           "reusePercent": {
@@ -263119,7 +263119,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -263704,7 +263704,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -264387,7 +264387,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63955,
+            "lines": 63954,
             "modules": 300
           },
           "largestNonShared": [
@@ -265520,7 +265520,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23106,
+            "eligibleLines": 23093,
             "eligibleModules": 97,
             "modulesOnlyInLynx": [
               {
@@ -265703,7 +265703,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16884,
+            "lines": 16871,
             "modules": 62
           },
           "reusePercent": {
@@ -270131,7 +270131,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -270226,7 +270226,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -270516,7 +270516,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -270941,7 +270941,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -271591,7 +271591,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63955,
+            "lines": 63954,
             "modules": 300
           },
           "largestNonShared": [
@@ -272724,7 +272724,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23106,
+            "eligibleLines": 23093,
             "eligibleModules": 97,
             "modulesOnlyInLynx": [
               {
@@ -272907,7 +272907,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16884,
+            "lines": 16871,
             "modules": 62
           },
           "reusePercent": {
@@ -277335,7 +277335,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -277430,7 +277430,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -277720,7 +277720,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -278145,7 +278145,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -278792,7 +278792,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63966,
+            "lines": 63965,
             "modules": 301
           },
           "largestNonShared": [
@@ -279930,7 +279930,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23113,
+            "eligibleLines": 23100,
             "eligibleModules": 98,
             "modulesOnlyInLynx": [
               {
@@ -280118,7 +280118,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16884,
+            "lines": 16871,
             "modules": 62
           },
           "reusePercent": {
@@ -284551,7 +284551,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -284646,7 +284646,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -284936,7 +284936,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -285366,7 +285366,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -286019,7 +286019,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53202,
+            "lines": 53189,
             "modules": 244
           },
           "largestNonShared": [
@@ -287207,7 +287207,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -287425,7 +287425,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16773,
+            "lines": 16760,
             "modules": 61
           },
           "reusePercent": {
@@ -291488,7 +291488,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -292010,7 +292010,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53202,
+            "lines": 53189,
             "modules": 244
           },
           "largestNonShared": [
@@ -293198,7 +293198,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -293416,7 +293416,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16773,
+            "lines": 16760,
             "modules": 61
           },
           "reusePercent": {
@@ -297479,7 +297479,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -298001,7 +298001,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 53209,
+            "lines": 53196,
             "modules": 245
           },
           "largestNonShared": [
@@ -299194,7 +299194,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25347,
+            "eligibleLines": 25334,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -299417,7 +299417,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16773,
+            "lines": 16760,
             "modules": 61
           },
           "reusePercent": {
@@ -303490,7 +303490,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -304018,7 +304018,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49007,
+            "lines": 49003,
             "modules": 228
           },
           "largestNonShared": [
@@ -304089,13 +304089,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 590,
+              "lines": 580,
               "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 530,
-              "path": "apps/web/src/components/settings/SourceControlSettings.tsx"
+              "lines": 544,
+              "path": "apps/web/src/keybindings.ts"
             }
           ],
           "lynx": {
@@ -305206,7 +305206,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -305414,11 +305414,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 17423,
+            "lines": 17410,
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.6,
+            "lines": 35.5,
             "modules": 27.6
           },
           "web": {
@@ -308587,7 +308587,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -308822,7 +308822,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -309157,7 +309157,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -309707,7 +309707,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49007,
+            "lines": 49003,
             "modules": 228
           },
           "largestNonShared": [
@@ -309778,13 +309778,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 590,
+              "lines": 580,
               "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 530,
-              "path": "apps/web/src/components/settings/SourceControlSettings.tsx"
+              "lines": 544,
+              "path": "apps/web/src/keybindings.ts"
             }
           ],
           "lynx": {
@@ -310895,7 +310895,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -311103,11 +311103,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 17423,
+            "lines": 17410,
             "modules": 63
           },
           "reusePercent": {
-            "lines": 35.6,
+            "lines": 35.5,
             "modules": 27.6
           },
           "web": {
@@ -314276,7 +314276,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -314511,7 +314511,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -314846,7 +314846,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -315393,7 +315393,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 49014,
+            "lines": 49010,
             "modules": 229
           },
           "largestNonShared": [
@@ -315464,13 +315464,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 590,
+              "lines": 580,
               "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 530,
-              "path": "apps/web/src/components/settings/SourceControlSettings.tsx"
+              "lines": 544,
+              "path": "apps/web/src/keybindings.ts"
             }
           ],
           "lynx": {
@@ -316586,7 +316586,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25347,
+            "eligibleLines": 25334,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -316799,7 +316799,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 17423,
+            "lines": 17410,
             "modules": 63
           },
           "reusePercent": {
@@ -319977,7 +319977,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -320212,7 +320212,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -320552,7 +320552,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -321105,7 +321105,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50451,
+            "lines": 50447,
             "modules": 234
           },
           "largestNonShared": [
@@ -322293,7 +322293,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -322506,11 +322506,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16877,
+            "lines": 16864,
             "modules": 62
           },
           "reusePercent": {
-            "lines": 33.5,
+            "lines": 33.4,
             "modules": 26.5
           },
           "web": {
@@ -325664,7 +325664,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -325944,7 +325944,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -326289,7 +326289,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -326801,7 +326801,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 50451,
+            "lines": 50447,
             "modules": 234
           },
           "largestNonShared": [
@@ -327989,7 +327989,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -328202,11 +328202,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16877,
+            "lines": 16864,
             "modules": 62
           },
           "reusePercent": {
-            "lines": 33.5,
+            "lines": 33.4,
             "modules": 26.5
           },
           "web": {
@@ -331360,7 +331360,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -331640,7 +331640,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -331985,7 +331985,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -332562,7 +332562,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63955,
+            "lines": 63954,
             "modules": 300
           },
           "largestNonShared": [
@@ -333750,7 +333750,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -333938,7 +333938,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18223,
+            "lines": 18210,
             "modules": 67
           },
           "reusePercent": {
@@ -338366,7 +338366,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -338461,7 +338461,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -338751,7 +338751,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -339176,7 +339176,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -339826,7 +339826,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63955,
+            "lines": 63954,
             "modules": 300
           },
           "largestNonShared": [
@@ -341014,7 +341014,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25340,
+            "eligibleLines": 25327,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -341202,7 +341202,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18223,
+            "lines": 18210,
             "modules": 67
           },
           "reusePercent": {
@@ -345630,7 +345630,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -345725,7 +345725,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -346015,7 +346015,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -346440,7 +346440,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -347087,7 +347087,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 63962,
+            "lines": 63961,
             "modules": 301
           },
           "largestNonShared": [
@@ -348280,7 +348280,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25347,
+            "eligibleLines": 25334,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -348473,7 +348473,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 18223,
+            "lines": 18210,
             "modules": 67
           },
           "reusePercent": {
@@ -352906,7 +352906,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -353001,7 +353001,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 47,
+                "lines": 50,
                 "path": "apps/web/src/components/settings/providerDriverMeta.ts"
               },
               {
@@ -353291,7 +353291,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -353721,7 +353721,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -354374,7 +354374,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51188,
+            "lines": 51175,
             "modules": 252
           },
           "largestNonShared": [
@@ -355737,7 +355737,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28662,
+            "eligibleLines": 28649,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -356028,11 +356028,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16821,
+            "lines": 16808,
             "modules": 64
           },
           "reusePercent": {
-            "lines": 32.9,
+            "lines": 32.8,
             "modules": 25.4
           },
           "web": {
@@ -360051,7 +360051,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -360646,7 +360646,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 51188,
+            "lines": 51175,
             "modules": 252
           },
           "largestNonShared": [
@@ -362009,7 +362009,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28662,
+            "eligibleLines": 28649,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -362300,11 +362300,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 16821,
+            "lines": 16808,
             "modules": 64
           },
           "reusePercent": {
-            "lines": 32.9,
+            "lines": 32.8,
             "modules": 25.4
           },
           "web": {
@@ -366323,7 +366323,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
@@ -366918,7 +366918,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119618,
+            "lines": 119614,
             "modules": 549
           },
           "largestNonShared": [
@@ -370261,7 +370261,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56571,
+            "eligibleLines": 56575,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370386,7 +370386,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 505,
+                "lines": 503,
                 "path": "apps/lynxtron/src/app/components/ModelPicker.tsx"
               },
               {
@@ -370917,7 +370917,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32875,
+            "lines": 32881,
             "modules": 150
           },
           "reusePercent": {
@@ -380870,7 +380870,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 590,
+                "lines": 580,
                 "path": "apps/web/src/components/chat/ModelPickerContent.tsx"
               },
               {
@@ -381790,7 +381790,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 525,
+                "lines": 544,
                 "path": "apps/web/src/keybindings.ts"
               },
               {
@@ -382555,7 +382555,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 629,
+                "lines": 616,
                 "path": "packages/client-runtime/src/presentation/modelPicker.ts"
               },
               {
