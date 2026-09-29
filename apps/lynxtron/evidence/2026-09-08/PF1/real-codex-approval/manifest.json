@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "provider": {
+    "instanceId": "codex",
+    "model": "gpt-5.6-sol",
+    "runtimeMode": "approval-required",
+    "authentication": "ChatGPT Pro subscription"
+  },
+  "isolation": {
+    "baseDir": "/tmp/t3-pf1-codex.01DL4Z",
+    "workspaceRoot": "/Users/bytedance/github/t3code",
+    "liveUserdataReadWrite": false
+  },
+  "native": {
+    "pid": 3442,
+    "windowId": 68697,
+    "devtoolClient": "localhost:8901",
+    "devtoolSession": 1,
+    "bundle": "file:///Users/bytedance/github/t3code/apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "viewport": { "width": 1280, "height": 820 }
+  },
+  "interaction": {
+    "channel": "Computer Use",
+    "prompt": "Run the shell command pwd exactly once, then report its output.",
+    "requestedCommand": "/bin/zsh -lc pwd",
+    "decision": "accept",
+    "output": "/Users/bytedance/github/t3code",
+    "changedFiles": 0
+  },
+  "evidence": {
+    "pendingScreenshot": {
+      "path": "pending.png",
+      "sha256": "0b94493eab30c57d7d0f67649182803327eb2b6f5ac416860b2ca20b30d06a71"
+    },
+    "resolvedScreenshot": {
+      "path": "resolved.png",
+      "sha256": "c37ef0a30374996bf996b6dc504f6faac9b97409272bd343dcc2be952a212644"
+    },
+    "pendingConsoleProblems": 0,
+    "resolvedConsoleProblems": 0,
+    "canonicalActivities": "canonical-activities.json",
+    "providerSession": "provider-session.json"
+  },
+  "result": "pass"
+}

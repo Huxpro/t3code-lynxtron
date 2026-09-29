@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": "5a82f65b8fbea8fee1f6dade19df324fb40915a0",
+  "changeAttribution": "working-tree-product-change",
+  "releaseClassification": "chat-first-preview",
+  "finalBundle": {
+    "lynxSha256": "873311524e623bc770df05a93fc428d95743fe7ab6fbd82960ebcc5ec5a2b554",
+    "connectorSha256": "5ac9c2918c6209e2fef383e2cd46cae83a6df54933077a49ddcd5520523d874c",
+    "lynxBytes": 2113878,
+    "connectorBytes": 1879989
+  },
+  "coldStartRuns": [
+    "reports/oc7-cold-starts/run-1.json",
+    "reports/oc7-cold-starts/run-2.json",
+    "reports/oc7-cold-starts/run-3.json"
+  ],
+  "coldStartSummary": {
+    "passing": 3,
+    "total": 3,
+    "transport": "main",
+    "sequenceAdvancedEveryRun": true,
+    "canonicalUiEveryRun": true,
+    "defaultDevArtworkEveryRun": true,
+    "rendererConsoleProblems": 0
+  },
+  "outcomes": [
+    {
+      "id": "O1",
+      "status": "pass",
+      "evidence": [
+        "evidence/2026-09-08/OC4/sidebar-existing-thread/1280x820/metrics.json",
+        "project popup left the thread row at y=173 before, during, and after outside-close"
+      ]
+    },
+    {
+      "id": "O2",
+      "status": "pass",
+      "evidence": ["reports/oc2-route-authority.json"]
+    },
+    {
+      "id": "O3",
+      "status": "pass",
+      "evidence": [
+        "evidence/2026-09-08/OC5/composer-existing-thread/1280x820/metrics.json",
+        "evidence/2026-09-08/OC7/composer-existing-thread/1440x900/metrics.json",
+        "Computer Use: model picker opened; Full access changed to Supervised; Build changed to Plan; High · 1M changed to Extra High · 1M"
+      ]
+    },
+    {
+      "id": "O4",
+      "status": "pass",
+      "evidence": [
+        "reports/oc6-branding-default-dev.json",
+        "reports/oc6-branding-nightly.json",
+        "reports/oc6-branding-pill.json",
+        "reports/oc6-branding-none-latest.json",
+        "reports/oc6-branding-alpha.json"
+      ]
+    },
+    {
+      "id": "O5",
+      "status": "pass",
+      "evidence": ["reports/oc3-lifecycle-status.json"]
+    }
+  ],
+  "visualMetrics": {
+    "1280x820": {
+      "anchors": "5/5",
+      "typography": "3/3",
+      "semanticColors": "4/4",
+      "composerMaxDeltaPx": 0
+    },
+    "1440x900": {
+      "anchors": "5/5",
+      "typography": "3/3",
+      "semanticColors": "4/4",
+      "composerMaxDeltaPx": 0
+    }
+  },
+  "architecture": {
+    "writableLynxRouteAuthorities": 1,
+    "composerLines": 240,
+    "overridesCssLines": 3230,
+    "reuseReport": "reports/reuse/current.json"
+  },
+  "openRuntimeGaps": [
+    "R5 renderer keyboard API and physical-key acceptance",
+    "R11 relative async Lynx bundle URL",
+    "R12 DevTool non-tap input",
+    "R13 light theme"
+  ],
+  "cleanup": {
+    "ownedProcessesStopped": true,
+    "liveUserStateTouched": false
+  },
+  "commitStatus": "not-created: the working tree contains pre-existing user changes and no commit or pull request was requested"
+}

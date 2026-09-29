@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "task": "PF3-long-transcript",
+  "status": "partial-pass",
+  "scenario": "long-transcript",
+  "viewport": { "width": 1280, "height": 820, "devicePixelRatio": 1 },
+  "canonicalFixture": {
+    "messageCount": 80,
+    "rowCount": 80,
+    "terminalMarker": "Long transcript terminal marker",
+    "terminalMarkerPresentInOrder": true
+  },
+  "followState": {
+    "initialFollowing": true,
+    "initialAtEnd": true,
+    "sharedReducerTests": "19/19 passed",
+    "covered": [
+      "layout changes do not detach follow",
+      "user scroll away detaches",
+      "scrolling within threshold reattaches",
+      "jump-to-latest restores follow",
+      "new user turns anchor only while following"
+    ]
+  },
+  "browserRuntime": {
+    "semanticReadiness": true,
+    "rendererErrors": [],
+    "unexplainedErrors": [],
+    "mountedItemCount": 80,
+    "nativeVirtualizationCertified": false,
+    "initialTailPositionCertified": false,
+    "markdownSemanticsVisible": true,
+    "markdownStructures": [
+      "table",
+      "nested-list",
+      "code-block",
+      "external-link",
+      "relative-image-fallback"
+    ]
+  },
+  "pendingNativeAcceptance": [
+    "bounded rendering by native list recycling",
+    "initial-scroll-index tail positioning",
+    "real wheel or drag detach",
+    "visible Jump to latest followed by real-input re-stick"
+  ],
+  "notes": [
+    "Lynx Web mounts all list-item nodes and does not implement Native initial-scroll-index behavior.",
+    "Synthetic DOM scroll events are not counted as R12 input evidence.",
+    "Relative Markdown images retain alt text and source through an explicit fallback instead of disappearing."
+  ]
+}

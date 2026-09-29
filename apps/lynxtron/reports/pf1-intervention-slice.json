@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "complete",
+  "completed": [
+    "shared activity-to-pending approval and structured-input projections",
+    "typed approval and structured-input response commands",
+    "shared approval, structured-input, and proposed-plan anatomy",
+    "four approval decisions with ref-level duplicate-submit protection",
+    "structured-input option, custom-answer, previous, next, and submit routing",
+    "current-thread proposed-plan implementation handoff",
+    "new-thread proposed-plan implementation handoff and selection",
+    "send failure retains the draft and exposes an actionable error",
+    "pending send suppresses immediate duplicate submission",
+    "successful retry clears draft/error and advances canonical turn state",
+    "stop sends one interrupt command and renders the canonical stopped receipt",
+    "all approval policy labels map to their canonical decisions",
+    "multi-question, multi-select, previous/next, and custom-answer projections are covered",
+    "real Codex approval-required turn resolves and completes a read-only command"
+  ],
+  "deterministicEvidence": {
+    "approval": "evidence/2026-09-08/PF1/pending-approval/probe.json",
+    "structuredInput": "evidence/2026-09-08/PF1/pending-user-input/probe.json",
+    "currentThreadPlan": "evidence/2026-09-08/PF1/proposed-plan/probe.json",
+    "newThreadPlan": "evidence/2026-09-08/PF1/proposed-plan-new-thread/probe.json",
+    "sendRecovery": "evidence/2026-09-08/PF1/send-recovery/probe.json",
+    "interrupt": "evidence/2026-09-08/PF1/interrupt/probe.json",
+    "unexplainedErrors": 0
+  },
+  "verification": {
+    "focusedAggregate": "62/62 tests passed",
+    "lynxAppTypecheck": "pass",
+    "lynxMainTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "productionBuild": "pass",
+    "packagedReadiness": "pass",
+    "packagedReadinessEvidence": "reports/pf1-packaged-readiness.json",
+    "packagedTransport": "main, sequence 2 -> 16",
+    "packagedRendererProblems": 0
+  },
+  "realProviderAcceptance": {
+    "status": "pass",
+    "provider": "Codex",
+    "model": "gpt-5.6-sol",
+    "runtimeMode": "approval-required",
+    "evidence": "evidence/2026-09-08/PF1/real-codex-approval/manifest.json",
+    "detail": "Computer Use approved /bin/zsh -lc pwd in the owned Native window; canonical SQLite records request, accept resolution, exit code 0, and completed turn."
+  },
+  "remainingPf1Work": []
+}

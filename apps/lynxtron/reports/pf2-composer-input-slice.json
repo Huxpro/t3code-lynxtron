@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "completed": [
+    "hero send atomically creates, selects, and sends to a canonical thread",
+    "existing-thread send bypasses thread creation",
+    "project hero and thread prompt drafts are route scoped and host persisted",
+    "hero draft promotes to the created thread",
+    "failed send retains draft and successful send clears it",
+    "provider rail taps stay inside the model picker",
+    "main-owned native dialog converts selected images to canonical upload DTOs",
+    "typed connector forwards image attachments and supports attachment-only turns",
+    "deterministic browser-preview acceptance projects text-plus-image and attachment-only sends into canonical thread messages",
+    "host validates image type, 10 MB size, and 8-image count limits",
+    "file read results add removable, persisted Composer contexts and provider prompt blocks",
+    "Web/Electron and Lynx share the same 64px image attachment card anatomy",
+    "Web/Electron and Lynx share one compact, actionable connector error banner anatomy and presentation copy",
+    "browser preview includes a deterministic connection-error scenario and a build-time probe that renders the full shared AppRoot without relying on the broken preview bridge return channel",
+    "the error lifecycle row is ordered header-to-banner-to-body without overlap at 1280x820",
+    "Browser-preview image contents are constrained to their 14-20px host bounds and the timeline ends before the bottom Composer begins",
+    "the Browser-first error-state main surface fills all 1023px remaining beside the 257px sidebar",
+    "cold-start draft hydration waits for the preload preference capability and cannot overwrite persisted prompt, attachment, or file-context state while storage is unavailable",
+    "real isolated Native picker open/cancel and thumbnail add/remove paths pass"
+  ],
+  "verification": {
+    "focusedConnectorTests": "39/39 passed after surgical rollback",
+    "focusedErrorStateTests": "18/18 passed across lifecycle presentation, shared banner, preview fixture, and client send behavior; final aggregate remains 44/44",
+    "sharedAttachmentSurfaceTests": "2/2 passed",
+    "webTypecheck": "pass",
+    "lynxAppTypecheck": "pass",
+    "lynxMainTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "productionBuild": "pass",
+    "packagedReadiness": "fail: the single post-rollback packaged run timed out waiting for semantic readiness",
+    "finalPackagedReadinessEvidence": null,
+    "connectorProjectionTests": "24/24 passed; keybindings and provider payloads are bounded below the observed bridge threshold"
+  },
+  "deterministicEvidence": {
+    "attachmentSend": "evidence/2026-09-09/PF2/attachment-send/probe.json",
+    "connectionErrorFixture": "evidence/2026-09-09/PF2/connection-error-layout/probe.json; 1280x820, full remaining viewport, ordered lifecycle and Composer regions, 22/22 image samples contained, zero unexplained errors"
+  },
+  "remaining": [
+    "restore packaged main-transport readiness and initial config/shell delivery; the UI remains Connecting",
+    "upstream bridge fix after the coordinated Lynxtron 0.0.21 / Rsbuild 2 upgrade retained the semantic-readiness timeout",
+    "image attachment canonical send acceptance; macOS picker confirmation is intermittent",
+    "restore the generic Browser-first typed-host transport; the error-state slice now uses an explicit build-time probe while the async bridge return channel remains unavailable",
+    "terminal context entry after PF6 delivers a real terminal surface"
+  ]
+}

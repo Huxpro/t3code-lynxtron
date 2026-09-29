@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "task": "PF2-error-layout",
+  "status": "pass",
+  "source": "build-time-probe",
+  "scenario": "connection-error",
+  "viewport": {
+    "innerWidth": 1280,
+    "innerHeight": 820,
+    "devicePixelRatio": 1,
+    "lynxViewWidth": 1280,
+    "lynxViewHeight": 820
+  },
+  "knownState": {
+    "project": "T3 Code Browser Lab",
+    "thread": "Validate the dual renderer workbench",
+    "model": "GPT-5.6 Sol"
+  },
+  "lifecycleLayout": {
+    "chatSurface": { "x": 257, "y": 36, "width": 1023, "height": 820, "bottom": 856 },
+    "header": { "x": 257, "y": 36, "width": 1023, "height": 52, "bottom": 88 },
+    "banner": { "x": 269, "y": 96, "width": 999, "height": 74, "bottom": 170 },
+    "body": { "x": 257, "y": 170, "width": 1023, "height": 686, "bottom": 856 },
+    "orderedWithoutOverlap": true,
+    "errorCopyVisible": true,
+    "fillsRemainingViewport": true,
+    "toneVisible": true,
+    "composerPlaceholder": "Connection unavailable",
+    "composerCopyMatchesStatus": true
+  },
+  "imageLayout": {
+    "sampleCount": 22,
+    "contained": true
+  },
+  "composerLayout": {
+    "timeline": { "y": 170, "height": 459, "bottom": 629 },
+    "composer": { "y": 629, "height": 227, "bottom": 856 },
+    "orderedWithoutOverlap": true
+  },
+  "copy": {
+    "title": "Couldn’t connect to the local server",
+    "detail": "The local server stopped before the workspace was ready.",
+    "action": "Retry"
+  },
+  "runtime": {
+    "semanticReadiness": true,
+    "rendererErrors": [],
+    "unexplainedErrors": []
+  },
+  "bundle": {
+    "bytes": 2120188,
+    "sha256": "6f7212d6ce2bd861b30b84000616d4f34fad4a54c0e2666585a1bba6054b75b1"
+  },
+  "visualReview": {
+    "result": "error-state overlap, main-column width, Composer placement, and image overflow resolved in the deterministic Browser-first probe",
+    "retainedScreenshot": false,
+    "reason": "repository screenshot count was already at the 100-image limit",
+    "remainingHarnessDebt": "minor Browser-preview typography and spacing differences remain outside this PF2 error-state slice"
+  }
+}

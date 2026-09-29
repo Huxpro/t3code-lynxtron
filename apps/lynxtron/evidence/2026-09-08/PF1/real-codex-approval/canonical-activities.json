@@ -1,0 +1,50 @@
+[
+  {
+    "activity_id": "d50cc5bd-adf7-47e2-856d-e2e9dff21870",
+    "kind": "tool.completed",
+    "summary": "Ran command",
+    "payload_json": "{\"itemType\":\"command_execution\",\"detail\":\"/bin/zsh -lc pwd\",\"data\":{\"completedAtMs\":1788923856548,\"item\":{\"aggregatedOutput\":\"/Users/bytedance/github/t3code\\n\",\"command\":\"/bin/zsh -lc pwd\",\"commandActions\":[{\"command\":\"pwd\",\"type\":\"unknown\"}],\"cwd\":\"/Users/bytedance/github/t3code\",\"durationMs\":0,\"exitCode\":0,\"id\":\"exec-d2227305-a1d3-4f14-bdac-00f9bef3b5ff\",\"processId\":\"37011\",\"source\":\"unifiedExecStartup\",\"status\":\"completed\",\"type\":\"commandExecution\"},\"threadId\":\"01a08421-b7a3-7340-b13c-c9cd70c0976a\",\"turnId\":\"01a08429-bff8-73d0-9bde-b20718bb8a70\"}}",
+    "turn_id": "01a08429-bff8-73d0-9bde-b20718bb8a70",
+    "created_at": "2026-09-09T03:17:36.549Z"
+  },
+  {
+    "activity_id": "3ce9f8b8-686a-49b1-acab-0f1f71aeb99b",
+    "kind": "approval.resolved",
+    "summary": "Approval resolved",
+    "payload_json": "{\"requestType\":\"unknown\"}",
+    "turn_id": null,
+    "created_at": "2026-09-09T03:17:36.437Z"
+  },
+  {
+    "activity_id": "363bf4fa-9949-4173-91b7-15ef9003dd07",
+    "kind": "approval.resolved",
+    "summary": "Approval resolved",
+    "payload_json": "{\"requestId\":\"d676eac4-5418-4b1f-9957-3fa0edae232b\",\"requestKind\":\"command\",\"requestType\":\"command_execution_approval\",\"decision\":\"accept\"}",
+    "turn_id": "01a08429-bff8-73d0-9bde-b20718bb8a70",
+    "created_at": "2026-09-09T03:17:36.428Z"
+  },
+  {
+    "activity_id": "5066cd96-8082-47b3-a832-8519d2f88e58",
+    "kind": "approval.requested",
+    "summary": "Command approval requested",
+    "payload_json": "{\"requestId\":\"d676eac4-5418-4b1f-9957-3fa0edae232b\",\"requestKind\":\"command\",\"requestType\":\"command_execution_approval\",\"detail\":\"/bin/zsh -lc pwd\"}",
+    "turn_id": "01a08429-bff8-73d0-9bde-b20718bb8a70",
+    "created_at": "2026-09-09T03:15:31.380Z"
+  },
+  {
+    "activity_id": "22bbbefa-b036-4ded-8b95-98137af9d796",
+    "kind": "tool.completed",
+    "summary": "Ran command",
+    "payload_json": "{\"itemType\":\"command_execution\",\"detail\":\"/bin/zsh -lc pwd\",\"data\":{\"completedAtMs\":1788923351387,\"item\":{\"aggregatedOutput\":\"/Users/bytedance/github/t3code\\n\",\"command\":\"/bin/zsh -lc pwd\",\"commandActions\":[{\"command\":\"pwd\",\"type\":\"unknown\"}],\"cwd\":\"/Users/bytedance/github/t3code\",\"durationMs\":0,\"exitCode\":0,\"id\":\"exec-46c28966-3c91-49fb-82b7-1194d5239e55\",\"processId\":\"18520\",\"source\":\"unifiedExecStartup\",\"status\":\"completed\",\"type\":\"commandExecution\"},\"threadId\":\"01a08421-b7a3-7340-b13c-c9cd70c0976a\",\"turnId\":\"01a08423-138b-71d3-a316-4d8c97f4da7b\"}}",
+    "turn_id": "01a08423-138b-71d3-a316-4d8c97f4da7b",
+    "created_at": "2026-09-09T03:09:11.388Z"
+  },
+  {
+    "activity_id": "3b0bb131-ac2e-46ab-9f53-33ac6e7bfa16",
+    "kind": "approval.resolved",
+    "summary": "Approval resolved",
+    "payload_json": "{\"requestType\":\"unknown\"}",
+    "turn_id": null,
+    "created_at": "2026-09-09T03:09:11.266Z"
+  }
+]

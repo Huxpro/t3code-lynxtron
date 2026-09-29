@@ -1,0 +1,379 @@
+{
+  "status": "measured",
+  "route": "sidebar-v2-host-populated",
+  "viewport": {
+    "logicalWidth": 1280,
+    "logicalHeight": 820,
+    "deviceScaleFactor": 2,
+    "imageWidth": 2560,
+    "imageHeight": 1640
+  },
+  "captures": {
+    "web": {
+      "file": "/Users/bytedance/github/t3code/apps/lynxtron/evidence/2026-09-08/OC4/sidebar-existing-thread/1280x820/electron.png",
+      "sha256": "d75e6b1eb4b67ad1881d428f478d5344aae8c8be59e406bd178222d9191357ac",
+      "rendererErrors": 0
+    },
+    "lynx": {
+      "file": "evidence/2026-09-08/OC4/sidebar-existing-thread/1280x820/lynx.jpg",
+      "sha256": "434a657d4af8ffd6035be8d37e778369d2b4c88c0dad4d54c739bd6c4cec4cf6",
+      "devToolConsoleErrors": 0
+    }
+  },
+  "schemaVersion": 1,
+  "thresholds": {
+    "anchorMaxAbsPx": 8,
+    "correspondingFontSizeMaxAbsPx": 2
+  },
+  "coordinateSystem": {
+    "web": "logical CSS pixels",
+    "lynxRaw": "Lynx DevTool box-model units",
+    "lynxCoordinateScale": 1,
+    "deviceScaleFactor": 2
+  },
+  "anchors": {
+    "sidebar": {
+      "web": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 820
+      },
+      "lynxRaw": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "lynx": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 820
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 1,
+        "height": 0,
+        "maxAbs": 1
+      },
+      "pass": true,
+      "text": {
+        "web": "Code All projects t3code 26m Settle Native list transcript baseline Settings",
+        "lynx": "T3 Code Search All projects t3code 47m Native list transcript baseline Settings",
+        "exact": false
+      }
+    },
+    "workspaceHeader": {
+      "web": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "lynxRaw": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "lynx": {
+        "x": 256,
+        "y": 0,
+        "width": 1024,
+        "height": 52
+      },
+      "delta": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "maxAbs": 0
+      },
+      "pass": true,
+      "text": {
+        "web": "t3code / Native list transcript baseline Add action Open Commit, push & PR",
+        "lynx": "T3 t3code / Native list transcript baseline Add action Open Commit",
+        "exact": false
+      }
+    },
+    "composer": {
+      "web": {
+        "x": 384,
+        "y": 628,
+        "width": 768,
+        "height": 172
+      },
+      "lynxRaw": {
+        "x": 432,
+        "y": 648,
+        "width": 672,
+        "height": 152
+      },
+      "lynx": {
+        "x": 432,
+        "y": 648,
+        "width": 672,
+        "height": 152
+      },
+      "delta": {
+        "x": 48,
+        "y": 20,
+        "width": -96,
+        "height": -20,
+        "maxAbs": 96
+      },
+      "pass": false,
+      "text": {
+        "web": "Ask anything, @tag files/folders, $use skills, or / for commands Claude Fable 5 High · 1M Full access Build Local checkout lynxtron-port",
+        "lynx": "Claude Fable 5 Reasoning · High Full access Build Local checkout No branch",
+        "exact": false
+      }
+    },
+    "sidebarSearch": {
+      "web": {
+        "x": 8,
+        "y": 64,
+        "width": 203,
+        "height": 32
+      },
+      "lynxRaw": {
+        "x": 7,
+        "y": 59,
+        "width": 210,
+        "height": 28
+      },
+      "lynx": {
+        "x": 7,
+        "y": 59,
+        "width": 210,
+        "height": 28
+      },
+      "delta": {
+        "x": -1,
+        "y": -5,
+        "width": 7,
+        "height": -4,
+        "maxAbs": 7
+      },
+      "pass": true,
+      "text": {
+        "web": "",
+        "lynx": "Search",
+        "exact": false
+      }
+    },
+    "sidebarFirstRowTitle": {
+      "web": {
+        "x": 18,
+        "y": 178,
+        "width": 219,
+        "height": 20
+      },
+      "lynxRaw": {
+        "x": 16,
+        "y": 173,
+        "width": 224,
+        "height": 18
+      },
+      "lynx": {
+        "x": 16,
+        "y": 173,
+        "width": 224,
+        "height": 18
+      },
+      "delta": {
+        "x": -2,
+        "y": -5,
+        "width": 5,
+        "height": -2,
+        "maxAbs": 5
+      },
+      "pass": true,
+      "text": {
+        "web": "Native list transcript baseline",
+        "lynx": "Native list transcript baseline",
+        "exact": true
+      }
+    }
+  },
+  "typography": {
+    "brand": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.999994 0.0000455677 0.0000200868 / 0.7)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(255,255,255,0.698039)",
+        "fontFamily": "inherit",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "fontSizeDelta": 0,
+      "pass": true,
+      "text": {
+        "web": "Code",
+        "lynx": "Code",
+        "exact": true
+      }
+    },
+    "sidebarSearch": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(241, 243, 247)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "30px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "12.25px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      },
+      "fontSizeDelta": -1.75,
+      "pass": true,
+      "text": {
+        "web": "Search threads",
+        "lynx": "Search",
+        "exact": false
+      }
+    },
+    "sidebarFirstRowTitle": {
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.963762 -0.000504732 -0.00571203 / 0.9)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "inherit",
+        "fontSize": "12.25px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      },
+      "fontSizeDelta": -1.75,
+      "pass": true,
+      "text": {
+        "web": "Native list transcript baseline",
+        "lynx": "Native list transcript baseline",
+        "exact": true
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "properties": ["backgroundColor", "color"],
+      "web": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "rgb(245, 245, 245)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(10,10,10,1)",
+          "color": "rgba(245,245,245,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(10,10,10,1)",
+          "color": "rgba(0,0,0,1)"
+        }
+      },
+      "exact": false
+    },
+    "sidebarBackground": {
+      "properties": ["backgroundColor", "color"],
+      "web": {
+        "backgroundColor": "rgb(0, 0, 0)",
+        "color": "rgb(241, 243, 247)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(0,0,0,1)",
+          "color": "rgba(241,243,247,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(0,0,0,1)",
+          "color": "rgba(241,243,247,1)"
+        }
+      },
+      "exact": true
+    },
+    "composerBackground": {
+      "properties": ["backgroundColor", "color"],
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)"
+      },
+      "lynx": {
+        "backgroundColor": "rgb(18,18,18)",
+        "color": "rgb(0,0,0)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(0,0,0,0)",
+          "color": "rgba(245,245,245,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(18,18,18,1)",
+          "color": "rgba(0,0,0,1)"
+        }
+      },
+      "exact": false
+    },
+    "sidebarSearchBackground": {
+      "properties": ["backgroundColor", "color"],
+      "web": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(163, 163, 163)"
+      },
+      "lynx": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)"
+      },
+      "normalized": {
+        "web": {
+          "backgroundColor": "rgba(0,0,0,0)",
+          "color": "rgba(163,163,163,1)"
+        },
+        "lynx": {
+          "backgroundColor": "rgba(0,0,0,0)",
+          "color": "rgba(0,0,0,1)"
+        }
+      },
+      "exact": false
+    }
+  },
+  "summary": {
+    "anchorsPassing": 4,
+    "anchorsTotal": 5,
+    "typographyPassing": 3,
+    "typographyTotal": 3,
+    "exactAnchorText": 1,
+    "exactAnchorTextTotal": 5,
+    "exactColors": 1,
+    "exactColorsTotal": 4
+  },
+  "masks": []
+}

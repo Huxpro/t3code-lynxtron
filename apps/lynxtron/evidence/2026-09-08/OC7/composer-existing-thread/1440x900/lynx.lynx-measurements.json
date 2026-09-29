@@ -1,0 +1,287 @@
+{
+  "schemaVersion": 1,
+  "source": "lynx-devtool",
+  "route": "sidebar-v2-host-populated",
+  "anchors": {
+    "sidebar": {
+      "selector": ".sidebar",
+      "nodeId": 14,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 900
+      },
+      "box": {
+        "width": 255,
+        "height": 900
+      },
+      "text": "T3 Code Search All projects t3code 2h Native list transcript baseline Settings",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "workspaceHeader": {
+      "selector": "[data-chat-header]",
+      "nodeId": 52,
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1184,
+        "height": 52
+      },
+      "box": {
+        "width": 1144,
+        "height": 52
+      },
+      "text": "T3 t3code / Native list transcript baseline Add action Open Commit",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "composer": {
+      "selector": ".composer-shell",
+      "nodeId": 281,
+      "rect": {
+        "x": 464,
+        "y": 708,
+        "width": 768,
+        "height": 172
+      },
+      "box": {
+        "width": 768,
+        "height": 172
+      },
+      "text": "Claude Fable 5 High · 1M Full access Build Local checkout lynxtron-port",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sidebarSearch": {
+      "selector": ".sidebar-v2-search",
+      "nodeId": 236,
+      "rect": {
+        "x": 7,
+        "y": 59,
+        "width": 210,
+        "height": 28
+      },
+      "box": {
+        "width": 195.5,
+        "height": 17.5
+      },
+      "text": "Search",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "12.25px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    },
+    "sidebarFirstRowTitle": {
+      "selector": ".sidebar-v2-row-title",
+      "nodeId": 273,
+      "rect": {
+        "x": 16,
+        "y": 173,
+        "width": 224,
+        "height": 18
+      },
+      "box": {
+        "width": 223.5,
+        "height": 18
+      },
+      "text": "Native list transcript baseline",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "inherit",
+        "fontSize": "12.25px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    }
+  },
+  "typography": {
+    "brand": {
+      "selector": ".sidebar-brand-code-label",
+      "nodeId": 19,
+      "rect": {
+        "x": 112,
+        "y": 16,
+        "width": 34,
+        "height": 20
+      },
+      "box": {
+        "width": 34,
+        "height": 20
+      },
+      "text": "Code",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgba(255,255,255,0.698039)",
+        "fontFamily": "inherit",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "sidebarSearch": {
+      "selector": ".sidebar-v2-search-label",
+      "nodeId": 238,
+      "rect": {
+        "x": 37,
+        "y": 73,
+        "width": 173,
+        "height": 0
+      },
+      "box": {
+        "width": 172.5,
+        "height": 0
+      },
+      "text": "Search",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "12.25px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sidebarFirstRowTitle": {
+      "selector": ".sidebar-v2-row-title",
+      "nodeId": 273,
+      "rect": {
+        "x": 16,
+        "y": 173,
+        "width": 224,
+        "height": 18
+      },
+      "box": {
+        "width": 223.5,
+        "height": 18
+      },
+      "text": "Native list transcript baseline",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(245,245,245)",
+        "fontFamily": "inherit",
+        "fontSize": "12.25px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "selector": ".app-root",
+      "nodeId": 13,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "box": {
+        "width": 1440,
+        "height": 900
+      },
+      "text": "T3 Code Search All projects t3code 2h Native list transcript baseline Settings T3 t3code / Native list transcript baseline Add action Open Commit Failed to authenticate: OAuth session expired and could not be refreshed Explain how the sidebar derives its thread status labels. Claude Fable 5 High · 1M Full access Build Local checkout lynxtron-port",
+      "style": {
+        "backgroundColor": "rgb(10,10,10)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sidebarBackground": {
+      "selector": ".sidebar",
+      "nodeId": 14,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 900
+      },
+      "box": {
+        "width": 255,
+        "height": 900
+      },
+      "text": "T3 Code Search All projects t3code 2h Native list transcript baseline Settings",
+      "style": {
+        "backgroundColor": "rgb(0,0,0)",
+        "color": "rgb(241,243,247)",
+        "fontFamily": "\"DM Sans\",-apple-system,system-ui,sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "composerBackground": {
+      "selector": ".composer-surface",
+      "nodeId": 283,
+      "rect": {
+        "x": 465,
+        "y": 709,
+        "width": 766,
+        "height": 130
+      },
+      "box": {
+        "width": 766,
+        "height": 130
+      },
+      "text": "Claude Fable 5 High · 1M Full access Build",
+      "style": {
+        "backgroundColor": "rgba(20,20,20,0.8)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "14px",
+        "fontWeight": "normal",
+        "lineHeight": ""
+      }
+    },
+    "sidebarSearchBackground": {
+      "selector": ".sidebar-v2-search",
+      "nodeId": 236,
+      "rect": {
+        "x": 7,
+        "y": 59,
+        "width": 210,
+        "height": 28
+      },
+      "box": {
+        "width": 195.5,
+        "height": 17.5
+      },
+      "text": "Search",
+      "style": {
+        "backgroundColor": "rgba(0,0,0,0)",
+        "color": "rgb(0,0,0)",
+        "fontFamily": "",
+        "fontSize": "12.25px",
+        "fontWeight": "500",
+        "lineHeight": "1.25rem"
+      }
+    }
+  }
+}

@@ -95,16 +95,16 @@ At the start of every task:
 
 ## Task sequence
 
-| ID  | Task                                                 | Depends on     | Status    | Result                                                                            |
-| --- | ---------------------------------------------------- | -------------- | --------- | --------------------------------------------------------------------------------- |
+| ID  | Task                                                 | Depends on     | Status      | Result                                                                            |
+| --- | ---------------------------------------------------- | -------------- | ----------- | --------------------------------------------------------------------------------- |
 | OC0 | Freeze the five failures and current Web baselines   | Current branch | `completed` | Durable outcome fixtures, measurements, and exact failure signatures              |
-| OC1 | Make packaged cold start semantically ready          | OC0            | `pending` | Three fresh starts connect without reload and the harness rejects false readiness |
-| OC2 | Give Lynx navigation one authority                   | OC1            | `pending` | Settings tap, section changes, and Back remain stable                             |
-| OC3 | Make lifecycle state visible and actionable          | OC2            | `pending` | Starting, ready, failed, and reconnecting are truthful in the chat shell          |
-| OC4 | Converge Sidebar layout and anchored overlays        | OC3            | `pending` | Sidebar V2 and project-scope popup match Web without reflow or duplication        |
-| OC5 | Converge Composer layout and token contracts         | OC4            | `pending` | Composer geometry, density, contrast, and context strip meet the matched baseline |
-| OC6 | Restore stage branding from canonical build metadata | OC5            | `pending` | Dev artwork is visible in the local packaged preview without prototype branding   |
-| OC7 | Run the five-outcome product proof                   | OC6            | `pending` | One report proves O1–O5 on a real packaged cold start                             |
+| OC1 | Make packaged cold start semantically ready          | OC0            | `completed` | Three fresh starts connect without reload and the harness rejects false readiness |
+| OC2 | Give Lynx navigation one authority                   | OC1            | `completed` | Settings tap, section changes, and Back remain stable                             |
+| OC3 | Make lifecycle state visible and actionable          | OC2            | `completed` | Starting, ready, failed, and reconnecting are truthful in the chat shell          |
+| OC4 | Converge Sidebar layout and anchored overlays        | OC3            | `completed` | Sidebar V2 and project-scope popup match Web without reflow or duplication        |
+| OC5 | Converge Composer layout and token contracts         | OC4            | `completed` | Composer geometry, density, contrast, and context strip meet the matched baseline |
+| OC6 | Restore stage branding from canonical build metadata | OC5            | `completed` | Dev artwork is visible in the local packaged preview without prototype branding   |
+| OC7 | Run the five-outcome product proof                   | OC6            | `completed` | One report proves O1–O5 on a real packaged cold start                             |
 
 Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `skipped(reason)`. Only one task may be `in_progress`.
 
@@ -146,6 +146,17 @@ Web product reference, not OC7 same-snapshot certification.
 
 ## OC1: Make packaged cold start semantically ready
 
+Completed on 2026-09-08. Main now attaches the typed connector bridge before
+the renderer bundle loads. The renderer subscribes before requesting its
+initial snapshot and replays any buffered events in sequence afterward, which
+closes both cold-start race windows without polling or reload. The exact-owned
+packaged smoke in `scripts/verify-packaged-readiness.mjs` binds the process to
+its DevTool listening port, verifies the current bundle URL, requires
+`kind === "main"`, an advancing sequence, canonical project/model UI, no
+visible Connecting state, and no renderer console problems. Three fresh
+1280 x 820 runs passed; a withheld-bridge negative control failed as required.
+Machine-readable results are in `reports/oc1-packaged-readiness.json`.
+
 Fix the lifecycle before UI work. A renderer that cannot reach main invalidates every subsequent product capture.
 
 ### Required design
@@ -179,6 +190,17 @@ A bounded deadline may fail the smoke. A fixed delay must not decide success.
 
 ## OC2: Give Lynx navigation one authority
 
+Completed on 2026-09-08. The Lynx pathname Atom is now the only writable
+route authority; the unused TanStack memory-history load, navigation, and
+subscription writeback path has been removed. Settings roots normalize
+synchronously to `/settings/general`, supported sections are allowlisted, and
+the read-only `globalThis.__T3_LYNXTRON_ROUTE__()` diagnostic exposes the
+current route to the packaged harness. Two Computer Use passes exercised
+Settings, Providers, Connections, Source Control, Beta, Archive, and Back.
+A canonical provider update advanced the connector sequence from 24 to 34
+while the route remained `/settings/providers`; the isolated setting was then
+restored. Evidence is recorded in `reports/oc2-route-authority.json`.
+
 The Lynx renderer cannot use `RouterProvider`, but it also must not maintain a local path and a second memory-router path that can overwrite each other.
 
 ### Required design
@@ -209,6 +231,16 @@ The Lynx renderer cannot use `RouterProvider`, but it also must not maintain a l
 
 ## OC3: Make lifecycle state visible and actionable
 
+The shared connector lifecycle projection and chat-route banner now cover
+idle, server startup, connecting, error, and ready without animation or a
+second state source. A packaged withheld-bridge run visibly rendered
+`Connection unavailable` with the bridge failure detail. A second exact-owned
+run terminated only its child server PID, rendered the terminal failure with
+`Retry connection`, then launched a replacement server from that real button
+and returned to ready on the same route with transport `main` and sequence 38.
+Three normal fresh starts removed the banner only after semantic readiness.
+Evidence is in `reports/oc3-lifecycle-status.json`.
+
 Connection lifecycle is product state, not a styling side effect of disabled controls. Reuse the connector's canonical state and make it legible in the shell without adding another lifecycle authority.
 
 ### Required design
@@ -234,6 +266,17 @@ Connection lifecycle is product state, not a styling side effect of disabled con
 - Focused state/projection tests pass, and the implementation adds no continuous animation.
 
 ## OC4: Converge Sidebar layout and anchored overlays
+
+Completed on 2026-09-08 for the 1280 x 820 slice. Electron and Lynxtron
+started from separate clones of snapshot `5686b023...abb3398` and rendered
+thread `274e9e56...ba209`. After explicitly aligning the shared Sidebar width
+preference to 256 px, Sidebar, workspace header, Search, and active-row
+anchors all pass the 8 px threshold; all measured Sidebar typography passes
+the 2 px threshold. The Lynx project-scope popup now uses an anchored absolute
+surface with explicit item rows and an outside-tap backdrop. Its thread row
+stays at y=173 before, during, and after the popup, closing the former 28 px
+reflow. Evidence is under
+`evidence/2026-09-08/OC4/sidebar-existing-thread/1280x820/`.
 
 Keep the maximum shared Sidebar composition. Repair the platform primitive and layout contract instead of forking a Lynx Sidebar.
 
@@ -268,6 +311,15 @@ Keep the maximum shared Sidebar composition. Repair the platform primitive and l
 - Sidebar-related `overrides.css` has no unowned rule and records a net line delta.
 
 ## OC5: Converge Composer layout and token contracts
+
+Completed on 2026-09-08. The matched 1280 x 820 and 1440 x 900 pairs pass
+5/5 anchors, 3/3 typography checks, and 4/4 semantic color checks. Composer
+geometry is exact in both pairs. The Web and Lynx renderers now share the
+full traits label projection, while Lynx resolves the active branch through
+the server VCS status contract and uses the canonical ready placeholder. Real
+Computer Use taps opened the model picker and changed runtime, interaction,
+and model-option state on a disposable exact-owned process. Evidence is under
+`evidence/2026-09-08/OC5/` and `evidence/2026-09-08/OC7/`.
 
 The shared Composer boundary must determine more than child order. Move geometry, density, and semantic color decisions into the shared contract; keep native text entry in Lynx.
 
@@ -304,6 +356,15 @@ The shared Composer boundary must determine more than child order. Move geometry
 
 ## OC6: Restore stage branding from canonical build metadata
 
+Completed on 2026-09-08. Lynxtron now resolves its stage through one tested
+preload source, defaults an unadorned repository-built package to Dev, accepts
+all four canonical stages, and gives Latest the canonical unadorned display
+name. Web and Lynx consume one client-runtime projection for artwork, pill, and
+none modes. Five fresh packaged runs proved default Dev artwork, Nightly
+artwork, Dev pill, Latest none, and Alpha without invented artwork; every run
+used the main transport, advanced its sequence, and reported zero renderer
+warnings/errors. Evidence is in `reports/oc6-branding-*.json`.
+
 Do not hard-code a blue rectangle into the Sidebar. Restore the product's stage-identification semantics.
 
 ### Required design
@@ -326,6 +387,15 @@ Do not hard-code a blue rectangle into the Sidebar. Restore the product's stage-
 - No duplicate branding component or unregistered color region is added.
 
 ## OC7: Five-outcome product proof
+
+Completed on 2026-09-08 for the bounded Plan 11 scope. The final Lynx bundle
+passed three fresh unadorned cold starts with main transport, advancing
+sequence, canonical project/model UI, Dev artwork, and zero renderer problems.
+O1-O5 are independently recorded as pass in
+`reports/oc7-five-outcome-proof.json`. The release remains a
+`chat-first-preview`: R5, R11, R12, and R13 remain explicit runtime gaps, and
+no commit or push was created because the working tree includes pre-existing
+user changes and this run was not authorized to publish them.
 
 This is a bounded outcome certification, not a rerun of every historical AR6 screenshot.
 

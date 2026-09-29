@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "commit": "5a82f65b8",
+  "viewport": { "width": 1280, "height": 820 },
+  "bundle": "apps/lynxtron/dist/desktop/main.lynx.bundle",
+  "state": "fresh isolated directory per run",
+  "runs": [
+    { "transport": "main", "initialSeq": 2, "finalSeq": 9, "consoleProblems": 0 },
+    { "transport": "main", "initialSeq": 10, "finalSeq": 12, "consoleProblems": 0 },
+    { "transport": "main", "initialSeq": 12, "finalSeq": 14, "consoleProblems": 0 }
+  ],
+  "canonicalUi": {
+    "project": "t3code",
+    "model": "Claude Fable 5",
+    "connectingVisible": false
+  },
+  "negativeControl": {
+    "environment": "T3_LYNXTRON_WITHHOLD_CONNECTOR_BRIDGE=1",
+    "result": "rejected",
+    "error": "Timed out waiting for main transport semantic readiness"
+  },
+  "verification": [
+    "node apps/lynxtron/scripts/verify-packaged-readiness.mjs",
+    "node apps/lynxtron/scripts/verify-packaged-readiness.mjs --withhold-bridge",
+    "vp test run apps/lynxtron/src/main/desktop/windowStartup.test.ts apps/lynxtron/src/main/desktop/mainConnectorHost.test.ts apps/lynxtron/src/app/state/mainConnectorTransport.test.ts",
+    "tsc --noEmit -p apps/lynxtron/src/app/tsconfig.json",
+    "tsc --noEmit -p apps/lynxtron/src/main/desktop/tsconfig.json",
+    "tsgo --noEmit -p apps/web/tsconfig.json",
+    "pnpm --dir apps/lynxtron run build"
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "status": "pass",
+  "surface": "typed-browser-preview",
+  "scenario": "send-recovery",
+  "command": "sendPrompt",
+  "cases": [
+    {
+      "name": "text-plus-image",
+      "result": "canonical thread event emitted after retry"
+    },
+    {
+      "name": "attachment-only",
+      "result": "canonical user message retained empty text and projected image metadata"
+    }
+  ],
+  "assertions": {
+    "uploadDtoForwarded": true,
+    "dataUrlExcludedFromCanonicalMessage": true,
+    "attachmentMetadataPreserved": true,
+    "turnAdvanced": true,
+    "focusedTests": "15/15 passed",
+    "browserPreviewTypecheck": "pass"
+  },
+  "limitations": [
+    "Native picker-to-provider acceptance remains pending behind packaged main-transport readiness."
+  ]
+}

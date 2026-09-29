@@ -7,7 +7,7 @@ Execute tasks in order unless a task explicitly allows independent runtime work.
 ## Plan metadata
 
 - Content type: How-to
-- Status: Queued after Plan 11
+- Status: Active after Plan 11 completion
 - Audience: Agents continuing the T3 Code Electron-to-Lynxtron port
 - Goal: Let a user complete and review a real local or remote coding-agent turn in Lynxtron without returning to Web for any required step
 - Scope: `apps/lynxtron`, physically shared Web compositions, `packages/client-runtime`, `packages/contracts`, and the minimum desktop/server boundaries needed by a cross-surface feature
@@ -47,21 +47,36 @@ If an invariant regresses, fix it inside the active PF task and add a focused re
 
 ## Priority and task sequence
 
-| Priority | ID  | Product capability                                    | Depends on | Status    | User-visible exit                                                                       |
-| -------- | --- | ----------------------------------------------------- | ---------- | --------- | --------------------------------------------------------------------------------------- |
-| P0       | PF0 | Rebaseline the complete Web feature journey           | Plan 11    | `pending` | One fixed parity ledger identifies required, deferred, unsupported, and blocked paths   |
-| P1       | PF1 | Complete agent intervention and recovery              | PF0        | `pending` | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
-| P1       | PF2 | Complete Composer input and context                   | PF1        | `pending` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
-| P1       | PF3 | Complete transcript navigation and interaction        | PF2        | `pending` | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
-| P1       | PF4 | Complete remote and multi-environment operation       | PF3        | `pending` | A user can find, connect to, diagnose, and operate supported remote environments        |
-| P2       | PF5 | Complete change review, checkpoints, and files        | PF4        | `pending` | A user can inspect the result and its source-control implications without Web           |
-| P2       | PF6 | Expand terminal and browser work surfaces             | PF5        | `pending` | Approved placeholder surfaces are replaced only where the runtime can support them      |
-| P2       | PF7 | Close performance, theme, and remaining platform gaps | PF6        | `pending` | Long sessions remain fast and required theme/input/runtime gates have evidence          |
-| P3       | PF8 | Certify the end-to-end Lynxtron product journey       | PF7        | `pending` | Local and remote journeys pass the complete phase-exit evidence matrix                  |
+| Priority | ID   | Product capability                                    | Depends on | Status        | User-visible exit                                                                       |
+| -------- | ---- | ----------------------------------------------------- | ---------- | ------------- | --------------------------------------------------------------------------------------- |
+| P0       | PF0  | Rebaseline the complete Web feature journey           | Plan 11    | `completed`   | One fixed parity ledger identifies required, deferred, unsupported, and blocked paths   |
+| P1       | PF1  | Complete agent intervention and recovery              | PF0        | `completed`   | Approval, user input, plan response, failure, retry, stop, and resume work end to end   |
+| P1       | PF2  | Complete Composer input and context                   | PF1        | `in_progress` | Attachments, images, file/terminal context, draft, pending, and send states are usable  |
+| P1       | PF3  | Complete transcript navigation and interaction        | PF2        | `in_progress` | Long turns, Markdown, follow mode, discrete commands, and real input behave predictably |
+| P1       | PF4  | Complete remote and multi-environment operation       | PF3        | `pending`     | A user can find, connect to, diagnose, and operate supported remote environments        |
+| P2       | PF5  | Complete change review, checkpoints, and files        | PF4        | `pending`     | A user can inspect the result and its source-control implications without Web           |
+| P2       | PF6  | Expand terminal and browser work surfaces             | PF5        | `pending`     | Approved placeholder surfaces are replaced only where the runtime can support them      |
+| P2       | PF6a | Build Electron/Lynxtron Components Lab parity system  | PF2        | `pending`     | Every reused Electron component has one cataloged Lynx counterpart and shared identity  |
+| P2       | PF6b | Integrate CEF/WebView for the built-in browser        | PF6        | `pending`     | Lynxtron matches Electron browser navigation, lifecycle, isolation, and controls        |
+| P2       | PF7  | Close performance, theme, and remaining platform gaps | PF6        | `pending`     | Long sessions remain fast and required theme/input/runtime gates have evidence          |
+| P3       | PF8  | Certify the end-to-end Lynxtron product journey       | PF7        | `pending`     | Local and remote journeys pass the complete phase-exit evidence matrix                  |
 
 Use only `pending`, `in_progress`, `completed`, `blocked(runtime-gap-id)`, or `skipped(reason)`. Only one task may be `in_progress`.
 
 ## PF0: Rebaseline the complete Web feature journey
+
+Completed on 2026-09-08. The frozen journey, surface/provider/connection
+decisions, canonical owners, reverse actions, and smallest proofs are recorded
+in [12-feature-parity-ledger.md](./12-feature-parity-ledger.md). The first PF1
+boundary is approval plus structured user input: all five server adapters
+support the canonical response operations. Lynx now exposes these pending states
+and response actions, plus plan handoff and send-failure recovery; real-provider
+acceptance now passes through an isolated, authenticated Codex session in
+approval-required mode. Computer Use submitted the real decision; DevTool and
+SQLite evidence prove the canonical request, accept resolution, exit code 0, and
+completed turn. The same run exposed and fixed unreadable Native approval labels
+and provider-rail event bubbling. PF2 is active; its first fix makes hero send
+atomically create, select, and dispatch to a canonical thread.
 
 Freeze the actual product boundary before implementing more controls. Use a populated, realistic snapshot and trace one current Web/Electron journey from project selection through completed work and review.
 

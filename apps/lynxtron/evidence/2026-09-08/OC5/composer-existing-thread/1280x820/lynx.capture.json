@@ -1,0 +1,18 @@
+{
+  "baseline": "electron-web",
+  "clientName": "@t3tools/lynxtron",
+  "route": "composer-existing-thread",
+  "theme": "dark",
+  "snapshot": "5686b023626886dc8de671be3ee684bdba6fb5783a85ffc5b4f48cad4abb3398",
+  "interactionState": "none",
+  "screenshot": "evidence/2026-09-08/OC5/composer-existing-thread/1280x820/lynx.jpg",
+  "dimensions": {
+    "format": "jpeg",
+    "width": 2560,
+    "height": 1640
+  },
+  "capturedAt": "2026-09-08T23:56:54.064Z",
+  "reusedScreenshot": false,
+  "devToolConsoleErrors": 0,
+  "measurements": "evidence/2026-09-08/OC5/composer-existing-thread/1280x820/lynx.lynx-measurements.json"
+}

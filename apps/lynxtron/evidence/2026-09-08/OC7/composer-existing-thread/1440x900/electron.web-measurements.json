@@ -1,0 +1,227 @@
+{
+  "schemaVersion": 1,
+  "source": "electron-cdp",
+  "route": "sidebar-v2-host-populated",
+  "anchors": {
+    "sidebar": {
+      "selector": "[data-sidebar=\"sidebar\"]",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 900
+      },
+      "text": "Code\nAll projects\nt3code\n2h\nSettle\nNative list transcript baseline\nSettings",
+      "style": {
+        "backgroundColor": "rgb(0, 0, 0)",
+        "color": "rgb(241, 243, 247)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "workspaceHeader": {
+      "selector": "[data-chat-header]",
+      "rect": {
+        "x": 256,
+        "y": 0,
+        "width": 1184,
+        "height": 52
+      },
+      "text": "t3code\n/\nNative list transcript baseline\nAdd action\nOpen\nCommit, push & PR",
+      "style": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "composer": {
+      "selector": ".chat-composer-glass-shell",
+      "rect": {
+        "x": 464,
+        "y": 708,
+        "width": 768,
+        "height": 172
+      },
+      "text": "\n\n\nAsk anything, @tag files/folders, $use skills, or / for commands\nClaude Fable 5\nHigh · 1M\nFull access\nBuild\nLocal checkout\nlynxtron-port",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "sidebarSearch": {
+      "selector": "[data-sidebar-version=\"v2\"] .sidebar-v2-search",
+      "rect": {
+        "x": 8,
+        "y": 64,
+        "width": 203,
+        "height": 32
+      },
+      "text": "",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(163, 163, 163)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "sidebarFirstRowTitle": {
+      "selector": "[data-sidebar-version=\"v2\"] .sidebar-v2-row-title",
+      "rect": {
+        "x": 18,
+        "y": 178,
+        "width": 219,
+        "height": 20
+      },
+      "text": "Native list transcript baseline",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.963762 -0.000504732 -0.00571203 / 0.9)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    }
+  },
+  "typography": {
+    "brand": {
+      "selector": ".sidebar-brand-code-label",
+      "rect": {
+        "x": 150.5703125,
+        "y": 16,
+        "width": 34.109375,
+        "height": 20
+      },
+      "text": "Code",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.999994 0.0000455677 0.0000200868 / 0.7)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    },
+    "sidebarSearch": {
+      "selector": "[data-sidebar-version=\"v2\"] input[aria-label=\"Search threads\"]",
+      "rect": {
+        "x": 40,
+        "y": 65,
+        "width": 163,
+        "height": 30
+      },
+      "text": "Search threads",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(241, 243, 247)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "30px"
+      }
+    },
+    "sidebarFirstRowTitle": {
+      "selector": "[data-sidebar-version=\"v2\"] .sidebar-v2-row-title",
+      "rect": {
+        "x": 18,
+        "y": 178,
+        "width": 219,
+        "height": 20
+      },
+      "text": "Native list transcript baseline",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "oklab(0.963762 -0.000504732 -0.00571203 / 0.9)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    }
+  },
+  "colors": {
+    "appBackground": {
+      "selector": "body",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1440,
+        "height": 900
+      },
+      "text": "Code\nAll projects\nt3code\n2h\nSettle\nNative list transcript baseline\nSettings\nt3code\n/\nNative list transcript baseline\nAdd action\nOpen\nCommit, push & PR\n\nExplain how the sidebar derives its thread status labels.\n\n5:20 PM\n\nFailed to authenticate: OAuth session expired and could not be refreshed\n\n5:20 PM\n\n\n\n\nAsk anything, @tag files/folders, $use skills, or / for commands\nClaude Fable 5\nHigh · 1M\nFull access\nBuild\nLocal checkout\nlynxtron-port\nToggle Sidebar",
+      "style": {
+        "backgroundColor": "oklch(0.145 0 0)",
+        "color": "rgb(245, 245, 245)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "sidebarBackground": {
+      "selector": "[data-sidebar=\"sidebar\"]",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 255,
+        "height": 900
+      },
+      "text": "Code\nAll projects\nt3code\n2h\nSettle\nNative list transcript baseline\nSettings",
+      "style": {
+        "backgroundColor": "rgb(0, 0, 0)",
+        "color": "rgb(241, 243, 247)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "composerBackground": {
+      "selector": ".chat-composer-glass-shell",
+      "rect": {
+        "x": 464,
+        "y": 708,
+        "width": 768,
+        "height": 172
+      },
+      "text": "\n\n\nAsk anything, @tag files/folders, $use skills, or / for commands\nClaude Fable 5\nHigh · 1M\nFull access\nBuild\nLocal checkout\nlynxtron-port",
+      "style": {
+        "backgroundColor": "color(srgb 0.0778016 0.0778173 0.0778187 / 0.8)",
+        "color": "oklch(0.97 0 0)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "400",
+        "lineHeight": "24px"
+      }
+    },
+    "sidebarSearchBackground": {
+      "selector": "[data-sidebar-version=\"v2\"] .sidebar-v2-search",
+      "rect": {
+        "x": 8,
+        "y": 64,
+        "width": 203,
+        "height": 32
+      },
+      "text": "",
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "color": "rgb(163, 163, 163)",
+        "fontFamily": "\"DM Sans Variable\", \"DM Sans\", -apple-system, \"system-ui\", \"Segoe UI\", system-ui, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "lineHeight": "20px"
+      }
+    }
+  }
+}

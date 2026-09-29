@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "status": "installed-with-runtime-blocker",
+  "versions": {
+    "lynxtron": "0.0.21",
+    "lynxtronDevPlugins": "0.0.21",
+    "rspeedy": "0.16.1",
+    "rsbuildDirect": "2.1.5",
+    "rsbuildFromRspeedy": "2.1.7",
+    "rspackFromRspeedy": "2.1.10",
+    "reactLynx": "0.123.1",
+    "reactRsbuildPlugin": "0.18.1",
+    "lynxCore": "0.1.4",
+    "webCore": "0.23.0",
+    "webElements": "0.12.7"
+  },
+  "verification": {
+    "focusedTests": "114/114 passed",
+    "lynxAppTypecheck": "pass",
+    "lynxMainTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "productionBuild": "pass",
+    "packagedSemanticReadiness": "fail: timed out"
+  },
+  "restart": {
+    "cliPid": 23293,
+    "appPid": 23301,
+    "windowId": 78125,
+    "viewport": "1280x852 window with 1280x820 requested content",
+    "stateDirectory": "/tmp/t3-owned-state.M0L1s1",
+    "project": "/Users/bytedance/github/t3code",
+    "serverPort": 55694,
+    "visibleState": "Starting T3 Code / Connecting to T3 Code",
+    "keptRunning": true
+  },
+  "devtool": {
+    "client": "localhost:8902",
+    "session": 1,
+    "bundle": "file:///tmp/t3-main-e0b0cf2285c7.lynx.bundle",
+    "bundleSha256": "e0b0cf2285c72cd30563e751ce9727edec4ed6169dba20af0fccb79ece671fae",
+    "transportKind": "unavailable",
+    "lastSeq": -1,
+    "consoleErrorsOrWarnings": []
+  },
+  "mainLogErrors": [
+    "An error occurred when parse json: The data couldn’t be read because it isn’t in the correct format."
+  ],
+  "bridgeDiagnosis": {
+    "readyInvokeReachedMain": true,
+    "mainHandlerElapsedMs": 0,
+    "readySnapshotJsonBytes": 264,
+    "rendererDeadlineMs": 20000,
+    "conclusion": "failure is below connector/server/payload generation, in the native callback reply delivery or parse layer",
+    "synaraPatternTrial": "explicit LynxWindow -lynx-invoke plus event.sendReply(JSON string) reproduced the same 20-second parse failure and was reverted",
+    "additionalRevertedTrials": [
+      "lynxBridge.handle replies wrapped as { ok, value }",
+      "lynxBridge.handle replies wrapped as { error, data }",
+      "NativeModules.bridge.send subscribe plus sendGlobalEvent snapshot",
+      "preload-owned polling through contextBridge",
+      "live snapshots through setGlobalProps and updateMetaData"
+    ]
+  },
+  "resolvedDuringUpgrade": [
+    "Removed the unusable DM Sans @font-face URL from generated Native CSS; the restarted 0.0.21 app no longer reports Unsupported protocol: webpack:."
+  ],
+  "synaraAlignment": {
+    "frameworkVersionsAligned": true,
+    "hostRsbuildMigration": "built successfully but could not be certified in the shared com.lynxjs.Lynxtron bundle-identity environment; the process exited without a uniquely attributable window, so the production host build remains on the prior Rspack path",
+    "reactPatchReviewed": "Synara's local ReactLynx patch only changes first-screen spread/event snapshot handling and is unrelated to bridge callbacks"
+  },
+  "windowIdentity": {
+    "dedicatedBundleId": "com.t3tools.lynxtron.dev",
+    "knownStaleWindow": {
+      "pid": 56004,
+      "runtime": "@lynx-js/lynxtron@0.0.16",
+      "sourceCheckout": "/Users/bytedance/github/t3code-archaeology-verify3",
+      "note": "This separately owned process explains the older T3 UI visible in user screenshots and was not terminated."
+    }
+  }
+}

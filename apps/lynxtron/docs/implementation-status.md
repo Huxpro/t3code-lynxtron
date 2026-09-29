@@ -23,6 +23,167 @@ geometry pairs the Web reference with the durable Native failure measurements
 in `reports/oc0-outcome-baseline.json`. The report keeps this historical
 failure freeze distinct from OC7 same-snapshot certification.
 
+OC1 is complete. The packaged main process now installs connector bridge
+handlers before loading the Lynx bundle, and the renderer subscribes before
+the ready snapshot exchange so an event cannot fall between snapshot and
+subscription. `scripts/verify-packaged-readiness.mjs` performed three fresh,
+isolated 1280 x 820 starts against the current production bundle. Each run
+resolved the DevTool client from the owned PID tree, reached transport `main`,
+advanced its sequence, rendered the canonical `t3code` / `Claude Fable 5`
+state without Connecting, and reported zero renderer console problems. The
+withheld-bridge negative control was rejected. Results are recorded in
+`reports/oc1-packaged-readiness.json`.
+
+OC2 is complete. Lynx rendering now has one synchronous pathname Atom instead
+of a local Atom plus TanStack memory-history writeback. Settings roots and
+sections normalize through that authority, and a read-only route diagnostic
+supports packaged verification. Two exact-owned Computer Use passes covered
+Settings navigation and Back. During the Providers pass, a canonical provider
+mutation advanced connector sequence 24 to 34 without changing
+`/settings/providers`; the isolated mutation was restored. Evidence is in
+`reports/oc2-route-authority.json`.
+
+OC3 is complete. A shared connector lifecycle projection now gives the
+chat shell explicit idle, starting, connecting, error, and ready presentation
+instead of relying on the disabled Composer. In a packaged withheld-bridge
+run, the exact-owned window rendered the bridge failure and its Connections
+action reached `/settings/connections`; normal ready runs render no stale
+banner. A second exact-owned run terminated only the bundled server PID,
+showed a precise terminal error, and used the real Retry connection action to
+start a replacement server and return the same route to ready at sequence 38.
+
+OC4 is complete for the required 1280 x 820 slice. A same-snapshot, same-thread
+Electron/Lynxtron pair uses explicit 256 px Sidebar state and passes all four
+Sidebar-related anchor gates plus all three typography gates. The project-scope
+popup is now absolutely anchored below its trigger; opening and outside-closing
+it leaves the active thread row at y=173. The pair isolates the remaining 96 px
+Composer width loss for OC5.
+
+OC5 now passes its 1280 x 820 existing-thread geometry, content, and real-input
+slice. The shared Composer projection renders all current provider descriptors
+(`High · 1M`), Lynx resolves the active checkout branch through the canonical
+server VCS status command (`lynxtron-port`), and both renderers use the same
+ready-state placeholder. Composer geometry is exact at this viewport and the
+full measurement spec passes 5/5 anchors and 3/3 typography gates. Computer
+Use proved the model picker, runtime, interaction, new-thread, and traits
+controls with real OS taps on an exact-owned disposable process. OC5 remains
+in progress until the 1440 x 900 matched pair is recorded. Evidence is under
+`evidence/2026-09-08/OC5/composer-existing-thread/1280x820/`.
+
+OC6 is complete. A pure Lynxtron branding resolver defaults unadorned
+repository packages to Dev and accepts Dev, Nightly, Alpha, and Latest, while
+the shared client-runtime stage projection owns artwork/pill/none behavior for
+both renderers. Packaged reports prove default Dev artwork, Nightly artwork,
+Dev pill, Latest none, and Alpha without artwork, all with main transport, an
+advancing sequence, and zero renderer warnings/errors. Evidence is in
+`reports/oc6-branding-*.json`.
+
+Plan 11 OC7 is complete for its bounded product proof. The final bundle passes
+three fresh semantic cold starts; the 1280 x 820 and 1440 x 900 matched pairs
+both pass 5/5 geometry anchors, 3/3 typography checks, and 4/4 semantic color
+checks, with exact Composer geometry. O1-O5 and their independent evidence are
+summarized in `reports/oc7-five-outcome-proof.json`. The classification stays
+`chat-first-preview`; R5, R11, R12, and R13 remain open as documented in the
+compatibility matrix.
+
+Plan 12 PF0 and PF1 are complete. The complete journey and cross-surface, provider, and
+connection-mode decisions are frozen in
+`docs/plans/12-feature-parity-ledger.md`. Web and Lynx share
+pending approval, structured-input, and proposed-plan anatomy; Lynx exposes the
+canonical response commands and both current/new-thread implementation handoffs.
+A deterministic send-recovery fixture proves draft retention, actionable failure,
+duplicate-submit suppression, retry, and canonical running-turn advancement. A
+running-turn fixture also proves one stop command, canonical interruption, and the
+shared `You stopped` receipt. The
+latest focused aggregate passes 62 tests, all Lynx typechecks pass, the production
+build passes, and packaged readiness reports main transport seq 2 -> 16 with zero
+renderer problems. A real provider acceptance attempt reached the isolated
+product but the copied Claude credential was expired. A fresh isolated Codex
+session then passed the real approval-required journey with readable action
+labels, canonical accept resolution, exit code 0, and completed turn. PF2 is now
+in progress, starting with atomic hero create/select/send behavior; details are
+in `reports/pf1-intervention-slice.json`.
+The same Native acceptance run fixed provider-rail event bubbling and replaced
+raw approval button strings with explicit host text, making all four actions
+readable. PF2 now also has a route-scoped prompt registry with hero-to-thread
+promotion; successful sends clear the draft while failed sends retain it.
+Non-empty prompt drafts now also persist through the isolated host preference
+store, so route changes and cold restarts restore the same keyed draft.
+The PF2 attachment path now uses a main-owned native dialog, validates the
+canonical 8-image/10 MB limits, persists add/remove state, and forwards upload
+DTOs (including attachment-only turns). The Files panel can add its real server
+read result to Composer as a removable, persisted context, and shared
+presentation code materializes the matching `<file_context>` provider prompt.
+OS picker open/cancel and one Native thumbnail add/remove cycle are verified;
+repeated macOS file-row confirmation was not stable enough to retain as canonical
+send evidence. Terminal context is deferred to PF6 because Lynxtron currently
+exposes an honest terminal placeholder rather than a selectable terminal source.
+Cold-start testing also found that preload preference readiness can lag the first
+renderer route, leaving a persisted attachment unhydrated. Extending the typed
+ready snapshot with draft data caused the current Lynx bridge to reject that JSON
+shape, so the experiment was reverted and transport stability reverified.
+Subsequent provider discovery exposed a deeper Lynxtron 0.0.8 transport limit:
+even after bounding Native keybindings to the three supported menu commands,
+removing unused provider catalogs, and splitting provider snapshots into separate
+sequenced envelopes, the packaged renderer still times out waiting for the
+main-transport ready callback. Focused transport/projection tests and all Lynx
+typechecks pass, but packaged semantic readiness does not; PF2 therefore remains
+in progress and the stale readiness report must not be treated as current proof.
+A coordinated Lynxtron 0.0.21 upgrade is now installed: Lynxtron and its dev
+plugin are 0.0.21, and the framework/build versions now match Synara's known
+working matrix (Rspeedy 0.16.1, ReactLynx 0.123.1, Rsbuild 2.1.x, web-core
+0.23.0). Typechecks, 114 focused
+tests, and the production build pass. The upgrade does not restore the ready
+callback: the fresh packaged verifier still times out, the exact-owned window
+remains visibly Starting/Connecting, and its logs retain the unsupported
+JSON parse error. The earlier unsupported `webpack:` font-resource error was
+removed by making the documented R2 system-font fallback explicit. Lynx
+DevTool confirms the current
+`dist/desktop/main.lynx.bundle` and a renderer transport hook of
+`kind=unavailable`, `lastSeq=-1`.
+The full upgrade, adapter, regression, and reverted-experiment record is in
+[lynxtron-runtime-patches-and-0.0.21-regressions.md](./lynxtron-runtime-patches-and-0.0.21-regressions.md).
+An environment-gated main diagnostic then proved the renderer invoke reaches
+`t3:connector.ready`; main returns the 264-byte snapshot in 0 ms, while the
+native callback does not complete and fails at the 20-second JS-call deadline.
+The explicit `LynxWindow -lynx-invoke` plus `event.sendReply(JSON string)` path
+used successfully by Synara reproduces the same failure in this T3 window and
+was reverted. The remaining defect is therefore in this runtime's callback
+reply delivery/parse layer, below T3 server readiness, connector state, payload
+generation, and handler registration.
+The failure also reproduces when the renderer config projection contains no
+providers or keybindings, so payload size/content is no longer considered the
+sole root cause. Callback-free subscribe, preload polling, and runtime
+`setGlobalProps` / `updateMetaData` experiments also failed to deliver advancing
+state and were reverted. The current packaged hook therefore remains honestly
+`kind=unavailable` / `lastSeq=-1`, and the UI remains Connecting. The remaining
+blocker is the Lynxtron 0.0.21 host↔renderer transport boundary, not process,
+socket, server, provider discovery, or T3 snapshot generation.
+Lynxtron and its dev plugin have since moved to 0.0.28 (2026-09-29). Its
+`devtool` runtime is byte-identical to the upstream v0.0.28 release archive,
+and the production build and desktop-main typecheck pass. Whether 0.0.28 fixes
+the ready-callback and global-event delivery failures has not been re-verified
+with the packaged readiness smoke yet.
+Web/Electron and Lynx now also share one 64 x 64 image-attachment card anatomy
+(preview, persistence warning, and remove slots); Lynx supplies only the native
+image leaf. The shared surface tests and Web typecheck pass.
+The PF2 connection-error slice now uses the shared lifecycle presentation and
+banner anatomy with a deterministic full-AppRoot probe. Its 1280 x 820 gate
+asserts header -> banner -> body ordering, timeline -> Composer ordering,
+complete recovery copy, 22 contained image samples, matching emitted Web bundle
+hashes, and zero unexplained runtime errors. The generic typed preview bridge
+return channel remains unreliable, so this fixture is injected through the
+existing build-time probe entry and is not packaged as product behavior. No new
+screenshot was retained because the repository already contains 100 images.
+PF3 has started with an 80-message deterministic long-transcript fixture. The
+shared follow reducer passes 19 focused tests covering follow, detach, threshold
+re-stick, jump-to-latest, and new-turn anchoring. The Browser-first full-AppRoot
+probe preserves all 80 canonical rows and the terminal Markdown fixture renders
+table, nested-list, code-block, external-link, and relative-image-fallback
+semantics with zero unexplained errors. Lynx Web mounts all 80 list items and
+does not implement Native `initial-scroll-index`, so Native list recycling, tail
+positioning, and real wheel/drag evidence remain pending rather than inferred.
+
 [Plan 12](./plans/12-feature-parity-by-product-value.md) is queued after Plan 11. It closes the remaining Web/Electron feature gap by product value: the
 complete agent intervention and input loop, transcript interaction, remote and
 multi-environment operation, change review, secondary work surfaces, and then

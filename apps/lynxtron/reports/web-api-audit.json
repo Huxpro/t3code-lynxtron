@@ -1,11 +1,11 @@
 {
   "scannedRoot": "apps/web/src",
-  "generatedAt": "2026-08-01T10:22:34.977Z",
-  "totalCallSites": 754,
+  "generatedAt": "2026-09-09T00:29:02.726Z",
+  "totalCallSites": 764,
   "entries": [
     {
       "api": "window",
-      "calls": 61,
+      "calls": 64,
       "fileCount": 38,
       "files": [
         "apps/web/src/branding.ts",
@@ -50,7 +50,7 @@
     },
     {
       "api": "window.addEventListener",
-      "calls": 58,
+      "calls": 59,
       "fileCount": 32,
       "files": [
         "apps/web/src/browser/BrowserSurfaceSlot.tsx",
@@ -89,7 +89,7 @@
     },
     {
       "api": "window.removeEventListener",
-      "calls": 52,
+      "calls": 53,
       "fileCount": 30,
       "files": [
         "apps/web/src/browser/BrowserSurfaceSlot.tsx",
@@ -398,6 +398,20 @@
       ]
     },
     {
+      "api": "matchMedia",
+      "calls": 15,
+      "fileCount": 7,
+      "files": [
+        "apps/web/src/components/ChatView.tsx",
+        "apps/web/src/components/chat/draftHeroTransition.ts",
+        "apps/web/src/components/settings/settingsLayout.web.tsx",
+        "apps/web/src/hooks/useMediaQuery.ts",
+        "apps/web/src/hooks/useTheme.ts",
+        "apps/web/src/platform/clientCapabilities.web.ts",
+        "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
       "api": "document.addEventListener",
       "calls": 13,
       "fileCount": 9,
@@ -475,20 +489,6 @@
       ]
     },
     {
-      "api": "matchMedia",
-      "calls": 12,
-      "fileCount": 7,
-      "files": [
-        "apps/web/src/components/ChatView.tsx",
-        "apps/web/src/components/chat/draftHeroTransition.ts",
-        "apps/web/src/components/settings/settingsLayout.web.tsx",
-        "apps/web/src/hooks/useMediaQuery.ts",
-        "apps/web/src/hooks/useTheme.ts",
-        "apps/web/src/platform/clientCapabilities.web.ts",
-        "apps/web/src/terminal/ghostty/surface.ts"
-      ]
-    },
-    {
       "api": "window.matchMedia",
       "calls": 11,
       "fileCount": 6,
@@ -499,6 +499,19 @@
         "apps/web/src/hooks/useMediaQuery.ts",
         "apps/web/src/hooks/useTheme.ts",
         "apps/web/src/terminal/ghostty/surface.ts"
+      ]
+    },
+    {
+      "api": "window.innerWidth",
+      "calls": 10,
+      "fileCount": 6,
+      "files": [
+        "apps/web/src/components/AppSidebarLayout.tsx",
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/chat/ProviderModelPicker.tsx",
+        "apps/web/src/components/preview/PreviewPanelShell.tsx",
+        "apps/web/src/contextMenuFallback.ts",
+        "apps/web/src/platform/clientCapabilities.web.ts"
       ]
     },
     {
@@ -513,18 +526,6 @@
         "apps/web/src/lib/previewFocus.ts",
         "apps/web/src/lib/terminalFocus.ts",
         "apps/web/src/routes/settings.tsx"
-      ]
-    },
-    {
-      "api": "window.innerWidth",
-      "calls": 9,
-      "fileCount": 5,
-      "files": [
-        "apps/web/src/components/AppSidebarLayout.tsx",
-        "apps/web/src/components/ThreadTerminalDrawer.tsx",
-        "apps/web/src/components/chat/ProviderModelPicker.tsx",
-        "apps/web/src/components/preview/PreviewPanelShell.tsx",
-        "apps/web/src/contextMenuFallback.ts"
       ]
     },
     {
@@ -655,6 +656,17 @@
       ]
     },
     {
+      "api": "window.innerHeight",
+      "calls": 5,
+      "fileCount": 4,
+      "files": [
+        "apps/web/src/components/ThreadTerminalDrawer.tsx",
+        "apps/web/src/components/chat/ChatComposer.tsx",
+        "apps/web/src/contextMenuFallback.ts",
+        "apps/web/src/platform/clientCapabilities.web.ts"
+      ]
+    },
+    {
       "api": "document.keys",
       "calls": 4,
       "fileCount": 2,
@@ -668,16 +680,6 @@
         "apps/web/src/browser/ElectronBrowserHost.tsx",
         "apps/web/src/components/ThreadTerminalDrawer.tsx",
         "apps/web/src/components/settings/ProviderModelsSection.tsx"
-      ]
-    },
-    {
-      "api": "window.innerHeight",
-      "calls": 4,
-      "fileCount": 3,
-      "files": [
-        "apps/web/src/components/ThreadTerminalDrawer.tsx",
-        "apps/web/src/components/chat/ChatComposer.tsx",
-        "apps/web/src/contextMenuFallback.ts"
       ]
     },
     {

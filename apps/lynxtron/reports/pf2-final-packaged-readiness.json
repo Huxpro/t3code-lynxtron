@@ -1,0 +1,24 @@
+{
+  "ok": false,
+  "status": "failed",
+  "failure": "Timed out waiting for main transport semantic readiness",
+  "observed": {
+    "readySnapshotBytes": 264,
+    "largestProjectedConfigBytes": 15016,
+    "transport": "ready callback or initial state delivery did not complete in the packaged runtime",
+    "rendererProblem": "The UI remained Connecting and the semantic transport hook did not become ready",
+    "minimalConfigReproduction": "reproduced with empty providers and keybindings",
+    "runtimeUpgrade": "coordinated 0.0.21 upgrade with Rspeedy 0.17.1 / Rsbuild 2.2.3 / ReactLynx 0.124.0 completed; readiness still times out with a JSON callback parse error; the unrelated webpack font-resource error was removed"
+  },
+  "notes": [
+    "After removing provider splitting, push serialization, recursive array unwrapping, and bootstrap retries, the focused connector suite passes 39/39.",
+    "Lynx app, main, and browser-preview typechecks pass.",
+    "The full production build passes with the existing Effect import.meta warnings.",
+    "A fresh packaged readiness run after the coordinated 0.0.21 upgrade still timed out. No new bridge protocol experiment was introduced.",
+    "Computer Use verified the new 0.0.21 workspace window at 1280x852; it remains visibly Starting/Connecting.",
+    "Lynx DevTool resolved client localhost:8902, session 1, and the exact dist/desktop/main.lynx.bundle; the product hook reports transport unavailable and lastSeq -1.",
+    "A diagnostic run proved t3:connector.ready reaches main and returns a 264-byte JSON-serializable snapshot in 0ms; native reply delivery fails at the 20-second deadline.",
+    "The explicit -lynx-invoke/event.sendReply pattern used by Synara reproduced the same failure on this 0.0.21 runtime and was reverted.",
+    "This file replaces stale successful evidence and must not be treated as acceptance."
+  ]
+}

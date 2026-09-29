@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "commit": "5a82f65b8",
+  "viewport": { "width": 1280, "height": 820 },
+  "stateDir": "/tmp/t3code-oc2-nav.axQN5v",
+  "process": { "pid": 46893, "windowId": 64753, "devtoolClient": "localhost:8901", "sessionId": 1 },
+  "interactionChannel": "Computer Use exact-owned window",
+  "routeDiagnostic": "globalThis.__T3_LYNXTRON_ROUTE__()",
+  "flows": [
+    {
+      "actions": [
+        "Settings",
+        "Providers",
+        "Connections",
+        "Source Control",
+        "Beta",
+        "Archive",
+        "Back"
+      ],
+      "result": "pass"
+    },
+    { "actions": ["Settings", "Providers", "Back"], "result": "pass" }
+  ],
+  "sequencedUpdate": {
+    "action": "enable then restore Cursor provider in isolated state",
+    "routeBefore": "/settings/providers",
+    "routeAfter": "/settings/providers",
+    "sequenceBefore": 24,
+    "sequenceAfter": 34
+  },
+  "rendererConsoleProblems": []
+}

@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "rootPid": 67703,
+  "descendantPids": [67703, 67709, 67724, 67760, 67823, 67827, 67828, 67936],
+  "ownedPorts": [8901, 61595],
+  "clientId": "localhost:8901",
+  "sessionId": 1,
+  "bundleUrl": "file:///Users/bytedance/github/t3code/apps/lynxtron/dist/desktop/main.lynx.bundle",
+  "stateDir": "/var/folders/6d/hff_8tfd2qd94xs1r4jpbzwc0000gn/T/t3code-oc1-readiness-FCItLy",
+  "transport": {
+    "initial": {
+      "kind": "main",
+      "lastSeq": 12
+    },
+    "final": {
+      "kind": "main",
+      "lastSeq": 18
+    }
+  },
+  "canonicalUi": {
+    "project": "t3code",
+    "model": "Claude Fable 5",
+    "connecting": false
+  },
+  "branding": {
+    "stage": "Dev",
+    "identificationMode": "artwork",
+    "backdrop": "sidebar-stage-backdrop--dev",
+    "pill": null
+  },
+  "rendererConsoleProblems": []
+}

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "commit": "5a82f65b8",
+  "viewport": { "width": 1280, "height": 820 },
+  "sharedProjection": "packages/client-runtime/src/presentation/connectorLifecycle.ts",
+  "packagedFailureProof": {
+    "environment": "T3_LYNXTRON_WITHHOLD_CONNECTOR_BRIDGE=1",
+    "pid": 72179,
+    "windowId": 64945,
+    "visibleTitle": "Connection unavailable",
+    "visibleDetail": "Main-owned connector transport unavailable (typed bridge probe failed). The renderer cannot reach the backend.",
+    "action": "Connections",
+    "actionResult": "/settings/connections"
+  },
+  "readyProof": {
+    "runs": 3,
+    "bannerVisible": false,
+    "connectingVisible": false
+  },
+  "recoveryProof": {
+    "ownedAppPid": 87366,
+    "terminatedServerPid": 87424,
+    "errorTitle": "Connection unavailable",
+    "errorDetail": "Server exited (code=130 signal=null).",
+    "action": "Retry connection",
+    "replacementServerPid": 90891,
+    "routeAfterRecovery": "/",
+    "transportAfterRecovery": "main",
+    "sequenceAfterRecovery": 38,
+    "readyBannerVisibleAfterRecovery": false
+  },
+  "continuousAnimationAdded": false
+}

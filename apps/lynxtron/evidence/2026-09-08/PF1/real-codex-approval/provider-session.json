@@ -1,0 +1,10 @@
+[
+  {
+    "thread_id": "8f81df89-5247-4dac-8395-5b61b680e17b",
+    "provider_name": "codex",
+    "adapter_key": "codex",
+    "runtime_mode": "approval-required",
+    "status": "running",
+    "provider_instance_id": "codex"
+  }
+]

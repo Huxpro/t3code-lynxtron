@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "status": "in_progress",
+  "completed": [
+    "80-message canonical long-transcript fixture",
+    "shared follow-state reducer for follow, detach, threshold re-stick, jump-to-latest, thread reset, and new-turn anchoring",
+    "canonical message, reasoning, tool-error, proposed-plan, and assistant-output ordering",
+    "Markdown table, nested list, fenced code, external link, and relative-image fallback semantics",
+    "relative Markdown images retain alt text and source instead of silently disappearing"
+  ],
+  "verification": {
+    "focusedAggregate": "113/113 passed before the final mixed-order addition; PF3-specific aggregate 80/80 passed afterward",
+    "lynxAppTypecheck": "pass",
+    "lynxMainTypecheck": "pass",
+    "browserPreviewTypecheck": "pass",
+    "productionBuild": "pass with existing Effect import.meta warnings",
+    "browserRuntimeErrors": []
+  },
+  "evidence": {
+    "longTranscript": "evidence/2026-09-09/PF3/long-transcript/probe.json"
+  },
+  "boundaries": {
+    "approvalAndQuestions": "remain Composer intervention surfaces and are not duplicated as transcript rows",
+    "browserList": "Lynx Web mounts all 80 list-item nodes and does not implement Native initial-scroll-index",
+    "realInput": "synthetic DOM scroll is not accepted as R12 wheel/drag evidence"
+  },
+  "remaining": [
+    "Native list recycling and bounded-rendering acceptance",
+    "Native initial tail positioning",
+    "real wheel/drag detach and visible Jump-to-latest re-stick",
+    "selection/copy and supported link activation acceptance",
+    "remaining Markdown and canonical card visual parity",
+    "discrete accelerator phase-exit coverage"
+  ]
+}
