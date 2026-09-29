@@ -5,7 +5,37 @@ import path from "node:path";
 import { mkdtemp } from "node:fs/promises";
 import { describe, it } from "vitest";
 
-import { verifyPackagedCefRuntime } from "./cef-frameworks.mjs";
+import { selectCefMacBundles, verifyPackagedCefRuntime } from "./cef-frameworks.mjs";
+
+describe("CEF bundle selection", () => {
+  const manifest = {
+    platforms: {
+      lynxtron: {
+        targets: [
+          { os: "win32", arch: "x64", files: ["dist/win32/x64/cef_extension.node"] },
+          {
+            os: "darwin",
+            arch: "arm64",
+            files: ["dist/darwin/arm64/cef_extension.node"],
+            frameworks: ["dist/darwin/arm64/frameworks/Chromium Embedded Framework.framework"],
+            appBundles: ["dist/darwin/arm64/frameworks/LynxtronWebview Helper.app"],
+          },
+        ],
+      },
+    },
+  };
+
+  it("stages the declared framework and helper bundles for the matching target", () => {
+    assert.deepEqual(selectCefMacBundles(manifest, "darwin", "arm64"), [
+      "dist/darwin/arm64/frameworks/Chromium Embedded Framework.framework",
+      "dist/darwin/arm64/frameworks/LynxtronWebview Helper.app",
+    ]);
+  });
+
+  it("rejects a platform the package does not declare", () => {
+    assert.throws(() => selectCefMacBundles(manifest, "darwin", "x64"), /darwin\/x64 target/);
+  });
+});
 
 async function makeFramework(root, name, version) {
   const framework = path.join(root, `${name}.framework`);

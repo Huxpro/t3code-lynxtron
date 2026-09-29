@@ -61,8 +61,8 @@
   },
   "dependencies": {
     "@effect/atom-react": "catalog:",
-    "@lynx-js/cef-webview": "0.0.18",
-    "@lynx-js/lynxtron": "0.0.21",
+    "@lynx-js/cef-webview": "0.0.28",
+    "@lynx-js/lynxtron": "0.0.28",
     "@t3tools/client-runtime": "workspace:*",
     "@t3tools/contracts": "workspace:*",
     "@t3tools/shared": "workspace:*",
@@ -73,8 +73,8 @@
   "devDependencies": {
     "@lynx-js/config-rsbuild-plugin": "0.2.0",
     "@lynx-js/lynx-core": "0.1.4",
-    "@lynx-js/lynxtron-builder": "0.0.21",
-    "@lynx-js/lynxtron-dev-plugins": "0.0.21",
+    "@lynx-js/lynxtron-builder": "0.0.28",
+    "@lynx-js/lynxtron-dev-plugins": "0.0.28",
     "@lynx-js/react": "0.123.1",
     "@lynx-js/react-rsbuild-plugin": "0.18.1",
     "@lynx-js/rspeedy": "0.16.1",

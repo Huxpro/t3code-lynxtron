@@ -7,6 +7,25 @@ commit `97605a1b8` (the build with Components Lab, Terminal, and Browser
 surfaces). It deliberately does not use the older `5a82f65b` checkout as the
 product baseline.
 
+## 0.0.28 follow-up (2026-09-29)
+
+`@lynx-js/lynxtron`, `-builder`, `-dev-plugins`, and `@lynx-js/cef-webview`
+now all use 0.0.28. The installed devtool runtime is byte-identical to the
+upstream `v0.0.28` release archive (executable SHA-256 `dccabe34…0aea`).
+
+- The CEF archive installs and extracts on macOS arm64, so the 0.0.18
+  `cef-webview` exception below is removed.
+- CEF 0.0.28 renamed its helpers to `LynxtronWebview Helper*.app` and declares
+  its Framework and helper bundles in `lynx.lib.json`. `prepare:cef-runtime`
+  and the builder hooks now stage exactly the bundles that manifest declares
+  for the current target instead of a hard-coded helper list.
+- Production build passes. One fresh 1280 x 820 dark packaged-readiness run
+  reached `kind=main`, advanced the connector sequence from 3 to 5, rendered
+  the canonical thread title and model label, and reported zero renderer
+  errors.
+- The open-dialog and Command+A findings below were recorded on 0.0.21; they
+  are re-verified separately before any Plan 14 gate relies on them.
+
 ## Version changes
 
 | Package                                       | Before              | Current             | Status               |

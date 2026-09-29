@@ -1,10 +1,9 @@
-import { access, cp, lstat, mkdir, readlink, readdir, rm } from "node:fs/promises";
+import { access, cp, lstat, mkdir, readFile, readlink, readdir, rm } from "node:fs/promises";
 import path from "node:path";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const packageRoot = path.dirname(require.resolve("@lynx-js/cef-webview/package.json"));
-const source = path.join(packageRoot, "dist", process.platform, process.arch, "frameworks");
 
 async function exists(target) {
   try {
@@ -15,23 +14,36 @@ async function exists(target) {
   }
 }
 
+/**
+ * Returns the package-relative Framework and helper bundles that the CEF
+ * package's AutoLink manifest declares for one macOS target. The manifest is
+ * the same contract lynxtron-builder uses, so helper renames need no change here.
+ */
+export function selectCefMacBundles(manifest, platform, arch) {
+  const target = manifest?.platforms?.lynxtron?.targets?.find(
+    (candidate) => candidate.os === platform && candidate.arch === arch,
+  );
+  if (!target) throw new Error(`@lynx-js/cef-webview declares no ${platform}/${arch} target`);
+  const bundles = [...(target.frameworks ?? []), ...(target.appBundles ?? [])];
+  if (bundles.length === 0) {
+    throw new Error(`@lynx-js/cef-webview declares no ${platform}/${arch} bundles`);
+  }
+  return bundles;
+}
+
 export async function copyCefFrameworks(destination) {
   if (process.platform !== "darwin") return false;
-  if (!(await exists(source))) {
-    throw new Error(`CEF frameworks are missing at ${source}. Reinstall @lynx-js/cef-webview.`);
-  }
+  const manifest = JSON.parse(await readFile(path.join(packageRoot, "lynx.lib.json"), "utf8"));
+  const bundles = selectCefMacBundles(manifest, process.platform, process.arch);
   await mkdir(destination, { recursive: true });
-  for (const entry of [
-    "Chromium Embedded Framework.framework",
-    "Lynxtron Helper.app",
-    "Lynxtron Helper (Alerts).app",
-    "Lynxtron Helper (GPU).app",
-    "Lynxtron Helper (Plugin).app",
-    "Lynxtron Helper (Renderer).app",
-  ]) {
-    const target = path.join(destination, entry);
+  for (const bundle of bundles) {
+    const source = path.join(packageRoot, bundle);
+    if (!(await exists(source))) {
+      throw new Error(`CEF bundle is missing at ${source}. Reinstall @lynx-js/cef-webview.`);
+    }
+    const target = path.join(destination, path.basename(bundle));
     await rm(target, { recursive: true, force: true });
-    await cp(path.join(source, entry), target, { recursive: true, verbatimSymlinks: true });
+    await cp(source, target, { recursive: true, verbatimSymlinks: true });
   }
   return true;
 }

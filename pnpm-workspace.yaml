@@ -77,9 +77,9 @@ minimumReleaseAgeExclude:
   - "@effect/vitest@4.0.0-beta.102"
   - alchemy@2.0.0-beta.65
   - effect@4.0.0-beta.102
-  - "@lynx-js/lynxtron-builder@0.0.21"
-  - "@lynx-js/lynxtron-dev-plugins@0.0.21"
-  - "@lynx-js/lynxtron@0.0.21"
+  - "@lynx-js/lynxtron-builder@0.0.28"
+  - "@lynx-js/lynxtron-dev-plugins@0.0.28"
+  - "@lynx-js/lynxtron@0.0.28"
 
 overrides:
   "@clerk/backend": "catalog:"

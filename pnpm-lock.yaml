@@ -179,11 +179,11 @@ importers:
         specifier: 4.0.0-beta.102
         version: 4.0.0-beta.102(effect@4.0.0-beta.102(patch_hash=71215759e1ac0a7f65d7b75d816986687ae6c3a6cba02d928d184ca71790d488))(react@19.2.6)(scheduler@0.27.0)
       '@lynx-js/cef-webview':
-        specifier: 0.0.18
-        version: 0.0.18
+        specifier: 0.0.28
+        version: 0.0.28
       '@lynx-js/lynxtron':
-        specifier: 0.0.21
-        version: 0.0.21
+        specifier: 0.0.28
+        version: 0.0.28
       '@t3tools/client-runtime':
         specifier: workspace:*
         version: link:../../packages/client-runtime
@@ -210,11 +210,11 @@ importers:
         specifier: 0.1.4
         version: 0.1.4
       '@lynx-js/lynxtron-builder':
-        specifier: 0.0.21
-        version: 0.0.21(electron-builder-squirrel-windows@26.13.0)
+        specifier: 0.0.28
+        version: 0.0.28(electron-builder-squirrel-windows@26.13.0)
       '@lynx-js/lynxtron-dev-plugins':
-        specifier: 0.0.21
-        version: 0.0.21(@rsbuild/core@2.1.5(core-js@3.47.0))
+        specifier: 0.0.28
+        version: 0.0.28(@rsbuild/core@2.1.5(core-js@3.47.0))
       '@lynx-js/react':
         specifier: 0.123.1
         version: 0.123.1(@lynx-js/types@4.1.0)(@types/react@19.2.16)
@@ -1982,6 +1982,7 @@ packages:
 
   '@distilled.cloud/cloudflare-rolldown-plugin@0.13.10':
     resolution: {integrity: sha512-UO9wjepZWYupWMf/KYKY7LUueHNawdp0qBGc9z3XYxjodrQaMwFQWtIGG1yWOHjTWl1BUx86A69hyB8kHYRAeA==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       rolldown: ^1.1.5
       vite: ^7.0.0 || ^8.0.0
@@ -2006,6 +2007,7 @@ packages:
 
   '@distilled.cloud/cloudflare-vite-plugin@0.13.10':
     resolution: {integrity: sha512-O8lvG48OQcRkjwkCPUGdEGTtDuaKBlZWIMy+yTCAUnte/8rvixIxUj/PMX6lx4Prj2tx/ciqjRHl9qjtHL8KWA==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
     peerDependencies:
       '@distilled.cloud/cloudflare': ^0.29.0
       '@distilled.cloud/cloudflare-runtime': 0.13.10
@@ -3402,8 +3404,8 @@ packages:
     resolution: {integrity: sha512-BclJ0H6tEdI0ZX0YrxNqRLuVcUvm5SyHxgLvvCHUWwRWlYc37xewv2sQTdPHNipNbmq9xvrNuauJIDucdjOouw==}
     engines: {node: '>=18'}
 
-  '@lynx-js/cef-webview@0.0.18':
-    resolution: {integrity: sha512-hHsyiyDoR5oqKkz2hMjpOFs3vFPSMKnkgQ2WigGL551TwVCVqB8NBsNOqx0Qgrsso/3w4YqYnPnYsRgmBVKFIg==}
+  '@lynx-js/cef-webview@0.0.28':
+    resolution: {integrity: sha512-OdO8rVwpMnXx/Ganu3yZNsJOWzVdVu4ZSuXerkwUQ9XT8d7WqMbehKarFeVIjtAmSaEYHzgdcConse84KePanQ==}
     engines: {node: ^22.18.0 || ^24.0.0 || ^26.0.0}
 
   '@lynx-js/chunk-loading-webpack-plugin@0.4.2':
@@ -3448,20 +3450,20 @@ packages:
   '@lynx-js/lynx-core@0.1.4':
     resolution: {integrity: sha512-JxpAoDhpR8dJ6PFR2KOsFQyWt6SKiU+Bp701/miy5exqZHd+SlCd3UCfMtJy3nRlz3gy1O1xsObK7+x+jArdAQ==}
 
-  '@lynx-js/lynxtron-builder@0.0.21':
-    resolution: {integrity: sha512-C7aGJ+hSNKpsh835LLKhJOb+/rWWr4R6v54BB06URVHC5BH+KtPXMfGtvfo5X0nhghKa/j4yc0sKXKTxVUt/RQ==}
+  '@lynx-js/lynxtron-builder@0.0.28':
+    resolution: {integrity: sha512-EPQhLTpJOdVlbCh3+lFZECaZYBq3ahQt9mcvzL4rAj5AqaR3B5eUL6yJFlRpP2inxCfk3s1vwtyEHU0FJ6rouw==}
     engines: {node: ^22.18.0 || ^24.0.0 || ^26.0.0}
     hasBin: true
 
-  '@lynx-js/lynxtron-dev-plugins@0.0.21':
-    resolution: {integrity: sha512-A/XAS0Iq9qfJZGxsHG6bu/UJ2T9vyTU2+5trtfkrAEuUGvEJinMCGy2bIuOI62bQx+kRAzsnvCWqaMshEaRfBQ==}
+  '@lynx-js/lynxtron-dev-plugins@0.0.28':
+    resolution: {integrity: sha512-b+ZWvaJaFxQx47nA4pmdLllF+T5cpZJAYZjlcBBs3HYsvwLS9tmk9SFTf2xK1ybkPrV5qBBBYKu74F2WdAAyww==}
     engines: {node: ^22.18.0 || ^24.0.0 || ^26.0.0}
     hasBin: true
     peerDependencies:
       '@rsbuild/core': ^2.1.5
 
-  '@lynx-js/lynxtron@0.0.21':
-    resolution: {integrity: sha512-ndBXBYS5iK61fC2Ihy7/FmQvtNQVMU7AwbUG4cy31Kv36u1YtXE1kQUI+9iY3Mx8d+9LivLDHt/QRO+9+3guQw==}
+  '@lynx-js/lynxtron@0.0.28':
+    resolution: {integrity: sha512-Ab4nJ7lh94J3oZIbgGQmcbpzg1Y1NDkP/uaFIy1ucU06qowO4btPKq9L39FP8bL3ZPIkg/SAkEwCtP+35JkYlA==}
     engines: {node: ^22.18.0 || ^24.0.0 || ^26.0.0}
     hasBin: true
 
@@ -15963,7 +15965,7 @@ snapshots:
     dependencies:
       '@lynx-js/webpack-runtime-globals': 0.0.8
 
-  '@lynx-js/cef-webview@0.0.18':
+  '@lynx-js/cef-webview@0.0.28':
     dependencies:
       js-yaml: 4.2.0
       node-fetch: 3.3.2
@@ -16001,7 +16003,7 @@ snapshots:
 
   '@lynx-js/lynx-core@0.1.4': {}
 
-  '@lynx-js/lynxtron-builder@0.0.21(electron-builder-squirrel-windows@26.13.0)':
+  '@lynx-js/lynxtron-builder@0.0.28(electron-builder-squirrel-windows@26.13.0)':
     dependencies:
       '@electron/universal': 1.5.1
       app-builder-lib: 26.13.0(patch_hash=384be5f92c9f4eb15aa506b508157a19abefc167046204a020913cd6ee53fda0)(dmg-builder@26.13.0)(electron-builder-squirrel-windows@26.13.0)
@@ -16013,12 +16015,12 @@ snapshots:
       - electron-builder-squirrel-windows
       - supports-color
 
-  '@lynx-js/lynxtron-dev-plugins@0.0.21(@rsbuild/core@2.1.5(core-js@3.47.0))':
+  '@lynx-js/lynxtron-dev-plugins@0.0.28(@rsbuild/core@2.1.5(core-js@3.47.0))':
     dependencies:
       '@rsbuild/core': 2.1.5(core-js@3.47.0)
       cross-spawn: 7.0.6
 
-  '@lynx-js/lynxtron@0.0.21':
+  '@lynx-js/lynxtron@0.0.28':
     dependencies:
       node-fetch: 3.3.2
       proper-lockfile: 4.1.2
