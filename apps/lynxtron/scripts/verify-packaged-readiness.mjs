@@ -8196,6 +8196,171 @@ async function verifyCheckpointRevertLive({
   };
 }
 
+// Plan 14 M6: the supported Lynx terminal runs real shell sessions. Open the
+// panel, run a command, split into two sessions and see the PTY shrink, close
+// the split, and close then reopen the panel onto a fresh session.
+async function verifyTerminalLifecycle({ child, client, timeoutMs }) {
+  const token = `t3-term-${Date.now().toString(36)}`;
+  const outputs = async () =>
+    (await readSelectorMeasurements(client, ".terminal-panel__output")).map((node) => node.text);
+  const waitForOutput = async (predicate, label) => {
+    const deadline = Date.now() + timeoutMs;
+    let latest = [];
+    while (Date.now() < deadline) {
+      latest = await outputs();
+      if (predicate(latest)) return latest;
+      await waitForChildExit(child, 200);
+    }
+    throw new Error(`Terminal never showed ${label}: ${JSON.stringify(latest)}`);
+  };
+  const run = async (command) => {
+    const typed = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_TERMINAL_COMMAND_FIXTURE__?.(${JSON.stringify(command)}) ?? false`,
+      returnByValue: true,
+    });
+    if (commandResult(typed)?.value !== true) throw new Error("Terminal command probe is missing.");
+    await tapSelectorByAttribute({
+      attribute: "aria-label",
+      child,
+      client,
+      selector: ".terminal-panel__run",
+      timeoutMs,
+      value: "Run terminal command",
+    });
+  };
+  const panelState = (predicate) =>
+    waitForMeasurement({ child, client, selector: ".terminal-panel", timeoutMs, predicate });
+  const colsFrom = (texts, marker) => {
+    const match = texts.join("\n").match(new RegExp(`${marker}=(\\d+)`, "u"));
+    return match ? Number(match[1]) : null;
+  };
+
+  await tapSelector({ child, client, selector: ".topbar__toggle--terminal", timeoutMs });
+  const opened = await panelState(
+    (panel) => panel?.attributes["data-terminal-session-status"] === "running",
+  );
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression: "typeof globalThis.__T3_LYNXTRON_TERMINAL_COMMAND_FIXTURE__",
+    predicate: (value) => value === "function",
+    timeoutMs,
+  });
+  await run(`echo ${token}-out; echo cols-before=$(tput cols)`);
+  const firstOutput = await waitForOutput(
+    (texts) =>
+      texts.some((text) => text.includes(`${token}-out`)) &&
+      colsFrom(texts, "cols-before") !== null,
+    "the echoed token",
+  );
+  const colsBefore = colsFrom(firstOutput, "cols-before");
+
+  await tapSelectorByAttribute({
+    attribute: "aria-label",
+    child,
+    client,
+    selector: ".terminal-panel__session-split",
+    timeoutMs,
+    value: "Split terminal horizontally",
+  });
+  const split = await panelState(
+    (panel) =>
+      panel?.attributes["data-terminal-session-count"] === "2" &&
+      panel.attributes["data-terminal-split"] !== "none",
+  );
+  const viewports = await waitForOutput((texts) => texts.length >= 2, "two split viewports");
+  // The first session is still addressable: activate it and read its size.
+  await tapSelectorByAttribute({
+    attribute: "aria-label",
+    child,
+    client,
+    selector: ".terminal-panel__session",
+    timeoutMs,
+    value: "Activate Terminal 1",
+  });
+  await run("echo cols-after=$(tput cols)");
+  const splitOutput = await waitForOutput(
+    (texts) => colsFrom(texts, "cols-after") !== null,
+    "the resized column count",
+  );
+  const colsAfter = colsFrom(splitOutput, "cols-after");
+  if (!(colsBefore > colsAfter)) {
+    throw new Error(`Split did not resize the PTY: ${JSON.stringify({ colsBefore, colsAfter })}`);
+  }
+
+  await tapSelectorByAttribute({
+    attribute: "aria-label",
+    child,
+    client,
+    selector: ".terminal-panel__session-close",
+    timeoutMs,
+    value: "Close Terminal 2",
+  });
+  await panelState((panel) => panel?.attributes["data-terminal-session-count"] === "1");
+
+  // Hiding the right panel keeps the session, like Web's terminal drawer.
+  await tapSelector({ child, client, selector: ".right-panel__layout-control--close", timeoutMs });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".terminal-panel",
+    timeoutMs,
+    predicate: (panel) => panel === null,
+  });
+  await tapSelector({ child, client, selector: ".topbar__toggle--terminal", timeoutMs });
+  await panelState((panel) => panel?.attributes["data-terminal-session-status"] === "running");
+  await waitForOutput(
+    (texts) => texts.some((text) => text.includes(`${token}-out`)),
+    "the kept session history after reopening",
+  );
+
+  // Closing the terminal tab ends the session; opening again starts clean.
+  await tapSelectorByAttribute({
+    attribute: "aria-label",
+    child,
+    client,
+    selector: ".right-panel-tab__close",
+    timeoutMs,
+    value: "Close Terminal 1",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".terminal-panel",
+    timeoutMs,
+    predicate: (panel) => panel === null,
+  });
+  await tapSelector({ child, client, selector: ".topbar__toggle--terminal", timeoutMs });
+  const reopened = await panelState(
+    (panel) => panel?.attributes["data-terminal-session-status"] === "running",
+  );
+  const reopenedOutput = await outputs();
+  if (reopenedOutput.some((text) => text.includes(`${token}-out`))) {
+    throw new Error("A terminal reopened after closing its tab kept the closed session's history.");
+  }
+
+  return {
+    status: "pass",
+    input:
+      "DevTool taps on terminal controls; command text through the probe-only setter the input's bindinput uses",
+    opened: { status: opened.attributes["data-terminal-session-status"], rect: opened.rect },
+    output: { token: `${token}-out`, colsBefore },
+    split: {
+      direction: split.attributes["data-terminal-split"],
+      sessions: 2,
+      viewports: viewports.length,
+      colsAfter,
+    },
+    closeSplit: { sessions: 1 },
+    hideAndReopen: { historyKept: true },
+    closeTabAndReopen: {
+      status: reopened.attributes["data-terminal-session-status"],
+      historyCleared: true,
+    },
+    physicalKeyboard: "pending-user-session",
+  };
+}
+
 async function verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs }) {
   // Shared formatWorkspaceRelativePath prefixes the workspace folder name.
   const relativePath = `${path.basename(projectCwd)}/src/greet.ts`;
@@ -15308,6 +15473,7 @@ async function runOnce({
       ...(shouldVerifyCheckpointRevertLive
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "confirm" }
         : {}),
+      ...(shouldVerifyTerminalLifecycle ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
       ...(shouldVerifyLinkContextMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
@@ -15830,6 +15996,9 @@ async function runOnce({
     const linkContextMenu = shouldVerifyLinkContextMenu
       ? await verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs })
       : undefined;
+    const terminalLifecycle = shouldVerifyTerminalLifecycle
+      ? await verifyTerminalLifecycle({ child, client, timeoutMs })
+      : undefined;
     const checkpointRevertLive = shouldVerifyCheckpointRevertLive
       ? await verifyCheckpointRevertLive({
           child,
@@ -16169,6 +16338,7 @@ async function runOnce({
       linkContextMenu,
       checkpointRevert,
       checkpointRevertLive,
+      terminalLifecycle,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -16251,6 +16421,7 @@ async function runOnce({
       linkContextMenu,
       checkpointRevert,
       checkpointRevertLive,
+      terminalLifecycle,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -16380,6 +16551,7 @@ const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transc
 const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context-menu");
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
+const shouldVerifyTerminalLifecycle = process.argv.includes("--verify-terminal-lifecycle");
 const shouldVerifyTranscriptIncomingGrowth = process.argv.includes(
   "--verify-transcript-incoming-growth",
 );

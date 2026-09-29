@@ -15,6 +15,7 @@ import {
   splitTerminalSession,
 } from "./terminalSessions.logic";
 import { Icon } from "./Icon";
+import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 
 function inputValue(event: unknown): string {
   const input = event as {
@@ -61,6 +62,21 @@ export function TerminalPanel({
     [height, selection.splitDirection, width],
   );
   const resizedGridRef = useRef<string | null>(null);
+  const viewport = useViewportSnapshot();
+  useEffect(() => {
+    // Probe runs type commands through the same state the input's bindinput sets.
+    if (!viewport.testResize) return;
+    const diagnosticsGlobal = globalThis as {
+      __T3_LYNXTRON_TERMINAL_COMMAND_FIXTURE__?: (value: string) => boolean;
+    };
+    diagnosticsGlobal.__T3_LYNXTRON_TERMINAL_COMMAND_FIXTURE__ = (value) => {
+      setCommand(value);
+      return true;
+    };
+    return () => {
+      delete diagnosticsGlobal.__T3_LYNXTRON_TERMINAL_COMMAND_FIXTURE__;
+    };
+  }, [viewport.testResize]);
 
   useEffect(() => {
     setCommand("");

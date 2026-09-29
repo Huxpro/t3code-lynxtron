@@ -86,7 +86,7 @@ export function RightPanelTabSurface({
       <HostButton
         type="button"
         className={cn(
-          "relative flex size-4 shrink-0 items-center justify-center rounded hover:bg-muted focus:opacity-100",
+          "right-panel-tab__close relative flex size-4 shrink-0 items-center justify-center rounded hover:bg-muted focus:opacity-100",
           closeVisibilityClass,
         )}
         aria-label={`Close ${title}`}

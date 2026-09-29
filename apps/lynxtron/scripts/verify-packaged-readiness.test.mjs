@@ -417,6 +417,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"native-model-selection-after.png"');
   });
 
+  it("verifies the terminal session lifecycle", () => {
+    assert.include(source, "async function verifyTerminalLifecycle");
+    assert.include(source, '"--verify-terminal-lifecycle"');
+    assert.include(source, "__T3_LYNXTRON_TERMINAL_COMMAND_FIXTURE__");
+    assert.include(source, 'selector: ".right-panel-tab__close"');
+  });
+
   it("verifies a live checkpoint revert restores thread, timeline, and workspace", () => {
     assert.include(source, "async function verifyCheckpointRevertLive");
     assert.include(source, '"--verify-checkpoint-revert-live"');
