@@ -417,6 +417,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"native-model-selection-after.png"');
   });
 
+  it("verifies checkpoint revert cancellation and refusal without state drift", () => {
+    assert.include(source, "async function verifyCheckpointRevert");
+    assert.include(source, '"--verify-checkpoint-revert"');
+    assert.include(source, 'T3_TEST_CONFIRM_ANSWERS: "cancel,confirm"');
+    assert.include(source, '"Checkpoint revert failed"');
+  });
+
   it("verifies the runtime permission menu dismisses without changing value", () => {
     assert.include(source, "async function verifyRuntimeMenuDismiss");
     assert.include(source, '"--verify-runtime-menu-dismiss"');

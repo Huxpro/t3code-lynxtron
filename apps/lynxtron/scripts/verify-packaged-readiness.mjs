@@ -7876,6 +7876,127 @@ async function verifyCompletedTranscriptState({ child, client, devToolCli, outpu
  * Copy Link, and records copies instead of touching the system clipboard. The
  * file copy must raise the shared toast.
  */
+// Plan 14 M5: revert a completed turn from its user message. The first
+// confirmation is cancelled and must change nothing. The second is confirmed
+// on a projection fixture with no provider session, so the server refuses it:
+// the refusal must be visible while the thread, timeline, and workspace stay put.
+async function verifyCheckpointRevert({
+  child,
+  client,
+  log,
+  projectCwd,
+  reviewFixture,
+  timeoutMs,
+}) {
+  const checkpoint = reviewFixture.checkpoint;
+  const fixturePath = path.join(projectCwd, checkpoint.files[0].path);
+  const baselineRef = checkpoint.checkpointRef.replace(/\/turn\/\d+$/u, "/turn/0");
+  const readGitFile = (ref) =>
+    spawnSync("git", ["-C", projectCwd, "show", `${ref}:${checkpoint.files[0].path}`], {
+      encoding: "utf8",
+    }).stdout;
+  // The workspace starts where the agent left it: the completed turn's tree.
+  const checkout = spawnSync(
+    "git",
+    ["-C", projectCwd, "checkout", checkpoint.checkpointRef, "--", "."],
+    {
+      encoding: "utf8",
+    },
+  );
+  if (checkout.status !== 0) throw new Error(`Could not stage the turn tree: ${checkout.stderr}`);
+  const turnContent = readFileSync(fixturePath, "utf8");
+  if (turnContent === readGitFile(baselineRef)) {
+    throw new Error("Revert fixture needs a turn that changes the first file.");
+  }
+  const before = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === reviewFixture.threadId &&
+      state?.latestTurn?.state === "completed" &&
+      (state?.messages?.length ?? 0) >= 2,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".turn-diff-card",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurement?.attributes["data-review-turn-id"] === checkpoint.turnId,
+  });
+  const tapRevert = () =>
+    tapSelectorByAttribute({
+      attribute: "aria-label",
+      child,
+      client,
+      selector: ".transcript-message-meta__action",
+      timeoutMs,
+      value: "Revert to this message",
+    });
+  const expectedTitle = `Revert this thread to checkpoint ${checkpoint.checkpointTurnCount - 1}?`;
+
+  await tapRevert();
+  await waitForLogText(child, log, '"answer":"cancel"', timeoutMs);
+  const cancelled = await readClientState(client);
+  if (
+    cancelled?.messages?.length !== before.messages.length ||
+    readFileSync(fixturePath, "utf8") !== turnContent
+  ) {
+    throw new Error(
+      `Cancelled revert changed the thread or workspace: ${JSON.stringify(cancelled)}`,
+    );
+  }
+
+  await tapRevert();
+  await waitForLogText(child, log, '"answer":"confirm"', timeoutMs);
+  // A projection fixture has no provider session, so the server refuses the
+  // revert. The refusal must be visible and nothing may move.
+  const failureDeadline = Date.now() + timeoutMs;
+  let failureRow = null;
+  while (Date.now() < failureDeadline && !failureRow) {
+    const rows = await readSelectorMeasurements(client, "[data-timeline-row-kind]");
+    failureRow = rows.find((row) => row.text.includes("Checkpoint revert failed")) ?? null;
+    if (!failureRow) await waitForChildExit(child, 200);
+  }
+  if (!failureRow) throw new Error("The refused revert never surfaced in the transcript.");
+  const afterFailure = await readClientState(client);
+  const card = await readOptionalMeasurement(client, ".turn-diff-card");
+  if (
+    afterFailure?.messages?.length !== before.messages.length ||
+    card === null ||
+    readFileSync(fixturePath, "utf8") !== turnContent
+  ) {
+    throw new Error(
+      `Refused revert left UI and canonical state disagreeing: ${JSON.stringify({
+        messages: afterFailure?.messages?.length,
+        card: card !== null,
+      })}`,
+    );
+  }
+  const prompts = log
+    .read()
+    .split("\n")
+    .filter((line) => line.includes("[confirm-probe]"))
+    .map((line) => JSON.parse(line.slice(line.indexOf("{"))));
+  if (prompts.some((prompt) => prompt.message !== expectedTitle)) {
+    throw new Error(`Revert confirmation copy drifted: ${JSON.stringify(prompts)}`);
+  }
+
+  return {
+    status: "pass",
+    input: "DevTool tap on the user message Revert action; probe confirm answers cancel, confirm",
+    prompts,
+    messageCount: {
+      before: before.messages.length,
+      afterCancel: cancelled.messages.length,
+      afterRefusedRevert: afterFailure.messages.length,
+    },
+    refusal: { row: failureRow.text.trim().slice(0, 200), checkpointCardKept: true },
+    workspace: { file: checkpoint.files[0].path, unchanged: true },
+  };
+}
+
 async function verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs }) {
   // Shared formatWorkspaceRelativePath prefixes the workspace folder name.
   const relativePath = `${path.basename(projectCwd)}/src/greet.ts`;
@@ -14958,6 +15079,9 @@ async function runOnce({
       ...(shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney
         ? { T3_TEST_SEND_PROMPT_ERROR_ONCE: "1" }
         : {}),
+      ...(shouldVerifyCheckpointRevert
+        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm" }
+        : {}),
       ...(shouldVerifyLinkContextMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
@@ -15470,6 +15594,9 @@ async function runOnce({
     const linkContextMenu = shouldVerifyLinkContextMenu
       ? await verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs })
       : undefined;
+    const checkpointRevert = shouldVerifyCheckpointRevert
+      ? await verifyCheckpointRevert({ child, client, log, projectCwd, reviewFixture, timeoutMs })
+      : undefined;
     const failedTranscriptState = shouldVerifyFailedTranscriptState
       ? await verifyFailedTranscriptState({
           child,
@@ -15790,6 +15917,7 @@ async function runOnce({
       completedTranscriptState,
       transcriptFollowState,
       linkContextMenu,
+      checkpointRevert,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -15868,6 +15996,7 @@ async function runOnce({
       completedTranscriptState,
       transcriptFollowState,
       linkContextMenu,
+      checkpointRevert,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -15995,6 +16124,7 @@ const shouldVerifyCompletedTranscriptState = process.argv.includes(
 );
 const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transcript-follow-state");
 const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context-menu");
+const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyTranscriptIncomingGrowth = process.argv.includes(
   "--verify-transcript-incoming-growth",
 );
@@ -16244,6 +16374,7 @@ const reviewFixture = fixtureManifest.reviewFixture;
 if (
   (shouldVerifyReviewDiffState ||
     shouldVerifyReviewCheckpointStates ||
+    shouldVerifyCheckpointRevert ||
     shouldVerifyDiffScopeMenu) &&
   (typeof reviewFixture?.threadId !== "string" ||
     typeof reviewFixture?.title !== "string" ||
@@ -16295,6 +16426,7 @@ const canonicalThreadTitle = shouldVerifyIdleThreadState
       ? fixtureManifest.pendingRequestFixture.title
       : shouldVerifyReviewDiffState ||
           shouldVerifyReviewCheckpointStates ||
+          shouldVerifyCheckpointRevert ||
           shouldVerifyDiffScopeMenu
         ? reviewFixture.title
         : fixtureManifest.sidebarFixture?.titles?.[0];
@@ -16389,6 +16521,7 @@ const modelSelection = shouldVerifyIdleThreadState
       ? fixtureManifest.pendingRequestFixture.modelSelection
       : shouldVerifyReviewDiffState ||
           shouldVerifyReviewCheckpointStates ||
+          shouldVerifyCheckpointRevert ||
           shouldVerifyDiffScopeMenu
         ? reviewFixture.modelSelection
         : JSON.parse(readFileSync(path.join(fixtureDir, "lynxtron-prefs.json"), "utf8"))

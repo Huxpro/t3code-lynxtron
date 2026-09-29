@@ -1,7 +1,11 @@
 import { describe, expect, it, vi } from "vite-plus/test";
 
 import { T3_CLIPBOARD_WRITE_TEXT_METHOD, T3_CONFIRM_METHOD } from "../../shared/capabilityProtocol";
-import { startClipboardCapabilityHost, startConfirmCapabilityHost } from "./capabilityHost";
+import {
+  createProbeConfirm,
+  startClipboardCapabilityHost,
+  startConfirmCapabilityHost,
+} from "./capabilityHost";
 
 describe("startClipboardCapabilityHost", () => {
   it("registers the typed clipboard handler and disposes it", () => {
@@ -75,5 +79,18 @@ describe("startConfirmCapabilityHost", () => {
 
     host.dispose();
     expect(removeHandler).toHaveBeenCalledWith(T3_CONFIRM_METHOD);
+  });
+});
+
+describe("createProbeConfirm", () => {
+  it("answers from the queue, logs each prompt, and cancels once exhausted", async () => {
+    const lines: string[] = [];
+    const confirm = createProbeConfirm("cancel, confirm", (line) => lines.push(line));
+    const input = { message: "Revert?", detail: "Cannot be undone.", confirmLabel: "Revert" };
+
+    expect(await confirm(input)).toBe(false);
+    expect(await confirm(input)).toBe(true);
+    expect(await confirm(input)).toBe(false);
+    expect(lines[1]).toBe(`[confirm-probe] ${JSON.stringify({ ...input, answer: "confirm" })}`);
   });
 });

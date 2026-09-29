@@ -31,7 +31,11 @@ import {
   T3_MENU_CLICK_FOR_TEST_METHOD,
   T3_RELOAD_FOR_TEST_METHOD,
 } from "../../shared/viewportProtocol.ts";
-import { startClipboardCapabilityHost, startConfirmCapabilityHost } from "./capabilityHost.ts";
+import {
+  createProbeConfirm,
+  startClipboardCapabilityHost,
+  startConfirmCapabilityHost,
+} from "./capabilityHost.ts";
 import {
   createProbeContextMenuBuilder,
   startContextMenuCapabilityHost,
@@ -332,18 +336,20 @@ app.whenReady().then(() => {
       },
       removeHandler: (method) => lynxBridge.removeHandler(method),
     },
-    async ({ message, detail, confirmLabel }) => {
-      const result = await dialog.showMessageBox(win as never, {
-        type: "warning",
-        title: "T3 Code",
-        message,
-        ...(detail ? { detail } : {}),
-        buttons: [confirmLabel ?? "Confirm", "Cancel"],
-        defaultId: 1,
-        cancelId: 1,
-      });
-      return result.response === 0;
-    },
+    process.env.T3_LYNXTRON_VIEWPORT_PROBE === "1" && process.env.T3_TEST_CONFIRM_ANSWERS
+      ? createProbeConfirm(process.env.T3_TEST_CONFIRM_ANSWERS, (line) => console.log(line))
+      : async ({ message, detail, confirmLabel }) => {
+          const result = await dialog.showMessageBox(win as never, {
+            type: "warning",
+            title: "T3 Code",
+            message,
+            ...(detail ? { detail } : {}),
+            buttons: [confirmLabel ?? "Confirm", "Cancel"],
+            defaultId: 1,
+            cancelId: 1,
+          });
+          return result.response === 0;
+        },
   );
   win.on("closed", () => confirmCapabilityHost.dispose());
   const contextMenuCapabilityHost = startContextMenuCapabilityHost(

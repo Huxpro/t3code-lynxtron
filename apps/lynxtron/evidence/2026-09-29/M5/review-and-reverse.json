@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "phase": "Plan 14 M5",
+  "observedAt": "2026-09-29",
+  "runtime": "@lynx-js/lynxtron@0.0.28",
+  "viewport": "1280x820",
+  "launch": "background (T3_LYNXTRON_BACKGROUND=1; front app unchanged)",
+  "bundle": {
+    "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "bytes": 6956512,
+    "sha256": "ed47b007d48bb27c6b6e4ecbb71df35b97adfdab4cd933888985d91979496ef5"
+  },
+  "legs": {
+    "checkpointRevertCancelAndRefusal": {
+      "status": "pass",
+      "input": "DevTool tap on the user message Revert action; probe confirm answers cancel, confirm",
+      "prompts": [
+        {
+          "message": "Revert this thread to checkpoint 0?",
+          "detail": "This will discard newer messages and turn diffs in this thread. This action cannot be undone.",
+          "confirmLabel": "Revert",
+          "answer": "cancel"
+        },
+        {
+          "message": "Revert this thread to checkpoint 0?",
+          "detail": "This will discard newer messages and turn diffs in this thread. This action cannot be undone.",
+          "confirmLabel": "Revert",
+          "answer": "confirm"
+        }
+      ],
+      "messageCount": {
+        "before": 2,
+        "afterCancel": 2,
+        "afterRefusedRevert": 2
+      },
+      "refusal": {
+        "row": "Checkpoint revert failedNo active provider session with workspace cwd is bound to this thread.",
+        "checkpointCardKept": true
+      },
+      "workspace": {
+        "file": "review-fixture.txt",
+        "unchanged": true
+      }
+    },
+    "reviewDiffState": {
+      "status": "pass",
+      "note": "Passes on an isolated multi-file workspace; the earlier failure came from two fixtures sharing one workspace checkpoint ref."
+    }
+  },
+  "open": [
+    "Successful revert needs a real provider session (the server rolls back the provider conversation); run it on a live OpenCode turn.",
+    "Expanded checkpoint card is 82px vs a Native-only 79px pin from 0.0.21; needs a Web reference before re-pinning."
+  ]
+}
