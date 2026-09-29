@@ -41,6 +41,10 @@ import {
 import { createPortal } from "react-dom";
 import { deriveComposerControlState } from "@t3tools/client-runtime/presentation/composer";
 import {
+  composerImagePreparationErrorMessage,
+  planComposerImageAdditions,
+} from "@t3tools/client-runtime/presentation/draft-thread";
+import {
   clampCollapsedComposerCursor,
   type ComposerTrigger,
   collapseExpandedComposerCursor,
@@ -2317,13 +2321,6 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
   // ------------------------------------------------------------------
   const addComposerImages = async (files: File[]) => {
     if (!activeThreadId || files.length === 0) return;
-    if (pendingUserInputs.length > 0) {
-      toastManager.add({
-        type: "error",
-        title: "Attach images after answering plan questions.",
-      });
-      return;
-    }
     // Captured before the awaits below: the user may switch threads while a
     // large image is being compressed, and the attachments and errors belong
     // to the thread the paste happened in.
@@ -2333,22 +2330,17 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     // accepted files reserve their attachment slots (via the pending counter)
     // before the first await, keeping the total under the limit.
     const pendingCount = pendingImageCompressionsRef.current.get(threadId) ?? 0;
-    let reservedCount = composerImagesRef.current.length + pendingCount;
-    const acceptedFiles: File[] = [];
-    let error: string | null = null;
-    for (const file of files) {
-      if (!file.type.startsWith("image/")) {
-        error = `Unsupported file type for '${file.name}'. Please attach image files only.`;
-        continue;
-      }
-      if (reservedCount >= PROVIDER_SEND_TURN_MAX_ATTACHMENTS) {
-        error = `You can attach up to ${PROVIDER_SEND_TURN_MAX_ATTACHMENTS} images per message.`;
-        break;
-      }
-      acceptedFiles.push(file);
-      reservedCount += 1;
+    const plan = planComposerImageAdditions({
+      candidates: files.map((file) => ({ file, name: file.name, mimeType: file.type })),
+      reservedCount: composerImagesRef.current.length + pendingCount,
+      hasPendingUserInput: pendingUserInputs.length > 0,
+    });
+    if (plan.kind === "blocked-by-pending-user-input") {
+      toastManager.add({ type: "error", title: plan.message });
+      return;
     }
-    setThreadError(threadId, error);
+    const acceptedFiles = plan.accepted.map((candidate) => candidate.file);
+    setThreadError(threadId, plan.error);
     if (acceptedFiles.length === 0) return;
 
     pendingImageCompressionsRef.current.set(threadId, pendingCount + acceptedFiles.length);
@@ -2360,10 +2352,7 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
         // refused; files already within it pass through byte-for-byte.
         const compressed = await compressImageToByteLimit(file, PROVIDER_SEND_TURN_MAX_IMAGE_BYTES);
         if (!compressed.ok) {
-          compressionError =
-            compressed.reason === "unreadable"
-              ? `'${file.name}' could not be read as an image.`
-              : `'${file.name}' is too large to attach, even after compression.`;
+          compressionError = composerImagePreparationErrorMessage(file.name, compressed.reason);
           continue;
         }
         const attachmentFile = compressed.file;

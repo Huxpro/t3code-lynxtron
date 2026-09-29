@@ -1,6 +1,7 @@
 import {
   DEFAULT_PROVIDER_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
+  PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
   type ModelSelection,
   type OrchestrationThreadShell,
   type ProjectId,
@@ -80,13 +81,71 @@ export function addComposerDraftAttachments(
   draftsByScopeKey: ComposerDraftAttachmentsByScopeKey,
   scopeKey: string,
   attachments: ReadonlyArray<UploadChatAttachment>,
-  limit = 8,
+  limit = PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
 ): ComposerDraftAttachmentsByScopeKey {
   const current = draftsByScopeKey[scopeKey] ?? [];
   const next = [...current, ...attachments].slice(0, limit);
   return next.length === current.length && next.every((item, index) => item === current[index])
     ? draftsByScopeKey
     : { ...draftsByScopeKey, [scopeKey]: next };
+}
+
+/** Thread error shown when a pasted or dropped image cannot be prepared for sending. */
+export function composerImagePreparationErrorMessage(
+  name: string,
+  reason: "too-large" | "unreadable",
+): string {
+  return reason === "unreadable"
+    ? `'${name}' could not be read as an image.`
+    : `'${name}' is too large to attach, even after compression.`;
+}
+
+export const COMPOSER_IMAGES_BLOCKED_BY_PENDING_INPUT =
+  "Attach images after answering plan questions.";
+
+export type ComposerImageAdditionPlan<Candidate> =
+  | { readonly kind: "blocked-by-pending-user-input"; readonly message: string }
+  | {
+      readonly kind: "planned";
+      readonly accepted: ReadonlyArray<Candidate>;
+      readonly error: string | null;
+    };
+
+/**
+ * Decides which pasted or dropped images a Composer accepts. `reservedCount`
+ * includes attachments already in the draft plus any still being prepared, so
+ * concurrent additions cannot exceed the per-message limit. Renderers show a
+ * `planned` error in the thread error surface.
+ */
+export function planComposerImageAdditions<
+  Candidate extends { readonly name: string; readonly mimeType: string },
+>(options: {
+  readonly candidates: ReadonlyArray<Candidate>;
+  readonly reservedCount: number;
+  readonly hasPendingUserInput: boolean;
+}): ComposerImageAdditionPlan<Candidate> {
+  if (options.hasPendingUserInput) {
+    return {
+      kind: "blocked-by-pending-user-input",
+      message: COMPOSER_IMAGES_BLOCKED_BY_PENDING_INPUT,
+    };
+  }
+  let reservedCount = options.reservedCount;
+  const accepted: Candidate[] = [];
+  let error: string | null = null;
+  for (const candidate of options.candidates) {
+    if (!candidate.mimeType.startsWith("image/")) {
+      error = `Unsupported file type for '${candidate.name}'. Please attach image files only.`;
+      continue;
+    }
+    if (reservedCount >= PROVIDER_SEND_TURN_MAX_ATTACHMENTS) {
+      error = `You can attach up to ${PROVIDER_SEND_TURN_MAX_ATTACHMENTS} images per message.`;
+      break;
+    }
+    accepted.push(candidate);
+    reservedCount += 1;
+  }
+  return { kind: "planned", accepted, error };
 }
 
 export function removeComposerDraftAttachment(

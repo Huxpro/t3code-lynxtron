@@ -8,6 +8,9 @@ import {
 } from "@t3tools/contracts";
 
 import {
+  COMPOSER_IMAGES_BLOCKED_BY_PENDING_INPUT,
+  composerImagePreparationErrorMessage,
+  planComposerImageAdditions,
   addComposerDraftAttachments,
   buildDraftThreadTurnBootstrap,
   composerDraftScopeKey,
@@ -271,5 +274,57 @@ describe("local draft thread", () => {
         sessionStatus: "running",
       }),
     ).toBe(false);
+  });
+});
+
+describe("planComposerImageAdditions", () => {
+  const image = (name: string, mimeType = "image/png") => ({ name, mimeType });
+
+  it("blocks every addition while a plan question is pending", () => {
+    expect(
+      planComposerImageAdditions({
+        candidates: [image("a.png")],
+        reservedCount: 0,
+        hasPendingUserInput: true,
+      }),
+    ).toEqual({
+      kind: "blocked-by-pending-user-input",
+      message: COMPOSER_IMAGES_BLOCKED_BY_PENDING_INPUT,
+    });
+  });
+
+  it("skips non-images and keeps accepting later images", () => {
+    const plan = planComposerImageAdditions({
+      candidates: [image("notes.txt", "text/plain"), image("b.png")],
+      reservedCount: 0,
+      hasPendingUserInput: false,
+    });
+    expect(plan).toEqual({
+      kind: "planned",
+      accepted: [image("b.png")],
+      error: "Unsupported file type for 'notes.txt'. Please attach image files only.",
+    });
+  });
+
+  it("stops at the per-message limit including reserved slots", () => {
+    const plan = planComposerImageAdditions({
+      candidates: [image("a.png"), image("b.png")],
+      reservedCount: 7,
+      hasPendingUserInput: false,
+    });
+    expect(plan).toEqual({
+      kind: "planned",
+      accepted: [image("a.png")],
+      error: "You can attach up to 8 images per message.",
+    });
+  });
+
+  it("describes preparation failures by reason", () => {
+    expect(composerImagePreparationErrorMessage("x.png", "unreadable")).toBe(
+      "'x.png' could not be read as an image.",
+    );
+    expect(composerImagePreparationErrorMessage("x.png", "too-large")).toBe(
+      "'x.png' is too large to attach, even after compression.",
+    );
   });
 });
