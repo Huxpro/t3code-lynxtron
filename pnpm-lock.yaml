@@ -196,6 +196,9 @@ importers:
       '@tanstack/react-router':
         specifier: ^1.170.18
         version: 1.170.18(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      core-js:
+        specifier: 3.47.0
+        version: 3.47.0
       effect:
         specifier: 4.0.0-beta.102
         version: 4.0.0-beta.102(patch_hash=71215759e1ac0a7f65d7b75d816986687ae6c3a6cba02d928d184ca71790d488)

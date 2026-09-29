@@ -1,3 +1,9 @@
+// Lynx core ships a partial URL shim (href/searchParams only; no protocol,
+// host, hostname, or pathname) that shared helpers silently misread. core-js
+// feature-detects the gap and installs a WHATWG-complete URL/URLSearchParams.
+import "core-js/actual/url";
+import "core-js/actual/url-search-params";
+
 interface LynxRuntimeGlobals {
   window?: unknown;
   self?: unknown;
