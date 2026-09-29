@@ -7093,6 +7093,135 @@ async function verifyM1LocalJourney({
   }
 }
 
+/**
+ * Plan 14 M3: the essential agent journey against a paired existing (remote)
+ * environment. A new thread on the remote project completes a real provider
+ * turn; a thread-scoped draft then survives the Reconnect action, which must
+ * reuse the paired session instead of re-spending the pairing credential.
+ */
+async function verifyRemoteJourney({ child, client, projectId, timeoutMs }) {
+  const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
+  const config = await waitForConnectorCommand({
+    child,
+    client,
+    method: "refreshProviders",
+    params: { instanceId: modelSelection.instanceId },
+    timeoutMs,
+  });
+  const provider = config?.providers?.find(
+    (candidate) => candidate.instanceId === modelSelection.instanceId,
+  );
+  if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
+    throw new Error(`Remote OpenCode provider is not ready: ${JSON.stringify(provider)}`);
+  }
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const draft = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" &&
+      state.activeThreadId === state.draftThreadId &&
+      state.activeThread?.projectId === projectId,
+  });
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression:
+      "[typeof globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__].join(':')",
+    predicate: (value) => value === "function:function",
+    timeoutMs,
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?.(${JSON.stringify(
+      modelSelection.instanceId,
+    )}, ${JSON.stringify(modelSelection.model)})`,
+    returnByValue: true,
+  });
+  const token = `T3_M3_REMOTE_${Date.now()}`;
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(
+      `Reply exactly ${token}. Do not use tools or modify files.`,
+    )})`,
+    returnByValue: true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-primary-action",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "send",
+  });
+  await tapSelector({ child, client, selector: ".composer-primary-action", timeoutMs });
+  const completed = await waitForClientState({
+    child,
+    client,
+    timeoutMs: Math.max(timeoutMs, 180_000),
+    predicate: (state) =>
+      state?.activeThreadId === draft.draftThreadId &&
+      state.threadIds?.includes(draft.draftThreadId) &&
+      state.activeTurnId == null &&
+      state.messages?.some(
+        (message) =>
+          message.role === "assistant" &&
+          message.streaming === false &&
+          message.text.includes(token),
+      ),
+  });
+  const threadId = completed.activeThreadId;
+  const draftText = `Remote draft kept across reconnect ${token}`;
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(draftText)})`,
+    returnByValue: true,
+  });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === threadId && state.activeComposerDraftText === draftText,
+  });
+  const routeBefore = await readRoutePanel(client);
+  const beforeReconnect = await readRendererReadiness(client);
+  await invokeConnector(client, "reconnect", {});
+  const afterReconnect = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeReconnect,
+    timeoutMs,
+  });
+  const reconnected = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === threadId &&
+      state.activeComposerDraftText === draftText &&
+      state.messages?.some(
+        (message) => message.role === "assistant" && message.text.includes(token),
+      ),
+  });
+  const routeAfter = await readRoutePanel(client);
+  if (routeAfter.route !== routeBefore.route) {
+    throw new Error(
+      `Remote reconnect changed the route: ${JSON.stringify({ routeBefore, routeAfter })}`,
+    );
+  }
+  return {
+    status: "pass",
+    input:
+      "DevTool taps on New thread and Send; renderer fixtures for model and text; connector reconnect",
+    threadId,
+    provider: modelSelection,
+    responseToken: token,
+    reconnect: {
+      route: routeAfter.route,
+      sequence: { before: beforeReconnect.lastSeq, after: afterReconnect.lastSeq },
+      draftPreserved: reconnected.activeComposerDraftText === draftText,
+    },
+  };
+}
+
 async function verifyModelPickerFidelity({
   baseDir,
   child,
@@ -14778,6 +14907,7 @@ async function runOnce({
       shouldVerifyTerminalContextProviderSend ||
       shouldVerifyComposerSendRetry ||
       shouldVerifyM1LocalJourney ||
+      shouldVerifyRemoteJourney ||
       shouldVerifyModelPickerFidelity ||
       shouldVerifyQuestionTranscriptState ||
       shouldVerifyMessageCardState ||
@@ -15254,6 +15384,14 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const remoteJourney = shouldVerifyRemoteJourney
+      ? await verifyRemoteJourney({
+          child,
+          client,
+          projectId: fixtureManifestProjectId,
+          timeoutMs,
+        })
+      : undefined;
     let m1LocalJourney;
     if (shouldVerifyM1LocalJourney) {
       const journey = await verifyM1LocalJourney({
@@ -15613,6 +15751,7 @@ async function runOnce({
       terminalContextProviderSend,
       composerSendRetry,
       m1LocalJourney,
+      remoteJourney,
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
@@ -15690,6 +15829,7 @@ async function runOnce({
       terminalContextProviderSend,
       composerSendRetry,
       m1LocalJourney,
+      remoteJourney,
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
@@ -15814,6 +15954,7 @@ const shouldVerifyTerminalContextProviderSend = process.argv.includes(
 );
 const shouldVerifyComposerSendRetry = process.argv.includes("--verify-composer-send-retry");
 const shouldVerifyM1LocalJourney = process.argv.includes("--verify-m1-local-journey");
+const shouldVerifyRemoteJourney = process.argv.includes("--verify-remote-journey");
 const shouldVerifyComposerWorkingState = process.argv.includes("--verify-composer-working-state");
 const shouldVerifyCompletedTranscriptState = process.argv.includes(
   "--verify-completed-transcript-state",
@@ -16098,6 +16239,12 @@ if (shouldVerifyTerminalContextProviderSend && typeof fixtureManifestProjectId !
     "--verify-terminal-context-provider-send requires visual-state.json project.projectId.",
   );
 }
+if (
+  shouldVerifyRemoteJourney &&
+  (!pairingUrlFile || typeof fixtureManifestProjectId !== "string")
+) {
+  throw new Error("--verify-remote-journey requires --pairing-url-file and project.projectId.");
+}
 if (shouldVerifyM1LocalJourney && typeof fixtureManifestProjectId !== "string") {
   throw new Error("--verify-m1-local-journey requires visual-state.json project.projectId.");
 }
@@ -16174,7 +16321,7 @@ const fileEditingSaveOnlyEmptyFixture =
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
 const composerSendRetryOnlyEmptyFixture =
-  (shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney) &&
+  (shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney || shouldVerifyRemoteJourney) &&
   !verifySettingsNavigation &&
   !verifySidebarScope &&
   !verifyComposerBranding &&
