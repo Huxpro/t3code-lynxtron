@@ -875,3 +875,80 @@ export function buildSidebarV2ThreadContextMenuItems(
     { id: "delete", label: "Delete", destructive: true, icon: "trash" },
   ];
 }
+
+/**
+ * A woken thread reappears at its original position, so the Woke pill carries
+ * the signal until the user visits it after the wake. A never-visited thread
+ * still shows it, and an unparseable visit timestamp counts as never-visited.
+ */
+export function isSidebarV2ThreadWoke(
+  wokeAt: string | null,
+  lastVisitedAt: string | undefined,
+): boolean {
+  const wokeAtMs = wokeAt === null ? Number.NaN : Date.parse(wokeAt);
+  if (Number.isNaN(wokeAtMs)) return false;
+  const lastVisitedMs = lastVisitedAt === undefined ? Number.NaN : Date.parse(lastVisitedAt);
+  return Number.isNaN(lastVisitedMs) || lastVisitedMs < wokeAtMs;
+}
+
+export interface SidebarV2TopStatus {
+  readonly label: string;
+  readonly icon: "working" | "done" | "woke" | null;
+  readonly className: string;
+}
+
+/**
+ * Row prominence and status pill for a Sidebar V2 thread.
+ *
+ * In-flight rows (working, or waiting on approval/input) recede with read
+ * ready rows: prominence is reserved for rows that need a human — done
+ * (unread), failed, and freshly woken. Status hues follow the system-wide
+ * convention (amber approval, indigo input, sky working).
+ */
+export function resolveSidebarV2RowPresentation(input: {
+  readonly status: SidebarV2Status;
+  readonly isUnread: boolean;
+  readonly isWoke: boolean;
+  readonly isActive: boolean;
+  readonly isSelected: boolean;
+}): {
+  readonly isInFlight: boolean;
+  readonly shouldRecede: boolean;
+  readonly topStatus: SidebarV2TopStatus | null;
+} {
+  const { status } = input;
+  const isInFlight =
+    status === "working" || status === "connecting" || status === "approval" || status === "input";
+  const shouldRecede =
+    (status === "ready" || isInFlight) &&
+    !input.isUnread &&
+    !input.isWoke &&
+    !input.isActive &&
+    !input.isSelected;
+  const topStatus: SidebarV2TopStatus | null =
+    status === "working"
+      ? {
+          label: "Working",
+          icon: "working",
+          className:
+            "animate-sidebar-working-text text-sky-600 motion-reduce:animate-none dark:text-sky-400",
+        }
+      : status === "connecting"
+        ? { label: "Connecting", icon: null, className: "text-sidebar-muted-foreground" }
+        : status === "approval"
+          ? { label: "Approval", icon: null, className: "text-amber-700 dark:text-amber-300" }
+          : status === "input"
+            ? { label: "Input", icon: null, className: "text-indigo-600 dark:text-indigo-300" }
+            : status === "failed"
+              ? { label: "Failed", icon: null, className: "text-red-700 dark:text-red-300" }
+              : input.isWoke
+                ? { label: "Woke", icon: "woke", className: "text-amber-700 dark:text-amber-300" }
+                : input.isUnread
+                  ? {
+                      label: "Done",
+                      icon: "done",
+                      className: "text-emerald-700 dark:text-emerald-300",
+                    }
+                  : null;
+  return { isInFlight, shouldRecede, topStatus };
+}

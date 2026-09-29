@@ -1619,7 +1619,9 @@ describe("desktop shell interaction contract", () => {
     );
 
     expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
-    expect(sidebarSource).toMatch(/case "failed":[\s\S]*?label: "Failed"[\s\S]*?icon: null/);
+    // Status pills and recede rules come from the shared Web row presentation.
+    expect(sidebarSource).toContain("resolveSidebarV2RowPresentation({");
+    expect(sidebarSource).toContain("topStatus={lynxTopStatus(presentation.topStatus, thread)}");
     expect(faviconSource).toContain("size = 14");
     expect(faviconSource).toContain("size={size}");
     expect(faviconSource).toContain("t3ClientActions");
@@ -1654,14 +1656,11 @@ describe("desktop shell interaction contract", () => {
         /className="(?:sidebar-v2-search-result__favicon )?size-4 shrink-0"\s+size=\{16\}/g,
       ),
     ).toHaveLength(4);
-    expect(sidebarSource).toContain("topStatus={statusPresentation(status, thread)}");
-    expect(sidebarSource).toContain('case "working":');
-    expect(sidebarSource).toContain('label: "Working"');
-    expect(sidebarSource).toContain('name="circle-dashed"');
+    expect(sidebarSource).toContain('working: "circle-dashed"');
     expect(sidebarSource).toContain("function LynxWorkingDuration");
     expect(sidebarSource).toContain("resolveWorkingStartedAt(thread)");
     expect(sidebarSource).toContain("formatWorkingDurationLabel(Date.now() - startedMs)");
-    expect(sidebarSource).toContain("workingDuration: <LynxWorkingDuration thread={thread} />");
+    expect(sidebarSource).toContain("<LynxWorkingDuration thread={thread} />");
     expect(overrides).toContain(".sidebar-v2-row-card .sidebar-v2-row-actions {");
     expect(overrides).toContain(
       ".sidebar-v2-row-card .sidebar-v2-row-actions {\n  z-index: 2;\n  opacity: 0;",

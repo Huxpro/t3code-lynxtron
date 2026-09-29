@@ -15,7 +15,7 @@
   "removedDeclarationCount": 1,
   "retainedSupportedSelectorCount": 2,
   "retainedSupportedDeclarationCount": 2,
-  "transformedSelectorCount": 35,
+  "transformedSelectorCount": 36,
   "transformedDeclarationCount": 9,
   "transformedSelectors": [
     {
@@ -46,6 +46,11 @@
     {
       "from": ".dark\\:text-blue-400:is(.dark *)",
       "to": ".dark .dark\\:text-blue-400",
+      "transformations": ["dark-is-to-descendant"]
+    },
+    {
+      "from": ".dark\\:text-emerald-300:is(.dark *)",
+      "to": ".dark .dark\\:text-emerald-300",
       "transformations": ["dark-is-to-descendant"]
     },
     {

@@ -31,6 +31,8 @@ import {
   sortProjectsForSidebar,
   sortScopedProjectsForSidebar,
   buildSidebarV2ThreadContextMenuItems,
+  isSidebarV2ThreadWoke,
+  resolveSidebarV2RowPresentation,
   THREAD_JUMP_HINT_SHOW_DELAY_MS,
 } from "./Sidebar.logic";
 import {
@@ -1538,5 +1540,45 @@ describe("buildSidebarV2ThreadContextMenuItems", () => {
     const snooze = items.find((item) => item.id === "snooze");
     expect(snooze?.disabled).toBe(true);
     expect(snooze?.children?.map((child) => child.id)).toEqual(["snooze:1h"]);
+  });
+});
+
+describe("resolveSidebarV2RowPresentation", () => {
+  const base = { isUnread: false, isWoke: false, isActive: false, isSelected: false };
+
+  it("recedes read ready and in-flight rows but keeps rows that need a human", () => {
+    expect(resolveSidebarV2RowPresentation({ ...base, status: "ready" }).shouldRecede).toBe(true);
+    expect(resolveSidebarV2RowPresentation({ ...base, status: "working" }).shouldRecede).toBe(true);
+    expect(
+      resolveSidebarV2RowPresentation({ ...base, status: "ready", isUnread: true }).shouldRecede,
+    ).toBe(false);
+    expect(resolveSidebarV2RowPresentation({ ...base, status: "failed" }).shouldRecede).toBe(false);
+  });
+
+  it("labels woke before done and live status before either", () => {
+    expect(
+      resolveSidebarV2RowPresentation({ ...base, status: "ready", isUnread: true, isWoke: true })
+        .topStatus?.label,
+    ).toBe("Woke");
+    expect(
+      resolveSidebarV2RowPresentation({ ...base, status: "ready", isUnread: true }).topStatus
+        ?.label,
+    ).toBe("Done");
+    expect(
+      resolveSidebarV2RowPresentation({ ...base, status: "approval", isWoke: true }).topStatus
+        ?.label,
+    ).toBe("Approval");
+    expect(resolveSidebarV2RowPresentation({ ...base, status: "ready" }).topStatus).toBeNull();
+  });
+});
+
+describe("isSidebarV2ThreadWoke", () => {
+  it("shows the pill until a visit after the wake", () => {
+    const wokeAt = "2026-09-29T10:00:00.000Z";
+    expect(isSidebarV2ThreadWoke(wokeAt, undefined)).toBe(true);
+    expect(isSidebarV2ThreadWoke(wokeAt, "not-a-date")).toBe(true);
+    expect(isSidebarV2ThreadWoke(wokeAt, "2026-09-29T09:00:00.000Z")).toBe(true);
+    expect(isSidebarV2ThreadWoke(wokeAt, "2026-09-29T11:00:00.000Z")).toBe(false);
+    expect(isSidebarV2ThreadWoke(null, undefined)).toBe(false);
   });
 });

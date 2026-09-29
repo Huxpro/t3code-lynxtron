@@ -217,6 +217,16 @@
       "carried": [
         "verifyShellInteractions still taps the removed [data-sidebar-thread-action-trigger]; that step was already stale before this slice."
       ]
+    },
+    {
+      "id": "sidebar-row-presentation",
+      "change": "Sidebar V2 row prominence and status pills come from Web resolveSidebarV2RowPresentation and isSidebarV2ThreadWoke for both renderers. Lynx gains the Woke and Done pills, recedes in-flight rows like Web instead of only ready ones, keeps unread/woke rows prominent, and applies the same rules to settled rows. Lynx rasterizes lucide circle-check and alarm-clock for the new pill icons.",
+      "nativeProbe": {
+        "route": "m1 fixture, 1280x820",
+        "sidebarRows": 3,
+        "renderedWithoutErrors": true
+      },
+      "coverage": "Pill ordering, recede rules, and the woke-visit rule are unit-tested in Sidebar.logic.test.ts; the m1 fixture has no unread or woken thread to show a pill natively."
     }
   ]
 }

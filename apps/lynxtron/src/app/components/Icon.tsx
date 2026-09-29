@@ -145,6 +145,8 @@ export type IconName =
   | "copy"
   | "circle-alert"
   | "circle-dashed"
+  | "circle-check"
+  | "alarm-clock"
   | "wifi-off"
   | "info"
   | "eye"

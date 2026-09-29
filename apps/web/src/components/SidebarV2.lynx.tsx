@@ -8,6 +8,7 @@ import {
   effectiveSettled,
   effectiveSnoozed,
   resolveSnoozePresets,
+  threadWokeAt,
 } from "@t3tools/client-runtime/state/thread-settled";
 import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
 import { DEFAULT_SIDEBAR_AUTO_SETTLE_AFTER_DAYS } from "@t3tools/contracts/settings";
@@ -31,7 +32,9 @@ import {
   sortSettledThreadsForSidebarV2,
   sortThreadsForSidebarV2,
   buildSidebarV2ThreadContextMenuItems,
-  type SidebarV2Status,
+  isSidebarV2ThreadWoke,
+  resolveSidebarV2RowPresentation,
+  type SidebarV2TopStatus,
 } from "./Sidebar.logic";
 import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
 import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV2RowSurface";
@@ -98,50 +101,31 @@ function LynxWorkingDuration({
   );
 }
 
-function statusPresentation(
-  status: SidebarV2Status,
+const TOP_STATUS_ICON_NAMES = {
+  working: "circle-dashed",
+  done: "circle-check",
+  woke: "alarm-clock",
+} as const;
+
+function lynxTopStatus(
+  topStatus: SidebarV2TopStatus | null,
   thread: ReturnType<typeof useThreadShells>[number],
 ): SidebarV2RowStatus | null {
-  switch (status) {
-    case "working":
-      return {
-        label: "Working",
-        className:
-          "animate-sidebar-working-text text-sky-600 motion-reduce:animate-none dark:text-sky-400",
-        icon: <Icon name="circle-dashed" size={16} color="#a1a1aa" className="size-4 shrink-0" />,
-        workingDuration: <LynxWorkingDuration thread={thread} />,
-      };
-    case "connecting":
-      return {
-        label: "Connecting",
-        className: "text-sidebar-muted-foreground",
-        icon: null,
-        workingDuration: null,
-      };
-    case "approval":
-      return {
-        label: "Approval",
-        className: "text-amber-700 dark:text-amber-300",
-        icon: null,
-        workingDuration: null,
-      };
-    case "input":
-      return {
-        label: "Input",
-        className: "text-indigo-600 dark:text-indigo-300",
-        icon: null,
-        workingDuration: null,
-      };
-    case "failed":
-      return {
-        label: "Failed",
-        className: "text-red-700 dark:text-red-300",
-        icon: null,
-        workingDuration: null,
-      };
-    case "ready":
-      return null;
-  }
+  if (topStatus === null) return null;
+  return {
+    label: topStatus.label,
+    className: topStatus.className,
+    icon:
+      topStatus.icon === null ? null : (
+        <Icon
+          name={TOP_STATUS_ICON_NAMES[topStatus.icon]}
+          size={16}
+          color="#a1a1aa"
+          className="size-4 shrink-0"
+        />
+      ),
+    workingDuration: topStatus.icon === "working" ? <LynxWorkingDuration thread={thread} /> : null,
+  };
 }
 
 function stopPropagation(event: unknown): void {
@@ -750,9 +734,21 @@ export default function SidebarV2() {
             const snoozePresets = snoozeMenuOpen ? resolveSnoozePresets(new Date()) : [];
             const detailsRelationId = `sidebar-thread-details:${thread.id}`;
             const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
+            const lastVisitedAt = threadLastVisitedAtById[threadKey];
             const isUnread = hasUnseenThreadCompletion({
               latestTurn: thread.latestTurn,
-              lastVisitedAt: threadLastVisitedAtById[threadKey],
+              lastVisitedAt,
+            });
+            const isWoke = isSidebarV2ThreadWoke(
+              threadWokeAt(thread, { now: new Date().toISOString() }),
+              lastVisitedAt,
+            );
+            const presentation = resolveSidebarV2RowPresentation({
+              status,
+              isUnread,
+              isWoke,
+              isActive,
+              isSelected: false,
             });
             return (
               <SidebarV2RowSurface
@@ -762,15 +758,10 @@ export default function SidebarV2() {
                 variantAction="settle"
                 isActive={isActive}
                 isSelected={false}
-                shouldRecede={status === "ready" && !isActive}
-                isInFlight={
-                  status === "working" ||
-                  status === "connecting" ||
-                  status === "approval" ||
-                  status === "input"
-                }
+                shouldRecede={presentation.shouldRecede}
+                isInFlight={presentation.isInFlight}
                 isUnread={isUnread}
-                isWoke={false}
+                isWoke={isWoke}
                 settlementSupported={settlementSupported}
                 snoozeSupported={snoozeSupported}
                 cardActionsVisible={snoozeMenuOpen || hoveredThreadId === thread.id}
@@ -781,7 +772,7 @@ export default function SidebarV2() {
                 branch={thread.branch ?? null}
                 threadTimeLabel={compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp))}
                 settledTimeLabel=""
-                topStatus={statusPresentation(status, thread)}
+                topStatus={lynxTopStatus(presentation.topStatus, thread)}
                 jumpLabel={jumpLabelByThreadId.get(thread.id) ?? null}
                 favicon={
                   <ProjectFavicon
@@ -960,9 +951,21 @@ export default function SidebarV2() {
             const providerProjection = resolveThreadProvider(thread, providerByInstanceId);
             const actionMenuOpen = actionMenuThreadId === thread.id;
             const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
+            const lastVisitedAt = threadLastVisitedAtById[threadKey];
             const isUnread = hasUnseenThreadCompletion({
               latestTurn: thread.latestTurn,
-              lastVisitedAt: threadLastVisitedAtById[threadKey],
+              lastVisitedAt,
+            });
+            const isWoke = isSidebarV2ThreadWoke(
+              threadWokeAt(thread, { now: new Date().toISOString() }),
+              lastVisitedAt,
+            );
+            const presentation = resolveSidebarV2RowPresentation({
+              status: resolveSidebarV2Status(thread),
+              isUnread,
+              isWoke,
+              isActive: thread.id === activeThreadId,
+              isSelected: false,
             });
             return (
               <SidebarV2RowSurface
@@ -972,10 +975,10 @@ export default function SidebarV2() {
                 variantAction="unsettle"
                 isActive={thread.id === activeThreadId}
                 isSelected={false}
-                shouldRecede={false}
-                isInFlight={false}
+                shouldRecede={presentation.shouldRecede}
+                isInFlight={presentation.isInFlight}
                 isUnread={isUnread}
-                isWoke={false}
+                isWoke={isWoke}
                 settlementSupported={settlementSupported}
                 snoozeSupported={false}
                 snoozeMenuOpen={false}
@@ -985,7 +988,7 @@ export default function SidebarV2() {
                 branch={thread.branch ?? null}
                 threadTimeLabel=""
                 settledTimeLabel={settledTimeLabel(thread)}
-                topStatus={null}
+                topStatus={lynxTopStatus(presentation.topStatus, thread)}
                 jumpLabel={jumpLabelByThreadId.get(thread.id) ?? null}
                 favicon={
                   <Icon name="message-square" size={16} color="#818181" className="size-4" />

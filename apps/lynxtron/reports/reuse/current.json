@@ -155,7 +155,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 74188,
+            "lines": 74207,
             "modules": 350
           },
           "largestNonShared": [
@@ -171,7 +171,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -2223,7 +2223,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 35607,
+            "eligibleLines": 35686,
             "eligibleModules": 183,
             "modulesOnlyInLynx": [
               {
@@ -2238,7 +2238,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -2659,11 +2659,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 22289,
+            "lines": 22366,
             "modules": 98
           },
           "reusePercent": {
-            "lines": 30,
+            "lines": 30.1,
             "modules": 28
           },
           "web": {
@@ -8097,7 +8097,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -8172,7 +8172,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -9663,7 +9663,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 69749,
+            "lines": 69826,
             "modules": 336
           },
           "largestNonShared": [
@@ -11786,7 +11786,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 39568,
+            "eligibleLines": 39647,
             "eligibleModules": 200,
             "modulesOnlyInLynx": [
               {
@@ -11806,7 +11806,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -12297,7 +12297,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 26693,
+            "lines": 26770,
             "modules": 100
           },
           "reusePercent": {
@@ -17250,7 +17250,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -18770,7 +18770,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81686,
+            "lines": 81705,
             "modules": 393
           },
           "largestNonShared": [
@@ -18791,7 +18791,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -23568,7 +23568,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 87988,
+            "eligibleLines": 88067,
             "eligibleModules": 363,
             "modulesOnlyInLynx": [
               {
@@ -23668,7 +23668,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -24636,11 +24636,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 34469,
+            "lines": 34546,
             "modules": 151
           },
           "reusePercent": {
-            "lines": 42.2,
+            "lines": 42.3,
             "modules": 38.4
           },
           "web": {
@@ -31204,7 +31204,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -31279,7 +31279,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -32862,7 +32862,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109274,
+            "lines": 109293,
             "modules": 497
           },
           "largestNonShared": [
@@ -32888,7 +32888,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -36200,7 +36200,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56494,
+            "eligibleLines": 56573,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -36275,7 +36275,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -36861,11 +36861,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32557,
+            "lines": 32634,
             "modules": 147
           },
           "reusePercent": {
-            "lines": 29.8,
+            "lines": 29.9,
             "modules": 29.6
           },
           "web": {
@@ -45789,7 +45789,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -45864,7 +45864,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -47675,7 +47675,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97152,
+            "lines": 97229,
             "modules": 452
           },
           "largestNonShared": [
@@ -47746,13 +47746,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 947,
-              "path": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 947,
+              "path": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
             }
           ],
           "lynx": {
@@ -50233,7 +50233,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48414,
+            "eligibleLines": 48416,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -50308,7 +50308,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -50745,7 +50745,7 @@
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.7,
+            "lines": 29.6,
             "modules": 26.3
           },
           "web": {
@@ -58384,7 +58384,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -60116,7 +60116,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119840,
+            "lines": 119859,
             "modules": 550
           },
           "largestNonShared": [
@@ -60142,7 +60142,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -63464,7 +63464,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56535,
+            "eligibleLines": 56614,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -63539,7 +63539,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -64126,11 +64126,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32948,
+            "lines": 33025,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.5,
+            "lines": 27.6,
             "modules": 27.3
           },
           "web": {
@@ -74609,7 +74609,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -74684,7 +74684,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -76611,7 +76611,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 109274,
+            "lines": 109293,
             "modules": 497
           },
           "largestNonShared": [
@@ -76637,7 +76637,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -79949,7 +79949,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56494,
+            "eligibleLines": 56573,
             "eligibleModules": 277,
             "modulesOnlyInLynx": [
               {
@@ -80024,7 +80024,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -80610,11 +80610,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32557,
+            "lines": 32634,
             "modules": 147
           },
           "reusePercent": {
-            "lines": 29.8,
+            "lines": 29.9,
             "modules": 29.6
           },
           "web": {
@@ -89538,7 +89538,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -89613,7 +89613,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -91424,7 +91424,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97152,
+            "lines": 97229,
             "modules": 452
           },
           "largestNonShared": [
@@ -91495,13 +91495,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 947,
-              "path": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 947,
+              "path": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
             }
           ],
           "lynx": {
@@ -93982,7 +93982,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48414,
+            "eligibleLines": 48416,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -94057,7 +94057,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -94497,7 +94497,7 @@
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.7,
+            "lines": 29.6,
             "modules": 26.3
           },
           "web": {
@@ -102136,7 +102136,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -103871,7 +103871,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119849,
+            "lines": 119868,
             "modules": 550
           },
           "largestNonShared": [
@@ -103897,7 +103897,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -107219,7 +107219,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56535,
+            "eligibleLines": 56614,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -107294,7 +107294,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -107881,11 +107881,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32948,
+            "lines": 33025,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.5,
+            "lines": 27.6,
             "modules": 27.3
           },
           "web": {
@@ -118374,7 +118374,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -118449,7 +118449,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -120376,7 +120376,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 97152,
+            "lines": 97229,
             "modules": 452
           },
           "largestNonShared": [
@@ -120447,13 +120447,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 947,
-              "path": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 947,
+              "path": "apps/lynxtron/src/app/components/MarkdownRenderer.tsx"
             }
           ],
           "lynx": {
@@ -122934,7 +122934,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 48414,
+            "eligibleLines": 48416,
             "eligibleModules": 219,
             "modulesOnlyInLynx": [
               {
@@ -123009,7 +123009,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -123449,7 +123449,7 @@
             "modules": 119
           },
           "reusePercent": {
-            "lines": 29.7,
+            "lines": 29.6,
             "modules": 26.3
           },
           "web": {
@@ -131088,7 +131088,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -134046,7 +134046,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 26323,
+            "eligibleLines": 26325,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
@@ -134076,7 +134076,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -139519,7 +139519,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119840,
+            "lines": 119859,
             "modules": 550
           },
           "largestNonShared": [
@@ -139545,7 +139545,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -142867,7 +142867,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56535,
+            "eligibleLines": 56614,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -142942,7 +142942,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -143529,11 +143529,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32948,
+            "lines": 33025,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.5,
+            "lines": 27.6,
             "modules": 27.3
           },
           "web": {
@@ -154012,7 +154012,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -154087,7 +154087,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -157357,7 +157357,7 @@
                 "to": "packages/shared/src/sourceControl.ts"
               }
             ],
-            "eligibleLines": 28441,
+            "eligibleLines": 28443,
             "eligibleModules": 123,
             "modulesOnlyInLynx": [
               {
@@ -157387,7 +157387,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -164019,12 +164019,12 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23820,
+            "eligibleLines": 23822,
             "eligibleModules": 100,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -168047,7 +168047,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119840,
+            "lines": 119859,
             "modules": 550
           },
           "largestNonShared": [
@@ -168073,7 +168073,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -171395,7 +171395,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56535,
+            "eligibleLines": 56614,
             "eligibleModules": 280,
             "modulesOnlyInLynx": [
               {
@@ -171470,7 +171470,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -172057,11 +172057,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32948,
+            "lines": 33025,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.5,
+            "lines": 27.6,
             "modules": 27.3
           },
           "web": {
@@ -182540,7 +182540,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -182615,7 +182615,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -190634,7 +190634,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25956,
+            "eligibleLines": 25958,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -190644,7 +190644,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -196772,7 +196772,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26040,
+            "eligibleLines": 26042,
             "eligibleModules": 115,
             "modulesOnlyInLynx": [
               {
@@ -196782,7 +196782,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -201302,7 +201302,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 85050,
+            "lines": 85069,
             "modules": 408
           },
           "largestNonShared": [
@@ -201318,7 +201318,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -203450,7 +203450,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 36298,
+            "eligibleLines": 36377,
             "eligibleModules": 193,
             "modulesOnlyInLynx": [
               {
@@ -203460,7 +203460,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -203887,7 +203887,7 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23440,
+            "lines": 23517,
             "modules": 108
           },
           "reusePercent": {
@@ -210810,7 +210810,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -210885,7 +210885,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -212482,7 +212482,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 66645,
+            "lines": 66722,
             "modules": 321
           },
           "largestNonShared": [
@@ -212518,13 +212518,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -213795,12 +213795,12 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26932,
+            "eligibleLines": 26934,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -218924,7 +218924,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -220285,7 +220285,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64021,
+            "lines": 64098,
             "modules": 300
           },
           "largestNonShared": [
@@ -220316,13 +220316,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -221543,12 +221543,12 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 26398,
+            "eligibleLines": 26400,
             "eligibleModules": 113,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -226347,7 +226347,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -227662,7 +227662,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 88845,
+            "lines": 88864,
             "modules": 426
           },
           "largestNonShared": [
@@ -227678,7 +227678,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -229850,12 +229850,12 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 37209,
+            "eligibleLines": 37288,
             "eligibleModules": 196,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -230297,11 +230297,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 23583,
+            "lines": 23660,
             "modules": 109
           },
           "reusePercent": {
-            "lines": 26.5,
+            "lines": 26.6,
             "modules": 25.6
           },
           "web": {
@@ -237875,7 +237875,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -237950,7 +237950,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -239582,7 +239582,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59990,
+            "lines": 60067,
             "modules": 290
           },
           "largestNonShared": [
@@ -241190,12 +241190,12 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32981,
+            "eligibleLines": 33060,
             "eligibleModules": 146,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -241403,11 +241403,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 25027,
+            "lines": 25104,
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.7,
+            "lines": 41.8,
             "modules": 36.2
           },
           "web": {
@@ -245461,7 +245461,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -246796,7 +246796,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 59990,
+            "lines": 60067,
             "modules": 290
           },
           "largestNonShared": [
@@ -248404,12 +248404,12 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 32981,
+            "eligibleLines": 33060,
             "eligibleModules": 146,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -248617,11 +248617,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 25027,
+            "lines": 25104,
             "modules": 105
           },
           "reusePercent": {
-            "lines": 41.7,
+            "lines": 41.8,
             "modules": 36.2
           },
           "web": {
@@ -252675,7 +252675,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -254007,7 +254007,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 81686,
+            "lines": 81705,
             "modules": 393
           },
           "largestNonShared": [
@@ -254023,7 +254023,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -255940,12 +255940,12 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 33318,
+            "eligibleLines": 33397,
             "eligibleModules": 172,
             "modulesOnlyInLynx": [
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -256331,11 +256331,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 21620,
+            "lines": 21697,
             "modules": 96
           },
           "reusePercent": {
-            "lines": 26.5,
+            "lines": 26.6,
             "modules": 24.4
           },
           "web": {
@@ -262899,7 +262899,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -262974,7 +262974,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {
@@ -264557,7 +264557,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64021,
+            "lines": 64098,
             "modules": 300
           },
           "largestNonShared": [
@@ -264583,13 +264583,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -265690,7 +265690,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23093,
+            "eligibleLines": 23095,
             "eligibleModules": 97,
             "modulesOnlyInLynx": [
               {
@@ -265700,7 +265700,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -265877,7 +265877,7 @@
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.4,
+            "lines": 26.3,
             "modules": 20.7
           },
           "web": {
@@ -270446,7 +270446,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -271761,7 +271761,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64021,
+            "lines": 64098,
             "modules": 300
           },
           "largestNonShared": [
@@ -271787,13 +271787,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -272894,7 +272894,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23093,
+            "eligibleLines": 23095,
             "eligibleModules": 97,
             "modulesOnlyInLynx": [
               {
@@ -272904,7 +272904,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -273081,7 +273081,7 @@
             "modules": 62
           },
           "reusePercent": {
-            "lines": 26.4,
+            "lines": 26.3,
             "modules": 20.7
           },
           "web": {
@@ -277650,7 +277650,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -278962,7 +278962,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64032,
+            "lines": 64109,
             "modules": 301
           },
           "largestNonShared": [
@@ -278988,13 +278988,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -280100,7 +280100,7 @@
                 "to": "packages/contracts/src/baseSchemas.ts"
               }
             ],
-            "eligibleLines": 23100,
+            "eligibleLines": 23102,
             "eligibleModules": 98,
             "modulesOnlyInLynx": [
               {
@@ -280110,7 +280110,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -284866,7 +284866,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -287377,7 +287377,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -287387,7 +287387,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -293368,7 +293368,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -293378,7 +293378,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -299364,7 +299364,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25334,
+            "eligibleLines": 25336,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -299374,7 +299374,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -305376,7 +305376,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -305386,7 +305386,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -311065,7 +311065,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -311075,7 +311075,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -316756,7 +316756,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25334,
+            "eligibleLines": 25336,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -316766,7 +316766,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -322463,7 +322463,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -322473,7 +322473,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -328159,7 +328159,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -328169,7 +328169,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -332732,7 +332732,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64021,
+            "lines": 64098,
             "modules": 300
           },
           "largestNonShared": [
@@ -332758,13 +332758,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -333920,7 +333920,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -333930,7 +333930,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -338681,7 +338681,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -339996,7 +339996,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64021,
+            "lines": 64098,
             "modules": 300
           },
           "largestNonShared": [
@@ -340022,13 +340022,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -341184,7 +341184,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25327,
+            "eligibleLines": 25329,
             "eligibleModules": 103,
             "modulesOnlyInLynx": [
               {
@@ -341194,7 +341194,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -345945,7 +345945,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -347257,7 +347257,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 64028,
+            "lines": 64105,
             "modules": 301
           },
           "largestNonShared": [
@@ -347283,13 +347283,13 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 923,
-              "path": "packages/client-runtime/src/relay/managedRelay.ts"
+              "lines": 954,
+              "path": "apps/web/src/components/Sidebar.logic.ts"
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 877,
-              "path": "apps/web/src/components/Sidebar.logic.ts"
+              "lines": 923,
+              "path": "packages/client-runtime/src/relay/managedRelay.ts"
             },
             {
               "classification": "EXCLUSIVE",
@@ -348450,7 +348450,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 25334,
+            "eligibleLines": 25336,
             "eligibleModules": 104,
             "modulesOnlyInLynx": [
               {
@@ -348460,7 +348460,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -353221,7 +353221,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -355907,7 +355907,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28649,
+            "eligibleLines": 28651,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -355927,7 +355927,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -362179,7 +362179,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 28649,
+            "eligibleLines": 28651,
             "eligibleModules": 120,
             "modulesOnlyInLynx": [
               {
@@ -362199,7 +362199,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -367088,7 +367088,7 @@
           },
           "denominator": "eligible-web-production-modules",
           "eligible": {
-            "lines": 119653,
+            "lines": 119672,
             "modules": 549
           },
           "largestNonShared": [
@@ -367114,7 +367114,7 @@
             },
             {
               "classification": "EXCLUSIVE",
-              "lines": 2867,
+              "lines": 2809,
               "path": "apps/web/src/components/SidebarV2.tsx"
             },
             {
@@ -370436,7 +370436,7 @@
                 "to": "packages/contracts/src/index.ts"
               }
             ],
-            "eligibleLines": 56526,
+            "eligibleLines": 56605,
             "eligibleModules": 279,
             "modulesOnlyInLynx": [
               {
@@ -370511,7 +370511,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 226,
+                "lines": 228,
                 "path": "apps/lynxtron/src/app/components/Icon.tsx"
               },
               {
@@ -371092,11 +371092,11 @@
             "unresolvedExternalRequests": []
           },
           "reused": {
-            "lines": 32948,
+            "lines": 33025,
             "modules": 150
           },
           "reusePercent": {
-            "lines": 27.5,
+            "lines": 27.6,
             "modules": 27.3
           },
           "web": {
@@ -381500,7 +381500,7 @@
               },
               {
                 "classification": "SHARED",
-                "lines": 877,
+                "lines": 954,
                 "path": "apps/web/src/components/Sidebar.logic.ts"
               },
               {
@@ -381575,7 +381575,7 @@
               },
               {
                 "classification": "EXCLUSIVE",
-                "lines": 2867,
+                "lines": 2809,
                 "path": "apps/web/src/components/SidebarV2.tsx"
               },
               {

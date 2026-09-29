@@ -91,8 +91,11 @@ on the pre-slice commit too, although a direct probe finds it.
 - The unreachable Lynx in-row action list and its CSS are deleted; the Lynx
   leaf keeps the rename field and delete confirmation.
 
-Next divergences, recorded from the audit: row status pills and recede rules
-(Lynx lacks Woke/Done), the auto-settle window ignoring
+- Row prominence and status pills come from `resolveSidebarV2RowPresentation`
+  and `isSidebarV2ThreadWoke`; Lynx gained Woke and Done and recedes
+  in-flight rows like Web, on active and settled rows alike.
+
+Next divergences, recorded from the audit: the auto-settle window ignoring
 `sidebarAutoSettleAfterDays`, no snoozed shelf, project sort ignoring
 `sidebarProjectSortOrder`, the new-thread target, a Lynx-only project row
 menu, and "No matching threads" vs Web "No threads found".
