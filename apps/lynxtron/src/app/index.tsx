@@ -62,6 +62,7 @@ import jetBrainsMono400DataUrl from "./assets/jetbrains-mono-400.woff2?inline";
 import "./generated/lynx.css";
 import "./tailwind.css";
 import "./overrides.css";
+import { ToastViewport } from "../../../web/src/components/ui/toast";
 
 declare const __T3_LYNXTRON_WEB_PREVIEW__: boolean;
 
@@ -259,6 +260,7 @@ function RootOverlays() {
       {gitPublishDialogOpen && cwd ? (
         <GitPublishDialog cwd={cwd} onClose={uiActions.closeGitPublishDialog} />
       ) : null}
+      <ToastViewport />
     </>
   );
 }

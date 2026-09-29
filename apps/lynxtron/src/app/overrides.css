@@ -13649,3 +13649,79 @@
   width: 100%;
   padding: 32px 20px 64px;
 }
+
+/* Toasts: Lynx rendering of the shared Web toast manager (toast.lynx.tsx). */
+.ui-toast-viewport {
+  position: fixed;
+  top: 52px;
+  right: 16px;
+  width: 356px;
+  display: flex;
+  flex-direction: column;
+  z-index: 60;
+}
+.ui-toast {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  margin-bottom: 8px;
+  padding: 10px 12px 10px 0;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--border);
+  border-radius: 12px;
+  background-color: var(--popover);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+  overflow: hidden;
+}
+.ui-toast__accent {
+  width: 3px;
+  align-self: stretch;
+  margin-right: 10px;
+  border-radius: 2px;
+  background-color: var(--muted-foreground);
+}
+.ui-toast--error .ui-toast__accent {
+  background-color: #ef4444;
+}
+.ui-toast--success .ui-toast__accent {
+  background-color: #22c55e;
+}
+.ui-toast--warning .ui-toast__accent {
+  background-color: #f59e0b;
+}
+.ui-toast--info .ui-toast__accent {
+  background-color: #3b82f6;
+}
+.ui-toast__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.ui-toast__title {
+  color: var(--popover-foreground);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.ui-toast__description {
+  margin-top: 2px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 16px;
+}
+.ui-toast__dismiss {
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+}
+.ui-toast__dismiss-label {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  line-height: 14px;
+}
