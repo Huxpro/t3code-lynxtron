@@ -36,6 +36,8 @@ import {
   forgetLocalDraftThread,
   normalizeComposerDraftAttachmentsByScopeKey,
   normalizeComposerDraftTextByScopeKey,
+  normalizeLocalDraftThreadsByProjectId,
+  serializeLocalDraftThreadsByProjectId,
   removeComposerDraftAttachment,
   projectDraftThreadInteractionMode,
   projectComposerDraftText,
@@ -330,11 +332,18 @@ function getBridge(): Partial<PollBridge> | undefined {
 }
 
 function patchState(partial: Partial<T3ClientState>): void {
+  const previous = appAtomRegistry.get(t3ClientStateAtom);
   const next = {
-    ...appAtomRegistry.get(t3ClientStateAtom),
+    ...previous,
     ...partial,
   };
   appAtomRegistry.set(t3ClientStateAtom, next);
+  if (next.draftThreadsByProjectId !== previous.draftThreadsByProjectId) {
+    setPref(
+      "draftThreadsByProjectId",
+      serializeLocalDraftThreadsByProjectId(next.draftThreadsByProjectId),
+    );
+  }
   const reportReadiness = getPreloadBridge()?.reportReadiness as
     | ((value: Record<string, unknown>) => boolean)
     | undefined;
@@ -1049,6 +1058,9 @@ async function bootstrapT3Client(): Promise<void> {
   const savedComposerElementContexts = normalizeComposerElementContextsByScopeKey(
     getPref<unknown>("composerElementContextsByScopeKey", null),
   );
+  const savedDraftThreadsByProjectId = normalizeLocalDraftThreadsByProjectId(
+    getPref<unknown>("draftThreadsByProjectId", null),
+  );
   if (saved) {
     patchState({
       modelSelection: saved,
@@ -1057,6 +1069,7 @@ async function bootstrapT3Client(): Promise<void> {
       composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
       composerFileContextsByScopeKey: savedComposerFileContexts,
       composerElementContextsByScopeKey: savedComposerElementContexts,
+      draftThreadsByProjectId: savedDraftThreadsByProjectId,
     });
   } else {
     patchState({
@@ -1065,6 +1078,7 @@ async function bootstrapT3Client(): Promise<void> {
       composerTerminalContextsByScopeKey: savedComposerTerminalContexts,
       composerFileContextsByScopeKey: savedComposerFileContexts,
       composerElementContextsByScopeKey: savedComposerElementContexts,
+      draftThreadsByProjectId: savedDraftThreadsByProjectId,
     });
   }
   let firstSnapshotApplied = false;

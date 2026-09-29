@@ -11,6 +11,8 @@ import {
   COMPOSER_IMAGES_BLOCKED_BY_PENDING_INPUT,
   composerImagePreparationErrorMessage,
   planComposerImageAdditions,
+  normalizeLocalDraftThreadsByProjectId,
+  serializeLocalDraftThreadsByProjectId,
   addComposerDraftAttachments,
   buildDraftThreadTurnBootstrap,
   composerDraftScopeKey,
@@ -326,5 +328,39 @@ describe("planComposerImageAdditions", () => {
     expect(composerImagePreparationErrorMessage("x.png", "too-large")).toBe(
       "'x.png' is too large to attach, even after compression.",
     );
+  });
+});
+
+describe("local draft thread persistence", () => {
+  const draft = createLocalDraftThread({
+    threadId: ThreadId.make("draft-1"),
+    projectId: ProjectId.make("project-1"),
+    modelSelection: {
+      instanceId: ProviderInstanceId.make("opencode"),
+      model: "opencode/big-pickle",
+    },
+    createdAt: "2026-09-29T00:00:00.000Z",
+    envMode: "worktree",
+    startFromOrigin: true,
+    branch: "feature",
+  });
+
+  it("round-trips a draft thread's identity and workspace", () => {
+    const restored = normalizeLocalDraftThreadsByProjectId(
+      JSON.parse(JSON.stringify(serializeLocalDraftThreadsByProjectId({ "project-1": draft }))),
+    );
+    expect(restored).toEqual({ "project-1": draft });
+  });
+
+  it("drops entries whose identity or project key does not match", () => {
+    expect(
+      normalizeLocalDraftThreadsByProjectId({
+        "project-2": {
+          ...serializeLocalDraftThreadsByProjectId({ "project-1": draft })["project-1"],
+        },
+        "project-3": { id: "", projectId: "project-3" },
+        "project-4": null,
+      }),
+    ).toEqual({});
   });
 });

@@ -205,6 +205,99 @@ export function forgetLocalDraftThread(
   return remaining;
 }
 
+/** Compact, restart-safe form of a local draft thread; rebuilt with `createLocalDraftThread`. */
+export interface PersistedLocalDraftThread {
+  readonly id: string;
+  readonly projectId: string;
+  readonly modelSelection: ModelSelection;
+  readonly runtimeMode: RuntimeMode;
+  readonly interactionMode: ProviderInteractionMode;
+  readonly branch: string | null;
+  readonly worktreePath: string | null;
+  readonly envMode: LocalDraftThreadEnvMode;
+  readonly startFromOrigin: boolean;
+  readonly createdAt: string;
+}
+
+export function serializeLocalDraftThreadsByProjectId(
+  draftsByProjectId: LocalDraftThreadsByProjectId,
+): Readonly<Record<string, PersistedLocalDraftThread>> {
+  return Object.fromEntries(
+    Object.entries(draftsByProjectId).map(([projectId, draft]) => [
+      projectId,
+      {
+        id: draft.id,
+        projectId: draft.projectId,
+        modelSelection: draft.modelSelection,
+        runtimeMode: draft.runtimeMode,
+        interactionMode: draft.interactionMode,
+        branch: draft.branch,
+        worktreePath: draft.worktreePath,
+        envMode: draft.envMode,
+        startFromOrigin: draft.startFromOrigin,
+        createdAt: draft.createdAt,
+      },
+    ]),
+  );
+}
+
+const nullableString = (value: unknown): string | null | undefined =>
+  value === null ? null : typeof value === "string" ? value : undefined;
+
+/**
+ * Restores persisted local drafts so a draft keeps its identity across a cold
+ * restart, as Web's persisted draft store does. Invalid entries are dropped.
+ */
+export function normalizeLocalDraftThreadsByProjectId(
+  value: unknown,
+): LocalDraftThreadsByProjectId {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return {};
+  return Object.fromEntries(
+    Object.entries(value).flatMap(([projectId, entry]) => {
+      if (typeof entry !== "object" || entry === null) return [];
+      const draft = entry as Partial<Record<keyof PersistedLocalDraftThread, unknown>>;
+      const selection = draft.modelSelection as Partial<ModelSelection> | undefined;
+      const branch = nullableString(draft.branch);
+      const worktreePath = nullableString(draft.worktreePath);
+      if (
+        typeof draft.id !== "string" ||
+        draft.id.length === 0 ||
+        draft.projectId !== projectId ||
+        typeof selection?.instanceId !== "string" ||
+        typeof selection.model !== "string" ||
+        typeof draft.createdAt !== "string" ||
+        branch === undefined ||
+        worktreePath === undefined
+      ) {
+        return [];
+      }
+      return [
+        [
+          projectId,
+          createLocalDraftThread({
+            threadId: draft.id as ThreadId,
+            projectId: projectId as ProjectId,
+            modelSelection: selection as ModelSelection,
+            createdAt: draft.createdAt,
+            ...(typeof draft.runtimeMode === "string"
+              ? { runtimeMode: draft.runtimeMode as RuntimeMode }
+              : {}),
+            ...(typeof draft.interactionMode === "string"
+              ? { interactionMode: draft.interactionMode as ProviderInteractionMode }
+              : {}),
+            branch,
+            worktreePath,
+            ...(draft.envMode === "local" || draft.envMode === "worktree"
+              ? { envMode: draft.envMode }
+              : {}),
+            startFromOrigin: draft.startFromOrigin === true,
+          }),
+        ],
+      ];
+    }),
+  );
+}
+
 export function createLocalDraftThread(input: {
   readonly threadId: ThreadId;
   readonly projectId: ProjectId;
