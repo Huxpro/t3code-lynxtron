@@ -15,6 +15,7 @@ import {
   isClaudeUltrathinkPrompt,
 } from "@t3tools/shared/model";
 import { memo, useCallback, useState } from "react";
+import { buildComposerTraitsTriggerPresentation } from "@t3tools/client-runtime/presentation/composer";
 import type { VariantProps } from "class-variance-authority";
 import { ZapIcon } from "lucide-react";
 import { buttonVariants } from "../ui/button";
@@ -384,53 +385,7 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
  * one exception is when fast mode is the only trait, where a bare bolt (or bare
  * chevron) would leave the trigger unreadable.
  */
-export function buildTraitsTriggerDisplay(input: {
-  provider: ProviderDriverKind;
-  descriptors: ReadonlyArray<ProviderOptionDescriptor>;
-  primarySelectDescriptorId: string | null;
-  ultrathinkPromptControlled: boolean;
-}): { label: string; showFastModeIcon: boolean } {
-  let hasFastMode = false;
-  let fastModeEnabled = false;
-  const labels: Array<string> = [];
-  for (const descriptor of input.descriptors) {
-    if (descriptor.id === "fastMode" && descriptor.type === "boolean") {
-      hasFastMode = true;
-      fastModeEnabled = descriptor.currentValue === true;
-      continue;
-    }
-    if (
-      input.provider === "codex" &&
-      descriptor.id === "serviceTier" &&
-      descriptor.type === "select"
-    ) {
-      const currentValue = getProviderOptionCurrentValue(descriptor);
-      const fastTier = descriptor.options.find(({ label }) => label === "Fast");
-      if (fastTier && (currentValue === "default" || currentValue === fastTier.id)) {
-        hasFastMode = true;
-        fastModeEnabled = currentValue === fastTier.id;
-        continue;
-      }
-    }
-    const label =
-      input.ultrathinkPromptControlled && descriptor.id === input.primarySelectDescriptorId
-        ? "Ultrathink"
-        : descriptor.type === "boolean"
-          ? `${descriptor.label} ${descriptor.currentValue === true ? "On" : "Off"}`
-          : getProviderOptionCurrentLabel(descriptor);
-    if (typeof label === "string" && label.length > 0) {
-      labels.push(label);
-    }
-  }
-
-  // Only fall back to text when fast mode is genuinely the sole trait. Keying
-  // off an empty label list alone would also catch descriptors that resolved to
-  // no label at all, printing a bogus "Normal" for a model without fast mode.
-  if (labels.length === 0 && hasFastMode) {
-    return { label: fastModeEnabled ? "Fast" : "Normal", showFastModeIcon: false };
-  }
-  return { label: labels.join(" · "), showFastModeIcon: fastModeEnabled };
-}
+export const buildTraitsTriggerDisplay = buildComposerTraitsTriggerPresentation;
 
 export const TraitsPicker = memo(function TraitsPicker({
   provider,

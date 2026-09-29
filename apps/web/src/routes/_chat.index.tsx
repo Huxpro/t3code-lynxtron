@@ -8,7 +8,9 @@ import { sortScopedProjectsForSidebar } from "../components/Sidebar.logic";
 import { Button } from "../components/ui/button";
 import { Empty, EmptyDescription, EmptyHeader, EmptyTitle } from "../components/ui/empty";
 import { SidebarInset } from "../components/ui/sidebar";
+import { WelcomeWorkspace } from "../components/WelcomeWorkspace";
 import { useNewThreadHandler } from "../hooks/useHandleNewThread";
+import { useTheme } from "../hooks/useTheme";
 import {
   useAllEnvironmentShellsBootstrapped,
   useProjects,
@@ -106,29 +108,18 @@ function DraftStartError({ onRetry }: { readonly onRetry: () => void }) {
 
 function NoProjectsHero() {
   const openAddProject = useCallback(() => openCommandPalette({ open: "add-project" }), []);
+  const navigate = Route.useNavigate();
+  const { resolvedTheme, setTheme } = useTheme();
 
   return (
     <SidebarInset className="h-dvh min-h-0 overflow-hidden overscroll-y-none bg-background text-foreground">
-      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-x-hidden bg-background">
-        <Empty className="flex-1">
-          <div className="w-full max-w-lg px-8 py-12">
-            <EmptyHeader className="max-w-none">
-              <EmptyTitle className="text-foreground text-2xl sm:text-3xl">
-                What should we work on?
-              </EmptyTitle>
-              <EmptyDescription className="mt-2 text-sm text-muted-foreground/78">
-                Add a project to start your first thread.
-              </EmptyDescription>
-              <div className="mt-6 flex justify-center">
-                <Button size="sm" onClick={openAddProject}>
-                  <PlusIcon className="size-4" />
-                  Add project
-                </Button>
-              </div>
-            </EmptyHeader>
-          </div>
-        </Empty>
-      </div>
+      <WelcomeWorkspace
+        isDark={resolvedTheme === "dark"}
+        onCreateProject={openAddProject}
+        onExploreProjects={openAddProject}
+        onOpenConnections={() => void navigate({ to: "/settings/connections" })}
+        onToggleTheme={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      />
     </SidebarInset>
   );
 }

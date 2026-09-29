@@ -213,6 +213,14 @@ export default function SidebarV2() {
           />
         );
       })}
+      afterContent={
+        projectScopeMenuOpen ? (
+          <view
+            className="lynx-sidebar-scope-menu-backdrop"
+            bindtap={() => setProjectScopeMenuOpen(false)}
+          />
+        ) : null
+      }
       rowCount={orderedThreads.length}
       hasProjects={projects.length > 0}
       scopedDisplayName={scopedProject?.title ?? null}

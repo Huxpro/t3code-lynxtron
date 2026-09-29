@@ -1,6 +1,6 @@
 import { type ApprovalRequestId, type ProviderApprovalDecision } from "@t3tools/contracts";
 import { memo } from "react";
-import { Button } from "../ui/button";
+import { ComposerPendingApprovalActionsSurface } from "./ComposerPendingApprovalSurface";
 
 interface ComposerPendingApprovalActionsProps {
   requestId: ApprovalRequestId;
@@ -17,39 +17,12 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
   onRespondToApproval,
 }: ComposerPendingApprovalActionsProps) {
   return (
-    <>
-      <Button
-        size="sm"
-        variant="ghost"
-        disabled={isResponding}
-        onClick={() => void onRespondToApproval(requestId, "cancel")}
-      >
-        Cancel turn
-      </Button>
-      <Button
-        size="sm"
-        variant="destructive-outline"
-        disabled={isResponding}
-        onClick={() => void onRespondToApproval(requestId, "decline")}
-      >
-        Decline
-      </Button>
-      <Button
-        size="sm"
-        variant="outline"
-        disabled={isResponding}
-        onClick={() => void onRespondToApproval(requestId, "acceptForSession")}
-      >
-        Always allow this session
-      </Button>
-      <Button
-        size="sm"
-        variant="default"
-        disabled={isResponding}
-        onClick={() => void onRespondToApproval(requestId, "accept")}
-      >
-        Approve once
-      </Button>
-    </>
+    <ComposerPendingApprovalActionsSurface
+      requestId={requestId}
+      isResponding={isResponding}
+      onRespondToApproval={(nextRequestId, decision) =>
+        void onRespondToApproval(nextRequestId, decision)
+      }
+    />
   );
 });

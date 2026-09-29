@@ -117,53 +117,61 @@ export function SidebarV2ControlsSurface(props: SidebarV2ControlsSurfaceProps) {
       {props.projectScopeOptions.length > 0 ? (
         <SidebarGroup className="px-2 pb-2 pt-0">
           <HostView className="flex items-center gap-1">
-            <Menu
-              open={props.projectScopeMenuOpen}
-              onOpenChange={props.onProjectScopeMenuOpenChange}
-            >
-              <MenuTrigger
-                aria-label="Filter threads by project"
-                data-testid="sidebar-v2-project-scope-trigger"
-                className="flex h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md px-2 text-left text-sm font-medium text-sidebar-muted-foreground outline-none hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
+            <HostView className="sidebar-v2-scope-anchor relative min-w-0 flex-1">
+              <Menu
+                open={props.projectScopeMenuOpen}
+                onOpenChange={props.onProjectScopeMenuOpenChange}
               >
-                {props.scopedFavicon ?? (
-                  <FolderIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
-                )}
-                <HostText className="min-w-0 flex-1 truncate">
-                  {props.scopedDisplayName ?? "All projects"}
-                </HostText>
-                <ChevronDownIcon className="size-4 shrink-0 text-sidebar-muted-foreground/70" />
-              </MenuTrigger>
-              <MenuPopup align="start" className="w-(--anchor-width) sidebar-v2-scope-popup">
-                <MenuRadioGroup
-                  value={props.projectScopeKey ?? "all"}
-                  onValueChange={(value) =>
-                    props.onProjectScopeKeyChange(value === "all" ? null : (value as string))
-                  }
+                <MenuTrigger
+                  aria-label="Filter threads by project"
+                  data-testid="sidebar-v2-project-scope-trigger"
+                  className="flex h-8 min-w-0 flex-1 cursor-pointer items-center gap-2 rounded-md px-2 text-left text-sm font-medium text-sidebar-muted-foreground outline-none hover:bg-sidebar-row-hover hover:text-sidebar-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
                 >
-                  <MenuRadioItem
-                    value="all"
-                    closeOnClick
-                    className="h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
+                  {props.scopedFavicon ?? (
+                    <FolderIcon className="size-4 shrink-0 text-sidebar-muted-foreground/80" />
+                  )}
+                  <HostText className="min-w-0 flex-1 truncate">
+                    {props.scopedDisplayName ?? "All projects"}
+                  </HostText>
+                  <ChevronDownIcon className="size-4 shrink-0 text-sidebar-muted-foreground/70" />
+                </MenuTrigger>
+                <MenuPopup
+                  align="start"
+                  className="w-(--anchor-width) sidebar-v2-scope-popup"
+                  style={{ height: `${8 + (props.projectScopeOptions.length + 1) * 32}px` }}
+                >
+                  <MenuRadioGroup
+                    value={props.projectScopeKey ?? "all"}
+                    onValueChange={(value) =>
+                      props.onProjectScopeKeyChange(value === "all" ? null : (value as string))
+                    }
                   >
-                    <FolderIcon className="size-4 shrink-0" />
-                    <HostText className="min-w-0 truncate text-sm">All projects</HostText>
-                  </MenuRadioItem>
-                  {props.projectScopeOptions.map((option) => (
                     <MenuRadioItem
-                      key={option.scopeKey}
-                      value={option.scopeKey}
+                      value="all"
                       closeOnClick
                       className="h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
                     >
-                      {option.favicon}
-                      <HostText className="min-w-0 truncate text-sm">{option.displayName}</HostText>
-                      {option.actions ?? null}
+                      <FolderIcon className="size-4 shrink-0" />
+                      <HostText className="min-w-0 truncate text-sm">All projects</HostText>
                     </MenuRadioItem>
-                  ))}
-                </MenuRadioGroup>
-              </MenuPopup>
-            </Menu>
+                    {props.projectScopeOptions.map((option) => (
+                      <MenuRadioItem
+                        key={option.scopeKey}
+                        value={option.scopeKey}
+                        closeOnClick
+                        className="h-8 min-h-8 px-1 py-0 text-sm font-medium [&>span:last-child]:flex [&>span:last-child]:min-w-0 [&>span:last-child]:items-center [&>span:last-child]:gap-2"
+                      >
+                        {option.favicon}
+                        <HostText className="min-w-0 truncate text-sm">
+                          {option.displayName}
+                        </HostText>
+                        {option.actions ?? null}
+                      </MenuRadioItem>
+                    ))}
+                  </MenuRadioGroup>
+                </MenuPopup>
+              </Menu>
+            </HostView>
             <Tooltip>
               <TooltipTrigger
                 render={

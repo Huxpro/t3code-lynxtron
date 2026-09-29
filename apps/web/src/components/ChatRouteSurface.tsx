@@ -46,15 +46,24 @@ export function ChatRouteSurface({
       {layoutControls}
       <HostView
         className={cn(
-          "flex min-h-0 min-w-0 flex-col overflow-x-hidden",
+          "lynx-chat-route-column flex min-h-0 min-w-0 flex-col overflow-x-hidden",
           chatColumnHidden ? "w-0 flex-none" : "flex-1",
         )}
+        data-chat-route-column=""
         data-chat-column-maximized-away={chatColumnHidden ? "true" : "false"}
       >
         {header}
         {banner}
-        <HostView className="flex min-h-0 min-w-0 flex-1">
-          <HostView className="relative flex min-h-0 min-w-0 flex-1 flex-col">{children}</HostView>
+        <HostView
+          className="lynx-chat-route-body flex min-h-0 min-w-0 flex-1"
+          data-chat-route-body=""
+        >
+          <HostView
+            className="lynx-chat-route-content relative flex min-h-0 min-w-0 flex-1 flex-col"
+            data-chat-route-content=""
+          >
+            {children}
+          </HostView>
         </HostView>
         {afterChatColumn}
       </HostView>

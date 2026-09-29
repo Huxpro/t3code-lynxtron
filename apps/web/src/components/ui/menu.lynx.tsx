@@ -70,7 +70,11 @@ export function MenuTrigger({ children, render, ...props }: ElementProps) {
 export function MenuPopup({ children, ...props }: ElementProps) {
   const context = useContext(MenuContext);
   if (!context?.open) return null;
-  return <view {...props}>{children}</view>;
+  return (
+    <view data-slot="menu-popup" {...props}>
+      {children}
+    </view>
+  );
 }
 
 export function MenuRadioGroup({
@@ -84,7 +88,9 @@ export function MenuRadioGroup({
 }) {
   return (
     <RadioContext.Provider value={{ onValueChange, value }}>
-      <view {...props}>{children}</view>
+      <view data-slot="menu-radio-group" {...props}>
+        {children}
+      </view>
     </RadioContext.Provider>
   );
 }
@@ -103,7 +109,12 @@ export function MenuRadioItem({
     menu?.setOpen(false);
   }, [disabled, menu, radio, value]);
   return (
-    <view {...props} data-checked={radio.value === value} bindtap={handleTap}>
+    <view
+      data-slot="menu-radio-item"
+      {...props}
+      data-checked={radio.value === value}
+      bindtap={handleTap}
+    >
       {children}
     </view>
   );

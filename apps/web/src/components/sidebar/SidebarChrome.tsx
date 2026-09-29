@@ -4,12 +4,8 @@ import { Link, useNavigate } from "../../lib/router";
 
 import { useEnvironmentIdentificationMode } from "../../hooks/useSettings";
 import { cn } from "../../lib/utils";
-import {
-  resolveEnvironmentIdentificationPillLabel,
-  resolveSidebarStageBackdropVariant,
-  SidebarStageBackdrop,
-  useEnvironmentStageLabel,
-} from "../SidebarStageBackdrop";
+import { projectEnvironmentIdentification } from "@t3tools/client-runtime/presentation/stage-branding";
+import { SidebarStageBackdrop, useEnvironmentStageLabel } from "../SidebarStageBackdrop";
 import { Badge } from "../ui/badge";
 import {
   SidebarMenu,
@@ -31,14 +27,10 @@ export const SidebarChromeHeader = memo(function SidebarChromeHeader({
 }) {
   const stageLabel = useEnvironmentStageLabel();
   const environmentIdentificationMode = useEnvironmentIdentificationMode();
-  const backdropVariant = resolveSidebarStageBackdropVariant(
+  const { backdropVariant, pillLabel } = projectEnvironmentIdentification({
     stageLabel,
-    environmentIdentificationMode === "artwork",
-  );
-  const pillLabel =
-    environmentIdentificationMode === "pill"
-      ? resolveEnvironmentIdentificationPillLabel(stageLabel)
-      : null;
+    mode: environmentIdentificationMode,
+  });
 
   return (
     <SidebarChromeHeaderSurface

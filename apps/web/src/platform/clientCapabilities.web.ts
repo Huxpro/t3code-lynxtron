@@ -37,6 +37,22 @@ export const clientCapabilities: ClientUiCapabilities = {
   },
   mediaQuery: {
     matches: (query) => globalThis.matchMedia?.(query).matches ?? false,
+    getViewport: () => ({
+      width: typeof window === "undefined" ? 1280 : window.innerWidth,
+      height: typeof window === "undefined" ? 820 : window.innerHeight,
+      pointer: globalThis.matchMedia?.("(pointer: coarse)").matches ? "coarse" : "fine",
+    }),
+    subscribe: (query, listener) => {
+      if (!globalThis.matchMedia) return () => {};
+      const mediaQuery = globalThis.matchMedia(query);
+      mediaQuery.addEventListener("change", listener);
+      return () => mediaQuery.removeEventListener("change", listener);
+    },
+    subscribeViewport: (listener) => {
+      if (typeof window === "undefined") return () => {};
+      window.addEventListener("resize", listener);
+      return () => window.removeEventListener("resize", listener);
+    },
   },
   navigation: {
     canOpenExternal: () => typeof window !== "undefined",
