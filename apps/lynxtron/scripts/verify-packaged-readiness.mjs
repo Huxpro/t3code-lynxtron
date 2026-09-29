@@ -5007,27 +5007,39 @@ async function verifyRuntimeMenuDismiss({ child, client, timeoutMs }) {
   const dismissLayer = await waitForMeasurement({
     child,
     client,
-    selector: ".composer-runtime-menu-dismiss-layer",
+    selector: ".lynx-menu-dismiss-layer",
     timeoutMs,
     predicate: (measurement) =>
       (measurement?.rect?.width ?? 0) >= 1280 && (measurement?.rect?.height ?? 0) >= 820,
   });
-  await tapSelector({
-    child,
-    client,
-    // GAP-014: on Lynxtron 0.0.28 the composer-scoped dismiss layer misses
-    // taps far from the composer column, so dismissal is proven mid-window.
-    point: "center",
-    selector: ".composer-runtime-menu-dismiss-layer",
-    timeoutMs,
-  });
-  await waitForMeasurement({
-    child,
-    client,
-    selector: ".composer-runtime-menu",
-    timeoutMs,
-    predicate: (measurement) => measurement === null,
-  });
+  // GAP-014 regressed at the window corners, so dismissal is proven there.
+  const cornerDismissals = [];
+  for (const point of ["bottom-right", "top-left"]) {
+    if (cornerDismissals.length > 0) {
+      await tapSelector({
+        child,
+        client,
+        selector: ".composer-toolbar-control--runtime",
+        timeoutMs,
+      });
+      await waitForMeasurement({
+        child,
+        client,
+        selector: ".composer-runtime-menu",
+        timeoutMs,
+        predicate: (measurement) => measurement !== null,
+      });
+    }
+    await tapSelector({ child, client, point, selector: ".lynx-menu-dismiss-layer", timeoutMs });
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-runtime-menu",
+      timeoutMs,
+      predicate: (measurement) => measurement === null,
+    });
+    cornerDismissals.push(point);
+  }
   const afterState = await readClientState(client);
   const afterTrigger = await waitForMeasurement({
     child,
@@ -5072,7 +5084,7 @@ async function verifyRuntimeMenuDismiss({ child, client, timeoutMs }) {
 
   return {
     status: "pass",
-    cornerDismissal: "GAP-014 (outside taps near the window corner do not dismiss)",
+    cornerDismissals,
     selectedMode: selectedState.activeThread.runtimeMode,
     input: "DevTool Input.emulateTouchFromMouseEvent on measured runtime trigger and dismiss layer",
     runtimeMode: beforeMode,

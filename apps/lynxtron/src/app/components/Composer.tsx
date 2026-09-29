@@ -64,6 +64,7 @@ import {
   HostView,
 } from "../../../../web/src/components/ui/hostElements";
 import { Icon, type IconName } from "./Icon";
+import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../../../../web/src/components/ui/menu";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { COMPOSER_CONTEXT_LIGHT_PROFILE } from "./composerContextLightProfile.logic";
@@ -1500,83 +1501,76 @@ export function Composer({
                       </view>
                     ) : null,
                     !compactFooter && !questionMode ? (
-                      <view
+                      <Menu
                         key="runtime"
-                        className="composer-runtime-control-wrap"
-                        data-floating-anchor="composer-runtime-menu"
+                        open={runtimeModeMenuOpen}
+                        onOpenChange={(open) => {
+                          if (open) toggleComposerMenu("runtime");
+                          else setOpenComposerMenu(null);
+                        }}
                       >
-                        <ComposerToolbarControl
-                          className="composer-toolbar-control--runtime"
-                          controlId="runtime"
-                          label={runtimeModePresentation.label}
-                          leading={
-                            <Icon
-                              name={RUNTIME_MODE_ICONS[runtimeMode]}
-                              size={COMPOSER_FOOTER_ICON_GEOMETRY.runtime}
-                              color="#818181"
-                              className="pill__icon-img"
-                            />
-                          }
-                          trailing={
-                            <Icon
-                              name="chevron-down"
-                              size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
-                              color="#818181"
-                              className="pill__chevron-img"
-                            />
-                          }
-                          onClick={() => {
-                            toggleComposerMenu("runtime");
-                          }}
-                        />
-                        {runtimeModeMenuOpen ? (
-                          <>
-                            <view
-                              className="composer-runtime-menu"
-                              aria-label="Runtime mode"
-                              data-composer-runtime-menu
-                              data-floating-popup="composer-runtime-menu"
+                        <MenuTrigger
+                          className="composer-runtime-control-wrap"
+                          data-floating-anchor="composer-runtime-menu"
+                        >
+                          <ComposerToolbarControl
+                            className="composer-toolbar-control--runtime"
+                            controlId="runtime"
+                            label={runtimeModePresentation.label}
+                            leading={
+                              <Icon
+                                name={RUNTIME_MODE_ICONS[runtimeMode]}
+                                size={COMPOSER_FOOTER_ICON_GEOMETRY.runtime}
+                                color="#818181"
+                                className="pill__icon-img"
+                              />
+                            }
+                            trailing={
+                              <Icon
+                                name="chevron-down"
+                                size={COMPOSER_FOOTER_ICON_GEOMETRY.chevron}
+                                color="#818181"
+                                className="pill__chevron-img"
+                              />
+                            }
+                          />
+                        </MenuTrigger>
+                        <MenuPopup
+                          relationId="composer-runtime-menu"
+                          side="top"
+                          align="start"
+                          className="composer-runtime-menu"
+                          aria-label="Runtime mode"
+                          data-composer-runtime-menu
+                        >
+                          {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
+                            <MenuItem
+                              key={option.mode}
+                              className={`composer-runtime-menu__item${
+                                option.mode === runtimeMode
+                                  ? " composer-runtime-menu__item--active"
+                                  : ""
+                              }`}
+                              aria-checked={option.mode === runtimeMode ? "true" : "false"}
+                              onClick={() => onRuntimeModeChange(option.mode)}
                             >
-                              {COMPOSER_RUNTIME_MODE_PRESENTATIONS.map((option) => (
-                                <view
-                                  key={option.mode}
-                                  className={`composer-runtime-menu__item${
-                                    option.mode === runtimeMode
-                                      ? " composer-runtime-menu__item--active"
-                                      : ""
-                                  }`}
-                                  aria-checked={option.mode === runtimeMode ? "true" : "false"}
-                                  bindtap={() => {
-                                    onRuntimeModeChange(option.mode);
-                                    setOpenComposerMenu(null);
-                                  }}
-                                >
-                                  <view className="composer-runtime-menu__icon">
-                                    <Icon
-                                      name={RUNTIME_MODE_ICONS[option.mode]}
-                                      size={14}
-                                      color="#818181"
-                                    />
-                                  </view>
-                                  <view className="composer-runtime-menu__copy">
-                                    <text className="composer-runtime-menu__label">
-                                      {option.label}
-                                    </text>
-                                    <text className="composer-runtime-menu__description">
-                                      {option.description}
-                                    </text>
-                                  </view>
-                                </view>
-                              ))}
-                            </view>
-                            <view
-                              className="composer-runtime-menu-dismiss-layer"
-                              aria-label="Dismiss runtime mode"
-                              bindtap={() => setOpenComposerMenu(null)}
-                            />
-                          </>
-                        ) : null}
-                      </view>
+                              <view className="composer-runtime-menu__icon">
+                                <Icon
+                                  name={RUNTIME_MODE_ICONS[option.mode]}
+                                  size={14}
+                                  color="#818181"
+                                />
+                              </view>
+                              <view className="composer-runtime-menu__copy">
+                                <text className="composer-runtime-menu__label">{option.label}</text>
+                                <text className="composer-runtime-menu__description">
+                                  {option.description}
+                                </text>
+                              </view>
+                            </MenuItem>
+                          ))}
+                        </MenuPopup>
+                      </Menu>
                     ) : null,
                     !compactFooter && !questionMode && showInteractionModeToggle ? (
                       <ComposerToolbarControl

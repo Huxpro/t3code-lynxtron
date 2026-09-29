@@ -1,6 +1,6 @@
 # Plan 11C residual atlas
 
-Generated: 2026-09-29T19:23:41.091Z
+Generated: 2026-09-29T20:14:37.209Z
 
 This atlas combines strict evidence, production-resolver physical reuse,
 weighted style coverage, and registered Native runtime boundaries. Missing
@@ -28,7 +28,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 | GAP-010 | P1       | RUNTIME_CAPABILITY | Review / Changed Files                                 |    50 | closed          | DiffPanel / changed-files composition and R10 renderer island |
 | GAP-003 | P2       | SOURCE_REUSE       | Settings Connections / Source Control / Beta / Archive |    45 | closed          | Settings route panels and platform host slots                 |
 | GAP-012 | P2       | INTERACTION        | Settings Appearance                                    |    39 | closed          | AppearanceSettingsSurface and runtime preferences             |
-| GAP-014 | P3       | SHARED_PRIMITIVE   | Composer runtime menu                                  |    24 | open            | Composer runtime menu (local popup and dismiss layer)         |
+| GAP-014 | P3       | SHARED_PRIMITIVE   | Composer runtime menu                                  |    24 | closed          | Composer runtime menu (local popup and dismiss layer)         |
 | GAP-013 | P2       | RUNTIME_CAPABILITY | Composer image input                                   |    23 | blocked-runtime | Lynxtron host drag-and-drop bridge                            |
 | GAP-001 | P3       | HARNESS_INVALID    | Main shell / New Thread                                |    21 | closed          | Plan 11C workbench state-echo selector                        |
 
@@ -41,7 +41,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: Web route composition and Lynx platform leaves
 - Likely root cause: Closed by deletion-driven convergence onto shared composition and client-runtime presentation modules, with explicit platform leaves.
 - Fix class: `shared composition`
-- Physical reuse: 6.7% modules / 4.8% LOC
+- Physical reuse: 28% modules / 30% LOC
 - Weighted style risk occurrences: 4769
 - Native requirement: satisfied by per-slice Native interaction and runtime certification
 - Disposition: `closed`
@@ -62,7 +62,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: Tailwind v3 compatibility layer and shared tokens/primitives
 - Likely root cause: The Lynx preset omits high-frequency Web utilities; reusable Native-safe mappings now live in the shared override layer.
 - Fix class: `shared token`
-- Physical reuse: 8.7% modules / 8.2% LOC
+- Physical reuse: 29.6% modules / 29.7% LOC
 - Weighted style risk occurrences: 5258
 - Native requirement: Native specimen batch after Browser calibration
 - Disposition: `closed`
@@ -74,12 +74,12 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P1` / `SOURCE_REUSE`
 - Priority score: 58
-- User impact: The primary input surface has only 5.9% module / 6.8% LOC reuse at product-surface scope.
+- User impact: The primary input surface has only 26.3% module / 29.7% LOC reuse at product-surface scope.
 - Clients/states: web, lynx, native / hero, docked, sendable, working, disabled
 - Source owner: ChatComposer / Composer shared composition
 - Likely root cause: Closed by shared Composer surfaces and projections with the Native textarea retained as an explicit platform leaf.
 - Fix class: `shared composition`
-- Physical reuse: 5.9% modules / 6.8% LOC
+- Physical reuse: 26.3% modules / 29.7% LOC
 - Weighted style risk occurrences: 5258
 - Native requirement: satisfied for focus, literal input, physical Return send, pointer send, and Stop; text selection remains GAP-011
 - Disposition: `closed`
@@ -98,7 +98,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: generated Lynx tokens and runtime theme host
 - Likely root cause: The historical atlas predated the dual token generator, system-theme host, and exact-bundle light/dark evidence.
 - Fix class: `product pipeline`
-- Physical reuse: 8.7% modules / 8.2% LOC
+- Physical reuse: 29.6% modules / 29.7% LOC
 - Weighted style risk occurrences: 5258
 - Native requirement: completed exact-bundle light/dark Native evidence
 - Disposition: `closed`
@@ -112,12 +112,12 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P1` / `SOURCE_REUSE`
 - Priority score: 55
-- User impact: Model selection is high-frequency and currently has 2.9% module / 3.1% LOC reuse.
+- User impact: Model selection is high-frequency and currently has 24.5% module / 31.7% LOC reuse.
 - Clients/states: web, lynx, native / default, provider rail, query, empty, selected
 - Source owner: ProviderModelPicker / ModelPicker composition
 - Likely root cause: Closed by shared catalog, provider/row projection, and shared surface anatomy with platform-specific input leaves.
 - Fix class: `shared composition`
-- Physical reuse: 2.9% modules / 3.1% LOC
+- Physical reuse: 24.5% modules / 31.7% LOC
 - Weighted style risk occurrences: 4557
 - Native requirement: satisfied: real open/select/dismiss/focus/typing; focused-input Arrow, Return, and numeric shortcuts remain GAP-011
 - Disposition: `closed`
@@ -137,7 +137,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: MessagesTimeline shared rows and Native list host
 - Likely root cause: Closed by one canonical long-thread fixture plus Web CDP wheel and exact-owned Native Computer Use wheel/Jump evidence.
 - Fix class: `platform primitive`
-- Physical reuse: 8.7% modules / 8.2% LOC
+- Physical reuse: 29.6% modules / 29.7% LOC
 - Weighted style risk occurrences: 5258
 - Native requirement: satisfied: real list wheel/follow and state switching
 - Disposition: `closed`
@@ -155,7 +155,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: Lynxtron host input and menu accelerator bridge
 - Likely root cause: The focused Model Picker input does not propagate Arrow or Return to its container, while Lynxtron's macOS menu bridge cannot encode Arrow keys; focused Native text controls also do not receive Command+A selection.
 - Fix class: `runtime capability`
-- Physical reuse: not audited
+- Physical reuse: 36.2% modules / 41.6% LOC
 - Weighted style risk occurrences: 3854
 - Native requirement: physical Arrow/Return is satisfied for Quick Switch and Return for Composer; Model Picker keyboard selection and Composer Command+A selection require an upstream runtime change
 - Disposition: `blocked-runtime`
@@ -167,12 +167,12 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 
 - Severity/category: `P1` / `SOURCE_REUSE`
 - Priority score: 51
-- User impact: The global navigation overlay has unavailable reuse metrics; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.
+- User impact: The global navigation overlay has 36.2% module / 41.6% LOC reuse; default evidence is retained while query/empty input states remain blocked by the Lynx-for-Web input path.
 - Clients/states: web, lynx, native / default, query, actions-only, empty
 - Source owner: CommandPalette composition / QuickSwitch host
 - Likely root cause: Closed by shared search, thread presentation, and surface composition with platform-specific input leaves.
 - Fix class: `shared composition`
-- Physical reuse: not audited
+- Physical reuse: 36.2% modules / 41.6% LOC
 - Weighted style risk occurrences: 3854
 - Native requirement: satisfied for Command+K, focus, literal query, pointer and Return selection, Arrow navigation, and Escape
 - Disposition: `closed`
@@ -191,7 +191,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: DiffPanel / changed-files composition and R10 renderer island
 - Likely root cause: Closed by the Native diff renderer fallback plus repeatable multi-file semantic checks and exact-owned physical pointer evidence.
 - Fix class: `hard island`
-- Physical reuse: not audited
+- Physical reuse: 25.4% modules / 32.9% LOC
 - Weighted style risk occurrences: 4085
 - Native requirement: satisfied by explicit Native fallback and real multi-file tool interaction
 - Disposition: `closed`
@@ -210,7 +210,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: Settings route panels and platform host slots
 - Likely root cause: Closed after correcting the production roots, measuring 22.4%-35.6% product-surface reuse, and verifying platform mutations and reverse states.
 - Fix class: `shared composition`
-- Physical reuse: not audited
+- Physical reuse: 25% modules / 31.5% LOC
 - Weighted style risk occurrences: 4335
 - Native requirement: satisfied by loading, error/retry, mutation, reverse-state, and cold-restart checks
 - Disposition: `closed`
@@ -231,7 +231,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: AppearanceSettingsSurface and runtime preferences
 - Likely root cause: Closed by wiring the shared Appearance anatomy to canonical portable client settings and Native material/consumer hosts.
 - Fix class: `host adapter`
-- Physical reuse: not audited
+- Physical reuse: 20.7% modules / 26.4% LOC
 - Weighted style risk occurrences: 4821
 - Native requirement: satisfied by real pointer mutation, persistence, and cold restart
 - Disposition: `closed`
@@ -249,12 +249,13 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: Composer runtime menu (local popup and dismiss layer)
 - Likely root cause: The menu keeps an absolute popup and a z-index 0 fixed dismiss layer inside the Composer; raising the layer covers the popup items because Lynx does not order a fixed layer against an absolute sibling's stacking context.
 - Fix class: `shared primitive`
-- Physical reuse: 5.9% modules / 6.8% LOC
+- Physical reuse: 26.3% modules / 29.7% LOC
 - Weighted style risk occurrences: 5258
-- Native requirement: move the runtime menu onto the shared Lynx Menu primitive, whose popup and dismiss layer are both fixed (161/160)
-- Disposition: `open`
+- Native requirement: satisfied: the runtime menu renders through the shared Lynx Menu (fixed popup 161, full-window dismiss layer 160) and corner taps dismiss it
+- Disposition: `closed`
 - Evidence:
   - `evidence/2026-09-29/M2/transcript-and-input.json`
+  - `evidence/2026-09-29/M4/duplicate-decisions.json`
 
 ## GAP-013 — Composer image input
 
@@ -265,7 +266,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: Lynxtron host drag-and-drop bridge
 - Likely root cause: Lynxtron forwards no native drag/drop file events to the LynxView. Web has no picker either, so the 0.0.21 open-dialog FiberSetAttribute error is off the product path.
 - Fix class: `runtime capability`
-- Physical reuse: 5.9% modules / 6.8% LOC
+- Physical reuse: 26.3% modules / 29.7% LOC
 - Weighted style risk occurrences: 5258
 - Native requirement: Command+V image paste is satisfied through the Edit menu handler; file drop requires an upstream drag/drop event
 - Disposition: `blocked-runtime`
@@ -282,7 +283,7 @@ three-client evidence lowers confidence; it does not silently pass a gap.
 - Source owner: Plan 11C workbench state-echo selector
 - Likely root cause: The Harness queried a Lynx-only composer class instead of Web's data-chat-provider-model-picker trigger.
 - Fix class: `harness`
-- Physical reuse: 8.7% modules / 8.2% LOC
+- Physical reuse: 29.6% modules / 29.7% LOC
 - Weighted style risk occurrences: 5258
 - Native requirement: none; Browser state echo now proves equal visible labels
 - Disposition: `closed`

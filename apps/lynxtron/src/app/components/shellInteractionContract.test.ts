@@ -371,9 +371,12 @@ describe("desktop shell interaction contract", () => {
   it("dismisses the runtime permission menu without changing its value", () => {
     const source = componentSource("Composer.tsx");
 
-    expect(source).toContain('className="composer-runtime-menu-dismiss-layer"');
-    expect(source).toContain('aria-label="Dismiss runtime mode"');
-    expect(source).toContain("bindtap={() => setOpenComposerMenu(null)}");
+    // The shared Lynx Menu owns the fixed popup and full-window dismiss layer.
+    expect(source).toContain('from "../../../../web/src/components/ui/menu"');
+    expect(source).toContain('relationId="composer-runtime-menu"');
+    expect(source).toContain("open={runtimeModeMenuOpen}");
+    expect(source).toContain("else setOpenComposerMenu(null);");
+    expect(source).not.toContain("composer-runtime-menu-dismiss-layer");
     expect(source).toContain("const [openComposerMenu, setOpenComposerMenu]");
     expect(source).toContain('toggleComposerMenu("runtime")');
     expect(source).toContain('toggleComposerMenu("model-option")');
@@ -385,7 +388,7 @@ describe("desktop shell interaction contract", () => {
     expect(source).toContain("runtimeModeMenuOpen ||");
     expect(source).toContain("compactControlsMenuOpen");
     expect(source).toContain("modelPicker != null");
-    expect(overrides).toContain(".composer-runtime-menu-dismiss-layer {");
+    expect(overrides).not.toContain(".composer-runtime-menu-dismiss-layer {");
     expect(overrides).toContain(".composer-runtime-control-wrap {");
   });
 
@@ -2567,7 +2570,7 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("height: 32px;");
     expect(sidebarSource).toContain("projectScopePopupWidth: sidebarWidth - 53");
     expect(menuSource).toContain('trigger.invoke("boundingClientRect"');
-    expect(menuSource).toContain("resolveFloatingAnchorPoint(context.anchorRect");
+    expect(menuSource).toContain("resolveFloatingFixedPosition(\n      context.anchorRect");
     expect(menuSource).toContain('position: "fixed"');
     expect(menuSource).not.toContain('top: "140px"');
     expect(menuSource).not.toContain('left: "8px"');

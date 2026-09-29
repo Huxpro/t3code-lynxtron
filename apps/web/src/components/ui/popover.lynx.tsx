@@ -12,11 +12,12 @@ import {
   useState,
 } from "@lynx-js/react";
 import {
-  resolveFloatingAnchorPoint,
+  resolveFloatingFixedPosition,
   type FloatingAlign,
   type FloatingRect,
   type FloatingSide,
 } from "@t3tools/client-runtime/presentation/floating-relation";
+import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
 
 type ElementProps = Record<string, unknown> & {
   readonly children?: ReactNode;
@@ -133,13 +134,13 @@ export function PopoverPopup({
   readonly sideOffset?: number;
 }) {
   const context = useContext(PopoverContext);
+  const viewport = useViewportSnapshot();
   if (!context?.open || !context.anchorRect) return null;
-  const point = resolveFloatingAnchorPoint(context.anchorRect, {
-    align,
-    alignOffset,
-    side,
-    sideOffset,
-  });
+  const position = resolveFloatingFixedPosition(
+    context.anchorRect,
+    { align, alignOffset, side, sideOffset },
+    viewport.height,
+  );
   return (
     <>
       <view
@@ -148,9 +149,7 @@ export function PopoverPopup({
         data-slot="popover-popup"
         style={{
           position: "fixed",
-          left: `${point.x}px`,
-          top: `${point.y}px`,
-          transform: point.transform,
+          ...position,
           zIndex: 161,
         }}
         catchtap={() => {}}

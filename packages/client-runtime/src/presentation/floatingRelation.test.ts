@@ -4,6 +4,7 @@ import {
   floatingRelationResidual,
   measureFloatingRelation,
   resolveFloatingAnchorPoint,
+  resolveFloatingFixedPosition,
 } from "./floatingRelation.ts";
 
 describe("floating relation", () => {
@@ -77,5 +78,16 @@ describe("floating relation", () => {
       y: 202,
       transform: "translate(-100%, 0%)",
     });
+  });
+
+  it("anchors top-side fixed popups by their bottom edge", () => {
+    const trigger = { x: 623, y: 725, width: 129, height: 28 };
+
+    expect(
+      resolveFloatingFixedPosition(trigger, { side: "top", align: "start", sideOffset: 4 }, 820),
+    ).toEqual({ left: "623px", bottom: "99px", transform: "translate(0%, 0%)" });
+    expect(
+      resolveFloatingFixedPosition(trigger, { side: "bottom", align: "end", sideOffset: 4 }, 820),
+    ).toEqual({ left: "752px", top: "757px", transform: "translate(-100%, 0%)" });
   });
 });

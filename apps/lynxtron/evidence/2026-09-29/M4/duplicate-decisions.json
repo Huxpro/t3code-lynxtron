@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "phase": "Plan 14 M4",
+  "observedAt": "2026-09-29",
+  "runtime": "@lynx-js/lynxtron@0.0.28",
+  "viewport": "1280x820",
+  "theme": "dark",
+  "bundle": {
+    "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+    "bytes": 6816103,
+    "sha256": "8e41390c20b78a43c83c794b019d1176e9f2a6df51be55ca99e7caf641ac290f"
+  },
+  "slices": [
+    {
+      "id": "composer-runtime-menu",
+      "change": "Lynx Composer runtime menu renders through the shared Lynx Menu primitive; its local absolute popup and z-index 0 dismiss layer are deleted. The shared Lynx Menu and Popover now anchor top-side popups by bottom, because Lynx sizes a fixed box by the space below its top.",
+      "closes": ["GAP-014"],
+      "gates": {
+        "runtimeMenuDismiss": {
+          "status": "pass",
+          "runtimeMenuDismiss": {
+            "status": "pass",
+            "cornerDismissals": ["bottom-right", "top-left"],
+            "selectedMode": "approval-required",
+            "input": "DevTool Input.emulateTouchFromMouseEvent on measured runtime trigger and dismiss layer",
+            "runtimeMode": "full-access",
+            "label": "Full access",
+            "trigger": {
+              "x": 623,
+              "y": 725,
+              "width": 129,
+              "height": 28
+            },
+            "menu": {
+              "x": 623,
+              "y": 450,
+              "width": 272,
+              "height": 271
+            },
+            "activeItem": {
+              "text": "Full access Allow commands and edits without prompts.",
+              "rect": {
+                "x": 628,
+                "y": 648,
+                "width": 262,
+                "height": 68
+              }
+            },
+            "dismissLayer": {
+              "x": 0,
+              "y": 0,
+              "width": 1280,
+              "height": 820
+            },
+            "dismissed": true,
+            "valueUnchanged": true
+          }
+        },
+        "diffScopeMenu": {
+          "status": "pass"
+        },
+        "sidebarScope": {
+          "status": "pass"
+        }
+      }
+    }
+  ]
+}

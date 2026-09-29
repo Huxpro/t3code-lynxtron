@@ -72,6 +72,34 @@ export function resolveFloatingAnchorPoint(
   };
 }
 
+export interface FloatingFixedPosition {
+  readonly left: string;
+  readonly top?: string;
+  readonly bottom?: string;
+  readonly transform: string;
+}
+
+/**
+ * Fixed-position placement for hosts that size a fixed box by the space below
+ * its `top` (Lynx). A top-side popup anchors by `bottom` instead of being
+ * translated up, so it keeps its full content height.
+ */
+export function resolveFloatingFixedPosition(
+  anchor: FloatingRect,
+  placement: FloatingPlacement,
+  viewportHeight: number,
+): FloatingFixedPosition {
+  const point = resolveFloatingAnchorPoint(anchor, placement);
+  if (placement.side !== "top") {
+    return { left: `${point.x}px`, top: `${point.y}px`, transform: point.transform };
+  }
+  return {
+    left: `${point.x}px`,
+    bottom: `${viewportHeight - point.y}px`,
+    transform: transformForPlacement("bottom", placement.align),
+  };
+}
+
 export function measureFloatingRelation(
   anchor: FloatingRect,
   popup: FloatingRect,

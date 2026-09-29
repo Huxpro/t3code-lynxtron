@@ -14,7 +14,7 @@ import {
   useState,
 } from "@lynx-js/react";
 import {
-  resolveFloatingAnchorPoint,
+  resolveFloatingFixedPosition,
   type FloatingAlign,
   type FloatingRect,
   type FloatingSide,
@@ -212,6 +212,7 @@ export function MenuPopup({
   readonly sideOffset?: number;
 }) {
   const context = useContext(MenuContext);
+  const viewport = useViewportSnapshot();
   if (!context?.open) return null;
   const isSidebarScopePopup = className?.includes("sidebar-v2-scope-popup") ?? false;
   const isAnchoredPopup = typeof relationId === "string";
@@ -219,11 +220,11 @@ export function MenuPopup({
   const alignClass = align === "end" ? "right-0" : align === "start" ? "left-0" : "left-0";
   if (isSidebarScopePopup || isAnchoredPopup) {
     if (!context.anchorRect) return null;
-    const point = resolveFloatingAnchorPoint(context.anchorRect, {
-      side,
-      align,
-      sideOffset,
-    });
+    const position = resolveFloatingFixedPosition(
+      context.anchorRect,
+      { side, align, sideOffset },
+      viewport.height,
+    );
     const callerStyle =
       typeof props.style === "object" && props.style !== null
         ? (props.style as Record<string, string>)
@@ -243,9 +244,7 @@ export function MenuPopup({
           style={{
             ...callerStyle,
             position: "fixed",
-            left: `${point.x}px`,
-            top: `${point.y}px`,
-            transform: point.transform,
+            ...position,
             zIndex: 161,
           }}
           catchtap={() => {}}

@@ -446,9 +446,12 @@ const gaps = [
     implementationCost: 3,
     platformRisk: 2,
     nativeRequirement:
-      "move the runtime menu onto the shared Lynx Menu primitive, whose popup and dismiss layer are both fixed (161/160)",
-    disposition: "open",
-    evidence: ["evidence/2026-09-29/M2/transcript-and-input.json"],
+      "satisfied: the runtime menu renders through the shared Lynx Menu (fixed popup 161, full-window dismiss layer 160) and corner taps dismiss it",
+    disposition: "closed",
+    evidence: [
+      "evidence/2026-09-29/M2/transcript-and-input.json",
+      "evidence/2026-09-29/M4/duplicate-decisions.json",
+    ],
     screen: "composer",
   },
 ];
