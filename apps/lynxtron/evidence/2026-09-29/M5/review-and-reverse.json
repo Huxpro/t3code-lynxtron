@@ -45,10 +45,36 @@
     "reviewDiffState": {
       "status": "pass",
       "note": "Passes on an isolated multi-file workspace; the earlier failure came from two fixtures sharing one workspace checkpoint ref."
+    },
+    "checkpointRevertLive": {
+      "status": "pass",
+      "input": "Renderer input fixture + DevTool tap on Send; DevTool tap on the user message Revert; probe confirm answers confirm",
+      "provider": {
+        "instanceId": "opencode",
+        "model": "opencode/big-pickle"
+      },
+      "threadId": "c055a31e-2b86-401d-816b-45e391dd748f",
+      "checkpointCard": "1 changed file + 1 − 0 Hide files Open diff ◻ revert-probe.txt + 1 − 0",
+      "messageCount": {
+        "afterTurn": 2,
+        "afterRevert": 1
+      },
+      "workspace": {
+        "file": "revert-probe.txt",
+        "createdByTurn": true,
+        "removedByRevert": true
+      },
+      "bundle": {
+        "path": "/Users/bytedance/github/t3code-lynxtron-021-full/apps/lynxtron/dist/desktop/main.lynx.bundle",
+        "bytes": 6956512,
+        "sha256": "ed47b007d48bb27c6b6e4ecbb71df35b97adfdab4cd933888985d91979496ef5"
+      }
     }
   },
   "open": [
-    "Successful revert needs a real provider session (the server rolls back the provider conversation); run it on a live OpenCode turn.",
     "Expanded checkpoint card is 82px vs a Native-only 79px pin from 0.0.21; needs a Web reference before re-pinning."
+  ],
+  "notes": [
+    "After a revert the native list keeps recycled cells (removed rows and the old card) in its pool outside the list bounds; the captured frame shows only the user message, so the gate counts cards inside .timeline-list only."
   ]
 }

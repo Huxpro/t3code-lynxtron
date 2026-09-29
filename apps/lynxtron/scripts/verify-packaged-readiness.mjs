@@ -7997,6 +7997,184 @@ async function verifyCheckpointRevert({
   };
 }
 
+// Plan 14 M5: a live OpenCode turn creates a file, then the user message's
+// Revert (confirmed) must truncate the thread, drop its checkpoint card, and
+// remove the file from the workspace.
+async function verifyCheckpointRevertLive({
+  child,
+  client,
+  devToolCli,
+  log,
+  outputDirectory,
+  projectCwd,
+  projectId,
+  timeoutMs,
+}) {
+  const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
+  const probeFile = "revert-probe.txt";
+  const probePath = path.join(projectCwd, probeFile);
+  rmSync(probePath, { force: true });
+  const providerDeadline = Date.now() + timeoutMs;
+  let provider;
+  while (Date.now() < providerDeadline) {
+    try {
+      const config = await invokeConnector(client, "refreshProviders", {
+        instanceId: modelSelection.instanceId,
+      });
+      provider = config?.providers?.find(
+        (candidate) => candidate.instanceId === modelSelection.instanceId,
+      );
+      break;
+    } catch (error) {
+      if (!(error instanceof Error) || !error.message.includes("not connected")) throw error;
+      await waitForChildExit(child, 100);
+    }
+  }
+  if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
+    throw new Error(`OpenCode is not ready for the live revert: ${JSON.stringify(provider)}`);
+  }
+  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-row-card",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const draft = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" &&
+      state.activeThreadId === state.draftThreadId &&
+      state.activeThread?.projectId === projectId,
+  });
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression:
+      "[typeof globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__].join(':')",
+    predicate: (value) => value === "function:function",
+    timeoutMs,
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?.(${JSON.stringify(
+      modelSelection.instanceId,
+    )}, ${JSON.stringify(modelSelection.model)})`,
+    returnByValue: true,
+  });
+  const prompt = `Create a new file named ${probeFile} in the project root containing exactly the line: revert me. Do not change any other file.`;
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(prompt)})`,
+    returnByValue: true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-primary-action",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "send",
+  });
+  await tapSelector({ child, client, selector: ".composer-primary-action", timeoutMs });
+  const completed = await waitForClientState({
+    child,
+    client,
+    timeoutMs: Math.max(timeoutMs, 240_000),
+    predicate: (state) =>
+      state?.activeThreadId === draft.draftThreadId &&
+      state.draftThreadId !== draft.draftThreadId &&
+      state.threadIds?.includes(draft.draftThreadId) &&
+      state.activeTurnId == null &&
+      state.latestTurn?.state === "completed" &&
+      state.messages?.some((message) => message.role === "assistant" && !message.streaming),
+  });
+  const threadId = completed.activeThreadId;
+  if (!existsSync(probePath)) {
+    throw new Error(
+      `The live turn did not create ${probeFile}: ${JSON.stringify(completed.messages)}`,
+    );
+  }
+  const card = await waitForMeasurement({
+    child,
+    client,
+    selector: ".turn-diff-card",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes(probeFile) ?? false,
+  });
+  await tapSelectorByAttribute({
+    attribute: "aria-label",
+    child,
+    client,
+    selector: ".transcript-message-meta__action",
+    timeoutMs,
+    value: "Revert to this message",
+  });
+  await waitForLogText(child, log, '"answer":"confirm"', timeoutMs);
+  const reverted = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === threadId &&
+      (state.messages?.length ?? 0) < completed.messages.length,
+  });
+  // The native list keeps recycled cells in its pool outside the list's
+  // bounds; only a card inside the transcript list counts as rendered.
+  const cardDeadline = Date.now() + timeoutMs;
+  let renderedCards = [];
+  let list = null;
+  do {
+    list = await readOptionalMeasurement(client, ".timeline-list");
+    const cards = await readSelectorMeasurements(client, ".turn-diff-card");
+    renderedCards = list
+      ? cards.filter(
+          (candidate) =>
+            candidate.rect.x >= list.rect.x &&
+            candidate.rect.x < list.rect.x + list.rect.width &&
+            candidate.rect.y < list.rect.y + list.rect.height &&
+            candidate.rect.y + candidate.rect.height > list.rect.y,
+        )
+      : cards;
+    if (renderedCards.length === 0) break;
+    await waitForChildExit(child, 200);
+  } while (Date.now() < cardDeadline);
+  if (renderedCards.length > 0) {
+    const screenshot = captureNativeScreenshot({
+      client,
+      devToolCli,
+      outputDirectory,
+      name: "native-revert-live-stale-card.png",
+    });
+    throw new Error(
+      `Checkpoint card survived the revert: ${JSON.stringify({
+        screenshot: screenshot.path,
+        list: list?.rect,
+        cards: renderedCards.map((candidate) => candidate.rect),
+      })}`,
+    );
+  }
+  const fileDeadline = Date.now() + timeoutMs;
+  while (existsSync(probePath) && Date.now() < fileDeadline) await waitForChildExit(child, 200);
+  if (existsSync(probePath)) throw new Error(`Revert left ${probeFile} in the workspace.`);
+  const refusal = (await readSelectorMeasurements(client, "[data-timeline-row-kind]")).find((row) =>
+    row.text.includes("Checkpoint revert failed"),
+  );
+  if (refusal) throw new Error(`Live revert was refused: ${refusal.text}`);
+
+  return {
+    status: "pass",
+    input:
+      "Renderer input fixture + DevTool tap on Send; DevTool tap on the user message Revert; probe confirm answers confirm",
+    provider: modelSelection,
+    threadId,
+    checkpointCard: card.text.trim().slice(0, 160),
+    messageCount: { afterTurn: completed.messages.length, afterRevert: reverted.messages.length },
+    workspace: { file: probeFile, createdByTurn: true, removedByRevert: true },
+  };
+}
+
 async function verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs }) {
   // Shared formatWorkspaceRelativePath prefixes the workspace folder name.
   const relativePath = `${path.basename(projectCwd)}/src/greet.ts`;
@@ -15082,6 +15260,9 @@ async function runOnce({
       ...(shouldVerifyCheckpointRevert
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm" }
         : {}),
+      ...(shouldVerifyCheckpointRevertLive
+        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "confirm" }
+        : {}),
       ...(shouldVerifyLinkContextMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
@@ -15594,6 +15775,18 @@ async function runOnce({
     const linkContextMenu = shouldVerifyLinkContextMenu
       ? await verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs })
       : undefined;
+    const checkpointRevertLive = shouldVerifyCheckpointRevertLive
+      ? await verifyCheckpointRevertLive({
+          child,
+          client,
+          devToolCli,
+          log,
+          outputDirectory,
+          projectCwd,
+          projectId: fixtureManifestProjectId,
+          timeoutMs,
+        })
+      : undefined;
     const checkpointRevert = shouldVerifyCheckpointRevert
       ? await verifyCheckpointRevert({ child, client, log, projectCwd, reviewFixture, timeoutMs })
       : undefined;
@@ -15918,6 +16111,7 @@ async function runOnce({
       transcriptFollowState,
       linkContextMenu,
       checkpointRevert,
+      checkpointRevertLive,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -15997,6 +16191,7 @@ async function runOnce({
       transcriptFollowState,
       linkContextMenu,
       checkpointRevert,
+      checkpointRevertLive,
       failedTranscriptState,
       approvalTranscriptState,
       messageCardState,
@@ -16125,6 +16320,7 @@ const shouldVerifyCompletedTranscriptState = process.argv.includes(
 const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transcript-follow-state");
 const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context-menu");
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
+const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
 const shouldVerifyTranscriptIncomingGrowth = process.argv.includes(
   "--verify-transcript-incoming-growth",
 );
@@ -16487,7 +16683,10 @@ const fileEditingSaveOnlyEmptyFixture =
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
 const composerSendRetryOnlyEmptyFixture =
-  (shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney || shouldVerifyRemoteJourney) &&
+  (shouldVerifyComposerSendRetry ||
+    shouldVerifyM1LocalJourney ||
+    shouldVerifyRemoteJourney ||
+    shouldVerifyCheckpointRevertLive) &&
   !verifySettingsNavigation &&
   !verifySidebarScope &&
   !verifyComposerBranding &&

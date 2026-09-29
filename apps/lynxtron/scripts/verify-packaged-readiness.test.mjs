@@ -417,6 +417,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"native-model-selection-after.png"');
   });
 
+  it("verifies a live checkpoint revert restores thread, timeline, and workspace", () => {
+    assert.include(source, "async function verifyCheckpointRevertLive");
+    assert.include(source, '"--verify-checkpoint-revert-live"');
+    assert.include(source, 'T3_TEST_CONFIRM_ANSWERS: "confirm"');
+    assert.include(source, 'readOptionalMeasurement(client, ".timeline-list")');
+  });
+
   it("verifies checkpoint revert cancellation and refusal without state drift", () => {
     assert.include(source, "async function verifyCheckpointRevert");
     assert.include(source, '"--verify-checkpoint-revert"');
