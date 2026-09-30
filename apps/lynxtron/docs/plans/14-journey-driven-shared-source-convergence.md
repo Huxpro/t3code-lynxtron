@@ -13,8 +13,8 @@ the phase files own implementation detail.
 ## Plan metadata
 
 - Content type: Master execution plan
-- Status: `in_progress`
-- Active phase: `M4`
+- Status: `completed` (2026-09-29; open exceptions in M7)
+- Active phase: none (next: upstream sync on a separate branch)
 - Audience: Agents continuing the T3 Code Electron-to-Lynxtron convergence
 - Product authority: Current Web/Electron behavior in this checkout
 - Runtime authority: Exact-owned packaged Lynxtron using disposable realistic state
