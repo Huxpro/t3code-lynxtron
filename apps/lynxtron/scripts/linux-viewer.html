@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>T3 Code Lynxtron (Linux)</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #1b1b1b;
+        color: #bbb;
+        font:
+          12px system-ui,
+          sans-serif;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #status {
+        padding: 4px 8px;
+        align-self: stretch;
+      }
+      canvas {
+        outline: none;
+        touch-action: none;
+        box-shadow: 0 0 0 1px #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="status">connecting…</div>
+    <canvas id="view" tabindex="0"></canvas>
+    <script type="module">
+      const canvas = document.getElementById("view");
+      const status = document.getElementById("status");
+      const context = canvas.getContext("2d");
+      const staging = document.createElement("canvas");
+      const stagingContext = staging.getContext("2d");
+      let logicalScale = 1;
+      let frames = 0;
+
+      async function inflate(buffer) {
+        const stream = new Blob([buffer])
+          .stream()
+          .pipeThrough(new DecompressionStream("deflate-raw"));
+        return new Uint8ClampedArray(await new Response(stream).arrayBuffer());
+      }
+
+      async function pumpFrames() {
+        let seq = 0;
+        for (;;) {
+          try {
+            const response = await fetch(`/frame?after=${seq}`, { cache: "no-store" });
+            if (response.status === 204) continue;
+            if (!response.ok) throw new Error(`frame ${response.status}`);
+            seq = Number(response.headers.get("x-seq"));
+            const width = Number(response.headers.get("x-width"));
+            const height = Number(response.headers.get("x-height"));
+            logicalScale = Number(response.headers.get("x-scale"));
+            const pixels = await inflate(await response.arrayBuffer());
+            if (staging.width !== width || staging.height !== height) {
+              staging.width = canvas.width = width;
+              staging.height = canvas.height = height;
+              canvas.style.width = `${width / logicalScale}px`;
+              canvas.style.height = `${height / logicalScale}px`;
+            }
+            stagingContext.putImageData(new ImageData(pixels, width, height), 0, 0);
+            // Clay writes GL rows bottom-up.
+            context.setTransform(1, 0, 0, -1, 0, height);
+            context.drawImage(staging, 0, 0);
+            frames += 1;
+            status.textContent = `frame ${seq} · ${width / logicalScale}×${height / logicalScale} @${logicalScale}x`;
+            document.title = `T3 Code Lynxtron · frame ${seq}`;
+          } catch (error) {
+            status.textContent = `waiting for frames: ${error.message}`;
+            await new Promise((resolve) => setTimeout(resolve, 500));
+          }
+        }
+      }
+
+      let queue = [];
+      let flushing = false;
+      async function send(event) {
+        // DevTool inserts text as one synthetic key press; rapid presses
+        // collide, so consecutive characters travel as one insertion.
+        const last = queue.at(-1);
+        if (event.kind === "text" && last?.kind === "text") {
+          last.text += event.text;
+        } else {
+          queue.push(event);
+        }
+        if (flushing) return;
+        flushing = true;
+        while (queue.length > 0) {
+          const batch = queue;
+          queue = [];
+          const response = await fetch("/input", { method: "POST", body: JSON.stringify(batch) });
+          if (!response.ok) status.textContent = `input: ${await response.text()}`;
+        }
+        flushing = false;
+      }
+
+      function logicalPoint(event) {
+        const rect = canvas.getBoundingClientRect();
+        const width = canvas.width / logicalScale;
+        const height = canvas.height / logicalScale;
+        return {
+          x: ((event.clientX - rect.left) * width) / rect.width,
+          y: ((event.clientY - rect.top) * height) / rect.height,
+        };
+      }
+
+      let pressed = false;
+      let lastMove = 0;
+      canvas.addEventListener("pointerdown", (event) => {
+        canvas.focus();
+        canvas.setPointerCapture(event.pointerId);
+        pressed = true;
+        send({ kind: "pointer", type: "mousePressed", ...logicalPoint(event) });
+      });
+      canvas.addEventListener("pointermove", (event) => {
+        if (!pressed || event.timeStamp - lastMove < 16) return;
+        lastMove = event.timeStamp;
+        send({ kind: "pointer", type: "mouseMoved", ...logicalPoint(event) });
+      });
+      const release = (event) => {
+        if (!pressed) return;
+        pressed = false;
+        send({ kind: "pointer", type: "mouseReleased", ...logicalPoint(event) });
+      };
+      canvas.addEventListener("pointerup", release);
+      canvas.addEventListener("pointercancel", release);
+      // Wheel turns coalesce into one scroll gesture per 60 ms.
+      let wheel = null;
+      canvas.addEventListener(
+        "wheel",
+        (event) => {
+          event.preventDefault();
+          const scale =
+            event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? canvas.clientHeight : 1;
+          if (!wheel) {
+            wheel = { kind: "wheel", ...logicalPoint(event), deltaX: 0, deltaY: 0 };
+            setTimeout(() => {
+              send(wheel);
+              wheel = null;
+            }, 60);
+          }
+          wheel.deltaX += event.deltaX * scale;
+          wheel.deltaY += event.deltaY * scale;
+        },
+        { passive: false },
+      );
+      canvas.addEventListener("keydown", (event) => {
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+        if (event.key.length === 1) {
+          event.preventDefault();
+          send({ kind: "text", text: event.key });
+        }
+      });
+      canvas.addEventListener("paste", (event) => {
+        const text = event.clipboardData?.getData("text/plain");
+        if (text) {
+          event.preventDefault();
+          send({ kind: "text", text });
+        }
+      });
+
+      pumpFrames();
+    </script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import { app, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
+import { app, devtool, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
 import path from "path";
 
 import {
@@ -9,6 +9,7 @@ import {
 } from "./keyboardMenu.ts";
 import { MainConnectorHost } from "./mainConnectorHost.ts";
 import { resolveLynxtronViewport } from "./windowViewport.ts";
+import { resolveWindowlessWindowOptions, shouldEnableDevTool } from "./windowlessHost.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
@@ -144,12 +145,16 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
 }
 
 app.whenReady().then(() => {
+  if (shouldEnableDevTool(process.env)) {
+    devtool.setDevToolEnabled(true);
+  }
   const viewport = resolveLynxtronViewport();
   const win = new LynxWindow({
     width: viewport.width,
     height: viewport.height,
     useContentSize: true,
     title: "T3 Code",
+    ...resolveWindowlessWindowOptions(process.platform, process.env),
     lynxPreference: {
       preload: path.join(__dirname, "preload.js"),
     },
