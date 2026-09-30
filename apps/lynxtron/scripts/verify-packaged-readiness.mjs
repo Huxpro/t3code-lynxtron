@@ -8713,7 +8713,22 @@ async function verifyHeaderThreadMenu({ child, client, log, timeoutMs }) {
       candidate.threadIds?.includes(candidate.activeThreadId) === true,
   });
   const threadId = state.activeThreadId;
-  await tapSelector({ child, client, selector: ".chat-header-title-button", timeoutMs });
+  const titleButton = await waitForMeasurement({
+    child,
+    client,
+    selector: ".chat-header-title-button",
+    timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement),
+  }).catch(async (error) => {
+    const titles = await readSelectorMeasurements(client, ".topbar__thread");
+    const headers = await readSelectorMeasurements(client, ".chat-header-reference");
+    throw new Error(
+      `${error instanceof Error ? error.message : String(error)}; titles=${JSON.stringify(
+        titles.map((title) => ({ text: title.text, attributes: title.attributes })),
+      )}; headers=${headers.length}; activeThreadId=${threadId}`,
+    );
+  });
+  await tapMeasurement({ client, measurement: titleButton });
   await waitForLogText(child, log, "select=rename", timeoutMs);
   const renameField = await waitForMeasurement({
     child,
@@ -8725,7 +8740,7 @@ async function verifyHeaderThreadMenu({ child, client, log, timeoutMs }) {
   if (renameField.attributes["data-chat-header-title-rename"] !== threadId) {
     throw new Error(`Header rename field targets the wrong thread: ${JSON.stringify(renameField)}`);
   }
-  await tapSelector({ child, client, selector: ".composer-frame", timeoutMs });
+  await tapSelector({ child, client, selector: ".chat-header-title-rename-dismiss", timeoutMs });
   await waitForMeasurement({
     child,
     client,

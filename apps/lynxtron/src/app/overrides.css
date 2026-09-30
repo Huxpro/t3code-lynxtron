@@ -2019,7 +2019,18 @@
   height: 24px;
   cursor: pointer;
 }
+.chat-header-title-rename-dismiss {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 96;
+  background-color: transparent;
+}
 .chat-header-title-rename {
+  position: relative;
+  z-index: 97;
   flex-grow: 1;
   min-width: 0;
   height: 24px;

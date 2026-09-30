@@ -236,16 +236,21 @@ export function ChatHeader({
   };
   const titleElement = activeShell ? (
     renameActive ? (
-      <input
-        className="chat-header-title-rename topbar__thread"
-        data-chat-header-title-rename={activeShell.id}
-        {...({ value: renaming.draft, focus: true } as object)}
-        bindinput={(event: { detail?: { value?: string } }) =>
-          setRenaming({ threadId: activeShell.id, draft: event.detail?.value ?? "" })
-        }
-        bindconfirm={commitRename}
-        bindblur={commitRename}
-      />
+      <>
+        {/* Lynx inputs keep focus when the user taps elsewhere, so a
+            transparent layer commits the rename, like a blur on Web. */}
+        <view className="chat-header-title-rename-dismiss" bindtap={commitRename} />
+        <input
+          className="chat-header-title-rename topbar__thread"
+          data-chat-header-title-rename={activeShell.id}
+          {...({ value: renaming.draft, focus: true } as object)}
+          bindinput={(event: { detail?: { value?: string } }) =>
+            setRenaming({ threadId: activeShell.id, draft: event.detail?.value ?? "" })
+          }
+          bindconfirm={commitRename}
+          bindblur={commitRename}
+        />
+      </>
     ) : (
       <view
         className="chat-header-title-button lynx-titlebar-no-drag"
