@@ -653,6 +653,9 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
           : null,
         row.kind === "turn-fold" ? "transcript-turn-fold-outer" : null,
         row.kind === "working" ? "transcript-working-outer" : null,
+        row.kind === "work-toggle" || row.kind === "work-live"
+          ? "transcript-work-line-outer"
+          : null,
       )}
       data-timeline-row-id={row.id}
       data-timeline-row-kind={row.kind}

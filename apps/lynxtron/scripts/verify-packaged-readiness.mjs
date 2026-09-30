@@ -8138,6 +8138,31 @@ async function verifyCheckpointRevertLive({
     timeoutMs,
     predicate: (measurement) => measurement?.text.includes(probeFile) ?? false,
   });
+  // Upstream #7152: the settled turn's tool calls collapse into one line.
+  const toolSummary = await waitForMeasurement({
+    child,
+    client,
+    selector: ".transcript-work-toggle--summary",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurementVisible(measurement) &&
+      /\b(Changed|Ran|Read|Searched|Used)\b/u.test(measurement.text),
+  });
+  const [summaryRows, summaryLabels] = await Promise.all([
+    readSelectorMeasurements(client, ".transcript-work-toggle--summary"),
+    readSelectorMeasurements(client, ".transcript-tool-summary-label"),
+  ]);
+  const summaryLabel = summaryLabels.find(
+    (label) => measurementVisible(label) && label.text.trim() === toolSummary.text.trim(),
+  );
+  if (!summaryLabel || summaryLabel.rect.width < 60) {
+    throw new Error(
+      `The tool summary line is not laid out as one readable row: ${JSON.stringify({
+        rows: summaryRows.map((row) => ({ text: row.text.trim(), rect: row.rect })),
+        labels: summaryLabels.map((label) => ({ text: label.text.trim(), rect: label.rect })),
+      })}`,
+    );
+  }
   await tapSelectorByAttribute({
     attribute: "aria-label",
     child,
@@ -8205,6 +8230,13 @@ async function verifyCheckpointRevertLive({
     provider: modelSelection,
     threadId,
     checkpointCard: card.text.trim().slice(0, 160),
+    toolSummary: {
+      text: toolSummary.text.trim(),
+      kind: toolSummary.attributes["data-transcript-tool-summary"] ?? null,
+      rect: toolSummary.rect,
+      label: summaryLabel.rect,
+      rows: summaryRows.map((row) => ({ text: row.text.trim(), rect: row.rect })),
+    },
     messageCount: { afterTurn: completed.messages.length, afterRevert: reverted.messages.length },
     workspace: { file: probeFile, createdByTurn: true, removedByRevert: true },
   };

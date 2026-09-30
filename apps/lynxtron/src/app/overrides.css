@@ -4668,17 +4668,19 @@
 /* One-line tool activity: the collapsed tool-group summary, the running
    turn's live tool row, and the one-line entries an expanded group reveals.
    Static by design; Web's live shimmer is an infinite animation. */
-[data-timeline-row-kind="work-toggle"],
-[data-timeline-row-kind="work-live"] {
+.transcript-work-line-outer {
   width: 100%;
   padding-bottom: 8px;
   box-sizing: border-box;
 }
-[data-timeline-row-kind].transcript-work-group-header-outer,
-[data-timeline-row-kind="work"].transcript-work-grouped-outer {
+/* Class selectors: attribute-qualified row selectors do not apply in Lynx. */
+.transcript-work-group-header-outer,
+.transcript-work-grouped-outer {
+  width: 100%;
   padding-bottom: 0;
+  box-sizing: border-box;
 }
-[data-timeline-row-kind="work"].transcript-work-grouped-outer--last {
+.transcript-work-grouped-outer--last {
   padding-bottom: 4px;
 }
 .transcript-work-toggle--summary,

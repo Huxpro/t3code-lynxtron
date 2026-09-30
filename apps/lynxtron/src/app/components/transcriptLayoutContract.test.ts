@@ -413,7 +413,7 @@ describe("transcript layout contract", () => {
     );
     expect(timelineSource).toContain("summary: row.onlyToolEntries && row.summary !== null");
     expect(timelineSource).toContain("latestUserMessageAt,\n    );");
-    expect(overrides).toContain('[data-timeline-row-kind="work-live"] {');
+    expect(overrides).toContain(".transcript-work-line-outer {");
     expect(overrides).toContain(".transcript-work-live-label {");
     const liveBlock = overrides.slice(
       overrides.indexOf(".transcript-work-toggle--summary,\n.transcript-work-live {"),
