@@ -197,7 +197,7 @@ export function formatDayAwareTimestamp(
   timestampFormat: TimestampFormat,
   nowMs: number = Date.now(),
   options: {
-    readonly locale?: string;
+    readonly locale?: string | undefined;
     readonly formatTime?: (date: Date) => string;
   } = {},
 ): string {
