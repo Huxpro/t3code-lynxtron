@@ -1454,26 +1454,39 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "transcriptFixture?.modelSelection");
   });
 
-  it("verifies the real Native approval request content, state, and column geometry", () => {
+  it("verifies the real Native approval request content, state, and attached drawer", () => {
     assert.include(source, "async function verifyApprovalTranscriptState");
-    assert.include(source, '".composer-pending-approval"');
+    assert.include(source, "async function readApprovalDrawer");
+    assert.include(source, "function approvalDrawerChecks");
+    assert.include(source, '".composer-top-drawer"');
     assert.include(source, '".composer-pending-approval__detail"');
     assert.include(source, '".composer-editor-area--approval"');
-    assert.include(source, '".composer-footer--approval"');
-    assert.include(source, '".composer-approval-action--accept"');
+    assert.include(source, '[".composer-approval-action--accept", "Approve"]');
+    assert.include(source, 'drawer.attributes["data-variant"] === "warning"');
+    assert.include(source, "near(drawer.rect.y + drawer.rect.height, frame.rect.y)");
+    assert.include(source, "labelMeasurement.rect.width >= label.length * 3");
+    assert.notInclude(source, '".composer-footer--approval"');
+    assert.notInclude(source, '[".composer-approval-action--cancel", "Cancel", 97]');
     assert.include(source, 'clientState?.sessionStatus === "running"');
     assert.include(source, 'frame?.attributes["data-composer-state"] === "working"');
-    assert.include(source, "approximately(footer?.rect?.y");
-    assert.include(source, 'expectedTheme !== "light"');
-    assert.include(source, 'action.measurement?.style.backgroundColor === "rgb(255,255,255)"');
-    assert.include(source, 'action.measurement.style.borderBottomColor === "rgb(212,212,216)"');
-    assert.include(source, "outlineActions: [actions[1], actions[2]].map");
     assert.include(source, '"native-approval.png"');
     assert.include(source, '"--approval-semantic-only"');
     assert.include(source, 'semanticOnly ? "semantic-only" : "visual-and-semantic"');
     assert.include(source, "const screenshot = semanticOnly");
     assert.include(source, '"--verify-approval-transcript-state"');
     assert.include(source, "fixtureManifest.pendingRequestFixture");
+  });
+
+  it("drives a live Supervised OpenCode approval through the drawer", () => {
+    assert.include(source, "async function verifyApprovalLive");
+    assert.include(source, '"--verify-approval-live"');
+    assert.include(source, '{ instanceId: "opencode", model: "opencode/big-pickle" }');
+    assert.include(source, 'item.text.includes("Supervised")');
+    assert.include(source, 'state.activeThread?.runtimeMode === "approval-required"');
+    assert.include(source, 'selector: ".composer-approval-action--accept"');
+    assert.include(source, 'receipt.kind !== "approval.resolved"');
+    assert.include(source, '"native-approval-live.png"');
+    assert.include(outcomeChecksSource, "approvalLive");
   });
 
   it("verifies stale Native approval decline recovery and cold restart", () => {

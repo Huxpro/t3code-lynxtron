@@ -8242,6 +8242,267 @@ async function verifyCheckpointRevertLive({
   };
 }
 
+// Upstream #7150 live: a Supervised OpenCode turn asks to run a shell command,
+// the attached approval drawer renders it, and a DevTool tap on Approve lets
+// the turn finish. Earlier non-probe requests are approved through the same
+// drawer so the gate reaches the command request the prompt asked for.
+async function verifyApprovalLive({
+  child,
+  client,
+  devToolCli,
+  outputDirectory,
+  projectId,
+  timeoutMs,
+}) {
+  const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
+  const probeToken = "lynx-approval-probe";
+  const providerDeadline = Date.now() + timeoutMs;
+  let provider;
+  while (Date.now() < providerDeadline) {
+    try {
+      const config = await invokeConnector(client, "refreshProviders", {
+        instanceId: modelSelection.instanceId,
+      });
+      provider = config?.providers?.find(
+        (candidate) => candidate.instanceId === modelSelection.instanceId,
+      );
+      break;
+    } catch (error) {
+      if (!(error instanceof Error) || !error.message.includes("not connected")) throw error;
+      await waitForChildExit(child, 100);
+    }
+  }
+  if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
+    throw new Error(`OpenCode is not ready for the live approval: ${JSON.stringify(provider)}`);
+  }
+  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".sidebar-v2-row-card",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const draft = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" &&
+      state.activeThreadId === state.draftThreadId &&
+      state.activeThread?.projectId === projectId,
+  });
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression:
+      "[typeof globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__, typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__].join(':')",
+    predicate: (value) => value === "function:function",
+    timeoutMs,
+  });
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?.(${JSON.stringify(
+      modelSelection.instanceId,
+    )}, ${JSON.stringify(modelSelection.model)})`,
+    returnByValue: true,
+  });
+
+  // The draft takes Supervised (approval-required) from the real runtime menu.
+  await tapSelector({ child, client, selector: ".composer-toolbar-control--runtime", timeoutMs });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement !== null,
+  });
+  const supervisedItem = (
+    await readSelectorMeasurements(client, ".composer-runtime-menu__item")
+  ).find((item) => measurementVisible(item) && item.text.includes("Supervised"));
+  if (!supervisedItem) throw new Error("The runtime menu did not offer Supervised.");
+  await tapMeasurement({ client, measurement: supervisedItem });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === draft.draftThreadId &&
+      state.activeThread?.runtimeMode === "approval-required",
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  const prompt = `Run exactly this shell command once and nothing else: printf ${probeToken}. Then reply with its output.`;
+  await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(prompt)})`,
+    returnByValue: true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-primary-action",
+    timeoutMs,
+    predicate: (measurement) => measurement?.attributes["data-composer-primary-state"] === "send",
+  });
+  await tapSelector({ child, client, selector: ".composer-primary-action", timeoutMs });
+
+  const turnTimeoutMs = Math.max(timeoutMs, 240_000);
+  const openApprovals = (state) => {
+    const settled = new Set((state?.approvalReceipts ?? []).map((receipt) => receipt.requestId));
+    return (state?.pendingApprovalRequests ?? []).filter(
+      (request) => !settled.has(request.requestId),
+    );
+  };
+  const onPromotedThread = (state) =>
+    state?.activeThreadId === draft.draftThreadId &&
+    state.draftThreadId !== draft.draftThreadId &&
+    state.threadIds?.includes(draft.draftThreadId);
+  const turnSettled = (state) =>
+    state.activeTurnId == null && state.latestTurn?.state === "completed";
+  const preliminaryApprovals = [];
+  let probe;
+  while (!probe) {
+    const state = await waitForClientState({
+      child,
+      client,
+      timeoutMs: turnTimeoutMs,
+      predicate: (candidate) =>
+        onPromotedThread(candidate) &&
+        (openApprovals(candidate).length > 0 || turnSettled(candidate)),
+    });
+    const request = openApprovals(state)[0];
+    if (!request) {
+      throw new Error(
+        `The Supervised turn finished without the probe approval: ${JSON.stringify({
+          runtimeMode: state.activeThread?.runtimeMode,
+          preliminaryApprovals,
+          messages: state.messages?.slice(-2),
+        })}`,
+      );
+    }
+    const detail = await waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-pending-approval__detail",
+      timeoutMs,
+      predicate: (measurement) => measurementVisible(measurement),
+    });
+    const parts = await readApprovalDrawer(client);
+    const checks = approvalDrawerChecks(parts);
+    if (!checks.ok) {
+      const screenshot = captureNativeScreenshot({
+        client,
+        devToolCli,
+        outputDirectory,
+        name: "native-approval-live-drift.png",
+      });
+      throw new Error(
+        `The live approval drawer drifted: ${JSON.stringify({
+          screenshot: screenshot.path,
+          request,
+          checks,
+          drawer: approvalDrawerEvidence(parts),
+        })}`,
+      );
+    }
+    if (request.requestKind === "command" && detail.text.includes(probeToken)) {
+      probe = { request, parts, checks, state };
+      break;
+    }
+    if (preliminaryApprovals.length >= 4) {
+      throw new Error(
+        `The live turn kept asking before the probe command: ${JSON.stringify(preliminaryApprovals)}`,
+      );
+    }
+    preliminaryApprovals.push({ ...request, detail: detail.text.trim() });
+    await tapSelector({ child, client, selector: ".composer-approval-action--accept", timeoutMs });
+    await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (candidate) =>
+        candidate?.approvalReceipts?.some((receipt) => receipt.requestId === request.requestId) ===
+        true,
+    });
+  }
+
+  const { request, parts, checks } = probe;
+  if (parts.editorValue?.text.includes(probeToken) !== true) {
+    throw new Error(
+      `The blocked editor did not echo the pending command: ${JSON.stringify(parts.editorValue)}`,
+    );
+  }
+  const screenshot = captureNativeScreenshot({
+    client,
+    devToolCli,
+    outputDirectory,
+    name: "native-approval-live.png",
+  });
+  const beforeApprove = await readRendererReadiness(client);
+  await tapSelector({ child, client, selector: ".composer-approval-action--accept", timeoutMs });
+  const resolved = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.approvalReceipts?.some((receipt) => receipt.requestId === request.requestId) === true,
+  });
+  const receipt = resolved.approvalReceipts.find(
+    (candidate) => candidate.requestId === request.requestId,
+  );
+  if (receipt.kind !== "approval.resolved") {
+    throw new Error(`The live approval did not resolve: ${JSON.stringify(receipt)}`);
+  }
+  const afterApprove = await waitForSequenceAdvance({
+    child,
+    client,
+    initial: beforeApprove,
+    timeoutMs,
+  });
+  const completed = await waitForClientState({
+    child,
+    client,
+    timeoutMs: turnTimeoutMs,
+    predicate: (state) =>
+      onPromotedThread(state) &&
+      turnSettled(state) &&
+      openApprovals(state).length === 0 &&
+      state.messages?.some((message) => message.role === "assistant" && !message.streaming),
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-top-drawer",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+
+  return {
+    status: "pass",
+    input:
+      "Runtime menu tap on Supervised; renderer input fixture + DevTool tap on Send; DevTool tap on the drawer's Approve",
+    provider: modelSelection,
+    threadId: completed.activeThreadId,
+    runtimeMode: completed.activeThread?.runtimeMode ?? null,
+    preliminaryApprovals,
+    request: { ...request, detail: parts.detail.text.trim() },
+    receipt,
+    sequence: { beforeApprove: beforeApprove.lastSeq, afterApprove: afterApprove.lastSeq },
+    layout: checks.layout,
+    geometry: approvalDrawerEvidence(parts),
+    assistantMentionsProbe: completed.messages.some(
+      (message) => message.role === "assistant" && String(message.text ?? "").includes(probeToken),
+    ),
+    screenshot,
+  };
+}
+
 // Plan 14 M6: the supported Lynx terminal runs real shell sessions. Open the
 // panel, run a command, split into two sessions and see the PTY shrink, close
 // the split, and close then reopen the panel onto a fresh session.
@@ -9191,56 +9452,131 @@ async function verifyFailedTranscriptState({
   };
 }
 
+const APPROVAL_ACTION_SPECS = [
+  [".composer-approval-action--cancel", "Cancel"],
+  [".composer-approval-action--decline", "Decline"],
+  [".composer-approval-action--session", "Always allow this session"],
+  [".composer-approval-action--accept", "Approve"],
+];
+
+// Upstream #7150 attaches a pending approval to a warning drawer above the
+// Composer card: one row of monospace detail plus four micro ghost-muted
+// actions, while the card keeps only the blocked editor.
+async function readApprovalDrawer(client) {
+  const [frame, drawer, row, pending, detail, editor, editorValue, footer] = await Promise.all([
+    readOptionalMeasurement(client, ".composer-frame"),
+    readOptionalMeasurement(client, ".composer-top-drawer"),
+    readOptionalMeasurement(client, ".composer-top-drawer__row"),
+    readOptionalMeasurement(client, ".composer-pending-approval"),
+    readOptionalMeasurement(client, ".composer-pending-approval__detail"),
+    readOptionalMeasurement(client, ".composer-editor-area--approval"),
+    readOptionalMeasurement(client, ".composer__input--approval"),
+    readOptionalMeasurement(client, ".composer-surface--approval .composer-footer"),
+  ]);
+  const actions = await Promise.all(
+    APPROVAL_ACTION_SPECS.map(async ([selector, label]) => ({
+      selector,
+      label,
+      measurement: await readOptionalMeasurement(client, selector),
+      labelMeasurement: await readOptionalMeasurement(client, `${selector} .ui-button__label`),
+    })),
+  );
+  return { frame, drawer, row, pending, detail, editor, editorValue, footer, actions };
+}
+
+// Relational drawer checks: attachment to the card, readable labels, and one
+// ordered action row. No pixel widths are pinned; fonts and labels may move.
+function approvalDrawerChecks({ frame, drawer, row, detail, editor, footer, actions }) {
+  const tolerance = 1.5;
+  const near = (actual, expected) =>
+    typeof actual === "number" &&
+    typeof expected === "number" &&
+    Math.abs(actual - expected) <= tolerance;
+  const inside = (measurement) =>
+    measurementVisible(measurement) &&
+    measurementVisible(drawer) &&
+    measurement.rect.x >= drawer.rect.x - tolerance &&
+    measurement.rect.x + measurement.rect.width <= drawer.rect.x + drawer.rect.width + tolerance &&
+    measurement.rect.y >= drawer.rect.y - tolerance &&
+    measurement.rect.y + measurement.rect.height <= drawer.rect.y + drawer.rect.height + tolerance;
+  const drawerAttached =
+    measurementVisible(drawer) &&
+    measurementVisible(frame) &&
+    drawer.attributes["data-variant"] === "warning" &&
+    near(drawer.rect.y + drawer.rect.height, frame.rect.y) &&
+    near(drawer.rect.x, frame.rect.x + 22) &&
+    near(drawer.rect.width, frame.rect.width - 44);
+  const detailReadable = inside(detail) && detail.rect.width >= 40 && detail.text.trim() !== "";
+  const actionsReadable = actions.every(
+    ({ label, labelMeasurement, measurement }) =>
+      inside(measurement) &&
+      measurement.text.trim() === label &&
+      measurement.rect.height >= 18 &&
+      measurement.rect.height <= 24 &&
+      measurementVisible(labelMeasurement) &&
+      labelMeasurement.rect.width >= label.length * 3 &&
+      labelMeasurement.rect.width <= measurement.rect.width + tolerance,
+  );
+  const actionsOrdered = actions.every((action, index) => {
+    const previous = actions[index - 1]?.measurement?.rect;
+    const rect = action.measurement?.rect;
+    return (
+      index === 0 ||
+      (rect && previous && near(rect.y, previous.y) && rect.x >= previous.x + previous.width - 0.5)
+    );
+  });
+  const firstAction = actions[0]?.measurement?.rect;
+  const inline = row?.attributes["data-composer-top-drawer-layout"] === "inline";
+  const rowShapeMatches = inline
+    ? Boolean(firstAction) &&
+      detail.rect.x + detail.rect.width <= firstAction.x + tolerance &&
+      Math.abs(detail.rect.y + detail.rect.height / 2 - (firstAction.y + firstAction.height / 2)) <=
+        3
+    : Boolean(firstAction) && firstAction.y >= detail.rect.y + detail.rect.height - tolerance;
+  const editorBlocked =
+    measurementVisible(editor) && editor.rect.y >= (frame?.rect.y ?? 0) && footer === null;
+  return {
+    drawerAttached,
+    detailReadable,
+    actionsReadable,
+    actionsOrdered,
+    rowShapeMatches,
+    editorBlocked,
+    layout: inline ? "inline" : "stacked",
+    ok:
+      drawerAttached &&
+      detailReadable &&
+      actionsReadable &&
+      actionsOrdered &&
+      rowShapeMatches &&
+      editorBlocked,
+  };
+}
+
+function approvalDrawerEvidence(parts) {
+  return {
+    frame: parts.frame?.rect ?? null,
+    drawer: parts.drawer?.rect ?? null,
+    detail: parts.detail?.rect ?? null,
+    editor: parts.editor?.rect ?? null,
+    actions: parts.actions.map((action) => ({
+      label: action.measurement?.text.trim() ?? null,
+      rect: action.measurement?.rect ?? null,
+      labelWidth: action.labelMeasurement?.rect.width ?? null,
+    })),
+  };
+}
+
 async function verifyApprovalTranscriptState({
   approvalFixture,
   client,
   devToolCli,
-  expectedTheme,
   outputDirectory,
   semanticOnly,
 }) {
   const clientState = await readClientState(client);
-  const frame = await readOptionalMeasurement(client, ".composer-frame");
-  const surface = await readOptionalMeasurement(client, ".composer-surface--approval");
-  const pending = await readOptionalMeasurement(client, ".composer-pending-approval");
-  const detail = await readOptionalMeasurement(client, ".composer-pending-approval__detail");
-  const editor = await readOptionalMeasurement(client, ".composer-editor-area--approval");
-  const editorValue = await readOptionalMeasurement(client, ".composer__input--approval");
-  const footer = await readOptionalMeasurement(client, ".composer-footer--approval");
-  const actionSpecs = [
-    [".composer-approval-action--cancel", "Cancel", 97],
-    [".composer-approval-action--decline", "Decline", 69],
-    [".composer-approval-action--session", "Always allow this session", 184],
-    [".composer-approval-action--accept", "Approve", 112],
-  ];
-  const actions = await Promise.all(
-    actionSpecs.map(async ([selector, label, width]) => ({
-      selector,
-      label,
-      width,
-      measurement: await readOptionalMeasurement(client, selector),
-    })),
-  );
-  const approximately = (actual, expected, tolerance = 0.75) =>
-    typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
-  const rectMatches = (measurement, expected) => {
-    const rect = measurement?.rect;
-    return (
-      rect && Object.entries(expected).every(([key, value]) => approximately(rect[key], value))
-    );
-  };
-  const actionGeometryMatches = actions.every((action, index) => {
-    const previous = actions[index - 1]?.measurement?.rect;
-    const rect = action.measurement?.rect;
-    return (
-      rectMatches(action.measurement, { width: action.width, height: 28 }) &&
-      action.measurement?.text.trim() === action.label &&
-      approximately(rect?.y, footer?.rect?.y) &&
-      (index === 0
-        ? approximately(rect?.x, (footer?.rect?.x ?? 0) + 12)
-        : approximately(rect?.x, (previous?.x ?? 0) + (previous?.width ?? 0) + 8))
-    );
-  });
+  const parts = await readApprovalDrawer(client);
+  const { frame, pending, detail, editorValue } = parts;
   const expectedDetail = approvalFixture.activity?.payload?.detail;
   const stateMatches =
     clientState?.activeThreadId === approvalFixture.threadId &&
@@ -9255,58 +9591,19 @@ async function verifyApprovalTranscriptState({
     frame?.attributes["data-composer-state"] === "working";
   const contentMatches =
     typeof expectedDetail === "string" &&
-    pending?.text.includes("PENDING APPROVAL") &&
-    pending.text.includes("Command approval requested") &&
-    pending.text.includes("Command") &&
-    pending.text.includes(expectedDetail) &&
-    detail?.text.includes(expectedDetail) &&
+    !pending?.text.includes("PENDING APPROVAL") &&
+    detail?.text.includes(expectedDetail) === true &&
     editorValue?.text.trim() === expectedDetail;
-  const geometryMatches =
-    rectMatches(frame, { width: 768, height: 247 }) &&
-    rectMatches(surface, { width: 766, height: 245 }) &&
-    rectMatches(pending, { width: 766, height: 114 }) &&
-    rectMatches(detail, { width: 726, height: 50 }) &&
-    rectMatches(editor, { width: 766, height: 90 }) &&
-    rectMatches(footer, { width: 766, height: 40 }) &&
-    approximately(surface?.rect?.x, (frame?.rect?.x ?? 0) + 1) &&
-    approximately(surface?.rect?.y, (frame?.rect?.y ?? 0) + 1) &&
-    approximately(pending?.rect?.x, surface?.rect?.x) &&
-    approximately(pending?.rect?.y, surface?.rect?.y) &&
-    approximately(detail?.rect?.x, (pending?.rect?.x ?? 0) + 20) &&
-    approximately(detail?.rect?.y, (pending?.rect?.y ?? 0) + 48) &&
-    approximately(editor?.rect?.x, surface?.rect?.x) &&
-    approximately(editor?.rect?.y, (pending?.rect?.y ?? 0) + 115) &&
-    approximately(footer?.rect?.x, surface?.rect?.x) &&
-    approximately(footer?.rect?.y, (editor?.rect?.y ?? 0) + (editor?.rect?.height ?? 0)) &&
-    approximately(
-      (footer?.rect?.y ?? 0) + (footer?.rect?.height ?? 0),
-      (surface?.rect?.y ?? 0) + (surface?.rect?.height ?? 0),
-    ) &&
-    actionGeometryMatches;
-  const materialMatches =
-    expectedTheme !== "light" ||
-    [actions[1], actions[2]].every(
-      (action) =>
-        action.measurement?.style.backgroundColor === "rgb(255,255,255)" &&
-        action.measurement.style.borderBottomColor === "rgb(212,212,216)",
-    );
-  if (!stateMatches || !contentMatches || !geometryMatches || !materialMatches) {
+  const checks = approvalDrawerChecks(parts);
+  if (!stateMatches || !contentMatches || !checks.ok) {
     throw new Error(
       `Canonical approval transcript drifted: ${JSON.stringify({
         clientState,
-        frame,
-        surface,
-        pending,
-        detail,
-        editor,
-        editorValue,
-        footer,
-        actions,
         expectedDetail,
         stateMatches,
         contentMatches,
-        geometryMatches,
-        materialMatches,
+        checks,
+        drawer: approvalDrawerEvidence(parts),
       })}`,
     );
   }
@@ -9334,25 +9631,11 @@ async function verifyApprovalTranscriptState({
       primaryState: "stop",
     },
     content: {
-      pending: pending.text.trim(),
       detail: expectedDetail,
-      actions: actions.map((action) => action.measurement.text.trim()),
+      actions: parts.actions.map((action) => action.measurement.text.trim()),
     },
-    geometry: {
-      frame: frame.rect,
-      surface: surface.rect,
-      pending: pending.rect,
-      detail: detail.rect,
-      editor: editor.rect,
-      footer: footer.rect,
-      actions: actions.map((action) => action.measurement.rect),
-    },
-    material: {
-      outlineActions: [actions[1], actions[2]].map((action) => ({
-        backgroundColor: action.measurement.style.backgroundColor,
-        borderBottomColor: action.measurement.style.borderBottomColor,
-      })),
-    },
+    layout: checks.layout,
+    geometry: approvalDrawerEvidence(parts),
     screenshot,
     evidenceKind: semanticOnly ? "semantic-only" : "visual-and-semantic",
   };
@@ -9601,6 +9884,7 @@ async function verifyQuestionTranscriptState({
   const clientState = await readClientState(client);
   const frame = await readOptionalMeasurement(client, ".composer-frame");
   const surface = await readOptionalMeasurement(client, ".composer-surface--question");
+  const drawer = await readOptionalMeasurement(client, ".composer-top-drawer");
   const pending = await readOptionalMeasurement(client, ".composer-pending-question");
   const editor = await readOptionalMeasurement(client, ".composer-editor-area--question");
   const footer = await readOptionalMeasurement(client, ".composer-footer--question");
@@ -9621,13 +9905,18 @@ async function verifyQuestionTranscriptState({
     question.options.every((option) => pending.text.includes(option.label)) &&
     optionRects.length === question.options.length &&
     firstOption?.text.includes(question.options[0].label) === true;
+  // Upstream #7150: the question rides an info drawer attached above the card.
   const geometryMatches =
+    drawer?.attributes["data-variant"] === "info" &&
+    approximately((drawer?.rect?.y ?? 0) + (drawer?.rect?.height ?? 0), frame?.rect?.y) &&
+    approximately(drawer?.rect?.x, (frame?.rect?.x ?? 0) + 22) &&
+    approximately(drawer?.rect?.width, (frame?.rect?.width ?? 0) - 44) &&
+    pending?.rect?.y >= (drawer?.rect?.y ?? 0) &&
+    (pending?.rect?.y ?? 0) + (pending?.rect?.height ?? 0) <=
+      (drawer?.rect?.y ?? 0) + (drawer?.rect?.height ?? 0) + 1 &&
     approximately(frame?.rect?.width, 768) &&
-    approximately(frame?.rect?.height, 343.5) &&
     approximately(surface?.rect?.width, 766) &&
-    approximately(surface?.rect?.height, 341.5) &&
     approximately(editor?.rect?.width, 766) &&
-    approximately(editor?.rect?.height, 90) &&
     approximately(footer?.rect?.width, 766) &&
     approximately(footer?.rect?.height, 48) &&
     approximately(footer?.rect?.y, (editor?.rect?.y ?? 0) + (editor?.rect?.height ?? 0));
@@ -9636,6 +9925,7 @@ async function verifyQuestionTranscriptState({
       `Canonical question transcript drifted: ${JSON.stringify({
         clientState,
         frame,
+        drawer,
         surface,
         pending,
         editor,
@@ -9962,6 +10252,7 @@ async function verifyQuestionTranscriptState({
     },
     geometry: {
       frame: frame.rect,
+      drawer: drawer.rect,
       surface: surface.rect,
       editor: editor.rect,
       footer: footer.rect,
@@ -15949,6 +16240,7 @@ async function runOnce({
       ...(shouldVerifyCheckpointRevertLive
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "confirm" }
         : {}),
+      ...(shouldVerifyApprovalLive ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
       ...(shouldVerifyRightPanelAddMenu ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
       ...(shouldVerifyTerminalLifecycle
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm,confirm" }
@@ -16520,6 +16812,16 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const approvalLive = shouldVerifyApprovalLive
+      ? await verifyApprovalLive({
+          child,
+          client,
+          devToolCli,
+          outputDirectory,
+          projectId: fixtureManifestProjectId,
+          timeoutMs,
+        })
+      : undefined;
     const checkpointRevert = shouldVerifyCheckpointRevert
       ? await verifyCheckpointRevert({ child, client, log, projectCwd, reviewFixture, timeoutMs })
       : undefined;
@@ -16538,7 +16840,6 @@ async function runOnce({
             approvalFixture,
             client,
             devToolCli,
-            expectedTheme,
             outputDirectory,
             semanticOnly: approvalSemanticOnly,
           })
@@ -16851,6 +17152,7 @@ async function runOnce({
       linkContextMenu,
       checkpointRevert,
       checkpointRevertLive,
+      approvalLive,
       terminalLifecycle,
       failedTranscriptState,
       approvalTranscriptState,
@@ -16942,6 +17244,7 @@ async function runOnce({
       linkContextMenu,
       checkpointRevert,
       checkpointRevertLive,
+      approvalLive,
       terminalLifecycle,
       failedTranscriptState,
       approvalTranscriptState,
@@ -17076,6 +17379,7 @@ const shouldVerifySidebarDrafts = process.argv.includes("--verify-sidebar-drafts
 const shouldVerifyHeaderThreadMenu = process.argv.includes("--verify-header-thread-menu");
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
+const shouldVerifyApprovalLive = process.argv.includes("--verify-approval-live");
 const shouldVerifyTerminalLifecycle = process.argv.includes("--verify-terminal-lifecycle");
 const shouldVerifyTranscriptIncomingGrowth = process.argv.includes(
   "--verify-transcript-incoming-growth",
@@ -17442,7 +17746,8 @@ const composerSendRetryOnlyEmptyFixture =
   (shouldVerifyComposerSendRetry ||
     shouldVerifyM1LocalJourney ||
     shouldVerifyRemoteJourney ||
-    shouldVerifyCheckpointRevertLive) &&
+    shouldVerifyCheckpointRevertLive ||
+    shouldVerifyApprovalLive) &&
   !verifySettingsNavigation &&
   !verifySidebarScope &&
   !verifyComposerBranding &&
