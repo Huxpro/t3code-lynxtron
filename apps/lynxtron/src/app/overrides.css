@@ -2894,6 +2894,10 @@
   flex-grow: 1;
   min-width: 0;
 }
+/* Web: "skill:" prefix in the secondary label color. */
+.composer-context-picker__label-prefix {
+  color: var(--muted-foreground);
+}
 .composer-context-picker__label {
   color: var(--foreground);
   font-family: var(--font-sans);

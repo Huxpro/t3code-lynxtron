@@ -758,7 +758,8 @@ describe("desktop shell interaction contract", () => {
     expect(composer).toContain("const contextPickerHeight = Math.min(288");
     expect(composer).toContain("data-composer-context-path={entry.path}");
     expect(composer).toContain("data-composer-context-skill={skill.name}");
-    expect(composer).toContain("data-composer-context-command={command.name}");
+    expect(composer).toContain("searchSlashCommandItems(");
+    expect(composer).toContain('item.type === "skill" ? `skill:${name}` : name');
     expect(composer).toContain("onClick={() => selectContextPath(entry)}");
     expect(composer).toContain("stopTapPropagation");
     expect(composer).toContain("aria-label={`Add ${entry.path} to context`}");

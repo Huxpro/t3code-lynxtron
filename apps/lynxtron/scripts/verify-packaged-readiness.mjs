@@ -8436,6 +8436,94 @@ async function verifyTerminalLifecycle({ child, client, log, timeoutMs }) {
   };
 }
 
+// Upstream #7737: the slash menu ranks built-in commands, provider commands,
+// and enabled skills (as `skill:<name>`) together; picking a skill inserts `$name `.
+async function verifySlashMenu({ child, client, timeoutMs }) {
+  const config = await invokeConnector(client, "refreshProviders", {});
+  const provider = config?.providers?.find(
+    (candidate) =>
+      candidate.status === "ready" &&
+      (candidate.skills ?? []).some((skill) => skill.enabled) &&
+      (candidate.models ?? []).length > 0,
+  );
+  if (!provider) {
+    throw new Error(
+      `No ready provider exposes an enabled skill: ${JSON.stringify(
+        (config?.providers ?? []).map((candidate) => ({
+          instanceId: candidate.instanceId,
+          status: candidate.status,
+          skills: (candidate.skills ?? []).length,
+        })),
+      )}`,
+    );
+  }
+  const skill = provider.skills.find((candidate) => candidate.enabled);
+  await invokeConnector(client, "setModelSelection", {
+    selection: { instanceId: provider.instanceId, model: provider.models[0].slug },
+  });
+  const typeText = async (text) => {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(text)}) ?? false`,
+      returnByValue: true,
+    });
+    if (commandResult(response)?.value !== true) {
+      throw new Error(`Composer input fixture was not applied: ${JSON.stringify(response)}`);
+    }
+    await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_COMPOSER_CURSOR_FIXTURE__?.(${text.length})`,
+      returnByValue: true,
+    });
+  };
+  const menuCommands = async (predicate) => {
+    const deadline = Date.now() + timeoutMs;
+    let latest = [];
+    while (Date.now() < deadline) {
+      latest = (await readSelectorMeasurements(client, ".composer-context-picker__item")).map(
+        (row) => row.attributes["data-composer-context-command"],
+      );
+      if (predicate(latest)) return latest;
+      await waitForChildExit(child, 100);
+    }
+    throw new Error(`Slash menu rows never matched: ${JSON.stringify(latest)}`);
+  };
+  await typeText("/");
+  const all = await menuCommands(
+    (rows) => rows.includes("model") && rows.includes(`skill:${skill.name}`),
+  );
+  if (all.indexOf("model") > all.indexOf(`skill:${skill.name}`)) {
+    throw new Error(`Skills should rank after commands: ${JSON.stringify(all)}`);
+  }
+  await typeText(`/skill:${skill.name}`);
+  const narrowed = await menuCommands(
+    (rows) => rows.length > 0 && rows.every((row) => row?.startsWith("skill:")),
+  );
+  await tapSelectorByAttribute({
+    attribute: "data-composer-context-command",
+    child,
+    client,
+    selector: ".composer-context-picker__item",
+    timeoutMs,
+    value: `skill:${skill.name}`,
+  });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeComposerDraftText === `$${skill.name} `,
+  });
+  await typeText("");
+  return {
+    status: "pass",
+    input:
+      "renderer input fixture types / and /skill:<name>; DevTool tap on the skill row; client state",
+    provider: provider.instanceId,
+    skill: skill.name,
+    rows: all,
+    narrowed,
+    inserted: `$${skill.name} `,
+  };
+}
+
 async function verifySidebarThreadMenu({ child, client, log, timeoutMs }) {
   const before = await waitForClientState({
     child,
@@ -15702,6 +15790,7 @@ async function runOnce({
       ...(shouldVerifyTerminalLifecycle
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm,confirm" }
         : {}),
+      ...(shouldVerifySlashMenu ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
       ...(shouldVerifySidebarThreadMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
@@ -16229,6 +16318,9 @@ async function runOnce({
     const transcriptFollowState = shouldVerifyTranscriptFollowState
       ? await verifyTranscriptFollowState({ child, client, timeoutMs })
       : undefined;
+    const slashMenu = shouldVerifySlashMenu
+      ? await verifySlashMenu({ child, client, timeoutMs })
+      : undefined;
     const sidebarThreadMenu = shouldVerifySidebarThreadMenu
       ? await verifySidebarThreadMenu({ child, client, log, timeoutMs })
       : undefined;
@@ -16574,6 +16666,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      slashMenu,
       sidebarThreadMenu,
       linkContextMenu,
       checkpointRevert,
@@ -16662,6 +16755,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      slashMenu,
       sidebarThreadMenu,
       linkContextMenu,
       checkpointRevert,
@@ -16795,6 +16889,7 @@ const shouldVerifyCompletedTranscriptState = process.argv.includes(
 const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transcript-follow-state");
 const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context-menu");
 const shouldVerifySidebarThreadMenu = process.argv.includes("--verify-sidebar-thread-menu");
+const shouldVerifySlashMenu = process.argv.includes("--verify-slash-menu");
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
 const shouldVerifyTerminalLifecycle = process.argv.includes("--verify-terminal-lifecycle");

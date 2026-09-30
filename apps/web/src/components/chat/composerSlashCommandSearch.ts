@@ -4,13 +4,28 @@ import {
   scoreQueryMatch,
 } from "@t3tools/shared/searchRanking";
 
-import type { ComposerCommandItem } from "./ComposerCommandMenu";
+import type { ServerProviderSkill } from "@t3tools/contracts";
+
 import { scoreProviderSkill } from "../../providerSkillSearch";
 
-type SlashSearchItem = Extract<
-  ComposerCommandItem,
-  { type: "slash-command" | "provider-slash-command" | "skill" }
->;
+/**
+ * Structural slash-menu item: Web's ComposerCommandMenu items and Lynx's
+ * composer items both satisfy it, so both clients rank with one function.
+ */
+export type SlashSearchItem =
+  | { readonly type: "slash-command"; readonly command: string; readonly description: string }
+  | {
+      readonly type: "provider-slash-command";
+      readonly provider: string;
+      readonly command: { readonly name: string };
+      readonly description: string;
+    }
+  | {
+      readonly type: "skill";
+      readonly provider: string;
+      readonly skill: ServerProviderSkill;
+      readonly description: string;
+    };
 
 function scoreSlashCommandItem(item: SlashSearchItem, query: string): number | null {
   if (item.type === "skill") {
@@ -51,17 +66,17 @@ function scoreSlashCommandItem(item: SlashSearchItem, query: string): number | n
   return Math.min(...scores);
 }
 
-export function searchSlashCommandItems(
-  items: ReadonlyArray<SlashSearchItem>,
+export function searchSlashCommandItems<T extends SlashSearchItem>(
+  items: ReadonlyArray<T>,
   query: string,
-): SlashSearchItem[] {
+): T[] {
   const normalizedQuery = normalizeSearchQuery(query, { trimLeadingPattern: /^\/+/ });
   if (!normalizedQuery) {
     return [...items];
   }
 
   const ranked: Array<{
-    item: SlashSearchItem;
+    item: T;
     score: number;
     tieBreaker: string;
   }> = [];

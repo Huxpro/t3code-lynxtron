@@ -63,6 +63,7 @@ import {
   HostText,
   HostView,
 } from "../../../../web/src/components/ui/hostElements";
+import { searchSlashCommandItems } from "../../../../web/src/components/chat/composerSlashCommandSearch";
 import { Icon, type IconName } from "./Icon";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../../../../web/src/components/ui/menu";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";
@@ -635,7 +636,12 @@ export function Composer({
   );
   const selectContextSkill = useCallback(
     (skill: ServerProviderSkill) => {
-      if (!composerTrigger || composerTrigger.kind !== "skill") return;
+      if (
+        !composerTrigger ||
+        (composerTrigger.kind !== "skill" && composerTrigger.kind !== "slash-command")
+      ) {
+        return;
+      }
       replaceComposerTrigger(composerTrigger, `$${skill.name} `);
     },
     [composerTrigger, replaceComposerTrigger],
@@ -762,12 +768,36 @@ export function Composer({
         providerSkillLabel(skill).toLowerCase().includes(normalizedContextQuery) ||
         skill.description?.toLowerCase().includes(normalizedContextQuery)),
   );
-  const contextCommands = [...BUILT_IN_COMPOSER_COMMANDS, ...providerSlashCommands].filter(
-    (command) =>
-      (planModeEnabled || (command.name !== "plan" && command.name !== "default")) &&
-      (!normalizedContextQuery ||
-        command.name.toLowerCase().includes(normalizedContextQuery) ||
-        command.description?.toLowerCase().includes(normalizedContextQuery)),
+  // Upstream ranks built-in commands, provider commands, and enabled skills
+  // (as `skill:<name>`) in one slash menu; Lynx shares that ranking.
+  const contextCommands = searchSlashCommandItems(
+    [
+      ...BUILT_IN_COMPOSER_COMMANDS.filter(
+        (command) => planModeEnabled || (command.name !== "plan" && command.name !== "default"),
+      ).map((command) => ({
+        type: "slash-command" as const,
+        command: command.name,
+        description: command.description,
+      })),
+      ...providerSlashCommands.map((command) => ({
+        type: "provider-slash-command" as const,
+        provider: "",
+        command,
+        description: command.description ?? command.input?.hint ?? "",
+      })),
+      ...providerSkills
+        .filter((skill) => skill.enabled)
+        .map((skill) => ({
+          type: "skill" as const,
+          provider: "",
+          skill,
+          description:
+            skill.shortDescription ??
+            skill.description ??
+            (skill.scope ? `${skill.scope} skill` : ""),
+        })),
+    ],
+    composerTrigger?.kind === "slash-command" ? composerTrigger.query : "",
   );
   const contextPickerItemCount =
     composerTrigger?.kind === "path"
@@ -1076,29 +1106,60 @@ export function Composer({
                                   </view>
                                 </HostButton>
                               ))
-                            : contextCommands.map((command) => (
-                                <HostButton
-                                  key={command.name}
-                                  className="composer-context-picker__item"
-                                  data-composer-context-command={command.name}
-                                  stopTapPropagation
-                                  aria-label={`Use /${command.name} command`}
-                                  onClick={() => selectContextCommand(command.name)}
-                                >
-                                  <Icon name="bot" size={14} color="#818181" />
-                                  <view className="composer-context-picker__copy">
-                                    <text className="composer-context-picker__label">
-                                      /{command.name}
-                                    </text>
-                                    <text
-                                      className="composer-context-picker__description"
-                                      text-maxline="1"
-                                    >
-                                      {command.description ?? command.input?.hint ?? "Run command"}
-                                    </text>
-                                  </view>
-                                </HostButton>
-                              ))}
+                            : contextCommands.map((item, index) => {
+                                const name =
+                                  item.type === "slash-command"
+                                    ? item.command
+                                    : item.type === "provider-slash-command"
+                                      ? item.command.name
+                                      : item.skill.name;
+                                return (
+                                  <HostButton
+                                    // Providers can list two skills with one name.
+                                    key={`${item.type}:${name}:${index}`}
+                                    className="composer-context-picker__item"
+                                    data-composer-context-command={
+                                      item.type === "skill" ? `skill:${name}` : name
+                                    }
+                                    stopTapPropagation
+                                    aria-label={
+                                      item.type === "skill"
+                                        ? `Use ${name} skill`
+                                        : `Use /${name} command`
+                                    }
+                                    onClick={() =>
+                                      item.type === "skill"
+                                        ? selectContextSkill(item.skill)
+                                        : selectContextCommand(name)
+                                    }
+                                  >
+                                    <Icon name="bot" size={14} color="#818181" />
+                                    <view className="composer-context-picker__copy">
+                                      {item.type === "skill" ? (
+                                        <text className="composer-context-picker__label">
+                                          <text className="composer-context-picker__label-prefix">
+                                            skill:
+                                          </text>
+                                          {name}
+                                        </text>
+                                      ) : (
+                                        <text className="composer-context-picker__label">
+                                          /{name}
+                                        </text>
+                                      )}
+                                      <text
+                                        className="composer-context-picker__description"
+                                        text-maxline="1"
+                                      >
+                                        {item.description ||
+                                          (item.type === "skill"
+                                            ? "Provider skill"
+                                            : "Run command")}
+                                      </text>
+                                    </view>
+                                  </HostButton>
+                                );
+                              })}
                         {composerTrigger.kind === "path" && contextSearchPending ? (
                           <text className="composer-context-picker__empty">Searching files…</text>
                         ) : null}
