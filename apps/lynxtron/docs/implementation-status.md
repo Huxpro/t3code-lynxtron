@@ -1,5 +1,10 @@
 # Implementation status
 
+> **Plan 14 authority notice (2026-09-29).** Current status lives in
+> [Plan 14](./plans/14-journey-driven-shared-source-convergence.md) and its
+> phase files; the M7 certification summary is the latest evidence boundary.
+> Entries below are history unless Plan 14 restates them.
+
 > **Final5 authority notice (2026-08-12).** This document is a detailed
 > implementation history, not the current Harness or fidelity authority.
 > Read [`harness/current-state.md`](./harness/current-state.md) and

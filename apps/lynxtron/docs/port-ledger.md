@@ -1,5 +1,10 @@
 # Port ledger
 
+> **Plan 14 authority notice (2026-09-29).** Current status lives in
+> [Plan 14](./plans/14-journey-driven-shared-source-convergence.md) and its
+> phase files; the M7 certification summary is the latest evidence boundary.
+> Entries below are history unless Plan 14 restates them.
+
 > **Plan 11C authority notice (2026-08-04).** This ledger records implemented
 > layers and historical verification. It does not certify current visual or
 > interaction fidelity. Current evidence policy and execution order live in
