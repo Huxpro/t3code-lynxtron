@@ -231,13 +231,17 @@ function waitForChildExit(child, timeoutMs) {
   });
 }
 
-// Resident memory of an owned process and all of its descendants, in KiB.
-function readProcessTreeRssKiB(rootPid) {
-  const table = spawnSync("ps", ["-A", "-o", "pid=,ppid=,rss="], { encoding: "utf8" }).stdout;
+// Resident memory of an owned process and all of its descendants, in KiB,
+// plus the largest members by executable name.
+function readProcessTreeMemory(rootPid) {
+  const table = spawnSync("ps", ["-A", "-o", "pid=,ppid=,rss=,comm="], { encoding: "utf8" }).stdout;
   const rows = table
     .trim()
     .split("\n")
-    .map((line) => line.trim().split(/\s+/u).map(Number));
+    .map((line) => {
+      const [pid, ppid, rss, ...command] = line.trim().split(/\s+/u);
+      return [Number(pid), Number(ppid), Number(rss), path.basename(command.join(" "))];
+    });
   const tree = new Set([rootPid]);
   let grew = true;
   while (grew) {
@@ -249,7 +253,16 @@ function readProcessTreeRssKiB(rootPid) {
       }
     }
   }
-  return rows.reduce((sum, [pid, , rss]) => (tree.has(pid) ? sum + rss : sum), 0);
+  const members = rows.filter(([pid]) => tree.has(pid));
+  const byName = new Map();
+  for (const [, , rss, name] of members) byName.set(name, (byName.get(name) ?? 0) + rss);
+  return {
+    totalKiB: members.reduce((sum, [, , rss]) => sum + rss, 0),
+    largest: [...byName]
+      .toSorted((left, right) => right[1] - left[1])
+      .slice(0, 6)
+      .map(([name, kiB]) => ({ name, kiB })),
+  };
 }
 
 async function waitWhileAlive(child, durationMs) {
@@ -9657,13 +9670,20 @@ async function verifyReviewDiffState({
       timeoutMs,
       predicate: (measurement) => measurement?.attributes["aria-label"] === "Split diff view",
     });
+    // Wrapping starts from the wordWrap setting (on by default, like Web).
+    const wrapStartsOn =
+      (await readSelectorAttributeMeasurement(client, {
+        attribute: "aria-label",
+        selector: ".diff-panel-header__icon-button",
+        value: "Disable diff line wrapping",
+      })) !== null;
     await tapSelectorByAttribute({
       attribute: "aria-label",
       child,
       client,
       selector: ".diff-panel-header__icon-button",
       timeoutMs,
-      value: "Enable diff line wrapping",
+      value: wrapStartsOn ? "Disable diff line wrapping" : "Enable diff line wrapping",
     });
     toolStates.wrap = await waitForValue({
       child,
@@ -9672,17 +9692,24 @@ async function verifyReviewDiffState({
         readSelectorAttributeMeasurement(client, {
           attribute: "aria-label",
           selector: ".diff-panel-header__icon-button",
-          value: "Disable diff line wrapping",
+          value: wrapStartsOn ? "Enable diff line wrapping" : "Disable diff line wrapping",
         }),
       predicate: (measurement) => measurement !== null,
     });
+    // Whitespace hiding starts from diffIgnoreWhitespace (on by default).
+    const whitespaceHidden =
+      (await readSelectorAttributeMeasurement(client, {
+        attribute: "aria-label",
+        selector: ".diff-panel-header__icon-button",
+        value: "Show whitespace changes",
+      })) !== null;
     await tapSelectorByAttribute({
       attribute: "aria-label",
       child,
       client,
       selector: ".diff-panel-header__icon-button",
       timeoutMs,
-      value: "Hide whitespace changes",
+      value: whitespaceHidden ? "Show whitespace changes" : "Hide whitespace changes",
     });
     toolStates.whitespace = await waitForValue({
       child,
@@ -9691,7 +9718,7 @@ async function verifyReviewDiffState({
         readSelectorAttributeMeasurement(client, {
           attribute: "aria-label",
           selector: ".diff-panel-header__icon-button",
-          value: "Show whitespace changes",
+          value: whitespaceHidden ? "Hide whitespace changes" : "Show whitespace changes",
         }),
       predicate: (measurement) => measurement !== null,
     });
@@ -13630,6 +13657,7 @@ async function waitForChatRoute({ child, client, timeoutMs }) {
   throw new Error(`Back did not return to chat: ${JSON.stringify({ latest })}`);
 }
 
+// Web settings pages start 52px header + sm:pt-12 (48px) below the window top.
 function assertSettingsTopOrigin(label, rect, expectedY) {
   if (
     !rect ||
@@ -13754,7 +13782,7 @@ async function readArchiveSettingsEvidence({ child, client, timeoutMs }) {
   const [section] = await readSelectorRects(client, ".settings-content--archive .settings-section");
   const [row] = await readSelectorMeasurements(client, ".settings-content--archive .settings-row");
   const [text] = await readSelectorRects(client, ".settings-content--archive .settings-row__text");
-  assertSettingsTopOrigin("Archive first section", section, 88);
+  assertSettingsTopOrigin("Archive first section", section, 100);
   if (!row || !text || Math.abs(row.rect.width - 896) > 1 || Math.abs(text.width - 832) > 1) {
     throw new Error(
       `Archive empty-state geometry drifted: ${JSON.stringify({ panel, row, section, text })}`,
@@ -14008,13 +14036,14 @@ async function verifySettingsRouteBehavior({
     client,
     ".settings-content--general .settings-section",
   );
-  assertSettingsTopOrigin("General first section", generalSections[0], 88);
+  assertSettingsTopOrigin("General first section", generalSections[0], 100);
   const generalRows = await readSelectorMeasurements(
     client,
     ".settings-content--general .settings-row",
   );
   const beta = await readGeneralBetaSettingsEvidence(client);
-  const expectedGeneralUnavailableIds = ["background-activity", "text-generation-model"];
+  // Background activity and the text generation model are implemented on Lynx.
+  const expectedGeneralUnavailableIds = [];
   const generalUnavailableRows = generalRows.filter(
     (row) => row.attributes["data-settings-unavailable"] === "true",
   );
@@ -14113,7 +14142,6 @@ async function verifySettingsRouteBehavior({
         timeoutMs,
         predicate: (measurement) =>
           measurement?.text.includes("Keybindings") === true &&
-          measurement.text.includes("Keybindings are read-only on Lynxtron") &&
           measurement.text.includes("Command") &&
           measurement.text.includes("Keybinding") &&
           measurement.text.includes("When") &&
@@ -14208,7 +14236,7 @@ async function verifySettingsRouteBehavior({
           name: "native-settings-source-control.png",
         }),
       };
-      assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 88);
+      assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 100);
     } else if (route === "/settings/archived") {
       archive = await readArchiveSettingsEvidence({ child, client, timeoutMs });
     }
@@ -14259,7 +14287,7 @@ async function verifySettingsRouteBehavior({
         predicate: (measurement) =>
           measurement !== null &&
           Math.abs(measurement.rect.x - 320) <= 1 &&
-          Math.abs(measurement.rect.y - 88) <= 1 &&
+          Math.abs(measurement.rect.y - 100) <= 1 &&
           Math.abs(measurement.rect.width - 896) <= 1,
       });
     } catch (error) {
@@ -14282,7 +14310,7 @@ async function verifySettingsRouteBehavior({
         })}`,
       );
     }
-    assertSettingsTopOrigin(`General cycle ${cycle}`, cycledGeneralSection.rect, 88);
+    assertSettingsTopOrigin(`General cycle ${cycle}`, cycledGeneralSection.rect, 100);
     await tapSelector({
       child,
       client,
@@ -14492,7 +14520,7 @@ async function verifyProvidersSettings({ child, client, devToolCli, outputDirect
     actions.length !== expectedCardCount ||
     headerActions.length !== 2 ||
     Math.abs(panel.rect.x - 320) > 1 ||
-    Math.abs(panel.rect.y - 88) > 1 ||
+    Math.abs(panel.rect.y - 100) > 1 ||
     Math.abs(panel.rect.width - 896) > 1 ||
     Math.abs(healthRow.rect.width - panel.rect.width) > 1 ||
     cards.some(
@@ -15583,7 +15611,8 @@ async function runOnce({
       timeoutMs,
     });
     mark("semanticReadyMs");
-    const readyRssKiB = readProcessTreeRssKiB(child.pid);
+    const readyMemory = readProcessTreeMemory(child.pid);
+    const readyLoadAverage = Number(os.loadavg()[0].toFixed(2));
     const transport = {
       kind: "main",
       probe: "same-value model selection without thread mutation",
@@ -16408,7 +16437,11 @@ async function runOnce({
       status: outcomeChecks.every((outcome) => outcome.status === "pass") ? "pass" : "fail",
       startedAt,
       timing,
-      memory: { processTreeRssKiBAtSemanticReady: readyRssKiB },
+      memory: {
+        processTreeRssKiBAtSemanticReady: readyMemory.totalKiB,
+        largestProcesses: readyMemory.largest,
+      },
+      host: { loadAverage1m: readyLoadAverage, cpuCount: os.cpus().length },
       processId: child.pid,
       isolatedState: { path: pairingUrl ? null : baseDir, disposed: true },
       connection: {

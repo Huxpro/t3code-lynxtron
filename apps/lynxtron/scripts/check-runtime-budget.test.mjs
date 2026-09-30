@@ -42,4 +42,26 @@ describe("checkRuntimeBudget", () => {
       "bundle 8000000 bytes > 7340032 bytes",
     ]);
   });
+
+  it("skips timing, but not memory, on a saturated host", () => {
+    const notes = [];
+    expect(
+      checkRuntimeBudget(
+        {
+          bundle: { bytes: 6956815 },
+          results: [
+            {
+              index: 3,
+              timing: { semanticReadyMs: 7394 },
+              memory: { processTreeRssKiBAtSemanticReady: 697552 },
+              host: { loadAverage1m: 30.6, cpuCount: 12 },
+            },
+          ],
+        },
+        budgets,
+        notes,
+      ),
+    ).toEqual([]);
+    expect(notes).toEqual(["run 3: timing skipped at load 30.6"]);
+  });
 });

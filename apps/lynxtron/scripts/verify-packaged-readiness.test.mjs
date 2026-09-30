@@ -995,8 +995,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '"review-secondary.ts"');
     assert.include(source, "otherContent.every");
     assert.include(source, 'value: "Split diff view"');
-    assert.include(source, 'value: "Enable diff line wrapping"');
-    assert.include(source, 'value: "Hide whitespace changes"');
+    assert.include(source, '"Disable diff line wrapping" : "Enable diff line wrapping"');
+    assert.include(source, '"Show whitespace changes" : "Hide whitespace changes"');
     assert.include(source, 'value: "Collapse all files"');
     assert.include(source, 'measurement.attributes["data-review-file-expanded"] === "false"');
     assert.include(source, '"--review-semantic-only"');
@@ -1268,13 +1268,13 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, '".settings-content--general .settings-section"');
     assert.include(
       source,
-      'assertSettingsTopOrigin("General first section", generalSections[0], 88)',
+      'assertSettingsTopOrigin("General first section", generalSections[0], 100)',
     );
     assert.include(
       source,
       'readSelectorMeasurements(\n    client,\n    ".settings-content--general .settings-row",',
     );
-    assert.include(source, '["background-activity", "text-generation-model"]');
+    assert.include(source, "const expectedGeneralUnavailableIds = [];");
     assert.include(source, "generalUnavailableIds");
     assert.include(source, 'row.attributes["aria-disabled"] !== "true"');
     assert.include(source, '".settings-content--general .settings-row--unavailable"');
@@ -1288,7 +1288,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'assertSettingsTopOrigin("Appearance Theme row", theme?.rect, 144)');
     assert.include(
       source,
-      'assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 88)',
+      'assertSettingsTopOrigin("Source Control first section", sourceControl.sections[0], 100)',
     );
     assert.include(source, "assertSettingsTopOrigin(`General cycle ${cycle}`");
     assert.include(source, "async function readGeneralBetaSettingsEvidence");
@@ -1301,7 +1301,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "(!legacySidebarCollapsed && !legacySidebarVisible)");
     assert.include(source, "async function readArchiveSettingsEvidence");
     assert.include(source, 'selector: ".settings-content--archive"');
-    assert.include(source, 'assertSettingsTopOrigin("Archive first section", section, 88)');
+    assert.include(source, 'assertSettingsTopOrigin("Archive first section", section, 100)');
     assert.include(source, "const expectedObservedRoutes = [");
     assert.include(source, '"/settings/archived"');
     assert.include(source, "navigationSelections.length !== expectedObservedRoutes.length");

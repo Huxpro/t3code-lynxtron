@@ -10,12 +10,19 @@ import { fileURLToPath } from "node:url";
 
 const appRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
-export function checkRuntimeBudget(report, budgets) {
+export function checkRuntimeBudget(report, budgets, notes = []) {
   const failures = [];
   for (const result of report.results ?? []) {
     const readyMs = result.timing?.semanticReadyMs;
     const rssKiB = result.memory?.processTreeRssKiBAtSemanticReady;
+    // Startup timing is only comparable when the host is not saturated.
+    const saturated =
+      typeof result.host?.loadAverage1m === "number" &&
+      typeof result.host?.cpuCount === "number" &&
+      result.host.loadAverage1m > result.host.cpuCount;
     if (typeof readyMs !== "number") failures.push(`run ${result.index}: no semanticReadyMs`);
+    else if (saturated)
+      notes.push(`run ${result.index}: timing skipped at load ${result.host.loadAverage1m}`);
     else if (readyMs > budgets.semanticReadyMs)
       failures.push(
         `run ${result.index}: semantic ready ${readyMs}ms > ${budgets.semanticReadyMs}ms`,
@@ -40,7 +47,9 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const { budgets } = JSON.parse(
     readFileSync(path.join(appRoot, "reports/budgets/runtime.json"), "utf8"),
   );
-  const failures = checkRuntimeBudget(report, budgets);
+  const notes = [];
+  const failures = checkRuntimeBudget(report, budgets, notes);
+  for (const note of notes) console.log(note);
   for (const failure of failures) console.error(failure);
   console.log(failures.length === 0 ? "runtime budget: pass" : "runtime budget: fail");
   if (failures.length > 0) process.exitCode = 1;
