@@ -1,0 +1,483 @@
+{
+  "schemaVersion": 1,
+  "phase": "Plan 14 M7",
+  "observedAt": "2026-09-29",
+  "runtime": "@lynx-js/lynxtron@0.0.28",
+  "launch": "background (T3_LYNXTRON_BACKGROUND=1)",
+  "battery": {
+    "schemaVersion": 1,
+    "recordedAt": "2026-09-30T00:36:10.110Z",
+    "passed": 18,
+    "failed": 5,
+    "entries": [
+      {
+        "name": "readiness-1280-dark",
+        "status": "fail",
+        "seconds": 23,
+        "viewport": "1280x820",
+        "flags": ["--runs", "3", "--expected-theme", "dark"],
+        "error": null,
+        "budgetFailures": [
+          "run 1: semantic ready 3059ms > 3000ms",
+          "run 1: RSS 1232224 KiB > 819200 KiB",
+          "run 3: RSS 1290544 KiB > 819200 KiB"
+        ],
+        "timing": [
+          {
+            "devToolSessionMs": 1185,
+            "serverReadyMs": 2800,
+            "mainTransportMs": 2816,
+            "semanticReadyMs": 3059
+          },
+          {
+            "devToolSessionMs": 770,
+            "serverReadyMs": 1806,
+            "mainTransportMs": 1818,
+            "semanticReadyMs": 1896
+          },
+          {
+            "devToolSessionMs": 1093,
+            "serverReadyMs": 1997,
+            "mainTransportMs": 2171,
+            "semanticReadyMs": 2482
+          }
+        ]
+      },
+      {
+        "name": "journeys-1440-light",
+        "status": "pass",
+        "seconds": 12,
+        "viewport": "1440x900",
+        "flags": [
+          "--expected-theme",
+          "light",
+          "--verify-runtime-menu-dismiss",
+          "--verify-sidebar-scope"
+        ],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 797,
+            "serverReadyMs": 1658,
+            "mainTransportMs": 1724,
+            "semanticReadyMs": 1816
+          }
+        ]
+      },
+      {
+        "name": "journeys-1440-dark",
+        "status": "pass",
+        "seconds": 19,
+        "viewport": "1440x900",
+        "flags": [
+          "--expected-theme",
+          "dark",
+          "--verify-runtime-menu-dismiss",
+          "--verify-sidebar-scope"
+        ],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1365,
+            "serverReadyMs": 3409,
+            "mainTransportMs": 3426,
+            "semanticReadyMs": 3577
+          }
+        ]
+      },
+      {
+        "name": "journeys-1280-system",
+        "status": "pass",
+        "seconds": 22,
+        "viewport": "1280x820",
+        "flags": [
+          "--expected-theme",
+          "light",
+          "--verify-runtime-menu-dismiss",
+          "--verify-sidebar-scope"
+        ],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 958,
+            "serverReadyMs": 2093,
+            "mainTransportMs": 2821,
+            "semanticReadyMs": 2902
+          }
+        ]
+      },
+      {
+        "name": "model-options",
+        "status": "pass",
+        "seconds": 34,
+        "viewport": "1280x820",
+        "flags": ["--verify-model-option-menu-mutation"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 9940,
+            "serverReadyMs": 18028,
+            "mainTransportMs": 18429,
+            "semanticReadyMs": 18492
+          }
+        ]
+      },
+      {
+        "name": "quick-switch",
+        "status": "pass",
+        "seconds": 19,
+        "viewport": "1280x820",
+        "flags": ["--verify-quick-switch-default"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 985,
+            "serverReadyMs": 2386,
+            "mainTransportMs": 2397,
+            "semanticReadyMs": 2415
+          }
+        ]
+      },
+      {
+        "name": "settings-navigation",
+        "status": "fail",
+        "seconds": 14,
+        "viewport": "1280x820",
+        "flags": ["--verify-settings-navigation"],
+        "error": "General first section did not reset to the Settings top origin: {\"expected\":{\"x\":320,\"y\":88,\"width\":896},\"rect\":{\"x\":320,\"y\":100,\"width\":896,\"height\":1076}}",
+        "budgetFailures": [],
+        "timing": []
+      },
+      {
+        "name": "lifecycle-reconnect",
+        "status": "pass",
+        "seconds": 22,
+        "viewport": "1280x820",
+        "flags": ["--verify-lifecycle-recovery"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1996,
+            "serverReadyMs": 3376,
+            "mainTransportMs": 3818,
+            "semanticReadyMs": 4295
+          }
+        ]
+      },
+      {
+        "name": "terminal",
+        "status": "pass",
+        "seconds": 10,
+        "viewport": "1280x820",
+        "flags": ["--verify-terminal-lifecycle"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 856,
+            "serverReadyMs": 2313,
+            "mainTransportMs": 2327,
+            "semanticReadyMs": 2458
+          }
+        ]
+      },
+      {
+        "name": "right-panel-add-menu",
+        "status": "pass",
+        "seconds": 9,
+        "viewport": "1280x820",
+        "flags": ["--verify-right-panel-add-menu"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1580,
+            "serverReadyMs": 1719,
+            "mainTransportMs": 1728,
+            "semanticReadyMs": 1746
+          }
+        ]
+      },
+      {
+        "name": "files-desktop",
+        "status": "pass",
+        "seconds": 13,
+        "viewport": "1280x820",
+        "flags": ["--verify-files-browser"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1291,
+            "serverReadyMs": 2108,
+            "mainTransportMs": 2340,
+            "semanticReadyMs": 2368
+          }
+        ]
+      },
+      {
+        "name": "files-sheet-700",
+        "status": "pass",
+        "seconds": 12,
+        "viewport": "700x820",
+        "flags": ["--verify-files-browser", "--verify-file-sheet-back"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 940,
+            "serverReadyMs": 2085,
+            "mainTransportMs": 2920,
+            "semanticReadyMs": 3567
+          }
+        ]
+      },
+      {
+        "name": "review-diff",
+        "status": "fail",
+        "seconds": 68,
+        "viewport": "1280x820",
+        "flags": ["--verify-review-diff-state"],
+        "error": "Lynx route smoke could not find .diff-panel-header__icon-button[aria-label=\"Enable diff line wrapping\"].",
+        "budgetFailures": [],
+        "timing": []
+      },
+      {
+        "name": "diff-scope",
+        "status": "pass",
+        "seconds": 9,
+        "viewport": "1280x820",
+        "flags": ["--verify-diff-scope-menu"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1436,
+            "serverReadyMs": 2215,
+            "mainTransportMs": 2227,
+            "semanticReadyMs": 2242
+          }
+        ]
+      },
+      {
+        "name": "message-cards",
+        "status": "pass",
+        "seconds": 5,
+        "viewport": "1280x820",
+        "flags": ["--verify-message-card-state"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 758,
+            "serverReadyMs": 1709,
+            "mainTransportMs": 1722,
+            "semanticReadyMs": 1752
+          }
+        ]
+      },
+      {
+        "name": "approval-intervention",
+        "status": "pass",
+        "seconds": 13,
+        "viewport": "1280x820",
+        "flags": ["--verify-approval-transcript-state"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1098,
+            "serverReadyMs": 2182,
+            "mainTransportMs": 2753,
+            "semanticReadyMs": 2771
+          }
+        ]
+      },
+      {
+        "name": "checkpoint-revert-refusal",
+        "status": "pass",
+        "seconds": 12,
+        "viewport": "1280x820",
+        "flags": ["--verify-checkpoint-revert"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1306,
+            "serverReadyMs": 4051,
+            "mainTransportMs": 4426,
+            "semanticReadyMs": 4465
+          }
+        ]
+      },
+      {
+        "name": "link-context-menu",
+        "status": "pass",
+        "seconds": 10,
+        "viewport": "1280x820",
+        "flags": ["--verify-link-context-menu"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1659,
+            "serverReadyMs": 4377,
+            "mainTransportMs": 4734,
+            "semanticReadyMs": 4766
+          }
+        ]
+      },
+      {
+        "name": "transcript-recycling",
+        "status": "pass",
+        "seconds": 16,
+        "viewport": null,
+        "flags": [
+          "--fixture-dir",
+          "/private/tmp/claude-501/-Users-bytedance-github-t3code/891668c9-6700-4f26-8b82-2c144ce370dd/scratchpad/m2-fixture",
+          "--output",
+          "{out}"
+        ],
+        "error": null,
+        "budgetFailures": [],
+        "timing": []
+      },
+      {
+        "name": "transcript-incoming-growth-live",
+        "status": "pass",
+        "seconds": 21,
+        "viewport": "1280x820",
+        "flags": ["--verify-transcript-incoming-growth"],
+        "error": null,
+        "budgetFailures": [],
+        "timing": [
+          {
+            "devToolSessionMs": 1141,
+            "serverReadyMs": 2820,
+            "mainTransportMs": 3044,
+            "semanticReadyMs": 3083
+          }
+        ]
+      },
+      {
+        "name": "m1-local-journey-live",
+        "status": "fail",
+        "seconds": 136,
+        "viewport": "1280x820",
+        "flags": ["--verify-m1-local-journey"],
+        "error": "Timed out waiting for client state: {\"latest\":{\"activeThreadId\":\"b7362861-b3b0-4db4-8f64-78141831e650\",\"draftThreadId\":\"b7362861-b3b0-4db4-8f64-78141831e650\",\"environmentLabel\":\"MacBook Pro (3)\",\"draftThreadIdsByProjectId\":{\"a7d275a9-1609-4bd2-b6d1-de853b463c5a\":\"b7362861-b3b0-4db4-8f64-78141831e650\"},\"activeComposerDraftText\":\"\",\"composerDraftTextByScopeKey\":{},\"activeComposerDraftAttachments\":[{",
+        "budgetFailures": [],
+        "timing": []
+      },
+      {
+        "name": "checkpoint-revert-live",
+        "status": "fail",
+        "seconds": 146,
+        "viewport": "1280x820",
+        "flags": ["--verify-checkpoint-revert-live"],
+        "error": "Timed out waiting for log signal \"answer\":\"confirm\".",
+        "budgetFailures": [],
+        "timing": []
+      },
+      {
+        "name": "remote-journey-live",
+        "status": "pass",
+        "seconds": 48,
+        "viewport": null,
+        "flags": [
+          "/private/tmp/claude-501/-Users-bytedance-github-t3code/891668c9-6700-4f26-8b82-2c144ce370dd/scratchpad/m1-fixture",
+          "{out}"
+        ],
+        "error": null,
+        "budgetFailures": [],
+        "timing": []
+      }
+    ]
+  },
+  "rerunsAfterGateMaintenance": {
+    "settings-navigation": "pass",
+    "review-diff": "pass",
+    "providers-settings": "pass"
+  },
+  "memoryRerun": {
+    "hostLoad1m": "30 to 67 during the battery (Defender scan)",
+    "runs": [
+      {
+        "semanticReadyMs": 7394,
+        "rssKiB": 697552,
+        "largest": [
+          {
+            "name": "lynxtron",
+            "kiB": 352880
+          },
+          {
+            "name": "node",
+            "kiB": 344608
+          },
+          {
+            "name": "opencode",
+            "kiB": 32
+          },
+          {
+            "name": "claude",
+            "kiB": 32
+          }
+        ]
+      },
+      {
+        "semanticReadyMs": 7209,
+        "rssKiB": 687328,
+        "largest": [
+          {
+            "name": "lynxtron",
+            "kiB": 345952
+          },
+          {
+            "name": "node",
+            "kiB": 341312
+          },
+          {
+            "name": "opencode",
+            "kiB": 32
+          },
+          {
+            "name": "claude",
+            "kiB": 32
+          }
+        ]
+      },
+      {
+        "semanticReadyMs": 5547,
+        "rssKiB": 734624,
+        "largest": [
+          {
+            "name": "node",
+            "kiB": 387776
+          },
+          {
+            "name": "lynxtron",
+            "kiB": 346752
+          },
+          {
+            "name": "opencode",
+            "kiB": 32
+          },
+          {
+            "name": "claude",
+            "kiB": 32
+          },
+          {
+            "name": "codex",
+            "kiB": 32
+          }
+        ]
+      }
+    ]
+  }
+}
