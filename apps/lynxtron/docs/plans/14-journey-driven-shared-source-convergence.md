@@ -51,8 +51,8 @@ or classified as platform leaves or hard islands.
 | M3    | [Prove remote and multi-environment ownership](./14-journey-driven-convergence/M3-remote-environment-journey.md)          | `completed`   | One local and one supported remote journey complete a turn and reconnect without identity leakage                |
 | M4    | [Delete duplicated product decisions](./14-journey-driven-convergence/M4-shared-source-deletion.md)                       | `completed`   | Active journey surfaces improve physical reuse and duplicate-decision LOC without widening exclusions            |
 | M5    | [Complete review and reverse actions](./14-journey-driven-convergence/M5-review-and-reverse-actions.md)                   | `completed`   | Checkpoint, files, diff/fallback, and reverse actions form one canonical loop                                    |
-| M6    | [Bound secondary surfaces and platform quality](./14-journey-driven-convergence/M6-secondary-surfaces-and-performance.md) | `in_progress` | Terminal/browser decisions are honest and startup, update, memory, and bundle budgets exist                      |
-| M7    | [Certify the complete product journey](./14-journey-driven-convergence/M7-phase-exit-certification.md)                    | `pending`     | Local and remote phase-exit journeys pass the complete evidence matrix                                           |
+| M6    | [Bound secondary surfaces and platform quality](./14-journey-driven-convergence/M6-secondary-surfaces-and-performance.md) | `completed`   | Terminal/browser decisions are honest and startup, update, memory, and bundle budgets exist                      |
+| M7    | [Certify the complete product journey](./14-journey-driven-convergence/M7-phase-exit-certification.md)                    | `in_progress` | Local and remote phase-exit journeys pass the complete evidence matrix                                           |
 
 Only one phase may be `in_progress`. M4 is a cross-cutting rule, but its own phase
 is the point where accumulated source-reuse debt is audited and reduced deliberately.
