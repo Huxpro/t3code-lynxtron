@@ -1377,6 +1377,25 @@ function setComposerDraftText(scopeKey: string, text: string): void {
   }, 300);
 }
 
+/** Discards a project's remembered local draft and everything typed into it. */
+function discardProjectDraft(projectId: string): void {
+  const scopeKey = composerDraftScopeKey({ projectId, localDraft: true });
+  if (scopeKey) {
+    setComposerDraftText(scopeKey, "");
+    clearComposerAttachments(scopeKey);
+    clearComposerTerminalContexts(scopeKey);
+    clearComposerFileContexts(scopeKey);
+    clearComposerElementContexts(scopeKey);
+  }
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const draft = state.draftThreadsByProjectId[projectId];
+  if (draft) {
+    patchState({
+      draftThreadsByProjectId: forgetLocalDraftThread(state.draftThreadsByProjectId, draft),
+    });
+  }
+}
+
 function addComposerAttachments(
   scopeKey: string,
   attachments: ReadonlyArray<UploadChatAttachment>,
@@ -2467,6 +2486,7 @@ export const t3ClientActions = {
   unsettleThread,
   pinThread,
   unpinThread,
+  discardProjectDraft,
   unsnoozeThread,
   setModelSelection,
   setModelOptions,

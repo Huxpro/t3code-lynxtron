@@ -8438,6 +8438,124 @@ async function verifyTerminalLifecycle({ child, client, log, timeoutMs }) {
 
 // Upstream #7737: the slash menu ranks built-in commands, provider commands,
 // and enabled skills (as `skill:<name>`) together; picking a skill inserts `$name `.
+// Upstream #5777: an unsent draft with content stays one click away in the
+// sidebar; the row reopens the draft and its discard button clears it.
+async function verifySidebarDrafts({ child, client, timeoutMs }) {
+  const before = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => Array.isArray(state?.threadIds) && state.threadIds.length > 0,
+  });
+  const serverThreadId = before.threadIds[0];
+  const draftText = `Unsent sidebar draft ${Date.now()}`;
+  await tapSelector({ child, client, selector: "[data-testid=sidebar-v2-new-thread]", timeoutMs });
+  const drafted = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" && state.activeThreadId === state.draftThreadId,
+  });
+  const draftThreadId = drafted.draftThreadId;
+  const projectId = Object.entries(drafted.draftThreadIdsByProjectId ?? {}).find(
+    ([, id]) => id === draftThreadId,
+  )?.[0];
+  if (!projectId) {
+    throw new Error(`The new draft has no project: ${JSON.stringify(drafted)}`);
+  }
+  const typed = await client.runCdp("Runtime.evaluate", {
+    expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(draftText)}) ?? false`,
+    returnByValue: true,
+  });
+  if (commandResult(typed)?.value !== true) {
+    throw new Error(`Composer input fixture was not applied: ${JSON.stringify(typed)}`);
+  }
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeComposerDraftText === draftText,
+  });
+  const leaveDraft = async () => {
+    await tapSelectorByAttribute({
+      attribute: "data-thread-id",
+      child,
+      client,
+      selector: ".sidebar-v2-row-item",
+      timeoutMs,
+      value: serverThreadId,
+    });
+    await waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) => state?.activeThreadId === serverThreadId,
+    });
+  };
+  const findDraftRow = async (present) => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const rows = await readSelectorMeasurements(client, ".sidebar-v2-draft-row");
+      const row = rows.find((entry) => entry.attributes["data-sidebar-draft"] === projectId);
+      if (present ? row && measurementVisible(row) : !row) return row ?? null;
+      await waitForChildExit(child, 100);
+    }
+    throw new Error(`Sidebar draft row ${present ? "never appeared" : "never left"}.`);
+  };
+  await leaveDraft();
+  const row = await findDraftRow(true);
+  if (!row.text.includes(draftText)) {
+    throw new Error(`Sidebar draft row does not preview the draft: ${row.text}`);
+  }
+  await tapSelectorByAttribute({
+    attribute: "data-sidebar-draft",
+    child,
+    client,
+    selector: ".sidebar-v2-draft-row",
+    timeoutMs,
+    value: projectId,
+  });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThreadId === draftThreadId && state.activeComposerDraftText === draftText,
+  });
+  await findDraftRow(false);
+  await leaveDraft();
+  await findDraftRow(true);
+  await tapSelectorByAttribute({
+    attribute: "data-sidebar-draft-discard",
+    child,
+    client,
+    selector: ".sidebar-v2-draft-row__discard",
+    timeoutMs,
+    value: projectId,
+  });
+  await findDraftRow(false);
+  const after = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.draftThreadIdsByProjectId?.[projectId] === undefined &&
+      !state?.composerDraftTextByScopeKey?.[`project:${projectId}`],
+  });
+  return {
+    status: "pass",
+    input:
+      "DevTool taps on New thread, a thread row, the draft row, and its discard button; renderer input fixture types the draft",
+    projectId,
+    draftThreadId,
+    preview: row.text.trim().slice(0, 120),
+    reopened: true,
+    openDraftHidden: true,
+    discarded: { draftIds: after.draftThreadIdsByProjectId },
+  };
+}
+
 async function verifySlashMenu({ child, client, timeoutMs }) {
   const config = await invokeConnector(client, "refreshProviders", {});
   const provider = config?.providers?.find(
@@ -15790,7 +15908,9 @@ async function runOnce({
       ...(shouldVerifyTerminalLifecycle
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm,confirm" }
         : {}),
-      ...(shouldVerifySlashMenu ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
+      ...(shouldVerifySlashMenu || shouldVerifySidebarDrafts
+        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
+        : {}),
       ...(shouldVerifySidebarThreadMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
@@ -16318,6 +16438,9 @@ async function runOnce({
     const transcriptFollowState = shouldVerifyTranscriptFollowState
       ? await verifyTranscriptFollowState({ child, client, timeoutMs })
       : undefined;
+    const sidebarDrafts = shouldVerifySidebarDrafts
+      ? await verifySidebarDrafts({ child, client, timeoutMs })
+      : undefined;
     const slashMenu = shouldVerifySlashMenu
       ? await verifySlashMenu({ child, client, timeoutMs })
       : undefined;
@@ -16666,6 +16789,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      sidebarDrafts,
       slashMenu,
       sidebarThreadMenu,
       linkContextMenu,
@@ -16755,6 +16879,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      sidebarDrafts,
       slashMenu,
       sidebarThreadMenu,
       linkContextMenu,
@@ -16890,6 +17015,7 @@ const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transc
 const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context-menu");
 const shouldVerifySidebarThreadMenu = process.argv.includes("--verify-sidebar-thread-menu");
 const shouldVerifySlashMenu = process.argv.includes("--verify-slash-menu");
+const shouldVerifySidebarDrafts = process.argv.includes("--verify-sidebar-drafts");
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
 const shouldVerifyTerminalLifecycle = process.argv.includes("--verify-terminal-lifecycle");

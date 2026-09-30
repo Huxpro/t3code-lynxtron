@@ -312,7 +312,14 @@ function LynxThreadActionMenu({
  * main thread.
  */
 export default function SidebarV2() {
-  const { activeThreadId, providerEntries, serverConfig } = useT3ClientState();
+  const {
+    activeThreadId,
+    composerDraftAttachmentsByScopeKey,
+    composerDraftTextByScopeKey,
+    draftThreadsByProjectId,
+    providerEntries,
+    serverConfig,
+  } = useT3ClientState();
   const { sidebarWidth } = useSidebar();
   const projects = useProjects();
   const threads = useThreadShells();
@@ -409,6 +416,38 @@ export default function SidebarV2() {
       settledThreads: sortSettledThreadsForSidebar(settled),
     };
   }, [clientSettings.sidebarAutoSettleAfterDays, projectScopeKey, serverConfig, threads]);
+  // Upstream #5777: unsent drafts with content stay one click away above the
+  // thread list. The open draft is left out so typing never repaints rows.
+  const unsentDrafts = useMemo(
+    () =>
+      Object.values(draftThreadsByProjectId)
+        .filter(
+          (draft) =>
+            draft.id !== activeThreadId &&
+            (projectScopeKey === null || draft.projectId === projectScopeKey),
+        )
+        .flatMap((draft) => {
+          const scopeKey = `project:${draft.projectId}`;
+          const firstLine = (composerDraftTextByScopeKey[scopeKey] ?? "").trim().split("\n", 1)[0];
+          const attachmentCount = composerDraftAttachmentsByScopeKey[scopeKey]?.length ?? 0;
+          if (!firstLine && attachmentCount === 0) return [];
+          return [
+            {
+              draft,
+              preview:
+                firstLine || `${attachmentCount} attachment${attachmentCount === 1 ? "" : "s"}`,
+            },
+          ];
+        })
+        .sort((left, right) => right.draft.createdAt.localeCompare(left.draft.createdAt)),
+    [
+      activeThreadId,
+      composerDraftAttachmentsByScopeKey,
+      composerDraftTextByScopeKey,
+      draftThreadsByProjectId,
+      projectScopeKey,
+    ],
+  );
   const searchableThreads = useMemo(
     () => [...activeThreads, ...settledThreads],
     [activeThreads, settledThreads],
@@ -758,6 +797,44 @@ export default function SidebarV2() {
                 <HostText className="sidebar-v2-search-result__time">
                   {sidebarV2ThreadTimeLabel(thread)}
                 </HostText>
+              </view>
+            );
+          }),
+          ...(threadSearchQuery.trim() ? [] : unsentDrafts).map(({ draft, preview }) => {
+            const project = projectById.get(draft.projectId) ?? null;
+            return (
+              <view
+                key={`draft:${draft.id}`}
+                className="sidebar-v2-draft-row"
+                data-sidebar-draft={draft.projectId}
+                aria-label={`Open draft in ${project?.title ?? "project"}`}
+                bindtap={() => {
+                  void t3ClientActions.createThread(draft.projectId).catch(() => undefined);
+                }}
+              >
+                <view className="sidebar-v2-draft-row__head">
+                  <Icon name="square-pen" size={12} color="#d97706" />
+                  {project ? (
+                    <ProjectFavicon
+                      environmentId={project.environmentId}
+                      cwd={project.workspaceRoot}
+                      className="size-4 shrink-0"
+                      size={16}
+                    />
+                  ) : null}
+                  <HostText className="sidebar-v2-draft-row__project min-w-0 flex-1 truncate">
+                    {project?.title ?? ""}
+                  </HostText>
+                  <view
+                    className="sidebar-v2-draft-row__discard"
+                    data-sidebar-draft-discard={draft.projectId}
+                    aria-label="Discard draft"
+                    catchtap={() => t3ClientActions.discardProjectDraft(draft.projectId)}
+                  >
+                    <Icon name="x" size={12} color="#a1a1aa" />
+                  </view>
+                </view>
+                <HostText className="sidebar-v2-draft-row__preview truncate">{preview}</HostText>
               </view>
             );
           }),

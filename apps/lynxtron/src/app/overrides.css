@@ -161,6 +161,49 @@
   height: 20px;
   padding: 0;
 }
+/* Web: unsent draft rows, amber-tinted, above the thread list. */
+.sidebar-v2-draft-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 4px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background-color: rgba(251, 191, 36, 0.04);
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.sidebar-v2-draft-row:hover {
+  background-color: rgba(251, 191, 36, 0.08);
+}
+.sidebar-v2-draft-row__head {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 20px;
+  gap: 6px;
+}
+.sidebar-v2-draft-row__project {
+  color: var(--muted-foreground);
+  font-size: 12px;
+  font-weight: 500;
+}
+.sidebar-v2-draft-row__discard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.sidebar-v2-draft-row__preview {
+  margin-top: 2px;
+  color: rgba(var(--foreground-rgb), 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
 /* Web: size-3 PinIcon beside the project label, muted until hover. */
 .sidebar-v2-row-pin {
   display: flex;

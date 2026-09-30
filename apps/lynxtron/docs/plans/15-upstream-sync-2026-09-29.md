@@ -107,7 +107,7 @@ focused test and a background smoke.
 | P2  | Collapse tool activity into one line; subagent rows and counts (#7152, #5745)                        | Transcript — done                 |
 | P3  | Composer state drawers, question prompt collapse (#7150, #6773)                                      | Composer interventions            |
 | P4  | Approval actions: micro buttons, "Cancel"/"Approve" (upstream restyle)                               | Composer approval geometry        |
-| P5  | Skills listed with slash commands (#7737)                                                            | Composer command menu             |
+| P5  | Skills listed with slash commands (#7737)                                                            | Composer command menu — done      |
 | P6  | Sidebar footer utility menu, back buttons, pinning and pin order (#6210, #6031, #5312, #5581, #5578) | Sidebar                           |
 | P7  | Thread actions from the header title; Copy Thread ID (#5592, #5574)                                  | Chat header, thread menus         |
 | P8  | Confirm before closing a terminal (#7592)                                                            | Terminal — done                   |
@@ -115,7 +115,7 @@ focused test and a background smoke.
 | P10 | Theme library and OKLCH palettes (#5226, #6036, #6183, #5636)                                        | Appearance, generated CSS         |
 | P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar — done        |
 | P12 | Project settings page and manual project icons (#5768, #5775)                                        | Settings                          |
-| P13 | Unsent drafts in the sidebar (#5777)                                                                 | Sidebar                           |
+| P13 | Unsent drafts in the sidebar (#5777)                                                                 | Sidebar — done                    |
 | P14 | Right panel empty state, surface dropdown shortcuts, maximize binding (#6258, #7318, #5091)          | Right panel                       |
 | P15 | New thread picker shows project location (#7392)                                                     | New thread flow — done            |
 
@@ -141,6 +141,10 @@ apply in Lynx CSS, so the wrappers use class hooks.
 
 P11 notes: the day-aware timestamp rule lives in client-runtime `time.ts`; Web
 delegates with its host locale.
+
+P13 notes: Lynx keeps one remembered draft per project, so the draft block
+lists each project's draft with content. The open draft is left out rather
+than frozen, so typing never repaints sidebar rows.
 
 Out of scope for Lynx unless the runtime changes: pull request surfaces
 (#6039, #7148, #7077, #6597), usage insights (#8101, #7147), browser defaults and

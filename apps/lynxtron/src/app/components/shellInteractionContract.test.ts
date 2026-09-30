@@ -1659,7 +1659,7 @@ describe("desktop shell interaction contract", () => {
       sidebarSource.match(
         /className="(?:sidebar-v2-search-result__favicon )?size-4 shrink-0"\s+size=\{16\}/g,
       ),
-    ).toHaveLength(4);
+    ).toHaveLength(5);
     expect(sidebarSource).toContain('working: "circle-dashed"');
     expect(sidebarSource).toContain("function LynxWorkingDuration");
     expect(sidebarSource).toContain("resolveWorkingStartedAt(thread)");
