@@ -507,7 +507,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, "canonicalThreadIdsBefore: beforeNewThreadIds");
     assert.include(source, "serverSequenceBefore: beforeNewThreadSequence.lastSeq");
     assert.include(source, 'selector: ".topbar__toggle--terminal"');
-    assert.include(source, 'selector: ".terminal-placeholder"');
+    assert.include(source, 'selector: ".terminal-panel"');
     assert.include(source, 'selector: ".topbar__toggle--right-panel"');
     assert.include(source, 'selector: "[data-sidebar-thread-action-trigger]"');
     assert.include(source, 'readSelectorRects(client, ".sidebar-v2-action-menu__item")');
@@ -611,8 +611,8 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".right-panel__add-btn"');
     assert.include(source, 'selector: ".right-panel__add-menu"');
     assert.include(source, 'selector: ".right-panel__add-menu-dismiss"');
-    assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - 176) <= 0.5");
-    assert.include(source, "Math.abs((row.rect?.width ?? 0) - 166) > 0.5");
+    assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - 128) <= 0.5");
+    assert.include(source, "Math.abs((row.rect?.width ?? 0) - 118) > 0.5");
     assert.include(source, "Math.abs((measurement?.rect.width ?? 0) - width) <= 1");
     assert.include(source, "Math.abs((measurement?.rect.height ?? 0) - height) <= 1");
     assert.include(source, 'readSelectorMeasurements(client, ".right-panel__add-item")');
@@ -624,10 +624,12 @@ describe("packaged readiness Sidebar geometry", () => {
       source,
       'measurement?.attributes["data-right-panel-active-kind"] === "terminal"',
     );
-    assert.include(source, 'selector: ".terminal-placeholder"');
+    assert.include(source, 'selector: ".terminal-panel"');
     assert.include(source, "terminalSelected: true");
     assert.include(source, "rightPanelAddMenuOnlyEmptyFixture");
     assert.include(outcomeChecksSource, "rightPanelAddMenu");
+    assert.include(source, 'selector: ".ui-toast__title"');
+    assert.include(source, "browserDisabledReason: browserReason.text.trim(),");
   });
 
   it("verifies the Native Diff scope menu through a real review checkpoint", () => {

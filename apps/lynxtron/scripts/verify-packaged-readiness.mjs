@@ -10051,10 +10051,11 @@ async function verifyShellInteractions({ child, client, timeoutMs }) {
   const terminal = await waitForMeasurement({
     child,
     client,
-    selector: ".terminal-placeholder",
+    // The terminal is a real session panel, not a placeholder.
+    selector: ".terminal-panel",
     timeoutMs,
     predicate: (measurement) =>
-      measurement?.text.includes("Terminal sessions are not connected yet") === true,
+      typeof measurement?.attributes["data-terminal-session-status"] === "string",
   });
   const rightPanel = await waitForMeasurement({
     child,
@@ -10217,8 +10218,9 @@ async function verifyRightPanelAddMenu({
       client,
       selector: ".right-panel__add-menu",
       timeoutMs,
+      // 128px since 600a014a5 ("match add surface menu width").
       predicate: (measurement) =>
-        Math.abs((measurement?.rect.width ?? 0) - 176) <= 0.5 &&
+        Math.abs((measurement?.rect.width ?? 0) - 128) <= 0.5 &&
         Math.abs((measurement?.rect.height ?? 0) - 122) <= 0.5,
     });
   };
@@ -10246,7 +10248,7 @@ async function verifyRightPanelAddMenu({
       (row, index) =>
         row.attributes["data-right-panel-add-kind"] !== expectedRows[index].kind ||
         row.text.trim() !== expectedRows[index].label ||
-        Math.abs((row.rect?.width ?? 0) - 166) > 0.5 ||
+        Math.abs((row.rect?.width ?? 0) - 118) > 0.5 ||
         Math.abs((row.rect?.height ?? 0) - 28) > 0.5,
     )
   ) {
@@ -10258,6 +10260,39 @@ async function verifyRightPanelAddMenu({
     outputDirectory,
     name: "native-right-panel-add-menu.png",
   });
+  // The unavailable Browser item closes the menu and explains itself.
+  await tapSelectorByAttribute({
+    attribute: "data-right-panel-add-kind",
+    child,
+    client,
+    selector: ".right-panel__add-item",
+    timeoutMs,
+    value: "browser",
+  });
+  const browserReason = await waitForMeasurement({
+    child,
+    client,
+    selector: ".ui-toast__title",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes("browser is unavailable") === true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".right-panel__add-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  // The toast sits over the panel header, as on Web; dismiss it like a user.
+  await tapSelector({ child, client, selector: ".ui-toast__dismiss", timeoutMs });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".ui-toast",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  await openMenu();
 
   await tapSelector({
     child,
@@ -10318,10 +10353,11 @@ async function verifyRightPanelAddMenu({
   const terminal = await waitForMeasurement({
     child,
     client,
-    selector: ".terminal-placeholder",
+    // The terminal is a real session panel, not a placeholder.
+    selector: ".terminal-panel",
     timeoutMs,
     predicate: (measurement) =>
-      measurement?.text.includes("Terminal sessions are not connected yet") === true,
+      typeof measurement?.attributes["data-terminal-session-status"] === "string",
   });
   await waitForMeasurement({
     child,
@@ -10332,6 +10368,7 @@ async function verifyRightPanelAddMenu({
   });
 
   return {
+    browserDisabledReason: browserReason.text.trim(),
     status: "pass",
     input: "DevTool touch on measured add-menu trigger, dismiss layer, Files row, and Terminal row",
     menu: menu.rect,
@@ -15473,7 +15510,9 @@ async function runOnce({
       ...(shouldVerifyCheckpointRevertLive
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "confirm" }
         : {}),
-      ...(shouldVerifyTerminalLifecycle ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
+      ...(shouldVerifyTerminalLifecycle || shouldVerifyRightPanelAddMenu
+        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
+        : {}),
       ...(shouldVerifyLinkContextMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",

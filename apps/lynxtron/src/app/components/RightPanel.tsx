@@ -27,6 +27,7 @@ import { FilePanel, FilesPanel } from "./FilesPanel";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
+import { toastManager } from "../../../../web/src/components/ui/toast";
 import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
 import { BrowserPanel } from "./BrowserPanel";
 import { selectWarmBrowserSurfaceIds } from "./browserPanel.logic";
@@ -399,36 +400,52 @@ export function RightPanel({
                 data-floating-popup="right-panel-add-menu"
                 catchtap={() => undefined}
               >
-                {presentedAddableSurfaces.map((item) => (
-                  <view
-                    key={item.kind}
-                    className={`right-panel__add-item${item.disabled ? " right-panel__add-item--disabled" : ""}`}
-                    data-right-panel-add-kind={item.kind}
-                    {...(item.disabled
-                      ? {}
-                      : {
-                          bindtap: () => {
-                            if (
-                              item.kind === "browser" ||
-                              item.kind === "files" ||
-                              item.kind === "diff" ||
-                              item.kind === "plan" ||
-                              item.kind === "terminal"
-                            ) {
-                              handleAddSurface(item.kind);
-                            }
-                          },
-                        })}
-                  >
-                    <Icon
-                      name={ADDABLE_ICONS[item.kind]}
-                      size={14}
-                      color="#818181"
-                      className="right-panel__add-item-icon"
-                    />
-                    <text className="right-panel__add-item-label">{item.label}</text>
-                  </view>
-                ))}
+                {presentedAddableSurfaces.map((item) => {
+                  const itemContent = (
+                    <>
+                      <Icon
+                        name={ADDABLE_ICONS[item.kind]}
+                        size={14}
+                        color="#818181"
+                        className="right-panel__add-item-icon"
+                      />
+                      <text className="right-panel__add-item-label">{item.label}</text>
+                    </>
+                  );
+                  if (item.disabled) {
+                    // Web explains this in a hover tooltip; here a tap closes the
+                    // menu and says why, so the explanation never covers the menu.
+                    return (
+                      <view
+                        key={item.kind}
+                        className="right-panel__add-item right-panel__add-item--disabled"
+                        data-right-panel-add-kind={item.kind}
+                        aria-disabled="true"
+                        bindtap={() => {
+                          setShowAddMenu(false);
+                          if (item.disabledReason) {
+                            toastManager.add({ type: "warning", title: item.disabledReason });
+                          }
+                        }}
+                      >
+                        {itemContent}
+                      </view>
+                    );
+                  }
+                  return (
+                    <view
+                      key={item.kind}
+                      className="right-panel__add-item"
+                      data-right-panel-add-kind={item.kind}
+                      aria-disabled="false"
+                      bindtap={() => {
+                        if (item.kind !== "file") handleAddSurface(item.kind);
+                      }}
+                    >
+                      {itemContent}
+                    </view>
+                  );
+                })}
               </view>
             </>
           ) : null}
