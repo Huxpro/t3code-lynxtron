@@ -11,6 +11,8 @@ export interface ChatHeaderSurfaceProps {
   readonly actions?: ReactNode;
   readonly rightPanelOpen: boolean;
   readonly contentProps?: Record<string, unknown>;
+  /** Host title leaf (Lynx: a tappable title or an inline rename field). */
+  readonly titleElement?: ReactNode;
 }
 
 /**
@@ -26,6 +28,7 @@ export function ChatHeaderSurface({
   actions,
   rightPanelOpen,
   contentProps,
+  titleElement,
 }: ChatHeaderSurfaceProps) {
   return (
     <HostView
@@ -52,10 +55,12 @@ export function ChatHeaderSurface({
             </HostText>
           </HostView>
         ) : null}
-        <ChatHeaderTitle
-          className="chat-header-thread-title-reference topbar__thread min-w-0 flex-1 truncate text-sm font-medium text-foreground"
-          title={activeThreadTitle}
-        />
+        {titleElement ?? (
+          <ChatHeaderTitle
+            className="chat-header-thread-title-reference topbar__thread min-w-0 flex-1 truncate text-sm font-medium text-foreground"
+            title={activeThreadTitle}
+          />
+        )}
       </HostView>
       <HostView
         data-chat-header-actions

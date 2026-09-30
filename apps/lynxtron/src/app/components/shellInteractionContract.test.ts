@@ -1689,17 +1689,23 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("bindtap={confirmDelete}");
     expect(sidebarSource).toContain("isDisposableEmptyThread(thread)");
     // The thread menu inventory and delete copy are shared with Web.
-    expect(sidebarSource).toContain("buildThreadActionMenuItems({");
+    expect(sidebarSource).toContain("openThreadActionMenu({");
     expect(sidebarSource).toContain("projectThreadActionConfirmation({");
-    expect(sidebarSource).toContain("getClientSettingsState().confirmThreadDelete");
     expect(sidebarSource).not.toContain('{ id: "archive", label: "Archive" }');
-    expect(sidebarSource).toContain("t3ClientActions.createThread(thread.projectId, {");
-    expect(sidebarSource).toContain('envMode: thread.worktreePath ? "worktree" : "local"');
-    expect(sidebarSource).toContain("startFromOrigin: false");
-    expect(sidebarSource).toContain("t3ClientActions.regenerateThreadTitle(thread.id)");
     expect(sidebarSource).toContain("resolveSnoozePresets(new Date())");
-    expect(sidebarSource).toContain("t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil)");
-    expect(sidebarSource).toContain("t3ClientActions.unsnoozeThread(thread.id)");
+    // Sidebar rows and the chat header title share one menu handler.
+    const threadMenuSource = componentSource("threadActionMenu.ts");
+    expect(threadMenuSource).toContain("buildThreadActionMenuItems({");
+    expect(threadMenuSource).toContain("getClientSettingsState().confirmThreadDelete");
+    expect(threadMenuSource).toContain("t3ClientActions.createThread(thread.projectId, {");
+    expect(threadMenuSource).toContain('envMode: thread.worktreePath ? "worktree" : "local"');
+    expect(threadMenuSource).toContain("startFromOrigin: false");
+    expect(threadMenuSource).toContain("t3ClientActions.regenerateThreadTitle(thread.id)");
+    expect(threadMenuSource).toContain(
+      "t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil)",
+    );
+    expect(threadMenuSource).toContain("t3ClientActions.unsnoozeThread(thread.id)");
+    expect(componentSource("ChatHeader.tsx")).toContain("openThreadActionMenu({");
     expect(sidebarRowSource).toMatch(
       /variant === "slim"[\s\S]*?<HostText[\s\S]*?onClick=\{\(\) => props\.onClick\(\)\}[\s\S]*?onContextMenu=\{props\.onContextMenu\}[\s\S]*?props\.favicon/u,
     );
@@ -1709,11 +1715,11 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toMatch(
       /visibleSettledThreads\.map[\s\S]*?<HostText\s+onClick=\{\(\) => \{[\s\S]*?markThreadVisited\(thread\)/u,
     );
-    expect(sidebarSource).toContain("markThreadUnreadInTimestampRecord");
+    expect(componentSource("threadActionMenu.ts")).toContain("markThreadUnreadInTimestampRecord");
     expect(sidebarSource).toContain("markThreadVisitedInTimestampRecord");
     expect(sidebarSource).toContain("hasUnseenThreadCompletion({");
     expect(sidebarSource).toContain("isUnread={isUnread}");
-    expect(sidebarSource).toContain("setPref(THREAD_VISITED_TIMESTAMPS_PREF, next)");
+    expect(sidebarSource).toContain("useThreadVisitedTimestamps()");
     expect(sidebarSource).toContain("t3ClientActions.deleteThread(thread.id)");
     expect(componentSource("OtherSettings.tsx")).toContain('data-settings-archive-error="true"');
     expect(componentSource("OtherSettings.tsx")).toContain('"Failed to unarchive thread"');

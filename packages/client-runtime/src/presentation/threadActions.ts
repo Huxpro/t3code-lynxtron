@@ -90,3 +90,17 @@ export function selectRecoverableDisposableThreadIds(
     thread.archivedAt === null && isDisposableEmptyThread(thread) ? [thread.id] : [],
   );
 }
+
+/**
+ * Rename commit rule shared by the header and sidebar inline renames: trim,
+ * reject empty (the caller toasts), and skip the mutation when nothing changed.
+ */
+export function resolveRenameCommit(input: {
+  readonly title: string;
+  readonly originalTitle: string;
+}): { action: "commit"; title: string } | { action: "reject-empty" } | { action: "noop" } {
+  const trimmed = input.title.trim();
+  if (trimmed.length === 0) return { action: "reject-empty" };
+  if (trimmed === input.originalTitle) return { action: "noop" };
+  return { action: "commit", title: trimmed };
+}

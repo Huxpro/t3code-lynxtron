@@ -2009,6 +2009,31 @@
   flex-grow: 1;
   transform: none;
 }
+/* Upstream #5592: the title opens the thread menu and renames in place. */
+.chat-header-title-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-grow: 1;
+  min-width: 0;
+  height: 24px;
+  cursor: pointer;
+}
+.chat-header-title-rename {
+  flex-grow: 1;
+  min-width: 0;
+  height: 24px;
+  padding: 0 6px;
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 500;
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--ring);
+  border-radius: 6px;
+  box-sizing: border-box;
+}
 .topbar__actions {
   display: flex;
   flex-direction: row;

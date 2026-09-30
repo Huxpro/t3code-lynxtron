@@ -6,7 +6,6 @@ import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import {
   canSnooze,
   effectiveSettled,
-  effectiveSnoozed,
   resolveSnoozePresets,
   threadWokeAt,
 } from "@t3tools/client-runtime/state/thread-settled";
@@ -35,8 +34,8 @@ import {
   sidebarV2ThreadTimeLabel,
   type SidebarV2TopStatus,
 } from "./Sidebar.logic";
+import { openThreadActionMenu } from "../../../lynxtron/src/app/components/threadActionMenu";
 import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
-import { buildThreadActionMenuItems } from "./threadActionMenu.logic";
 import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV2RowSurface";
 import { HostText } from "./ui/hostElements";
 import { useSidebar } from "./ui/sidebar";
@@ -45,7 +44,6 @@ import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation
 import {
   clientCapabilities,
   showNativeContextMenu,
-  showNativeConfirm,
 } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
 import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
@@ -53,24 +51,18 @@ import {
   isDisposableEmptyThread,
   projectThreadActionConfirmation,
 } from "@t3tools/client-runtime/presentation/thread-actions";
-import { toastManager } from "./ui/toast";
 import {
   hasUnseenThreadCompletion,
-  markThreadUnreadInTimestampRecord,
   markThreadVisitedInTimestampRecord,
   projectSidebarThreadDetailsRows,
-  sanitizeThreadVisitedTimestampRecord,
 } from "@t3tools/client-runtime/presentation/sidebar";
 import {
-  getClientSettingsState,
-  getPref,
-  setPref,
+  updateThreadVisitedTimestamps,
   useClientSettingsState,
+  useThreadVisitedTimestamps,
 } from "../../../lynxtron/src/app/state/prefsStore";
 import { onSidebarThreadJump } from "../../../lynxtron/src/app/state/sidebarThreadNavigation";
 import { useLynxShortcutModifierState } from "../../../lynxtron/src/app/state/shortcutModifierState";
-
-const THREAD_VISITED_TIMESTAMPS_PREF = "threadLastVisitedAtById";
 
 function LynxWorkingDuration({
   thread,
@@ -338,37 +330,13 @@ export default function SidebarV2() {
     readonly threadId: string;
   } | null>(null);
   const [hoveredThreadId, setHoveredThreadId] = useState<string | null>(null);
-  const [threadLastVisitedAtById, setThreadLastVisitedAtById] = useState(() =>
-    sanitizeThreadVisitedTimestampRecord(getPref(THREAD_VISITED_TIMESTAMPS_PREF, {})),
-  );
-  const updateThreadVisitedTimestamps = useCallback(
-    (update: (current: Record<string, string>) => Record<string, string>) => {
-      setThreadLastVisitedAtById((current) => {
-        const next = update(current);
-        if (next !== current) setPref(THREAD_VISITED_TIMESTAMPS_PREF, next);
-        return next;
-      });
-    },
-    [],
-  );
-  const markThreadVisited = useCallback(
-    (thread: (typeof threads)[number]) => {
-      const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
-      updateThreadVisitedTimestamps((current) =>
-        markThreadVisitedInTimestampRecord(current, threadKey, thread.updatedAt),
-      );
-    },
-    [updateThreadVisitedTimestamps],
-  );
-  const markThreadUnread = useCallback(
-    (thread: (typeof threads)[number]) => {
-      const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
-      updateThreadVisitedTimestamps((current) =>
-        markThreadUnreadInTimestampRecord(current, threadKey, thread.latestTurn?.completedAt),
-      );
-    },
-    [updateThreadVisitedTimestamps],
-  );
+  const threadLastVisitedAtById = useThreadVisitedTimestamps();
+  const markThreadVisited = useCallback((thread: (typeof threads)[number]) => {
+    const threadKey = scopedThreadKey(scopeThreadRef(thread.environmentId, thread.id));
+    updateThreadVisitedTimestamps((current) =>
+      markThreadVisitedInTimestampRecord(current, threadKey, thread.updatedAt),
+    );
+  }, []);
   const orderedProjects = useMemo(
     () => sortScopedProjectsForSidebar(projects, threads, "updated_at"),
     [projects, threads],
@@ -542,83 +510,22 @@ export default function SidebarV2() {
   const newThreadProject = scopedProject ?? projects[0] ?? null;
   const settlementSupported = serverConfig?.environment.capabilities.threadSettlement === true;
   const showThreadContextMenu = useCallback(
-    async (thread: (typeof threads)[number], projectPath: string | null, settled: boolean) => {
-      const workspacePath = thread.worktreePath ?? projectPath;
-      const supportsTitleRegeneration =
-        serverConfig?.environment.capabilities.threadTitleRegeneration === true;
-      const supportsSnooze = serverConfig?.environment.capabilities.threadSnooze === true;
-      const isSnoozed = effectiveSnoozed(thread, { now: new Date().toISOString() });
-      const snoozePresets = resolveSnoozePresets(new Date());
-      const isRegeneratingTitle = thread.titleRegeneration != null;
-      const selection = await showNativeContextMenu(
-        buildThreadActionMenuItems({
-          branch: thread.branch,
-          isPinned: thread.pinnedAt != null,
-          isSettled: settled,
-          isSnoozed,
-          canSnoozeNow: canSnooze(thread, { now: new Date().toISOString() }),
-          isRegeneratingTitle,
-          isRunning: thread.session?.status === "running" && thread.session.activeTurnId != null,
-          supports: {
-            settlement: settlementSupported,
-            snooze: supportsSnooze,
-            pinning: serverConfig?.environment.capabilities.threadPinning === true,
-            titleRegeneration: supportsTitleRegeneration,
-          },
-          snoozePresets,
-        }),
-      );
-      if (selection?.startsWith("snooze:")) {
-        const preset = snoozePresets.find((candidate) => `snooze:${candidate.id}` === selection);
-        if (preset) await t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil);
-        return;
-      }
-      if (selection === "new-thread-on-branch" && thread.branch) {
-        await t3ClientActions.createThread(thread.projectId, {
-          branch: thread.branch,
-          worktreePath: thread.worktreePath,
-          envMode: thread.worktreePath ? "worktree" : "local",
-          startFromOrigin: false,
-        });
-      } else if (selection === "pin") await t3ClientActions.pinThread(thread.id);
-      else if (selection === "unpin") await t3ClientActions.unpinThread(thread.id);
-      else if (selection === "settle") await t3ClientActions.settleThread(thread.id);
-      else if (selection === "unsettle") await t3ClientActions.unsettleThread(thread.id);
-      else if (selection === "unsnooze") await t3ClientActions.unsnoozeThread(thread.id);
-      else if (selection === "copy-path") {
-        if (!workspacePath) {
-          toastManager.add({
-            type: "error",
-            title: "Path unavailable",
-            description: "This thread does not have a workspace path to copy.",
-          });
-          return;
-        }
-        await clientCapabilities.clipboard.writeText(workspacePath);
-      } else if (selection === "copy-branch" && thread.branch) {
-        await clientCapabilities.clipboard.writeText(thread.branch);
-      } else if (selection === "copy-thread-id") {
-        await clientCapabilities.clipboard.writeText(thread.id);
-      } else if (selection === "archive") {
-        if (
-          getClientSettingsState().confirmThreadArchive &&
-          !(await showNativeConfirm({ message: `Archive thread "${thread.title}"?` }))
-        ) {
-          return;
-        }
-        await t3ClientActions.archiveThread(thread.id);
-      } else if (selection === "mark-unread") {
-        markThreadUnread(thread);
-      } else if (selection === "regenerate-title") {
-        await t3ClientActions.regenerateThreadTitle(thread.id);
-      } else if (selection === "delete" && !getClientSettingsState().confirmThreadDelete) {
-        await t3ClientActions.deleteThread(thread.id);
-      } else if (selection === "rename" || selection === "delete") {
-        setActionMenuThreadId(thread.id);
-        setNativeFollowup({ kind: selection, threadId: thread.id });
-      }
-    },
-    [markThreadUnread, serverConfig, settlementSupported, threads],
+    (thread: (typeof threads)[number], projectPath: string | null, settled: boolean) =>
+      openThreadActionMenu({
+        thread,
+        projectPath,
+        settled,
+        serverConfig,
+        onRename: () => {
+          setActionMenuThreadId(thread.id);
+          setNativeFollowup({ kind: "rename", threadId: thread.id });
+        },
+        onDelete: () => {
+          setActionMenuThreadId(thread.id);
+          setNativeFollowup({ kind: "delete", threadId: thread.id });
+        },
+      }),
+    [serverConfig],
   );
   useEffect(() => {
     const diagnosticsGlobal = globalThis as typeof globalThis & {

@@ -14,7 +14,16 @@ import type {
 } from "@t3tools/contracts";
 import { ChatHeaderSurface } from "../../../../web/src/components/chat/ChatHeaderSurface";
 import { ProjectFavicon } from "../../../../web/src/components/ProjectFavicon.lynx";
-import { t3ClientActions } from "../state/t3Client";
+import {
+  projectThreadActionConfirmation,
+  resolveRenameCommit,
+} from "@t3tools/client-runtime/presentation/thread-actions";
+import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
+import { useThreadShells } from "../../../../web/src/state/entities";
+import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
+import { useClientSettingsState } from "../state/prefsStore";
+import { t3ClientActions, useT3ClientState } from "../state/t3Client";
+import { openThreadActionMenu } from "./threadActionMenu";
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../state/environment";
 import { uiActions } from "../state/uiState";
 import { Icon, type IconName } from "./Icon";
@@ -173,6 +182,83 @@ export function ChatHeader({
   onGitMenuOpenChange = () => undefined,
   onRunProjectScript,
 }: ChatHeaderProps) {
+  const { activeThreadId, serverConfig } = useT3ClientState();
+  const threadShells = useThreadShells();
+  const [clientSettings] = useClientSettingsState();
+  const activeShell = threadShells.find((thread) => thread.id === activeThreadId);
+  const [renaming, setRenaming] = useState<{
+    readonly threadId: string;
+    readonly draft: string;
+  } | null>(null);
+  const renameActive = renaming !== null && renaming.threadId === activeShell?.id;
+  const commitRename = () => {
+    if (!renaming || !activeShell) return;
+    const resolution = resolveRenameCommit({
+      title: renaming.draft,
+      originalTitle: activeShell.title,
+    });
+    setRenaming(null);
+    if (resolution.action === "commit") {
+      void t3ClientActions.renameThread(activeShell.id, resolution.title).catch(() => undefined);
+    }
+  };
+  // Upstream #5592: the header title opens the same thread action menu as a
+  // sidebar row; rename edits the title in place and delete asks first.
+  const openTitleMenu = () => {
+    if (!activeShell) return;
+    void openThreadActionMenu({
+      thread: activeShell,
+      projectPath: cwd ?? null,
+      settled:
+        serverConfig?.environment.capabilities.threadSettlement === true &&
+        effectiveSettled(activeShell, {
+          now: new Date().toISOString(),
+          autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays,
+        }),
+      serverConfig,
+      onRename: () => setRenaming({ threadId: activeShell.id, draft: activeShell.title }),
+      onDelete: () => {
+        const confirmation = projectThreadActionConfirmation({
+          action: "delete",
+          threadTitle: activeShell.title,
+        });
+        void showNativeConfirm({
+          message: confirmation.title,
+          ...(confirmation.description ? { detail: confirmation.description } : {}),
+          confirmLabel: confirmation.confirmLabel,
+        })
+          .then((confirmed) =>
+            confirmed ? t3ClientActions.deleteThread(activeShell.id) : undefined,
+          )
+          .catch(() => undefined);
+      },
+    }).catch(() => undefined);
+  };
+  const titleElement = activeShell ? (
+    renameActive ? (
+      <input
+        className="chat-header-title-rename topbar__thread"
+        data-chat-header-title-rename={activeShell.id}
+        {...({ value: renaming.draft, focus: true } as object)}
+        bindinput={(event: { detail?: { value?: string } }) =>
+          setRenaming({ threadId: activeShell.id, draft: event.detail?.value ?? "" })
+        }
+        bindconfirm={commitRename}
+        bindblur={commitRename}
+      />
+    ) : (
+      <view
+        className="chat-header-title-button lynx-titlebar-no-drag"
+        data-chat-header-title-menu={activeShell.id}
+        aria-label={`${threadTitle}, thread actions`}
+        bindtap={openTitleMenu}
+      >
+        <text className="chat-header-thread-title-reference topbar__thread" text-maxline="1">
+          {threadTitle}
+        </text>
+      </view>
+    )
+  ) : undefined;
   const [gitInitPending, setGitInitPending] = useState(false);
   const [gitActionPending, setGitActionPending] = useState(false);
   const [projectActionsMenuOpen, setProjectActionsMenuOpen] = useState(false);
@@ -276,6 +362,7 @@ export function ChatHeader({
       <ChatHeaderSurface
         activeProjectName={projectName}
         activeThreadTitle={threadTitle}
+        titleElement={titleElement}
         projectIcon={
           cwd ? (
             <ProjectFavicon

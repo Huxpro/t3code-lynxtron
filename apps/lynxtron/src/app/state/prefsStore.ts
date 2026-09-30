@@ -6,6 +6,7 @@ import {
   type PortableClientSettings,
   type PortableClientSettingsPatch,
 } from "@t3tools/client-runtime/presentation/settings";
+import { sanitizeThreadVisitedTimestampRecord } from "@t3tools/client-runtime/presentation/sidebar";
 import { Atom } from "effect/unstable/reactivity";
 
 import { clientCapabilities } from "../platform/clientCapabilities";
@@ -98,6 +99,35 @@ export function useClientSettingsState(): [
     updateClientSettingsState(patch);
   }, []);
   return [getClientSettingsState(), update];
+}
+
+const THREAD_VISITED_TIMESTAMPS_PREF = "threadLastVisitedAtById";
+
+let visitedTimestampsSource: unknown;
+let visitedTimestamps: Record<string, string> = {};
+
+/** Per-thread last-visited timestamps, keyed by scoped thread key; stable until changed. */
+export function getThreadVisitedTimestamps(): Record<string, string> {
+  const source = getPref<unknown>(THREAD_VISITED_TIMESTAMPS_PREF, {});
+  if (source !== visitedTimestampsSource) {
+    visitedTimestampsSource = source;
+    visitedTimestamps = sanitizeThreadVisitedTimestampRecord(source);
+  }
+  return visitedTimestamps;
+}
+
+export function updateThreadVisitedTimestamps(
+  update: (current: Record<string, string>) => Record<string, string>,
+): void {
+  const current = getThreadVisitedTimestamps();
+  const next = update(current);
+  if (next !== current) setPref(THREAD_VISITED_TIMESTAMPS_PREF, next);
+}
+
+/** Shared by the sidebar and the chat header, so either can mark a thread unread. */
+export function useThreadVisitedTimestamps(): Record<string, string> {
+  useAtomValue(preferencesRevisionAtom);
+  return getThreadVisitedTimestamps();
 }
 
 export function usePreferredEditorState(): [EditorId | null, (editor: EditorId) => void] {

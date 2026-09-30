@@ -8440,6 +8440,51 @@ async function verifyTerminalLifecycle({ child, client, log, timeoutMs }) {
 // and enabled skills (as `skill:<name>`) together; picking a skill inserts `$name `.
 // Upstream #5777: an unsent draft with content stays one click away in the
 // sidebar; the row reopens the draft and its discard button clears it.
+// Upstream #5592: the chat header title opens the shared thread action menu;
+// rename edits the title in place.
+async function verifyHeaderThreadMenu({ child, client, log, timeoutMs }) {
+  const state = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (candidate) =>
+      typeof candidate?.activeThreadId === "string" &&
+      candidate.threadIds?.includes(candidate.activeThreadId) === true,
+  });
+  const threadId = state.activeThreadId;
+  await tapSelector({ child, client, selector: ".chat-header-title-button", timeoutMs });
+  await waitForLogText(child, log, "select=rename", timeoutMs);
+  const renameField = await waitForMeasurement({
+    child,
+    client,
+    selector: ".chat-header-title-rename",
+    timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement) && measurement.rect.width > 60,
+  });
+  if (renameField.attributes["data-chat-header-title-rename"] !== threadId) {
+    throw new Error(`Header rename field targets the wrong thread: ${JSON.stringify(renameField)}`);
+  }
+  await tapSelector({ child, client, selector: ".composer-frame", timeoutMs });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".chat-header-title-button",
+    timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement),
+  });
+  await tapSelector({ child, client, selector: ".chat-header-title-button", timeoutMs });
+  await waitForLogText(child, log, "select=copy-thread-id", timeoutMs);
+  await waitForLogText(child, log, `[clipboard-sink] ${JSON.stringify(threadId)}`, timeoutMs);
+  return {
+    status: "pass",
+    input:
+      "DevTool taps on the header title; main probe menu selects Rename, then Copy > Thread ID; clipboard sink",
+    threadId,
+    renameField: renameField.rect,
+    copiedThreadId: threadId,
+  };
+}
+
 async function verifySidebarDrafts({ child, client, timeoutMs }) {
   const before = await waitForClientState({
     child,
@@ -15911,6 +15956,13 @@ async function runOnce({
       ...(shouldVerifySlashMenu || shouldVerifySidebarDrafts
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
+      ...(shouldVerifyHeaderThreadMenu
+        ? {
+            T3_LYNXTRON_VIEWPORT_PROBE: "1",
+            T3_TEST_CONTEXT_MENU_SELECT: "rename,copy-thread-id",
+            T3_TEST_CLIPBOARD_SINK: "1",
+          }
+        : {}),
       ...(shouldVerifySidebarThreadMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
@@ -16438,6 +16490,9 @@ async function runOnce({
     const transcriptFollowState = shouldVerifyTranscriptFollowState
       ? await verifyTranscriptFollowState({ child, client, timeoutMs })
       : undefined;
+    const headerThreadMenu = shouldVerifyHeaderThreadMenu
+      ? await verifyHeaderThreadMenu({ child, client, log, timeoutMs })
+      : undefined;
     const sidebarDrafts = shouldVerifySidebarDrafts
       ? await verifySidebarDrafts({ child, client, timeoutMs })
       : undefined;
@@ -16789,6 +16844,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      headerThreadMenu,
       sidebarDrafts,
       slashMenu,
       sidebarThreadMenu,
@@ -16879,6 +16935,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      headerThreadMenu,
       sidebarDrafts,
       slashMenu,
       sidebarThreadMenu,
@@ -17016,6 +17073,7 @@ const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context
 const shouldVerifySidebarThreadMenu = process.argv.includes("--verify-sidebar-thread-menu");
 const shouldVerifySlashMenu = process.argv.includes("--verify-slash-menu");
 const shouldVerifySidebarDrafts = process.argv.includes("--verify-sidebar-drafts");
+const shouldVerifyHeaderThreadMenu = process.argv.includes("--verify-header-thread-menu");
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
 const shouldVerifyTerminalLifecycle = process.argv.includes("--verify-terminal-lifecycle");
