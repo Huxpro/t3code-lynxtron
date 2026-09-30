@@ -29,7 +29,7 @@ import {
   indexCheckpointSummariesByAssistantMessageId,
   projectRevertCheckpointConfirmation,
 } from "@t3tools/client-runtime/presentation/transcript";
-import { formatShortTimestamp } from "@t3tools/client-runtime/presentation/time";
+import { formatDayAwareTimestamp } from "@t3tools/client-runtime/presentation/time";
 import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
 import { formatWorkspaceRelativePath } from "@t3tools/client-runtime/presentation/paths";
 import {
@@ -500,7 +500,7 @@ function UserMessageMeta({
   readonly copyText: string;
   readonly revertTurnCount: number | undefined;
   readonly isWorking: boolean;
-  readonly timestampFormat: Parameters<typeof formatShortTimestamp>[1];
+  readonly timestampFormat: Parameters<typeof formatDayAwareTimestamp>[1];
 }) {
   const [revertStatus, setRevertStatus] = useState<MessageRevertStatus | null>(null);
   useEffect(() => setRevertStatus(null), [messageId, revertTurnCount]);
@@ -523,7 +523,7 @@ function UserMessageMeta({
       data-message-revert-state={revertStatus ?? "idle"}
     >
       <text className="transcript-message-meta__time">
-        {formatShortTimestamp(createdAt, timestampFormat)}
+        {formatDayAwareTimestamp(createdAt, timestampFormat)}
       </text>
       {revertTurnCount !== undefined ? (
         <view
@@ -848,7 +848,7 @@ function buildLynxTranscriptRowElements(
   latestTurnId: TurnId | null,
   compactChangedFiles: boolean,
   compactChangedFilesActions: boolean,
-  timestampFormat: Parameters<typeof formatShortTimestamp>[1],
+  timestampFormat: Parameters<typeof formatDayAwareTimestamp>[1],
   isWorking: boolean,
   onManualNavigation: () => void,
   onImageExpand: ((preview: ExpandedImagePreview) => void) | undefined,
@@ -1008,7 +1008,7 @@ function buildLynxTranscriptRowElements(
           ) : null}
           {!row.message.streaming ? (
             <text className="transcript-message-meta__time">
-              {formatShortTimestamp(row.message.updatedAt, timestampFormat)}
+              {formatDayAwareTimestamp(row.message.updatedAt, timestampFormat)}
             </text>
           ) : null}
         </view>

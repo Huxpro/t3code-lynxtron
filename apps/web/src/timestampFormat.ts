@@ -1,5 +1,6 @@
 import { type TimestampFormat } from "@t3tools/contracts/settings";
 import {
+  formatDayAwareTimestamp as formatDayAwareTimestampShared,
   formatElapsedDurationLabel as formatElapsedDurationLabelAt,
   formatExpiresInLabel as formatExpiresInLabelAt,
   getTimestampFormatOptions as getTimestampFormatOptionsShared,
@@ -128,42 +129,21 @@ export function formatShortTimestamp(isoDate: string, timestampFormat: Timestamp
   return getTimestampFormatter(timestampFormat, false).format(date);
 }
 
-const numericDateFormatter = new Intl.DateTimeFormat(timestampLocale, {
-  month: "numeric",
-  day: "numeric",
-});
-const numericDateWithYearFormatter = new Intl.DateTimeFormat(timestampLocale, {
-  month: "numeric",
-  day: "numeric",
-  year: "numeric",
-});
-
 /**
  * Chat timestamp that adds the date once the message is no longer from today:
  * today `12:34 PM`, yesterday `yesterday at 12:34 PM`, older `8/13 12:34 PM`
  * (locale digit order), with the year included once the calendar year differs.
- * Boundaries are local calendar days, not 24-hour windows.
+ * The day rule is shared with Lynx through client-runtime.
  */
 export function formatDayAwareTimestamp(
   isoDate: string,
   timestampFormat: TimestampFormat,
   nowMs: number = Date.now(),
 ): string {
-  const date = parseTimestampDate(isoDate);
-  if (!date) return "";
-  const time = getTimestampFormatter(timestampFormat, false).format(date);
-
-  const now = new Date(nowMs);
-  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-  const startOfMessageDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
-  // Round so DST-shifted 23/25 hour days still count as whole days.
-  const dayDiff = Math.round((startOfToday - startOfMessageDay) / 86_400_000);
-
-  if (dayDiff <= 0) return time;
-  if (dayDiff === 1) return `yesterday at ${time}`;
-  const dateFormatter =
-    date.getFullYear() === now.getFullYear() ? numericDateFormatter : numericDateWithYearFormatter;
-  return `${dateFormatter.format(date)} ${time}`;
+  return formatDayAwareTimestampShared(isoDate, timestampFormat, nowMs, {
+    locale: timestampLocale,
+    formatTime: (date) => getTimestampFormatter(timestampFormat, false).format(date),
+  });
 }
 
 export function formatRelativeTime(isoDate: string): RelativeTimeParts | null {

@@ -170,3 +170,53 @@ export function formatExpiresInLabel(isoDate: string, nowMs: number): string {
   if (seconds > 0) tail.push(`${seconds}s`);
   return tail.length > 0 ? `Expires in ${days}d ${tail.join(" ")}` : `Expires in ${days}d`;
 }
+
+const numericDateFormatters = new Map<string, Intl.DateTimeFormat>();
+
+function numericDateFormatter(locale: string | undefined, withYear: boolean): Intl.DateTimeFormat {
+  const cacheKey = `${locale ?? ""}:${withYear ? "year" : "day"}`;
+  const cached = numericDateFormatters.get(cacheKey);
+  if (cached) return cached;
+  const formatter = new Intl.DateTimeFormat(locale, {
+    month: "numeric",
+    day: "numeric",
+    ...(withYear ? { year: "numeric" } : {}),
+  });
+  numericDateFormatters.set(cacheKey, formatter);
+  return formatter;
+}
+
+/**
+ * Chat timestamp that adds the date once the message is no longer from today:
+ * today `12:34 PM`, yesterday `yesterday at 12:34 PM`, older `8/13 12:34 PM`
+ * (locale digit order), with the year included once the calendar year differs.
+ * Boundaries are local calendar days, not 24-hour windows.
+ */
+export function formatDayAwareTimestamp(
+  isoDate: string,
+  timestampFormat: TimestampFormat,
+  nowMs: number = Date.now(),
+  options: {
+    readonly locale?: string;
+    readonly formatTime?: (date: Date) => string;
+  } = {},
+): string {
+  const date = new Date(isoDate);
+  if (Number.isNaN(date.getTime())) return "";
+  const time =
+    options.formatTime?.(date) ?? getTimestampFormatter(timestampFormat, false).format(date);
+
+  const now = new Date(nowMs);
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+  const startOfMessageDay = new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime();
+  // Round so DST-shifted 23/25 hour days still count as whole days.
+  const dayDiff = Math.round((startOfToday - startOfMessageDay) / 86_400_000);
+
+  if (dayDiff <= 0) return time;
+  if (dayDiff === 1) return `yesterday at ${time}`;
+  const dateFormatter = numericDateFormatter(
+    options.locale,
+    date.getFullYear() !== now.getFullYear(),
+  );
+  return `${dateFormatter.format(date)} ${time}`;
+}
