@@ -5,12 +5,18 @@ import {
   DISCRETE_KEYBOARD_ACCELERATORS,
   T3_KEYBOARD_EVENT,
   createDiscreteKeyboardPacket,
+  findDiscreteAccelerator,
   type DiscreteKeyboardAccelerator,
 } from "./keyboardMenu.ts";
 import { registerHostCapabilities } from "./hostCapabilities.ts";
 import { MainConnectorHost } from "./mainConnectorHost.ts";
 import { resolveLynxtronViewport } from "./windowViewport.ts";
 import { resolveWindowlessWindowOptions, shouldEnableDevTool } from "./windowlessHost.ts";
+import {
+  resolveViewerPort,
+  startLinuxViewerHost,
+  supportsInProcessViewer,
+} from "./linuxViewerHost.ts";
 
 // Note: `app` and `LynxWindow` are present on the ESM surface (verified via the
 // counter showcase). Only extended APIs (Notification, BaseWindow,
@@ -35,7 +41,9 @@ interface GlobalEventWindow extends ResizableWindow {
   on(event: "closed", listener: () => void): unknown;
 }
 
-function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
+function installDiscreteKeyboardMenu(
+  win: GlobalEventWindow,
+): (accelerator: DiscreteKeyboardAccelerator) => void {
   let sequence = 0;
   const dispatch = (accelerator: DiscreteKeyboardAccelerator) => {
     sequence += 1;
@@ -87,6 +95,7 @@ function installDiscreteKeyboardMenu(win: GlobalEventWindow): void {
       },
     ]),
   );
+  return dispatch;
 }
 
 // Framed LynxWindows mis-size their LynxView at creation; nudge once after
@@ -161,6 +170,28 @@ app.whenReady().then(() => {
     },
   });
 
+  const dispatchAccelerator = installDiscreteKeyboardMenu(win);
+
+  // Linux dev: serve the windowless frames when this Lynxtron build can paint
+  // and take input in-process; scripts/linux-dev.mjs falls back otherwise.
+  const viewerPort = resolveViewerPort(process.env);
+  if (process.platform === "linux" && viewerPort !== null && supportsInProcessViewer(win)) {
+    const viewer = startLinuxViewerHost({
+      window: win,
+      clipboard,
+      port: viewerPort,
+      host: process.env.T3_LYNXTRON_VIEWER_HOST ?? "127.0.0.1",
+      viewerHtmlPath: path.join(__dirname, "linux-viewer.html"),
+      onKeyDown: (event) => {
+        const accelerator = findDiscreteAccelerator({ ...event, platform: process.platform });
+        if (accelerator) dispatchAccelerator(accelerator);
+        return accelerator !== undefined;
+      },
+      onLog: (line) => console.log(line),
+    });
+    win.on("closed", () => viewer.close());
+  }
+
   registerHostCapabilities({
     clipboard,
     shell,
@@ -172,7 +203,6 @@ app.whenReady().then(() => {
   win.show();
   win.loadFile(LYNX_BUNDLE_PATH);
   nudgeFramedWindowViewport(win);
-  installDiscreteKeyboardMenu(win);
   startMainConnectorHost(win);
 
   // P3-S1 capability probe (R3/R5): prove at runtime whether the declared

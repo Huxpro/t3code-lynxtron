@@ -1,8 +1,11 @@
 // Linux development host for the Lynxtron client.
 //
 // Linux Lynxtron only renders windowless, so this script launches the built
-// app headlessly and serves a small viewer page that shows its frames and
-// forwards pointer and text input:
+// app headlessly with a viewer page that shows its frames and forwards input.
+//
+// Lynxtron builds whose LynxWindow has `sendInputEvent` serve the viewer
+// themselves (src/main/desktop/linuxViewerHost.ts). For stock builds this
+// script serves it instead:
 //
 //   frames  the LynxView renders into Clay shared-memory backings; the viewer
 //           reads them through /proc/<pid>/fd (no copy inside Lynxtron)
@@ -10,7 +13,8 @@
 //           the same input path the visual-capture workflow uses
 //
 // Usage: node scripts/linux-dev.mjs [--port 7801] [--host 127.0.0.1]
-//                                   [--scale 1] [--no-launch --pid <pid>]
+//                                   [--scale 1] [--lynxtron <binary>]
+//                                   [--no-launch --pid <pid>]
 
 import * as NodeChildProcess from "node:child_process";
 import * as NodeFS from "node:fs";
@@ -49,16 +53,20 @@ if (NodeProcess.platform !== "linux") {
 let appPid = Number(readArgument("--pid", "0"));
 let appChild;
 
+// Resolves once the app says whether it serves the viewer in-process. Its
+// viewer line precedes the connector's startup line.
 function launchApp() {
-  const binary = NodePath.join(
-    NodeFS.realpathSync(NodePath.join(appRoot, "node_modules/@lynx-js/lynxtron")),
-    "dist/lynxtron",
-  );
+  const binary =
+    readArgument("--lynxtron", NodeProcess.env.LYNXTRON_BIN) ??
+    NodePath.join(
+      NodeFS.realpathSync(NodePath.join(appRoot, "node_modules/@lynx-js/lynxtron")),
+      "dist/lynxtron",
+    );
   appChild = NodeChildProcess.spawn(binary, ["./dist/desktop"], {
     cwd: appRoot,
     // Own process group so shutdown also reaches the connector's server child.
     detached: true,
-    stdio: ["ignore", "inherit", "inherit"],
+    stdio: ["ignore", "pipe", "inherit"],
     env: {
       ...NodeProcess.env,
       // No display server is needed: Mesa renders through its surfaceless
@@ -66,12 +74,27 @@ function launchApp() {
       EGL_PLATFORM: NodeProcess.env.EGL_PLATFORM ?? "surfaceless",
       T3_LYNXTRON_DEVTOOL: "1",
       T3_LYNXTRON_DEVICE_SCALE_FACTOR: String(scale),
+      T3_LYNXTRON_VIEWER_PORT: String(port),
+      T3_LYNXTRON_VIEWER_HOST: host,
+      // shell.openExternal / openPath reach the viewer instead of xdg-open.
+      LYNXTRON_OPEN_COMMAND: NodePath.join(import.meta.dirname, "linux-open.mjs"),
+      PATH: `${NodePath.dirname(NodeProcess.execPath)}:${NodeProcess.env.PATH ?? ""}`,
     },
   });
   appPid = appChild.pid;
   appChild.on("exit", (code, signal) => {
     console.log(`[linux-dev] lynxtron exited (${signal ?? code})`);
     NodeProcess.exit(code ?? 0);
+  });
+  return new Promise((resolve) => {
+    let pending = "";
+    appChild.stdout.on("data", (chunk) => {
+      NodeProcess.stdout.write(chunk);
+      pending += chunk;
+      if (pending.includes("[linux-viewer] serving")) resolve("native");
+      else if (pending.includes("[main-connector]")) resolve("devtool");
+      pending = pending.slice(-256);
+    });
   });
 }
 
@@ -291,58 +314,65 @@ class DevToolInput {
 
 // --- Server -----------------------------------------------------------------
 
-if (launch) launchApp();
+const backend = launch ? await launchApp() : "devtool";
 if (!appPid) throw new Error("--no-launch needs --pid <lynxtron pid>");
+if (backend === "native") {
+  console.log(`[linux-dev] lynxtron pid ${appPid} serves the viewer in-process`);
+} else {
+  serveDevToolViewer();
+}
 
-const frames = new ShmFrameSource();
-setInterval(() => frames.poll(), 40);
-const input = new DevToolInput();
-const viewerHtml = NodeFS.readFileSync(NodePath.join(import.meta.dirname, "linux-viewer.html"));
+function serveDevToolViewer() {
+  const frames = new ShmFrameSource();
+  setInterval(() => frames.poll(), 40);
+  const input = new DevToolInput();
+  const viewerHtml = NodeFS.readFileSync(NodePath.join(import.meta.dirname, "linux-viewer.html"));
 
-const server = NodeHttp.createServer(async (request, response) => {
-  const url = new URL(request.url, "http://viewer");
-  if (url.pathname === "/") {
-    response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
-    response.end(viewerHtml);
-    return;
-  }
-  if (url.pathname === "/frame") {
-    const frame = await frames.next(Number(url.searchParams.get("after") ?? 0), 10_000);
-    if (!frame) {
-      response.writeHead(204).end();
+  const server = NodeHttp.createServer(async (request, response) => {
+    const url = new URL(request.url, "http://viewer");
+    if (url.pathname === "/") {
+      response.writeHead(200, { "content-type": "text/html; charset=utf-8" });
+      response.end(viewerHtml);
       return;
     }
-    response.writeHead(200, {
-      "content-type": "application/octet-stream",
-      "x-seq": String(frame.seq),
-      "x-width": String(frame.width),
-      "x-height": String(frame.height),
-      "x-scale": String(scale),
-      "cache-control": "no-store",
-    });
-    response.end(frame.body);
-    return;
-  }
-  if (url.pathname === "/input" && request.method === "POST") {
-    let body = "";
-    for await (const chunk of request) body += chunk;
-    try {
-      for (const event of JSON.parse(body)) {
-        await input.dispatch(event);
-        // Give Lynx a frame to settle each synthetic key press.
-        if (event.kind === "text") await new Promise((resolve) => setTimeout(resolve, 20));
+    if (url.pathname === "/frame") {
+      const frame = await frames.next(Number(url.searchParams.get("after") ?? 0), 10_000);
+      if (!frame) {
+        response.writeHead(204).end();
+        return;
       }
-      response.writeHead(204).end();
-    } catch (error) {
-      response
-        .writeHead(503, { "content-type": "text/plain" })
-        .end(String(error?.message ?? error));
+      response.writeHead(200, {
+        "content-type": "application/octet-stream",
+        "x-seq": String(frame.seq),
+        "x-width": String(frame.width),
+        "x-height": String(frame.height),
+        "x-scale": String(scale),
+        "cache-control": "no-store",
+      });
+      response.end(frame.body);
+      return;
     }
-    return;
-  }
-  response.writeHead(404).end();
-});
+    if (url.pathname === "/input" && request.method === "POST") {
+      let body = "";
+      for await (const chunk of request) body += chunk;
+      try {
+        for (const event of JSON.parse(body)) {
+          await input.dispatch(event);
+          // Give Lynx a frame to settle each synthetic key press.
+          if (event.kind === "text") await new Promise((resolve) => setTimeout(resolve, 20));
+        }
+        response.writeHead(204).end();
+      } catch (error) {
+        response
+          .writeHead(503, { "content-type": "text/plain" })
+          .end(String(error?.message ?? error));
+      }
+      return;
+    }
+    response.writeHead(404).end();
+  });
 
-server.listen(port, host, () => {
-  console.log(`[linux-dev] lynxtron pid ${appPid}; viewer at http://${host}:${port}/`);
-});
+  server.listen(port, host, () => {
+    console.log(`[linux-dev] lynxtron pid ${appPid}; viewer at http://${host}:${port}/`);
+  });
+}
