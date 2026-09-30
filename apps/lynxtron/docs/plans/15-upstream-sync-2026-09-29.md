@@ -101,23 +101,23 @@ Ordered by product value to a Lynx user. Each port brings the Lynx surface to
 upstream's behaviour through shared source where the runtime allows, with a
 focused test and a background smoke.
 
-| #   | Upstream feature                                                                                     | Lynx area                         |
-| --- | ---------------------------------------------------------------------------------------------------- | --------------------------------- |
-| P1  | Remove Build/Plan toggle; plan mode behind Legacy features (#5551, #5664)                            | Composer, General settings — done |
-| P2  | Collapse tool activity into one line; subagent rows and counts (#7152, #5745)                        | Transcript — done                 |
-| P3  | Composer state drawers, question prompt collapse (#7150, #6773)                                      | Composer interventions            |
-| P4  | Approval actions: micro buttons, "Cancel"/"Approve" (upstream restyle)                               | Composer approval geometry        |
-| P5  | Skills listed with slash commands (#7737)                                                            | Composer command menu — done      |
-| P6  | Sidebar footer utility menu, back buttons, pinning and pin order (#6210, #6031, #5312, #5581, #5578) | Sidebar                           |
-| P7  | Thread actions from the header title; Copy Thread ID (#5592, #5574)                                  | Chat header, thread menus         |
-| P8  | Confirm before closing a terminal (#7592)                                                            | Terminal — done                   |
-| P9  | Configurable fonts and sizes; system font stacks (#5103)                                             | Appearance, typography            |
-| P10 | Theme library and OKLCH palettes (#5226, #6036, #6183, #5636)                                        | Appearance, generated CSS         |
-| P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar — done        |
-| P12 | Project settings page and manual project icons (#5768, #5775)                                        | Settings                          |
-| P13 | Unsent drafts in the sidebar (#5777)                                                                 | Sidebar — done                    |
-| P14 | Right panel empty state, surface dropdown shortcuts, maximize binding (#6258, #7318, #5091)          | Right panel                       |
-| P15 | New thread picker shows project location (#7392)                                                     | New thread flow — done            |
+| #   | Upstream feature                                                                                     | Lynx area                            |
+| --- | ---------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| P1  | Remove Build/Plan toggle; plan mode behind Legacy features (#5551, #5664)                            | Composer, General settings — done    |
+| P2  | Collapse tool activity into one line; subagent rows and counts (#7152, #5745)                        | Transcript — done                    |
+| P3  | Composer state drawers, question prompt collapse (#7150, #6773)                                      | Composer interventions — done        |
+| P4  | Approval actions: micro buttons, "Cancel"/"Approve" (upstream restyle)                               | Composer approval geometry — done    |
+| P5  | Skills listed with slash commands (#7737)                                                            | Composer command menu — done         |
+| P6  | Sidebar footer utility menu, back buttons, pinning and pin order (#6210, #6031, #5312, #5581, #5578) | Sidebar — partial                    |
+| P7  | Thread actions from the header title; Copy Thread ID (#5592, #5574)                                  | Chat header, thread menus — done     |
+| P8  | Confirm before closing a terminal (#7592)                                                            | Terminal — done                      |
+| P9  | Configurable fonts and sizes; system font stacks (#5103)                                             | Appearance, typography — deferred    |
+| P10 | Theme library and OKLCH palettes (#5226, #6036, #6183, #5636)                                        | Appearance, generated CSS — deferred |
+| P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar — done           |
+| P12 | Project settings page and manual project icons (#5768, #5775)                                        | Settings — open                      |
+| P13 | Unsent drafts in the sidebar (#5777)                                                                 | Sidebar — done                       |
+| P14 | Right panel empty state, surface dropdown shortcuts, maximize binding (#6258, #7318, #5091)          | Right panel — decided                |
+| P15 | New thread picker shows project location (#7392)                                                     | New thread flow — done               |
 
 P1 notes: Lynx persists `planModeEnabled` with its client settings, forces the
 default mode in the composer and in the dispatched turn (shared
@@ -145,6 +145,32 @@ delegates with its host locale.
 P13 notes: Lynx keeps one remembered draft per project, so the draft block
 lists each project's draft with content. The open draft is left out rather
 than frozen, so typing never repaints sidebar rows.
+
+P3/P4 notes: the pending approval and question render in a drawer attached
+above the composer, with upstream's micro ghost buttons. The static approval
+fixture still cannot reach a running session (#7719), so
+`--verify-approval-live` proves the drawer with a real OpenCode approval:
+Supervised mode through the runtime menu, the drawer, Approve, and the
+`approval.resolved` receipt. Lynx has no plan follow-up banner.
+
+P7 notes: the header title and sidebar rows share `openThreadActionMenu`;
+rename edits the title in place (a transparent layer commits it, because a
+Lynx input keeps focus on outside taps) and delete confirms natively.
+
+Decisions for the rest:
+
+- P6: pinning, the pinned block, and the footer utility menu are ported;
+  drag-to-reorder pins is not (the Lynx dnd shim has no drag runtime).
+- P9: deferred to its own phase. Lynx CSS is pixel-pinned to the old DM Sans
+  metrics, so system font stacks and scalable sizes invalidate most geometry
+  gates and need a re-certification pass against current Web.
+- P10: deferred. Lynx colors are resolved to fixed values at build time;
+  runtime theme files need runtime CSS variables first.
+- P12: open. Lynx keeps its project settings dialog.
+- P14: Lynx keeps its launcher (same four supported surfaces and copy).
+  Pull request and Agents surfaces do not exist in Lynx, and the letter
+  shortcuts and bindable maximize need Lynx keyboard parity for right-panel
+  commands, which it lacks today.
 
 Out of scope for Lynx unless the runtime changes: pull request surfaces
 (#6039, #7148, #7077, #6597), usage insights (#8101, #7147), browser defaults and
