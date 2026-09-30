@@ -12595,221 +12595,172 @@ async function verifyProjectActionDialog({ child, client, height, timeoutMs, wid
   };
 }
 
-async function verifyProjectSettingsDialog({
+async function verifyProjectSettingsPage({
   child,
   client,
   devToolCli,
-  height,
   outputDirectory,
   timeoutMs,
-  width,
 }) {
-  const approximately = (actual, expected, tolerance = 3) =>
-    typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
-  await tapSelector({
+  const before = await waitForClientState({
     child,
     client,
-    selector: ".sidebar-v2-project-scope-trigger",
     timeoutMs,
+    predicate: (state) => Array.isArray(state?.projects) && state.projects.length > 0,
   });
+  const project = before.projects[0];
+  const findAttributed = async (selector, attribute, value) => {
+    const deadline = Date.now() + timeoutMs;
+    let latest = [];
+    while (Date.now() < deadline) {
+      latest = await readSelectorMeasurements(client, selector);
+      const match = latest.find(
+        (entry) => entry.attributes[attribute] === value && measurementVisible(entry),
+      );
+      if (match) return match;
+      await waitForChildExit(child, 100);
+    }
+    throw new Error(
+      `No visible ${selector} carries ${attribute}=${value}: ${JSON.stringify(
+        latest.map(({ attributes, rect }) => ({ attributes, rect })),
+      )}`,
+    );
+  };
+  const readTitle = (title) =>
+    waitForMeasurement({
+      child,
+      client,
+      selector: ".project-settings-topbar__title",
+      timeoutMs,
+      predicate: (measurement) =>
+        measurementVisible(measurement) && measurement.text.trim() === title,
+    });
+  const readCanonicalTitle = (title) =>
+    waitForClientState({
+      child,
+      client,
+      timeoutMs,
+      predicate: (state) =>
+        state?.projects?.find((candidate) => candidate.id === project.id)?.title === title,
+    });
+  // The name field keeps Web's blur-to-commit contract: the renderer input
+  // fixture types the draft, then a DevTool tap outside the field commits it.
+  const renameThroughField = async (title) => {
+    const typed = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_PROJECT_SETTINGS_NAME_FIXTURE__?.(${JSON.stringify(title)}) ?? false`,
+      returnByValue: true,
+    });
+    if (commandResult(typed)?.value !== true) {
+      throw new Error(`Project settings name fixture was not applied: ${JSON.stringify(typed)}`);
+    }
+    await waitForMeasurement({
+      child,
+      client,
+      selector: ".project-settings-name-dismiss",
+      timeoutMs,
+      predicate: (measurement) => measurementVisible(measurement),
+    });
+    await tapSelector({
+      child,
+      client,
+      selector: ".project-settings-name-dismiss",
+      point: "bottom-right",
+      timeoutMs,
+    });
+    await readCanonicalTitle(title);
+    return readTitle(title);
+  };
+
+  // Real entry point: Sidebar project scope menu -> the project's settings action.
+  await tapSelector({ child, client, selector: ".sidebar-v2-project-scope-trigger", timeoutMs });
   await waitForMeasurement({
     child,
     client,
     selector: ".sidebar-v2-scope-popup",
     timeoutMs,
-    predicate: (measurement) => measurement !== null,
+    predicate: (measurement) => measurementVisible(measurement),
   });
-  const projectAction = await waitForMeasurement({
-    child,
-    client,
-    selector: ".sidebar-v2-project-action",
-    timeoutMs,
-    predicate: (measurement) =>
-      measurement?.attributes["aria-label"]?.startsWith("Project actions for ") === true,
-  });
-  await tapSelector({
-    child,
-    client,
-    selector: ".sidebar-v2-project-action",
-    timeoutMs,
-  });
-  const dialog = await waitForMeasurement({
-    child,
-    client,
-    selector: ".project-settings-dialog",
-    timeoutMs,
-    predicate: (measurement) =>
-      measurement?.text.includes("Project settings") &&
-      measurement.text.includes("Project name") &&
-      measurement.text.includes("Grouping rule"),
-  });
-  const anatomy = {
-    backdrop: await readOptionalMeasurement(client, ".project-settings-overlay"),
-    header: await readOptionalMeasurement(client, ".project-settings-dialog__header"),
-    body: await readOptionalMeasurement(client, ".project-settings-dialog__body"),
-    footer: await readOptionalMeasurement(client, ".project-settings-dialog__footer"),
-  };
-  const name = await readOptionalMeasurement(client, ".project-settings-name-input");
-  const grouping = await readOptionalMeasurement(client, ".project-settings-grouping-trigger");
-  const buttons = await readSelectorMeasurements(client, ".project-settings-dialog__button");
-  const removeLabel = await readOptionalMeasurement(
-    client,
-    ".project-settings-dialog__button-label--danger",
+  const listRow = await findAttributed(
+    ".sidebar-v2-scope-option",
+    "data-sidebar-project-scope-option",
+    project.id,
   );
-  const closeLabel = await readOptionalMeasurement(
-    client,
-    ".project-settings-dialog__button-label--primary",
-  );
-  if (
-    !approximately(dialog.rect?.width, 576) ||
-    !approximately(dialog.rect?.height, 251, 8) ||
-    !approximately(anatomy.backdrop?.rect?.width, width) ||
-    !approximately(anatomy.backdrop?.rect?.height, height) ||
-    !approximately(anatomy.header?.rect?.width, 576) ||
-    !approximately(anatomy.body?.rect?.width, 576) ||
-    !approximately(anatomy.footer?.rect?.width, 576) ||
-    !measurementVisible(name) ||
-    !measurementVisible(grouping) ||
-    buttons.length !== 2 ||
-    removeLabel?.text.trim() !== "Remove project" ||
-    closeLabel?.text.trim() !== "Close"
-  ) {
-    throw new Error(
-      `Native Project settings anatomy drifted: ${JSON.stringify({
-        projectAction,
-        dialog,
-        anatomy,
-        name,
-        grouping,
-        buttons,
-        removeLabel,
-        closeLabel,
-      })}`,
-    );
-  }
-  await tapSelector({
-    child,
-    client,
-    selector: ".project-settings-grouping-trigger",
-    timeoutMs,
-  });
-  const groupingOptions = await readSelectorMeasurements(
-    client,
-    ".project-settings-grouping-option",
-  );
-  const groupingOptionLabels = await readSelectorMeasurements(
-    client,
-    ".project-settings-grouping-option__label",
-  );
-  if (
-    groupingOptions.length !== 4 ||
-    groupingOptionLabels.map(({ text }) => text.trim()).join("|") !==
-      [
-        "Use global default",
-        "Group by repository",
-        "Group by repository and path",
-        "Keep projects separate",
-      ].join("|")
-  ) {
-    throw new Error(
-      `Native Project settings grouping options drifted: ${JSON.stringify({
-        groupingOptions,
-        groupingOptionLabels,
-      })}`,
-    );
-  }
   await tapSelectorByAttribute({
-    attribute: "data-project-grouping-option",
+    attribute: "data-sidebar-project-action",
     child,
     client,
     descendantSelector: null,
-    selector: ".project-settings-grouping-option",
+    selector: ".sidebar-v2-project-action",
     timeoutMs,
-    value: "separate",
+    value: project.id,
   });
-  const separate = await waitForMeasurement({
+  const route = await waitForRuntimeValue({
     child,
     client,
-    selector: ".project-settings-grouping-trigger",
+    expression: "globalThis.__T3_LYNXTRON_ROUTE__?.() ?? null",
     timeoutMs,
-    predicate: (measurement) => measurement?.text.includes("Keep projects separate"),
+    predicate: (value) => typeof value === "string" && value.startsWith("/projects/"),
   });
-  await tapSelector({
+  const page = await waitForMeasurement({
     child,
     client,
-    selector: ".project-settings-dialog__button--danger",
+    selector: ".project-settings-page",
     timeoutMs,
+    predicate: (measurement) => measurementVisible(measurement),
   });
-  const confirmation = await waitForMeasurement({
+  const title = await readTitle(project.title);
+  const nameField = await waitForMeasurement({
     child,
     client,
-    selector: ".project-settings-remove-confirm",
+    selector: ".project-settings-name-input",
     timeoutMs,
-    predicate: (measurement) =>
-      measurement?.text.includes("This action cannot be undone") &&
-      measurement.text.includes("Confirm remove"),
+    predicate: (measurement) => measurementVisible(measurement),
   });
-  await tapSelector({
-    child,
-    client,
-    selector: ".project-settings-remove-confirm .project-settings-dialog__button",
-    timeoutMs,
-  });
-  await waitForMeasurement({
-    child,
-    client,
-    selector: ".project-settings-remove-confirm",
-    timeoutMs,
-    predicate: (measurement) => measurement === null,
-  });
+  const sections = (await readSelectorMeasurements(client, ".settings-section__title")).map(
+    ({ text }) => text.trim(),
+  );
+  // Readable geometry: the list row and the page title must show text, not a
+  // collapsed or clipped-to-nothing box.
+  if (
+    listRow.rect.width < 120 ||
+    !listRow.text.includes(project.title) ||
+    title.rect.width < 24 ||
+    title.rect.height < 12 ||
+    nameField.rect.width < 120 ||
+    sections.join("|") !== "Project|Checkout|Danger"
+  ) {
+    throw new Error(
+      `Native Project settings page geometry drifted: ${JSON.stringify({
+        listRow,
+        title,
+        nameField,
+        sections,
+      })}`,
+    );
+  }
+  const renamedTitle = `${project.title} (renamed)`;
+  const renamed = await renameThroughField(renamedTitle);
+  const restored = await renameThroughField(project.title);
   const screenshot = captureNativeScreenshot({
     client,
     devToolCli,
     outputDirectory,
-    name: "native-project-settings.png",
-  });
-  await tapSelector({
-    child,
-    client,
-    selector: ".project-settings-overlay",
-    point: "bottom-right",
-    timeoutMs,
-  });
-  await waitForMeasurement({
-    child,
-    client,
-    selector: ".project-settings-dialog",
-    timeoutMs,
-    predicate: (measurement) => measurement === null,
+    name: "native-project-settings-page.png",
   });
   return {
     status: "pass",
     input:
-      "DevTool touches on measured project scope, project action, grouping option, remove confirmation, cancel, and fullscreen outside dismiss",
-    projectAction,
-    dialog: dialog.rect,
-    anatomy: Object.fromEntries(
-      Object.entries(anatomy).map(([key, measurement]) => [key, measurement?.rect ?? null]),
-    ),
-    fields: {
-      name: { rect: name.rect, text: name.text, attributes: name.attributes },
-      grouping: {
-        rect: grouping.rect,
-        before: grouping.text.trim(),
-        after: separate.text.trim(),
-      },
-    },
-    groupingOptions: groupingOptions.map(({ rect }, index) => ({
-      rect,
-      text: groupingOptionLabels[index]?.text.trim() ?? "",
-    })),
-    removeConfirmation: {
-      rect: confirmation.rect,
-      text: confirmation.text.trim(),
-      cancelled: true,
-    },
+      "DevTool taps on the Sidebar project scope and project settings action; renderer name fixture plus DevTool tap outside the field commits each rename",
+    projectId: project.id,
+    route,
+    page: page.rect,
+    listRow: { rect: listRow.rect, text: listRow.text.trim() },
+    title: { rect: title.rect, text: title.text.trim() },
+    nameField: nameField.rect,
+    sections,
+    renamed: { title: renamedTitle, rect: renamed.rect },
+    restored: { title: project.title, rect: restored.rect },
     screenshot,
-    dismissed: true,
     keyboardRename: "pending-user-session",
   };
 }
@@ -16147,7 +16098,6 @@ async function runOnce({
   verifyGitInitialize: shouldVerifyGitInitialize,
   verifyGitPublishDialog: shouldVerifyGitPublishDialog,
   verifyProjectActionDialog: shouldVerifyProjectActionDialog,
-  verifyProjectSettingsDialog: shouldVerifyProjectSettingsDialog,
   verifyProjectActionKeybindingMutation: shouldVerifyProjectActionKeybindingMutation,
   verifyBetaMutation: shouldVerifyBetaMutation,
   verifyArchiveMutation: shouldVerifyArchiveMutation,
@@ -16260,7 +16210,7 @@ async function runOnce({
       ...(shouldVerifyTerminalLifecycle
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm,confirm" }
         : {}),
-      ...(shouldVerifySlashMenu || shouldVerifySidebarDrafts
+      ...(shouldVerifySlashMenu || shouldVerifySidebarDrafts || shouldVerifyProjectSettingsPage
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyHeaderThreadMenu
@@ -17000,15 +16950,13 @@ async function runOnce({
           width,
         })
       : undefined;
-    const projectSettingsDialog = shouldVerifyProjectSettingsDialog
-      ? await verifyProjectSettingsDialog({
+    const projectSettingsPage = shouldVerifyProjectSettingsPage
+      ? await verifyProjectSettingsPage({
           child,
           client,
           devToolCli,
-          height,
           outputDirectory,
           timeoutMs,
-          width,
         })
       : undefined;
     let projectActionKeybindingMutation;
@@ -17184,7 +17132,7 @@ async function runOnce({
       gitInitialize,
       gitPublishDialog,
       projectActionDialog,
-      projectSettingsDialog,
+      projectSettingsPage,
       projectActionKeybindingMutation,
       betaMutation,
       archiveMutation,
@@ -17276,7 +17224,7 @@ async function runOnce({
       gitInitialize,
       gitPublishDialog,
       projectActionDialog,
-      projectSettingsDialog,
+      projectSettingsPage,
       projectActionKeybindingMutation,
       betaMutation,
       archiveMutation,
@@ -17434,7 +17382,7 @@ const shouldVerifyResponsiveSettledBanner = process.argv.includes(
 const shouldVerifyGitInitialize = process.argv.includes("--verify-git-initialize");
 const shouldVerifyGitPublishDialog = process.argv.includes("--verify-git-publish-dialog");
 const shouldVerifyProjectActionDialog = process.argv.includes("--verify-project-action-dialog");
-const shouldVerifyProjectSettingsDialog = process.argv.includes("--verify-project-settings-dialog");
+const shouldVerifyProjectSettingsPage = process.argv.includes("--verify-project-settings-page");
 const shouldVerifyProjectActionKeybindingMutation = process.argv.includes(
   "--verify-project-action-keybinding-mutation",
 );
@@ -17744,7 +17692,7 @@ const rightPanelAddMenuOnlyEmptyFixture =
   !shouldVerifyModelPickerFidelity &&
   !verifyPlan11SemanticOutcomes;
 const projectSettingsOnlyEmptyFixture =
-  shouldVerifyProjectSettingsDialog &&
+  shouldVerifyProjectSettingsPage &&
   !verifySettingsNavigation &&
   !verifySidebarScope &&
   !verifyComposerBranding &&
@@ -17906,7 +17854,6 @@ for (let index = 1; index <= runs; index += 1) {
       verifyGitInitialize: shouldVerifyGitInitialize,
       verifyGitPublishDialog: shouldVerifyGitPublishDialog,
       verifyProjectActionDialog: shouldVerifyProjectActionDialog,
-      verifyProjectSettingsDialog: shouldVerifyProjectSettingsDialog,
       verifyProjectActionKeybindingMutation: shouldVerifyProjectActionKeybindingMutation,
       verifyBetaMutation: shouldVerifyBetaMutation,
       verifyArchiveMutation: shouldVerifyArchiveMutation,

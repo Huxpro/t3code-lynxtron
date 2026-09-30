@@ -190,23 +190,31 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(outcomeChecksSource, "projectActionKeybindingMutation");
   });
 
-  it("verifies the Native Sidebar project-settings entry, dialog, grouping, and removal confirmation", () => {
-    assert.include(source, "async function verifyProjectSettingsDialog");
-    assert.include(source, '"--verify-project-settings-dialog"');
+  it("verifies the Native project settings page from the Sidebar entry through a real rename", () => {
+    assert.include(source, "async function verifyProjectSettingsPage");
+    assert.include(source, '"--verify-project-settings-page"');
+    assert.notInclude(source, "--verify-project-settings-dialog");
     assert.include(source, 'selector: ".sidebar-v2-project-scope-trigger"');
-    assert.include(source, '".sidebar-v2-project-action"');
-    assert.include(source, '".project-settings-dialog"');
+    assert.include(source, 'attribute: "data-sidebar-project-action"');
+    assert.include(source, '"data-sidebar-project-scope-option"');
+    assert.include(source, 'value.startsWith("/projects/")');
+    assert.include(source, '".project-settings-topbar__title"');
     assert.include(source, '".project-settings-name-input"');
-    assert.include(source, '".project-settings-grouping-trigger"');
-    assert.include(source, '".project-settings-grouping-option"');
-    assert.include(source, 'attribute: "data-project-grouping-option"');
-    assert.include(source, 'selector: ".project-settings-grouping-option"');
-    assert.include(source, 'value: "separate"');
-    assert.include(source, '".project-settings-remove-confirm"');
-    assert.include(source, 'point: "bottom-right"');
+    assert.include(source, "__T3_LYNXTRON_PROJECT_SETTINGS_NAME_FIXTURE__");
+    assert.include(source, 'selector: ".project-settings-name-dismiss"');
+    assert.include(
+      source,
+      "state?.projects?.find((candidate) => candidate.id === project.id)?.title === title",
+    );
+    assert.include(source, "const restored = await renameThroughField(project.title);");
+    assert.include(source, 'sections.join("|") !== "Project|Checkout|Danger"');
+    assert.include(
+      source,
+      "shouldVerifySlashMenu || shouldVerifySidebarDrafts || shouldVerifyProjectSettingsPage",
+    );
     assert.include(source, 'keyboardRename: "pending-user-session"');
-    assert.include(source, "projectSettingsDialog,");
-    assert.include(outcomeChecksSource, "projectSettingsDialog");
+    assert.include(source, "projectSettingsPage,");
+    assert.include(outcomeChecksSource, "projectSettingsPage");
   });
 
   it("verifies titlebar branding artwork and none modes without moving the brand", () => {

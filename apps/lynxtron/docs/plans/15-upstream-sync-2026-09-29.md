@@ -114,7 +114,7 @@ focused test and a background smoke.
 | P9  | Configurable fonts and sizes; system font stacks (#5103)                                             | Appearance, typography — deferred    |
 | P10 | Theme library and OKLCH palettes (#5226, #6036, #6183, #5636)                                        | Appearance, generated CSS — deferred |
 | P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar — done           |
-| P12 | Project settings page and manual project icons (#5768, #5775)                                        | Settings — open                      |
+| P12 | Project settings page and manual project icons (#5768, #5775)                                        | Project settings — partial           |
 | P13 | Unsent drafts in the sidebar (#5777)                                                                 | Sidebar — done                       |
 | P14 | Right panel empty state, surface dropdown shortcuts, maximize binding (#6258, #7318, #5091)          | Right panel — decided                |
 | P15 | New thread picker shows project location (#7392)                                                     | New thread flow — done               |
@@ -166,7 +166,19 @@ Decisions for the rest:
   gates and need a re-certification pass against current Web.
 - P10: deferred. Lynx colors are resolved to fixed values at build time;
   runtime theme files need runtime CSS variables first.
-- P12: open. Lynx keeps its project settings dialog.
+- P12: partial. Upstream later moved the page out of Settings to the
+  contextual `/projects/$projectKey` route (#5923), with no Settings nav entry
+  or listing page, so Lynx follows that shape: `/projects/<encoded key>` beside
+  the main sidebar, opened from the sidebar project menu and the Quick Switch
+  "Project settings" action. The dialog is gone. Ported: name, checkout path
+  and thread count, grouping, remove checkout, actions (add, edit, delete,
+  import from t3.json, invalid t3.json notice), and remove project, with the
+  pure pieces shared from `ProjectSettingsPanel.logic.ts` and
+  `projectScriptEditor.logic.ts`. Not ported: default model and new-thread
+  workspace (the Lynx connector's `updateProject` carries only the title),
+  and choosing a project icon (no Lynx favicon file picker). Those rows are
+  absent rather than disabled. `--verify-project-settings-page` proves the
+  sidebar entry and a rename through the name field.
 - P14: Lynx keeps its launcher (same four supported surfaces and copy).
   Pull request and Agents surfaces do not exist in Lynx, and the letter
   shortcuts and bindable maximize need Lynx keyboard parity for right-panel

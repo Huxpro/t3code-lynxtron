@@ -633,24 +633,6 @@ describe("desktop shell interaction contract", () => {
     expect(overrides).toContain("animation: provider-card-body-enter 200ms ease-in-out both;");
     expect(overrides).toContain("animation: provider-card-body-exit 200ms ease-in-out both;");
     expect(overrides).toContain(".provider-instance-dialog__body {\n  display: flex;");
-    expect(overrides).toContain(
-      ".project-settings-dialog__description {\n  position: absolute;\n  width: 1px;\n  height: 1px;",
-    );
-    expect(overrides).toContain(".project-settings-dialog__body {\n  flex-grow: 1;");
-    expect(overrides).toContain(
-      ".project-settings-dialog__body--single {\n  height: 94px;\n  padding: 8px 24px 16px;",
-    );
-    expect(overrides).toContain(".project-settings-field {");
-    expect(overrides).toContain("  width: 258px;");
-    expect(overrides).toContain(
-      ".project-settings-fields {\n  display: flex;\n  flex-direction: row;\n  gap: 12px;\n  margin-top: 11px;",
-    );
-    expect(componentSource("ProjectSettingsDialog.tsx")).toContain(
-      '<view className="project-settings-field flex flex-col">',
-    );
-    expect(componentSource("ProjectSettingsDialog.tsx")).toContain(
-      '"project-settings-dialog__body project-settings-dialog__body--single"',
-    );
     expect(providers).toContain('scroll-orientation="vertical"');
   });
 
@@ -1392,17 +1374,17 @@ describe("desktop shell interaction contract", () => {
   it("persists Project Action keybindings after the script update", () => {
     const dialog = componentSource("ProjectActionDialog.tsx");
 
-    expect(dialog).toContain("decodeProjectScriptKeybindingRule");
-    expect(dialog).toContain("commandForProjectScript(id)");
-    expect(dialog).toContain("keybindingRule ? t3ClientActions.upsertKeybinding");
+    expect(dialog).toContain("resolveProjectScriptEditorPayload");
+    expect(dialog).toContain("nextProjectScriptsForSubmit(project.scripts, request.scriptId");
+    expect(dialog).toContain("projectScriptKeybindingChange");
+    expect(dialog).toContain('change.kind === "upsert") await t3ClientActions.upsertKeybinding');
+    expect(dialog).toContain('change.kind === "remove") await t3ClientActions.removeKeybinding');
     expect(dialog).toContain('data-keybinding-input-mode="canonical-text"');
     expect(dialog).toContain("PROJECT_SCRIPT_KEYBINDING_HELPER.prefix");
     expect(dialog.indexOf(".updateProjectScripts(")).toBeLessThan(
       dialog.indexOf("t3ClientActions.upsertKeybinding"),
     );
-    expect(dialog).toContain(
-      'setError(cause instanceof Error ? cause.message : "Invalid keybinding.")',
-    );
+    expect(dialog).toContain("if (!resolved.ok) {\n      setError(resolved.error);");
     expect(overrides).toContain(
       ".project-action-field__icon {\n  display: flex;\n  flex-direction: row;\n  align-items: center;\n  justify-content: center;\n  flex-shrink: 0;\n  width: 36px;\n  height: 32px;",
     );
@@ -1938,7 +1920,7 @@ describe("desktop shell interaction contract", () => {
       ),
       "utf8",
     );
-    const projectSettings = componentSource("ProjectSettingsDialog.tsx");
+    const projectSettings = componentSource("ProjectSettingsPage.tsx");
     const quickSwitch = readFileSync(path.resolve(import.meta.dirname, "QuickSwitch.tsx"), "utf8");
     const appIndex = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
     const settings = readFileSync(
@@ -1977,7 +1959,9 @@ describe("desktop shell interaction contract", () => {
     );
     expect(sidebarProjectListHost).toContain("bindcontextmenu:");
     expect(sidebarProjectListHost).toContain("bindlongpress:");
-    expect(sidebarProjectListHost).toContain("<ProjectSettingsDialog");
+    expect(sidebarProjectListHost).toContain("onOpenProjectSettings?.(row.projectMembers)");
+    expect(sidebarProjectListHost).not.toContain("ProjectSettingsDialog");
+    expect(sidebarClassic).toContain("openProjectSettings(members[0])");
     expect(sidebarSource).toContain("data-sidebar-project-action={project.id}");
     expect(sidebarSource).toContain("serverConfig?.environment.label ?? null");
     expect(sidebarSource).toContain("aria-label={`Project actions for ${project.title}`}");
@@ -1985,27 +1969,35 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("void showThreadContextMenu(");
     expect(hostElementsSource).toContain("event.button === 2 && onContextMenu");
     expect(hostElementsSource).toContain('"main-thread:bindmousedown": handleMouseDown');
-    expect(sidebarSource).toContain("<ProjectSettingsDialog");
-    expect(projectSettings).toContain("Project settings");
-    expect(projectSettings).toContain("data-project-settings-environment");
-    expect(projectSettings).toContain("data-project-settings-copy-path");
+    // Project settings is Web's contextual /projects/<key> page, not a dialog.
+    expect(sidebarSource).toContain("openProjectSettings(project)");
+    expect(sidebarSource).not.toContain("ProjectSettingsDialog");
+    expect(quickSwitch).toContain('id: "project-settings"');
+    expect(appIndex).toContain("parseProjectSettingsPath(pathname)");
+    expect(appIndex).toContain("<ProjectSettingsPage projectKey={projectSettingsKey} />");
+    expect(projectSettings).toContain("navigate(projectSettingsPath(projectKey))");
     expect(projectSettings).toContain(
-      "clientCapabilities.clipboard.writeText(member.workspaceRoot)",
+      '<text className="project-settings-topbar__crumb">Projects</text>',
     );
-    expect(projectSettings).toContain('singleMember ? " project-settings-dialog__footer--single"');
-    expect(overrides).toContain(
-      ".project-settings-dialog__footer--single {\n  justify-content: space-between;",
+    expect(projectSettings).toContain('aria-label="Switch project"');
+    expect(projectSettings).toContain('<SettingsSection title="Project">');
+    expect(projectSettings).toContain('title="Checkout"');
+    expect(projectSettings).toContain('<SettingsSection title="Danger">');
+    expect(projectSettings).toContain("t3ClientActions.updateProject(member.id, title)");
+    expect(projectSettings).toContain(
+      "t3ClientActions.deleteProject(member.id, memberThreadCount > 0)",
     );
-    expect(overrides).toContain(
-      ".project-settings-dialog__footer--single .project-settings-dialog__button--danger {\n  width: 148px;",
+    expect(projectSettings).toContain("t3ClientActions.discardProjectDraft(member.id)");
+    expect(projectSettings).toContain(
+      "sidebarProjectGroupingOverrides: nextProjectGroupingOverrides(",
     );
-    expect(projectSettings).toContain("Project name");
-    expect(projectSettings).toContain("Grouping rule");
-    expect(projectSettings).toContain("Remove project");
-    expect(projectSettings).toContain(".updateProject(member.id, title)");
-    expect(projectSettings).toContain("updateSettings({ sidebarProjectGroupingOverrides");
-    expect(projectSettings).toContain("t3ClientActions");
-    expect(projectSettings).toContain(".deleteProject(member.id, true)");
+    expect(projectSettings).toContain("clientCapabilities.clipboard");
+    expect(projectSettings).toContain("<ProjectActionDialog");
+    expect(projectSettings).toContain("__T3_LYNXTRON_PROJECT_SETTINGS_NAME_FIXTURE__");
+    expect(projectSettings).toContain("if (!viewport.testResize) return;");
+    expect(projectSettings).toContain('className="project-settings-name-dismiss" bindtap={commit}');
+    expect(overrides).toContain(".project-settings-name-dismiss {\n  position: fixed;");
+    expect(overrides).not.toContain(".project-settings-dialog");
     expect(quickSwitch).toContain('data-quick-switch-mode="add-project-sources"');
     expect(quickSwitch).toContain('id: "new-thread-in",\n        icon: "square-pen"');
     expect(quickSwitch).toContain('shortcutCommand: "chat.new"');

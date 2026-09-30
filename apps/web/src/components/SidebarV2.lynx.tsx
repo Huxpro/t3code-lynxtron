@@ -46,7 +46,7 @@ import {
   showNativeContextMenu,
 } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
-import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
+import { useOpenProjectSettings } from "../../../lynxtron/src/app/components/ProjectSettingsPage";
 import {
   isDisposableEmptyThread,
   projectThreadActionConfirmation,
@@ -321,7 +321,7 @@ export default function SidebarV2() {
   const [activeSearchResultIndex, setActiveSearchResultIndex] = useState(0);
   const projectScopeKey = useProjectScopeKey();
   const [projectScopeMenuOpen, setProjectScopeMenuOpen] = useState(false);
-  const [projectSettingsProjectId, setProjectSettingsProjectId] = useState<string | null>(null);
+  const openProjectSettings = useOpenProjectSettings();
   const [settledShelfExpanded, setSettledShelfExpanded] = useState(true);
   const [actionMenuThreadId, setActionMenuThreadId] = useState<string | null>(null);
   const [snoozeMenuThreadId, setSnoozeMenuThreadId] = useState<string | null>(null);
@@ -573,7 +573,7 @@ export default function SidebarV2() {
         .then(async (selection) => {
           if (selection === "settings") {
             setProjectScopeMenuOpen(false);
-            setProjectSettingsProjectId(project.id);
+            openProjectSettings(project);
           } else if (selection === "copy-path") {
             await clientCapabilities.clipboard.writeText(project.workspaceRoot);
           }
@@ -588,17 +588,13 @@ export default function SidebarV2() {
         bindtap={(event: { stopPropagation?: () => void }) => {
           stopPropagation(event);
           setProjectScopeMenuOpen(false);
-          setProjectSettingsProjectId(project.id);
+          openProjectSettings(project);
         }}
       >
         <Icon name="ellipsis" size={14} color="#a1a1aa" />
       </view>
     ),
   }));
-  const projectSettingsProject =
-    projectSettingsProjectId === null
-      ? null
-      : (orderedProjects.find((project) => project.id === projectSettingsProjectId) ?? null);
   return (
     <>
       <SidebarV2CompositionSurface
@@ -1136,20 +1132,6 @@ export default function SidebarV2() {
         scopedDisplayName={scopedProject?.title ?? null}
         onAddProjectClick={uiActions.openAddProject}
       />
-      {projectSettingsProject ? (
-        <ProjectSettingsDialog
-          members={[
-            {
-              id: projectSettingsProject.id,
-              environmentId: projectSettingsProject.environmentId,
-              title: projectSettingsProject.title,
-              workspaceRoot: projectSettingsProject.workspaceRoot,
-              environmentLabel: serverConfig?.environment.label ?? null,
-            },
-          ]}
-          onClose={() => setProjectSettingsProjectId(null)}
-        />
-      ) : null}
     </>
   );
 }

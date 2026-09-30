@@ -776,6 +776,7 @@ function installTransportDevToolHook(): void {
       activeProject?: ProjectSummary;
       activeThread?: ThreadSummary;
       environmentLabel: string | null;
+      projects: ReadonlyArray<{ readonly id: string; readonly title: string }>;
       threadIds: ReadonlyArray<string>;
       archivedThreadIds: ReadonlyArray<string>;
       pairingLinkIds: ReadonlyArray<string>;
@@ -888,6 +889,7 @@ function installTransportDevToolHook(): void {
       sessionError: state.sessionError,
       activeTurnId: state.activeTurnId,
       latestTurn: state.latestTurn,
+      projects: state.projects.map((project) => ({ id: project.id, title: project.title })),
       threadIds: state.threads.map((thread) => thread.id),
       archivedThreadIds: state.archivedThreads.map((thread) => thread.id),
       pairingLinkIds: state.authAccess.pairingLinks.map((pairingLink) => pairingLink.id),

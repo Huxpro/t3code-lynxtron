@@ -9,30 +9,52 @@ import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 const decodeT3ProjectFile = Schema.decodeExit(T3ProjectFileFromJson);
 const NO_SCRIPTS: ReadonlyArray<T3ProjectFileScript> = [];
 
-export function useT3ProjectFileScripts(cwd: string | null): ReadonlyArray<T3ProjectFileScript> {
-  const [scripts, setScripts] = useState<ReadonlyArray<T3ProjectFileScript>>(NO_SCRIPTS);
+export interface T3ProjectFileState {
+  /** Same states as Web's useT3ProjectFileState: `invalid` means t3.json fails to parse. */
+  readonly status: "loading" | "missing" | "invalid" | "valid";
+  readonly scripts: ReadonlyArray<T3ProjectFileScript>;
+}
+
+const LOADING: T3ProjectFileState = { status: "loading", scripts: NO_SCRIPTS };
+const MISSING: T3ProjectFileState = { status: "missing", scripts: NO_SCRIPTS };
+const INVALID: T3ProjectFileState = { status: "invalid", scripts: NO_SCRIPTS };
+
+export function useT3ProjectFileState(cwd: string | null): T3ProjectFileState {
+  const [state, setState] = useState<T3ProjectFileState>(LOADING);
   const { connectorCommandsReady } = useT3ClientState();
 
   useEffect(() => {
     let cancelled = false;
     if (!cwd || !connectorCommandsReady) {
-      setScripts(NO_SCRIPTS);
+      setState(cwd ? LOADING : MISSING);
       return;
     }
     void t3ClientActions
       .readProjectFile(cwd, T3_PROJECT_FILE_NAME)
       .then((result) => {
-        if (cancelled || result.truncated) return;
+        if (cancelled) return;
+        if (result.truncated) {
+          setState(MISSING);
+          return;
+        }
         const decoded = decodeT3ProjectFile(result.contents);
-        setScripts(Exit.isSuccess(decoded) ? (decoded.value.scripts ?? NO_SCRIPTS) : NO_SCRIPTS);
+        setState(
+          Exit.isSuccess(decoded)
+            ? { status: "valid", scripts: decoded.value.scripts ?? NO_SCRIPTS }
+            : INVALID,
+        );
       })
       .catch(() => {
-        if (!cancelled) setScripts(NO_SCRIPTS);
+        if (!cancelled) setState(MISSING);
       });
     return () => {
       cancelled = true;
     };
   }, [connectorCommandsReady, cwd]);
 
-  return scripts;
+  return state;
+}
+
+export function useT3ProjectFileScripts(cwd: string | null): ReadonlyArray<T3ProjectFileScript> {
+  return useT3ProjectFileState(cwd).scripts;
 }

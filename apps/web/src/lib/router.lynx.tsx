@@ -7,6 +7,8 @@ function paramsFromPathname(pathname: string): Record<string, string> {
   if (segments[0] === "draft" && segments[1]) {
     return { draftId: segments[1] };
   }
+  // `/projects/<key>` is the project settings page, not a thread route.
+  if (segments[0] === "projects") return {};
   if (segments[0] !== "settings" && segments[0] && segments[1]) {
     return { environmentId: segments[0], threadId: segments[1] };
   }

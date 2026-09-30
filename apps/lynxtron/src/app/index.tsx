@@ -9,6 +9,7 @@ import { AppSidebarLayout } from "../../../web/src/components/AppSidebarLayout";
 import { ComponentLabSurface } from "../../../web/src/components/components-lab/ComponentLabSurface";
 import { ChatView } from "./components/ChatView";
 import { SettingsPage } from "./components/SettingsPage";
+import { ProjectSettingsPage } from "./components/ProjectSettingsPage";
 import { GeneralSettings } from "./components/GeneralSettings";
 import { AppearanceSettings } from "./components/AppearanceSettings";
 import { GeneralSettingsSync } from "./components/GeneralSettingsSync";
@@ -24,6 +25,7 @@ import {
   SourceControlSettings,
 } from "./components/OtherSettings";
 import { usePathname, navigate } from "./router";
+import { parseProjectSettingsPath } from "./projectSettingsRoute";
 import { resolveLynxSettingsPanel } from "./settingsPanel";
 import { appAtomRegistry } from "./state/atomRegistry";
 import { registerCapabilityProbe } from "./state/capabilityProbe";
@@ -216,6 +218,15 @@ function RootSwitch() {
       <AppSidebarLayout>
         <GeneralSettingsSync />
         <SettingsPage panelId={section}>{panel}</SettingsPage>
+      </AppSidebarLayout>
+    );
+  }
+
+  const projectSettingsKey = parseProjectSettingsPath(pathname);
+  if (projectSettingsKey !== null) {
+    return (
+      <AppSidebarLayout>
+        <ProjectSettingsPage projectKey={projectSettingsKey} />
       </AppSidebarLayout>
     );
   }

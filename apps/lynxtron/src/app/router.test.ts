@@ -35,6 +35,11 @@ describe("Lynx pathname authority", () => {
     expect(getPathname()).toBe("/components-lab");
   });
 
+  it("lets the DevTool writer open a project settings page", () => {
+    globalThis.__T3_LYNXTRON_NAVIGATE__?.("/projects/primary%3A%2Frepo");
+    expect(getPathname()).toBe("/projects/primary%3A%2Frepo");
+  });
+
   it("routes the DevTool writer through the same normalization boundary", () => {
     globalThis.__T3_LYNXTRON_NAVIGATE__?.("/settings");
     expect(getPathname()).toBe("/settings/general");

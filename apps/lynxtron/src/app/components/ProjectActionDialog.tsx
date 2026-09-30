@@ -1,17 +1,30 @@
 import { useCallback, useEffect, useState } from "@lynx-js/react";
-import type { ProjectScriptIcon } from "@t3tools/contracts";
+import type {
+  KeybindingCommand,
+  ProjectScript,
+  ProjectScriptIcon,
+  ResolvedKeybindingsConfig,
+} from "@t3tools/contracts";
 import type { ProjectSummary } from "../bridge";
 
 import { uiActions } from "../state/uiState";
-import { t3ClientActions } from "../state/t3Client";
+import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import {
   PROJECT_SCRIPT_KEYBINDING_HELPER,
-  buildProjectScript,
   commandForProjectScript,
-  nextProjectScriptId,
 } from "../../../../web/src/projectScripts";
-import { decodeProjectScriptKeybindingRule } from "../../../../web/src/lib/projectScriptKeybindings";
+import {
+  keybindingValueForCommand,
+  projectScriptKeybindingChange,
+} from "../../../../web/src/lib/projectScriptKeybindings";
+import {
+  EMPTY_PROJECT_SCRIPT_INPUT,
+  resolveProjectScriptEditorPayload,
+  type ProjectScriptEditorRequest,
+} from "../../../../web/src/components/projectScriptEditor.logic";
+import { nextProjectScriptsForSubmit } from "../../../../web/src/components/settings/ProjectSettingsPanel.logic";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
+import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { Icon, type IconName } from "./Icon";
 
 const SCRIPT_ICONS: ReadonlyArray<{ readonly id: ProjectScriptIcon; readonly icon: IconName }> = [
@@ -23,18 +36,67 @@ const SCRIPT_ICONS: ReadonlyArray<{ readonly id: ProjectScriptIcon; readonly ico
   { id: "debug", icon: "terminal" },
 ];
 
-export function ProjectActionDialog({ project }: { project: ProjectSummary | null }) {
+export function projectScriptIconName(icon: ProjectScriptIcon): IconName {
+  return SCRIPT_ICONS.find((option) => option.id === icon)?.icon ?? "play";
+}
+
+const ADD_ACTION_REQUEST: ProjectScriptEditorRequest = {
+  scriptId: null,
+  initial: EMPTY_PROJECT_SCRIPT_INPUT,
+};
+
+/**
+ * Writes a project's whole scripts array, then the keybinding-config change
+ * for `command`. The previous binding is read before the write so a cleared
+ * or deleted shortcut is removed and a changed one replaces the old rule.
+ */
+export async function persistProjectScripts(input: {
+  readonly projectId: string;
+  readonly scripts: ReadonlyArray<ProjectScript>;
+  readonly keybinding: string | null;
+  readonly command: KeybindingCommand;
+  readonly keybindings: ResolvedKeybindingsConfig;
+}): Promise<void> {
+  const previousKeybinding = keybindingValueForCommand(input.keybindings, input.command);
+  await t3ClientActions.updateProjectScripts(input.projectId, input.scripts);
+  const change = projectScriptKeybindingChange({
+    previousKeybinding,
+    keybinding: input.keybinding,
+    command: input.command,
+  });
+  if (change.kind === "upsert") await t3ClientActions.upsertKeybinding(change.input);
+  else if (change.kind === "remove") await t3ClientActions.removeKeybinding(change.input);
+}
+
+/**
+ * Add/edit dialog for a project action, shared by the chat-header actions
+ * menu (add) and the project settings page (add, edit, delete).
+ */
+export function ProjectActionDialog({
+  project,
+  request = ADD_ACTION_REQUEST,
+  onClose = uiActions.closeProjectActionDialog,
+}: {
+  readonly project: Pick<ProjectSummary, "id" | "scripts"> | null;
+  readonly request?: ProjectScriptEditorRequest;
+  readonly onClose?: () => void;
+}) {
   const viewport = useViewportSnapshot();
-  const [name, setName] = useState("");
-  const [command, setCommand] = useState("");
-  const [keybinding, setKeybinding] = useState("");
-  const [previewUrl, setPreviewUrl] = useState("");
-  const [icon, setIcon] = useState<ProjectScriptIcon>("play");
-  const [runOnWorktreeCreate, setRunOnWorktreeCreate] = useState(false);
-  const [autoOpenPreview, setAutoOpenPreview] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { serverConfig } = useT3ClientState();
+  const keybindings = serverConfig?.keybindings ?? [];
+  const isEditing = request.scriptId !== null;
+  const [name, setName] = useState(request.initial.name);
+  const [command, setCommand] = useState(request.initial.command);
+  const [keybinding, setKeybinding] = useState(request.initial.keybinding ?? "");
+  const [previewUrl, setPreviewUrl] = useState(request.initial.previewUrl ?? "");
+  const [icon, setIcon] = useState<ProjectScriptIcon>(request.initial.icon);
+  const [runOnWorktreeCreate, setRunOnWorktreeCreate] = useState(
+    request.initial.runOnWorktreeCreate,
+  );
+  const [autoOpenPreview, setAutoOpenPreview] = useState(request.initial.autoOpenPreview);
+  const [error, setError] = useState<string | null>(request.error ?? null);
   const [saving, setSaving] = useState(false);
-  const close = uiActions.closeProjectActionDialog;
+  const close = onClose;
   const handleInput = useCallback(
     (setter: (value: string) => void) => (event: { detail?: { value?: unknown } }) => {
       if (typeof event.detail?.value === "string") setter(event.detail.value);
@@ -42,53 +104,80 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
     [],
   );
   const save = useCallback(() => {
-    const trimmedName = name.trim();
-    const trimmedCommand = command.trim();
     if (!project) {
       setError("No project is selected.");
       return;
     }
-    if (!trimmedName) {
-      setError("Name is required.");
-      return;
-    }
-    if (!trimmedCommand) {
-      setError("Command is required.");
-      return;
-    }
-    const id = nextProjectScriptId(
-      trimmedName,
-      project.scripts.map((script) => script.id),
-    );
-    let keybindingRule: ReturnType<typeof decodeProjectScriptKeybindingRule>;
-    try {
-      keybindingRule = decodeProjectScriptKeybindingRule({
+    const resolved = resolveProjectScriptEditorPayload({
+      scriptId: request.scriptId,
+      scripts: project.scripts,
+      form: {
+        name,
+        command,
+        icon,
+        runOnWorktreeCreate,
         keybinding,
-        command: commandForProjectScript(id),
-      });
-    } catch (cause) {
-      setError(cause instanceof Error ? cause.message : "Invalid keybinding.");
+        previewUrl,
+        autoOpenPreview,
+      },
+    });
+    if (!resolved.ok) {
+      setError(resolved.error);
       return;
     }
-    const script = buildProjectScript(id, {
-      name: trimmedName,
-      command: trimmedCommand,
-      icon,
-      runOnWorktreeCreate,
-      previewUrl: previewUrl.trim() || null,
-      autoOpenPreview: previewUrl.trim().length > 0 && autoOpenPreview,
-    });
+    const next = nextProjectScriptsForSubmit(project.scripts, request.scriptId, resolved.payload);
     setSaving(true);
     setError(null);
-    void t3ClientActions
-      .updateProjectScripts(project.id, [...project.scripts, script])
-      .then(() => (keybindingRule ? t3ClientActions.upsertKeybinding(keybindingRule) : undefined))
+    void persistProjectScripts({
+      projectId: project.id,
+      scripts: next.scripts,
+      keybinding: resolved.payload.keybinding,
+      command: commandForProjectScript(next.scriptId),
+      keybindings,
+    })
       .then(close)
       .catch((cause) => {
         setError(cause instanceof Error ? cause.message : String(cause));
       })
       .finally(() => setSaving(false));
-  }, [autoOpenPreview, command, icon, keybinding, name, previewUrl, project, runOnWorktreeCreate]);
+  }, [
+    autoOpenPreview,
+    close,
+    command,
+    icon,
+    keybinding,
+    keybindings,
+    name,
+    previewUrl,
+    project,
+    request.scriptId,
+    runOnWorktreeCreate,
+  ]);
+  const remove = useCallback(() => {
+    const scriptId = request.scriptId;
+    if (!project || scriptId === null) return;
+    setError(null);
+    void showNativeConfirm({
+      message: `Delete action "${name}"?`,
+      detail: "This action cannot be undone.",
+      confirmLabel: "Delete action",
+    })
+      .then((confirmed) => {
+        if (!confirmed) return;
+        setSaving(true);
+        return persistProjectScripts({
+          projectId: project.id,
+          scripts: project.scripts.filter((script) => script.id !== scriptId),
+          keybinding: null,
+          command: commandForProjectScript(scriptId),
+          keybindings,
+        }).then(close);
+      })
+      .catch((cause) => {
+        setError(cause instanceof Error ? cause.message : String(cause));
+      })
+      .finally(() => setSaving(false));
+  }, [close, keybindings, name, project, request.scriptId]);
   const fillForTest = useCallback(
     (input: {
       readonly name?: string;
@@ -117,19 +206,16 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
     };
   }, [fillForTest, viewport.testResize]);
 
+  const title = isEditing ? "Edit Action" : "Add Action";
   return (
     <>
       <view className="project-action-overlay" bindtap={close} />
-      <view
-        className="project-action-dialog"
-        aria-label="Add Action"
-        data-project-action-dialog="true"
-      >
+      <view className="project-action-dialog" aria-label={title} data-project-action-dialog="true">
         <view className="project-action-dialog__close" aria-label="Close" bindtap={close}>
           <Icon name="x" size={16} color="#818181" />
         </view>
         <view className="project-action-dialog__header">
-          <text className="project-action-dialog__title">Add Action</text>
+          <text className="project-action-dialog__title">{title}</text>
           <text className="project-action-dialog__description">
             Actions are project-scoped commands you can run from the top bar or keybindings.
           </text>
@@ -146,11 +232,7 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
                   setIcon(SCRIPT_ICONS[(current + 1) % SCRIPT_ICONS.length]?.id ?? "play");
                 }}
               >
-                <Icon
-                  name={SCRIPT_ICONS.find((option) => option.id === icon)?.icon ?? "play"}
-                  size={16}
-                  color="#818181"
-                />
+                <Icon name={projectScriptIconName(icon)} size={16} color="#818181" />
               </view>
               <input
                 className="project-action-field__input project-action-field__input--name"
@@ -235,6 +317,19 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
           {error ? <text className="project-action-dialog__error">{error}</text> : null}
         </scroll-view>
         <view className="project-action-dialog__footer">
+          {isEditing ? (
+            <view
+              className={`project-action-dialog__button project-action-dialog__button--danger${
+                saving ? " project-action-dialog__button--disabled" : ""
+              }`}
+              aria-disabled={saving ? "true" : "false"}
+              bindtap={saving ? undefined : remove}
+            >
+              <text className="project-action-dialog__button-label project-action-dialog__button-label--danger">
+                Delete
+              </text>
+            </view>
+          ) : null}
           <view className="project-action-dialog__button" bindtap={close}>
             <text className="project-action-dialog__button-label">Cancel</text>
           </view>
@@ -246,7 +341,7 @@ export function ProjectActionDialog({ project }: { project: ProjectSummary | nul
             bindtap={saving ? undefined : save}
           >
             <text className="project-action-dialog__button-label">
-              {saving ? "Saving…" : "Save action"}
+              {saving ? "Saving…" : isEditing ? "Save changes" : "Save action"}
             </text>
           </view>
         </view>

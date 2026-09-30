@@ -3,12 +3,8 @@ import type { ScopedThreadRef } from "@t3tools/contracts";
 
 import { t3ClientActions, useT3ClientState } from "../../../../lynxtron/src/app/state/t3Client";
 import { Icon } from "../../../../lynxtron/src/app/components/Icon";
-import { ProjectSettingsDialog } from "../../../../lynxtron/src/app/components/ProjectSettingsDialog";
 import { ThreadStatusLabel } from "../ThreadStatusIndicators";
-import type {
-  SidebarProjectHostRow,
-  SidebarProjectListHostProps,
-} from "./SidebarProjectListHost.types";
+import type { SidebarProjectListHostProps } from "./SidebarProjectListHost.types";
 
 export type {
   SidebarProjectHostRow,
@@ -38,9 +34,6 @@ export function SidebarProjectListHost({
 }: SidebarProjectListHostProps) {
   const { activeThreadId } = useT3ClientState();
   const [threadMenu, setThreadMenu] = useState<ThreadMenuState>(null);
-  const [projectSettingsMembers, setProjectSettingsMembers] = useState<
-    SidebarProjectHostRow["projectMembers"] | null
-  >(null);
   const [renamingThreadKey, setRenamingThreadKey] = useState<string | null>(null);
   const [renameDraft, setRenameDraft] = useState("");
 
@@ -65,13 +58,11 @@ export function SidebarProjectListHost({
             {...({
               bindcontextmenu: (event: { stopPropagation?: () => void }) => {
                 stopTapPropagation(event);
-                if (onOpenProjectSettings) onOpenProjectSettings(row.projectMembers);
-                else setProjectSettingsMembers(row.projectMembers);
+                onOpenProjectSettings?.(row.projectMembers);
               },
               bindlongpress: (event: { stopPropagation?: () => void }) => {
                 stopTapPropagation(event);
-                if (onOpenProjectSettings) onOpenProjectSettings(row.projectMembers);
-                else setProjectSettingsMembers(row.projectMembers);
+                onOpenProjectSettings?.(row.projectMembers);
               },
             } as object)}
             className="sidebar-project-row-reference lynx-sidebar-project-row flex flex-row"
@@ -248,12 +239,6 @@ export function SidebarProjectListHost({
             </view>
           </view>
         </>
-      ) : null}
-      {projectSettingsMembers ? (
-        <ProjectSettingsDialog
-          members={projectSettingsMembers}
-          onClose={() => setProjectSettingsMembers(null)}
-        />
       ) : null}
     </view>
   );

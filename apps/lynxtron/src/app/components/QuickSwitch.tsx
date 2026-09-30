@@ -47,7 +47,9 @@ import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { searchOverlayReturnController } from "../state/searchOverlayKeyboard";
 import { uiActions } from "../state/uiState";
 import { environmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
+import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../state/environment";
 import { Icon, type IconName } from "./Icon";
+import { useOpenProjectSettings } from "./ProjectSettingsPage";
 import { ProjectFileIcon } from "./ProjectFileIcon";
 import {
   initialQuickSwitchActiveIndex,
@@ -160,6 +162,7 @@ export function QuickSwitch({
     projects[0] ??
     null;
   const projectName = activeProject?.title ?? "workspace";
+  const openProjectSettings = useOpenProjectSettings();
   const cwd = activeThread?.worktreePath ?? activeProject?.workspaceRoot ?? null;
   const openLocalFolderView = useCallback(() => {
     setView("add-project-local");
@@ -460,8 +463,27 @@ export function QuickSwitch({
           close();
         },
       },
+      // There is no projects listing page; the action targets the contextual
+      // project, as Web's command palette does.
+      ...(activeProject
+        ? [
+            {
+              id: "project-settings",
+              icon: "folder" as const,
+              label: "Project settings",
+              searchTerms: ["project", "settings", "scripts", "grouping", "checkout"],
+              run: () => {
+                openProjectSettings({
+                  environmentId: LYNX_PRIMARY_ENVIRONMENT_ID,
+                  id: activeProject.id,
+                });
+                close();
+              },
+            },
+          ]
+        : []),
     ],
-    [activeProject, close, createThread, openNewThreadProjects, projectName],
+    [activeProject, close, createThread, openNewThreadProjects, openProjectSettings, projectName],
   );
 
   const projectTitleById = useMemo(

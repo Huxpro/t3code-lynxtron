@@ -44,7 +44,8 @@ function installDevToolNavigation(): void {
       to === "/" ||
       to === "/components-lab" ||
       to === "/settings" ||
-      to.indexOf("/settings/") === 0
+      to.indexOf("/settings/") === 0 ||
+      to.indexOf("/projects/") === 0
     ) {
       navigate(to);
     }

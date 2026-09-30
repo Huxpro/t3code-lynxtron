@@ -1,20 +1,10 @@
 import type { ProjectScript, T3ProjectFileScript } from "@t3tools/contracts";
 import { buildProjectScript, nextProjectScriptId } from "../../../../web/src/projectScripts";
 import { projectScriptRuntimeEnv } from "@t3tools/shared/projectScripts";
+import { importableProjectFileScripts } from "../../../../web/src/components/settings/ProjectSettingsPanel.logic";
 
-export function importableProjectScripts(
-  scripts: ReadonlyArray<ProjectScript>,
-  fileScripts: ReadonlyArray<T3ProjectFileScript>,
-): ReadonlyArray<T3ProjectFileScript> {
-  return fileScripts.filter(
-    (fileScript) =>
-      !scripts.some(
-        (script) =>
-          script.command === fileScript.command ||
-          script.name.toLowerCase() === fileScript.name.toLowerCase(),
-      ),
-  );
-}
+/** t3.json scripts not already saved; shared with the project settings page. */
+export const importableProjectScripts = importableProjectFileScripts;
 
 export function importedProjectScript(
   scripts: ReadonlyArray<ProjectScript>,
