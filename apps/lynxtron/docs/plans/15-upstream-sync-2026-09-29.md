@@ -104,7 +104,7 @@ focused test and a background smoke.
 | #   | Upstream feature                                                                                     | Lynx area                         |
 | --- | ---------------------------------------------------------------------------------------------------- | --------------------------------- |
 | P1  | Remove Build/Plan toggle; plan mode behind Legacy features (#5551, #5664)                            | Composer, General settings — done |
-| P2  | Collapse tool activity into one line; subagent rows and counts (#7152, #5745)                        | Transcript                        |
+| P2  | Collapse tool activity into one line; subagent rows and counts (#7152, #5745)                        | Transcript — done                 |
 | P3  | Composer state drawers, question prompt collapse (#7150, #6773)                                      | Composer interventions            |
 | P4  | Approval actions: micro buttons, "Cancel"/"Approve" (upstream restyle)                               | Composer approval geometry        |
 | P5  | Skills listed with slash commands (#7737)                                                            | Composer command menu             |
@@ -113,11 +113,11 @@ focused test and a background smoke.
 | P8  | Confirm before closing a terminal (#7592)                                                            | Terminal — done                   |
 | P9  | Configurable fonts and sizes; system font stacks (#5103)                                             | Appearance, typography            |
 | P10 | Theme library and OKLCH palettes (#5226, #6036, #6183, #5636)                                        | Appearance, generated CSS         |
-| P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar               |
+| P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar — done        |
 | P12 | Project settings page and manual project icons (#5768, #5775)                                        | Settings                          |
 | P13 | Unsent drafts in the sidebar (#5777)                                                                 | Sidebar                           |
 | P14 | Right panel empty state, surface dropdown shortcuts, maximize binding (#6258, #7318, #5091)          | Right panel                       |
-| P15 | New thread picker shows project location (#7392)                                                     | New thread flow                   |
+| P15 | New thread picker shows project location (#7392)                                                     | New thread flow — done            |
 
 P1 notes: Lynx persists `planModeEnabled` with its client settings, forces the
 default mode in the composer and in the dispatched turn (shared
@@ -131,6 +131,16 @@ submenu with Thread ID, Archive thread) and supports pin/unpin with a pinned
 block and a tap-to-unpin marker (`--verify-sidebar-thread-menu`). Still open:
 drag-to-reorder pins, header-title thread actions, and the footer utility
 menu's back buttons for pages Lynx lacks.
+
+P2 notes: tool rows collapse through the client-runtime projection (shared
+helpers re-exported by Web). Lynx keeps the live row static (no shimmer) and
+does not restyle standalone work rows or the larger turn headers. The live
+revert gate asserts a readable one-line summary; a first run found the line
+collapsed to its icon because attribute-qualified wrapper selectors do not
+apply in Lynx CSS, so the wrappers use class hooks.
+
+P11 notes: the day-aware timestamp rule lives in client-runtime `time.ts`; Web
+delegates with its host locale.
 
 Out of scope for Lynx unless the runtime changes: pull request surfaces
 (#6039, #7148, #7077, #6597), usage insights (#8101, #7147), browser defaults and
