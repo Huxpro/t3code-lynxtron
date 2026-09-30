@@ -131,3 +131,25 @@ export function recentTerminalContext(input: {
     text: selected.join("\n"),
   };
 }
+
+/**
+ * Confirmation copy for closing terminals by hand (a close button, the
+ * `terminal.close` keybinding, or closing a terminal tab). The first label is
+ * the terminal the user acted on.
+ */
+export function terminalCloseConfirmation(labels: readonly [string, ...string[]]): {
+  readonly title: string;
+  readonly detail: string;
+} {
+  return labels.length === 1
+    ? {
+        title: `Close terminal "${labels[0]}"?`,
+        detail: "This stops the running process and clears its history.",
+      }
+    : {
+        title: `Close ${labels.length} terminals?`,
+        detail: `This stops their running processes and clears their histories: ${labels
+          .map((label) => `"${label}"`)
+          .join(", ")}.`,
+      };
+}

@@ -28,7 +28,7 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { useResizableWidth } from "../hooks/useResizableWidth";
 import { Icon, type IconName } from "./Icon";
 import { toastManager } from "../../../../web/src/components/ui/toast";
-import { closeTerminalSession, TerminalPanel } from "./TerminalPanel";
+import { closeTerminalSession, confirmTerminalSurfaceClose, TerminalPanel } from "./TerminalPanel";
 import { BrowserPanel } from "./BrowserPanel";
 import { selectWarmBrowserSurfaceIds } from "./browserPanel.logic";
 import { useT3ClientState } from "../state/t3Client";
@@ -206,8 +206,15 @@ export function RightPanel({
 
   const handleCloseTab = useCallback(
     (surface: RightPanelSurface) => {
-      if (surface.kind === "terminal") closeTerminalSession(activeThreadId);
-      uiActions.closeRightPanelSurface(surface.id);
+      if (surface.kind !== "terminal") {
+        uiActions.closeRightPanelSurface(surface.id);
+        return;
+      }
+      void confirmTerminalSurfaceClose().then((confirmed) => {
+        if (!confirmed) return;
+        closeTerminalSession(activeThreadId);
+        uiActions.closeRightPanelSurface(surface.id);
+      });
     },
     [activeThreadId],
   );

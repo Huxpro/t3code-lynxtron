@@ -110,7 +110,7 @@ focused test and a background smoke.
 | P5  | Skills listed with slash commands (#7737)                                                            | Composer command menu             |
 | P6  | Sidebar footer utility menu, back buttons, pinning and pin order (#6210, #6031, #5312, #5581, #5578) | Sidebar                           |
 | P7  | Thread actions from the header title; Copy Thread ID (#5592, #5574)                                  | Chat header, thread menus         |
-| P8  | Confirm before closing a terminal (#7592)                                                            | Terminal                          |
+| P8  | Confirm before closing a terminal (#7592)                                                            | Terminal — done                   |
 | P9  | Configurable fonts and sizes; system font stacks (#5103)                                             | Appearance, typography            |
 | P10 | Theme library and OKLCH palettes (#5226, #6036, #6183, #5636)                                        | Appearance, generated CSS         |
 | P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar               |

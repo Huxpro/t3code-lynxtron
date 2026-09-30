@@ -8213,7 +8213,7 @@ async function verifyCheckpointRevertLive({
 // Plan 14 M6: the supported Lynx terminal runs real shell sessions. Open the
 // panel, run a command, split into two sessions and see the PTY shrink, close
 // the split, and close then reopen the panel onto a fresh session.
-async function verifyTerminalLifecycle({ child, client, timeoutMs }) {
+async function verifyTerminalLifecycle({ child, client, log, timeoutMs }) {
   const token = `t3-term-${Date.now().toString(36)}`;
   const outputs = async () =>
     (await readSelectorMeasurements(client, ".terminal-panel__output")).map((node) => node.text);
@@ -8302,14 +8302,26 @@ async function verifyTerminalLifecycle({ child, client, timeoutMs }) {
     throw new Error(`Split did not resize the PTY: ${JSON.stringify({ colsBefore, colsAfter })}`);
   }
 
-  await tapSelectorByAttribute({
-    attribute: "aria-label",
-    child,
-    client,
-    selector: ".terminal-panel__session-close",
-    timeoutMs,
-    value: "Close Terminal 2",
-  });
+  // The probe answers the first close prompt with cancel, then confirm.
+  const closeSplitSession = () =>
+    tapSelectorByAttribute({
+      attribute: "aria-label",
+      child,
+      client,
+      selector: ".terminal-panel__session-close",
+      timeoutMs,
+      value: "Close Terminal 2",
+    });
+  await closeSplitSession();
+  const confirmPrompts = () =>
+    log
+      .read()
+      .split("\n")
+      .filter((line) => line.includes("[confirm-probe]"))
+      .map((line) => JSON.parse(line.slice(line.indexOf("{"))));
+  await waitForLogOccurrence(child, log, "[confirm-probe]", 1, timeoutMs);
+  await panelState((panel) => panel?.attributes["data-terminal-session-count"] === "2");
+  await closeSplitSession();
   await panelState((panel) => panel?.attributes["data-terminal-session-count"] === "1");
 
   // Hiding the right panel keeps the session, like Web's terminal drawer.
@@ -8353,10 +8365,27 @@ async function verifyTerminalLifecycle({ child, client, timeoutMs }) {
     throw new Error("A terminal reopened after closing its tab kept the closed session's history.");
   }
 
+  const prompts = confirmPrompts();
+  const expectedPrompts = [
+    ['Close terminal "Terminal 2"?', "cancel"],
+    ['Close terminal "Terminal 2"?', "confirm"],
+    ['Close terminal "Terminal 1"?', "confirm"],
+  ];
+  if (
+    prompts.length !== expectedPrompts.length ||
+    prompts.some(
+      (prompt, index) =>
+        prompt.message !== expectedPrompts[index][0] || prompt.answer !== expectedPrompts[index][1],
+    )
+  ) {
+    throw new Error(`Terminal close confirmations drifted: ${JSON.stringify(prompts)}`);
+  }
+
   return {
     status: "pass",
     input:
-      "DevTool taps on terminal controls; command text through the probe-only setter the input's bindinput uses",
+      "DevTool taps on terminal controls; command text through the probe-only setter the input's bindinput uses; probe confirm answers cancel, confirm, confirm",
+    prompts,
     opened: { status: opened.attributes["data-terminal-session-status"], rect: opened.rect },
     output: { token: `${token}-out`, colsBefore },
     split: {
@@ -15540,8 +15569,9 @@ async function runOnce({
       ...(shouldVerifyCheckpointRevertLive
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "confirm" }
         : {}),
-      ...(shouldVerifyTerminalLifecycle || shouldVerifyRightPanelAddMenu
-        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
+      ...(shouldVerifyRightPanelAddMenu ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
+      ...(shouldVerifyTerminalLifecycle
+        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm,confirm" }
         : {}),
       ...(shouldVerifyLinkContextMenu
         ? {
@@ -16067,7 +16097,7 @@ async function runOnce({
       ? await verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs })
       : undefined;
     const terminalLifecycle = shouldVerifyTerminalLifecycle
-      ? await verifyTerminalLifecycle({ child, client, timeoutMs })
+      ? await verifyTerminalLifecycle({ child, client, log, timeoutMs })
       : undefined;
     const checkpointRevertLive = shouldVerifyCheckpointRevertLive
       ? await verifyCheckpointRevertLive({

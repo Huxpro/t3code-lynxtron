@@ -1,5 +1,6 @@
 import { terminalCloseConfirmation } from "@t3tools/client-runtime/presentation/terminal-context";
-import { readLocalApi } from "~/localApi";
+
+import { showNativeConfirm } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 
 let pendingConfirmations = 0;
 
@@ -8,21 +9,15 @@ export function isTerminalCloseConfirmPending(): boolean {
   return pendingConfirmations > 0;
 }
 
-/**
- * Confirmation for individual terminal close actions: drawer buttons, panel
- * buttons, the `terminal.close` keybinding, and closing a terminal surface from
- * the tab strip. Auto-exit cleanup and bulk tab closes skip this path and close
- * directly.
- */
+/** Lynx twin of the Web confirmation, shown as a native dialog. */
 export async function confirmTerminalClose(
   labels: readonly [string, ...string[]],
 ): Promise<boolean> {
-  const localApi = readLocalApi();
-  if (!localApi) return true;
+  "background only";
+  const { title, detail } = terminalCloseConfirmation(labels);
   pendingConfirmations += 1;
   try {
-    const { title, detail } = terminalCloseConfirmation(labels);
-    return await localApi.dialogs.confirm([title, detail].join("\n"), { variant: "destructive" });
+    return await showNativeConfirm({ message: title, detail, confirmLabel: "Close" });
   } catch {
     return false;
   } finally {

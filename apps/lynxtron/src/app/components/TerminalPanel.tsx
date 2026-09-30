@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "@lynx-js/react";
 import type { NodesRef } from "@lynx-js/types";
 
+import { confirmTerminalClose } from "../../../../web/src/lib/terminalCloseConfirm";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
 import { terminalSplitGridSize } from "./terminalGrid.logic";
@@ -40,6 +41,14 @@ export function TerminalPanel({
   const [openError, setOpenError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [selection, setSelection] = useState(initialTerminalSessionSelection);
+  useEffect(() => {
+    openTerminalLabels = [
+      terminalSessionLabel(selection.ids, selection.activeId),
+      ...selection.ids
+        .filter((terminalId) => terminalId !== selection.activeId)
+        .map((terminalId) => terminalSessionLabel(selection.ids, terminalId)),
+    ];
+  }, [selection.activeId, selection.ids]);
   const sendingRef = useRef(false);
   const commandInputRef = useRef<NodesRef>(null);
   const activeThread =
@@ -165,19 +174,24 @@ export function TerminalPanel({
 
   const closeSession = (terminalId: string) => {
     if (!activeThreadId || selection.ids.length === 1) return;
-    void t3ClientActions
-      .closeTerminal({ threadId: activeThreadId, terminalId, deleteHistory: true })
-      .then(() => setSelection((current) => removeTerminalSession(current, terminalId)))
-      .catch((cause: unknown) =>
-        setOpenError(cause instanceof Error ? cause.message : String(cause)),
-      );
+    void confirmTerminalClose([terminalSessionLabel(selection.ids, terminalId)]).then(
+      (confirmed) => {
+        if (!confirmed) return;
+        void t3ClientActions
+          .closeTerminal({ threadId: activeThreadId, terminalId, deleteHistory: true })
+          .then(() => setSelection((current) => removeTerminalSession(current, terminalId)))
+          .catch((cause: unknown) =>
+            setOpenError(cause instanceof Error ? cause.message : String(cause)),
+          );
+      },
+    );
   };
 
   const addRecentOutputToComposer = () => {
     if (!composerScopeKey || !session?.history) return;
     const context = recentTerminalContext({
       terminalId: selection.activeId,
-      terminalLabel: `Terminal ${selection.ids.indexOf(selection.activeId) + 1}`,
+      terminalLabel: terminalSessionLabel(selection.ids, selection.activeId),
       history: presentTerminalText(session.history),
       maxLines: 50,
     });
@@ -349,6 +363,18 @@ export function TerminalPanel({
       </view>
     </view>
   );
+}
+
+function terminalSessionLabel(ids: ReadonlyArray<string>, terminalId: string): string {
+  return `Terminal ${ids.indexOf(terminalId) + 1}`;
+}
+
+// Labels of the thread's open terminals, active first, for the tab-close prompt.
+let openTerminalLabels: readonly [string, ...string[]] = ["Terminal 1"];
+
+/** Confirms closing the terminal tab, which ends every terminal in the thread. */
+export function confirmTerminalSurfaceClose(): Promise<boolean> {
+  return confirmTerminalClose(openTerminalLabels);
 }
 
 export function closeTerminalSession(threadId: string | undefined): void {
