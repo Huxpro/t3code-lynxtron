@@ -46,8 +46,8 @@ describe("message hover actions contract", () => {
     expect(timelineSource).toContain("deriveRevertTurnCountByUserMessageId(");
     expect(timelineSource).toContain("}, 1_000);");
     expect(timelineSource).toContain("createdAt={row.message.createdAt}");
-    expect(timelineSource).toContain("formatShortTimestamp(createdAt, timestampFormat)");
-    expect(timelineSource).toContain("formatShortTimestamp(row.message.updatedAt");
+    expect(timelineSource).toContain("formatDayAwareTimestamp(createdAt, timestampFormat)");
+    expect(timelineSource).toContain("formatDayAwareTimestamp(row.message.updatedAt");
     expect(overrides).toContain(".transcript-message-meta {");
     expect(overrides).toContain("opacity: 1;");
     expect(overrides).toContain("visibility: visible;");
