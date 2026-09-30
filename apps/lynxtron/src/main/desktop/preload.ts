@@ -3,10 +3,11 @@
 // After AR2 the connector lives in the main process (see mainConnectorHost.ts
 // and src/shared/connectorProtocol.ts); product state reaches the renderer as
 // sequenced push events. This preload keeps only the capabilities that stay
-// preload-resident: app branding, small JSON preference persistence,
-// clipboard, and native/external navigation. It owns no product state.
+// preload-resident: app branding and small JSON preference persistence. It
+// owns no product state. Clipboard and navigation are served by main
+// (hostCapabilities.ts): the preload's Lynx background realm exposes only
+// `contextBridge` from `lynxtron`.
 import { contextBridge } from "@lynx-js/lynxtron/context-bridge";
-import { clipboard, shell } from "@lynx-js/lynxtron";
 import type { DesktopAppBranding, DesktopAppStageLabel } from "@t3tools/contracts";
 import * as path from "node:path";
 import * as fs from "node:fs";
@@ -86,14 +87,6 @@ contextBridge.exposeInLynxBTS({
   // Preference persistence (sync; small JSON file).
   getPrefs: () => readPrefs(),
   setPrefs: (patch: Record<string, unknown>) => writePrefs(patch ?? {}),
-  writeClipboardText: (value: string) => clipboard.writeText(value),
-  openExternal: async (url: string) => {
-    await shell.openExternal(url);
-  },
-  openPath: async (targetPath: string) => {
-    const error = await shell.openPath(targetPath);
-    if (error) throw new Error(error);
-  },
 });
 
 console.log("[T3 Preload] bridge exposed (capabilities only; connector is main-owned)");

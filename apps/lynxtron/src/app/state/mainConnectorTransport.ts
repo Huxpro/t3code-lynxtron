@@ -51,7 +51,7 @@ export interface MainConnectorTransport {
 
 const DEFAULT_READY_TIMEOUT_MS = 3_000;
 
-function callBridge(
+export function callBridge(
   bridge: BridgeCallModule,
   method: string,
   params: Record<string, unknown>,

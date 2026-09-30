@@ -1,19 +1,39 @@
 import type { ClientUiCapabilities } from "@t3tools/client-runtime/platform";
 
+import { T3_HOST_METHODS, isHostReply } from "../../shared/hostProtocol";
 import { appAtomRegistry } from "../state/atomRegistry";
 import { connectionStatusAtom } from "../state/connectionStatus";
+import { callBridge, type BridgeCallModule } from "../state/mainConnectorTransport";
 
 interface PlatformBridge {
   getPrefs?: () => Record<string, unknown>;
   setPrefs?: (patch: Record<string, unknown>) => Record<string, unknown>;
-  writeClipboardText?: (value: string) => void;
-  openExternal?: (url: string) => Promise<void>;
-  openPath?: (path: string) => Promise<void>;
 }
 
 declare const NativeModules: {
   nodejs?: { exposed?: PlatformBridge };
+  bridge?: BridgeCallModule;
 } & Record<string, unknown>;
+
+function mainBridge(): BridgeCallModule | undefined {
+  "background only";
+  try {
+    const bridge = NativeModules?.bridge;
+    return typeof bridge?.call === "function" ? bridge : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+// Clipboard and navigation run in main (see shared/hostProtocol.ts).
+async function callHost(method: string, params: Record<string, unknown>): Promise<void> {
+  "background only";
+  const bridge = mainBridge();
+  if (!bridge) throw new Error("The Lynxtron host is unavailable");
+  const reply = await callBridge(bridge, method, params);
+  if (!isHostReply(reply)) throw new Error(`Unexpected reply from ${method}`);
+  if (reply.error) throw new Error(reply.error);
+}
 
 function bridge(): PlatformBridge | undefined {
   "background only";
@@ -45,14 +65,9 @@ export const clientCapabilities: ClientUiCapabilities = {
   clipboard: {
     available: () => {
       "background only";
-      return Boolean(bridge()?.writeClipboardText);
+      return mainBridge() !== undefined;
     },
-    writeText: async (value) => {
-      "background only";
-      const target = bridge();
-      if (!target?.writeClipboardText) throw new Error("Clipboard is unavailable");
-      target.writeClipboardText(value);
-    },
+    writeText: (value) => callHost(T3_HOST_METHODS.writeClipboardText, { text: value }),
   },
   connectivity: {
     isOnline: () => {
@@ -74,23 +89,13 @@ export const clientCapabilities: ClientUiCapabilities = {
   navigation: {
     canOpenExternal: () => {
       "background only";
-      return Boolean(bridge()?.openExternal);
+      return mainBridge() !== undefined;
     },
     canOpenPath: () => {
       "background only";
-      return Boolean(bridge()?.openPath);
+      return mainBridge() !== undefined;
     },
-    openExternal: async (url) => {
-      "background only";
-      const target = bridge();
-      if (!target?.openExternal) throw new Error("External navigation is unavailable");
-      await target.openExternal(url);
-    },
-    openPath: async (path) => {
-      "background only";
-      const target = bridge();
-      if (!target?.openPath) throw new Error("Native path navigation is unavailable");
-      await target.openPath(path);
-    },
+    openExternal: (url) => callHost(T3_HOST_METHODS.openExternal, { url }),
+    openPath: (path) => callHost(T3_HOST_METHODS.openPath, { path }),
   },
 };

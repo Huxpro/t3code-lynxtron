@@ -1,4 +1,4 @@
-import { app, devtool, LynxWindow, Menu, lynxBridge } from "@lynx-js/lynxtron";
+import { app, clipboard, devtool, LynxWindow, Menu, lynxBridge, shell } from "@lynx-js/lynxtron";
 import path from "path";
 
 import {
@@ -7,6 +7,7 @@ import {
   createDiscreteKeyboardPacket,
   type DiscreteKeyboardAccelerator,
 } from "./keyboardMenu.ts";
+import { registerHostCapabilities } from "./hostCapabilities.ts";
 import { MainConnectorHost } from "./mainConnectorHost.ts";
 import { resolveLynxtronViewport } from "./windowViewport.ts";
 import { resolveWindowlessWindowOptions, shouldEnableDevTool } from "./windowlessHost.ts";
@@ -157,6 +158,14 @@ app.whenReady().then(() => {
     ...resolveWindowlessWindowOptions(process.platform, process.env),
     lynxPreference: {
       preload: path.join(__dirname, "preload.js"),
+    },
+  });
+
+  registerHostCapabilities({
+    clipboard,
+    shell,
+    registerHandler: (method, handler) => {
+      lynxBridge.handle(method, (_event, params) => handler(params));
     },
   });
 
