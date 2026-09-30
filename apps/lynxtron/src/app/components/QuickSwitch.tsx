@@ -46,6 +46,7 @@ import { navigate } from "../router";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { searchOverlayReturnController } from "../state/searchOverlayKeyboard";
 import { uiActions } from "../state/uiState";
+import { environmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
 import { Icon, type IconName } from "./Icon";
 import { ProjectFileIcon } from "./ProjectFileIcon";
 import {
@@ -138,7 +139,7 @@ export function QuickSwitch({
   const [remoteProjectPending, setRemoteProjectPending] = useState(false);
   const [remoteProjectError, setRemoteProjectError] = useState<string | null>(null);
   const { createThread, selectThread } = t3ClientActions;
-  const { draftThread, serverConfig } = useT3ClientState();
+  const { connectionKind, draftThread, serverConfig } = useT3ClientState();
 
   const close = uiActions.closeQuickSwitch;
 
@@ -589,6 +590,14 @@ export function QuickSwitch({
     }
     return items;
   }, [addLocalProject, cloneAndAddProject, currentBrowsePath, filesystemBrowse?.entries, view]);
+  // Matches Web's new-thread picker: "Local" for this machine's own server,
+  // "<label> (Local)" for another local server, and the label for a remote one.
+  const projectLocation =
+    connectionKind !== "existing-environment"
+      ? "Local"
+      : environmentPathsResolveLocally()
+        ? `${serverConfig?.environment.label ?? "Environment"} (Local)`
+        : (serverConfig?.environment.label ?? "Remote");
   const projectItems = useMemo<ReadonlyArray<PaletteNavigationItem>>(() => {
     const preferredProjects =
       activeProject === null
@@ -598,10 +607,10 @@ export function QuickSwitch({
       id: `project:${project.id}`,
       icon: "folder",
       title: project.title,
-      description: project.workspaceRoot,
+      description: `${projectLocation} · ${project.workspaceRoot}`,
       run: () => createThreadInProject(project.id),
     }));
-  }, [activeProject, createThreadInProject, orderedProjects]);
+  }, [activeProject, createThreadInProject, orderedProjects, projectLocation]);
 
   const handleThreadTap = useCallback(
     (threadId: string) => {

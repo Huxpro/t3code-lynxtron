@@ -86,6 +86,10 @@ export function setEnvironmentPathsResolveLocally(value: boolean): void {
   pathsResolveLocally = value;
 }
 
+export function environmentPathsResolveLocally(): boolean {
+  return pathsResolveLocally;
+}
+
 const storage = {
   getItem(key: string): string | null {
     "background only";
