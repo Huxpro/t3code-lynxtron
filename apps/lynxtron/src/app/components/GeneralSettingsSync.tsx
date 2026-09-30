@@ -22,6 +22,7 @@ import {
   type GeneralSettingsSurfaceActions,
   type GeneralSettingsSurfaceSnapshot,
 } from "../../../../web/src/components/settings/generalSettingsStore";
+import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { navigate } from "../router";
 import { useClientSettingsState } from "../state/prefsStore";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
@@ -60,6 +61,7 @@ export function GeneralSettingsSync() {
         ...(patch.legacySidebarEnabled === undefined
           ? {}
           : { legacySidebarEnabled: patch.legacySidebarEnabled }),
+        ...(patch.planModeEnabled === undefined ? {} : { planModeEnabled: patch.planModeEnabled }),
         ...(patch.sidebarAutoSettleAfterDays === undefined
           ? {}
           : { sidebarAutoSettleAfterDays: patch.sidebarAutoSettleAfterDays }),
@@ -84,6 +86,19 @@ export function GeneralSettingsSync() {
       };
       if (Object.keys(clientPatch).length > 0) updateClientSettings(clientPatch);
       if (Object.keys(serverPatch).length > 0) updateServerSettings(serverPatch);
+      if (patch.enableLegacyTokenStreaming === false) {
+        updateServerSettings({ enableLegacyTokenStreaming: false });
+      } else if (patch.enableLegacyTokenStreaming === true) {
+        void showNativeConfirm({
+          message: "Turn on token-by-token output?",
+          detail:
+            "It is significantly slower than the default buffered output and hurts the reading experience. This switch exists only for backwards compatibility.",
+        })
+          .then((confirmed) => {
+            if (confirmed) updateServerSettings({ enableLegacyTokenStreaming: true });
+          })
+          .catch(() => {});
+      }
     };
     const snapshot: GeneralSettingsSurfaceSnapshot = {
       backgroundActivityDescription: settings

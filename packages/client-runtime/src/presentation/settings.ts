@@ -24,6 +24,7 @@ export type PortableClientSettings = Pick<
   | "favorites"
   | "glassOpacity"
   | "legacySidebarEnabled"
+  | "planModeEnabled"
   | "sidebarAutoSettleAfterDays"
   | "sidebarProjectGroupingMode"
   | "timestampFormat"

@@ -16,6 +16,7 @@ export const PORTABLE_CLIENT_SETTINGS_DEFAULTS = {
   favorites: [],
   glassOpacity: 80,
   legacySidebarEnabled: false,
+  planModeEnabled: false,
   sidebarAutoSettleAfterDays: 3,
   sidebarProjectGroupingMode: "repository",
   timestampFormat: "locale",

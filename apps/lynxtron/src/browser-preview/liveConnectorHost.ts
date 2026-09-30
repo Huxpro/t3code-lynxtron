@@ -188,6 +188,7 @@ export async function dispatchLivePrompt<A>(input: {
     readonly text: string;
     readonly attachments?: ReadonlyArray<UploadChatAttachment>;
     readonly bootstrap?: ThreadTurnStartBootstrap;
+    readonly planModeEnabled: boolean;
   };
   readonly thread:
     | Pick<OrchestrationThreadShell, "modelSelection" | "runtimeMode" | "interactionMode">
@@ -204,6 +205,7 @@ export async function dispatchLivePrompt<A>(input: {
     attachments: input.params.attachments,
     thread: input.thread,
     bootstrap: input.params.bootstrap,
+    planModeEnabled: input.params.planModeEnabled,
     commandId: CommandId.make(input.commandId ?? globalThis.crypto.randomUUID()),
     messageId: MessageId.make(input.messageId ?? globalThis.crypto.randomUUID()),
     createdAt: input.createdAt ?? new Date().toISOString(),
@@ -792,6 +794,7 @@ export class LiveConnectorHost {
         text: string;
         attachments?: ReadonlyArray<UploadChatAttachment>;
         bootstrap?: ThreadTurnStartBootstrap;
+        planModeEnabled: boolean;
       };
       const thread =
         this.#shellSnapshot?.threads.find((candidate) => candidate.id === params.threadId) ??

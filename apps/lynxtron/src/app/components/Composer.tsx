@@ -110,6 +110,8 @@ interface ComposerProps {
   runtimeMode: RuntimeMode;
   interactionMode: ProviderInteractionMode;
   showInteractionModeToggle: boolean;
+  /** Legacy plan mode; while off, /plan and /default are not offered. */
+  planModeEnabled: boolean;
   availableWidth: number;
   statusBanner?: ReactNode;
   pendingBanner?: ReactNode;
@@ -198,6 +200,7 @@ export function Composer({
   runtimeMode,
   interactionMode,
   showInteractionModeToggle,
+  planModeEnabled,
   availableWidth,
   statusBanner,
   pendingBanner,
@@ -761,9 +764,10 @@ export function Composer({
   );
   const contextCommands = [...BUILT_IN_COMPOSER_COMMANDS, ...providerSlashCommands].filter(
     (command) =>
-      !normalizedContextQuery ||
-      command.name.toLowerCase().includes(normalizedContextQuery) ||
-      command.description?.toLowerCase().includes(normalizedContextQuery),
+      (planModeEnabled || (command.name !== "plan" && command.name !== "default")) &&
+      (!normalizedContextQuery ||
+        command.name.toLowerCase().includes(normalizedContextQuery) ||
+        command.description?.toLowerCase().includes(normalizedContextQuery)),
   );
   const contextPickerItemCount =
     composerTrigger?.kind === "path"

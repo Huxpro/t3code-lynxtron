@@ -1529,6 +1529,7 @@ function sendPrompt(
       .sendPrompt({
         threadId,
         text: trimmed,
+        planModeEnabled: getClientSettingsState().planModeEnabled,
         ...(attachments.length > 0 ? { attachments } : {}),
         ...(resolvedBootstrap ? { bootstrap: resolvedBootstrap } : {}),
       })

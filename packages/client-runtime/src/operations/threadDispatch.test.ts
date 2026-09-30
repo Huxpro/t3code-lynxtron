@@ -51,6 +51,7 @@ describe("projectThreadTurnDispatchState", () => {
           worktreePath: null,
           createdAt: "2026-08-22T00:00:00.000Z",
         },
+        planModeEnabled: true,
       }),
     ).toEqual({
       modelSelection: shell.modelSelection,
@@ -60,6 +61,7 @@ describe("projectThreadTurnDispatchState", () => {
     expect(
       resolveThreadTurnDispatchState({
         thread: undefined,
+        planModeEnabled: true,
       }),
     ).toBeNull();
   });
@@ -84,6 +86,7 @@ describe("projectThreadTurnDispatchState", () => {
         text: "Implement it",
         thread: undefined,
         bootstrap,
+        planModeEnabled: true,
         commandId: CommandId.make("command-1"),
         messageId: MessageId.make("message-1"),
         createdAt: "2026-08-22T00:00:01.000Z",
@@ -113,6 +116,7 @@ describe("projectThreadTurnDispatchState", () => {
         threadId: ThreadId.make("missing-thread"),
         text: "No implicit persistence",
         thread: undefined,
+        planModeEnabled: true,
         commandId: CommandId.make("command-2"),
         messageId: MessageId.make("message-2"),
         createdAt: "2026-08-22T00:00:01.000Z",
@@ -135,11 +139,20 @@ describe("projectThreadTurnDispatchState", () => {
       text: "Review this",
       thread: shell,
       attachments,
+      planModeEnabled: true,
       commandId: CommandId.make("command-attachments"),
       messageId: MessageId.make("message-attachments"),
       createdAt: "2026-09-10T00:00:00.000Z",
     });
 
     expect(command?.message.attachments).toEqual(attachments);
+  });
+
+  it("runs plan-mode threads in the default mode while plan mode is off", () => {
+    expect(resolveThreadTurnDispatchState({ thread: shell, planModeEnabled: false })).toEqual({
+      ...shell,
+      interactionMode: "default",
+    });
+    expect(resolveThreadTurnDispatchState({ thread: shell, planModeEnabled: true })).toEqual(shell);
   });
 });

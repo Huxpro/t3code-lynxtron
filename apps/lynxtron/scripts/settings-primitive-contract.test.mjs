@@ -83,7 +83,7 @@ describe("Settings primitive contract", () => {
 
     assert.match(webAdapter, /from ["'].\/GeneralSettingsContent["']/u);
     assert.match(lynxAdapter, /web\/src\/components\/settings\/GeneralSettingsPanel["']/u);
-    assert.equal([...composition.matchAll(/<SettingsRow\b/gu)].length, 15);
+    assert.equal([...composition.matchAll(/<SettingsRow\b/gu)].length, 17);
     for (const id of [
       "project-grouping",
       "time-format",
@@ -96,6 +96,8 @@ describe("Settings primitive contract", () => {
       "delete-confirmation",
       "text-generation-model",
       "diagnostics",
+      "legacy-plan-mode",
+      "legacy-token-streaming",
     ]) {
       assert.include(composition, `searchableSetting("${id}")`, id);
     }

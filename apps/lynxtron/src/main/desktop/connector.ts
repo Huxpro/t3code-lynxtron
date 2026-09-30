@@ -1217,6 +1217,7 @@ export class T3Connector {
     text: string;
     attachments?: ReadonlyArray<UploadChatAttachment>;
     bootstrap?: ThreadTurnStartBootstrap;
+    planModeEnabled: boolean;
   }): Promise<void> {
     await this.awaitRecoveredTransport();
     const bootstrap = materializeTurnBootstrap(input.bootstrap);
@@ -1230,6 +1231,7 @@ export class T3Connector {
       thread,
       pendingModelSelection: this.pendingThreadModelSelections.get(input.threadId),
       bootstrap,
+      planModeEnabled: input.planModeEnabled,
       commandId: CommandId.make(crypto.randomUUID()),
       messageId: MessageId.make(crypto.randomUUID()),
       createdAt: new Date().toISOString(),

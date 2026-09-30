@@ -475,9 +475,16 @@ export function ChatView({ threadId }: ChatViewProps) {
       }),
     [connectionKind, serverConfig?.environment.label, status, statusDetail],
   );
+  // Plan mode is a legacy feature: while it is off the toggle is hidden and
+  // every thread presents (and sends) the default mode.
   const showInteractionModeToggle =
-    providerEntries.find((entry) => entry.instanceId === modelInstanceId)?.snapshot
-      .showInteractionModeToggle ?? true;
+    clientSettings.planModeEnabled &&
+    (providerEntries.find((entry) => entry.instanceId === modelInstanceId)?.snapshot
+      .showInteractionModeToggle ??
+      true);
+  const interactionMode = clientSettings.planModeEnabled
+    ? (activeThread?.interactionMode ?? "default")
+    : "default";
   const activeThreadSettled =
     activeThread !== undefined &&
     serverConfig?.environment.capabilities.threadSettlement === true &&
@@ -931,8 +938,9 @@ export function ChatView({ threadId }: ChatViewProps) {
         workspaceModeLocked={workspaceModeLocked}
         startFromOrigin={startFromOrigin}
         runtimeMode={activeThread?.runtimeMode ?? "full-access"}
-        interactionMode={activeThread?.interactionMode ?? "default"}
+        interactionMode={interactionMode}
         showInteractionModeToggle={showInteractionModeToggle}
+        planModeEnabled={clientSettings.planModeEnabled}
         availableWidth={centerPanelWidth}
         statusBanner={
           shouldRenderConnectionLifecycleBanner() && connectionLifecycle.visible ? (

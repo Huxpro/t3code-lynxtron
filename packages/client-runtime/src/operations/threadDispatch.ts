@@ -36,22 +36,30 @@ export function projectThreadTurnDispatchState(
   };
 }
 
+/**
+ * Plan mode is a legacy feature. While it is off every turn runs in the
+ * default mode, even on threads that stored plan mode, and the turn persists
+ * that mode back to the thread.
+ */
 export function resolveThreadTurnDispatchState(input: {
   readonly thread:
     | Pick<OrchestrationThreadShell, "modelSelection" | "runtimeMode" | "interactionMode">
     | undefined;
   readonly pendingModelSelection?: ModelSelection;
   readonly bootstrapCreateThread?: ThreadTurnStartBootstrap["createThread"];
+  readonly planModeEnabled: boolean;
 }): ThreadTurnDispatchState | null {
-  if (input.thread) {
-    return projectThreadTurnDispatchState(input.thread, input.pendingModelSelection);
-  }
-  if (!input.bootstrapCreateThread) return null;
-  return {
-    modelSelection: input.bootstrapCreateThread.modelSelection,
-    runtimeMode: input.bootstrapCreateThread.runtimeMode,
-    interactionMode: input.bootstrapCreateThread.interactionMode,
-  };
+  const state = input.thread
+    ? projectThreadTurnDispatchState(input.thread, input.pendingModelSelection)
+    : input.bootstrapCreateThread
+      ? {
+          modelSelection: input.bootstrapCreateThread.modelSelection,
+          runtimeMode: input.bootstrapCreateThread.runtimeMode,
+          interactionMode: input.bootstrapCreateThread.interactionMode,
+        }
+      : null;
+  if (!state || input.planModeEnabled) return state;
+  return { ...state, interactionMode: "default" };
 }
 
 export function buildThreadTurnStartCommand(input: {
@@ -63,6 +71,7 @@ export function buildThreadTurnStartCommand(input: {
     | undefined;
   readonly pendingModelSelection?: ModelSelection;
   readonly bootstrap?: ThreadTurnStartBootstrap;
+  readonly planModeEnabled: boolean;
   readonly commandId: CommandId;
   readonly messageId: MessageId;
   readonly createdAt: string;
@@ -73,6 +82,7 @@ export function buildThreadTurnStartCommand(input: {
     ...(input.bootstrap?.createThread
       ? { bootstrapCreateThread: input.bootstrap.createThread }
       : {}),
+    planModeEnabled: input.planModeEnabled,
   });
   if (!dispatchState) return null;
   return {

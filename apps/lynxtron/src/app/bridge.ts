@@ -166,6 +166,7 @@ export interface T3ConnectorCommandBridge {
     text: string;
     attachments?: ReadonlyArray<UploadChatAttachment>;
     bootstrap?: ThreadTurnStartBootstrap;
+    planModeEnabled: boolean;
   }): Promise<void>;
   interrupt(input: { threadId: string; turnId?: TurnId }): Promise<void>;
   revertCheckpoint(input: { threadId: string; turnCount: number }): Promise<void>;
