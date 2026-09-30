@@ -62,6 +62,18 @@ describe("probe context menu builder", () => {
     expect(lines).toEqual(['[context-menu-probe] offered=["Open","Copy"] select=copy']);
   });
 
+  it("selects an item inside a submenu", () => {
+    const clicked: string[] = [];
+    createProbeContextMenuBuilder("copy-thread-id", () => {})([
+      {
+        id: "copy",
+        label: "Copy",
+        submenu: [{ id: "copy-thread-id", label: "Thread ID", click: () => clicked.push("id") }],
+      },
+    ]).popup({ window: null, callback: () => {} });
+    expect(clicked).toEqual(["id"]);
+  });
+
   it("dismisses when the requested item is absent", () => {
     let dismissed = false;
     createProbeContextMenuBuilder("missing", () => {})([{ id: "open", label: "Open" }]).popup({

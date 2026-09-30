@@ -8404,6 +8404,58 @@ async function verifyTerminalLifecycle({ child, client, log, timeoutMs }) {
   };
 }
 
+async function verifySidebarThreadMenu({ child, client, log, timeoutMs }) {
+  const before = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => Array.isArray(state?.threadIds) && state.threadIds.length > 0,
+  });
+  const threadId = before.activeThreadId ?? before.threadIds[0];
+  const openMenu = async () => {
+    const response = await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_SIDEBAR_THREAD_MENU_PROBE__?.(${JSON.stringify(threadId)}) ?? "missing"`,
+      returnByValue: true,
+    });
+    if (commandResult(response)?.value !== true) {
+      throw new Error(`Sidebar thread menu probe did not run: ${JSON.stringify(response)}`);
+    }
+  };
+  const menuLines = () =>
+    log
+      .read()
+      .split("\n")
+      .filter((line) => line.includes("[context-menu-probe]"));
+  await openMenu();
+  await waitForLogText(child, log, "select=copy-thread-id", timeoutMs);
+  await waitForLogText(child, log, `[clipboard-sink] ${JSON.stringify(threadId)}`, timeoutMs);
+  await openMenu();
+  await waitForLogText(child, log, "select=archive", timeoutMs);
+  const archived = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.archivedThreadIds?.includes(threadId) === true &&
+      state?.threadIds?.includes(threadId) === false,
+  });
+  const offered = menuLines()[0] ?? "";
+  for (const label of ["Rename thread", "Mark unread", "Copy", "Archive thread", "Delete"]) {
+    if (!offered.includes(JSON.stringify(label))) {
+      throw new Error(`Sidebar thread menu is missing ${label}: ${offered}`);
+    }
+  }
+  return {
+    status: "pass",
+    input:
+      "renderer probe invokes the sidebar row's secondary-click handler; main probe menu selects Copy > Thread ID, then Archive thread; clipboard sink",
+    threadId,
+    offered,
+    copiedThreadId: threadId,
+    archived: { archivedThreadIds: archived.archivedThreadIds },
+  };
+}
+
 async function verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs }) {
   // Shared formatWorkspaceRelativePath prefixes the workspace folder name.
   const relativePath = `${path.basename(projectCwd)}/src/greet.ts`;
@@ -15573,6 +15625,13 @@ async function runOnce({
       ...(shouldVerifyTerminalLifecycle
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm,confirm" }
         : {}),
+      ...(shouldVerifySidebarThreadMenu
+        ? {
+            T3_LYNXTRON_VIEWPORT_PROBE: "1",
+            T3_TEST_CONTEXT_MENU_SELECT: "copy-thread-id,archive",
+            T3_TEST_CLIPBOARD_SINK: "1",
+          }
+        : {}),
       ...(shouldVerifyLinkContextMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
@@ -16093,6 +16152,9 @@ async function runOnce({
     const transcriptFollowState = shouldVerifyTranscriptFollowState
       ? await verifyTranscriptFollowState({ child, client, timeoutMs })
       : undefined;
+    const sidebarThreadMenu = shouldVerifySidebarThreadMenu
+      ? await verifySidebarThreadMenu({ child, client, log, timeoutMs })
+      : undefined;
     const linkContextMenu = shouldVerifyLinkContextMenu
       ? await verifyLinkContextMenu({ child, client, log, projectCwd, timeoutMs })
       : undefined;
@@ -16435,6 +16497,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      sidebarThreadMenu,
       linkContextMenu,
       checkpointRevert,
       checkpointRevertLive,
@@ -16522,6 +16585,7 @@ async function runOnce({
       composerWorkingState,
       completedTranscriptState,
       transcriptFollowState,
+      sidebarThreadMenu,
       linkContextMenu,
       checkpointRevert,
       checkpointRevertLive,
@@ -16653,6 +16717,7 @@ const shouldVerifyCompletedTranscriptState = process.argv.includes(
 );
 const shouldVerifyTranscriptFollowState = process.argv.includes("--verify-transcript-follow-state");
 const shouldVerifyLinkContextMenu = process.argv.includes("--verify-link-context-menu");
+const shouldVerifySidebarThreadMenu = process.argv.includes("--verify-sidebar-thread-menu");
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
 const shouldVerifyTerminalLifecycle = process.argv.includes("--verify-terminal-lifecycle");

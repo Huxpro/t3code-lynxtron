@@ -1688,7 +1688,7 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("bindtap={confirmDelete}");
     expect(sidebarSource).toContain("isDisposableEmptyThread(thread)");
     // The thread menu inventory and delete copy are shared with Web.
-    expect(sidebarSource).toContain("buildSidebarV2ThreadContextMenuItems({");
+    expect(sidebarSource).toContain("buildThreadActionMenuItems({");
     expect(sidebarSource).toContain("projectThreadActionConfirmation({");
     expect(sidebarSource).toContain("getClientSettingsState().confirmThreadDelete");
     expect(sidebarSource).not.toContain('{ id: "archive", label: "Archive" }');

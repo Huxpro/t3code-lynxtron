@@ -28,7 +28,6 @@ import {
   sortScopedProjectsForSidebar,
   sortSettledThreadsForSidebar,
   sortThreadsForSidebar,
-  buildSidebarV2ThreadContextMenuItems,
   isSidebarV2ThreadWoke,
   resolveSidebarV2RowPresentation,
   sidebarV2SettledTimeLabel,
@@ -36,6 +35,7 @@ import {
   type SidebarV2TopStatus,
 } from "./Sidebar.logic";
 import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
+import { buildThreadActionMenuItems } from "./threadActionMenu.logic";
 import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV2RowSurface";
 import { HostText } from "./ui/hostElements";
 import { useSidebar } from "./ui/sidebar";
@@ -44,6 +44,7 @@ import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation
 import {
   clientCapabilities,
   showNativeContextMenu,
+  showNativeConfirm,
 } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 import { ProviderBrandIcon } from "../../../lynxtron/src/app/components/ProviderBrandIcon";
 import { ProjectSettingsDialog } from "../../../lynxtron/src/app/components/ProjectSettingsDialog";
@@ -500,16 +501,22 @@ export default function SidebarV2() {
       const snoozePresets = resolveSnoozePresets(new Date());
       const isRegeneratingTitle = thread.titleRegeneration != null;
       const selection = await showNativeContextMenu(
-        buildSidebarV2ThreadContextMenuItems({
+        buildThreadActionMenuItems({
           branch: thread.branch,
-          supportsSettlement: settlementSupported,
+          // Pinning has no Lynx client action yet (Plan 15 P6).
+          isPinned: false,
           isSettled: settled,
-          supportsSnooze,
           isSnoozed,
-          canSnooze: canSnooze(thread, { now: new Date().toISOString() }),
-          snoozePresets,
-          supportsTitleRegeneration,
+          canSnoozeNow: canSnooze(thread, { now: new Date().toISOString() }),
           isRegeneratingTitle,
+          isRunning: thread.session?.status === "running" && thread.session.activeTurnId != null,
+          supports: {
+            settlement: settlementSupported,
+            snooze: supportsSnooze,
+            pinning: false,
+            titleRegeneration: supportsTitleRegeneration,
+          },
+          snoozePresets,
         }),
       );
       if (selection?.startsWith("snooze:")) {
@@ -539,6 +546,16 @@ export default function SidebarV2() {
         await clientCapabilities.clipboard.writeText(workspacePath);
       } else if (selection === "copy-branch" && thread.branch) {
         await clientCapabilities.clipboard.writeText(thread.branch);
+      } else if (selection === "copy-thread-id") {
+        await clientCapabilities.clipboard.writeText(thread.id);
+      } else if (selection === "archive") {
+        if (
+          getClientSettingsState().confirmThreadArchive &&
+          !(await showNativeConfirm({ message: `Archive thread "${thread.title}"?` }))
+        ) {
+          return;
+        }
+        await t3ClientActions.archiveThread(thread.id);
       } else if (selection === "mark-unread") {
         markThreadUnread(thread);
       } else if (selection === "regenerate-title") {
@@ -552,6 +569,29 @@ export default function SidebarV2() {
     },
     [markThreadUnread, serverConfig, settlementSupported, threads],
   );
+  useEffect(() => {
+    const diagnosticsGlobal = globalThis as typeof globalThis & {
+      __T3_LYNXTRON_SIDEBAR_THREAD_MENU_PROBE__?: (threadId: string) => boolean;
+      __T3_LYNXTRON_VIEWPORT_PROBE__?: unknown;
+    };
+    if (typeof diagnosticsGlobal.__T3_LYNXTRON_VIEWPORT_PROBE__ !== "function") return;
+    // DevTool touches carry no mouse button, so the probe invokes the same
+    // secondary-click handler a sidebar row registers.
+    diagnosticsGlobal.__T3_LYNXTRON_SIDEBAR_THREAD_MENU_PROBE__ = (threadId) => {
+      const thread = threads.find((candidate) => candidate.id === threadId);
+      if (!thread) return false;
+      const settled = settledThreads.some((candidate) => candidate.id === threadId);
+      void showThreadContextMenu(
+        thread,
+        projectById.get(thread.projectId)?.workspaceRoot ?? null,
+        settled,
+      ).catch(() => undefined);
+      return true;
+    };
+    return () => {
+      delete diagnosticsGlobal.__T3_LYNXTRON_SIDEBAR_THREAD_MENU_PROBE__;
+    };
+  }, [projectById, settledThreads, showThreadContextMenu, threads]);
   const newThreadShortcutLabel = serverConfig
     ? (shortcutLabelForCommand(serverConfig.keybindings, "chat.newLocal", "MacIntel") ??
       shortcutLabelForCommand(serverConfig.keybindings, "chat.new", "MacIntel"))

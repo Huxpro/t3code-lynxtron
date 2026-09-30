@@ -77,7 +77,17 @@ export function createProbeContextMenuBuilder(
       const selectId = queue.shift() ?? "";
       const labels = template.flatMap((item) => (item.label ? [item.label] : []));
       log(`[context-menu-probe] offered=${JSON.stringify(labels)} select=${selectId}`);
-      const selected = template.find((item) => item.id === selectId);
+      const findItem = (
+        items: ReadonlyArray<MenuItemConstructorOptions>,
+      ): MenuItemConstructorOptions | undefined => {
+        for (const item of items) {
+          if (item.id === selectId) return item;
+          const nested = Array.isArray(item.submenu) ? findItem(item.submenu) : undefined;
+          if (nested) return nested;
+        }
+        return undefined;
+      };
+      const selected = findItem(template);
       if (selected?.click && selected.enabled !== false) {
         selected.click(undefined as never, undefined, undefined);
       } else {
