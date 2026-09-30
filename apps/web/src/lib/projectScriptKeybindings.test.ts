@@ -6,6 +6,7 @@ import {
   decodeProjectScriptKeybindingRule,
   keybindingValueForCommand,
   PROJECT_SCRIPT_KEYBINDING_INVALID_MESSAGE,
+  projectScriptKeybindingChange,
 } from "./projectScriptKeybindings";
 
 describe("projectScriptKeybindings", () => {
@@ -88,5 +89,24 @@ describe("projectScriptKeybindings", () => {
     );
 
     expect(value).toBe("mod+shift+k");
+  });
+
+  it("replaces a changed shortcut, removes a cleared one, and skips no-ops", () => {
+    const command = commandForProjectScript("lint");
+    expect(
+      projectScriptKeybindingChange({ previousKeybinding: "mod+k", keybinding: "mod+j", command }),
+    ).toEqual({
+      kind: "upsert",
+      input: { key: "mod+j", command, replace: { key: "mod+k", command } },
+    });
+    expect(
+      projectScriptKeybindingChange({ previousKeybinding: "mod+k", keybinding: "mod+k", command }),
+    ).toEqual({ kind: "upsert", input: { key: "mod+k", command } });
+    expect(
+      projectScriptKeybindingChange({ previousKeybinding: "mod+k", keybinding: null, command }),
+    ).toEqual({ kind: "remove", input: { key: "mod+k", command } });
+    expect(
+      projectScriptKeybindingChange({ previousKeybinding: null, keybinding: "", command }),
+    ).toEqual({ kind: "none" });
   });
 });

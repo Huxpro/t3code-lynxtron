@@ -13,14 +13,16 @@ import { useCallback, useMemo, useState } from "react";
 import { commandForProjectScript, primaryProjectScript } from "~/projectScripts";
 import { shortcutLabelForCommand } from "~/keybindings";
 import {
-  EMPTY_PROJECT_SCRIPT_INPUT,
-  editorRequestForScript,
   ProjectScriptEditorDialog,
   ScriptIcon,
-  type NewProjectScriptInput,
   type ProjectScriptActionResult,
-  type ProjectScriptEditorRequest,
 } from "./projectScriptEditor";
+import {
+  EMPTY_PROJECT_SCRIPT_INPUT,
+  editorRequestForScript,
+  type NewProjectScriptInput,
+  type ProjectScriptEditorRequest,
+} from "./projectScriptEditor.logic";
 import { Button } from "./ui/button";
 import { Group, GroupSeparator } from "./ui/group";
 import {
