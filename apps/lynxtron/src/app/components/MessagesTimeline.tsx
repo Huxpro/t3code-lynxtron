@@ -130,15 +130,25 @@ type TimelineRow = MessagesTimelineRow<
 const LIST_EVENT_SOURCE_SCROLL = 2;
 
 function reuseIdentifierForRow(row: TimelineRow): string {
-  return timelineRowReuseIdentifier(
-    row.kind === "message"
-      ? {
-          kind: "message",
-          role: row.message.role,
-          hasCheckpoint: row.assistantTurnDiffSummary !== null,
-        }
-      : { kind: row.kind },
-  );
+  switch (row.kind) {
+    case "message":
+      return timelineRowReuseIdentifier({
+        kind: "message",
+        role: row.message.role,
+        hasCheckpoint: row.assistantTurnDiffSummary !== null,
+      });
+    case "work":
+      return timelineRowReuseIdentifier({ kind: "work", grouped: row.isExpandedToolGroupEntry });
+    case "work-toggle":
+      return timelineRowReuseIdentifier({
+        kind: "work-toggle",
+        summary: row.onlyToolEntries && row.summary !== null,
+      });
+    case "working":
+      return timelineRowReuseIdentifier({ kind: "working", thinking: row.showThinking });
+    default:
+      return timelineRowReuseIdentifier({ kind: row.kind });
+  }
 }
 
 /** Lynx checkpoint island: compact turn-diff card (full patch renderer is R10). */
@@ -1191,10 +1201,19 @@ export function MessagesTimeline({
       proposedPlans,
       workEntries,
     );
+    let latestUserMessageAt: string | null = null;
+    for (let index = messages.length - 1; index >= 0; index -= 1) {
+      const message = messages[index];
+      if (message?.role === "user") {
+        latestUserMessageAt = message.createdAt;
+        break;
+      }
+    }
     const activeTurnStartedAt = deriveActiveWorkStartedAt(
       latestTurn,
       { status: sessionStatus, activeTurnId },
       null,
+      latestUserMessageAt,
     );
     const turnDiffSummaryByAssistantMessageId =
       indexCheckpointSummariesByAssistantMessageId(checkpoints);
@@ -1493,7 +1512,9 @@ export function MessagesTimeline({
             <view
               className={
                 row.kind === "working"
-                  ? "timeline-row-root timeline-row-root--working"
+                  ? row.showThinking
+                    ? "timeline-row-root timeline-row-root--working timeline-row-root--working-thinking"
+                    : "timeline-row-root timeline-row-root--working"
                   : row.kind === "message" && row.message.role === "assistant"
                     ? "timeline-row-root timeline-row-root--assistant"
                     : row.kind === "message" && row.message.role === "user"

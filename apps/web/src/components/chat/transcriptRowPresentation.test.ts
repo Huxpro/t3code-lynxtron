@@ -2,6 +2,9 @@ import { describe, expect, it } from "vite-plus/test";
 
 import {
   buildToolCallExpandedBody,
+  commandProgramName,
+  liveWorkEntryLabel,
+  toolGroupSummaryIconName,
   toolWorkEntryHeading,
   workEntryIconName,
   workEntryPreview,
@@ -62,9 +65,28 @@ describe("transcriptRowPresentation", () => {
     expect(workEntryIconName(entry({ requestKind: "file-change" }))).toBe("square-pen");
     expect(workEntryIconName(entry({ itemType: "web_search" }))).toBe("globe");
     expect(workEntryIconName(entry({ itemType: "mcp_tool_call" }))).toBe("wrench");
+    expect(workEntryIconName(entry({ itemType: "web_search", toolTitle: "grep -n foo" }))).toBe(
+      "search",
+    );
     expect(workEntryIconName(entry({ sourceActivityKind: "user-input.requested" }))).toBe(
       "message-circle",
     );
+  });
+
+  it("names the running program for live rows", () => {
+    expect(commandProgramName("FOO=1 sudo -u me env -i pnpm test")).toBe("pnpm");
+    expect(commandProgramName("/usr/bin/git log")).toBe("git");
+    expect(commandProgramName('echo "unterminated')).toBeNull();
+    expect(liveWorkEntryLabel(entry({ command: "pnpm test" }), "/repo")).toBe("Running pnpm");
+    expect(liveWorkEntryLabel(entry({ command: 'echo "x' }), "/repo")).toBe("Running command");
+    expect(liveWorkEntryLabel(entry({ detail: "src/a.ts" }), "/repo")).toBe("src/a.ts");
+  });
+
+  it("maps tool-group summary kinds to icons", () => {
+    expect(toolGroupSummaryIconName("read")).toBe("eye");
+    expect(toolGroupSummaryIconName("code-search")).toBe("search");
+    expect(toolGroupSummaryIconName("agent-tool")).toBe("bot");
+    expect(toolGroupSummaryIconName(null)).toBe("hammer");
   });
 
   it("capitalizes and compacts headings", () => {

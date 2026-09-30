@@ -26,6 +26,18 @@ describe("timelineRowReuseIdentifier", () => {
     ).toBe("message:user");
     expect(timelineRowReuseIdentifier({ kind: "work" })).toBe("work");
     expect(timelineRowReuseIdentifier({ kind: "working" })).toBe("working");
+    expect(timelineRowReuseIdentifier({ kind: "work-live" })).toBe("work-live");
+  });
+
+  it("keeps one-line tool rows out of the multi-line work pools", () => {
+    expect(timelineRowReuseIdentifier({ kind: "work", grouped: true })).toBe("work:grouped");
+    expect(timelineRowReuseIdentifier({ kind: "work-toggle", summary: true })).toBe(
+      "work-toggle:summary",
+    );
+    expect(timelineRowReuseIdentifier({ kind: "work-toggle", summary: false })).toBe("work-toggle");
+    expect(timelineRowReuseIdentifier({ kind: "working", thinking: true })).toBe(
+      "working:thinking",
+    );
   });
 });
 

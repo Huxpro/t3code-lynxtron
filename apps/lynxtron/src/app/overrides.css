@@ -4665,6 +4665,108 @@
   width: 16px;
   height: 16px;
 }
+/* One-line tool activity: the collapsed tool-group summary, the running
+   turn's live tool row, and the one-line entries an expanded group reveals.
+   Static by design; Web's live shimmer is an infinite animation. */
+[data-timeline-row-kind="work-toggle"],
+[data-timeline-row-kind="work-live"] {
+  width: 100%;
+  padding-bottom: 8px;
+  box-sizing: border-box;
+}
+[data-timeline-row-kind].transcript-work-group-header-outer,
+[data-timeline-row-kind="work"].transcript-work-grouped-outer {
+  padding-bottom: 0;
+}
+[data-timeline-row-kind="work"].transcript-work-grouped-outer--last {
+  padding-bottom: 4px;
+}
+.transcript-work-toggle--summary,
+.transcript-work-live {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 24px;
+  padding: 2px;
+  gap: 6px;
+  border-radius: 6px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.transcript-work-toggle--summary:hover,
+.transcript-work-live:hover {
+  background-color: rgba(var(--foreground-rgb), 0.04);
+}
+.transcript-tool-summary-icon,
+.transcript-work-live-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+.transcript-tool-summary-label,
+.transcript-work-live-label {
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 0;
+  min-width: 0;
+  height: 20px;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 20px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.transcript-tool-summary-label {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+}
+.transcript-work-live-label {
+  color: rgba(var(--foreground-rgb), 0.82);
+}
+.transcript-work-group--grouped {
+  min-height: 24px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.transcript-work-entry--grouped {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.transcript-work-entry-heading--native.transcript-work-entry-heading--grouped {
+  flex-grow: 1;
+  flex-shrink: 1;
+  width: 0;
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.timeline-row-root--working-thinking {
+  height: 68px;
+}
+.transcript-working-row--thinking {
+  height: 52px;
+}
+.transcript-working-row > .transcript-working-thinking {
+  height: 24px;
+  margin-top: 4px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transform: none;
+}
+.transcript-working-row .transcript-working-thinking-label {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 20px;
+}
 /* surface: transcript anchoring-new-turn; gap: R7; remove-when: native list
    exposes Web-equivalent reserved-end-space anchoring. */
 .timeline-new-turn-anchor-space {

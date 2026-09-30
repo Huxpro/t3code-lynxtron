@@ -105,8 +105,10 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(".transcript-working-outer {\n  padding-bottom: 16px;");
     expect(sharedRowSource).toContain('row.kind === "working" ? "transcript-working-outer" : null');
     expect(timelineSource).toContain(
-      'row.kind === "working"\n                  ? "timeline-row-root timeline-row-root--working"',
+      'row.kind === "working"\n                  ? row.showThinking\n                    ? "timeline-row-root timeline-row-root--working timeline-row-root--working-thinking"\n                    : "timeline-row-root timeline-row-root--working"',
     );
+    expect(overrides).toContain(".timeline-row-root--working-thinking {\n  height: 68px;");
+    expect(overrides).toContain(".transcript-working-row--thinking {\n  height: 52px;");
     expect(timelineSource).toContain('row.kind === "message" && row.message.role === "assistant"');
     expect(timelineSource).toContain("text={displayed.visibleText}");
     expect(overrides).toContain(".transcript-user-body .md-paragraph {");
@@ -397,6 +399,26 @@ describe("transcript layout contract", () => {
     expect(overrides).toContain(
       ".transcript-disclosure-chevron-native--expanded {\n  transform: rotate(180deg) scale(1.01);",
     );
+  });
+
+  it("collapses tool activity into one static line with distinct reuse pools", () => {
+    expect(sharedRowSource).toContain("transcript-work-toggle transcript-work-toggle--summary");
+    expect(sharedRowSource).toContain("data-transcript-tool-summary={row.summaryKind");
+    expect(sharedRowSource).toContain(
+      "aria-label={failed ? `${label}, tool call failed` : undefined}",
+    );
+    expect(sharedRowSource).toContain('row.kind === "work-live" ? (');
+    expect(timelineSource).toContain(
+      'timelineRowReuseIdentifier({ kind: "work", grouped: row.isExpandedToolGroupEntry })',
+    );
+    expect(timelineSource).toContain("summary: row.onlyToolEntries && row.summary !== null");
+    expect(timelineSource).toContain("latestUserMessageAt,\n    );");
+    expect(overrides).toContain('[data-timeline-row-kind="work-live"] {');
+    expect(overrides).toContain(".transcript-work-live-label {");
+    const liveBlock = overrides.slice(
+      overrides.indexOf(".transcript-work-toggle--summary,\n.transcript-work-live {"),
+    );
+    expect(liveBlock.slice(0, liveBlock.indexOf("}"))).not.toContain("animation");
   });
 
   it("exposes native work status meaning without relying on icon shape", () => {

@@ -392,21 +392,32 @@ describe("deriveMessagesTimelineRows", () => {
         createdAt: "2026-01-01T00:00:01.000Z",
       }),
     ]);
-    const rows = deriveMessagesTimelineRows({
-      timelineEntries: thinking.map((entry) => ({
-        kind: "work" as const,
-        id: entry.id,
-        createdAt: entry.createdAt,
-        entry,
-      })),
-      expandedTurnIds: new Set([TurnId.make("turn-1")]),
-      isWorking: false,
-      activeTurnStartedAt: null,
+    const deriveRows = (expandedWorkGroupIds: ReadonlySet<string>) =>
+      deriveMessagesTimelineRows({
+        timelineEntries: thinking.map((entry) => ({
+          kind: "work" as const,
+          id: entry.id,
+          createdAt: entry.createdAt,
+          entry,
+        })),
+        expandedTurnIds: new Set([TurnId.make("turn-1")]),
+        expandedWorkGroupIds,
+        isWorking: false,
+        activeTurnStartedAt: null,
+      });
+
+    const collapsed = deriveRows(new Set());
+    expect(collapsed.map((row) => row.kind)).toEqual(["turn-fold", "work-toggle"]);
+    expect(collapsed[1]).toMatchObject({
+      summary: "Used 1 tool",
+      summaryKind: "agent-tool",
+      groupId: "work-group:thinking-1",
     });
 
-    expect(rows).toHaveLength(2);
-    expect(rows.find((row) => row.kind === "work")).toMatchObject({
+    const expanded = deriveRows(new Set(["work-group:thinking-1"]));
+    expect(expanded.find((row) => row.kind === "work")).toMatchObject({
       kind: "work",
+      isExpandedToolGroupEntry: true,
       groupedEntries: [{ tone: "thinking", detail: "Compare the existing call sites." }],
     });
   });
@@ -470,7 +481,7 @@ describe("deriveMessagesTimelineRows", () => {
       activeTurnStartedAt: null,
     });
 
-    expect(rows.map((row) => row.kind)).toEqual(["message", "turn-fold", "work", "message"]);
+    expect(rows.map((row) => row.kind)).toEqual(["message", "turn-fold", "work-toggle", "message"]);
   });
 
   it("labels the latest interrupted turn as stopped", () => {
@@ -486,7 +497,7 @@ describe("deriveMessagesTimelineRows", () => {
     expect(fold.label).toBe("You stopped after 12s");
   });
 
-  it("collapses long unsettled work runs behind a work-toggle row", () => {
+  it("collapses the running turn's trailing tool calls into one live row", () => {
     const workEntries = deriveWorkLogEntries(
       [
         "2026-01-01T00:00:02.000Z",
@@ -527,21 +538,14 @@ describe("deriveMessagesTimelineRows", () => {
       activeTurnStartedAt: "2026-01-01T00:00:01.500Z",
     });
 
-    const kinds = rows.map((row) => row.kind);
-    expect(kinds).toEqual([
-      "message",
-      "work",
-      "work",
-      "work",
-      "work",
-      "work",
-      "work-toggle",
-      "working",
-    ]);
-    const toggle = rows[6];
-    if (toggle?.kind !== "work-toggle") throw new Error("expected work toggle");
-    expect(toggle.hiddenCount).toBe(2);
-    expect(toggle.expanded).toBe(false);
+    expect(rows.map((row) => row.kind)).toEqual(["message", "working", "work-live"]);
+    const live = rows[2];
+    if (live?.kind !== "work-live") throw new Error("expected live work row");
+    expect(live.id).toBe("work-live:tool:turn-2:call-0");
+    expect(live.groupId).toBe("work-group:tool:turn-2:call-0");
+    expect(live.entry.id).toBe("w6");
+    expect(live.groupedEntries).toHaveLength(7);
+    expect(live.expanded).toBe(false);
   });
 });
 
@@ -729,8 +733,10 @@ describe("computeStableMessagesTimelineRows", () => {
     });
     const second = computeStableMessagesTimelineRows(nextRows, first);
 
+    expect(second.result.map((row) => row.kind)).toEqual(["message", "working", "message"]);
     expect(second.result[0]).toBe(first.result[0]);
-    expect(second.result[1]).not.toBe(first.result[1]);
+    expect(second.result[1]).toBe(first.result[1]);
+    expect(second.result[2]).not.toBe(first.result[2]);
   });
 
   it("reuses rows from value-equal connector payload clones", () => {

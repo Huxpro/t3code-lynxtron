@@ -15,9 +15,11 @@ import { memo, useEffect, useState, type ReactNode } from "react";
 
 import {
   normalizeCompactToolLabel,
+  workEntryDisplayIndicatesToolFailure,
   workEntryIndicatesToolFailure,
   workEntryIndicatesToolNeutralStatus,
   workEntryIndicatesToolSuccess,
+  workEntryIsVisibleInGroup,
   workLogEntryIsToolLike,
   type MessagesTimelineRow,
   type TranscriptMessage,
@@ -29,6 +31,8 @@ import { cn } from "../../lib/cn";
 import { HostButton, HostText, HostView } from "../ui/hostElements";
 import {
   buildToolCallExpandedBody,
+  liveWorkEntryLabel,
+  toolGroupSummaryIconName,
   toolWorkEntryHeading,
   workEntryIconName,
   workEntryPreview,
@@ -197,12 +201,14 @@ function WorkEntryRow({
   workEntry,
   workspaceRoot,
   activeTurnInProgress,
+  isExpandedToolGroupEntry,
   elements,
   onDisclosure,
 }: {
   readonly workEntry: TimelineWorkEntry;
   readonly workspaceRoot: string | undefined;
   readonly activeTurnInProgress: boolean;
+  readonly isExpandedToolGroupEntry: boolean;
   readonly elements: TranscriptRowElements;
   readonly onDisclosure: (() => void) | undefined;
 }) {
@@ -210,25 +216,38 @@ function WorkEntryRow({
   useEffect(() => setExpanded(false), [workEntry.id]);
   const iconConfig = workToneIcon(workEntry.tone);
   const showWarningIndicator = workEntry.sourceActivityKind === "runtime.warning";
-  const entryIconName = showWarningIndicator ? "x" : workEntryIconName(workEntry);
-  const heading = toolWorkEntryHeading(workEntry);
   const rawPreview = workEntryPreview(workEntry, workspaceRoot);
+  // Entries under a tool-group summary read as one line of copy; their
+  // failure shows as the leading x instead of a trailing status glyph.
+  const heading = isExpandedToolGroupEntry
+    ? (rawPreview ?? toolWorkEntryHeading(workEntry))
+    : toolWorkEntryHeading(workEntry);
   const preview =
-    rawPreview &&
-    normalizeCompactToolLabel(rawPreview).toLowerCase() ===
-      normalizeCompactToolLabel(heading).toLowerCase()
+    isExpandedToolGroupEntry ||
+    (rawPreview &&
+      normalizeCompactToolLabel(rawPreview).toLowerCase() ===
+        normalizeCompactToolLabel(heading).toLowerCase())
       ? null
       : rawPreview;
   const displayText = preview ? `${heading} - ${preview}` : heading;
   const expandedBody = buildToolCallExpandedBody(workEntry, workspaceRoot);
   const canExpand = expandedBody !== null;
-  const showFailedIndicator = workEntryIndicatesToolFailure(workEntry);
+  const showFailedIndicator = isExpandedToolGroupEntry
+    ? workEntryDisplayIndicatesToolFailure(workEntry)
+    : workEntryIndicatesToolFailure(workEntry);
+  const entryIconName =
+    showWarningIndicator || (isExpandedToolGroupEntry && showFailedIndicator)
+      ? "x"
+      : workEntryIconName(workEntry);
+  const showEntryIcon = !isExpandedToolGroupEntry || showWarningIndicator || showFailedIndicator;
   const showDestructiveRowStyle =
     showFailedIndicator &&
     (workEntry.sourceActivityKind === "runtime.error" || !workLogEntryIsToolLike(workEntry));
   const iconWrapperClass = cn(
     "transcript-work-entry-icon flex size-5 shrink-0 items-center justify-center",
-    showWarningIndicator || showDestructiveRowStyle
+    showWarningIndicator ||
+      showDestructiveRowStyle ||
+      (isExpandedToolGroupEntry && showFailedIndicator)
       ? "text-destructive"
       : workEntry.tone === "tool" || showFailedIndicator
         ? "text-muted-foreground/65"
@@ -238,7 +257,9 @@ function WorkEntryRow({
     ? "font-medium text-warning"
     : showDestructiveRowStyle
       ? "font-medium text-destructive"
-      : "font-medium text-foreground/82";
+      : isExpandedToolGroupEntry
+        ? "transcript-work-entry-heading--grouped text-muted-foreground/70"
+        : "font-medium text-foreground/82";
   const turnSettled = !activeTurnInProgress;
   const showSuccessIndicator =
     workEntryIndicatesToolSuccess(workEntry) ||
@@ -246,11 +267,18 @@ function WorkEntryRow({
   return (
     <HostView
       className={cn(
-        "transcript-work-entry flex flex-col rounded-md px-0.5 py-0.5",
+        "transcript-work-entry flex flex-col rounded-md px-0.5",
+        isExpandedToolGroupEntry ? "transcript-work-entry--grouped py-0" : "py-0.5",
         canExpand && "cursor-pointer",
       )}
       role={canExpand ? "button" : undefined}
-      aria-label={canExpand ? displayText : undefined}
+      aria-label={
+        canExpand
+          ? showFailedIndicator && isExpandedToolGroupEntry
+            ? `${displayText}, tool call failed`
+            : displayText
+          : undefined
+      }
       aria-expanded={canExpand ? expanded : undefined}
       data-transcript-work-entry={workEntry.id}
       data-transcript-work-tone={workEntry.tone}
@@ -265,11 +293,21 @@ function WorkEntryRow({
       }
     >
       <HostView className="transcript-work-entry-line flex select-none items-center gap-1.5">
-        <HostText className={iconWrapperClass}>
-          {elements.renderWorkIcon({
-            name: entryIconName,
-            className: "block size-3.5 shrink-0 opacity-80",
-          })}
+        <HostText
+          className={iconWrapperClass}
+          aria-label={
+            isExpandedToolGroupEntry && showFailedIndicator ? "Tool call failed" : undefined
+          }
+        >
+          {showEntryIcon
+            ? elements.renderWorkIcon({
+                name: entryIconName,
+                className: cn(
+                  "block size-3.5 shrink-0 opacity-80",
+                  isExpandedToolGroupEntry && showFailedIndicator && "text-destructive",
+                ),
+              })
+            : null}
         </HostText>
         <HostView className="transcript-work-entry-content flex min-w-0 flex-1 items-center gap-1.5">
           <HostView className="transcript-work-entry-copy-wrap min-w-0 flex-1 overflow-hidden">
@@ -304,11 +342,13 @@ function WorkEntryRow({
                 ? elements.renderDisclosureChevron({ kind: "work-entry", expanded })
                 : null}
             </HostText>
-            {elements.renderWorkStatus({
-              failed: showFailedIndicator,
-              succeeded: showSuccessIndicator,
-              warning: showWarningIndicator,
-            })}
+            {isExpandedToolGroupEntry
+              ? null
+              : elements.renderWorkStatus({
+                  failed: showFailedIndicator,
+                  succeeded: showSuccessIndicator,
+                  warning: showWarningIndicator,
+                })}
           </HostView>
         </HostView>
       </HostView>
@@ -336,8 +376,9 @@ function WorkGroupRows({
   readonly elements: TranscriptRowElements;
   readonly onWorkEntryDisclosure: (() => void) | undefined;
 }) {
-  const nonEmptyEntries = row.groupedEntries.filter(
-    (entry) => entry.tone === "thinking" || !workEntryIndicatesToolNeutralStatus(entry),
+  const { isExpandedToolGroupEntry } = row;
+  const nonEmptyEntries = row.groupedEntries.filter((entry) =>
+    workEntryIsVisibleInGroup(entry, isExpandedToolGroupEntry),
   );
   const onlyToolEntries = nonEmptyEntries.every((entry) => workLogEntryIsToolLike(entry));
   const groupLabel = workGroupSectionLabel({
@@ -347,7 +388,14 @@ function WorkGroupRows({
   if (nonEmptyEntries.length === 0) return null;
 
   return (
-    <HostView className="transcript-work-group -mx-1 px-1 py-0.5" aria-label={groupLabel}>
+    <HostView
+      className={cn(
+        "transcript-work-group -mx-1 px-1",
+        isExpandedToolGroupEntry ? "transcript-work-group--grouped py-0" : "py-0.5",
+      )}
+      aria-label={isExpandedToolGroupEntry ? undefined : groupLabel}
+      data-transcript-work-grouped={isExpandedToolGroupEntry ? "true" : undefined}
+    >
       {!onlyToolEntries ? (
         <HostText className="px-0.5 pb-0.5 font-medium text-[11px] text-muted-foreground/65">
           {groupLabel}
@@ -360,6 +408,7 @@ function WorkGroupRows({
             workEntry={workEntry}
             workspaceRoot={workspaceRoot}
             activeTurnInProgress={activeTurnInProgress}
+            isExpandedToolGroupEntry={isExpandedToolGroupEntry}
             elements={elements}
             onDisclosure={onWorkEntryDisclosure}
           />
@@ -378,25 +427,72 @@ function WorkGroupToggleRow({
   readonly elements: TranscriptRowElements;
   readonly onToggleWorkGroup: (groupId: string, anchorElement?: unknown) => void;
 }) {
+  const onClick = (event: unknown) =>
+    onToggleWorkGroup(
+      row.groupId,
+      (event as { currentTarget?: unknown } | null | undefined)?.currentTarget,
+    );
+  if (row.onlyToolEntries && row.summary) {
+    return (
+      <HostButton
+        type="button"
+        className="transcript-work-toggle transcript-work-toggle--summary flex w-full cursor-pointer items-center gap-1.5 rounded-md px-0.5 py-0.5 text-left text-[12px] leading-5"
+        aria-label={row.hasFailure ? `${row.summary}, tool call failed` : undefined}
+        aria-expanded={row.expanded}
+        data-transcript-tool-summary={row.summaryKind ?? "mixed"}
+        data-transcript-tool-summary-state={row.hasFailure ? "failed" : "ok"}
+        onClick={onClick}
+      >
+        <HostView
+          className={cn(
+            "transcript-tool-summary-icon flex size-5 shrink-0 items-center justify-center",
+            row.hasFailure ? "text-destructive" : "text-muted-foreground/65",
+          )}
+          aria-label={row.hasFailure ? "Tool call failed" : undefined}
+        >
+          {elements.renderWorkIcon({
+            name: row.hasFailure ? "x" : toolGroupSummaryIconName(row.summaryKind),
+            className: cn(
+              "block size-3.5 shrink-0 opacity-70",
+              row.hasFailure && "text-destructive",
+            ),
+          })}
+        </HostView>
+        <HostText
+          className="transcript-tool-summary-label min-w-0 flex-1 truncate text-muted-foreground/70"
+          text-maxline="1"
+        >
+          {row.summary}
+        </HostText>
+      </HostButton>
+    );
+  }
   const labelNoun = workGroupToggleNoun({
     onlyToolEntries: row.onlyToolEntries,
     hiddenCount: row.hiddenCount,
   });
+  const showHiddenFailure = row.hasFailure && !row.expanded;
 
   return (
     <HostButton
       type="button"
       className="transcript-work-toggle flex w-full cursor-pointer items-center gap-1.5 rounded-md px-0.5 py-0.5 text-left text-[12px] leading-5"
       aria-expanded={row.expanded}
-      onClick={(event: unknown) =>
-        onToggleWorkGroup(
-          row.groupId,
-          (event as { currentTarget?: unknown } | null | undefined)?.currentTarget,
-        )
-      }
+      onClick={onClick}
     >
-      <HostText className="flex size-5 shrink-0 items-center justify-center text-muted-foreground/65">
-        {elements.renderDisclosureChevron({ kind: "work-toggle", expanded: row.expanded })}
+      <HostText
+        className={cn(
+          "flex size-5 shrink-0 items-center justify-center",
+          showHiddenFailure ? "text-destructive" : "text-muted-foreground/65",
+        )}
+        aria-label={showHiddenFailure ? "Hidden work includes a failure" : undefined}
+      >
+        {showHiddenFailure
+          ? elements.renderWorkIcon({
+              name: "x",
+              className: "block size-3.5 shrink-0 opacity-70 text-destructive",
+            })
+          : elements.renderDisclosureChevron({ kind: "work-toggle", expanded: row.expanded })}
       </HostText>
       {row.expanded ? (
         <HostText className="font-medium text-foreground/82">
@@ -407,6 +503,57 @@ function WorkGroupToggleRow({
           +{row.hiddenCount} previous {labelNoun}
         </HostText>
       )}
+    </HostButton>
+  );
+}
+
+/** The running turn's latest tool call; tapping expands the contiguous run. */
+function LiveWorkRow({
+  row,
+  workspaceRoot,
+  elements,
+  onToggleWorkGroup,
+}: {
+  readonly row: Extract<TranscriptTimelineRow, { kind: "work-live" }>;
+  readonly workspaceRoot: string | undefined;
+  readonly elements: TranscriptRowElements;
+  readonly onToggleWorkGroup: (groupId: string, anchorElement?: unknown) => void;
+}) {
+  const label = liveWorkEntryLabel(row.entry, workspaceRoot);
+  const failed = workEntryDisplayIndicatesToolFailure(row.entry);
+  return (
+    <HostButton
+      type="button"
+      className="transcript-work-live flex w-full cursor-pointer items-center gap-1.5 rounded-md px-0.5 py-0.5 text-left text-[12px] leading-5"
+      aria-label={failed ? `${label}, tool call failed` : undefined}
+      aria-expanded={row.expanded}
+      data-transcript-work-live={row.entry.id}
+      data-transcript-work-live-state={failed ? "failed" : "running"}
+      onClick={(event: unknown) =>
+        onToggleWorkGroup(
+          row.groupId,
+          (event as { currentTarget?: unknown } | null | undefined)?.currentTarget,
+        )
+      }
+    >
+      <HostView
+        className={cn(
+          "transcript-work-live-icon flex size-5 shrink-0 items-center justify-center",
+          failed ? "text-destructive" : "text-foreground/82",
+        )}
+        aria-label={failed ? "Tool call failed" : undefined}
+      >
+        {elements.renderWorkIcon({
+          name: failed ? "x" : workEntryIconName(row.entry),
+          className: cn("block size-3.5 shrink-0", failed && "text-destructive"),
+        })}
+      </HostView>
+      <HostText
+        className="transcript-work-live-label min-w-0 flex-1 truncate text-foreground/82"
+        text-maxline="1"
+      >
+        {label}
+      </HostText>
     </HostButton>
   );
 }
@@ -433,7 +580,12 @@ function WorkingRow({
   readonly elements: TranscriptRowElements;
 }) {
   return (
-    <HostView className="transcript-working-row py-0.5 pl-1.5">
+    <HostView
+      className={cn(
+        "transcript-working-row py-0.5 pl-1.5",
+        row.showThinking && "transcript-working-row--thinking",
+      )}
+    >
       <HostView className="flex items-center gap-2 pt-1 text-[11px] text-muted-foreground/70 tabular-nums">
         {elements.renderWorkingIndicator?.() ?? (
           <HostText className="transcript-working-dots inline-flex items-center gap-[3px]">
@@ -444,6 +596,13 @@ function WorkingRow({
         )}
         {elements.renderWorkingLabel({ createdAt: row.createdAt })}
       </HostView>
+      {row.showThinking ? (
+        <HostView className="transcript-working-thinking mt-1 flex items-center px-1 py-0.5">
+          <HostText className="transcript-working-thinking-label text-[12px] leading-5 text-muted-foreground/70">
+            Thinking
+          </HostText>
+        </HostView>
+      ) : null}
     </HostView>
   );
 }
@@ -468,12 +627,26 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
 }: TranscriptRowSurfaceProps<M, P, D>) {
   const isCommentaryAssistant =
     row.kind === "message" && row.message.role === "assistant" && !row.showAssistantMeta;
+  const isExpandedToolGroupEntry = row.kind === "work" && row.isExpandedToolGroupEntry;
+  const isLastExpandedToolGroupEntry = row.kind === "work" && row.isLastExpandedToolGroupEntry;
+  const isExpandedToolGroupHeader =
+    (row.kind === "work-toggle" && row.summary !== null && row.onlyToolEntries && row.expanded) ||
+    (row.kind === "work-live" && row.expanded);
   return (
     <HostView
       className={cn(
-        isCommentaryAssistant || row.kind === "work" || row.kind === "work-toggle"
-          ? "pb-2"
-          : "pb-4",
+        isExpandedToolGroupEntry
+          ? isLastExpandedToolGroupEntry
+            ? "transcript-work-grouped-outer transcript-work-grouped-outer--last pb-1"
+            : "transcript-work-grouped-outer pb-0"
+          : isExpandedToolGroupHeader
+            ? "transcript-work-group-header-outer pb-0"
+            : isCommentaryAssistant ||
+                row.kind === "work" ||
+                row.kind === "work-live" ||
+                row.kind === "work-toggle"
+              ? "pb-2"
+              : "pb-4",
         row.kind === "message" && row.message.role === "user" ? "transcript-user-outer" : null,
         row.kind === "message" && row.message.role === "assistant"
           ? "transcript-assistant-group group/assistant"
@@ -505,6 +678,14 @@ export const TranscriptRowSurface = memo(function TranscriptRowSurface<
           activeTurnInProgress={activeTurnInProgress}
           elements={elements}
           onWorkEntryDisclosure={onWorkEntryDisclosure}
+        />
+      ) : null}
+      {row.kind === "work-live" ? (
+        <LiveWorkRow
+          row={row}
+          workspaceRoot={workspaceRoot}
+          elements={elements}
+          onToggleWorkGroup={onToggleWorkGroup}
         />
       ) : null}
       {row.kind === "work-toggle" ? (
