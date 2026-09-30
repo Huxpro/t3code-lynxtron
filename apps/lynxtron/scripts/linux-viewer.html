@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>T3 Code Lynxtron (Linux)</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #1b1b1b;
+        color: #bbb;
+        font:
+          12px system-ui,
+          sans-serif;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #bar,
+      #opened {
+        padding: 4px 8px;
+        align-self: stretch;
+      }
+      #bar {
+        display: flex;
+        justify-content: space-between;
+      }
+      #opened a {
+        color: #8ab4f8;
+      }
+      canvas {
+        outline: none;
+        touch-action: none;
+        box-shadow: 0 0 0 1px #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="bar">
+      <span id="status">connecting…</span>
+      <label id="fit" hidden><input type="checkbox" /> fit window</label>
+    </div>
+    <div id="opened"></div>
+    <canvas id="view" tabindex="0"></canvas>
+    <script type="module">
+      // Two backends serve this page: linuxViewerHost.ts inside Lynxtron
+      // ("native": paint frames and sendInputEvent) and scripts/linux-dev.mjs
+      // for stock builds ("devtool": shared-memory frames and DevTool touch
+      // and text input). /frame headers say which one answered.
+      const canvas = document.getElementById("view");
+      const status = document.getElementById("status");
+      const opened = document.getElementById("opened");
+      const context = canvas.getContext("2d");
+      const staging = document.createElement("canvas");
+      const stagingContext = staging.getContext("2d");
+      let logicalScale = 1;
+      let inputMode = "devtool";
+
+      async function inflate(buffer) {
+        const stream = new Blob([buffer])
+          .stream()
+          .pipeThrough(new DecompressionStream("deflate-raw"));
+        return new Uint8ClampedArray(await new Response(stream).arrayBuffer());
+      }
+
+      async function pumpFrames() {
+        let seq = 0;
+        for (;;) {
+          try {
+            const response = await fetch(`/frame?after=${seq}`, { cache: "no-store" });
+            if (response.status === 204) continue;
+            if (!response.ok) throw new Error(`frame ${response.status}`);
+            seq = Number(response.headers.get("x-seq"));
+            const width = Number(response.headers.get("x-width"));
+            const height = Number(response.headers.get("x-height"));
+            logicalScale = Number(response.headers.get("x-scale"));
+            inputMode = response.headers.get("x-input") ?? "devtool";
+            const bottomUp = response.headers.get("x-row-order") !== "top-down";
+            const pixels = await inflate(await response.arrayBuffer());
+            if (staging.width !== width || staging.height !== height) {
+              staging.width = canvas.width = width;
+              staging.height = canvas.height = height;
+              canvas.style.width = `${width / logicalScale}px`;
+              canvas.style.height = `${height / logicalScale}px`;
+            }
+            stagingContext.putImageData(new ImageData(pixels, width, height), 0, 0);
+            context.setTransform(1, 0, 0, bottomUp ? -1 : 1, 0, bottomUp ? height : 0);
+            context.drawImage(staging, 0, 0);
+            status.textContent = `frame ${seq} · ${width / logicalScale}×${height / logicalScale} @${logicalScale}x · ${inputMode} input`;
+            document.title = `T3 Code Lynxtron · frame ${seq}`;
+          } catch (error) {
+            status.textContent = `waiting for frames: ${error.message}`;
+            await new Promise((resolve) => setTimeout(resolve, 500));
+          }
+        }
+      }
+
+      // Cursor shapes and the app clipboard (native backend only).
+      function listenForHostEvents() {
+        const events = new EventSource("/events");
+        events.addEventListener("cursor", (event) => {
+          canvas.style.cursor = JSON.parse(event.data);
+        });
+        // Browsers block pop-ups without a user gesture, so offer the link.
+        events.addEventListener("open", (event) => {
+          const target = JSON.parse(event.data);
+          const link = document.createElement("a");
+          link.href = /^[a-z][a-z0-9+.-]*:/i.test(target) ? target : `file://${target}`;
+          link.target = "_blank";
+          link.rel = "noreferrer";
+          link.textContent = target;
+          opened.replaceChildren("App opened: ", link);
+        });
+        events.addEventListener("clipboard", (event) => {
+          navigator.clipboard?.writeText(JSON.parse(event.data)).catch(() => {});
+        });
+        events.onerror = () => events.close();
+      }
+
+      let queue = [];
+      let flushing = false;
+      async function send(event) {
+        // DevTool inserts text as one synthetic key press; rapid presses
+        // collide, so consecutive characters travel as one insertion.
+        const last = queue.at(-1);
+        if (event.kind === "text" && last?.kind === "text") {
+          last.text += event.text;
+        } else {
+          queue.push(event);
+        }
+        if (flushing) return;
+        flushing = true;
+        while (queue.length > 0) {
+          const batch = queue;
+          queue = [];
+          const response = await fetch("/input", { method: "POST", body: JSON.stringify(batch) });
+          if (!response.ok) status.textContent = `input: ${await response.text()}`;
+        }
+        flushing = false;
+      }
+      const sendNative = (event) => send({ kind: "native", event });
+
+      function logicalPoint(event) {
+        const rect = canvas.getBoundingClientRect();
+        const width = canvas.width / logicalScale;
+        const height = canvas.height / logicalScale;
+        return {
+          x: ((event.clientX - rect.left) * width) / rect.width,
+          y: ((event.clientY - rect.top) * height) / rect.height,
+        };
+      }
+      const buttonName = (button) => (button === 1 ? "middle" : button === 2 ? "right" : "left");
+
+      let pressed = false;
+      let lastMove = 0;
+      canvas.addEventListener("contextmenu", (event) => event.preventDefault());
+      canvas.addEventListener("pointerdown", (event) => {
+        canvas.focus();
+        canvas.setPointerCapture(event.pointerId);
+        pressed = true;
+        if (inputMode === "native") {
+          sendNative({
+            type: "mouseDown",
+            button: buttonName(event.button),
+            ...logicalPoint(event),
+          });
+        } else {
+          send({ kind: "pointer", type: "mousePressed", ...logicalPoint(event) });
+        }
+      });
+      canvas.addEventListener("pointermove", (event) => {
+        // DevTool input is touch-shaped: it only knows drags.
+        if ((!pressed && inputMode !== "native") || event.timeStamp - lastMove < 16) return;
+        lastMove = event.timeStamp;
+        if (inputMode === "native") {
+          sendNative({ type: "mouseMove", ...logicalPoint(event) });
+        } else {
+          send({ kind: "pointer", type: "mouseMoved", ...logicalPoint(event) });
+        }
+      });
+      const release = (event) => {
+        if (!pressed) return;
+        pressed = false;
+        if (inputMode === "native") {
+          sendNative({ type: "mouseUp", button: buttonName(event.button), ...logicalPoint(event) });
+        } else {
+          send({ kind: "pointer", type: "mouseReleased", ...logicalPoint(event) });
+        }
+      };
+      canvas.addEventListener("pointerup", release);
+      canvas.addEventListener("pointercancel", release);
+      canvas.addEventListener("pointerleave", (event) => {
+        if (inputMode === "native" && !pressed) {
+          sendNative({ type: "mouseLeave", ...logicalPoint(event) });
+        }
+      });
+      // Wheel turns coalesce into one event per 60 ms.
+      let wheel = null;
+      canvas.addEventListener(
+        "wheel",
+        (event) => {
+          event.preventDefault();
+          const scale =
+            event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? canvas.clientHeight : 1;
+          if (!wheel) {
+            wheel = { ...logicalPoint(event), deltaX: 0, deltaY: 0 };
+            setTimeout(() => {
+              if (inputMode === "native") {
+                sendNative({ type: "mouseWheel", ...wheel });
+              } else {
+                send({ kind: "wheel", ...wheel });
+              }
+              wheel = null;
+            }, 60);
+          }
+          wheel.deltaX += event.deltaX * scale;
+          wheel.deltaY += event.deltaY * scale;
+        },
+        { passive: false },
+      );
+
+      const isPasteShortcut = (event) =>
+        (event.ctrlKey || event.metaKey) && !event.altKey && event.code === "KeyV";
+      function nativeKey(type, event) {
+        return {
+          type,
+          key: event.key,
+          code: event.code,
+          repeat: event.repeat,
+          ctrlKey: event.ctrlKey,
+          metaKey: event.metaKey,
+          altKey: event.altKey,
+          shiftKey: event.shiftKey,
+          // Clay's multi-line editable turns a "\r" character into a line break.
+          ...(event.key === "Enter" && event.shiftKey ? { text: "\r" } : {}),
+        };
+      }
+      // Keys held down in the native backend, released if focus leaves.
+      const held = new Map();
+      canvas.addEventListener("blur", () => {
+        for (const event of held.values()) sendNative({ ...event, type: "keyUp" });
+        held.clear();
+      });
+      canvas.addEventListener("keydown", (event) => {
+        if (inputMode === "native") {
+          // Paste arrives through the paste event with the browser clipboard.
+          if (isPasteShortcut(event)) return;
+          event.preventDefault();
+          held.set(event.code, nativeKey("keyDown", event));
+          sendNative(nativeKey("keyDown", event));
+          return;
+        }
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+        if (event.key.length === 1) {
+          event.preventDefault();
+          send({ kind: "text", text: event.key });
+        } else if (event.key === "Enter") {
+          event.preventDefault();
+          send({ kind: "text", text: "\n" });
+        }
+      });
+      canvas.addEventListener("keyup", (event) => {
+        if (inputMode !== "native" || isPasteShortcut(event)) return;
+        event.preventDefault();
+        held.delete(event.code);
+        sendNative(nativeKey("keyUp", event));
+      });
+      canvas.addEventListener("paste", (event) => {
+        const text = event.clipboardData?.getData("text/plain");
+        if (!text) return;
+        event.preventDefault();
+        if (inputMode === "native") {
+          // Hand the browser clipboard to the app, then let Lynx paste it.
+          const control = held.has("ControlLeft") || held.has("ControlRight");
+          send({ kind: "clipboard", text });
+          if (!control) sendNative({ type: "keyDown", key: "Control", code: "ControlLeft" });
+          sendNative({ type: "keyDown", key: "v", code: "KeyV", ctrlKey: true });
+          sendNative({ type: "keyUp", key: "v", code: "KeyV", ctrlKey: true });
+          if (!control) sendNative({ type: "keyUp", key: "Control", code: "ControlLeft" });
+        } else {
+          send({ kind: "text", text });
+        }
+      });
+
+      // Native backend: resize the app's viewport to the browser window.
+      const fit = document.getElementById("fit");
+      const fitBox = fit.querySelector("input");
+      let resizeTimer = 0;
+      function requestFit() {
+        if (!fitBox.checked || inputMode !== "native") return;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          const top = canvas.getBoundingClientRect().top;
+          send({ kind: "resize", width: innerWidth, height: innerHeight - top });
+        }, 200);
+      }
+      fitBox.addEventListener("change", requestFit);
+      addEventListener("resize", requestFit);
+      const showFit = setInterval(() => {
+        if (inputMode !== "native") return;
+        fit.hidden = false;
+        clearInterval(showFit);
+      }, 500);
+
+      pumpFrames();
+      listenForHostEvents();
+    </script>
+  </body>
+</html>

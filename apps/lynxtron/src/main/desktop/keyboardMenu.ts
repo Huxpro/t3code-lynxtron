@@ -75,3 +75,22 @@ export function createDiscreteKeyboardPacket(input: {
     sequence: input.sequence,
   };
 }
+
+// Windowless hosts have no menu bar to fire accelerators, so they match
+// forwarded key presses against the same set.
+export function findDiscreteAccelerator(input: {
+  readonly code: string;
+  readonly ctrlKey?: boolean;
+  readonly metaKey?: boolean;
+  readonly altKey?: boolean;
+  readonly shiftKey?: boolean;
+  readonly platform: string;
+}): DiscreteKeyboardAccelerator | undefined {
+  const mac = input.platform === "darwin";
+  const command = mac ? input.metaKey === true : input.ctrlKey === true;
+  const other = mac ? input.ctrlKey === true : input.metaKey === true;
+  if (!command || other || input.altKey === true) return undefined;
+  return DISCRETE_KEYBOARD_ACCELERATORS.find(
+    (entry) => entry.code === input.code && entry.shift === (input.shiftKey === true),
+  );
+}

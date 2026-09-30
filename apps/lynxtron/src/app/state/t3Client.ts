@@ -157,8 +157,7 @@ function getBridge(): Partial<PollBridge> | undefined {
   "background only";
   const preload = getPreloadBridge();
   // The main-owned transport overrides only connector-owned commands; preload
-  // keeps branding, preference storage, clipboard, and shell navigation in
-  // both transports.
+  // keeps branding and preference storage in both transports.
   if (mainCommandBridge) return { ...preload, ...mainCommandBridge };
   return preload;
 }

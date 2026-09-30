@@ -38,18 +38,22 @@ const pathnameAtom = Atom.make(memoryHistory.location?.pathname ?? "/").pipe(
   Atom.withLabel("lynx-router-pathname"),
 );
 
-function syncPathname() {
-  const next = router.state.location.pathname;
+function setPathname(next: string) {
   if (next !== appAtomRegistry.get(pathnameAtom)) {
     appAtomRegistry.set(pathnameAtom, next);
   }
 }
 
+function syncPathname() {
+  setPathname(router.state.location.pathname);
+}
+
 // history.subscribe covers push/replace; router.subscribe('onResolved')
-// covers redirects resolved by route loaders.
+// covers redirects resolved by route loaders. History is the source of truth
+// for a push: router.state still holds the previous location until its load
+// resolves, and syncing from it would bounce a fresh navigation back.
 memoryHistory.subscribe(() => {
-  // Defer to let router.state catch up with the history change.
-  setTimeout(syncPathname, 0);
+  setPathname(memoryHistory.location.pathname);
 });
 router.subscribe("onResolved", syncPathname);
 

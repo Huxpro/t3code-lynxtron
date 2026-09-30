@@ -141,8 +141,6 @@ export interface T3ConnectorCommandBridge {
 /** Capabilities that stay preload-resident after AR2. */
 export interface T3PreloadCapabilityBridge {
   getAppBranding(): DesktopAppBranding;
-  openExternal(url: string): Promise<void>;
-  openPath(path: string): Promise<void>;
 }
 
 /** The API surface reachable by the renderer across both boundaries. */

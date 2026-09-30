@@ -48,6 +48,8 @@ export default defineConfig({
           },
         },
         { from: "./output/bundle/lynx/", to: "." },
+        // Served by the Linux dev viewer (linuxViewerHost.ts).
+        { from: "./scripts/linux-viewer.html", to: "linux-viewer.html" },
       ],
     }),
     ...(isDev ? [pluginLynxtron({ isDev, entry: path.resolve(__dirname, "./dist/desktop") })] : []),

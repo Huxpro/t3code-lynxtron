@@ -17,6 +17,7 @@
     "format:generated": "vp fmt src/app/generated/lynx.css src/app/components/iconData.ts",
     "audit": "node scripts/audit-web-apis.mjs && node scripts/audit-css.mjs",
     "launch": "lynxtron ./dist/desktop",
+    "dev:linux": "node scripts/linux-dev.mjs",
     "report:provenance": "node scripts/provenance-report.mjs",
     "report:reuse": "node scripts/reuse-report.mjs",
     "smoke:settings": "pnpm run build:connector && node scripts/settings-smoke.mjs",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "@lynx-js/config-rsbuild-plugin": "0.0.2",
+    "@lynx-js/devtool-connector": "0.13.2",
     "@lynx-js/lynx-core": "0.1.3",
     "@lynx-js/lynxtron-dev-plugins": "0.0.8",
     "@lynx-js/react": "0.120.0",
