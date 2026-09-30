@@ -1065,10 +1065,10 @@ describe("desktop shell interaction contract", () => {
       '".composer-compact-controls-menu__item{display:flex;flex-direction:row;width:100%;}" +',
     );
     expect(browserPreviewSource).toContain(
-      '"display:flex!important;flex-direction:column!important;width:100%;height:114px;padding:16px 20px;" +',
+      '".composer-top-drawer,.composer-top-drawer__tint{display:flex;flex-direction:column;}" +',
     );
     expect(browserPreviewSource).toContain(
-      '".composer-pending-approval__detail{display:flex!important;flex-direction:row!important;}" +',
+      '".composer-pending-approval{display:flex!important;flex-direction:row!important;}" +',
     );
     expect(browserPreviewSource).toContain(
       '".right-panel__add-menu{display:flex;flex-direction:column;width:128px;height:122px;}" +',
@@ -2268,26 +2268,18 @@ describe("desktop shell interaction contract", () => {
       ),
       "utf8",
     );
-    expect(pendingSurfaceSource).toContain(
-      'className="composer-pending-question flex w-full flex-col px-4 py-3 sm:px-5"',
-    );
+    expect(pendingSurfaceSource).toContain('"composer-pending-question flex w-full flex-col py-2"');
     expect(pendingSurfaceSource).toContain('className="composer-pending-question__hint');
-    expect(overrides).toContain(".composer-pending-wrapper--question-multi-select");
-    expect(overrides).toContain("height: 223px;");
-    expect(overrides).toContain("height: 222px;");
-    expect(overrides).toContain("height: 363px;");
-    expect(overrides).toContain("height: 361px;");
+    // Upstream #6773: the card collapses from its header, one question at a time.
+    expect(pendingSurfaceSource).toContain("data-pending-user-input-toggle");
     expect(chatViewSource).toContain(
-      "questionMultiSelect={activePendingQuestion?.multiSelect === true}",
+      "collapsed={collapsedQuestionId === activePendingQuestion.id}",
     );
-    expect(composerSource).toContain(
-      'questionMultiSelect ? "composer-shell--question-multi-select"',
-    );
-    expect(composerSource).toContain(
-      'questionMultiSelect ? "composer-surface--question-multi-select"',
-    );
-    expect(overrides).toContain(".composer-shell--question-multi-select");
-    expect(overrides).toContain(".composer-surface--question-multi-select");
+    // The question now lives in the attached drawer, so no pinned card heights.
+    expect(overrides).not.toContain(".composer-pending-wrapper");
+    expect(overrides).not.toContain(".composer-shell--question");
+    expect(overrides).not.toContain(".composer-surface--question");
+    expect(chatViewSource).not.toContain("questionMultiSelect=");
     expect(composerSource).toContain(
       "if (questionMode) onQuestionCustomAnswerChange?.(nextValue);",
     );

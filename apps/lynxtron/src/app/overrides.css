@@ -2704,18 +2704,6 @@
   max-width: 100%;
   min-width: 0;
 }
-.composer-shell--approval {
-  height: 247px;
-  min-height: 247px;
-}
-.composer-shell--question {
-  height: 343.5px;
-  min-height: 343.5px;
-}
-.composer-shell--question-multi-select {
-  height: 363px;
-  min-height: 363px;
-}
 .theme-dark {
   --composer-frame-rgb: 30, 30, 30;
   --composer-surface-rgb: 18, 18, 18;
@@ -3515,156 +3503,235 @@
 .composer-surface {
   background-color: rgba(var(--composer-surface-rgb), var(--glass-opacity-ratio));
 }
-.composer-surface--approval {
-  height: 245px;
-  min-height: 245px;
-  flex-shrink: 0;
-}
-.composer-surface--question {
-  height: 341.5px;
-  min-height: 341.5px;
-  flex-shrink: 0;
-}
-.composer-surface--question-multi-select {
-  height: 361px;
-  min-height: 361px;
-}
-.composer-pending-wrapper {
-  display: block;
-  width: 100%;
-  height: 115px;
-  min-height: 115px;
-  flex-shrink: 0;
-  box-sizing: border-box;
-}
 
-.composer-surface .composer-pending-approval {
+/* surface: composer attached top drawer (upstream #7150 `.chat-composer-top-drawer`);
+   gap: no backdrop blur or mask, so the drawer stops at the card's top edge
+   instead of tucking 17px beneath it; remove-when: the drawer chrome compiles
+   from the shared composition. Variants use class hooks, never attribute selectors. */
+.composer-top-drawer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: relative;
+  width: calc(100% - 44px);
+  max-width: 724px;
+  min-width: 0;
+  margin-right: 22px;
+  margin-left: 22px;
+  border-top-width: 1px;
+  border-right-width: 1px;
+  border-bottom-width: 0;
+  border-left-width: 1px;
+  border-top-style: solid;
+  border-right-style: solid;
+  border-left-style: solid;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
+  background-color: var(--composer-strip);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+.composer-top-drawer--warning {
+  border-top-color: rgba(var(--warning-rgb), 0.28);
+  border-right-color: rgba(var(--warning-rgb), 0.28);
+  border-left-color: rgba(var(--warning-rgb), 0.28);
+}
+.composer-top-drawer--info {
+  border-top-color: rgba(var(--info-rgb), 0.32);
+  border-right-color: rgba(var(--info-rgb), 0.32);
+  border-left-color: rgba(var(--info-rgb), 0.32);
+}
+.composer-top-drawer__tint {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 114px;
-  padding: 16px 20px;
+  min-width: 0;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   box-sizing: border-box;
-  flex-shrink: 0;
 }
-.composer-surface .composer-pending-approval {
-  padding-right: 20px;
-  padding-left: 20px;
+.composer-top-drawer--warning .composer-top-drawer__tint {
+  background-color: rgba(var(--warning-rgb), 0.08);
 }
-.composer-pending-approval__heading {
+.composer-top-drawer--info .composer-top-drawer__tint {
+  background-color: rgba(var(--info-rgb), 0.04);
+}
+.composer-top-drawer__row {
   display: flex;
   flex-direction: row;
   align-items: center;
-  position: relative;
-  width: 726px;
-  height: 20px;
-  gap: 13px;
+  width: 100%;
+  min-width: 0;
+  padding: 6px 16px;
+  gap: 4px;
+  box-sizing: border-box;
 }
-.composer-pending-approval__eyebrow {
-  color: var(--foreground);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  letter-spacing: 2.1px;
-  font-family: "T3 DM Sans", var(--font-sans);
-  transform: scaleX(1.077);
-  transform-origin: left center;
+.composer-top-drawer__actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 2px;
 }
-.composer-pending-approval__summary {
-  color: var(--foreground);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 20px;
-  font-family: "T3 DM Sans", var(--font-sans);
-  transform: translateX(7.5px) scaleX(1.0195);
-  transform-origin: left center;
+.composer-top-drawer--stacked .composer-top-drawer__row {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 8px 12px 12px;
+  gap: 8px;
+}
+.composer-top-drawer--stacked .composer-top-drawer__actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+/* surface: one-line approval detail (upstream ComposerPendingApprovalPanel). */
+.composer-pending-approval {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  gap: 8px;
 }
 .composer-pending-approval__detail {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: relative;
-  width: 726px;
-  margin-top: 12px;
-  padding: 12px;
-  border-width: 1px;
-  border-style: solid;
-  height: 50px;
-  border-color: rgba(var(--border-rgb), 0.039);
-  border-radius: 10px;
-  background-color: rgba(var(--background-rgb), 0.7);
-  box-sizing: border-box;
-}
-.composer-pending-approval__detail-label {
-  color: var(--muted-foreground);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 16px;
-  transform: translateY(0.5px);
-}
-.composer-pending-approval__detail-value {
-  margin-top: 0;
-  margin-left: 0;
-  color: var(--foreground);
+  display: block;
+  flex: 1;
+  min-width: 0;
+  color: rgba(var(--foreground-rgb), 0.85);
   font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 19px;
-  text-stroke-color: var(--foreground);
-  text-stroke-width: 0.15px;
+  font-size: 11px;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.composer-editor-area--approval {
-  position: relative;
-  height: 90px;
-  min-height: 90px;
-  padding-top: 12px;
-  box-sizing: border-box;
+.composer-pending-approval__count {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+}
+/* Micro ghost-muted actions; `font-normal`, Decline in destructive text,
+   Approve in foreground (upstream ComposerPendingApprovalActions). */
+.composer-approval-action {
   flex-shrink: 0;
 }
-.composer-pending-wrapper--question {
-  height: 203.5px;
-  min-height: 203.5px;
+.composer-approval-action:hover {
+  background-color: var(--accent);
 }
-.composer-pending-wrapper--question-multi-select {
-  height: 223px;
-  min-height: 223px;
+.composer-approval-action .ui-button__label {
+  font-weight: 400;
+  line-height: 16px;
+  white-space: nowrap;
 }
-.composer-pending-wrapper--question-multi-select .composer-pending-question {
-  height: 222px;
-  min-height: 222px;
-  padding-right: 20px;
-  padding-left: 20px;
+.composer-approval-action--decline .ui-button__label {
+  color: var(--destructive-foreground);
 }
+.composer-approval-action--accept .ui-button__label {
+  color: var(--foreground);
+}
+.composer-editor-area--approval {
+  padding-bottom: 16px;
+  flex-shrink: 0;
+}
+.composer__input--approval {
+  overflow: hidden;
+}
+
+/* surface: pending question card (upstream ComposerPendingUserInputPanel,
+   collapsible from its header per #6773). */
 .composer-pending-question {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 203.5px;
-  padding: 12px 20px;
+  min-width: 0;
+  padding: 8px 0;
   box-sizing: border-box;
-  flex-shrink: 0;
 }
 .composer-pending-question__heading {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 20px;
-  margin-bottom: 8px;
+  width: 100%;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+.composer-pending-question__toggle {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  margin-top: -4px;
+  margin-bottom: -4px;
+  padding: 6px 8px;
+  gap: 8px;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+.composer-pending-question__toggle:hover {
+  background-color: rgba(var(--foreground-rgb), 0.04);
 }
 .composer-pending-question__header {
-  color: rgba(var(--muted-foreground-rgb), 0.55);
+  flex-shrink: 0;
+  color: var(--muted-foreground);
   font-family: var(--font-sans);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   line-height: 16px;
-  letter-spacing: 1.1px;
+}
+.composer-pending-question__counter {
+  flex-shrink: 0;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+}
+.composer-pending-question__echo {
+  display: block;
+  flex: 1;
+  min-width: 0;
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  line-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.composer-pending-question__chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: auto;
+}
+.composer-pending-question__chevron--collapsed {
+  transform: rotate(180deg);
+}
+.composer-pending-question__body {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 8px 16px 2px;
+  box-sizing: border-box;
 }
 .composer-pending-question__prompt {
-  color: rgba(var(--foreground-rgb), 0.9);
+  color: rgba(var(--foreground-rgb), 0.85);
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 20px;
 }
 .composer-pending-question__hint {
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-family: var(--font-sans);
   font-size: 12px;
   line-height: 16px;
 }
@@ -3672,31 +3739,26 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 12px;
-  gap: 6px;
+  margin-top: 8px;
+  gap: 2px;
 }
 .composer-pending-question__option {
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
-  height: 56px;
-  min-height: 56px;
-  padding: 8px 12px;
-  gap: 12px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
-  border-radius: 8px;
-  background-color: rgba(var(--foreground-rgb), 0.022);
+  padding: 8px 10px;
+  gap: 8px;
+  border-width: 0;
+  border-radius: 6px;
+  background-color: transparent;
   box-sizing: border-box;
 }
 .composer-pending-question__option:hover {
-  background-color: rgba(var(--foreground-rgb), 0.055);
+  background-color: rgba(var(--foreground-rgb), 0.03);
 }
-.composer-pending-question__option[data-question-option-selected="true"] {
-  border-color: rgba(var(--primary-rgb), 0.3);
-  background-color: rgba(var(--primary-rgb), 0.08);
+.composer-pending-question__option--selected {
+  background-color: rgba(var(--foreground-rgb), 0.055);
 }
 .composer-pending-question__option-copy {
   display: flex;
@@ -3705,17 +3767,20 @@
   min-width: 0;
 }
 .composer-pending-question__option-label {
-  color: rgba(var(--foreground-rgb), 0.9);
+  color: rgba(var(--foreground-rgb), 0.85);
   font-family: var(--font-sans);
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
 }
+.composer-pending-question__option--selected .composer-pending-question__option-label {
+  color: var(--foreground);
+}
 .composer-pending-question__option-description {
   margin-top: 2px;
   color: var(--muted-foreground);
   font-family: var(--font-sans);
-  font-size: 12px;
+  font-size: 11px;
   line-height: 16px;
 }
 .composer-pending-question__option-index {
@@ -3725,21 +3790,13 @@
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  color: rgba(var(--muted-foreground-rgb), 0.7);
+  color: var(--muted-foreground);
   font-family: var(--font-sans);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   line-height: 20px;
-  border-width: 1px;
-  border-style: solid;
-  border-color: rgba(var(--border-rgb), 0.5);
-  border-radius: 4px;
 }
 .composer-editor-area--question {
-  height: 90px;
-  min-height: 90px;
-  padding-top: 12px;
-  box-sizing: border-box;
   flex-shrink: 0;
 }
 .composer-footer--question {
@@ -4446,7 +4503,7 @@
   word-break: break-all;
 }
 .t3-jetbrains-mono-ready .inline-markdown-code-label,
-.t3-jetbrains-mono-ready .composer-pending-approval__detail-value {
+.t3-jetbrains-mono-ready .composer-pending-approval__detail {
   font-family: "T3 JetBrains Mono", var(--font-mono);
 }
 .transcript-message-meta {
@@ -7670,71 +7727,6 @@
   opacity: 0.96;
 }
 
-.composer-footer--approval .composer-primary-actions {
-  gap: 8px;
-}
-.composer-approval-action--cancel {
-  width: 97px;
-}
-.composer-approval-action--cancel .ui-button__label {
-  color: rgb(230, 230, 230);
-  letter-spacing: -0.45px;
-  font-family: "T3 DM Sans", var(--font-sans);
-  text-stroke-color: rgb(230, 230, 230);
-  text-stroke-width: 0.15px;
-  transform: translateX(-4px) scaleX(1.092);
-  transform-origin: left center;
-}
-.composer-approval-action--decline {
-  width: 69px;
-}
-.composer-approval-action--decline .ui-button__label {
-  color: rgb(240, 100, 100);
-  letter-spacing: -0.6px;
-  transform: translate(-1.5px, 1px) scaleX(1.055);
-  transform-origin: left center;
-}
-.composer-approval-action--session {
-  width: 184px;
-}
-.composer-approval-action--session .ui-button__label {
-  color: rgb(225, 225, 225);
-  letter-spacing: -0.36px;
-  font-family: "T3 DM Sans", var(--font-sans);
-  text-stroke-color: rgb(225, 225, 225);
-  text-stroke-width: 0.15px;
-  transform: translateX(-8.5px) scaleX(1.106);
-  transform-origin: left center;
-}
-.theme-light .composer-approval-action--cancel .ui-button__label,
-.theme-light .composer-approval-action--session .ui-button__label {
-  color: var(--foreground);
-  text-stroke-color: var(--foreground);
-}
-.theme-light .composer-approval-action--decline .ui-button__label {
-  color: var(--destructive-foreground);
-}
-.composer-approval-action--accept {
-  width: 112px;
-  border-color: #456ef2;
-  background-color: #456ef2;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 1px 2px rgba(69, 110, 242, 0.24);
-}
-.composer-approval-action--accept .ui-button__label {
-  letter-spacing: -0.64px;
-  font-family: "T3 DM Sans", var(--font-sans);
-  text-stroke-color: var(--primary-foreground);
-  text-stroke-width: 0.15px;
-  transform: translateX(-4px) scaleX(1.088);
-  transform-origin: left center;
-}
-.composer-footer--approval {
-  height: 40px;
-  min-height: 40px;
-  flex-shrink: 0;
-}
 .ui-button--xs .ui-button__label,
 .ui-button--icon-xs .ui-button__label {
   font-size: 12px;

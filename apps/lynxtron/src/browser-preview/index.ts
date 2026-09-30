@@ -527,11 +527,12 @@ function injectLynxLayoutDefaults(shadowRoot: ShadowRoot): void {
       ".composer-surface,.composer-editor-area,.composer-footer{" +
       "width:100%;max-width:100%;min-width:0;box-sizing:border-box;}" +
       ".composer-surface{display:flex;flex-direction:column;}" +
-      ".composer-pending-approval{" +
-      "display:flex!important;flex-direction:column!important;width:100%;height:114px;padding:16px 20px;" +
-      "box-sizing:border-box;flex:none;}" +
-      ".composer-pending-approval__heading," +
-      ".composer-pending-approval__detail{display:flex!important;flex-direction:row!important;}" +
+      ".composer-top-drawer{" +
+      "align-self:center;width:calc(100% - 44px);max-width:724px;min-width:0;box-sizing:border-box;}" +
+      ".composer-top-drawer,.composer-top-drawer__tint{display:flex;flex-direction:column;}" +
+      ".composer-top-drawer__row{display:flex;}" +
+      ".composer-top-drawer__actions," +
+      ".composer-pending-approval{display:flex!important;flex-direction:row!important;}" +
       ".composer-context-strip{" +
       "align-self:center;width:calc(100% - 44px);max-width:724px;min-width:0;box-sizing:border-box;}" +
       ".composer-footer,.composer-toolbar-row,.composer-primary-actions{display:flex;flex-direction:row;}" +

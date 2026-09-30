@@ -115,11 +115,12 @@ interface ComposerProps {
   planModeEnabled: boolean;
   availableWidth: number;
   statusBanner?: ReactNode;
-  pendingBanner?: ReactNode;
-  approvalActions?: ReactNode;
+  /** Pending-state drawer attached above the card (upstream `.chat-composer-top-drawer`). */
+  topDrawer?: ComposerTopDrawer;
+  /** A pending approval blocks the editor; its actions live in the top drawer. */
+  approvalPending?: boolean;
   approvalDetail?: string;
   questionActions?: ReactNode;
-  questionMultiSelect?: boolean;
   questionEditorKey?: string;
   questionCustomAnswer?: string;
   onQuestionCustomAnswerChange?: (value: string) => void;
@@ -145,6 +146,13 @@ interface ComposerProps {
   onInteractionModeTap: () => void;
   onWorkspaceModeChange: (mode: "local" | "worktree") => void;
   onStartFromOriginChange: (enabled: boolean) => void;
+}
+
+/** Attached drawer content: approval rows pass their actions separately. */
+export interface ComposerTopDrawer {
+  readonly variant: "info" | "warning";
+  readonly content: ReactNode;
+  readonly actions?: ReactNode;
 }
 
 const RUNTIME_MODE_ICONS: Record<RuntimeMode, IconName> = {
@@ -204,11 +212,10 @@ export function Composer({
   planModeEnabled,
   availableWidth,
   statusBanner,
-  pendingBanner,
-  approvalActions,
+  topDrawer,
+  approvalPending = false,
   approvalDetail,
   questionActions,
-  questionMultiSelect = false,
   questionEditorKey,
   questionCustomAnswer,
   onQuestionCustomAnswerChange,
@@ -330,7 +337,7 @@ export function Composer({
     };
   }
   const mobileCollapsed =
-    viewport.width < 640 && !mobileComposerExpanded && !approvalActions && !questionMode;
+    viewport.width < 640 && !mobileComposerExpanded && !approvalPending && !questionMode;
   const promptValueRef = useRef(value);
   promptValueRef.current = value;
   const applyExternalTextInsertion = (nextValue: string, cursor = nextValue.length) => {
@@ -499,7 +506,7 @@ export function Composer({
       return true;
     };
     diagnosticsGlobal.__T3_LYNXTRON_COMPOSER_ATTACHMENT_FIXTURE__ = (attachment) => {
-      if (questionMode || approvalActions) return false;
+      if (questionMode || approvalPending) return false;
       onAddAttachments([attachment]);
       return true;
     };
@@ -517,7 +524,7 @@ export function Composer({
       delete diagnosticsGlobal.__T3_LYNXTRON_COMPACT_CONTROLS_SCROLL_PROBE__;
     };
   }, [
-    approvalActions,
+    approvalPending,
     onAddAttachments,
     onQuestionCustomAnswerChange,
     onValueChange,
@@ -525,7 +532,7 @@ export function Composer({
     viewport.testResize,
   ]);
   const compactFooter = shouldUseCompactComposerFooter(availableWidth, {
-    hasWideActions: Boolean(approvalActions || questionActions),
+    hasWideActions: questionMode,
   });
   useEffect(() => {
     if (modelPicker != null) {
@@ -806,14 +813,37 @@ export function Composer({
         ? Math.max(contextSkills.length, 1)
         : Math.max(contextCommands.length, 1);
   const contextPickerHeight = Math.min(288, 34 + contextPickerItemCount * 38 + 8);
+  const topDrawerStacked = viewport.width < 640;
   const card = (
     <view className="composer-stack">
+      {topDrawer ? (
+        <view
+          className={`composer-top-drawer composer-top-drawer--${topDrawer.variant}${
+            topDrawerStacked ? " composer-top-drawer--stacked" : ""
+          }`}
+          data-chat-composer-top-drawer="true"
+          data-variant={topDrawer.variant}
+        >
+          <view className="composer-top-drawer__tint">
+            {topDrawer.actions ? (
+              <view
+                className="composer-top-drawer__row"
+                data-composer-top-drawer-layout={topDrawerStacked ? "stacked" : "inline"}
+              >
+                {topDrawer.content}
+                <view className="composer-top-drawer__actions">{topDrawer.actions}</view>
+              </view>
+            ) : (
+              topDrawer.content
+            )}
+          </view>
+        </view>
+      ) : null}
       <view
         className={[
           COMPOSER_SHELL_CLASS,
-          approvalActions ? "composer-shell--approval" : undefined,
+          approvalPending ? "composer-shell--approval" : undefined,
           questionMode ? "composer-shell--question" : undefined,
-          questionMultiSelect ? "composer-shell--question-multi-select" : undefined,
         ]
           .filter(Boolean)
           .join(" ")}
@@ -822,31 +852,18 @@ export function Composer({
           semanticState={controlState.semanticState}
           surfaceClassName={[
             disabled ? "opacity-70" : undefined,
-            approvalActions ? "composer-surface--approval" : undefined,
+            approvalPending ? "composer-surface--approval" : undefined,
             questionMode ? "composer-surface--question" : undefined,
-            questionMultiSelect ? "composer-surface--question-multi-select" : undefined,
           ]
             .filter(Boolean)
             .join(" ")}
           surfaceProps={{
             "data-chat-composer-mobile-collapsed": mobileCollapsed ? "true" : "false",
           }}
-          footerClassName={
-            approvalActions
-              ? "composer-footer--approval"
-              : questionMode
-                ? "composer-footer--question"
-                : undefined
-          }
+          footerClassName={questionMode ? "composer-footer--question" : undefined}
           footerCompact={compactFooter}
           primaryActionsCompact={compactFooter}
-          editorAreaClassName={
-            approvalActions
-              ? "composer-editor-area--approval"
-              : questionMode
-                ? "composer-editor-area--question"
-                : undefined
-          }
+          editorAreaClassName={questionMode ? "composer-editor-area--question" : undefined}
           renderCollapsedBody={
             mobileCollapsed
               ? () => (
@@ -875,41 +892,25 @@ export function Composer({
                     </view>
                   </view>
                 )
-              : approvalActions
+              : approvalPending
                 ? () => (
-                    <>
-                      <view className="composer-editor-area composer-editor-area--approval">
-                        <text
-                          className="composer__input composer__input--approval composer__input--placeholder"
-                          data-composer-editor="true"
-                        >
-                          {approvalDetail ?? "Resolve this approval request to continue"}
-                        </text>
-                      </view>
-                      providerAvailable ? (
-                      <view
-                        className="composer-footer composer-footer--approval"
-                        data-chat-composer-footer="true"
-                        data-chat-composer-footer-compact={compactFooter ? "true" : "false"}
+                    // Upstream keeps the blocked editor visible with the request
+                    // as its placeholder and drops the footer toolbar entirely.
+                    <view className="composer-editor-area composer-editor-area--approval">
+                      <text
+                        className="composer__input composer__input--approval composer__input--placeholder"
+                        data-composer-editor="true"
+                        text-maxline="3"
                       >
-                        <view
-                          className="composer-primary-actions"
-                          data-chat-composer-actions="right"
-                          data-chat-composer-primary-actions-compact={
-                            compactFooter ? "true" : "false"
-                          }
-                        >
-                          {approvalActions}
-                        </view>
-                      </view>
-                    </>
+                        {approvalDetail ?? "Resolve this approval request to continue"}
+                      </text>
+                    </view>
                   )
                 : undefined
           }
           elements={{
-            renderBanners: () => pendingBanner,
             renderAttachments: () =>
-              questionMode || approvalActions ? null : (
+              questionMode || approvalPending ? null : (
                 <>
                   {terminalContexts.length > 0 ? (
                     <view className="composer-terminal-context-list">
@@ -1194,7 +1195,7 @@ export function Composer({
               </>
             ),
             renderFooterLeftControls: () =>
-              approvalActions ? null : (
+              approvalPending ? null : (
                 <ComposerToolbarRow
                   overlayOpen={
                     modelPicker != null ||
@@ -1599,7 +1600,6 @@ export function Composer({
                 />
               ),
             renderFooterRightActions: () =>
-              approvalActions ??
               questionActions ?? (
                 <>
                   {activeContextWindow ? (

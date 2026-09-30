@@ -211,6 +211,8 @@ export function ChatView({ threadId }: ChatViewProps) {
   const lastKnownSelectedModel = useRef(selectedModel);
   const lastKnownModelSelection = useRef(modelSelection);
   const [respondingApprovalId, setRespondingApprovalId] = useState<string | null>(null);
+  // Upstream #6773: the question card collapses from its header, per question.
+  const [collapsedQuestionId, setCollapsedQuestionId] = useState<string | null>(null);
   const [respondingUserInputId, setRespondingUserInputId] = useState<string | null>(null);
   const [dismissedThreadErrorsById, setDismissedThreadErrorsById] = useState<
     Record<string, string>
@@ -986,62 +988,67 @@ export function ChatView({ threadId }: ChatViewProps) {
             </view>
           ) : undefined
         }
-        pendingBanner={
-          activePendingApproval ? (
-            <view className="composer-pending-wrapper rounded-t-[19px] border-b border-border/65 bg-muted/20">
-              <ComposerPendingApprovalSurface
-                approvalSummary={
-                  activePendingApproval.requestKind === "command"
-                    ? "Command approval requested"
-                    : activePendingApproval.requestKind === "file-read"
-                      ? "File-read approval requested"
-                      : "File-change approval requested"
+        topDrawer={
+          activePendingApproval
+            ? {
+                variant: "warning",
+                content: (
+                  <ComposerPendingApprovalSurface
+                    fallbackLabel={
+                      activePendingApproval.requestKind === "command"
+                        ? "Command approval"
+                        : activePendingApproval.requestKind === "file-read"
+                          ? "File read approval"
+                          : "File change approval"
+                    }
+                    detail={activePendingApproval.detail}
+                    detailLabel={
+                      activePendingApproval.requestKind === "command"
+                        ? "Command"
+                        : activePendingApproval.requestKind === "file-read"
+                          ? "File to read"
+                          : "File change"
+                    }
+                    pendingCount={pendingApprovals.length}
+                  />
+                ),
+                actions: (
+                  <ComposerPendingApprovalActions
+                    requestId={activePendingApproval.requestId}
+                    isResponding={respondingApprovalId === activePendingApproval.requestId}
+                    onRespondToApproval={handleRespondToApproval}
+                  />
+                ),
+              }
+            : activePendingQuestion
+              ? {
+                  variant: "info",
+                  content: (
+                    <ComposerPendingQuestionSurface
+                      header={activePendingQuestion.header}
+                      question={activePendingQuestion.question}
+                      questionIndex={activePendingProgress?.questionIndex ?? 0}
+                      questionCount={activePendingUserInput?.questions.length ?? 1}
+                      multiSelect={activePendingQuestion.multiSelect === true}
+                      options={activePendingQuestion.options}
+                      selectedOptionLabels={activePendingDraft?.selectedOptionLabels ?? []}
+                      responding={activePendingIsResponding}
+                      selectedIcon={<Icon name="check" size={14} color="#366ffb" />}
+                      collapsed={collapsedQuestionId === activePendingQuestion.id}
+                      toggleIcon={<Icon name="chevron-down" size={14} color="#818181" />}
+                      onToggleCollapsed={() =>
+                        setCollapsedQuestionId((current) =>
+                          current === activePendingQuestion.id ? null : activePendingQuestion.id,
+                        )
+                      }
+                      onSelect={handleQuestionOptionSelect}
+                    />
+                  ),
                 }
-                detail={activePendingApproval.detail}
-                detailLabel={
-                  activePendingApproval.requestKind === "command"
-                    ? "Command"
-                    : activePendingApproval.requestKind === "file-read"
-                      ? "File to read"
-                      : "File change"
-                }
-                pendingCount={pendingApprovals.length}
-              />
-            </view>
-          ) : activePendingQuestion ? (
-            <view
-              className={`composer-pending-wrapper composer-pending-wrapper--question${
-                activePendingQuestion.multiSelect
-                  ? " composer-pending-wrapper--question-multi-select"
-                  : ""
-              } rounded-t-[19px] border-b border-border/65 bg-muted/20`}
-            >
-              <ComposerPendingQuestionSurface
-                header={activePendingQuestion.header}
-                question={activePendingQuestion.question}
-                questionIndex={activePendingProgress?.questionIndex ?? 0}
-                questionCount={activePendingUserInput?.questions.length ?? 1}
-                multiSelect={activePendingQuestion.multiSelect === true}
-                options={activePendingQuestion.options}
-                selectedOptionLabels={activePendingDraft?.selectedOptionLabels ?? []}
-                responding={activePendingIsResponding}
-                selectedIcon={<Icon name="check" size={14} color="#366ffb" />}
-                onSelect={handleQuestionOptionSelect}
-              />
-            </view>
-          ) : null
+              : undefined
         }
-        approvalActions={
-          activePendingApproval ? (
-            <ComposerPendingApprovalActions
-              requestId={activePendingApproval.requestId}
-              isResponding={respondingApprovalId === activePendingApproval.requestId}
-              onRespondToApproval={handleRespondToApproval}
-            />
-          ) : undefined
-        }
+        approvalPending={activePendingApproval !== null}
         approvalDetail={activePendingApproval?.detail}
-        questionMultiSelect={activePendingQuestion?.multiSelect === true}
         questionActions={
           activePendingQuestion ? (
             <view className="composer-question-actions">

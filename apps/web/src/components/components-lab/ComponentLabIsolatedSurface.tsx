@@ -136,7 +136,7 @@ export function ComponentLabIsolatedSurface({ storyId }: { readonly storyId: str
       return (
         <HostView className="component-lab-pending-approval" style={{ width: "512px" }}>
           <ComposerPendingApprovalSurface
-            approvalSummary="Run workspace command"
+            fallbackLabel="Command approval"
             detail="pnpm test --filter web"
             detailLabel="Command"
             pendingCount={2}
