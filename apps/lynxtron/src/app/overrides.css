@@ -161,6 +161,16 @@
   height: 20px;
   padding: 0;
 }
+/* Web: size-3 PinIcon beside the project label, muted until hover. */
+.sidebar-v2-row-pin {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 12px;
+  height: 20px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
 .sidebar-v2-card-action-icon {
   display: flex;
   align-items: center;

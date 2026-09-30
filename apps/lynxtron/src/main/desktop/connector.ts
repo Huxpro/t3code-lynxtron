@@ -1354,6 +1354,23 @@ export class T3Connector {
     });
   }
 
+  async pinThread(input: { threadId: string; orderKey?: string }): Promise<void> {
+    await this.dispatchOrchestrationCommand({
+      type: "thread.pin",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+      ...(input.orderKey ? { orderKey: input.orderKey } : {}),
+    });
+  }
+
+  async unpinThread(input: { threadId: string }): Promise<void> {
+    await this.dispatchOrchestrationCommand({
+      type: "thread.unpin",
+      commandId: crypto.randomUUID(),
+      threadId: input.threadId,
+    });
+  }
+
   async renameThread(input: { threadId: string; title: string }): Promise<void> {
     const title = input.title.trim();
     if (!title) return;

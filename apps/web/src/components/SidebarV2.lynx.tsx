@@ -26,6 +26,7 @@ import {
   searchSidebarThreadsByTitle,
   shouldChooseProjectForNewThread,
   sortScopedProjectsForSidebar,
+  sortPinnedThreadsForSidebar,
   sortSettledThreadsForSidebar,
   sortThreadsForSidebar,
   isSidebarV2ThreadWoke,
@@ -372,17 +373,27 @@ export default function SidebarV2() {
         thread.archivedAt === null &&
         (projectScopeKey === null || thread.projectId === projectScopeKey),
     );
+    const pinningSupported = serverConfig?.environment.capabilities.threadPinning === true;
     if (serverConfig?.environment.capabilities.threadSettlement !== true) {
+      const isPinned = (thread: (typeof visible)[number]) =>
+        pinningSupported && thread.pinnedAt != null;
       return {
-        activeThreads: sortThreadsForSidebar(visible),
+        activeThreads: [
+          ...sortPinnedThreadsForSidebar(visible.filter(isPinned)),
+          ...sortThreadsForSidebar(visible.filter((thread) => !isPinned(thread))),
+        ],
         settledThreads: [],
       };
     }
     const now = new Date().toISOString();
+    const pinned = [];
     const active = [];
     const settled = [];
     for (const thread of visible) {
-      if (
+      // A pin overrides settlement, as on Web: pinned threads lead the list.
+      if (pinningSupported && thread.pinnedAt != null) {
+        pinned.push(thread);
+      } else if (
         effectiveSettled(thread, {
           now,
           autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays,
@@ -394,7 +405,7 @@ export default function SidebarV2() {
       }
     }
     return {
-      activeThreads: sortThreadsForSidebar(active),
+      activeThreads: [...sortPinnedThreadsForSidebar(pinned), ...sortThreadsForSidebar(active)],
       settledThreads: sortSettledThreadsForSidebar(settled),
     };
   }, [clientSettings.sidebarAutoSettleAfterDays, projectScopeKey, serverConfig, threads]);
@@ -503,8 +514,7 @@ export default function SidebarV2() {
       const selection = await showNativeContextMenu(
         buildThreadActionMenuItems({
           branch: thread.branch,
-          // Pinning has no Lynx client action yet (Plan 15 P6).
-          isPinned: false,
+          isPinned: thread.pinnedAt != null,
           isSettled: settled,
           isSnoozed,
           canSnoozeNow: canSnooze(thread, { now: new Date().toISOString() }),
@@ -513,7 +523,7 @@ export default function SidebarV2() {
           supports: {
             settlement: settlementSupported,
             snooze: supportsSnooze,
-            pinning: false,
+            pinning: serverConfig?.environment.capabilities.threadPinning === true,
             titleRegeneration: supportsTitleRegeneration,
           },
           snoozePresets,
@@ -531,7 +541,9 @@ export default function SidebarV2() {
           envMode: thread.worktreePath ? "worktree" : "local",
           startFromOrigin: false,
         });
-      } else if (selection === "settle") await t3ClientActions.settleThread(thread.id);
+      } else if (selection === "pin") await t3ClientActions.pinThread(thread.id);
+      else if (selection === "unpin") await t3ClientActions.unpinThread(thread.id);
+      else if (selection === "settle") await t3ClientActions.settleThread(thread.id);
       else if (selection === "unsettle") await t3ClientActions.unsettleThread(thread.id);
       else if (selection === "unsnooze") await t3ClientActions.unsnoozeThread(thread.id);
       else if (selection === "copy-path") {
@@ -940,6 +952,22 @@ export default function SidebarV2() {
                     setHoveredThreadId((current) => (current === thread.id ? null : current));
                   }
                 }}
+                pinControl={
+                  thread.pinnedAt != null &&
+                  serverConfig?.environment.capabilities.threadPinning === true ? (
+                    <view
+                      className="sidebar-v2-row-pin"
+                      data-sidebar-unpin={thread.id}
+                      aria-label="Unpin thread"
+                      bindtap={(event: unknown) => {
+                        stopPropagation(event);
+                        void t3ClientActions.unpinThread(thread.id).catch(() => undefined);
+                      }}
+                    >
+                      <Icon name="pin" size={12} color="#a1a1aa" />
+                    </view>
+                  ) : null
+                }
                 onSettleClick={(event) => {
                   stopPropagation(event);
                   void t3ClientActions.settleThread(thread.id).catch(() => undefined);

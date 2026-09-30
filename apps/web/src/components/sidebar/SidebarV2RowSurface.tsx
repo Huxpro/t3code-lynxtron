@@ -43,6 +43,8 @@ export interface SidebarV2RowSurfaceProps {
   readonly isRegeneratingTitle: boolean;
   readonly terminalStatusIcon: ReactNode;
   readonly prBadge: ReactNode;
+  /** Pin marker for pinned threads; tapping it unpins where the host allows. */
+  readonly pinControl?: ReactNode;
   readonly diff: { readonly insertions: number; readonly deletions: number } | null;
   readonly remoteIndicator: ReactNode;
   readonly providerIndicator: ReactNode;
@@ -280,6 +282,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               ) : (
                 <HostText className="sidebar-v2-row-project-title flex-1" />
               )}
+              {props.pinControl}
               <HostView className="sidebar-v2-row-status-slot relative ml-auto flex h-5 min-w-8 shrink-0 items-center justify-end pl-1 text-xs">
                 <HostView
                   className={cn(

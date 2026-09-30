@@ -148,6 +148,7 @@ export type IconName =
   | "circle-check"
   | "alarm-clock"
   | "chart-no-axes-column"
+  | "pin"
   | "wifi-off"
   | "info"
   | "eye"

@@ -199,6 +199,8 @@ export interface T3ConnectorCommandBridge {
   deleteThread(input: { threadId: string }): Promise<void>;
   archiveThread(input: { threadId: string; unarchive?: boolean }): Promise<void>;
   settleThread(input: { threadId: string }): Promise<void>;
+  pinThread(input: { threadId: string; orderKey?: string }): Promise<void>;
+  unpinThread(input: { threadId: string }): Promise<void>;
   unsettleThread(input: { threadId: string }): Promise<void>;
   renameThread(input: { threadId: string; title: string }): Promise<void>;
   regenerateThreadTitle(input: { threadId: string }): Promise<void>;

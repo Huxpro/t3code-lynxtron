@@ -137,6 +137,7 @@ import { navigate, getPathname } from "../router";
 import { appAtomRegistry } from "./atomRegistry";
 import { reportConnectionStatus } from "./connectionStatus";
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "./environment";
+import { pinOrderKeyBetween } from "@t3tools/client-runtime/state/thread-sort";
 import { getClientSettingsState, getPref, setPref, updateClientSettingsState } from "./prefsStore";
 import {
   callBridge,
@@ -1637,6 +1638,35 @@ async function archiveThread(threadId: string, unarchive = false): Promise<void>
   await bridge.archiveThread({ threadId, unarchive });
 }
 
+/** Pins a thread at the top of the pinned run, as Web's pin action does. */
+async function pinThread(threadId: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.pinThread) throw new Error("Thread pinning is unavailable.");
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  const orderKey =
+    state.serverConfig?.environment.capabilities.threadPinReorder === true
+      ? (pinOrderKeyBetween(
+          null,
+          state.threads.reduce<string | null>(
+            (first, thread) =>
+              thread.pinnedAt != null &&
+              thread.pinOrderKey != null &&
+              (first === null || thread.pinOrderKey < first)
+                ? thread.pinOrderKey
+                : first,
+            null,
+          ),
+        ) ?? undefined)
+      : undefined;
+  await bridge.pinThread({ threadId, ...(orderKey ? { orderKey } : {}) });
+}
+
+async function unpinThread(threadId: string): Promise<void> {
+  const bridge = getBridge();
+  if (!bridge?.unpinThread) throw new Error("Thread pinning is unavailable.");
+  await bridge.unpinThread({ threadId });
+}
+
 async function settleThread(threadId: string): Promise<void> {
   const bridge = getBridge();
   if (!bridge?.settleThread) return;
@@ -2435,6 +2465,8 @@ export const t3ClientActions = {
   clearComposerElementContexts,
   settleThread,
   unsettleThread,
+  pinThread,
+  unpinThread,
   unsnoozeThread,
   setModelSelection,
   setModelOptions,

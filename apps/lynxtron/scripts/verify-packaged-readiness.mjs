@@ -8427,6 +8427,42 @@ async function verifySidebarThreadMenu({ child, client, log, timeoutMs }) {
       .split("\n")
       .filter((line) => line.includes("[context-menu-probe]"));
   await openMenu();
+  await waitForLogText(child, log, "select=pin", timeoutMs);
+  const pinnedState = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThread?.id === threadId && state.activeThread.pinnedAt != null,
+  });
+  const pinMarker = await (async () => {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const markers = await readSelectorMeasurements(client, ".sidebar-v2-row-pin");
+      const marker = markers.find(
+        (entry) => entry.attributes["data-sidebar-unpin"] === threadId && measurementVisible(entry),
+      );
+      if (marker) return marker;
+      await waitForChildExit(child, 100);
+    }
+    throw new Error(`The pinned thread ${threadId} shows no pin marker.`);
+  })();
+  await tapSelectorByAttribute({
+    attribute: "data-sidebar-unpin",
+    child,
+    client,
+    selector: ".sidebar-v2-row-pin",
+    timeoutMs,
+    value: threadId,
+  });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      state?.activeThread?.id === threadId && state.activeThread.pinnedAt == null,
+  });
+  await openMenu();
   await waitForLogText(child, log, "select=copy-thread-id", timeoutMs);
   await waitForLogText(child, log, `[clipboard-sink] ${JSON.stringify(threadId)}`, timeoutMs);
   await openMenu();
@@ -8440,7 +8476,14 @@ async function verifySidebarThreadMenu({ child, client, log, timeoutMs }) {
       state?.threadIds?.includes(threadId) === false,
   });
   const offered = menuLines()[0] ?? "";
-  for (const label of ["Rename thread", "Mark unread", "Copy", "Archive thread", "Delete"]) {
+  for (const label of [
+    "Pin thread",
+    "Rename thread",
+    "Mark unread",
+    "Copy",
+    "Archive thread",
+    "Delete",
+  ]) {
     if (!offered.includes(JSON.stringify(label))) {
       throw new Error(`Sidebar thread menu is missing ${label}: ${offered}`);
     }
@@ -8448,9 +8491,11 @@ async function verifySidebarThreadMenu({ child, client, log, timeoutMs }) {
   return {
     status: "pass",
     input:
-      "renderer probe invokes the sidebar row's secondary-click handler; main probe menu selects Copy > Thread ID, then Archive thread; clipboard sink",
+      "renderer probe invokes the sidebar row's secondary-click handler; main probe menu selects Pin, Copy > Thread ID, then Archive thread; DevTool tap on the pin marker unpins; clipboard sink",
     threadId,
     offered,
+    pinned: { pinnedAt: pinnedState.activeThread.pinnedAt, marker: pinMarker.rect },
+    unpinnedByMarkerTap: true,
     copiedThreadId: threadId,
     archived: { archivedThreadIds: archived.archivedThreadIds },
   };
@@ -15628,7 +15673,7 @@ async function runOnce({
       ...(shouldVerifySidebarThreadMenu
         ? {
             T3_LYNXTRON_VIEWPORT_PROBE: "1",
-            T3_TEST_CONTEXT_MENU_SELECT: "copy-thread-id,archive",
+            T3_TEST_CONTEXT_MENU_SELECT: "pin,copy-thread-id,archive",
             T3_TEST_CLIPBOARD_SINK: "1",
           }
         : {}),

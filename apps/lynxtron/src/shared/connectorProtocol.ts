@@ -327,6 +327,8 @@ export const CONNECTOR_COMMAND_NAMES = [
   "archiveThread",
   "settleThread",
   "unsettleThread",
+  "pinThread",
+  "unpinThread",
   "renameThread",
   "regenerateThreadTitle",
   "snoozeThread",

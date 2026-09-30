@@ -126,6 +126,12 @@ and shows the Legacy features rows (token streaming asks for native
 confirmation). Upstream also strips the OpenCode "plan" agent from stored
 text-generation selections when plan mode turns off; Lynx does not yet.
 
+P6/P7 progress: the Lynx sidebar renders the shared thread action menu (Copy
+submenu with Thread ID, Archive thread) and supports pin/unpin with a pinned
+block and a tap-to-unpin marker (`--verify-sidebar-thread-menu`). Still open:
+drag-to-reorder pins, header-title thread actions, and the footer utility
+menu's back buttons for pages Lynx lacks.
+
 Out of scope for Lynx unless the runtime changes: pull request surfaces
 (#6039, #7148, #7077, #6597), usage insights (#8101, #7147), browser defaults and
 favicons (CEF stays opt-in, Plan 13), SSH editor handoff (#6572), launchd
