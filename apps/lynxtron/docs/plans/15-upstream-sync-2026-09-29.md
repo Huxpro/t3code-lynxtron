@@ -114,7 +114,7 @@ focused test and a background smoke.
 | P9  | Configurable fonts and sizes; system font stacks (#5103)                                             | Appearance, typography — deferred    |
 | P10 | Theme library and OKLCH palettes (#5226, #6036, #6183, #5636)                                        | Appearance, generated CSS — deferred |
 | P11 | Older timestamps show the date (#6654)                                                               | Transcript, sidebar — done           |
-| P12 | Project settings page and manual project icons (#5768, #5775)                                        | Project settings — partial           |
+| P12 | Project settings page and manual project icons (#5768, #5775)                                        | Project settings — partial — done    |
 | P13 | Unsent drafts in the sidebar (#5777)                                                                 | Sidebar — done                       |
 | P14 | Right panel empty state, surface dropdown shortcuts, maximize binding (#6258, #7318, #5091)          | Right panel — decided                |
 | P15 | New thread picker shows project location (#7392)                                                     | New thread flow — done               |
