@@ -1,4 +1,4 @@
-import type { EnvironmentId } from "@t3tools/contracts";
+import type { EnvironmentId, ServerConfig } from "@t3tools/contracts";
 
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../../../lynxtron/src/app/state/environment";
 import { useT3ClientState } from "../../../lynxtron/src/app/state/t3Client";
@@ -20,6 +20,8 @@ function primaryEnvironment(label: string) {
       phase: "connected",
       error: null,
     },
+    // Pull requests are not offered in Lynx, so no capability is advertised.
+    serverConfig: null as ServerConfig | null,
   } as const;
 }
 

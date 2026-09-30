@@ -16,7 +16,10 @@
     "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "types": ["@lynx-js/types"]
+    "types": ["@lynx-js/types"],
+    "paths": {
+      "~/*": ["../../../web/src/*"]
+    }
   },
   "include": [
     "./**/*.ts",

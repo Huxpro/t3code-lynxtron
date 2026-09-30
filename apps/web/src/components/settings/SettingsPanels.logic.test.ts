@@ -14,12 +14,28 @@ import {
   backgroundActivitySharedPolicySettings,
   durationToSeconds,
   formatDiagnosticsDescription,
+  getChangedBrowserSettingLabels,
+  getChangedTypographySettingLabels,
+  isSamePreviewViewport,
   hasChangedBackgroundActivitySettings,
   isProjectGroupingEnabled,
   normalizeIntervalSeconds,
   projectGroupingModeFromToggle,
   resolveBackgroundActivityProfileOption,
 } from "./SettingsPanels.logic";
+
+describe("typography settings restore", () => {
+  it("detects family and size changes by font row", () => {
+    expect(getChangedTypographySettingLabels(DEFAULT_UNIFIED_SETTINGS)).toEqual([]);
+    expect(
+      getChangedTypographySettingLabels({
+        ...DEFAULT_UNIFIED_SETTINGS,
+        fontSizeInterface: 18,
+        fontFamilyCode: "Fira Code",
+      }),
+    ).toEqual(["Interface font", "Code font"]);
+  });
+});
 
 describe("background activity settings restore", () => {
   it("projects provider-health interval changes through the shared background policy", () => {
@@ -195,5 +211,111 @@ describe("formatDiagnosticsDescription", () => {
         otlpMetricsEnabled: false,
       }),
     ).toBe("Local trace file.");
+  });
+});
+
+describe("buildProviderInstanceUpdatePatch", () => {
+  it("promotes an edited default provider into providerInstances and resets the legacy provider", () => {
+    const instanceId = ProviderInstanceId.make("codex");
+    const nextInstance = {
+      driver: ProviderDriverKind.make("codex"),
+      enabled: true,
+      config: {
+        binaryPath: "/opt/t3/codex",
+      },
+    } satisfies ProviderInstanceConfig;
+
+    const patch = buildProviderInstanceUpdatePatch({
+      settings: {
+        ...DEFAULT_SERVER_SETTINGS,
+        providers: {
+          ...DEFAULT_SERVER_SETTINGS.providers,
+          codex: {
+            ...DEFAULT_SERVER_SETTINGS.providers.codex,
+            binaryPath: "/legacy/codex",
+          },
+        },
+      },
+      instanceId,
+      instance: nextInstance,
+      driver: ProviderDriverKind.make("codex"),
+      isDefault: true,
+    });
+
+    expect(patch.providerInstances?.[instanceId]).toEqual(nextInstance);
+    expect(patch.providers?.codex).toEqual(DEFAULT_SERVER_SETTINGS.providers.codex);
+  });
+
+  it("updates custom instances without touching legacy provider settings", () => {
+    const instanceId = ProviderInstanceId.make("codex_personal");
+    const nextInstance = {
+      driver: ProviderDriverKind.make("codex"),
+      enabled: true,
+      config: {
+        homePath: "/Users/example/.codex-personal",
+      },
+    } satisfies ProviderInstanceConfig;
+
+    const patch = buildProviderInstanceUpdatePatch({
+      settings: DEFAULT_SERVER_SETTINGS,
+      instanceId,
+      instance: nextInstance,
+      driver: ProviderDriverKind.make("codex"),
+      isDefault: false,
+    });
+
+    expect(patch.providerInstances?.[instanceId]).toEqual(nextInstance);
+    expect(patch.providers).toBeUndefined();
+  });
+});
+
+describe("getChangedBrowserSettingLabels", () => {
+  it("reports nothing for the defaults", () => {
+    expect(getChangedBrowserSettingLabels(DEFAULT_UNIFIED_SETTINGS)).toEqual([]);
+  });
+
+  it("treats a structurally equal viewport as unchanged", () => {
+    // The viewport is a tagged union, so identity comparison would report a
+    // freshly decoded copy of the default as dirty and offer to "restore" it.
+    expect(
+      getChangedBrowserSettingLabels({
+        ...DEFAULT_UNIFIED_SETTINGS,
+        browserDefaultViewport: { ...DEFAULT_UNIFIED_SETTINGS.browserDefaultViewport },
+      }),
+    ).toEqual([]);
+  });
+
+  it("labels each browser default that differs", () => {
+    expect(
+      getChangedBrowserSettingLabels({
+        ...DEFAULT_UNIFIED_SETTINGS,
+        browserDefaultViewport: { _tag: "freeform", width: 900, height: 600 },
+        browserDefaultZoomFactor: 1.5,
+        browserDefaultAppearance: "dark",
+        browserAutoShowFloatingPreview: !DEFAULT_UNIFIED_SETTINGS.browserAutoShowFloatingPreview,
+      }),
+    ).toEqual(["Browser viewport", "Browser zoom", "Browser appearance", "Floating preview"]);
+  });
+});
+
+describe("isSamePreviewViewport", () => {
+  it("separates presets that share a size", () => {
+    // Two presets can agree on width and height and still be different
+    // entries in the picker, so the id has to take part in the comparison.
+    expect(
+      isSamePreviewViewport(
+        { _tag: "preset", width: 390, height: 844, presetId: "iphone-12-pro" },
+        { _tag: "preset", width: 390, height: 844, presetId: "ipad-mini" },
+      ),
+    ).toBe(false);
+  });
+
+  it("separates a freeform viewport from a preset of the same size", () => {
+    expect(
+      isSamePreviewViewport(
+        { _tag: "freeform", width: 390, height: 844 },
+        { _tag: "preset", width: 390, height: 844, presetId: "iphone-12-pro" },
+      ),
+    ).toBe(false);
   });
 });

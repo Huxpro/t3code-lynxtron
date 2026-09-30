@@ -28,9 +28,7 @@ describe("GeneralSettingsContent", () => {
       "auto-settle-inactive-threads",
       "time-format",
       "hide-whitespace-changes",
-      "assistant-output",
       "provider-update-checks",
-      "auto-open-task-panel",
       "new-threads",
       "add-project-starts-in",
       "archive-confirmation",
@@ -63,7 +61,7 @@ describe("GeneralSettingsContent", () => {
       markup.indexOf("data-background-activity"),
     );
     expect(markup.indexOf("data-background-activity")).toBeLessThan(
-      markup.indexOf("auto-open-task-panel"),
+      markup.indexOf('id="new-threads"'),
     );
   });
 

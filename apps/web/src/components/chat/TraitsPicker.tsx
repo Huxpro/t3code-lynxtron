@@ -97,8 +97,9 @@ function getSelectedTraits(
   prompt: string,
   modelOptions: ProviderOptions | null | undefined,
   allowPromptInjectedEffort: boolean,
+  planModeEnabled: boolean,
 ) {
-  const caps = getProviderModelCapabilities(models, model, provider);
+  const caps = getProviderModelCapabilities(models, model, provider, planModeEnabled);
   const descriptors = getProviderOptionDescriptors({
     caps,
     selections: modelOptions,
@@ -168,6 +169,7 @@ function getTraitsSectionVisibility(input: {
   prompt: string;
   modelOptions: ProviderOptions | null | undefined;
   allowPromptInjectedEffort?: boolean;
+  planModeEnabled: boolean;
 }) {
   const selected = getSelectedTraits(
     input.provider,
@@ -176,6 +178,7 @@ function getTraitsSectionVisibility(input: {
     input.prompt,
     input.modelOptions,
     input.allowPromptInjectedEffort ?? true,
+    input.planModeEnabled,
   );
 
   const showEffort = selected.primarySelectDescriptor !== null;
@@ -202,6 +205,7 @@ export function shouldRenderTraitsControls(input: {
   prompt: string;
   modelOptions: ProviderOptions | null | undefined;
   allowPromptInjectedEffort?: boolean;
+  planModeEnabled: boolean;
 }): boolean {
   return getTraitsSectionVisibility(input).hasAnyControls;
 }
@@ -215,6 +219,7 @@ export interface TraitsMenuContentProps {
   onPromptChange: (prompt: string) => void;
   modelOptions?: ProviderOptions | null | undefined;
   allowPromptInjectedEffort?: boolean;
+  planModeEnabled: boolean;
   triggerVariant?: VariantProps<typeof buttonVariants>["variant"];
   triggerClassName?: string;
 }
@@ -228,6 +233,7 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
   onPromptChange,
   modelOptions,
   allowPromptInjectedEffort = true,
+  planModeEnabled,
   ...persistence
 }: TraitsMenuContentProps & TraitsPersistence) {
   const setProviderModelOptions = useComposerDraftStore((store) => store.setProviderModelOptions);
@@ -264,6 +270,7 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
     prompt,
     modelOptions,
     allowPromptInjectedEffort,
+    planModeEnabled,
   });
   const updateDescriptors = (nextDescriptors: ReadonlyArray<ProviderOptionDescriptor>) => {
     updateModelOptions(buildProviderOptionSelectionsFromDescriptors(nextDescriptors));
@@ -324,18 +331,28 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
                     key={option.id}
                     value={option.id}
                     hideIndicator
+                    // Base UI keeps radio menus open by default. Close on pick so
+                    // the traits menu behaves like the model picker.
+                    closeOnClick
                     disabled={ultrathinkInBodyText && descriptor.id === primarySelectDescriptor?.id}
                   >
-                    <span className="flex w-full min-w-0 items-center justify-between gap-3">
-                      <span className="min-w-0 truncate">
-                        {option.label}
-                        {option.isDefault ? (
-                          <>
-                            {" "}
-                            <DefaultBadge />
-                          </>
-                        ) : null}
+                    <span className="flex w-full min-w-0 flex-col">
+                      <span className="flex w-full min-w-0 items-center justify-between gap-3">
+                        <span className="min-w-0 truncate">
+                          {option.label}
+                          {option.isDefault ? (
+                            <>
+                              {" "}
+                              <DefaultBadge />
+                            </>
+                          ) : null}
+                        </span>
                       </span>
+                      {option.description ? (
+                        <span className="max-w-56 text-pretty text-muted-foreground/80 text-xs">
+                          {option.description}
+                        </span>
+                      ) : null}
                     </span>
                   </MenuRadioItem>
                 ))}
@@ -363,7 +380,7 @@ export const TraitsMenuContent = memo(function TraitsMenuContentImpl({
                 }}
               >
                 {(["on", "off"] as const).map((value) => (
-                  <MenuRadioItem key={value} value={value} hideIndicator>
+                  <MenuRadioItem key={value} value={value} hideIndicator closeOnClick>
                     <span className="flex w-full min-w-0 items-center justify-between gap-3">
                       <span>{value === "on" ? "On" : "Off"}</span>
                     </span>
@@ -396,6 +413,7 @@ export const TraitsPicker = memo(function TraitsPicker({
   onPromptChange,
   modelOptions,
   allowPromptInjectedEffort = true,
+  planModeEnabled,
   triggerVariant,
   triggerClassName,
   ...persistence
@@ -409,6 +427,7 @@ export const TraitsPicker = memo(function TraitsPicker({
       prompt,
       modelOptions,
       allowPromptInjectedEffort,
+      planModeEnabled,
     });
   if (
     !shouldRenderTraitsControls({
@@ -418,6 +437,7 @@ export const TraitsPicker = memo(function TraitsPicker({
       prompt,
       modelOptions,
       allowPromptInjectedEffort,
+      planModeEnabled,
     })
   ) {
     return null;
@@ -488,6 +508,7 @@ export const TraitsPicker = memo(function TraitsPicker({
           onPromptChange={onPromptChange}
           modelOptions={modelOptions}
           allowPromptInjectedEffort={allowPromptInjectedEffort}
+          planModeEnabled={planModeEnabled}
           {...persistence}
         />
       </MenuPopup>

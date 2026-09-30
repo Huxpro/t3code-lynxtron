@@ -48,9 +48,6 @@ export function GeneralSettingsSync() {
     };
     const update = (patch: GeneralSettingsPatch) => {
       const clientPatch: PortableClientSettingsPatch = {
-        ...(patch.autoOpenPlanSidebar === undefined
-          ? {}
-          : { autoOpenPlanSidebar: patch.autoOpenPlanSidebar }),
         ...(patch.confirmThreadArchive === undefined
           ? {}
           : { confirmThreadArchive: patch.confirmThreadArchive }),
@@ -78,9 +75,6 @@ export function GeneralSettingsSync() {
         ...(patch.defaultThreadEnvMode === undefined
           ? {}
           : { defaultThreadEnvMode: patch.defaultThreadEnvMode }),
-        ...(patch.enableAssistantStreaming === undefined
-          ? {}
-          : { enableAssistantStreaming: patch.enableAssistantStreaming }),
         ...(patch.enableProviderUpdateChecks === undefined
           ? {}
           : { enableProviderUpdateChecks: patch.enableProviderUpdateChecks }),

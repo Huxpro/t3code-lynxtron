@@ -1,1 +1,8 @@
-export { Link, useLocation, useNavigate, useParams, useRouter } from "@tanstack/react-router";
+export {
+  Link,
+  useCanGoBack,
+  useLocation,
+  useNavigate,
+  useParams,
+  useRouter,
+} from "@tanstack/react-router";

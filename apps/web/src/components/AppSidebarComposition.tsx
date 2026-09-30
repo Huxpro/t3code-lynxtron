@@ -1,31 +1,34 @@
 import type { CSSProperties, ReactNode } from "react";
 
 import { AppShellSurface } from "./AppShellSurface";
-import ThreadSidebar from "./Sidebar";
-import ThreadSidebarV2 from "./SidebarV2";
 import { SidebarProvider, SidebarRail } from "./ui/sidebar";
 
+/**
+ * Shared provider + shell composition for Web and Lynx. Each platform layout
+ * decides which sidebar content to mount (the Web and Lynx sidebar modules
+ * differ), so this module stays free of sidebar imports.
+ */
 export function AppSidebarComposition({
   globalControl,
   main,
+  onRailDoubleClick,
   providerClassName,
   providerStyle,
   renderSidebar,
   sidebarContent,
-  useFlatSidebar,
 }: {
   readonly globalControl: ReactNode;
   readonly main: ReactNode;
+  readonly onRailDoubleClick?: () => void;
   readonly providerClassName: string;
   readonly providerStyle: CSSProperties | Readonly<Record<string, string | number>>;
   readonly renderSidebar: (content: ReactNode) => ReactNode;
-  readonly sidebarContent?: ReactNode;
-  readonly useFlatSidebar: boolean;
+  readonly sidebarContent: ReactNode;
 }) {
   const sidebar = renderSidebar(
     <>
-      {sidebarContent ?? (useFlatSidebar ? <ThreadSidebarV2 /> : <ThreadSidebar />)}
-      <SidebarRail />
+      {sidebarContent}
+      <SidebarRail {...(onRailDoubleClick ? { onDoubleClick: onRailDoubleClick } : {})} />
     </>,
   );
 

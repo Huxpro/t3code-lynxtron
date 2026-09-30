@@ -83,14 +83,12 @@ describe("Settings primitive contract", () => {
 
     assert.match(webAdapter, /from ["'].\/GeneralSettingsContent["']/u);
     assert.match(lynxAdapter, /web\/src\/components\/settings\/GeneralSettingsPanel["']/u);
-    assert.equal([...composition.matchAll(/<SettingsRow\b/gu)].length, 14);
+    assert.equal([...composition.matchAll(/<SettingsRow\b/gu)].length, 15);
     for (const id of [
       "project-grouping",
       "time-format",
       "hide-whitespace-changes",
-      "assistant-output",
       "provider-update-checks",
-      "auto-open-task-panel",
       "new-threads",
       "start-from-origin",
       "add-project-starts-in",

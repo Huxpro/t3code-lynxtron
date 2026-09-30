@@ -11,11 +11,11 @@
     "src/app/overrides.css",
     "src/app/tailwind.css"
   ],
-  "removedSelectorCount": 0,
+  "removedSelectorCount": 5,
   "removedDeclarationCount": 1,
   "retainedSupportedSelectorCount": 2,
   "retainedSupportedDeclarationCount": 2,
-  "transformedSelectorCount": 36,
+  "transformedSelectorCount": 35,
   "transformedDeclarationCount": 9,
   "transformedSelectors": [
     {
@@ -189,11 +189,6 @@
       "transformations": ["hover-to-state-attribute"]
     },
     {
-      "from": ".hover\\:text-primary:hover",
-      "to": ".hover\\:text-primary[data-lynx-hover=\"true\"]",
-      "transformations": ["hover-to-state-attribute"]
-    },
-    {
       "from": ".hover\\:text-sidebar-foreground:hover",
       "to": ".hover\\:text-sidebar-foreground[data-lynx-hover=\"true\"]",
       "transformations": ["hover-to-state-attribute"]
@@ -336,7 +331,13 @@
       "selector": ".grid-cols-\\[4ch_4ch\\]"
     }
   ],
-  "removedSelectors": [],
+  "removedSelectors": [
+    ".after\\:absolute::after",
+    ".after\\:bg-\\[linear-gradient\\(120deg\\2c transparent_40\\%\\2c var\\(--skeleton-highlight\\)\\2c transparent_60\\%\\)\\]::after",
+    ".after\\:inset-0::after",
+    ".enabled\\:hover\\:bg-sidebar-row-hover:hover:enabled",
+    ".enabled\\:hover\\:text-sidebar-foreground:hover:enabled"
+  ],
   "removedDeclarations": [
     {
       "property": "tab-size",

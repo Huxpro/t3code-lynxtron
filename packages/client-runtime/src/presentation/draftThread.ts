@@ -2,6 +2,7 @@ import {
   DEFAULT_PROVIDER_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
   PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
+  isProviderSendTurnSupportedImageMimeType,
   type ModelSelection,
   type OrchestrationThreadShell,
   type ProjectId,
@@ -136,6 +137,10 @@ export function planComposerImageAdditions<
   for (const candidate of options.candidates) {
     if (!candidate.mimeType.startsWith("image/")) {
       error = `Unsupported file type for '${candidate.name}'. Please attach image files only.`;
+      continue;
+    }
+    if (!isProviderSendTurnSupportedImageMimeType(candidate.mimeType)) {
+      error = `'${candidate.name}' is not a supported image type. Attach GIF, JPEG, PNG, or WebP images.`;
       continue;
     }
     if (reservedCount >= PROVIDER_SEND_TURN_MAX_ATTACHMENTS) {

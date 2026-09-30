@@ -9,12 +9,10 @@ import type { GeneralSettingsValues } from "./GeneralSettingsContent";
 
 export const GENERAL_SETTINGS_DEFAULT_VALUES: GeneralSettingsValues = {
   addProjectBaseDirectory: PORTABLE_SERVER_SETTINGS_DEFAULTS.addProjectBaseDirectory,
-  autoOpenPlanSidebar: PORTABLE_CLIENT_SETTINGS_DEFAULTS.autoOpenPlanSidebar,
   confirmThreadArchive: PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadArchive,
   confirmThreadDelete: PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadDelete,
   defaultThreadEnvMode: PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode,
   diffIgnoreWhitespace: PORTABLE_CLIENT_SETTINGS_DEFAULTS.diffIgnoreWhitespace,
-  enableAssistantStreaming: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableAssistantStreaming,
   enableProviderUpdateChecks: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableProviderUpdateChecks,
   legacySidebarEnabled: PORTABLE_CLIENT_SETTINGS_DEFAULTS.legacySidebarEnabled,
   newWorktreesStartFromOrigin: PORTABLE_SERVER_SETTINGS_DEFAULTS.newWorktreesStartFromOrigin,
@@ -25,7 +23,6 @@ export const GENERAL_SETTINGS_DEFAULT_VALUES: GeneralSettingsValues = {
 
 type GeneralClientSource = Pick<
   PortableClientSettings,
-  | "autoOpenPlanSidebar"
   | "confirmThreadArchive"
   | "confirmThreadDelete"
   | "diffIgnoreWhitespace"
@@ -39,7 +36,6 @@ type GeneralServerSource = Pick<
   PortableServerSettings,
   | "addProjectBaseDirectory"
   | "defaultThreadEnvMode"
-  | "enableAssistantStreaming"
   | "enableProviderUpdateChecks"
   | "newWorktreesStartFromOrigin"
 >;
@@ -54,12 +50,10 @@ export function projectGeneralSettingsValues(
 ): GeneralSettingsValues {
   return {
     addProjectBaseDirectory: server.addProjectBaseDirectory,
-    autoOpenPlanSidebar: client.autoOpenPlanSidebar,
     confirmThreadArchive: client.confirmThreadArchive,
     confirmThreadDelete: client.confirmThreadDelete,
     defaultThreadEnvMode: server.defaultThreadEnvMode,
     diffIgnoreWhitespace: client.diffIgnoreWhitespace,
-    enableAssistantStreaming: server.enableAssistantStreaming,
     enableProviderUpdateChecks: server.enableProviderUpdateChecks,
     legacySidebarEnabled: client.legacySidebarEnabled,
     newWorktreesStartFromOrigin: server.newWorktreesStartFromOrigin,

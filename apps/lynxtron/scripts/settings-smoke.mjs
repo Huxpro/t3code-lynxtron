@@ -28,18 +28,18 @@ try {
     throw new Error(`Connector did not become ready: ${connected.status}`);
   }
 
-  const original = connected.config.settings.enableAssistantStreaming;
+  const original = connected.config.settings.enableLegacyTokenStreaming;
   const updated = await connector.updateServerSettings({
-    patch: { enableAssistantStreaming: !original },
+    patch: { enableLegacyTokenStreaming: !original },
   });
-  if (updated.settings.enableAssistantStreaming !== !original) {
+  if (updated.settings.enableLegacyTokenStreaming !== !original) {
     throw new Error("server.updateSettings did not return the toggled canonical setting");
   }
 
   const restored = await connector.updateServerSettings({
-    patch: { enableAssistantStreaming: original },
+    patch: { enableLegacyTokenStreaming: original },
   });
-  if (restored.settings.enableAssistantStreaming !== original) {
+  if (restored.settings.enableLegacyTokenStreaming !== original) {
     throw new Error("server.updateSettings did not restore the canonical setting");
   }
   if (configEventCount < 3) {
@@ -51,8 +51,8 @@ try {
       ok: true,
       status: connected.status,
       original,
-      toggled: updated.settings.enableAssistantStreaming,
-      restored: restored.settings.enableAssistantStreaming,
+      toggled: updated.settings.enableLegacyTokenStreaming,
+      restored: restored.settings.enableLegacyTokenStreaming,
       configEventCount,
     }),
   );

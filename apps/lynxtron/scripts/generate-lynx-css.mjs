@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -9,31 +9,21 @@ const repoRoot = path.resolve(appRoot, "../..");
 const upstreamCssPath = path.join(repoRoot, "apps/web/src/index.css");
 const outputPath = path.join(appRoot, "src/app/generated/lynx.css");
 const reportPath = path.join(appRoot, "reports/css-generation.json");
-const webDmSansPath = path.join(
-  repoRoot,
-  "apps/web/node_modules/@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2",
-);
-const lynxDmSansPath = path.join(appRoot, "src/app/assets/dm-sans.woff2");
-const webJetBrainsMonoPath = path.join(
-  repoRoot,
-  "apps/web/node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2",
-);
-const lynxJetBrainsMonoPath = path.join(appRoot, "src/app/assets/jetbrains-mono-400.woff2");
 
 const source = await readFile(upstreamCssPath, "utf8");
 const sourceHash = createHash("sha256").update(source).digest("hex");
 
-function blockAfter(marker) {
-  const markerIndex = source.indexOf(marker);
+function blockAfter(marker, text = source) {
+  const markerIndex = text.indexOf(marker);
   if (markerIndex < 0) {
     throw new Error(`Unable to find ${marker} in ${upstreamCssPath}`);
   }
-  const open = source.indexOf("{", markerIndex);
+  const open = text.indexOf("{", markerIndex);
   let depth = 0;
-  for (let index = open; index < source.length; index += 1) {
-    if (source[index] === "{") depth += 1;
-    if (source[index] === "}") depth -= 1;
-    if (depth === 0) return source.slice(open + 1, index);
+  for (let index = open; index < text.length; index += 1) {
+    if (text[index] === "{") depth += 1;
+    if (text[index] === "}") depth -= 1;
+    if (depth === 0) return text.slice(open + 1, index);
   }
   throw new Error(`Unclosed CSS block after ${marker}`);
 }
@@ -44,7 +34,8 @@ function declarations(block) {
   );
 }
 
-const sidebarSource = declarations(blockAfter('.dark [data-sidebar-version="v1"]'));
+// The dark sidebar palette is nested as `[data-app-sidebar] { @variant dark { ... } }`.
+const sidebarSource = declarations(blockAfter("@variant dark", blockAfter("[data-app-sidebar] {")));
 const themeSource = declarations(blockAfter("@theme inline"));
 const settingsPrimitiveSource = declarations(blockAfter("LYNX_SETTINGS_PRIMITIVE_CONTRACT"));
 
@@ -331,8 +322,6 @@ ${lightSemanticVariables}
 
 await mkdir(path.dirname(outputPath), { recursive: true });
 await mkdir(path.dirname(reportPath), { recursive: true });
-await copyFile(webDmSansPath, lynxDmSansPath);
-await copyFile(webJetBrainsMonoPath, lynxJetBrainsMonoPath);
 await writeFile(outputPath, generated);
 await writeFile(
   reportPath,

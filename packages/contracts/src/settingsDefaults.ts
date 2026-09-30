@@ -9,7 +9,6 @@ export const MIN_GLASS_OPACITY_VALUE = 40;
 export const MAX_GLASS_OPACITY_VALUE = 100;
 
 export const PORTABLE_CLIENT_SETTINGS_DEFAULTS = {
-  autoOpenPlanSidebar: false,
   confirmThreadArchive: false,
   confirmThreadDelete: true,
   diffIgnoreWhitespace: true,
@@ -27,7 +26,7 @@ export const PORTABLE_SERVER_SETTINGS_DEFAULTS = {
   addProjectBaseDirectory: "",
   backgroundActivity: { schemaVersion: 1, profile: "balanced", overrides: {} },
   defaultThreadEnvMode: "local",
-  enableAssistantStreaming: false,
+  enableLegacyTokenStreaming: false,
   enableProviderUpdateChecks: true,
   newWorktreesStartFromOrigin: true,
 } as const;

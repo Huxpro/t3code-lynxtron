@@ -308,6 +308,19 @@ describe("planComposerImageAdditions", () => {
     });
   });
 
+  it("skips image types providers cannot receive", () => {
+    const plan = planComposerImageAdditions({
+      candidates: [image("icon.svg", "image/svg+xml"), image("b.png")],
+      reservedCount: 0,
+      hasPendingUserInput: false,
+    });
+    expect(plan).toEqual({
+      kind: "planned",
+      accepted: [image("b.png")],
+      error: "'icon.svg' is not a supported image type. Attach GIF, JPEG, PNG, or WebP images.",
+    });
+  });
+
   it("stops at the per-message limit including reserved slots", () => {
     const plan = planComposerImageAdditions({
       candidates: [image("a.png"), image("b.png")],

@@ -249,7 +249,7 @@ try {
   await evaluate(client, `(() => { location.hash = "#" + ${JSON.stringify(canonicalRoute)}; })()`);
   const expectedDetail =
     verifyMessageCard || verifyReviewDiff ? undefined : fixture.activity.payload.detail;
-  const expectedActions = ["Cancel turn", "Decline", "Always allow this session", "Approve once"];
+  const expectedActions = ["Cancel", "Decline", "Always allow this session", "Approve"];
   let state;
   try {
     state = verifyReviewDiff

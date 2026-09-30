@@ -19,7 +19,7 @@
         "sideOffset": 4
       },
       "source": [
-        "apps/web/src/components/SidebarV2.tsx",
+        "apps/web/src/components/Sidebar.tsx",
         "apps/web/src/components/SidebarV2.lynx.tsx"
       ]
     },
@@ -40,6 +40,7 @@
         "sideOffset": 4
       },
       "source": [
+        "apps/web/src/components/Sidebar.tsx",
         "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
         "apps/web/src/components/ui/menu.lynx.tsx"
       ]
@@ -136,7 +137,7 @@
       },
       "source": [
         "apps/web/src/components/chat/OpenInPicker.tsx",
-        "apps/lynxtron/src/app/components/ChatHeader.tsx"
+        "apps/lynxtron/src/app/components/OpenInPicker.tsx"
       ]
     },
     {

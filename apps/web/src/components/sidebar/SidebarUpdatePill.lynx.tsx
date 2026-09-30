@@ -2,3 +2,8 @@
 export function SidebarUpdatePill() {
   return null;
 }
+
+/** The update architecture warning is Electron-only. */
+export function SidebarUpdateArchitectureWarning() {
+  return null;
+}

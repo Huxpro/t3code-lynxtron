@@ -20,14 +20,14 @@ import { useProjects, useThreadShells } from "../state/entities";
 import { useViewportSnapshot } from "../hooks/useViewportSnapshot";
 import { ProjectFavicon } from "./ProjectFavicon";
 import {
-  resolveSidebarV2Status,
+  resolveSidebarThreadStatus,
   resolveWorkingStartedAt,
   formatWorkingDurationLabel,
   searchSidebarThreadsByTitle,
   shouldChooseProjectForNewThread,
   sortScopedProjectsForSidebar,
-  sortSettledThreadsForSidebarV2,
-  sortThreadsForSidebarV2,
+  sortSettledThreadsForSidebar,
+  sortThreadsForSidebar,
   buildSidebarV2ThreadContextMenuItems,
   isSidebarV2ThreadWoke,
   resolveSidebarV2RowPresentation,
@@ -373,7 +373,7 @@ export default function SidebarV2() {
     );
     if (serverConfig?.environment.capabilities.threadSettlement !== true) {
       return {
-        activeThreads: sortThreadsForSidebarV2(visible),
+        activeThreads: sortThreadsForSidebar(visible),
         settledThreads: [],
       };
     }
@@ -393,8 +393,8 @@ export default function SidebarV2() {
       }
     }
     return {
-      activeThreads: sortThreadsForSidebarV2(active),
-      settledThreads: sortSettledThreadsForSidebarV2(settled),
+      activeThreads: sortThreadsForSidebar(active),
+      settledThreads: sortSettledThreadsForSidebar(settled),
     };
   }, [clientSettings.sidebarAutoSettleAfterDays, projectScopeKey, serverConfig, threads]);
   const searchableThreads = useMemo(
@@ -710,7 +710,7 @@ export default function SidebarV2() {
             );
           }),
           ...visibleActiveThreads.map((thread) => {
-            const status = resolveSidebarV2Status(thread);
+            const status = resolveSidebarThreadStatus(thread);
             const isActive = thread.id === activeThreadId;
             const disposableEmptyThread = isDisposableEmptyThread(thread);
             const project = projectById.get(thread.projectId) ?? null;
@@ -950,7 +950,7 @@ export default function SidebarV2() {
               lastVisitedAt,
             );
             const presentation = resolveSidebarV2RowPresentation({
-              status: resolveSidebarV2Status(thread),
+              status: resolveSidebarThreadStatus(thread),
               isUnread,
               isWoke,
               isActive: thread.id === activeThreadId,

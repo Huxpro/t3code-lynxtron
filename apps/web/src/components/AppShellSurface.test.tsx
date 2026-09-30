@@ -24,7 +24,6 @@ describe("AppShellSurface", () => {
       <AppSidebarComposition
         providerClassName="shell-provider"
         providerStyle={{ "--sidebar-width": "16rem" } as CSSProperties}
-        useFlatSidebar
         sidebarContent={<span>Projects</span>}
         renderSidebar={(content) => <aside>Sidebar{content}</aside>}
         main={<main>Conversation</main>}

@@ -351,12 +351,13 @@ export function SidebarMenuButton({
   disabled = false,
   onClick,
   render: _render,
+  size: _size,
   ...props
 }: ElementProps & {
   readonly disabled?: boolean;
   readonly onClick?: (event: unknown) => void;
   readonly render?: ReactElement<Record<string, unknown>>;
-  readonly size?: "default" | "sm" | "lg";
+  readonly size?: "default" | "sm" | "lg" | "icon";
 }) {
   if (isValidElement(_render)) {
     return cloneElement(_render, {

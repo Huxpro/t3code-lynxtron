@@ -16,6 +16,8 @@ export function SortableContext({ children }: { children?: ReactNode }) {
   return <>{children}</>;
 }
 
+export type AnimateLayoutChanges = (args: { isSorting: boolean }) => boolean;
+export const defaultAnimateLayoutChanges: AnimateLayoutChanges = () => false;
 export const PointerSensor = {};
 export const verticalListSortingStrategy = {};
 export const restrictToFirstScrollableAncestor = () => {};

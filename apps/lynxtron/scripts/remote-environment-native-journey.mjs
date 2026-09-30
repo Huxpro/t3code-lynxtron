@@ -11,6 +11,8 @@ import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:f
 import { tmpdir } from "node:os";
 import path from "node:path";
 
+import { enableOpenCodeInFixtureState } from "./fixture-provider-defaults.mjs";
+
 const require = createRequire(import.meta.url);
 const appRoot = path.resolve(import.meta.dirname, "..");
 const repoRoot = path.resolve(appRoot, "../..");
@@ -26,6 +28,7 @@ const stateDir = path.join(runRoot, "state");
 const pairingUrlFile = path.join(runRoot, "pairing-url.txt");
 const nativeReport = path.join(runRoot, "native", "report.json");
 cpSync(path.resolve(sourceFixture), stateDir, { recursive: true });
+enableOpenCodeInFixtureState(stateDir);
 const manifest = JSON.parse(readFileSync(path.join(stateDir, "visual-state.json"), "utf8"));
 const workspaceRoot = manifest.project?.workspaceRoot;
 if (typeof workspaceRoot !== "string") throw new Error("Fixture needs project.workspaceRoot.");

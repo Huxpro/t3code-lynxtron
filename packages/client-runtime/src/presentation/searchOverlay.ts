@@ -29,14 +29,12 @@ export function reduceSearchOverlayState(
 ): SearchOverlayState {
   switch (action._tag) {
     case "SetOpen":
-      return {
-        open: action.open,
-        mode: "command",
-        openIntent: action.open ? state.openIntent : null,
-      };
+      return action.open
+        ? { open: true, mode: "command", openIntent: state.openIntent }
+        : { ...state, open: false, openIntent: null };
     case "ToggleMode":
       return state.open && state.mode === action.mode
-        ? INITIAL_SEARCH_OVERLAY_STATE
+        ? { ...state, open: false, openIntent: null }
         : { open: true, mode: action.mode, openIntent: null };
     case "OpenAddProject":
       return { open: true, mode: "command", openIntent: { kind: "add-project" } };

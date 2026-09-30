@@ -2,6 +2,7 @@ import { ProviderDriverKind, ProviderInstanceId, type ServerProvider } from "@t3
 import { describe, expect, it } from "vite-plus/test";
 import {
   applyProviderInstanceSettings,
+  deriveProviderEntriesByEnvironment,
   deriveProviderInstanceEntries,
   getDefaultProviderInstanceModel,
   isProviderInstancePickerReady,
@@ -12,8 +13,10 @@ import {
   resolveProviderDriverKindForInstanceSelection,
   getProviderSummary,
   projectProviderStatusNotice,
+  resolveProviderInstanceEnabled,
   sortProviderInstanceEntries,
 } from "./provider.ts";
+import { resolveProviderInstanceEnabled as resolveContractsInstanceEnabled } from "@t3tools/contracts";
 
 function provider(input: {
   provider: ProviderDriverKind;
@@ -21,6 +24,7 @@ function provider(input: {
   enabled?: boolean;
   availability?: ServerProvider["availability"];
   displayName?: string;
+  accentColor?: string;
   status?: ServerProvider["status"];
   models?: ServerProvider["models"];
 }): ServerProvider {
@@ -28,6 +32,7 @@ function provider(input: {
     instanceId: ProviderInstanceId.make(input.instanceId),
     driver: input.provider,
     ...(input.displayName ? { displayName: input.displayName } : {}),
+    ...(input.accentColor ? { accentColor: input.accentColor } : {}),
     enabled: input.enabled ?? true,
     installed: true,
     version: null,
@@ -251,6 +256,52 @@ describe("sortProviderInstanceEntries", () => {
         ProviderDriverKind.make("claudeAgent"),
       ]).map((entry) => entry.instanceId),
     ).toEqual(["codex", "codex_personal", "claudeAgent", "claude_work", "opencode"]);
+  });
+});
+
+describe("deriveProviderEntriesByEnvironment", () => {
+  it("keeps same-id default instances distinct per environment", () => {
+    const byEnvironment = deriveProviderEntriesByEnvironment([
+      [
+        "local",
+        [
+          provider({
+            provider: ProviderDriverKind.make("claude"),
+            instanceId: "claude",
+            displayName: "Claude Local",
+            accentColor: "#112233",
+          }),
+        ],
+      ],
+      [
+        "remote",
+        [
+          provider({
+            provider: ProviderDriverKind.make("claude"),
+            instanceId: "claude",
+            displayName: "Claude Remote",
+            accentColor: "#445566",
+          }),
+        ],
+      ],
+    ]);
+
+    expect(byEnvironment.get("local")?.get("claude")?.displayName).toBe("Claude Local");
+    expect(byEnvironment.get("local")?.get("claude")?.accentColor).toBe("#112233");
+    expect(byEnvironment.get("remote")?.get("claude")?.displayName).toBe("Claude Remote");
+    expect(byEnvironment.get("remote")?.get("claude")?.accentColor).toBe("#445566");
+  });
+
+  it("never falls back to another environment's instances", () => {
+    const byEnvironment = deriveProviderEntriesByEnvironment([
+      ["local", [provider({ provider: ProviderDriverKind.make("codex"), instanceId: "codex" })]],
+      ["empty", []],
+    ]);
+
+    expect(byEnvironment.get("empty")?.get("codex")).toBeUndefined();
+    // Every environment gets its own bucket, so an absent lookup is a real
+    // "this environment has no such instance", not a missing key.
+    expect(byEnvironment.get("empty")?.size).toBe(0);
   });
 });
 
@@ -579,5 +630,24 @@ describe("resolveDefaultProviderModelSelection", () => {
         null,
       ),
     ).toBeNull();
+  });
+});
+
+describe("resolveProviderInstanceEnabled", () => {
+  it("matches the contracts resolver for every built-in driver and flag", () => {
+    for (const driver of ["codex", "claudeAgent", "cursor", "grok", "opencode", "fork"]) {
+      for (const enabled of [undefined, true, false]) {
+        for (const config of [{}, { enabled: true }, { enabled: false }, null]) {
+          const instance = {
+            driver: ProviderDriverKind.make(driver),
+            ...(enabled === undefined ? {} : { enabled }),
+            config,
+          };
+          expect(resolveProviderInstanceEnabled(instance)).toBe(
+            resolveContractsInstanceEnabled(instance),
+          );
+        }
+      }
+    }
   });
 });

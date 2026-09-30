@@ -1915,25 +1915,28 @@ export function indexCheckpointSummariesByAssistantMessageId(
  * checkpoint of the first assistant reply with a diff, looking only until the
  * next user message.
  */
-export function deriveRevertTurnCountByUserMessageId<M extends TranscriptMessage>(
-  timelineEntries: ReadonlyArray<TimelineEntry<M>>,
+export function deriveRevertTurnCountByUserMessageId<
+  M extends Pick<TranscriptMessage, "id" | "role">,
+>(
+  timelineEntries: ReadonlyArray<{ readonly kind: string; readonly message?: M }>,
   summaryByAssistantMessageId: ReadonlyMap<string, OrchestrationCheckpointSummary>,
   inferredCheckpointTurnCountByTurnId: Readonly<Record<string, number>>,
 ): Map<M["id"], number> {
   const byUserMessageId = new Map<M["id"], number>();
   for (let index = 0; index < timelineEntries.length; index += 1) {
     const entry = timelineEntries[index];
-    if (!entry || entry.kind !== "message" || entry.message.role !== "user") continue;
+    if (!entry || entry.kind !== "message" || entry.message?.role !== "user") continue;
+    const userMessageId = entry.message.id;
     for (let cursor = index + 1; cursor < timelineEntries.length; cursor += 1) {
       const next = timelineEntries[cursor];
-      if (!next || next.kind !== "message") continue;
+      if (!next || next.kind !== "message" || !next.message) continue;
       if (next.message.role === "user") break;
       const summary = summaryByAssistantMessageId.get(next.message.id);
       if (!summary) continue;
       const turnCount =
         summary.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[summary.turnId];
       if (typeof turnCount === "number") {
-        byUserMessageId.set(entry.message.id, Math.max(0, turnCount - 1));
+        byUserMessageId.set(userMessageId, Math.max(0, turnCount - 1));
       }
       break;
     }

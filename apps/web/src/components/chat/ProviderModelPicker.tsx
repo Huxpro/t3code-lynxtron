@@ -16,7 +16,10 @@ import {
   getTriggerDisplayModelLabel,
   getTriggerDisplayModelName,
 } from "./providerIconUtils";
-import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
+import {
+  shouldShowInstanceBadge,
+  type ProviderInstanceEntry,
+} from "@t3tools/client-runtime/presentation/provider";
 import { ComposerControl, ComposerControlChevron } from "./ComposerControl";
 
 export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
@@ -67,10 +70,8 @@ export const ProviderModelPicker = memo(function ProviderModelPicker(props: {
     selectedInstanceOptions[0];
   const triggerTitle = selectedModel ? getTriggerDisplayModelName(selectedModel) : props.model;
   const triggerLabel = selectedModel ? getTriggerDisplayModelLabel(selectedModel) : props.model;
-  const duplicateDriverCount = props.instanceEntries.filter(
-    (entry) => activeEntry !== null && entry.driverKind === activeEntry.driverKind,
-  ).length;
-  const showInstanceBadge = Boolean(activeEntry?.accentColor) || duplicateDriverCount > 1;
+  const showInstanceBadge =
+    activeEntry !== null && shouldShowInstanceBadge(activeEntry, props.instanceEntries);
 
   const setIsMenuOpen = (open: boolean) => {
     props.onOpenChange?.(open);

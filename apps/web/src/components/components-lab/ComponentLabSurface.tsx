@@ -177,7 +177,7 @@ function StoryLabel({ children }: { readonly children: ReactNode }) {
 function ComponentLabSelectStory() {
   const [value, setValue] = useState("comfortable");
   return (
-    <Select value={value} onValueChange={setValue}>
+    <Select value={value} onValueChange={(next) => next !== null && setValue(next)}>
       <SelectTrigger aria-label="Density" data-component-lab-select-trigger="default">
         <SelectValue>{value === "compact" ? "Compact" : "Comfortable"}</SelectValue>
       </SelectTrigger>
@@ -204,7 +204,7 @@ function ComponentLabNumberFieldStory() {
       data-component-lab-number-field="default"
       max={20}
       min={0}
-      onValueChange={setValue}
+      onValueChange={(next) => next !== null && setValue(next)}
       step={2}
       value={value}
     >
@@ -1177,15 +1177,17 @@ export function ComponentLabSurface() {
             </HostText>
           </StoryFrame>
 
-          {[
-            ["ui/sheet#SheetTrigger", "Sheet trigger"],
-            ["ui/sheet#SheetClose", "Sheet close"],
-            ["ui/sheet#SheetHeader", "Sheet header"],
-            ["ui/sheet#SheetPanel", "Sheet panel"],
-            ["ui/sheet#SheetFooter", "Sheet footer"],
-            ["ui/sheet#SheetTitle", "Sheet title"],
-            ["ui/sheet#SheetDescription", "Sheet description"],
-          ].map(([id, title]) => (
+          {(
+            [
+              ["ui/sheet#SheetTrigger", "Sheet trigger"],
+              ["ui/sheet#SheetClose", "Sheet close"],
+              ["ui/sheet#SheetHeader", "Sheet header"],
+              ["ui/sheet#SheetPanel", "Sheet panel"],
+              ["ui/sheet#SheetFooter", "Sheet footer"],
+              ["ui/sheet#SheetTitle", "Sheet title"],
+              ["ui/sheet#SheetDescription", "Sheet description"],
+            ] as const
+          ).map(([id, title]) => (
             <StoryFrame id={id} key={id} title={title}>
               <HostText className="component-lab-host-text component-lab-host-text--muted">
                 Exercised by the shared production Sheet composition above.

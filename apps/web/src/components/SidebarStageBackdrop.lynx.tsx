@@ -42,6 +42,13 @@ export function resolveSidebarStageBackdropVariant(
   return null;
 }
 
+/** Focus rings are a pointer-web affordance; Lynx draws none. */
+export function resolveSidebarStageFocusRingOffsetClass(
+  _variant: SidebarStageBackdropVariant,
+): string {
+  return "";
+}
+
 export function resolveEnvironmentIdentificationPillLabel(
   stageLabel: string,
 ): EnvironmentIdentificationPillLabel | null {

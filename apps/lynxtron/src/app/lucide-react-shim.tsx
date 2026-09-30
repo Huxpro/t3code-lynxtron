@@ -26,6 +26,7 @@ function createIcon(name: IconName): ComponentType<LucideProps> {
 export const ArchiveIcon = createIcon("archive");
 export const ArrowDownIcon = createIcon("arrow-up");
 export const ArrowLeftIcon = createIcon("arrow-left");
+export const ChartNoAxesColumnIcon = createIcon("chart-no-axes-column");
 export const ArrowUpDownIcon = createIcon("arrow-up-down");
 export const ArrowUpIcon = createIcon("arrow-up");
 export const BotIcon = createIcon("bot");

@@ -253,7 +253,7 @@ function summaryForProvider(
   return [
     {
       kind: "text",
-      text: `Could not verify ${item.label}. ${item.installHint}`,
+      text: `Could not verify ${item.label}. ${optionGetOrNull(item.auth.detail) ?? item.installHint}`,
     },
   ];
 }

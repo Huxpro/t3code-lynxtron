@@ -60,10 +60,6 @@ function readLegacyClientSettings(): PortableClientSettings {
       "hideWhitespace",
       PORTABLE_CLIENT_SETTINGS_DEFAULTS.diffIgnoreWhitespace,
     ),
-    autoOpenPlanSidebar: getPref(
-      "autoOpenTaskPanel",
-      PORTABLE_CLIENT_SETTINGS_DEFAULTS.autoOpenPlanSidebar,
-    ),
     confirmThreadArchive: getPref(
       "archiveConfirmation",
       PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadArchive,

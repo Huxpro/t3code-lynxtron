@@ -1,3 +1,10 @@
+export interface ReviewCommentSelection {
+  readonly start: number;
+  readonly side: "additions" | "deletions";
+  readonly end: number;
+  readonly endSide: "additions" | "deletions";
+}
+
 export interface ReviewCommentContext {
   readonly id: string;
   readonly sectionId: string;
@@ -9,6 +16,7 @@ export interface ReviewCommentContext {
   readonly text: string;
   readonly diff: string;
   readonly fenceLanguage?: string | undefined;
+  readonly selection?: ReviewCommentSelection | undefined;
 }
 
 export type ReviewCommentMessageSegment =

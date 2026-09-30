@@ -23,7 +23,7 @@ export interface SidebarV2ProjectScopeOption {
   readonly favicon: ReactNode;
   /** Web-only trailing project-actions control; Lynx passes null. */
   readonly actions?: ReactNode;
-  readonly onContextMenu?: HostButtonProps["onContextMenu"];
+  readonly onContextMenu?: () => void;
 }
 
 export interface SidebarV2ControlsSurfaceProps {

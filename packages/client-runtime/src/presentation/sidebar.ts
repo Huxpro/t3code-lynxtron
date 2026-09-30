@@ -30,6 +30,7 @@ export interface SidebarThreadStatus {
 export interface ThreadStatusPill {
   readonly label:
     | "Working"
+    | "Monitoring"
     | "Connecting"
     | "Completed"
     | "Pending Approval"
@@ -101,6 +102,7 @@ export type SidebarThreadStatusInput = Pick<
   | "interactionMode"
   | "latestTurn"
   | "session"
+  | "backgroundLiveness"
 > & {
   readonly lastVisitedAt?: string | undefined;
 };
@@ -240,55 +242,79 @@ export function deriveSidebarThreadStatus(thread: SidebarThreadStatusInput): Sid
   return STATUSES.ready;
 }
 
+const WORKING_PILL_CLASSES = {
+  colorClass: "text-sky-600 dark:text-sky-300/80",
+  dotClass: "bg-sky-500 dark:bg-sky-300/80",
+} as const;
+
+/**
+ * Project-list status pill. Attention states first, then active work, then
+ * the actionable plan prompt, then native background work that outlives the
+ * turn (fleets read as Working, watch loops alone as Monitoring), then an
+ * unseen completion.
+ */
 export function resolveThreadStatusPill(input: {
   readonly thread: SidebarThreadStatusInput;
 }): ThreadStatusPill | null {
-  const status = deriveSidebarThreadStatus(input.thread);
-  switch (status.kind) {
-    case "approval":
-      return {
-        label: "Pending Approval",
-        colorClass: "text-amber-600 dark:text-amber-300/90",
-        dotClass: "bg-amber-500 dark:bg-amber-300/90",
-        pulse: status.pulse,
-      };
-    case "input":
-      return {
-        label: "Awaiting Input",
-        colorClass: "text-indigo-600 dark:text-indigo-300/90",
-        dotClass: "bg-indigo-500 dark:bg-indigo-300/90",
-        pulse: status.pulse,
-      };
-    case "working":
-      return {
-        label: "Working",
-        colorClass: "text-sky-600 dark:text-sky-300/80",
-        dotClass: "bg-sky-500 dark:bg-sky-300/80",
-        pulse: status.pulse,
-      };
-    case "connecting":
-      return {
-        label: "Connecting",
-        colorClass: "text-sky-600 dark:text-sky-300/80",
-        dotClass: "bg-sky-500 dark:bg-sky-300/80",
-        pulse: status.pulse,
-      };
-    case "plan-ready":
-      return {
-        label: "Plan Ready",
-        colorClass: "text-violet-600 dark:text-violet-300/90",
-        dotClass: "bg-violet-500 dark:bg-violet-300/90",
-        pulse: status.pulse,
-      };
-    case "completed":
-      return {
-        label: "Completed",
-        colorClass: "text-emerald-600 dark:text-emerald-300/90",
-        dotClass: "bg-emerald-500 dark:bg-emerald-300/90",
-        pulse: status.pulse,
-      };
-    case "failed":
-    case "ready":
-      return null;
+  const { thread } = input;
+
+  if (thread.hasPendingApprovals) {
+    return {
+      label: "Pending Approval",
+      colorClass: "text-amber-600 dark:text-amber-300/90",
+      dotClass: "bg-amber-500 dark:bg-amber-300/90",
+      pulse: false,
+    };
   }
+
+  if (thread.hasPendingUserInput) {
+    return {
+      label: "Awaiting Input",
+      colorClass: "text-indigo-600 dark:text-indigo-300/90",
+      dotClass: "bg-indigo-500 dark:bg-indigo-300/90",
+      pulse: false,
+    };
+  }
+
+  if (thread.session?.status === "running") {
+    return { label: "Working", ...WORKING_PILL_CLASSES, pulse: true };
+  }
+
+  if (thread.session?.status === "starting") {
+    return { label: "Connecting", ...WORKING_PILL_CLASSES, pulse: true };
+  }
+
+  // An actionable plan prompt outranks lingering background work: it needs
+  // the user's decision, while liveness merely reports.
+  if (
+    thread.interactionMode === "plan" &&
+    isLatestTurnSettled(thread.latestTurn, thread.session) &&
+    thread.hasActionableProposedPlan
+  ) {
+    return {
+      label: "Plan Ready",
+      colorClass: "text-violet-600 dark:text-violet-300/90",
+      dotClass: "bg-violet-500 dark:bg-violet-300/90",
+      pulse: false,
+    };
+  }
+
+  if (thread.backgroundLiveness === "working") {
+    return { label: "Working", ...WORKING_PILL_CLASSES, pulse: true };
+  }
+
+  if (thread.backgroundLiveness === "monitoring") {
+    return { label: "Monitoring", ...WORKING_PILL_CLASSES, pulse: false };
+  }
+
+  if (hasUnseenThreadCompletion(thread)) {
+    return {
+      label: "Completed",
+      colorClass: "text-emerald-600 dark:text-emerald-300/90",
+      dotClass: "bg-emerald-500 dark:bg-emerald-300/90",
+      pulse: false,
+    };
+  }
+
+  return null;
 }

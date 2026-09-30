@@ -38,6 +38,11 @@ export function useNavigate() {
   return navigate;
 }
 
+/** Lynx keeps no browser history stack, so Back always navigates home. */
+export function useCanGoBack(): boolean {
+  return false;
+}
+
 export function useRouter() {
   const pathname = usePathname();
   return {

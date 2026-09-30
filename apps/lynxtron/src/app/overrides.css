@@ -7286,6 +7286,17 @@
   padding: 0 var(--settings-small-control-padding-inline);
   border-radius: var(--settings-small-control-radius);
 }
+.ui-button--micro,
+.ui-button--icon-micro {
+  height: 20px;
+  min-width: 20px;
+  padding: 0 5px;
+  border-radius: 4px;
+}
+.ui-button--micro .ui-button__label,
+.ui-button--icon-micro .ui-button__label {
+  font-size: 11px;
+}
 .ui-button--sm {
   height: 28px;
   padding: 0 9px;
@@ -7300,9 +7311,13 @@
   padding: 0;
 }
 .ui-button--ghost,
+.ui-button--ghost-muted,
 .ui-button--link {
   border-color: transparent;
   background-color: transparent;
+}
+.ui-button--ghost-muted .ui-button__label {
+  color: var(--muted-foreground);
 }
 .ui-button--default {
   border-color: var(--primary);

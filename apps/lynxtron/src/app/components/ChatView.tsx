@@ -208,7 +208,6 @@ export function ChatView({ threadId }: ChatViewProps) {
   const rightPanel = useRightPanelState();
   const modelPickerOpen = useModelPickerOpen();
   const modelPickerNavigation = useModelPickerNavigation();
-  const lastAutoOpenedPlanKey = useRef<string | null>(null);
   const lastKnownSelectedModel = useRef(selectedModel);
   const lastKnownModelSelection = useRef(modelSelection);
   const [respondingApprovalId, setRespondingApprovalId] = useState<string | null>(null);
@@ -403,7 +402,6 @@ export function ChatView({ threadId }: ChatViewProps) {
   const modelPickerScopeKey = hero
     ? `new-thread:${activeProject?.id ?? "unselected"}`
     : (activeThreadId ?? "no-thread");
-  const autoOpenPlanKey = activePlan?.turnId ?? activeProposedPlan?.turnId ?? null;
   const pendingApprovals = useMemo(() => derivePendingApprovals(activities), [activities]);
   const pendingUserInputs = useMemo(() => derivePendingUserInputs(activities), [activities]);
   const activePendingApproval = pendingApprovals[0] ?? null;
@@ -550,18 +548,6 @@ export function ChatView({ threadId }: ChatViewProps) {
       setRightPanelMaximized(false);
     }
   }, [rightPanel.isOpen, rightPanelMaximized]);
-
-  useEffect(() => {
-    if (
-      !clientSettings.autoOpenPlanSidebar ||
-      !autoOpenPlanKey ||
-      lastAutoOpenedPlanKey.current === autoOpenPlanKey
-    ) {
-      return;
-    }
-    lastAutoOpenedPlanKey.current = autoOpenPlanKey;
-    uiActions.openRightPanelSurface("plan");
-  }, [autoOpenPlanKey, clientSettings.autoOpenPlanSidebar]);
 
   const handleInteractionModeTap = useCallback(() => {
     setThreadInteractionMode(

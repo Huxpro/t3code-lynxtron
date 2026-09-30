@@ -5,9 +5,6 @@ import { passkeys } from "@clerk/electron/passkeys";
 import { ClerkProvider as ElectronClerkProvider } from "@clerk/electron/react";
 import { createHashHistory, createBrowserHistory } from "@tanstack/react-router";
 
-import "@fontsource-variable/dm-sans/index.css";
-import "@fontsource/jetbrains-mono/400.css";
-import "@fontsource/jetbrains-mono/500.css";
 import "./index.css";
 
 import { isElectron } from "./env";
@@ -21,6 +18,7 @@ import {
 import { AppRoot } from "./AppRoot";
 import { ComponentLabSurface } from "./components/components-lab/ComponentLabSurface";
 import { ComponentLabIsolatedSurface } from "./components/components-lab/ComponentLabIsolatedSurface";
+import { clerkAppearance } from "./components/clerk/clerkAppearance";
 
 // Electron loads the app from a file-backed shell, so hash history avoids path resolution issues.
 const history = isElectron ? createHashHistory() : createBrowserHistory();
@@ -38,6 +36,11 @@ const componentLabStoryId =
   componentLabUrl.searchParams.get("story") ??
   new URLSearchParams(componentLabUrl.hash.slice(1)).get("story");
 
+// First Clerk UI build containing https://github.com/clerk/javascript/pull/9500.
+const electronClerkUI = {
+  __internal_clerkUIVersion: "1.30.5-canary.v20260819050620",
+};
+
 const app =
   window.location.pathname === "/components-lab" ? (
     componentLabStoryId ? (
@@ -53,11 +56,16 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     {clerkPublishableKey && hasCloudPublicConfig() ? (
       isElectron ? (
-        <ElectronClerkProvider publishableKey={clerkPublishableKey} passkeys={passkeys}>
+        <ElectronClerkProvider
+          {...electronClerkUI}
+          appearance={clerkAppearance}
+          publishableKey={clerkPublishableKey}
+          passkeys={passkeys}
+        >
           <ManagedRelayAuthProvider>{app}</ManagedRelayAuthProvider>
         </ElectronClerkProvider>
       ) : (
-        <ClerkProvider publishableKey={clerkPublishableKey}>
+        <ClerkProvider appearance={clerkAppearance} publishableKey={clerkPublishableKey}>
           <ManagedRelayAuthProvider>{app}</ManagedRelayAuthProvider>
         </ClerkProvider>
       )

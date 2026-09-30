@@ -24,12 +24,10 @@ export type GeneralProjectGroupingMode = "repository" | "repository_path" | "sep
 
 export interface GeneralSettingsValues {
   readonly addProjectBaseDirectory: string;
-  readonly autoOpenPlanSidebar: boolean;
   readonly confirmThreadArchive: boolean;
   readonly confirmThreadDelete: boolean;
   readonly defaultThreadEnvMode: GeneralThreadMode;
   readonly diffIgnoreWhitespace: boolean;
-  readonly enableAssistantStreaming: boolean;
   readonly enableProviderUpdateChecks: boolean;
   readonly legacySidebarEnabled: boolean;
   readonly newWorktreesStartFromOrigin: boolean;
@@ -228,31 +226,6 @@ export function GeneralSettingsContent({
         />
 
         <SettingsRow
-          {...searchableSetting("assistant-output")}
-          description="Show token-by-token output while a response is in progress."
-          resetAction={
-            values.enableAssistantStreaming !== defaults.enableAssistantStreaming ? (
-              <SettingResetButton
-                label="assistant output"
-                onClick={() =>
-                  onUpdate({
-                    enableAssistantStreaming: defaults.enableAssistantStreaming,
-                  })
-                }
-              />
-            ) : null
-          }
-          control={
-            <GeneralSettingsSwitch
-              checked={values.enableAssistantStreaming}
-              disabled={serverControlsDisabled}
-              onCheckedChange={(enableAssistantStreaming) => onUpdate({ enableAssistantStreaming })}
-              aria-label="Stream assistant messages"
-            />
-          }
-        />
-
-        <SettingsRow
           {...searchableSetting("provider-update-checks")}
           description="Check installed provider CLIs for newer available versions."
           resetAction={
@@ -280,30 +253,6 @@ export function GeneralSettingsContent({
         />
 
         {backgroundActivityContent}
-
-        <SettingsRow
-          {...searchableSetting("auto-open-task-panel")}
-          description="Open the right-side plan and task panel automatically when steps appear."
-          resetAction={
-            values.autoOpenPlanSidebar !== defaults.autoOpenPlanSidebar ? (
-              <SettingResetButton
-                label="auto-open task panel"
-                onClick={() =>
-                  onUpdate({
-                    autoOpenPlanSidebar: defaults.autoOpenPlanSidebar,
-                  })
-                }
-              />
-            ) : null
-          }
-          control={
-            <GeneralSettingsSwitch
-              checked={values.autoOpenPlanSidebar}
-              onCheckedChange={(autoOpenPlanSidebar) => onUpdate({ autoOpenPlanSidebar })}
-              aria-label="Open the task panel automatically"
-            />
-          }
-        />
 
         <SettingsRow
           {...searchableSetting("new-threads")}

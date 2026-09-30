@@ -896,7 +896,7 @@ describe("packaged readiness Sidebar geometry", () => {
     assert.include(source, 'selector: ".settings-content--keybindings"');
     assert.include(source, 'selector: "[data-keybindings-table-header]"');
     assert.include(source, 'readSelectorMeasurements(client, ".keybindings-table__row")');
-    assert.include(source, "rows.length !== 45");
+    assert.include(source, "rows.length !== 46");
     assert.include(source, "conflicts.length !== 18");
     assert.include(source, 'first?.attributes["data-keybinding-command"] !== "chat.new"');
     assert.include(source, 'last?.attributes["data-keybinding-command"] !== "thread.previous"');

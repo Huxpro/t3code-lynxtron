@@ -30,6 +30,7 @@ export type ModelEsque = {
   name: string;
   shortName?: string | undefined;
   subProvider?: string | undefined;
+  isLegacy?: boolean | undefined;
 };
 
 export { getDisplayModelName, getTriggerDisplayModelName };

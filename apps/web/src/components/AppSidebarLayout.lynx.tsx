@@ -3,6 +3,8 @@ import type { ReactNode } from "@lynx-js/react";
 import { ICON_PNGS } from "../../../lynxtron/src/app/components/iconData";
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import { AppSidebarComposition } from "./AppSidebarComposition";
+import ThreadSidebar from "./Sidebar";
+import ThreadSidebarV2 from "./SidebarV2";
 import { useLocation } from "../lib/router";
 import { useEnvironmentIdentificationMode, useLegacySidebarEnabled } from "../hooks/useSettings";
 import { useSidebarStageBackdropVariant } from "./SidebarStageBackdrop";
@@ -46,7 +48,7 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
     <AppSidebarComposition
       providerClassName="app-root h-full min-h-0"
       providerStyle={{ "--sidebar-width": "16rem" }}
-      useFlatSidebar={useFlatSidebar}
+      sidebarContent={useFlatSidebar ? <ThreadSidebarV2 /> : <ThreadSidebar />}
       renderSidebar={(content) => (
         <Sidebar
           side="left"

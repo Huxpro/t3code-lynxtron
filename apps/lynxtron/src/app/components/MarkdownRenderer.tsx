@@ -108,7 +108,7 @@ function showMarkdownExternalLinkContextMenu(href: string): Promise<void> {
   return showExternalLinkContextMenu({
     href,
     position: { x: 0, y: 0 },
-    includePreview: false,
+    canOpenInPreview: false,
     showContextMenu: (items) =>
       showNativeContextMenu(items) as Promise<
         "open-in-preview" | "open-external" | "copy-link" | null

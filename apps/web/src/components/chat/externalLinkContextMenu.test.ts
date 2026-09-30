@@ -41,13 +41,13 @@ describe("external chat link context menu", () => {
     expect(harness.copyLink).not.toHaveBeenCalled();
   });
 
-  it("omits the integrated browser on hosts without one", async () => {
+  it("still offers the link's own actions where the integrated browser cannot be opened", async () => {
     const harness = createHarness(null);
 
     await showExternalLinkContextMenu({
-      href: "https://example.com",
-      position: { x: 0, y: 0 },
-      includePreview: false,
+      href: "https://github.com/pingdotgg/t3code/pull/6169",
+      canOpenInPreview: false,
+      position: { x: 4, y: 8 },
       ...harness,
     });
 
@@ -56,7 +56,7 @@ describe("external chat link context menu", () => {
         { id: "open-external", label: "Open in system browser" },
         { id: "copy-link", label: "Copy Link" },
       ],
-      { x: 0, y: 0 },
+      { x: 4, y: 8 },
     );
   });
 

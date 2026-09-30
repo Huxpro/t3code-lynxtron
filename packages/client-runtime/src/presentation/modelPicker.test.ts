@@ -289,17 +289,17 @@ describe("shared model picker presentation", () => {
           models: [],
         }),
         provider({
-          instanceId: "grok",
-          driverKind: "grok",
-          models: [{ slug: "grok-ready", isDefault: true }],
+          instanceId: "cursor",
+          driverKind: "cursor",
+          models: [{ slug: "cursor-ready", isDefault: true }],
         }),
       ],
       settings: DEFAULT_SERVER_SETTINGS,
     });
 
     expect(projection.selection).toEqual({
-      instanceId: ProviderInstanceId.make("grok"),
-      model: "grok-ready",
+      instanceId: ProviderInstanceId.make("cursor"),
+      model: "cursor-ready",
     });
   });
 

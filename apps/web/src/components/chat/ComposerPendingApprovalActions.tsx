@@ -11,6 +11,8 @@ interface ComposerPendingApprovalActionsProps {
   ) => Promise<unknown>;
 }
 
+const APPROVAL_ACTION_CLASS_NAME = "font-normal";
+
 export const ComposerPendingApprovalActions = memo(function ComposerPendingApprovalActions({
   requestId,
   isResponding,
@@ -19,40 +21,40 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
   return (
     <>
       <Button
-        size="sm"
-        variant="ghost"
-        className="composer-approval-action composer-approval-action--cancel"
+        size="micro"
+        variant="ghost-muted"
+        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--cancel`}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "cancel")}
       >
-        Cancel turn
+        Cancel
       </Button>
       <Button
-        size="sm"
-        variant="destructive-outline"
-        className="composer-approval-action composer-approval-action--decline"
+        size="micro"
+        variant="ghost-muted"
+        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--decline text-destructive-foreground [:hover,[data-pressed]]:text-destructive-foreground`}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "decline")}
       >
         Decline
       </Button>
       <Button
-        size="sm"
-        variant="outline"
-        className="composer-approval-action composer-approval-action--session"
+        size="micro"
+        variant="ghost-muted"
+        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--session`}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "acceptForSession")}
       >
         Always allow this session
       </Button>
       <Button
-        size="sm"
-        variant="default"
-        className="composer-approval-action composer-approval-action--accept"
+        size="micro"
+        variant="ghost-muted"
+        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--accept text-foreground`}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "accept")}
       >
-        Approve once
+        Approve
       </Button>
     </>
   );

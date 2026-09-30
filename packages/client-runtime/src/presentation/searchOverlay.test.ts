@@ -15,9 +15,11 @@ describe("reduceSearchOverlayState", () => {
       mode: "files",
     });
     expect(files).toEqual({ open: true, mode: "files", openIntent: null });
-    expect(reduceSearchOverlayState(files, { _tag: "ToggleMode", mode: "files" })).toEqual(
-      INITIAL_SEARCH_OVERLAY_STATE,
-    );
+    expect(reduceSearchOverlayState(files, { _tag: "ToggleMode", mode: "files" })).toEqual({
+      open: false,
+      mode: "files",
+      openIntent: null,
+    });
   });
 
   it("routes direct opens through command mode", () => {
@@ -32,14 +34,16 @@ describe("reduceSearchOverlayState", () => {
     });
   });
 
-  it("resets mode and intent when closed", () => {
+  it("keeps the mode but clears the intent when closed", () => {
     const open = {
       open: true,
       mode: "content",
       openIntent: { kind: "new-thread-in" },
     } as const;
-    expect(reduceSearchOverlayState(open, { _tag: "SetOpen", open: false })).toEqual(
-      INITIAL_SEARCH_OVERLAY_STATE,
-    );
+    expect(reduceSearchOverlayState(open, { _tag: "SetOpen", open: false })).toEqual({
+      open: false,
+      mode: "content",
+      openIntent: null,
+    });
   });
 });

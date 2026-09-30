@@ -15,6 +15,7 @@
 import type {
   ModelSelection,
   ProviderDriverKind,
+  ProviderInstanceConfig,
   ProviderInstanceId,
   ServerProvider,
   ServerProviderModel,
@@ -22,6 +23,29 @@ import type {
   ServerSettings,
   ServerProviderState,
 } from "@t3tools/contracts";
+
+// Built-in drivers that start disabled; mirrors DEFAULT_SERVER_SETTINGS.providers
+// without importing the settings schema into renderer bundles.
+const DRIVERS_DISABLED_BY_DEFAULT: ReadonlySet<string> = new Set(["grok", "opencode"]);
+
+/**
+ * Schema-free twin of contracts' `resolveProviderInstanceEnabled`: an explicit
+ * false on the envelope or in the config wins, then envelope, config, and the
+ * driver's default.
+ */
+export function resolveProviderInstanceEnabled(
+  instance: Pick<ProviderInstanceConfig, "driver" | "enabled" | "config">,
+): boolean {
+  const config = instance.config;
+  const configEnabled =
+    config !== null && typeof config === "object" && !Array.isArray(config)
+      ? typeof (config as { readonly enabled?: unknown }).enabled === "boolean"
+        ? ((config as { readonly enabled?: boolean }).enabled as boolean)
+        : undefined
+      : undefined;
+  if (instance.enabled === false || configEnabled === false) return false;
+  return instance.enabled ?? configEnabled ?? !DRIVERS_DISABLED_BY_DEFAULT.has(instance.driver);
+}
 
 /**
  * Local-only placeholder used while a draft has no provider it can safely
@@ -127,6 +151,23 @@ function driverKindLabel(driverKind: ProviderDriverKind): string {
   return formatProviderDriverKindLabel(driverKind);
 }
 
+/**
+ * Whether an instance's icon carries the account badge: accent color set, or
+ * several instances sharing a driver so the brand glyph alone is ambiguous.
+ * Shared by the composer trigger, the picker rail, and sidebar rows.
+ */
+export function shouldShowInstanceBadge(
+  entry: ProviderInstanceEntry,
+  entries: Iterable<ProviderInstanceEntry>,
+): boolean {
+  if (entry.accentColor) return true;
+  let sharedDriverCount = 0;
+  for (const candidate of entries) {
+    if (candidate.driverKind === entry.driverKind && ++sharedDriverCount > 1) return true;
+  }
+  return false;
+}
+
 export function normalizeProviderAccentColor(value: string | undefined): string | undefined {
   const trimmed = value?.trim();
   if (!trimmed) return undefined;
@@ -200,6 +241,33 @@ export function deriveProviderInstanceEntries(
 }
 
 /**
+ * Project several environments' `ServerProvider[]` into a nested
+ * `environmentId → instanceId → entry` lookup.
+ *
+ * Instance ids are per-environment routing keys, and `defaultInstanceIdForDriver`
+ * makes the default id literally the driver slug, so every environment running
+ * the same driver reports the same id. Flattening across environments would
+ * clobber entries and mis-resolve accent colors; lookups must stay scoped to
+ * the thread's own environment.
+ */
+export function deriveProviderEntriesByEnvironment(
+  providersByEnvironment: Iterable<readonly [string, ReadonlyArray<ServerProvider>]>,
+): ReadonlyMap<string, ReadonlyMap<string, ProviderInstanceEntry>> {
+  const byEnvironment = new Map<string, ReadonlyMap<string, ProviderInstanceEntry>>();
+  for (const [environmentId, providers] of providersByEnvironment) {
+    byEnvironment.set(
+      environmentId,
+      new Map(
+        deriveProviderInstanceEntries(providers).map(
+          (entry) => [entry.instanceId as string, entry] as const,
+        ),
+      ),
+    );
+  }
+  return byEnvironment;
+}
+
+/**
  * Overlay the current settings configuration onto streamed provider snapshots.
  * Provider probes can briefly retain their previous `enabled` value after a
  * settings write, so picker visibility must follow settings rather than waiting
@@ -220,7 +288,7 @@ export function applyProviderInstanceSettings(
   return entries.map((entry) => {
     const explicitInstance = settings.providerInstances?.[entry.instanceId];
     const enabled = explicitInstance
-      ? (explicitInstance.enabled ?? true)
+      ? resolveProviderInstanceEnabled(explicitInstance)
       : entry.isDefault
         ? (legacyProviders[entry.driverKind]?.enabled ?? entry.enabled)
         : false;

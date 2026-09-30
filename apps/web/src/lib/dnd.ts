@@ -10,6 +10,12 @@ export {
   type DragEndEvent,
   type DragStartEvent,
 } from "@dnd-kit/core";
-export { SortableContext, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+export {
+  defaultAnimateLayoutChanges,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  type AnimateLayoutChanges,
+} from "@dnd-kit/sortable";
 export { restrictToFirstScrollableAncestor, restrictToVerticalAxis } from "@dnd-kit/modifiers";
 export { CSS } from "@dnd-kit/utilities";

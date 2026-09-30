@@ -56,7 +56,8 @@ export interface SidebarV2RowSurfaceProps {
   readonly unsettleIcon: ReactNode;
   readonly unsnoozeIcon: ReactNode;
   readonly wokeIcon: ReactNode;
-  readonly onClick: HostViewProps["onClick"];
+  /** Row activation; inner labels forward taps here without a DOM event. */
+  readonly onClick: () => void;
   readonly onDoubleClick: HostViewProps["onDoubleClick"];
   readonly onKeyDown: HostViewProps["onKeyDown"];
   readonly onContextMenu: HostViewProps["onContextMenu"];
@@ -130,7 +131,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
             }
           >
             <HostText
-              onClick={() => props.onClick?.({})}
+              onClick={() => props.onClick()}
               onContextMenu={props.onContextMenu}
               className={cn(
                 "shrink-0 transition-opacity",
@@ -158,7 +159,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
               >
                 {props.variantAction === "unsnooze" && props.snoozeWakeLabelText !== null ? (
                   <HostText
-                    onClick={() => props.onClick?.({})}
+                    onClick={() => props.onClick()}
                     onContextMenu={props.onContextMenu}
                     className="text-xs text-blue-600 tabular-nums dark:text-blue-400"
                   >
@@ -166,7 +167,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   </HostText>
                 ) : props.isWoke ? (
                   <HostText
-                    onClick={() => props.onClick?.({})}
+                    onClick={() => props.onClick()}
                     onContextMenu={props.onContextMenu}
                     role="status"
                     aria-label="Woke from snooze"
@@ -177,7 +178,7 @@ export function SidebarV2RowSurface(props: SidebarV2RowSurfaceProps) {
                   </HostText>
                 ) : (
                   <HostText
-                    onClick={() => props.onClick?.({})}
+                    onClick={() => props.onClick()}
                     onContextMenu={props.onContextMenu}
                     className="text-xs"
                   >

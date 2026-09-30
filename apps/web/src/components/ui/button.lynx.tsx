@@ -5,6 +5,7 @@ type ButtonVariant =
   | "destructive"
   | "destructive-outline"
   | "ghost"
+  | "ghost-muted"
   | "link"
   | "outline"
   | "secondary";
@@ -12,10 +13,12 @@ type ButtonSize =
   | "default"
   | "icon"
   | "icon-lg"
+  | "icon-micro"
   | "icon-sm"
   | "icon-xl"
   | "icon-xs"
   | "lg"
+  | "micro"
   | "sm"
   | "xl"
   | "xs";

@@ -19,7 +19,7 @@ const electron = JSON.parse(readFileSync(electronPath, "utf8"));
 const native = JSON.parse(readFileSync(nativePath, "utf8"));
 const nativeRun = native.results?.[0];
 const nativeApproval = nativeRun?.approvalTranscriptState;
-const expectedActions = ["Cancel turn", "Decline", "Always allow this session", "Approve once"];
+const expectedActions = ["Cancel", "Decline", "Always allow this session", "Approve"];
 const checks = {
   reportsPassed: electron.status === "pass" && native.status === "pass",
   head: electron.head === native.head,

@@ -1,9 +1,4 @@
-import {
-  DEFAULT_CLIENT_SETTINGS,
-  DEFAULT_SERVER_SETTINGS,
-  DEFAULT_UNIFIED_SETTINGS,
-} from "@t3tools/contracts/settings";
-import * as Duration from "effect/Duration";
+import { DEFAULT_CLIENT_SETTINGS, DEFAULT_SERVER_SETTINGS } from "@t3tools/contracts/settings";
 import { describe, expect, it } from "vite-plus/test";
 
 import {
@@ -12,7 +7,6 @@ import {
   mergeClientSettings,
   PORTABLE_CLIENT_SETTINGS_DEFAULTS,
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
-  projectGeneralSettingsRestore,
   projectGroupingModeFromToggle,
   projectPortableGeneralSettingsRestore,
 } from "./settings.ts";
@@ -38,57 +32,9 @@ describe("background activity profile settings", () => {
   });
 });
 
-describe("projectGeneralSettingsRestore", () => {
-  it("projects client and server defaults from one unified settings snapshot", () => {
-    const projection = projectGeneralSettingsRestore({
-      theme: "dark",
-      settings: {
-        ...DEFAULT_UNIFIED_SETTINGS,
-        glassOpacity: 55,
-        wordWrap: false,
-        enableAssistantStreaming: !DEFAULT_SERVER_SETTINGS.enableAssistantStreaming,
-        automaticGitFetchInterval: Duration.seconds(45),
-      },
-      defaults: DEFAULT_UNIFIED_SETTINGS,
-      backgroundActivityChanged: true,
-      textGenerationModelSelectionChanged: false,
-    });
-
-    expect(projection.changedSettingLabels).toEqual([
-      "Theme",
-      "Glass opacity",
-      "Word wrap",
-      "Assistant output",
-      "Background activity",
-    ]);
-    expect(projection.clientPatch.glassOpacity).toBe(DEFAULT_CLIENT_SETTINGS.glassOpacity);
-    expect(projection.clientPatch.wordWrap).toBe(DEFAULT_CLIENT_SETTINGS.wordWrap);
-    expect(projection.serverPatch.enableAssistantStreaming).toBe(
-      DEFAULT_SERVER_SETTINGS.enableAssistantStreaming,
-    );
-    expect(Duration.toMillis(projection.serverPatch.automaticGitFetchInterval!)).toBe(
-      Duration.toMillis(DEFAULT_SERVER_SETTINGS.automaticGitFetchInterval),
-    );
-    expect(projection.theme).toBe("system");
-  });
-
-  it("returns no changed labels for defaults", () => {
-    expect(
-      projectGeneralSettingsRestore({
-        theme: "system",
-        settings: DEFAULT_UNIFIED_SETTINGS,
-        defaults: DEFAULT_UNIFIED_SETTINGS,
-        backgroundActivityChanged: false,
-        textGenerationModelSelectionChanged: false,
-      }).changedSettingLabels,
-    ).toEqual([]);
-  });
-});
-
 describe("projectPortableGeneralSettingsRestore", () => {
   it("uses schema-free defaults that stay aligned with canonical settings", () => {
     expect(PORTABLE_CLIENT_SETTINGS_DEFAULTS).toMatchObject({
-      autoOpenPlanSidebar: DEFAULT_CLIENT_SETTINGS.autoOpenPlanSidebar,
       confirmThreadArchive: DEFAULT_CLIENT_SETTINGS.confirmThreadArchive,
       confirmThreadDelete: DEFAULT_CLIENT_SETTINGS.confirmThreadDelete,
       diffIgnoreWhitespace: DEFAULT_CLIENT_SETTINGS.diffIgnoreWhitespace,
@@ -105,7 +51,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
       addProjectBaseDirectory: DEFAULT_SERVER_SETTINGS.addProjectBaseDirectory,
       backgroundActivity: DEFAULT_SERVER_SETTINGS.backgroundActivity,
       defaultThreadEnvMode: DEFAULT_SERVER_SETTINGS.defaultThreadEnvMode,
-      enableAssistantStreaming: DEFAULT_SERVER_SETTINGS.enableAssistantStreaming,
+      enableLegacyTokenStreaming: DEFAULT_SERVER_SETTINGS.enableLegacyTokenStreaming,
       enableProviderUpdateChecks: DEFAULT_SERVER_SETTINGS.enableProviderUpdateChecks,
       newWorktreesStartFromOrigin: DEFAULT_SERVER_SETTINGS.newWorktreesStartFromOrigin,
     });
@@ -128,7 +74,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
           profile: "performance",
           overrides: {},
         },
-        enableAssistantStreaming: true,
+        enableLegacyTokenStreaming: true,
         newWorktreesStartFromOrigin: false,
       },
     });
@@ -137,7 +83,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
       "Glass opacity",
       "Environment identification",
       "Word wrap",
-      "Assistant output",
+      "Stream token by token",
       "Background activity",
       "New worktrees start from origin",
       "Add project base directory",
@@ -147,8 +93,8 @@ describe("projectPortableGeneralSettingsRestore", () => {
     expect(projection.clientPatch.environmentIdentificationMode).toBe(
       DEFAULT_CLIENT_SETTINGS.environmentIdentificationMode,
     );
-    expect(projection.serverPatch.enableAssistantStreaming).toBe(
-      DEFAULT_SERVER_SETTINGS.enableAssistantStreaming,
+    expect(projection.serverPatch.enableLegacyTokenStreaming).toBe(
+      DEFAULT_SERVER_SETTINGS.enableLegacyTokenStreaming,
     );
     expect(projection.serverPatch.newWorktreesStartFromOrigin).toBe(
       DEFAULT_SERVER_SETTINGS.newWorktreesStartFromOrigin,

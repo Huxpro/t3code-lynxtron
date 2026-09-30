@@ -37,6 +37,7 @@ import {
   fileContentRevision,
   projectFileDetailLayout,
 } from "../../../packages/client-runtime/src/presentation/files.ts";
+import { enableOpenCodeInFixtureState } from "./fixture-provider-defaults.mjs";
 
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const require = createRequire(import.meta.url);
@@ -8798,10 +8799,10 @@ async function verifyApprovalTranscriptState({
   const editorValue = await readOptionalMeasurement(client, ".composer__input--approval");
   const footer = await readOptionalMeasurement(client, ".composer-footer--approval");
   const actionSpecs = [
-    [".composer-approval-action--cancel", "Cancel turn", 97],
+    [".composer-approval-action--cancel", "Cancel", 97],
     [".composer-approval-action--decline", "Decline", 69],
     [".composer-approval-action--session", "Always allow this session", 184],
-    [".composer-approval-action--accept", "Approve once", 112],
+    [".composer-approval-action--accept", "Approve", 112],
   ];
   const actions = await Promise.all(
     actionSpecs.map(async ([selector, label, width]) => ({
@@ -14167,7 +14168,7 @@ async function verifySettingsRouteBehavior({
       const first = rows[0];
       const last = rows.at(-1);
       if (
-        rows.length !== 45 ||
+        rows.length !== 46 ||
         conflicts.length !== 18 ||
         conflictIndicators.length !== conflicts.length ||
         !header.rect ||
@@ -15446,6 +15447,7 @@ async function runOnce({
   const runRoot = mkdtempSync(path.join(os.tmpdir(), `t3code-packaged-readiness-${index}-`));
   const baseDir = path.join(runRoot, "state");
   cpSync(fixtureDir, baseDir, { recursive: true });
+  enableOpenCodeInFixtureState(baseDir);
   const initialPersistedThreadIds = shouldVerifyNewThreadDraftLifecycle
     ? readPersistedThreadIds(baseDir)
     : [];

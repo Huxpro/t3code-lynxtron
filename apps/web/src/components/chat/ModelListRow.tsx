@@ -13,6 +13,7 @@ import { Button } from "../ui/button";
 import { Kbd } from "../ui/kbd";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { cn } from "~/lib/utils";
+import { modelPickerModelKey } from "./modelPickerKeys";
 
 export const ModelListRow = memo(function ModelListRow(props: {
   index: number;
@@ -47,7 +48,7 @@ export const ModelListRow = memo(function ModelListRow(props: {
     <ComboboxItem
       hideIndicator
       index={props.index}
-      value={`${props.instanceId}:${props.model.slug}`}
+      value={modelPickerModelKey(props.instanceId, props.model.slug)}
       data-model-picker-key={`${props.instanceId}:${props.model.slug}`}
       data-model-picker-selected={props.isSelected ? "true" : "false"}
       disabled={Boolean(props.disabledReason)}

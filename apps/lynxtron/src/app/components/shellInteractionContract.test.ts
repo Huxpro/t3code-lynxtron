@@ -234,7 +234,7 @@ describe("desktop shell interaction contract", () => {
     expect(markdown).toContain('fileLinkFailureToast({ kind: "copy", label, cause })');
     expect(markdown).toContain("resolveExternalWebLinkHost(href)");
     expect(markdown).toContain("showExternalLinkContextMenu({");
-    expect(markdown).toContain("includePreview: false");
+    expect(markdown).toContain("canOpenInPreview: false");
     expect(markdown).toContain("clientCapabilities.navigation.openExternal(target)");
     expect(markdown).toContain("clientCapabilities.clipboard.writeText(target)");
     expect(markdown.indexOf("uiActions.openFileSurface")).toBeLessThan(
@@ -1621,7 +1621,7 @@ describe("desktop shell interaction contract", () => {
       "utf8",
     );
 
-    expect(sidebarSource).toContain("const status = resolveSidebarV2Status(thread);");
+    expect(sidebarSource).toContain("const status = resolveSidebarThreadStatus(thread);");
     // Status pills and recede rules come from the shared Web row presentation.
     expect(sidebarSource).toContain("resolveSidebarV2RowPresentation({");
     expect(sidebarSource).toContain("topStatus={lynxTopStatus(presentation.topStatus, thread)}");
@@ -1700,7 +1700,7 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarSource).toContain("t3ClientActions.snoozeThread(thread.id, preset.snoozedUntil)");
     expect(sidebarSource).toContain("t3ClientActions.unsnoozeThread(thread.id)");
     expect(sidebarRowSource).toMatch(
-      /variant === "slim"[\s\S]*?<HostText[\s\S]*?onClick=\{\(\) => props\.onClick\?\.\(\{\}\)\}[\s\S]*?onContextMenu=\{props\.onContextMenu\}[\s\S]*?props\.favicon/u,
+      /variant === "slim"[\s\S]*?<HostText[\s\S]*?onClick=\{\(\) => props\.onClick\(\)\}[\s\S]*?onContextMenu=\{props\.onContextMenu\}[\s\S]*?props\.favicon/u,
     );
     expect(sidebarSource).toMatch(
       /visibleSettledThreads\.map[\s\S]*?<HostText[\s\S]*?onClick=\{\(\) => \{[\s\S]*?markThreadVisited\(thread\)[\s\S]*?onContextMenu=\{\(event\)[\s\S]*?thread\.title/u,
