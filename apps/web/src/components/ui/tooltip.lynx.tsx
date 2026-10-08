@@ -279,7 +279,12 @@ export function TooltipTrigger({ children, render, ...props }: ElementProps) {
     "main-thread:bindmousemove": handleMouseMove,
   };
   if (isValidElement(render)) {
-    return cloneElement(render, { ...props, ...hoverProps, children });
+    // A trigger without its own children keeps the rendered element's children.
+    return cloneElement(render, {
+      ...props,
+      ...hoverProps,
+      ...(children === undefined ? {} : { children }),
+    });
   }
   return (
     <view {...props} {...hoverProps}>

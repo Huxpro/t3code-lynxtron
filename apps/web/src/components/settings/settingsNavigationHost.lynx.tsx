@@ -51,7 +51,7 @@ export function SettingsNavigationHost({
               <Icon
                 name={item.icon}
                 size={16}
-                color={isActive ? "#27272a" : "#a1a1aa"}
+                color={isActive ? "#f5f5f5" : "#a1a1aa"}
                 className="settings-nav__item-icon-img"
               />
               <text
