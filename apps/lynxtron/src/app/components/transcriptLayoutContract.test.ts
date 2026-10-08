@@ -530,7 +530,7 @@ describe("transcript layout contract", () => {
     const fileBlock = overrides.slice(fileStart, overrides.indexOf("}", fileStart));
     const headerStart = overrides.indexOf(".diff-code-file__header {");
     const headerBlock = overrides.slice(headerStart, overrides.indexOf("}", headerStart));
-    expect(filesBlock).toContain("gap: 8px;");
+    expect(filesBlock).toContain("gap: 16px;");
     expect(filesBlock).toContain("padding-bottom: 8px;");
     expect(fileBlock).toContain("border-width: 0;");
     expect(fileBlock).toContain("border-radius: 0;");

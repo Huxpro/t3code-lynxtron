@@ -218,6 +218,6 @@ describe("shared workbench Composer metrics", () => {
 
   it("records source-control badge anatomy for both renderers", () => {
     assert.include(source, "[data-slot='badge'], .source-control-item__badge");
-    assert.equal(source.match(/\.source-control-item__badge/g)?.length, 2);
+    assert.equal(source.match(/\.source-control-item__badge/g)?.length, 1);
   });
 });
