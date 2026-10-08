@@ -30,16 +30,31 @@ The connector finds `apps/server/dist/bin.mjs` relative to its built location.
 bundled Node runtime. The Lynxtron host executable itself is never reused as a
 Node CLI.
 
+## Native verification
+
+The Native gates launch the built app in the background (`T3_LYNXTRON_BACKGROUND=1`)
+against isolated fixtures, so they never take focus:
+
+```bash
+pnpm --filter t3 build:bundle && pnpm build:lynxtron
+node apps/lynxtron/scripts/prepare-native-battery.mjs /tmp/t3-battery
+node apps/lynxtron/scripts/run-native-battery.mjs /tmp/t3-battery/plan.json /tmp/t3-battery/results
+```
+
+`results/summary.json` lists each gate; a failing gate keeps its report and
+process log in its own directory. Root `AGENTS.md` has the rules for evidence.
+
 ## Architecture
 
 ```text
 src/app                     ReactLynx UI and .lynx platform adapters
   generated/lynx.css        generated from apps/web/src/index.css
   overrides.css             runtime-gap-only layout adapters
-  state/                    singleton polling bridge state
+  state/                    renderer state fed by sequenced main-process events
 src/main/desktop
   main.ts                   LynxWindow host
-  preload.ts                typed pull bridge and native capabilities
+  mainConnectorHost.ts      main-owned connector and typed bridge handlers
+  preload.ts                branding, preferences, clipboard, navigation
   connector.ts              server bootstrap, auth, Effect RPC
 scripts
   audit-web-apis.mjs        DOM/BOM usage inventory
