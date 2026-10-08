@@ -48,8 +48,8 @@ Use one isolated server and one canonical snapshot for both clients:
 4. Reuse the same HMR process for DOM, console, geometry, route, and ordinary
    pointer checks.
 5. Fresh-launch Native only for a new production bundle, viewport change,
-   retained frame, cold-start case, or exhausted screencast.
-6. Use authorized Computer Use only for real keyboard, focus, wheel, drag, or
+   cold-start case, or process exit.
+6. Use authorized Computer Use only for real keyboard, focus, drag, or
    selection evidence.
 
 `lynx.config.ts` now installs `pluginRspeedyDevReady()`, so `pnpm dev` starts the

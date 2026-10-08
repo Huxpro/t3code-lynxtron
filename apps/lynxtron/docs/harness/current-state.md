@@ -296,8 +296,8 @@ Plan 11 prose and screenshots.
    loop.
 3. Resolve Native DevTool identity from an exact owned PID and listening port.
 4. Reuse one verified process for ordinary route/state interaction.
-5. Restart only for a new bundle, explicit cold start, viewport change,
-   exhausted screencast, or process exit.
+5. Restart only for a new bundle, explicit cold start, viewport change, or
+   process exit.
 6. After two identical startup failures, stop reopening the app and diagnose
    the runtime.
 7. Use authorized Computer Use only for real keyboard, focus, wheel, drag, and

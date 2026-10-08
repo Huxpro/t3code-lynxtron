@@ -182,6 +182,9 @@ it as "what is the supported path for worker-backed rendering islands?".
   per fresh session is reliable.
 - **Ask**: support drag or wheel scrolling in DevTool input emulation (and
   ideally re-armable screencast frames).
+- **Status (2026-10-08, Lynxtron 0.0.28)**: `type: "mouseWheel"` scrolls the
+  transcript `<list>` and one process serves repeated screenshots after DOM
+  inspection. Drag is still unverified.
 
 ## Notes for the filer
 

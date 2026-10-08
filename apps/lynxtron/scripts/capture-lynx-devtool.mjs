@@ -240,8 +240,8 @@ if (identity.bundleUrl !== expectedBundle.url) {
 }
 await prepareInteractionState(clientOptions, interactionState);
 
-// Capture first: Lynx DevTool exposes a single screencast frame per fresh
-// desktop session, and another inspection request can consume or wedge it.
+// Capture before the inspection requests below so the frame shows the state
+// they measure.
 if (reuseScreenshot) {
   if (!existsSync(output)) {
     throw new Error(`--reuse-screenshot requires an existing DevTool screenshot: ${output}`);

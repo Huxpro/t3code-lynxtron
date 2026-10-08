@@ -188,3 +188,29 @@ Out of scope for Lynx unless the runtime changes: pull request surfaces
 (#6039, #7148, #7077, #6597), usage insights (#8101, #7147), browser defaults and
 favicons (CEF stays opt-in, Plan 13), SSH editor handoff (#6572), launchd
 service, AUR packaging, mobile-only and desktop-installer features.
+
+## Lynx toolchain upgrade (2026-10-08)
+
+Lynxtron stays at 0.0.28 (still the newest release). The Lynx toolchain moved
+to its newest releases: ReactLynx 0.126.2, Rspeedy 0.18.0 (Rsbuild 2.2.9),
+`react-rsbuild-plugin` 0.20.3, `config-rsbuild-plugin` 0.2.4, `tailwind-preset`
+0.6.0, `types` 4.3.0, `type-config` 4.2.0, `web-core` 0.26.2, `web-elements`
+0.12.12. `@rsbuild/core` is pinned to the version Rspeedy depends on.
+
+- The only source change the upgrade required: the local `overlay` intrinsic
+  declaration was removed, because `@lynx-js/types` now types `overlay` and the
+  stale local `level?: string` conflicted with it.
+- Verification: both Lynx typechecks, 883 tests, the production build, and a
+  background Native battery of 20 gates: 19 pass. The slash-menu gate fails,
+  and it fails against a pre-upgrade build too (fork issue #5), so it is left
+  out of the `prepare-native-battery.mjs` plan.
+- Found by looking at frames during the run, all present before the upgrade,
+  and fixed: the sidebar footer Settings button rendered empty and centered
+  (the Lynx `TooltipTrigger` dropped its rendered element's children), and the
+  active Settings nav icon was dark on dark.
+- Filed: inputs that start with a value render empty (#4), failing gates (#5),
+  the same children-dropping pattern in the other Lynx triggers (#6).
+- Harness: on 0.0.28 one process serves repeated DevTool screenshots and wheel
+  scrolling works through DevTool, so the one-frame-per-process and
+  wheel-needs-a-user-session rules were removed from `AGENTS.md`. Keyboard,
+  drag, hover, and selection still need computer use.

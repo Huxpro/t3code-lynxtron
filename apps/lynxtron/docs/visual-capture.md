@@ -59,9 +59,9 @@ pnpm --dir apps/lynxtron capture:lynx -- \
 ```
 
 Lynx DevTool Desktop currently emits JPEG data, so the output must use a
-`.jpg` or `.jpeg` extension. Start a fresh Lynxtron process for each capture;
-the desktop client exposes one reliable screencast frame per process. Stop the
-process after capture. The capture metadata records the PID-derived client,
+`.jpg` or `.jpeg` extension. On Lynxtron 0.0.28 one
+process serves repeated captures, so reuse it across states and stop it when
+the run ends. The capture metadata records the PID-derived client,
 session bundle URL, renderer transport kind and sequence, image dimensions,
 and zero-error console result. A name-only ambiguous client selection fails.
 
