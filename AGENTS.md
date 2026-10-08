@@ -111,50 +111,40 @@ An empty database is a bad test. Seed your worktree's `.t3` with a copy of real 
 
 ## Lynxtron harnessing
 
-Lynxtron verification has three distinct questions: did the code compile, did the product connect, and did the rendered interaction work? Evidence for one is not evidence for the others.
+Lynxtron verification answers three separate questions: did the code compile, did the product connect, and did the rendered interaction work? Evidence for one is not evidence for the others.
 
-### Acceptance tiers
+### The loop
 
-- **Use tiered acceptance.** For an implementation slice, run focused tests, the affected Web and Lynx typechecks, renderer scanner/audits, affected builds, and one fresh 1280 x 820 zero-error capture. Reserve paired viewports, themes, lifecycle states, and the complete visual matrix for phase exit. Repeating the full certification battery after every small change is waste, not confidence.
-- **Use isolated realistic state.** Launch with a fresh `T3_LYNXTRON_BASE_DIR`, an explicit `T3_LYNXTRON_PROJECT_CWD`, and explicit `T3_LYNXTRON_VIEWPORT_WIDTH` / `T3_LYNXTRON_VIEWPORT_HEIGHT`. Seed a useful project or a safe database snapshot; do not point the app at live `~/.t3/userdata` and do not accept an accidental empty-state-only test as product coverage.
-- **Build once per evidence run.** For a slice, build the affected artifact; for phase-exit evidence, run the complete production build. Record `HEAD`, the staged `dist/desktop` bundle paths and hashes, and the actual bundle URL/path reported by the DevTool session. A successful build or attached session does not prove that the running process loaded that build.
+This path needs no computer use and never takes focus. Use it in every environment.
 
-### Preflight and evidence validity
+1. **Build.** `pnpm --filter t3 build:bundle && pnpm build:lynxtron`. The Lynx build does not rebuild the server bundle the app launches.
+2. **Fixtures.** `node apps/lynxtron/scripts/prepare-native-battery.mjs <dir>` writes isolated fixtures and a plan. Never point the app at live `~/.t3/userdata`.
+3. **Gates.** `node apps/lynxtron/scripts/run-native-battery.mjs <dir>/plan.json <dir>/results`. For a slice, run focused tests, the affected typechecks, and the gates that cover the change; run the whole plan at phase exit.
+4. **Look.** Keep one background process and drive it through Lynx DevTool: `take-screenshot`, DOM and geometry reads, runtime evaluation, console, taps, and wheel scrolling (`Input.emulateTouchFromMouseEvent` with `type: "mouseWheel"`). One process serves any number of frames; restart only for a new bundle, a cold start, a viewport change, or process exit.
 
-Prove the harness before using it to judge the product. Do not retain a screenshot in the certification matrix until all applicable preflight checks pass:
+### Rules
 
-- Record the isolated state directory, server/Lynxtron/Web PIDs, listening ports, executable path, explicit viewport variables, route, theme, and snapshot identity. `verify-packaged-readiness.mjs` writes all of this into its report; only hand-rolled launches record it by hand.
-- Use one complete canonical snapshot for Web and Lynx. Create missing fixture data through the real product API or RPC, not renderer-only hard-coding.
-- Resolve the DevTool client from the owned Lynxtron PID and its listening port, then verify the expected session bundle. Never choose a client by list order, a remembered port, or app name alone; Fiddle and other Lynxtron instances commonly coexist.
-- For Web evidence, use a named isolated browser session. Record `innerWidth`, `innerHeight`, `visualViewport`, device pixel ratio, and exported image dimensions, then close only that session.
-- For Native evidence, distinguish requested window size, LynxView content size, device pixel ratio, and exported image size. Reject a frame whose measured dimensions do not match the recorded cell semantics.
-- Gate on semantic readiness. Server output saying `T3 Code server is ready`, the existence of a DevTool session, a visible window, and an empty error console are insufficient. Require `globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__` to report `kind === "main"`, require a nonnegative advancing `lastSeq()`, and assert a known project/model or another canonical state in the UI. A window that still says Connecting is a failed smoke even if the child server is listening.
+- **Background always.** Launch with `T3_LYNXTRON_BACKGROUND=1` (the harness scripts default it on). Never raise, activate, or focus the app unless the user asks to see it; then bring forward the exact process you started, after it is ready, and say whether its state is isolated or copied.
+- **Own the process.** Record the Lynxtron PID itself at spawn, not a wrapper shell. Resolve the DevTool client from that PID's listening port and check the session's bundle URL; never pick a client by list order, remembered port, or app name. Stop only PIDs you spawned, and confirm the child server exited too.
+- **Readiness is semantic.** Require `__T3_LYNXTRON_CONNECTOR_TRANSPORT__` to report `kind === "main"` with an advancing `lastSeq()`, and a known project or model in the UI. A window that says Connecting is a failed smoke, whatever the server log says.
+- **Wait on signals, not sleeps.** A deadline may fail a run; a fixed delay must not pass one. After two identical startup failures, stop relaunching and diagnose.
+- **Baseline before blaming.** When a gate or frame looks wrong after a change, run the same check against a build without the change before calling it a regression or pre-existing.
+- **Invalid evidence is not a regression.** Wrong process or bundle, mismatched state, route, theme, or dimensions, or console errors during capture mean the harness is broken; fix that first. Keep the console with every retained frame.
+- **Web comparisons** use a named isolated browser session with the same snapshot, route, and theme, and close only that session.
 
-Treat retained evidence as invalid, not as a product regression, when the client/process/bundle identity is wrong, Web and Lynx use different state/route/theme, dimensions are wrong, a production bundle requests a dev asset server, an outside writer changes persisted state, or runtime errors occur during capture. Keep diagnostic screenshots outside the certification matrix and fix the harness first.
+### With computer use
 
-### Startup and signal discipline
+Computer use covers only what DevTool cannot inject: real keyboard input and accelerators, drag, hover, text selection, focus order, and native menus and dialogs.
 
-- Exercise the real startup order. Connector tests that instantiate the host directly do not cover the `LynxWindow` lifecycle. The packaged launch harness must catch bridge-registration races between `loadFile`, `lynxBridge.handle`, renderer bootstrap, and server readiness. Do not hide a failed bridge probe with a sleep, reload, fixture injection, or screenshot; fix the ordering or readiness protocol.
-- Wait on signals, not elapsed time. Capture the spawned process and its logs, then wait for server-ready and renderer-ready diagnostics/state. A bounded deadline may fail the harness, but a fixed sleep must not decide success.
-- If an owned Native process exits twice with the same error, stop reopening it and diagnose the runtime instead of looping on restarts.
+- Use the computer use built into the agent host, through its background per-app tools on the owned PID's window. A request to verify or operate the app authorizes this; request access once per task.
+- The shell harness launches and stops the app. Computer use never launches it, never acts on another app with the same name, and never uses display-scope screenshot or click tools.
+- Prove each interaction as a chain: pre-state, real input, an observable UI or renderer-state result, then the DevTool console. Do not infer that a shortcut works because the equivalent tap does.
 
-### Computer Use and DevTool roles
+### Without computer use
 
-- **Stay in the background.** Launch owned Lynxtron processes with `T3_LYNXTRON_BACKGROUND=1` (accessory activation policy plus `showInactive`; the harness scripts default it on). Nothing in verification needs the app in front, so never raise, activate, or focus it; `lsappinfo front` before and after a run shows whether focus moved. Bring the exact owned process forward only when the user asks to see or operate it.
-- **DevTool is the default channel.** On Lynxtron 0.0.28 one process serves any number of `take-screenshot` frames, DOM and geometry reads, runtime evaluation, console capture, taps, and wheel scrolling (`Input.emulateTouchFromMouseEvent` with `type: "mouseWheel"`), all without focus. Reuse one verified process for a whole sequence of states; restart only for a new bundle, a cold-start case, a viewport change, or process exit.
-- **Computer use covers what DevTool cannot inject:** real OS keyboard input and accelerators, drag, hover, text selection, focus order, and native menus and dialogs. Use the computer use built into the agent host you are running in (Claude Code: Claude computer use; Codex: Codex computer use; TraeX: `$computer-use`) through its background per-app tools, which act on one window without bringing it forward. Never use display-scope screenshot or click tools, `open -a`, AppleScript, deep links, or raw event injection to drive a check; they disturb the desktop and do not prove the interaction.
-- **Permission.** A request to verify or operate the app authorizes background computer use on the owned process for that task; the host's own access prompt is the only further gate. Ask in chat only before anything that takes the foreground. Request access once per task. If the host has no computer-use tools or the grant is denied, do not re-prompt: prove what DevTool and env-gated main-process probes can, and mark the remaining physical checks `pending-user-session`.
-- **The launch harness owns lifecycle and identity; computer use owns input only.** Start the build from the shell harness with explicit arguments and environment, record its PID, and target that PID's window. Never let computer use launch or restart the app, and never act on an installed or stale app with the same display name.
-- **Prove an interaction as a causal chain:** pre-state, real input, an observable UI or renderer-state postcondition, then the DevTool console. A click animation, menu flash, or elapsed delay is not a postcondition. Take a fresh frame after any layout change instead of replaying remembered coordinates, and do not infer that an accelerator works because the equivalent tap does.
-- Stay inside the owned app. Do not grant Accessibility or Screen Recording permissions, dismiss unrelated dialogs, or touch another app without explicit user authorization. Size the window with the Lynxtron viewport variables, not through Accessibility.
-
-### Run ordering, state restoration, and cleanup
-
-- Put expensive work outside cheap variation: build once, prepare fixtures once (`scripts/prepare-native-battery.mjs` writes the fixtures and a plan for `scripts/run-native-battery.mjs`), then vary viewport, theme, route, and interaction state.
-- Prefer disposable isolated state. If a verification run must change an existing persisted file, save its original bytes and hash, record the temporary bytes/hash, and restore only after the owned process exits and the current file still matches what this run wrote. If it changed unexpectedly, do not overwrite a possible competing writer; preserve the backup and report both hashes.
-- Capture DevTool errors and warnings with every retained frame. The harness reports already record geometry, image dimensions, bundle identity, client port, snapshot, route, theme, semantic readiness, and cleanup; a hand-rolled run must record the same.
-- Stop only owned PIDs, close only named browser/Computer Use sessions created for the run, confirm owned ports are free, and verify state cleanup before declaring the harness clean.
-- **Handoff only a working window.** When asked to open the app, keep the process started by the agent alive, bring that exact process to the foreground, and verify product readiness before saying it is ready. Report whether the state is isolated or copied and retain the PID/session needed to stop only that process later.
+- Run the loop above in full; it covers everything except real input.
+- Do not substitute Midscene, AppleScript, `open -a`, deep links, or raw event injection. They take over the user's desktop and do not prove the interaction.
+- Report the real-input checks as `pending-user-session`, each named, so a session with computer use can pick them up.
 
 ## Pull requests
 
