@@ -226,16 +226,16 @@
       "label": "Settings General feature panel",
       "graphs": {
         "route": {
-          "web": ["apps/web/src/components/settings/GeneralSettingsContent.tsx"],
-          "lynx": ["apps/web/src/components/settings/GeneralSettingsContent.tsx"]
+          "web": ["apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx"],
+          "lynx": ["apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx"]
         },
         "productSurface": {
-          "web": ["apps/web/src/components/settings/GeneralSettingsContent.tsx"],
-          "lynx": ["apps/web/src/components/settings/GeneralSettingsContent.tsx"]
+          "web": ["apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx"],
+          "lynx": ["apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx"]
         },
         "rendererLocal": {
-          "web": ["apps/web/src/components/settings/GeneralSettingsContent.tsx"],
-          "lynx": ["apps/web/src/components/settings/GeneralSettingsContent.tsx"]
+          "web": ["apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx"],
+          "lynx": ["apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx"]
         }
       }
     },
@@ -258,7 +258,7 @@
         "productSurface": {
           "web": [
             "apps/web/src/routes/settings.tsx",
-            "apps/web/src/components/settings/GeneralSettingsPanel.tsx",
+            "apps/web/src/components/settings/GeneralSettingsPanel.lynx.tsx",
             "apps/web/src/components/settings/SettingsSidebarNav.tsx"
           ],
           "lynx": [
@@ -268,8 +268,8 @@
         },
         "rendererLocal": {
           "web": [
-            "apps/web/src/components/settings/GeneralSettingsPanel.tsx",
-            "apps/web/src/components/settings/GeneralSettingsContent.tsx",
+            "apps/web/src/components/settings/GeneralSettingsPanel.lynx.tsx",
+            "apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx",
             "apps/web/src/components/settings/settingsLayout.web.tsx"
           ],
           "lynx": [
@@ -323,10 +323,7 @@
       "label": "Quick Switch",
       "graphs": {
         "route": {
-          "web": [
-            "apps/web/src/routes/__root.tsx",
-            "apps/web/src/routes/_chat.tsx"
-          ],
+          "web": ["apps/web/src/routes/__root.tsx", "apps/web/src/routes/_chat.tsx"],
           "lynx": [
             "apps/lynxtron/src/app/routes/__root.tsx",
             "apps/lynxtron/src/app/routes/_chat.tsx"
@@ -335,19 +332,13 @@
         "productSurface": {
           "web": [
             "apps/web/src/components/CommandPalette.tsx",
-            "apps/web/src/components/CommandPaletteSurface.tsx"
+            "apps/web/src/components/CommandPaletteSurface.lynx.tsx"
           ],
-          "lynx": [
-            "apps/lynxtron/src/app/components/QuickSwitch.tsx"
-          ]
+          "lynx": ["apps/lynxtron/src/app/components/QuickSwitch.tsx"]
         },
         "rendererLocal": {
-          "web": [
-            "apps/web/src/components/CommandPalette.tsx"
-          ],
-          "lynx": [
-            "apps/lynxtron/src/app/components/QuickSwitch.tsx"
-          ]
+          "web": ["apps/web/src/components/CommandPalette.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/QuickSwitch.tsx"]
         }
       }
     },
@@ -362,11 +353,9 @@
         "productSurface": {
           "web": [
             "apps/web/src/components/settings/SettingsPanels.tsx",
-            "apps/web/src/components/settings/SettingsSurfaces.tsx"
+            "apps/web/src/components/settings/SettingsSurfaces.lynx.tsx"
           ],
-          "lynx": [
-            "apps/lynxtron/src/app/components/AppearanceSettings.tsx"
-          ]
+          "lynx": ["apps/lynxtron/src/app/components/AppearanceSettings.tsx"]
         },
         "rendererLocal": {
           "web": ["apps/web/src/components/settings/SettingsPanels.tsx"],
@@ -383,20 +372,12 @@
           "lynx": ["apps/lynxtron/src/app/routes/settings.connections.tsx"]
         },
         "productSurface": {
-          "web": [
-            "apps/web/src/components/settings/ConnectionsSettings.tsx"
-          ],
-          "lynx": [
-            "apps/lynxtron/src/app/components/OtherSettings.tsx"
-          ]
+          "web": ["apps/web/src/components/settings/ConnectionsSettings.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
         },
         "rendererLocal": {
-          "web": [
-            "apps/web/src/components/settings/ConnectionsSettings.tsx"
-          ],
-          "lynx": [
-            "apps/lynxtron/src/app/components/OtherSettings.tsx"
-          ]
+          "web": ["apps/web/src/components/settings/ConnectionsSettings.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
         }
       }
     },
@@ -413,17 +394,11 @@
             "apps/web/src/components/settings/SourceControlSettings.tsx",
             "apps/web/src/components/settings/SourceControlWritingSettings.tsx"
           ],
-          "lynx": [
-            "apps/lynxtron/src/app/components/OtherSettings.tsx"
-          ]
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
         },
         "rendererLocal": {
-          "web": [
-            "apps/web/src/components/settings/SourceControlSettings.tsx"
-          ],
-          "lynx": [
-            "apps/lynxtron/src/app/components/OtherSettings.tsx"
-          ]
+          "web": ["apps/web/src/components/settings/SourceControlSettings.tsx"],
+          "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
         }
       }
     },
@@ -456,7 +431,7 @@
         "productSurface": {
           "web": [
             "apps/web/src/components/settings/SettingsPanels.tsx",
-            "apps/web/src/components/settings/SettingsSurfaces.tsx"
+            "apps/web/src/components/settings/SettingsSurfaces.lynx.tsx"
           ],
           "lynx": ["apps/lynxtron/src/app/components/OtherSettings.tsx"]
         },

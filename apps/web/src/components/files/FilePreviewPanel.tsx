@@ -9,27 +9,10 @@ import { VirtualizedFile, type SelectedLineRange } from "@pierre/diffs";
 import { Editor } from "@pierre/diffs/editor";
 import { EditProvider, File, type FileOptions, Virtualizer } from "@pierre/diffs/react";
 import {
-  fileContentRevision,
-  isMarkdownPreviewFile,
-  projectFileCacheKey,
-  projectFileDetailLayout,
-  projectFileEditorCacheKey,
-  setMarkdownTaskChecked,
-} from "@t3tools/client-runtime/presentation/files";
-import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coordinator";
-import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
-import {
-  ArrowLeft,
-  ChevronRight,
-  Code2,
-  Eye,
-  FolderTree,
-  Globe2,
-  LoaderCircle,
-} from "lucide-react";
+import { ChevronRight, Code2, Eye, FolderTree, Globe2, LoaderCircle } from "lucide-react";
 import * as Schema from "effect/Schema";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -37,7 +20,6 @@ import { isBrowserPreviewFile, openFileInPreview } from "~/browser/openFileInPre
 import { useAssetUrlState } from "~/assets/assetUrls";
 import ChatMarkdown from "~/components/ChatMarkdown";
 import { OpenInPicker } from "~/components/chat/OpenInPicker";
-import { Button } from "~/components/ui/button";
 import { useRemoteOpenState } from "~/remoteOpen";
 import { useClientSettings } from "~/hooks/useSettings";
 import { useTheme } from "~/hooks/useTheme";
@@ -72,12 +54,14 @@ import {
 import { installFileEditorDismissal } from "./fileEditorDismissal";
 import { resolveCenteredFileLineScrollTop } from "./fileLineReveal";
 import { DiffCommentAnnotation } from "../diffs/DiffCommentAnnotation";
+import { projectFileCacheKey, projectFileEditorCacheKey } from "./fileContentRevision";
 import { fileBreadcrumbs } from "./filePath";
+import { isMarkdownPreviewFile, setMarkdownTaskChecked } from "./filePreviewMode";
+import { FileSaveCoordinator } from "./fileSaveCoordinator";
 import {
   confirmProjectFileQueryData,
   getOptimisticProjectFileQueryData,
   setProjectFileQueryData,
-  shouldRefreshProjectFileDetail,
   useProjectFileQuery,
 } from "./projectFilesQueryState";
 
@@ -92,7 +76,6 @@ interface FilePreviewPanelProps {
   availableEditors: ReadonlyArray<EditorId>;
   revealLine: number | null;
   revealRequestId: number;
-  onBackToFiles: () => void;
   onOpenFile: (relativePath: string) => void;
   onPendingChange: (relativePath: string, pending: boolean) => void;
 }
@@ -100,11 +83,6 @@ interface FilePreviewPanelProps {
 const FILE_EXPLORER_STORAGE_KEY = "t3code.fileExplorerOpen";
 const RENDER_MARKDOWN_STORAGE_KEY = "t3code.renderMarkdown";
 const FILE_SAVE_DEBOUNCE_MS = 500;
-const FILE_SAVE_SCHEDULER = {
-  now: () => Date.now(),
-  schedule: (callback: () => void, delayMs: number) => setTimeout(callback, delayMs),
-  cancel: (handle: unknown) => clearTimeout(handle as ReturnType<typeof setTimeout>),
-};
 const FILE_LINK_REVEAL_ATTRIBUTE = "data-file-link-reveal";
 const FILE_LINK_REVEAL_UNSAFE_CSS = `
   ${DIFF_SURFACE_THEME_UNSAFE_CSS}
@@ -427,18 +405,16 @@ function useFileSaveCoordinator({
   cwd,
   relativePath,
   onPendingChange,
-}: Pick<EditableFileSurfaceProps, "environmentId" | "cwd" | "relativePath" | "onPendingChange">) {
+}: Pick<
+  EditableFileSurfaceProps,
+  "environmentId" | "cwd" | "relativePath" | "onPendingChange"
+>): FileSaveCoordinator {
   const writeFile = useAtomCommand(projectEnvironment.writeFile);
-  const [saveError, setSaveError] = useState<string | null>(null);
   const coordinator = useMemo(
     () =>
       new FileSaveCoordinator({
         debounceMs: FILE_SAVE_DEBOUNCE_MS,
-        scheduler: FILE_SAVE_SCHEDULER,
-        onPendingChange: (pending) => {
-          if (!pending) setSaveError(null);
-          onPendingChange(relativePath, pending);
-        },
+        onPendingChange: (pending) => onPendingChange(relativePath, pending),
         persist: (nextContents) =>
           writeFile({
             environmentId,
@@ -447,43 +423,12 @@ function useFileSaveCoordinator({
         onConfirmed: (confirmedContents) => {
           confirmProjectFileQueryData(environmentId, cwd, relativePath, confirmedContents);
         },
-        onFailure: (failure) => {
-          const error =
-            failure._tag === "Result" && failure.result._tag === "Failure"
-              ? squashAtomCommandFailure(failure.result)
-              : failure._tag === "Exception"
-                ? failure.error
-                : new Error("Unable to save this file.");
-          setSaveError(error instanceof Error ? error.message : "Unable to save this file.");
-        },
       }),
     [cwd, environmentId, onPendingChange, relativePath, writeFile],
   );
 
   useEffect(() => () => coordinator.dispose(), [coordinator]);
-  return { coordinator, saveError };
-}
-
-function FileSaveFailureBar({
-  error,
-  onRetry,
-}: {
-  readonly error: string | null;
-  readonly onRetry: () => void;
-}) {
-  if (error === null) return null;
-  return (
-    <div
-      role="alert"
-      className="file-panel__statusbar file-panel__statusbar--error flex min-h-7 shrink-0 items-center justify-between gap-2 border-t border-destructive/20 bg-destructive/5 px-2.5 py-1 text-[11px] text-destructive-foreground"
-      data-file-save-error
-    >
-      <span className="min-w-0 flex-1 truncate">{error}</span>
-      <Button size="xs" variant="ghost" data-file-save-retry onClick={onRetry}>
-        Retry save
-      </Button>
-    </div>
-  );
+  return coordinator;
 }
 
 function EditableFileSurface({
@@ -512,7 +457,7 @@ function EditableFileSurface({
   );
   const surfaceRef = useRef<HTMLDivElement>(null);
   const selectionFrameRef = useRef<number | null>(null);
-  const { coordinator: saveCoordinator, saveError } = useFileSaveCoordinator({
+  const saveCoordinator = useFileSaveCoordinator({
     environmentId,
     cwd,
     relativePath,
@@ -696,67 +641,60 @@ function EditableFileSurface({
 
   return (
     <EditProvider editor={editor}>
-      <div className="flex min-h-0 flex-1 flex-col">
-        <div
-          ref={surfaceRef}
-          className="flex min-h-0 flex-1"
-          data-file-content-revision={fileContentRevision(contents)}
+      <div ref={surfaceRef} className="flex min-h-0 flex-1">
+        <Virtualizer
+          className="file-preview-virtualizer min-h-0 flex-1 overflow-auto"
+          config={{
+            overscrollSize: 600,
+            intersectionObserverMargin: 1200,
+          }}
         >
-          <Virtualizer
-            className="file-preview-virtualizer min-h-0 flex-1 overflow-auto"
-            config={{
-              overscrollSize: 600,
-              intersectionObserverMargin: 1200,
-            }}
-          >
-            <File<FileCommentAnnotationGroup>
-              file={{
-                name: relativePath,
+          <File<FileCommentAnnotationGroup>
+            file={{
+              name: relativePath,
+              contents,
+              cacheKey: projectFileEditorCacheKey(
+                environmentId,
+                cwd,
+                relativePath,
                 contents,
-                cacheKey: projectFileEditorCacheKey(
-                  environmentId,
-                  cwd,
-                  relativePath,
-                  contents,
-                  editor.getFile(),
-                ),
-              }}
-              options={{
-                disableFileHeader: true,
-                enableGutterUtility: !hasOpenCommentForm,
-                enableLineSelection: !hasOpenCommentForm,
-                onGutterUtilityClick: setSelectedRange,
-                onLineSelectionChange: setSelectedRange,
-                onLineSelectionEnd: handleLineSelectionEnd,
-                overflow: wordWrap ? "wrap" : "scroll",
-                theme: resolveDiffThemeName(resolvedTheme),
-                themeType: resolvedTheme,
-                unsafeCSS: FILE_LINK_REVEAL_UNSAFE_CSS,
-                onPostRender: handlePostRender,
-              }}
-              selectedLines={selectedRange}
-              lineAnnotations={lineAnnotations}
-              renderAnnotation={(annotation) => (
-                <div className="py-1">
-                  {annotation.metadata.entries.map((entry) => (
-                    <DiffCommentAnnotation
-                      key={entry.id}
-                      kind={entry.kind}
-                      rangeLabel={formatFileCommentRange(entry.startLine, entry.endLine)}
-                      text={entry.text}
-                      onCancel={() => removeAnnotationEntry(entry.id)}
-                      onComment={(text) => submitAnnotationEntry(entry.id, text)}
-                      onDelete={() => removeAnnotationEntry(entry.id)}
-                    />
-                  ))}
-                </div>
-              )}
-              className="min-h-full"
-              contentEditable
-            />
-          </Virtualizer>
-        </div>
-        <FileSaveFailureBar error={saveError} onRetry={() => void saveCoordinator.flush()} />
+                editor.getFile(),
+              ),
+            }}
+            options={{
+              disableFileHeader: true,
+              enableGutterUtility: !hasOpenCommentForm,
+              enableLineSelection: !hasOpenCommentForm,
+              onGutterUtilityClick: setSelectedRange,
+              onLineSelectionChange: setSelectedRange,
+              onLineSelectionEnd: handleLineSelectionEnd,
+              overflow: wordWrap ? "wrap" : "scroll",
+              theme: resolveDiffThemeName(resolvedTheme),
+              themeType: resolvedTheme,
+              unsafeCSS: FILE_LINK_REVEAL_UNSAFE_CSS,
+              onPostRender: handlePostRender,
+            }}
+            selectedLines={selectedRange}
+            lineAnnotations={lineAnnotations}
+            renderAnnotation={(annotation) => (
+              <div className="py-1">
+                {annotation.metadata.entries.map((entry) => (
+                  <DiffCommentAnnotation
+                    key={entry.id}
+                    kind={entry.kind}
+                    rangeLabel={formatFileCommentRange(entry.startLine, entry.endLine)}
+                    text={entry.text}
+                    onCancel={() => removeAnnotationEntry(entry.id)}
+                    onComment={(text) => submitAnnotationEntry(entry.id, text)}
+                    onDelete={() => removeAnnotationEntry(entry.id)}
+                  />
+                ))}
+              </div>
+            )}
+            className="min-h-full"
+            contentEditable
+          />
+        </Virtualizer>
       </div>
     </EditProvider>
   );
@@ -780,7 +718,7 @@ function RenderedMarkdownSurface({
 > & {
   threadRef: ScopedThreadRef;
 }) {
-  const { coordinator: saveCoordinator, saveError } = useFileSaveCoordinator({
+  const saveCoordinator = useFileSaveCoordinator({
     environmentId,
     cwd,
     relativePath,
@@ -788,26 +726,23 @@ function RenderedMarkdownSurface({
   });
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ScrollArea className="min-h-0 flex-1">
-        <ChatMarkdown
-          text={contents}
-          cwd={cwd}
-          threadRef={threadRef}
-          className="mx-auto max-w-4xl px-6 py-5"
-          onTaskListChange={({ markerOffset, checked }) => {
-            const currentContents =
-              getOptimisticProjectFileQueryData(environmentId, cwd, relativePath)?.contents ??
-              contents;
-            const nextContents = setMarkdownTaskChecked(currentContents, markerOffset, checked);
-            if (nextContents === currentContents) return;
-            setProjectFileQueryData(environmentId, cwd, relativePath, nextContents);
-            saveCoordinator.change(nextContents);
-          }}
-        />
-      </ScrollArea>
-      <FileSaveFailureBar error={saveError} onRetry={() => void saveCoordinator.flush()} />
-    </div>
+    <ScrollArea className="min-h-0 flex-1">
+      <ChatMarkdown
+        text={contents}
+        cwd={cwd}
+        threadRef={threadRef}
+        className="mx-auto max-w-4xl px-6 py-5"
+        onTaskListChange={({ markerOffset, checked }) => {
+          const currentContents =
+            getOptimisticProjectFileQueryData(environmentId, cwd, relativePath)?.contents ??
+            contents;
+          const nextContents = setMarkdownTaskChecked(currentContents, markerOffset, checked);
+          if (nextContents === currentContents) return;
+          setProjectFileQueryData(environmentId, cwd, relativePath, nextContents);
+          saveCoordinator.change(nextContents);
+        }}
+      />
+    </ScrollArea>
   );
 }
 
@@ -831,7 +766,6 @@ export default function FilePreviewPanel({
   availableEditors,
   revealLine,
   revealRequestId,
-  onBackToFiles,
   onOpenFile,
   onPendingChange,
 }: FilePreviewPanelProps) {
@@ -848,9 +782,6 @@ export default function FilePreviewPanel({
   });
   const isImage = relativePath !== null && isWorkspaceImagePreviewPath(relativePath);
   const file = useProjectFileQuery(environmentId, cwd, relativePath, !isImage);
-  const refreshFile = file.refresh;
-  const panelRef = useRef<HTMLDivElement>(null);
-  const [panelWidth, setPanelWidth] = useState<number | null>(null);
   const [explorerOpen, setExplorerOpen] = useState(initialExplorerOpen);
   // Reading markdown rendered is a preference, not a property of one file. Keeping
   // it on the panel meant a thread switch dropped it and forced source back.
@@ -867,7 +798,6 @@ export default function FilePreviewPanel({
   );
   const breadcrumbRef = useRef<HTMLDivElement>(null);
   const isMarkdown = relativePath ? isMarkdownPreviewFile(relativePath) : false;
-  const detailLayout = projectFileDetailLayout(panelWidth);
   // A reveal still wins over the preference: the line only exists in the source.
   const renderMarkdown =
     isMarkdown &&
@@ -889,25 +819,6 @@ export default function FilePreviewPanel({
     );
     currentCrumb?.scrollIntoView({ block: "nearest", inline: "end" });
   }, [relativePath]);
-
-  useEffect(() => {
-    if (!shouldRefreshProjectFileDetail(relativePath, isImage)) return;
-    refreshFile();
-  }, [isImage, refreshFile, relativePath]);
-
-  useEffect(() => {
-    const panel = panelRef.current;
-    if (!panel) return;
-    const updateWidth = () => {
-      const nextWidth = panel.clientWidth;
-      setPanelWidth((current) => (current === nextWidth ? current : nextWidth));
-    };
-    updateWidth();
-    if (typeof ResizeObserver === "undefined") return;
-    const observer = new ResizeObserver(updateWidth);
-    observer.observe(panel);
-    return () => observer.disconnect();
-  }, []);
 
   const toggleExplorer = () => {
     setExplorerOpen((current) => {
@@ -946,28 +857,12 @@ export default function FilePreviewPanel({
   }, [absolutePath, createAssetUrl, environmentHttpBaseUrl, openPreview, threadRef]);
 
   return (
-    <div
-      ref={panelRef}
-      className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background"
-      data-file-detail-layout={detailLayout.showExplorer ? "split" : "editor"}
-    >
+    <div className="flex min-h-0 flex-1 flex-col overflow-hidden bg-background">
       {relativePath ? (
         <div
           className="flex h-10 min-h-10 shrink-0 items-center gap-2 border-b border-border/60 bg-background px-3 in-data-[preview-panel-mode=inline]:mb-3 in-data-[preview-panel-mode=inline]:h-7 in-data-[preview-panel-mode=inline]:min-h-7 in-data-[preview-panel-mode=inline]:border-b-transparent"
           data-surface-subheader
         >
-          {detailLayout.showBackToFiles ? (
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon-xs"
-              className="-ml-1 size-7! shrink-0"
-              aria-label="Back to workspace files"
-              onClick={onBackToFiles}
-            >
-              <ArrowLeft className="size-3.5" />
-            </Button>
-          ) : null}
           <ScrollArea
             ref={breadcrumbRef}
             hideScrollbars
@@ -1017,7 +912,6 @@ export default function FilePreviewPanel({
               openInCwd={absolutePath}
               compact
               enableShortcut={false}
-              anchor="file-open-in-menu"
             />
           ) : null}
           {isMarkdown ? (
@@ -1169,7 +1063,7 @@ export default function FilePreviewPanel({
             )
           ) : null}
         </div>
-        {(detailLayout.showExplorer && explorerOpen) || relativePath === null ? (
+        {explorerOpen || relativePath === null ? (
           <aside
             className={cn(
               "flex min-h-0 shrink-0 bg-background",

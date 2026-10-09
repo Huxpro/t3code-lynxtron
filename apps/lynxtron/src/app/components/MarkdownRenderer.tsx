@@ -7,7 +7,7 @@ import {
   serializeMarkdownTable,
   type MarkdownInlinePresentation,
   type MarkdownTablePresentation,
-} from "@t3tools/client-runtime/presentation/markdown";
+} from "@t3tools/lynx-logic/markdown";
 import { clientCapabilities, showNativeContextMenu } from "../platform/clientCapabilities.lynx";
 import { getClientSettingsState } from "../state/prefsStore";
 import { uiActions } from "../state/uiState";
@@ -23,14 +23,11 @@ import {
   fileLinkFailureToast,
 } from "../../../../web/src/components/chat/fileLinkContextMenu";
 import { toastManager } from "../../../../web/src/components/ui/toast";
-import {
-  parseMarkdownBlocks,
-  type ParsedMarkdownBlock,
-} from "@t3tools/client-runtime/presentation/markdown-blocks";
+import { parseMarkdownBlocks, type ParsedMarkdownBlock } from "@t3tools/lynx-logic/markdownBlocks";
 import { copyMarkdownCode } from "./markdownClipboard";
 import { markdownTableContentWidth } from "./markdownTableLayout";
 import type { MessageCopyStatus } from "./messageCopy";
-import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 import type { ThreadId } from "@t3tools/contracts";
 import { t3ClientActions } from "../state/t3Client";
 

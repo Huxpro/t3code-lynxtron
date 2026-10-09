@@ -11,8 +11,8 @@ import {
   providerModelKey,
   resolveModelPickerSelectedKey,
   type ModelPickerContext,
-} from "@t3tools/client-runtime/presentation/model-picker";
-import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentation/provider";
+} from "@t3tools/lynx-logic/modelPicker";
+import { deriveProviderInstanceEntries } from "@t3tools/lynx-logic/provider";
 import { resolveModelPickerJumpTargets } from "../../../../web/src/keybindings";
 
 function provider(input: {

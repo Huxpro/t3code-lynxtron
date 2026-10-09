@@ -136,17 +136,10 @@ describe("Lynx Settings route projection", () => {
       ),
       "utf8",
     );
-    const generalWebHost = readFileSync(
-      path.resolve(
-        import.meta.dirname,
-        "../../../web/src/components/settings/generalSettingsPanelHost.web.tsx",
-      ),
-      "utf8",
-    );
     const generalPanel = readFileSync(
       path.resolve(
         import.meta.dirname,
-        "../../../web/src/components/settings/GeneralSettingsPanel.tsx",
+        "../../../web/src/components/settings/GeneralSettingsPanel.lynx.tsx",
       ),
       "utf8",
     );
@@ -186,7 +179,6 @@ describe("Lynx Settings route projection", () => {
     expect(generalLayout).toContain("readonly titleAccessory?: ReactNode;");
     expect(generalLayout).toContain("{titleAccessory}");
     expect(generalHost).toContain('ariaLabel="Background activity profile"');
-    expect(generalWebHost).toContain('id="background-activity"');
     expect(generalHost).toContain("onProfileChange(value)");
     expect(generalPanel).toContain("setBackgroundActivityProfile(profile)");
     expect(generalPanel).toContain(
@@ -259,7 +251,7 @@ describe("Lynx Settings route projection", () => {
     const settings = readFileSync(
       path.resolve(
         import.meta.dirname,
-        "../../../web/src/components/settings/GeneralSettingsContent.tsx",
+        "../../../web/src/components/settings/GeneralSettingsContent.lynx.tsx",
       ),
       "utf8",
     );

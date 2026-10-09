@@ -1,8 +1,5 @@
 import { useMemo, useCallback, useEffect, useRef, useState } from "@lynx-js/react";
-import {
-  deriveSessionPresentationPhase,
-  isSessionWorking,
-} from "@t3tools/client-runtime/presentation/session";
+import { deriveSessionPresentationPhase, isSessionWorking } from "@t3tools/lynx-logic/session";
 import {
   isComposerDraftThread,
   projectComposerProviderAvailability,
@@ -12,24 +9,21 @@ import {
   shouldShowComposerContextStrip,
   shouldUseComposerHeroLayout,
   toggleComposerInteractionMode,
-} from "@t3tools/client-runtime/presentation/composer";
+} from "@t3tools/lynx-logic/composer";
 import {
   composerDraftScopeKey,
   composerImagePreparationErrorMessage,
   planComposerImageAdditions,
-} from "@t3tools/client-runtime/presentation/draft-thread";
-import { appendTerminalContextsToPrompt } from "@t3tools/client-runtime/presentation/terminal-context";
-import { appendElementContextsToPrompt } from "@t3tools/client-runtime/presentation/element-context";
-import {
-  appendFileContextsToPrompt,
-  composerFileContext,
-} from "@t3tools/client-runtime/presentation/file-context";
+} from "@t3tools/lynx-logic/draftThread";
+import { appendTerminalContextsToPrompt } from "@t3tools/lynx-logic/terminalContext";
+import { appendElementContextsToPrompt } from "@t3tools/lynx-logic/elementContext";
+import { appendFileContextsToPrompt, composerFileContext } from "@t3tools/lynx-logic/fileContext";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
 import { projectConnectionLifecycle } from "@t3tools/client-runtime/connection/presentation";
 import {
   derivePendingApprovals,
   derivePendingUserInputs,
-} from "@t3tools/client-runtime/presentation/pending-requests";
+} from "@t3tools/lynx-logic/pendingRequests";
 import {
   buildPendingUserInputAnswers,
   derivePendingUserInputProgress,
@@ -37,25 +31,25 @@ import {
   setPendingUserInputCustomAnswer,
   togglePendingUserInputOptionSelection,
   type PendingUserInputDraftAnswer,
-} from "@t3tools/client-runtime/presentation/pending-user-input";
+} from "@t3tools/lynx-logic/pendingUserInput";
 import {
   deriveModelPickerModels,
   getTriggerDisplayModelName,
-} from "@t3tools/client-runtime/presentation/model-picker";
+} from "@t3tools/lynx-logic/modelPicker";
 import {
   deriveLatestContextWindowSnapshot,
   formatProviderDisplayName,
-} from "@t3tools/client-runtime/presentation/composer";
+} from "@t3tools/lynx-logic/composer";
 import {
   projectProviderStatusNotice,
   resolveSelectableProviderInstanceEntry,
-} from "@t3tools/client-runtime/presentation/provider";
+} from "@t3tools/lynx-logic/provider";
 import {
   EMPTY_TRANSCRIPT_PLACEHOLDER,
   shouldShowEmptyTranscript,
-} from "@t3tools/client-runtime/presentation/transcript";
+} from "@t3tools/lynx-logic/transcript";
 import { ChatRouteSurface } from "../../../../web/src/components/ChatRouteSurface";
-import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 import { ConnectionLifecycleBannerSurface } from "../../../../web/src/components/chat/ConnectionLifecycleBannerSurface";
 import { ThreadErrorBannerSurface } from "../../../../web/src/components/chat/ThreadErrorBannerSurface";
 import {

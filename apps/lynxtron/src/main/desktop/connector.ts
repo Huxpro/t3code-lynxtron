@@ -21,14 +21,11 @@ import * as net from "node:net";
 import * as os from "node:os";
 import * as path from "node:path";
 
-import {
-  projectAuthAccess,
-  type AuthAccessPresentation,
-} from "@t3tools/client-runtime/presentation/connections";
+import { projectAuthAccess, type AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
 import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
-import { buildThreadTurnStartCommand } from "@t3tools/client-runtime/operations/thread-dispatch";
-import { deriveProviderModelSelectionProjection } from "@t3tools/client-runtime/presentation/model-picker";
-import { selectRecoverableDisposableThreadIds } from "@t3tools/client-runtime/presentation/thread-actions";
+import { buildThreadTurnStartCommand } from "@t3tools/lynx-logic/threadDispatch";
+import { deriveProviderModelSelectionProjection } from "@t3tools/lynx-logic/modelPicker";
+import { selectRecoverableDisposableThreadIds } from "@t3tools/lynx-logic/threadActions";
 import { applyShellStreamEvent } from "@t3tools/client-runtime/state/shell";
 import {
   applyAuthAccessStreamEvent,
@@ -45,11 +42,8 @@ import {
   EMPTY_TERMINAL_BUFFER_STATE,
   type TerminalBufferState,
 } from "@t3tools/client-runtime/state/terminal";
-import {
-  deriveActivePlanState,
-  findLatestProposedPlan,
-} from "@t3tools/client-runtime/presentation/thread";
-import { buildProviderInstanceEnabledPatch } from "@t3tools/client-runtime/presentation/provider-settings";
+import { deriveActivePlanState, findLatestProposedPlan } from "@t3tools/lynx-logic/thread";
+import { buildProviderInstanceEnabledPatch } from "@t3tools/lynx-logic/providerSettings";
 import {
   WsRpcGroup,
   WS_METHODS,

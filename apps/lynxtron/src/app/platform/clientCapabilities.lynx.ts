@@ -1,7 +1,5 @@
-import {
-  matchesViewportMediaQuery,
-  type ClientUiCapabilities,
-} from "@t3tools/client-runtime/platform";
+import { matchesViewportMediaQuery } from "@t3tools/lynx-logic/mediaQuery";
+import type { ClientUiCapabilities } from "@t3tools/lynx-logic/uiCapabilities";
 
 import { appAtomRegistry } from "../state/atomRegistry";
 import { connectionStatusAtom } from "../state/connectionStatus";

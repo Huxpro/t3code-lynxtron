@@ -9,7 +9,10 @@ const timelineSource = readFileSync(
   "utf8",
 );
 const sharedRowSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/TranscriptRowSurface.tsx"),
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/chat/TranscriptRowSurface.lynx.tsx",
+  ),
   "utf8",
 );
 

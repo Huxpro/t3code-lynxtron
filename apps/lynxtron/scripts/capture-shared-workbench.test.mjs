@@ -1109,12 +1109,6 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(source, "web?.desktopVisualHost === true");
     assert.include(source, "web?.restore === null && lynx?.restore === null");
     assert.include(source, "finalSettingsDesktopTopbarReady");
-    const keybindings = readFileSync(
-      path.join(import.meta.dirname, "../../web/src/components/settings/KeybindingsSettings.tsx"),
-      "utf8",
-    );
-    assert.include(keybindings, "!isDesktopVisualHost");
-    assert.notInclude(keybindings, "!isElectron");
   });
 
   it("runs the Browser Connections create and revoke lifecycle on both renderers", () => {
@@ -1442,10 +1436,6 @@ describe("shared workbench lifecycle fault capture", () => {
       path.join(import.meta.dirname, "shared-workbench/workbench.js"),
       "utf8",
     );
-    const sidebarStageBackdrop = readFileSync(
-      path.join(import.meta.dirname, "../../web/src/components/SidebarStageBackdrop.tsx"),
-      "utf8",
-    );
     assert.include(workbench, "function readSidebarStageIdentity");
     assert.include(workbench, '"[data-stage-backdrop-variant]"');
     assert.include(workbench, "backdropVisible:");
@@ -1453,7 +1443,6 @@ describe("shared workbench lifecycle fault capture", () => {
     assert.include(workbench, 'const environmentIdentificationMode = "none"');
     assert.include(workbench, "environmentIdentificationMode:");
     assert.include(workbench, "lynxQuery.set");
-    assert.include(sidebarStageBackdrop, "data-stage-backdrop-variant={variant}");
     assert.include(source, "function sidebarStageIdentityMatches");
     assert.include(source, "stageIdentityReady");
     assert.include(source, "finalStageIdentityReady");

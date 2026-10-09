@@ -25,7 +25,6 @@ import {
   resolveWorkingStartedAt,
   searchSidebarThreadsByTitle,
   formatWorkingDurationLabel,
-  shouldChooseProjectForNewThread,
   shouldNavigateAfterProjectRemoval,
   shouldClearThreadSelectionOnMouseDown,
   sortLogicalProjectsForSidebar,
@@ -36,8 +35,6 @@ import {
   sortThreadsForSidebar,
   sortProjectsForSidebar,
   sortScopedProjectsForSidebar,
-  isSidebarV2ThreadWoke,
-  resolveSidebarV2RowPresentation,
   shouldCreateNewThreadInCurrentProject,
   THREAD_JUMP_HINT_SHOW_DELAY_MS,
 } from "./Sidebar.logic";
@@ -763,14 +760,6 @@ describe("resolveSidebarThreadStatus", () => {
 
   it("defaults to ready with no session", () => {
     expect(resolveSidebarThreadStatus({ ...idle, session: null })).toBe("ready");
-  });
-});
-
-describe("shouldChooseProjectForNewThread", () => {
-  it("opens the project chooser only when there is a real choice", () => {
-    expect(shouldChooseProjectForNewThread(0)).toBe(false);
-    expect(shouldChooseProjectForNewThread(1)).toBe(false);
-    expect(shouldChooseProjectForNewThread(2)).toBe(true);
   });
 });
 
@@ -1692,48 +1681,5 @@ describe("sortLogicalProjectsForSidebar", () => {
         (project) => project.projectKey,
       ),
     ).toEqual(["logical-newer", "logical-older"]);
-  });
-});
-
-describe("resolveSidebarV2RowPresentation", () => {
-  const base = { isUnread: false, isWoke: false, isActive: false, isSelected: false };
-
-  it("recedes read ready and in-flight rows but keeps rows that need a human", () => {
-    expect(resolveSidebarV2RowPresentation({ ...base, status: "ready" }).shouldRecede).toBe(true);
-    expect(resolveSidebarV2RowPresentation({ ...base, status: "working" }).shouldRecede).toBe(true);
-    expect(
-      resolveSidebarV2RowPresentation({ ...base, status: "ready", isUnread: true }).shouldRecede,
-    ).toBe(false);
-    expect(resolveSidebarV2RowPresentation({ ...base, status: "failed" }).shouldRecede).toBe(false);
-  });
-
-  it("labels woke before done and live status before either", () => {
-    expect(
-      resolveSidebarV2RowPresentation({ ...base, status: "ready", isUnread: true, isWoke: true })
-        .topStatus?.label,
-    ).toBe("Woke");
-    expect(
-      resolveSidebarV2RowPresentation({ ...base, status: "ready", isUnread: true }).topStatus
-        ?.label,
-    ).toBe("Done");
-    expect(
-      resolveSidebarV2RowPresentation({ ...base, status: "approval", isWoke: true }).topStatus
-        ?.label,
-    ).toBe("Approval");
-    expect(resolveSidebarV2RowPresentation({ ...base, status: "ready" }).topStatus).toBeNull();
-    const monitoring = resolveSidebarV2RowPresentation({ ...base, status: "monitoring" });
-    expect(monitoring.topStatus?.label).toBe("Monitoring");
-    expect(monitoring.isInFlight).toBe(true);
-  });
-});
-
-describe("isSidebarV2ThreadWoke", () => {
-  it("shows the pill until a visit after the wake", () => {
-    const wokeAt = "2026-09-29T10:00:00.000Z";
-    expect(isSidebarV2ThreadWoke(wokeAt, undefined)).toBe(true);
-    expect(isSidebarV2ThreadWoke(wokeAt, "not-a-date")).toBe(true);
-    expect(isSidebarV2ThreadWoke(wokeAt, "2026-09-29T09:00:00.000Z")).toBe(true);
-    expect(isSidebarV2ThreadWoke(wokeAt, "2026-09-29T11:00:00.000Z")).toBe(false);
-    expect(isSidebarV2ThreadWoke(null, undefined)).toBe(false);
   });
 });

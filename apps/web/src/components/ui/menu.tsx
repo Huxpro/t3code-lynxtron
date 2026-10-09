@@ -28,11 +28,9 @@ function MenuPopup({
   alignOffset,
   side = "bottom",
   anchor,
-  relationId,
   ...props
 }: MenuPrimitive.Popup.Props & {
   align?: MenuPrimitive.Positioner.Props["align"];
-  relationId?: string;
   sideOffset?: MenuPrimitive.Positioner.Props["sideOffset"];
   alignOffset?: MenuPrimitive.Positioner.Props["alignOffset"];
   side?: MenuPrimitive.Positioner.Props["side"];
@@ -62,7 +60,6 @@ function MenuPopup({
             !hasExplicitWidthClass && "min-w-32",
             className,
           )}
-          data-floating-popup={relationId}
           data-slot="menu-popup"
           {...props}
         >
@@ -175,9 +172,7 @@ function MenuRadioItem({
       data-slot="menu-radio-item"
       {...props}
     >
-      <span className="ui-menu-radio-item__content flex min-w-0 flex-1 items-center gap-2 truncate">
-        {children}
-      </span>
+      <span className="min-w-0 flex-1">{children}</span>
     </MenuPrimitive.RadioItem>
   );
 }

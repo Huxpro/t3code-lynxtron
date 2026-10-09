@@ -76,12 +76,9 @@ import type {
   ThreadTurnStartBootstrap,
   UploadChatAttachment,
 } from "@t3tools/contracts";
-import type { ModelPickerModel } from "@t3tools/client-runtime/presentation/model-picker";
-import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
-import type {
-  ActivePlanState,
-  LatestProposedPlanState,
-} from "@t3tools/client-runtime/presentation/thread";
+import type { ModelPickerModel } from "@t3tools/lynx-logic/modelPicker";
+import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
+import type { ActivePlanState, LatestProposedPlanState } from "@t3tools/lynx-logic/thread";
 import type { ConnectorAssetUrlResult, ProjectRepoContext } from "../shared/connectorProtocol";
 
 export type ConnectionStatus =

@@ -21,18 +21,6 @@ import {
   subscribe,
 } from "../rpc/client.ts";
 import { EnvironmentSupervisor } from "../connection/supervisor.ts";
-import {
-  isAtomCommandInterrupted,
-  settlePromise,
-  squashAtomCommandFailure,
-  type AtomCommandFailure,
-  type AtomCommandResult,
-  type AtomCommandSuccess,
-  type SettledAsyncResult,
-} from "./commandResult.ts";
-
-export { isAtomCommandInterrupted, settlePromise, squashAtomCommandFailure };
-export type { AtomCommandFailure, AtomCommandResult, AtomCommandSuccess, SettledAsyncResult };
 
 interface EnvironmentAtomOptions<Input, A, E, R> {
   readonly label: string;
@@ -71,6 +59,14 @@ interface EnvironmentSubscriptionAtomOptions<Input, A, E, R> {
   readonly subscribe: (input: Input) => Stream.Stream<A, E, R>;
   readonly idleTtlMs?: number;
 }
+
+export type SettledAsyncResult<A, E> = AsyncResult.Success<A, E> | AsyncResult.Failure<A, E>;
+
+export type AtomCommandResult<A, E> = SettledAsyncResult<A, E>;
+
+export type AtomCommandSuccess<R> = R extends AtomCommandResult<infer A, infer _E> ? A : never;
+
+export type AtomCommandFailure<R> = R extends AtomCommandResult<infer _A, infer E> ? E : never;
 
 export interface AtomCommandOptions {
   readonly label?: string;
@@ -300,6 +296,16 @@ export function mapAtomCommandResult<A, E, B>(
     : AsyncResult.failure(result.cause);
 }
 
+export function isAtomCommandInterrupted(result: AtomCommandResult<unknown, unknown>): boolean {
+  return result._tag === "Failure" && Cause.hasInterruptsOnly(result.cause);
+}
+
+export function squashAtomCommandFailure(result: {
+  readonly cause: Cause.Cause<unknown>;
+}): unknown {
+  return Cause.squash(result.cause);
+}
+
 export async function settleAsyncResult<A, E>(
   execute: () => Promise<Exit.Exit<A, E>>,
 ): Promise<SettledAsyncResult<A, E>> {
@@ -403,6 +409,16 @@ export function reportAtomCommandResult(
     }
   } else if (options.reportFailure ?? true) {
     reporter.warn(`[atom-command] ${label} failed`, result.cause);
+  }
+}
+
+export async function settlePromise<A>(
+  execute: () => Promise<A>,
+): Promise<AtomCommandResult<A, never>> {
+  try {
+    return AsyncResult.success(await execute());
+  } catch (defect) {
+    return AsyncResult.failure(Cause.die(defect));
   }
 }
 

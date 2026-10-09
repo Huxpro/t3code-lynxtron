@@ -15,7 +15,7 @@ import type {
   EnvironmentThread,
   EnvironmentThreadShell,
 } from "@t3tools/client-runtime/state/shell";
-import type { SessionPresentationPhase } from "@t3tools/client-runtime/presentation/session";
+import type { SessionPresentationPhase } from "@t3tools/lynx-logic/session";
 
 export type SessionPhase = SessionPresentationPhase;
 export const DEFAULT_RUNTIME_MODE: RuntimeMode = "full-access";

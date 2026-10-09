@@ -12,7 +12,6 @@ type CommandPaletteContentProps = Omit<ComponentProps<typeof Command>, "children
   readonly inputAccessory?: ReactNode;
   readonly inputProps: ComponentProps<typeof CommandInput>;
   readonly panelClassName?: string;
-  readonly paletteView?: string;
   readonly showBackHint?: boolean;
   readonly testId?: string;
 };
@@ -30,13 +29,12 @@ export function CommandPaletteContent({
   inputAccessory,
   inputProps,
   panelClassName,
-  paletteView,
   showBackHint,
   testId,
   ...commandProps
 }: CommandPaletteContentProps) {
   return (
-    <div className="contents" data-palette-view={paletteView} data-testid={testId}>
+    <div className="contents" data-testid={testId}>
       <Command {...commandProps}>
         <div className="relative">
           <CommandInput {...inputProps} />

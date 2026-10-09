@@ -3,15 +3,6 @@ import {
   scopedThreadKey,
   scopeThreadRef,
 } from "@t3tools/client-runtime/environment";
-import {
-  prStatusIndicator,
-  resolveThreadPr,
-  settledPrHoverColorClass,
-  terminalStatusFromRunningIds,
-  type PrStatusIndicator,
-  type TerminalStatusIndicator,
-  type ThreadPr,
-} from "@t3tools/client-runtime/presentation/source-control";
 import type { VcsStatusResult } from "@t3tools/contracts";
 import { Atom } from "effect/unstable/reactivity";
 import { CloudIcon, FolderGit2Icon, GitPullRequestIcon, TerminalIcon } from "lucide-react";
@@ -23,18 +14,89 @@ import { useEnvironmentQuery } from "../state/query";
 import { useThreadRunningTerminalIds } from "../state/terminalSessions";
 import { vcsEnvironment } from "../state/vcs";
 import { useUiStateStore } from "../uiStateStore";
+import { resolveChangeRequestPresentation } from "../sourceControlPresentation";
 import { resolveThreadStatusPill, type ThreadStatusPill } from "./Sidebar.logic";
 import type { SidebarThreadSummary } from "../types";
 import { formatWorktreePathForDisplay } from "../worktreeCleanup";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 
-export {
-  prStatusIndicator,
-  resolveThreadPr,
-  settledPrHoverColorClass,
-  terminalStatusFromRunningIds,
-};
-export type { PrStatusIndicator, TerminalStatusIndicator, ThreadPr };
+export interface PrStatusIndicator {
+  label: string;
+  colorClass: string;
+  tooltip: string;
+  tooltipLead: string;
+  tooltipTitle: string;
+  url: string;
+}
+
+export interface TerminalStatusIndicator {
+  label: "Terminal process running";
+  colorClass: string;
+  pulse: boolean;
+}
+
+export type ThreadPr = VcsStatusResult["pr"];
+
+export function settledPrHoverColorClass(state: NonNullable<ThreadPr>["state"]): string {
+  switch (state) {
+    case "open":
+      return "group-hover/v2-row:text-emerald-600 dark:group-hover/v2-row:text-emerald-300/90";
+    case "merged":
+      return "group-hover/v2-row:text-violet-600 dark:group-hover/v2-row:text-violet-300/90";
+    case "closed":
+      return "group-hover/v2-row:text-red-600 dark:group-hover/v2-row:text-red-300/90";
+  }
+}
+
+export function prStatusIndicator(
+  pr: ThreadPr,
+  provider: VcsStatusResult["sourceControlProvider"] | null | undefined,
+): PrStatusIndicator | null {
+  function formatPrState(state: NonNullable<ThreadPr>["state"]): string {
+    return state.charAt(0).toUpperCase() + state.slice(1);
+  }
+
+  function formatPrStatusLead(pr: NonNullable<ThreadPr>, changeRequestShortName: string): string {
+    return `${changeRequestShortName} #${pr.number} - ${formatPrState(pr.state)}`;
+  }
+  if (!pr) return null;
+  const presentation = resolveChangeRequestPresentation(provider);
+
+  const tooltipLead = formatPrStatusLead(pr, presentation.shortName);
+  const tooltip = `${tooltipLead}: ${pr.title}`;
+
+  if (pr.state === "open") {
+    return {
+      label: `${presentation.shortName} open`,
+      colorClass: "text-emerald-600 dark:text-emerald-300/90",
+      tooltip,
+      tooltipLead,
+      tooltipTitle: pr.title,
+      url: pr.url,
+    };
+  }
+  if (pr.state === "closed") {
+    return {
+      label: `${presentation.shortName} closed`,
+      colorClass: "text-red-600 dark:text-red-300/90",
+      tooltip,
+      tooltipLead,
+      tooltipTitle: pr.title,
+      url: pr.url,
+    };
+  }
+  if (pr.state === "merged") {
+    return {
+      label: `${presentation.shortName} merged`,
+      colorClass: "text-violet-600 dark:text-violet-300/90",
+      tooltip,
+      tooltipLead,
+      tooltipTitle: pr.title,
+      url: pr.url,
+    };
+  }
+  return null;
+}
 
 export function ChangeRequestStatusIcon({ className }: { className?: string }) {
   return <GitPullRequestIcon className={className} />;
@@ -48,6 +110,22 @@ export function PrStatusTooltipContent({ status }: { status: PrStatusIndicator }
       <span className="min-w-0 truncate pl-2">{status.tooltipTitle}</span>
     </span>
   );
+}
+
+export function resolveThreadPr(input: {
+  threadBranch: string | null;
+  gitStatus: VcsStatusResult | null;
+}): ThreadPr | null {
+  const { threadBranch, gitStatus } = input;
+  if (gitStatus === null) {
+    return null;
+  }
+
+  if (threadBranch === null || gitStatus.refName !== threadBranch) {
+    return null;
+  }
+
+  return gitStatus.pr ?? null;
 }
 
 /**
@@ -221,6 +299,19 @@ export function resolveDisplayedThreadPrProvider(input: {
   }
 
   return undefined;
+}
+
+export function terminalStatusFromRunningIds(
+  runningTerminalIds: ReadonlyArray<string>,
+): TerminalStatusIndicator | null {
+  if (runningTerminalIds.length === 0) {
+    return null;
+  }
+  return {
+    label: "Terminal process running",
+    colorClass: "text-teal-600 dark:text-teal-300/90",
+    pulse: true,
+  };
 }
 
 export function ThreadWorktreeIndicator({

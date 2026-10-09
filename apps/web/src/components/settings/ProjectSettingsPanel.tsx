@@ -15,8 +15,8 @@ import {
 import type {
   ContextMenuItem,
   ModelSelection,
-  ProjectScript,
   ProviderDriverKind,
+  SidebarProjectGroupingMode,
   T3ProjectFileScript,
   ThreadEnvMode,
 } from "@t3tools/contracts";
@@ -45,18 +45,20 @@ import {
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
 import { useT3ProjectFileState } from "../../hooks/useT3ProjectFileScripts";
 import { shortcutLabelForCommand } from "../../keybindings";
-import {
-  keybindingValueForCommand,
-  projectScriptKeybindingChange,
-} from "../../lib/projectScriptKeybindings";
+import { keybindingValueForCommand } from "../../lib/projectScriptKeybindings";
 import { readLocalApi } from "../../localApi";
-import { commandForProjectScript } from "../../projectScripts";
+import {
+  buildProjectScript,
+  commandForProjectScript,
+  nextProjectScriptId,
+} from "../../projectScripts";
+import { decodeProjectScriptKeybindingRule } from "../../lib/projectScriptKeybindings";
 import {
   applyProviderInstanceSettings,
   deriveProviderInstanceEntries,
   resolveDefaultProviderModelSelection,
   sortProviderInstanceEntries,
-} from "@t3tools/client-runtime/presentation/provider";
+} from "../../providerInstances";
 import { getCustomModelOptionsByInstance } from "../../modelSelection";
 import {
   buildSidebarProjectSnapshots,
@@ -71,13 +73,14 @@ import { useAtomCommand } from "../../state/use-atom-command";
 import { ProviderModelPicker } from "../chat/ProviderModelPicker";
 import { TraitsPicker } from "../chat/TraitsPicker";
 import { ProjectFavicon } from "../ProjectFavicon";
-import { ProjectScriptEditorDialog, ScriptIcon } from "../projectScriptEditor";
 import {
   EMPTY_PROJECT_SCRIPT_INPUT,
   editorRequestForScript,
+  ProjectScriptEditorDialog,
+  ScriptIcon,
   type NewProjectScriptInput,
   type ProjectScriptEditorRequest,
-} from "../projectScriptEditor.logic";
+} from "../projectScriptEditor";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import {
@@ -106,27 +109,12 @@ import {
   SettingsSection,
 } from "./settingsLayout";
 import { ProjectFaviconPickerDialog } from "./ProjectFaviconPickerDialog";
-import {
-  countThreadsByProjectMember,
-  importableProjectFileScripts,
-  isProjectGroupingSelection,
-  nextProjectGroupingOverrides,
-  nextProjectScriptsForSubmit,
-  PROJECT_GROUPING_SELECTIONS,
-  projectCheckoutLabel,
-  projectFileScriptInput,
-  projectGroupingOptionLabel,
-  projectGroupingTriggerLabel,
-  projectMemberKey,
-  projectRemovalConfirmationLines,
-  projectRemovalRowCopy,
-  projectSettingsUnavailableMessage,
-  projectThreadCountLabel,
-  resolveProjectRename,
-  resolveRegroupedProjectKey,
-  sortProjectSettingsGroups,
-  type ProjectGroupingSelection,
-} from "./ProjectSettingsPanel.logic";
+
+export const PROJECT_GROUPING_MODE_LABELS: Record<SidebarProjectGroupingMode, string> = {
+  repository: "Group by repository",
+  repository_path: "Group by repository path",
+  separate: "Keep separate",
+};
 
 /** Logical project groups for the settings page, sorted by display name. */
 export function useSettingsProjectGroups(): SidebarProjectSnapshot[] {
@@ -143,17 +131,18 @@ export function useSettingsProjectGroups(): SidebarProjectSnapshot[] {
   );
   return useMemo(
     () =>
-      sortProjectSettingsGroups(
-        buildSidebarProjectSnapshots({
-          projects,
-          settings: projectGroupingSettings,
-          primaryEnvironmentId,
-          resolveEnvironmentLabel: (environmentId) =>
-            environmentLabelById.get(environmentId) ?? null,
-        }),
-      ),
+      buildSidebarProjectSnapshots({
+        projects,
+        settings: projectGroupingSettings,
+        primaryEnvironmentId,
+        resolveEnvironmentLabel: (environmentId) => environmentLabelById.get(environmentId) ?? null,
+      }).sort((a, b) => a.displayName.localeCompare(b.displayName)),
     [environmentLabelById, primaryEnvironmentId, projectGroupingSettings, projects],
   );
+}
+
+function memberKey(member: { environmentId: string; id: string }): string {
+  return `${member.environmentId}:${member.id}`;
 }
 
 export function ProjectSettingsPage({ projectKey }: { projectKey: string }) {
@@ -267,25 +256,28 @@ export function ProjectSettingsPanel({ projectKey }: { projectKey: string }) {
   // A grouping-rule change replaces the group key mid-visit; follow the
   // project to its new key instead of parking on the not-found state.
   useEffect(() => {
-    const successorKey = resolveRegroupedProjectKey({
-      groups,
-      projectKey,
-      last: lastSelectionRef.current,
-    });
-    if (successorKey) {
+    if (selected !== null) return;
+    const last = lastSelectionRef.current;
+    if (last?.key !== projectKey) return;
+    const successor = groups.find((group) =>
+      group.memberProjects.some((member) => last.memberKeys.includes(member.physicalProjectKey)),
+    );
+    if (successor) {
       void navigate({
         to: "/projects/$projectKey",
-        params: { projectKey: successorKey },
+        params: { projectKey: successor.projectKey },
         replace: true,
         hashScrollIntoView: false,
       });
     }
-  }, [groups, navigate, projectKey]);
+  }, [groups, navigate, projectKey, selected]);
 
   if (!selected) {
     return (
       <div className="flex flex-1 items-center justify-center p-8 text-sm text-muted-foreground">
-        {projectSettingsUnavailableMessage(groups.length)}
+        {groups.length === 0
+          ? "Add a project from the sidebar to configure it here."
+          : "This project is no longer available."}
       </div>
     );
   }
@@ -328,7 +320,14 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
     ) ?? group.memberProjects[0]!;
   const faviconPath = representative.faviconPath ?? null;
 
-  const threadCountByMember = useMemo(() => countThreadsByProjectMember(threads), [threads]);
+  const threadCountByMember = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const thread of threads) {
+      const key = `${thread.environmentId}:${thread.projectId}`;
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return counts;
+  }, [threads]);
   const reportFailure = useCallback((title: string, result: AtomCommandResult<void, unknown>) => {
     if (result._tag !== "Failure" || isAtomCommandInterrupted(result)) return;
     const error = squashAtomCommandFailure(result);
@@ -380,15 +379,16 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
 
   const renameGroup = useCallback(
     async (nextTitle: string) => {
-      const rename = resolveProjectRename(nextTitle, group);
-      if (rename.kind === "empty") {
+      const title = nextTitle.trim();
+      if (!title) {
         toastManager.add({ type: "warning", title: "Project title cannot be empty" });
         return;
       }
-      if (rename.kind === "unchanged") return;
-      await updateAllMembers({ title: rename.title }, "Failed to rename project");
+      if (title === group.displayName) return;
+      if (group.memberProjects.every((member) => member.title === title)) return;
+      await updateAllMembers({ title }, "Failed to rename project");
     },
-    [group, updateAllMembers],
+    [group.displayName, group.memberProjects, updateAllMembers],
   );
 
   // ----- default model -----
@@ -468,13 +468,21 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
   const inheritedEnvMode = t3File.file?.defaultThreadEnvMode ?? settings.defaultThreadEnvMode;
   const inheritedEnvModeSource = t3File.file?.defaultThreadEnvMode != null ? "t3.json" : "global";
   const importableScripts = useMemo(
-    () => importableProjectFileScripts(scripts, t3File.scripts),
+    () =>
+      t3File.scripts.filter(
+        (fileScript) =>
+          !scripts.some(
+            (script) =>
+              script.command === fileScript.command ||
+              script.name.toLowerCase() === fileScript.name.toLowerCase(),
+          ),
+      ),
     [scripts, t3File.scripts],
   );
 
   const persistScripts = useCallback(
     async (
-      nextScripts: ReadonlyArray<ProjectScript>,
+      nextScripts: ReadonlyArray<ReturnType<typeof buildProjectScript>>,
       keybinding: string | null | undefined,
       keybindingCommand: ReturnType<typeof commandForProjectScript>,
     ): Promise<AtomCommandResult<void, unknown>> => {
@@ -501,31 +509,46 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
           return updateResult;
         }
 
-        if (!isElectron) return updateResult;
-        const change = projectScriptKeybindingChange({
-          previousKeybinding,
+        const keybindingRule = decodeProjectScriptKeybindingRule({
           keybinding,
           command: keybindingCommand,
         });
-        if (change.kind === "none") return updateResult;
-        const result = mapAtomCommandResult(
-          change.kind === "upsert"
-            ? await upsertKeybinding({
-                environmentId: selectedCheckout.environmentId,
-                input: change.input,
-              })
-            : await removeKeybinding({
-                environmentId: selectedCheckout.environmentId,
-                input: change.input,
-              }),
-          () => undefined,
-        );
-        if (result._tag === "Failure") {
-          reportFailure(
-            change.kind === "upsert" ? "Failed to save keybinding" : "Failed to remove keybinding",
-            result,
-          );
-          return result;
+        if (!isElectron) return updateResult;
+        const environmentIds = [selectedCheckout.environmentId];
+        const previousTarget = previousKeybinding
+          ? decodeProjectScriptKeybindingRule({
+              keybinding: previousKeybinding,
+              command: keybindingCommand,
+            })
+          : null;
+        if (keybindingRule) {
+          // `replace` swaps the command's previous rule instead of appending a
+          // second one that would keep the old shortcut alive.
+          const input =
+            previousTarget && previousTarget.key !== keybindingRule.key
+              ? { ...keybindingRule, replace: previousTarget }
+              : keybindingRule;
+          for (const environmentId of environmentIds) {
+            const result = mapAtomCommandResult(
+              await upsertKeybinding({ environmentId, input }),
+              () => undefined,
+            );
+            if (result._tag === "Failure") {
+              reportFailure("Failed to save keybinding", result);
+              return result;
+            }
+          }
+        } else if (previousTarget) {
+          for (const environmentId of environmentIds) {
+            const result = mapAtomCommandResult(
+              await removeKeybinding({ environmentId, input: previousTarget }),
+              () => undefined,
+            );
+            if (result._tag === "Failure") {
+              reportFailure("Failed to remove keybinding", result);
+              return result;
+            }
+          }
         }
         return updateResult;
       } finally {
@@ -549,8 +572,32 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
       scriptId: string | null,
       input: NewProjectScriptInput,
     ): Promise<AtomCommandResult<void, unknown>> => {
-      const next = nextProjectScriptsForSubmit(scripts, scriptId, input);
-      return persistScripts(next.scripts, input.keybinding, commandForProjectScript(next.scriptId));
+      if (scriptId === null) {
+        const nextId = nextProjectScriptId(
+          input.name,
+          scripts.map((script) => script.id),
+        );
+        const nextScript = buildProjectScript(nextId, input);
+        const nextScripts = input.runOnWorktreeCreate
+          ? [
+              ...scripts.map((script) =>
+                script.runOnWorktreeCreate ? { ...script, runOnWorktreeCreate: false } : script,
+              ),
+              nextScript,
+            ]
+          : [...scripts, nextScript];
+        return persistScripts(nextScripts, input.keybinding, commandForProjectScript(nextId));
+      }
+
+      const updatedScript = buildProjectScript(scriptId, input);
+      const nextScripts = scripts.map((script) =>
+        script.id === scriptId
+          ? updatedScript
+          : input.runOnWorktreeCreate
+            ? { ...script, runOnWorktreeCreate: false }
+            : script,
+      );
+      return persistScripts(nextScripts, input.keybinding, commandForProjectScript(scriptId));
     },
     [persistScripts, scripts],
   );
@@ -565,7 +612,15 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
 
   const importFileScript = useCallback(
     async (fileScript: T3ProjectFileScript) => {
-      const payload = projectFileScriptInput(fileScript);
+      const payload: NewProjectScriptInput = {
+        name: fileScript.name,
+        command: fileScript.command,
+        icon: fileScript.icon ?? "play",
+        runOnWorktreeCreate: fileScript.runOnWorktreeCreate ?? false,
+        keybinding: null,
+        previewUrl: fileScript.previewUrl ?? null,
+        autoOpenPreview: fileScript.previewUrl ? (fileScript.autoOpenPreview ?? false) : false,
+      };
       const result = await submitScript(null, payload);
       if (result._tag === "Failure" && !isAtomCommandInterrupted(result)) {
         const error = squashAtomCommandFailure(result);
@@ -581,14 +636,15 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
 
   // ----- checkouts -----
   const updateGroupingPreference = useCallback(
-    (member: SidebarProjectGroupMember, selection: ProjectGroupingSelection) => {
-      updateClientSettings({
-        sidebarProjectGroupingOverrides: nextProjectGroupingOverrides(
-          projectGroupingSettings.sidebarProjectGroupingOverrides,
-          deriveProjectGroupingOverrideKey(member),
-          selection,
-        ),
-      });
+    (member: SidebarProjectGroupMember, selection: SidebarProjectGroupingMode | "inherit") => {
+      const overrideKey = deriveProjectGroupingOverrideKey(member);
+      const nextOverrides = { ...projectGroupingSettings.sidebarProjectGroupingOverrides };
+      if (selection === "inherit") {
+        delete nextOverrides[overrideKey];
+      } else {
+        nextOverrides[overrideKey] = selection;
+      }
+      updateClientSettings({ sidebarProjectGroupingOverrides: nextOverrides });
     },
     [projectGroupingSettings.sidebarProjectGroupingOverrides, updateClientSettings],
   );
@@ -598,21 +654,35 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
       const api = readLocalApi();
       if (!api) return;
 
-      const memberKeys = new Set(members.map(projectMemberKey));
+      const memberKeys = new Set(members.map(memberKey));
       const projectThreads = threads.filter((thread) =>
-        memberKeys.has(
-          projectMemberKey({ environmentId: thread.environmentId, id: thread.projectId }),
-        ),
+        memberKeys.has(`${thread.environmentId}:${thread.projectId}`),
       );
       const isWholeGroup = members.length === group.memberProjects.length;
+      const singleMember = members.length === 1 ? members[0]! : null;
+      const targetLabel = singleMember?.title ?? group.displayName;
       const confirmed = await settlePromise(() =>
         api.dialogs.confirm(
-          projectRemovalConfirmationLines({
-            groupDisplayName: group.displayName,
-            groupMemberCount: group.memberProjects.length,
-            members,
-            threadCount: projectThreads.length,
-          }).join("\n"),
+          [
+            projectThreads.length > 0
+              ? `Remove project "${targetLabel}" and delete its ${projectThreads.length} thread${projectThreads.length === 1 ? "" : "s"}?`
+              : `Remove project "${targetLabel}"?`,
+            ...(singleMember
+              ? [
+                  `Path: ${singleMember.workspaceRoot}`,
+                  ...(singleMember.environmentLabel
+                    ? [`Environment: ${singleMember.environmentLabel}`]
+                    : []),
+                ]
+              : [`This removes ${members.length} grouped project entries.`]),
+            ...(projectThreads.length > 0
+              ? ["This permanently clears conversation history for those threads."]
+              : []),
+            isWholeGroup
+              ? "This removes only the project entries, not the files on disk."
+              : "Other entries in this grouped project are unaffected.",
+            "This action cannot be undone.",
+          ].join("\n"),
           { variant: "destructive" },
         ),
       );
@@ -662,14 +732,12 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
     ],
   );
 
-  const selectedCheckoutThreadCount =
-    threadCountByMember.get(projectMemberKey(selectedCheckout)) ?? 0;
+  const selectedCheckoutThreadCount = threadCountByMember.get(memberKey(selectedCheckout)) ?? 0;
   const selectedCheckoutGrouping =
     projectGroupingSettings.sidebarProjectGroupingOverrides?.[
       deriveProjectGroupingOverrideKey(selectedCheckout)
     ] ?? "inherit";
-  const selectedCheckoutLabel = projectCheckoutLabel(selectedCheckout);
-  const removalCopy = projectRemovalRowCopy(group.memberProjects.length);
+  const selectedCheckoutLabel = selectedCheckout.environmentLabel ?? "This machine";
 
   return (
     <>
@@ -844,7 +912,7 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                     hideIndicator
                     value={member.physicalProjectKey}
                   >
-                    {projectCheckoutLabel(member)} · {member.workspaceRoot}
+                    {member.environmentLabel ?? "This machine"} · {member.workspaceRoot}
                   </SelectItem>
                 ))}
               </SelectPopup>
@@ -876,7 +944,9 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
                 <TooltipPopup side="top">Copy path</TooltipPopup>
               </Tooltip>
               <div className="shrink-0 border-l border-border/60 px-2 tabular-nums">
-                {projectThreadCountLabel(selectedCheckoutThreadCount)}
+                {selectedCheckoutThreadCount === 1
+                  ? "1 thread"
+                  : `${selectedCheckoutThreadCount} threads`}
               </div>
             </div>
           </div>
@@ -887,25 +957,36 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
               <Select
                 value={selectedCheckoutGrouping}
                 onValueChange={(value) => {
-                  if (isProjectGroupingSelection(value)) {
+                  if (
+                    value === "inherit" ||
+                    value === "repository" ||
+                    value === "repository_path" ||
+                    value === "separate"
+                  ) {
                     updateGroupingPreference(selectedCheckout, value);
                   }
                 }}
               >
                 <SelectTrigger aria-label={`Grouping rule for ${selectedCheckoutLabel}`}>
                   <SelectValue>
-                    {projectGroupingTriggerLabel(
-                      selectedCheckoutGrouping,
-                      projectGroupingSettings.sidebarProjectGroupingMode,
-                    )}
+                    {selectedCheckoutGrouping === "inherit"
+                      ? `Default (${PROJECT_GROUPING_MODE_LABELS[projectGroupingSettings.sidebarProjectGroupingMode]})`
+                      : PROJECT_GROUPING_MODE_LABELS[selectedCheckoutGrouping]}
                   </SelectValue>
                 </SelectTrigger>
                 <SelectPopup align="end" alignItemWithTrigger={false}>
-                  {PROJECT_GROUPING_SELECTIONS.map((selection) => (
-                    <SelectItem key={selection} hideIndicator value={selection}>
-                      {projectGroupingOptionLabel(selection)}
-                    </SelectItem>
-                  ))}
+                  <SelectItem hideIndicator value="inherit">
+                    Use global default
+                  </SelectItem>
+                  <SelectItem hideIndicator value="repository">
+                    {PROJECT_GROUPING_MODE_LABELS.repository}
+                  </SelectItem>
+                  <SelectItem hideIndicator value="repository_path">
+                    {PROJECT_GROUPING_MODE_LABELS.repository_path}
+                  </SelectItem>
+                  <SelectItem hideIndicator value="separate">
+                    {PROJECT_GROUPING_MODE_LABELS.separate}
+                  </SelectItem>
                 </SelectPopup>
               </Select>
             }
@@ -1052,15 +1133,21 @@ function ProjectDetail({ group }: { group: SidebarProjectSnapshot }) {
 
         <SettingsSection title="Danger">
           <SettingsRow
-            title={removalCopy.title}
-            description={removalCopy.description}
+            title={
+              group.memberProjects.length > 1 ? "Remove this project everywhere" : "Remove project"
+            }
+            description={
+              group.memberProjects.length > 1
+                ? `Deletes all ${group.memberProjects.length} checkout entries and their threads on every machine. Files on disk are not touched.`
+                : "Deletes the project entry and its threads. Files on disk are not touched."
+            }
             control={
               <Button
                 variant="destructive-outline"
                 onClick={() => void removeMembers(group.memberProjects)}
               >
                 <Trash2Icon />
-                {removalCopy.actionLabel}
+                {group.memberProjects.length > 1 ? "Remove all entries" : "Remove project"}
               </Button>
             }
           />

@@ -1,8 +1,6 @@
 import * as React from "react";
 import * as Schema from "effect/Schema";
 
-import { clientCapabilities } from "../platform/clientCapabilities";
-
 export class ClipboardApiUnavailableError extends Schema.TaggedErrorClass<ClipboardApiUnavailableError>()(
   "ClipboardApiUnavailableError",
   {
@@ -50,7 +48,11 @@ export class ClipboardReadError extends Schema.TaggedErrorClass<ClipboardReadErr
 }
 
 export async function writeTextToClipboard(value: string, target = "text") {
-  if (!clientCapabilities.clipboard.available()) {
+  if (
+    typeof window === "undefined" ||
+    typeof navigator === "undefined" ||
+    !navigator.clipboard?.writeText
+  ) {
     throw new ClipboardApiUnavailableError({
       target,
     });
@@ -59,7 +61,7 @@ export async function writeTextToClipboard(value: string, target = "text") {
   if (!value) return false;
 
   try {
-    await clientCapabilities.clipboard.writeText(value);
+    await navigator.clipboard.writeText(value);
     return true;
   } catch (cause) {
     throw new ClipboardWriteError({

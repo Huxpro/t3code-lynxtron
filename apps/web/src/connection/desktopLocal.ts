@@ -1,21 +1,9 @@
-import {
-  DESKTOP_LOCAL_CONNECTION_ID_PREFIX,
-  desktopLocalBackendId,
-  desktopLocalConnectionId,
-  isDesktopLocalConnectionTarget,
-} from "@t3tools/client-runtime/presentation/connections";
+import type { ConnectionTarget } from "@t3tools/client-runtime/connection";
 import {
   PRIMARY_LOCAL_ENVIRONMENT_ID,
   type DesktopBridge,
   type DesktopEnvironmentBootstrap,
 } from "@t3tools/contracts";
-
-export {
-  DESKTOP_LOCAL_CONNECTION_ID_PREFIX,
-  desktopLocalBackendId,
-  desktopLocalConnectionId,
-  isDesktopLocalConnectionTarget,
-};
 
 /**
  * Desktop-local secondary backends (e.g. a parallel WSL backend) are registered
@@ -29,6 +17,27 @@ export {
  * via {@link isDesktopLocalConnectionTarget}, so the convention can never drift
  * between the two.
  */
+export const DESKTOP_LOCAL_CONNECTION_ID_PREFIX = "local:";
+
+export function desktopLocalConnectionId(backendId: string): string {
+  return `${DESKTOP_LOCAL_CONNECTION_ID_PREFIX}${backendId}`;
+}
+
+export function isDesktopLocalConnectionTarget(
+  target: ConnectionTarget,
+): target is Extract<ConnectionTarget, { readonly _tag: "BearerConnectionTarget" }> {
+  return (
+    target._tag === "BearerConnectionTarget" &&
+    target.connectionId.startsWith(DESKTOP_LOCAL_CONNECTION_ID_PREFIX)
+  );
+}
+
+export function desktopLocalBackendId(target: ConnectionTarget): string | null {
+  return isDesktopLocalConnectionTarget(target)
+    ? target.connectionId.slice(DESKTOP_LOCAL_CONNECTION_ID_PREFIX.length)
+    : null;
+}
+
 export type DesktopSecondaryBootstrapsRead =
   | {
       readonly _tag: "Success";

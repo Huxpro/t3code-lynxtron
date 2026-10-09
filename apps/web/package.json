@@ -54,6 +54,7 @@
     "@effect/vitest": "catalog:",
     "@lynx-js/react": "0.126.2",
     "@rolldown/plugin-babel": "^0.2.0",
+    "@t3tools/lynx-logic": "workspace:*",
     "@tailwindcss/vite": "^4.0.0",
     "@tanstack/router-plugin": "^1.161.0",
     "@types/babel__core": "^7.20.5",

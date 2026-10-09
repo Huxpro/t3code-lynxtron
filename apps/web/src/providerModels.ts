@@ -9,12 +9,19 @@ import {
   type ServerProviderModel,
 } from "@t3tools/contracts";
 import { createModelCapabilities, normalizeModelSlug } from "@t3tools/shared/model";
-import { formatProviderDriverKindLabel } from "@t3tools/client-runtime/presentation/provider";
 
 const EMPTY_CAPABILITIES: ModelCapabilities = createModelCapabilities({
   optionDescriptors: [],
 });
 const DEFAULT_DRIVER_KIND = ProviderDriverKind.make("codex");
+
+export function formatProviderDriverKindLabel(provider: ProviderDriverKind): string {
+  return provider
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 export function getProviderModels(
   providers: ReadonlyArray<ServerProvider>,

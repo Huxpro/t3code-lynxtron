@@ -33,7 +33,7 @@ import {
   type ConnectorThreadPayload,
   type TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
-import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
+import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
 import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
 import type { ServerConfig } from "@t3tools/contracts";
 

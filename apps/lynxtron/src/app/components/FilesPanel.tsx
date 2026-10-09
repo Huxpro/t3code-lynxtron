@@ -7,14 +7,14 @@ import {
   projectFileLineTokens,
   setMarkdownTaskChecked,
   type ProjectEntryTreeNode,
-} from "@t3tools/client-runtime/presentation/files";
-import { getProjectFilePickerMatches } from "@t3tools/client-runtime/presentation/file-picker";
-import { resolvePathLinkTarget } from "@t3tools/client-runtime/presentation/paths";
-import { FileSaveCoordinator } from "@t3tools/client-runtime/state/file-save-coordinator";
+} from "@t3tools/lynx-logic/files";
+import { getProjectFilePickerMatches } from "@t3tools/lynx-logic/filePicker";
+import { resolvePathLinkTarget } from "@t3tools/lynx-logic/paths";
+import { FileSaveCoordinator } from "@t3tools/lynx-logic/fileSaveCoordinator";
 import type { ProjectEntry, ProjectReadFileResult } from "@t3tools/contracts";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
-import { composerFileContext } from "@t3tools/client-runtime/presentation/file-context";
-import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
+import { composerFileContext } from "@t3tools/lynx-logic/fileContext";
+import { composerDraftScopeKey } from "@t3tools/lynx-logic/draftThread";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "@lynx-js/react";
 
 import {

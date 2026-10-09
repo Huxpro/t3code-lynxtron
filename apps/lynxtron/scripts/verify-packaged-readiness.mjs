@@ -32,11 +32,11 @@ import {
 import {
   floatingRelationResidual,
   measureFloatingRelation,
-} from "../../../packages/client-runtime/src/presentation/floatingRelation.ts";
+} from "../../../packages/lynx-logic/src/floatingRelation.ts";
 import {
   fileContentRevision,
   projectFileDetailLayout,
-} from "../../../packages/client-runtime/src/presentation/files.ts";
+} from "../../../packages/lynx-logic/src/files.ts";
 import { enableOpenCodeInFixtureState } from "./fixture-provider-defaults.mjs";
 
 const APP_ROOT = path.resolve(import.meta.dirname, "..");

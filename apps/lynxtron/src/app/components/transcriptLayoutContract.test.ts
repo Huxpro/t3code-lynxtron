@@ -18,17 +18,16 @@ const hostElementsSource = readFileSync(
   "utf8",
 );
 const sharedRowSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/TranscriptRowSurface.tsx"),
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/chat/TranscriptRowSurface.lynx.tsx",
+  ),
   "utf8",
 );
 const appSource = readFileSync(path.resolve(import.meta.dirname, "../index.tsx"), "utf8");
 const chatViewSource = readFileSync(path.resolve(import.meta.dirname, "ChatView.tsx"), "utf8");
 const imagePreviewSource = readFileSync(
   path.resolve(import.meta.dirname, "ImagePreviewOverlay.tsx"),
-  "utf8",
-);
-const webTimelineSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/MessagesTimeline.tsx"),
   "utf8",
 );
 const rightPanelSource = readFileSync(path.resolve(import.meta.dirname, "RightPanel.tsx"), "utf8");
@@ -368,7 +367,6 @@ describe("transcript layout contract", () => {
     expect(planPanelSource).toContain("Saved: ${saveStatus.relativePath}");
     expect(planPanelSource).toContain("Save failed: ${saveStatus.message}");
     expect(planPanelSource).toContain("cwd={cwd}");
-    expect(webTimelineSource).toContain("@t3tools/client-runtime/presentation/image-preview");
   });
 
   it("hydrates persisted attachment previews without mutating canonical messages", () => {
@@ -496,7 +494,6 @@ describe("transcript layout contract", () => {
   });
 
   it("matches Web long user-message collapse semantics", () => {
-    expect(webTimelineSource).toContain("shouldCollapseUserMessage(props.text)");
     expect(timelineSource).toContain("function CollapsibleLynxUserMessageBody");
     expect(timelineSource).toContain("const canCollapse = shouldCollapseUserMessage(text)");
     expect(timelineSource).toContain("useEffect(() => setExpanded(false), [messageId])");

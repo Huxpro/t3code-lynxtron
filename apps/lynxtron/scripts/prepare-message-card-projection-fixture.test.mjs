@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { assert, describe, expect, it } from "vite-plus/test";
 
-import { deriveUserMessagePresentation } from "../../../packages/client-runtime/src/presentation/userMessage.ts";
+import { deriveUserMessagePresentation } from "../../../packages/lynx-logic/src/userMessage.ts";
 import {
   MESSAGE_CARD_PROMPT,
   prepareMessageCardProjectionFixture,

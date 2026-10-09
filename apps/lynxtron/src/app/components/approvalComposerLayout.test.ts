@@ -9,7 +9,7 @@ const overridesSource = readFileSync(path.resolve(import.meta.dirname, "../overr
 const pendingSurfaceSource = readFileSync(
   path.resolve(
     import.meta.dirname,
-    "../../../../web/src/components/chat/ComposerPendingSurface.tsx",
+    "../../../../web/src/components/chat/ComposerPendingSurface.lynx.tsx",
   ),
   "utf8",
 );

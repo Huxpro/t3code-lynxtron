@@ -1,14 +1,11 @@
 import { describe, expect, it } from "vite-plus/test";
-import {
-  isMarkdownPreviewFile,
-  setMarkdownTaskChecked,
-} from "@t3tools/client-runtime/presentation/files";
 
 import {
   formatFileCommentRange,
   normalizeFileCommentRange,
   remapFileCommentAnnotations,
 } from "./fileCommentAnnotations";
+import { isMarkdownPreviewFile, setMarkdownTaskChecked } from "./filePreviewMode";
 
 describe("file comment annotations", () => {
   it("normalizes and formats selected line ranges", () => {

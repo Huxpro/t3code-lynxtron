@@ -5,20 +5,9 @@ import {
 } from "@t3tools/contracts";
 import { filterFilesystemBrowseEntries } from "@t3tools/client-runtime/state/filesystem";
 import type { SidebarThreadSortOrder } from "@t3tools/contracts/settings";
+import * as Arr from "effect/Array";
+import * as Result from "effect/Result";
 import { type ReactNode } from "react";
-import {
-  normalizeCommandPaletteSearchText,
-  parseCommandPaletteSearchQuery,
-  projectCommandPaletteThread,
-  rankCommandPaletteSearchItems,
-} from "@t3tools/client-runtime/presentation/command-palette";
-import {
-  reduceSearchOverlayState,
-  type SearchOverlayAction,
-  type SearchOverlayMode,
-  type SearchOverlayOpenIntent,
-  type SearchOverlayState,
-} from "@t3tools/client-runtime/presentation/search-overlay";
 import { sortThreads } from "../lib/threadSort";
 import { formatRelativeTimeLabel } from "../timestampFormat";
 import { type Project, type SidebarThreadSummary, type Thread } from "../types";
@@ -46,11 +35,46 @@ export function browseInputEndPaddingClass(input: {
  * search (⇧⌘F). One reducer owns open/mode state so the surfaces can never
  * stack and re-triggering a mode's shortcut toggles it closed.
  */
-export type CommandPaletteOpenIntent = SearchOverlayOpenIntent;
-export type CommandPaletteUiState = SearchOverlayState;
-export type CommandPaletteUiAction = SearchOverlayAction;
-export type { SearchOverlayMode };
-export const reduceCommandPaletteUiState = reduceSearchOverlayState;
+export type SearchOverlayMode = "command" | "files" | "content";
+
+export interface CommandPaletteOpenIntent {
+  readonly kind: "add-project" | "new-thread-in";
+}
+
+export interface CommandPaletteUiState {
+  readonly open: boolean;
+  readonly mode: SearchOverlayMode;
+  readonly openIntent: CommandPaletteOpenIntent | null;
+}
+
+export type CommandPaletteUiAction =
+  | { readonly _tag: "SetOpen"; readonly open: boolean }
+  | { readonly _tag: "ToggleMode"; readonly mode: SearchOverlayMode }
+  | { readonly _tag: "OpenAddProject" }
+  | { readonly _tag: "OpenNewThreadIn" }
+  | { readonly _tag: "ClearOpenIntent" };
+
+export function reduceCommandPaletteUiState(
+  state: CommandPaletteUiState,
+  action: CommandPaletteUiAction,
+): CommandPaletteUiState {
+  switch (action._tag) {
+    case "SetOpen":
+      return action.open
+        ? { open: true, mode: "command", openIntent: state.openIntent }
+        : { ...state, open: false, openIntent: null };
+    case "ToggleMode":
+      return state.open && state.mode === action.mode
+        ? { ...state, open: false, openIntent: null }
+        : { open: true, mode: action.mode, openIntent: null };
+    case "OpenAddProject":
+      return { open: true, mode: "command", openIntent: { kind: "add-project" } };
+    case "OpenNewThreadIn":
+      return { open: true, mode: "command", openIntent: { kind: "new-thread-in" } };
+    case "ClearOpenIntent":
+      return state.openIntent ? { ...state, openIntent: null } : state;
+  }
+}
 
 export interface CommandPaletteThreadContentMatch {
   readonly source: "user" | "assistant";
@@ -115,7 +139,7 @@ export function enumerateCommandPaletteItems(
 export type CommandPaletteMode = "root" | "root-browse" | "submenu" | "submenu-browse";
 
 export function normalizeSearchText(value: string): string {
-  return normalizeCommandPaletteSearchText(value);
+  return value.trim().toLowerCase().replace(/\s+/g, " ");
 }
 
 export function buildProjectActionItems(input: {
@@ -183,28 +207,40 @@ export function buildThreadActionItems<TThread extends BuildThreadActionItemsThr
 
   return visibleThreads.map((thread) => {
     const projectTitle = input.projectTitleById.get(thread.projectId);
-    const presentation = projectCommandPaletteThread({
-      thread,
-      projectTitle: projectTitle ?? null,
-      activeThreadId: input.activeThreadId ?? null,
-      formatTimestamp: formatRelativeTimeLabel,
-    });
+    const descriptionParts: string[] = [];
+
+    if (projectTitle) {
+      descriptionParts.push(projectTitle);
+    }
+    if (thread.branch) {
+      descriptionParts.push(`#${thread.branch}`);
+    }
+    if (thread.id === input.activeThreadId) {
+      descriptionParts.push("Current thread");
+    }
 
     const leadingContent = input.renderLeadingContent?.(thread);
     const trailingContent = input.renderTrailingContent?.(thread);
     const contentMatch = input.getContentMatch?.(thread);
     const description = input.renderDescription
       ? input.renderDescription(thread, { projectTitle })
-      : presentation.description;
+      : descriptionParts.join(` · `);
 
     return Object.assign(
       {
         kind: "action" as const,
         value: `thread:${thread.id}`,
-        searchTerms: [...presentation.searchTerms, contentMatch?.snippet ?? ``],
-        title: presentation.title,
+        searchTerms: [
+          thread.title,
+          projectTitle ?? ``,
+          thread.branch ?? ``,
+          contentMatch?.snippet ?? ``,
+        ],
+        title: thread.title,
         description,
-        timestamp: presentation.timestamp,
+        timestamp: formatRelativeTimeLabel(
+          thread.latestUserMessageAt ?? thread.updatedAt ?? thread.createdAt,
+        ),
         icon: input.icon,
       },
       leadingContent ? { titleLeadingContent: leadingContent } : {},
@@ -219,6 +255,39 @@ export function buildThreadActionItems<TThread extends BuildThreadActionItemsThr
   });
 }
 
+function rankSearchFieldMatch(field: string, normalizedQuery: string): number {
+  const normalizedField = normalizeSearchText(field);
+  if (normalizedField.length === 0 || !normalizedField.includes(normalizedQuery)) {
+    return Number.NEGATIVE_INFINITY;
+  }
+  if (normalizedField === normalizedQuery) {
+    return 3;
+  }
+  if (normalizedField.startsWith(normalizedQuery)) {
+    return 2;
+  }
+  return 1;
+}
+
+function rankCommandPaletteItemMatch(
+  item: CommandPaletteActionItem | CommandPaletteSubmenuItem,
+  normalizedQuery: string,
+): number {
+  const terms = item.searchTerms.filter((term) => term.length > 0);
+  if (terms.length === 0) {
+    return 0;
+  }
+
+  for (const [index, field] of terms.entries()) {
+    const fieldRank = rankSearchFieldMatch(field, normalizedQuery);
+    if (fieldRank !== Number.NEGATIVE_INFINITY) {
+      return 1_000 - index * 100 + fieldRank;
+    }
+  }
+
+  return 0;
+}
+
 export function filterCommandPaletteGroups(input: {
   activeGroups: ReadonlyArray<CommandPaletteGroup>;
   query: string;
@@ -226,9 +295,9 @@ export function filterCommandPaletteGroups(input: {
   projectSearchItems: ReadonlyArray<CommandPaletteActionItem>;
   threadSearchItems: ReadonlyArray<CommandPaletteActionItem>;
 }): CommandPaletteGroup[] {
-  const { actionsOnly: isActionsFilter, normalizedQuery } = parseCommandPaletteSearchQuery(
-    input.query,
-  );
+  const isActionsFilter = input.query.startsWith(">");
+  const searchQuery = isActionsFilter ? input.query.slice(1) : input.query;
+  const normalizedQuery = normalizeSearchText(searchQuery);
 
   if (normalizedQuery.length === 0) {
     if (isActionsFilter) {
@@ -263,11 +332,20 @@ export function filterCommandPaletteGroups(input: {
   }
 
   return searchableGroups.flatMap((group) => {
-    const items = rankCommandPaletteSearchItems(
-      group.items,
-      normalizedQuery,
-      (item) => item.searchTerms,
-    );
+    const items = Arr.filterMap(group.items, (item, index) => {
+      const haystack = normalizeSearchText(item.searchTerms.join(" "));
+      if (!haystack.includes(normalizedQuery)) {
+        return Result.failVoid;
+      }
+
+      return Result.succeed({
+        item,
+        index,
+        rank: rankCommandPaletteItemMatch(item, normalizedQuery),
+      });
+    })
+      .toSorted((left, right) => right.rank - left.rank || left.index - right.index)
+      .map((entry) => entry.item);
 
     if (items.length === 0) {
       return [];

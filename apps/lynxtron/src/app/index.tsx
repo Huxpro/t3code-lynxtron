@@ -3,7 +3,7 @@ import "url-search-params-polyfill";
 import { RegistryContext } from "@effect/atom-react";
 import { root, runOnBackground } from "@lynx-js/react";
 import { useEffect, useRef, useState } from "@lynx-js/react";
-import { viewportTier } from "@t3tools/client-runtime/platform";
+import { viewportTier } from "@t3tools/lynx-logic/mediaQuery";
 
 import { AppSidebarLayout } from "../../../web/src/components/AppSidebarLayout";
 import { ComponentLabSurface } from "../../../web/src/components/components-lab/ComponentLabSurface";

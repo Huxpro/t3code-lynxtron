@@ -16,8 +16,6 @@ import {
   syncDocumentWindowControlsOverlayClass,
 } from "./lib/windowControlsOverlay";
 import { AppRoot } from "./AppRoot";
-import { ComponentLabSurface } from "./components/components-lab/ComponentLabSurface";
-import { ComponentLabIsolatedSurface } from "./components/components-lab/ComponentLabIsolatedSurface";
 import { clerkAppearance } from "./components/clerk/clerkAppearance";
 
 // Electron loads the app from a file-backed shell, so hash history avoids path resolution issues.
@@ -31,26 +29,13 @@ if (isElectron) {
 }
 
 const clerkPublishableKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY as string | undefined;
-const componentLabUrl = new URL(window.location.href);
-const componentLabStoryId =
-  componentLabUrl.searchParams.get("story") ??
-  new URLSearchParams(componentLabUrl.hash.slice(1)).get("story");
 
 // First Clerk UI build containing https://github.com/clerk/javascript/pull/9500.
 const electronClerkUI = {
   __internal_clerkUIVersion: "1.30.5-canary.v20260819050620",
 };
 
-const app =
-  window.location.pathname === "/components-lab" ? (
-    componentLabStoryId ? (
-      <ComponentLabIsolatedSurface storyId={componentLabStoryId} />
-    ) : (
-      <ComponentLabSurface />
-    )
-  ) : (
-    <AppRoot router={router} />
-  );
+const app = <AppRoot router={router} />;
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

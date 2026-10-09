@@ -8,7 +8,6 @@
     "verbatimModuleSyntax": false,
     "jsx": "react-jsx",
     "lib": ["ES2023", "DOM", "DOM.Iterable"],
-    "moduleSuffixes": [".web", ""],
     "paths": {
       "~/*": ["./src/*"]
     },

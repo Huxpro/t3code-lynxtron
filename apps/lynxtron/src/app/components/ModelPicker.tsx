@@ -13,16 +13,13 @@ import type {
   ProviderInstanceId,
   ServerProvider,
 } from "@t3tools/contracts";
-import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
-import {
-  getDisplayModelName,
-  providerModelKey,
-} from "@t3tools/client-runtime/presentation/model-picker";
+import type { ProviderInstanceEntry } from "@t3tools/lynx-logic/provider";
+import { getDisplayModelName, providerModelKey } from "@t3tools/lynx-logic/modelPicker";
 import {
   projectModelPickerProviders,
   projectModelPickerRows,
   resolveModelPickerSelectedKey,
-} from "@t3tools/client-runtime/presentation/model-picker";
+} from "@t3tools/lynx-logic/modelPicker";
 import {
   ModelPickerEmptySurface,
   ModelPickerBodySurface,

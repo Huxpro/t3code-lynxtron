@@ -1,4 +1,3 @@
-import { terminalCloseConfirmation } from "@t3tools/client-runtime/presentation/terminal-context";
 import { readLocalApi } from "~/localApi";
 
 let pendingConfirmations = 0;
@@ -21,8 +20,20 @@ export async function confirmTerminalClose(
   if (!localApi) return true;
   pendingConfirmations += 1;
   try {
-    const { title, detail } = terminalCloseConfirmation(labels);
-    return await localApi.dialogs.confirm([title, detail].join("\n"), { variant: "destructive" });
+    return await localApi.dialogs.confirm(
+      labels.length === 1
+        ? [
+            `Close terminal "${labels[0]}"?`,
+            "This stops the running process and clears its history.",
+          ].join("\n")
+        : [
+            `Close ${labels.length} terminals?`,
+            `This stops their running processes and clears their histories: ${labels
+              .map((label) => `"${label}"`)
+              .join(", ")}.`,
+          ].join("\n"),
+      { variant: "destructive" },
+    );
   } catch {
     return false;
   } finally {

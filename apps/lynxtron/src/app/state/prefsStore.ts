@@ -5,8 +5,8 @@ import {
   PORTABLE_CLIENT_SETTINGS_DEFAULTS,
   type PortableClientSettings,
   type PortableClientSettingsPatch,
-} from "@t3tools/client-runtime/presentation/settings";
-import { sanitizeThreadVisitedTimestampRecord } from "@t3tools/client-runtime/presentation/sidebar";
+} from "@t3tools/lynx-logic/settings";
+import { sanitizeThreadVisitedTimestampRecord } from "@t3tools/lynx-logic/sidebar";
 import { Atom } from "effect/unstable/reactivity";
 
 import { clientCapabilities } from "../platform/clientCapabilities";

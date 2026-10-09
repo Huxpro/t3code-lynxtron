@@ -16,7 +16,7 @@ import {
   type FloatingAlign,
   type FloatingRect,
   type FloatingSide,
-} from "@t3tools/client-runtime/presentation/floating-relation";
+} from "@t3tools/lynx-logic/floatingRelation";
 import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
 
 type ElementProps = Record<string, unknown> & {

@@ -10,13 +10,16 @@ import {
   type ThreadId,
   type TurnId,
 } from "@t3tools/contracts";
-import { startedThreadModelChangeReason } from "@t3tools/client-runtime/presentation/model-picker";
-export { deriveComposerSendState } from "@t3tools/client-runtime/presentation/composer";
 import { type ChatMessage, type SessionPhase, type Thread, type ThreadShell } from "../types";
 import { type ComposerImageAttachment, type DraftThreadState } from "../composerDraftStore";
 import * as Schema from "effect/Schema";
 import { appAtomRegistry } from "../rpc/atomRegistry";
 import { environmentThreadDetails } from "../state/threads";
+import {
+  filterTerminalContextsWithText,
+  stripInlineTerminalContextPlaceholders,
+  type TerminalContextDraft,
+} from "../lib/terminalContext";
 import type { DraftThreadEnvMode } from "../composerDraftStore";
 
 export const LAST_INVOKED_SCRIPT_BY_PROJECT_KEY = "t3code:last-invoked-script-by-project";
@@ -133,15 +136,6 @@ export function shouldWriteThreadErrorToCurrentServerThread(input: {
     input.activeServerThread.environmentId === input.routeThreadRef.environmentId &&
     input.activeServerThread.id === input.targetThreadId,
   );
-}
-
-export function resolveVisibleServerThreadError(input: {
-  readonly localError: string | null;
-  readonly persistedError: string | null;
-  readonly dismissedPersistedError: string | null;
-}): string | null {
-  if (input.localError !== null) return input.localError;
-  return input.persistedError === input.dismissedPersistedError ? null : input.persistedError;
 }
 
 export function buildThreadTurnInterruptInput(thread: Pick<Thread, "id" | "session">): {
@@ -279,6 +273,39 @@ export function cloneComposerImageForRetry(
   }
 }
 
+export function deriveComposerSendState(options: {
+  prompt: string;
+  imageCount: number;
+  terminalContexts: ReadonlyArray<TerminalContextDraft>;
+  /**
+   * Optional element-pick attachment count. Element contexts contribute to
+   * "sendable content" exactly like images and (text-bearing) terminal
+   * contexts do: a prompt of just element chips is still a valid send.
+   */
+  elementContextCount?: number;
+}): {
+  trimmedPrompt: string;
+  sendableTerminalContexts: TerminalContextDraft[];
+  expiredTerminalContextCount: number;
+  hasSendableContent: boolean;
+} {
+  const trimmedPrompt = stripInlineTerminalContextPlaceholders(options.prompt).trim();
+  const sendableTerminalContexts = filterTerminalContextsWithText(options.terminalContexts);
+  const expiredTerminalContextCount =
+    options.terminalContexts.length - sendableTerminalContexts.length;
+  const elementContextCount = options.elementContextCount ?? 0;
+  return {
+    trimmedPrompt,
+    sendableTerminalContexts,
+    expiredTerminalContextCount,
+    hasSendableContent:
+      trimmedPrompt.length > 0 ||
+      options.imageCount > 0 ||
+      sendableTerminalContexts.length > 0 ||
+      elementContextCount > 0,
+  };
+}
+
 export function buildExpiredTerminalContextToastCopy(
   expiredTerminalContextCount: number,
   variant: "omitted" | "empty",
@@ -343,17 +370,10 @@ export function threadHasStarted(thread: Thread | null | undefined): boolean {
   );
 }
 
-export function resolveProviderDriverKindByInstanceId(
-  providers: ReadonlyArray<Pick<ServerProvider, "driver" | "instanceId">>,
-  instanceId: string | null,
-): ProviderDriverKind | null {
-  return providers.find((provider) => provider.instanceId === instanceId)?.driver ?? null;
-}
-
-// `threadProvider` is the persisted provider selection for the thread. For
-// built-in default instances this is also the open branded driver kind. Prefer
-// it over the session's legacy `providerName`, which can be a display label
-// rather than a canonical driver slug.
+// `threadProvider` is the open branded driver kind carried by the session.
+// Unknown driver kinds degrade to `null` (i.e. "unlocked"), which is the safe
+// rollback / fork behavior — the routing layer is the right place to surface
+// "driver not installed" errors, not the lock state.
 //
 // `selectedProvider` takes the same open-string shape because the composer
 // now tracks the picker selection as a `ProviderInstanceId` (e.g.
@@ -370,22 +390,19 @@ export function deriveLockedProvider(input: {
   if (!threadHasStarted(input.thread)) {
     return null;
   }
-  const narrowedThreadProvider =
-    input.threadProvider && isProviderDriverKind(input.threadProvider)
-      ? input.threadProvider
-      : null;
-  if (narrowedThreadProvider) {
-    return narrowedThreadProvider;
-  }
   const sessionProvider = input.thread?.session?.providerName ?? null;
   if (sessionProvider && isProviderDriverKind(sessionProvider)) {
     return sessionProvider;
   }
+  const narrowedThreadProvider =
+    input.threadProvider && isProviderDriverKind(input.threadProvider)
+      ? input.threadProvider
+      : null;
   const narrowedSelectedProvider =
     input.selectedProvider && isProviderDriverKind(input.selectedProvider)
       ? input.selectedProvider
       : null;
-  return narrowedSelectedProvider;
+  return narrowedThreadProvider ?? narrowedSelectedProvider ?? null;
 }
 
 export function getStartedThreadModelChangeBlockReason(input: {
@@ -395,7 +412,35 @@ export function getStartedThreadModelChangeBlockReason(input: {
   currentProviderInstanceId?: ModelSelection["instanceId"] | null | undefined;
   nextModelSelection: ModelSelection;
 }): { title: string; description: string } | null {
-  return startedThreadModelChangeReason(input);
+  if (!input.hasStartedSession) {
+    return null;
+  }
+  const currentModelSelection = {
+    ...input.currentModelSelection,
+    instanceId: input.currentProviderInstanceId ?? input.currentModelSelection.instanceId,
+  };
+  if (
+    currentModelSelection.instanceId === input.nextModelSelection.instanceId &&
+    currentModelSelection.model === input.nextModelSelection.model
+  ) {
+    return null;
+  }
+  const currentProvider = input.providers.find(
+    (snapshot) => snapshot.instanceId === currentModelSelection.instanceId,
+  );
+  const nextProvider = input.providers.find(
+    (snapshot) => snapshot.instanceId === input.nextModelSelection.instanceId,
+  );
+  if (
+    currentProvider?.requiresNewThreadForModelChange !== true &&
+    nextProvider?.requiresNewThreadForModelChange !== true
+  ) {
+    return null;
+  }
+  return {
+    title: "Start a new chat to change models",
+    description: "This provider does not allow switching models after a conversation has started.",
+  };
 }
 
 export async function waitForStartedServerThread(

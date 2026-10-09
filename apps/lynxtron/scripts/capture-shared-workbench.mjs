@@ -6223,13 +6223,13 @@ async function prepareStateFixture({ seed, expectedThreadFixture }) {
         deletions: 7,
       },
       {
-        path: "packages/client-runtime/src/presentation/transcript-responsive-layout.ts",
+        path: "packages/lynx-logic/src/transcript-responsive-layout.ts",
         kind: "added",
         additions: 41,
         deletions: 0,
       },
       {
-        path: "apps/web/src/components/chat/ChangedFilesCardSurface.tsx",
+        path: "apps/web/src/components/chat/ChangedFilesCardSurface.lynx.tsx",
         kind: "modified",
         additions: 12,
         deletions: 3,

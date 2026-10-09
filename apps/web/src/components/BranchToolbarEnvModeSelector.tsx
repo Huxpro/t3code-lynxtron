@@ -85,10 +85,9 @@ export const BranchToolbarEnvModeSelector = memo(function BranchToolbarEnvModeSe
       <SelectTrigger
         variant="ghost"
         size="xs"
-        className="min-w-0 max-w-full flex-1 font-medium"
+        className="min-w-0 shrink font-medium"
         aria-label="Workspace"
         data-composer-context-control
-        data-floating-anchor="composer-workspace-menu"
       >
         {effectiveEnvMode === "worktree" ? (
           <FolderGit2Icon className="size-3" />
@@ -109,7 +108,7 @@ export const BranchToolbarEnvModeSelector = memo(function BranchToolbarEnvModeSe
           </span>
         </span>
       </SelectTrigger>
-      <SelectPopup data-floating-popup="composer-workspace-menu">
+      <SelectPopup>
         <SelectGroup>
           <SelectGroupLabel>Workspace</SelectGroupLabel>
           <SelectItem value="local">

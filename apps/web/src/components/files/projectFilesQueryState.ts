@@ -44,13 +44,6 @@ export function getProjectFileQueryAtom(
   });
 }
 
-export function shouldRefreshProjectFileDetail(
-  relativePath: string | null,
-  isImage: boolean,
-): boolean {
-  return relativePath !== null && !isImage;
-}
-
 export function setProjectFileQueryData(
   environmentId: EnvironmentId,
   cwd: string,
@@ -97,11 +90,7 @@ export function confirmProjectFileQueryData(
     reportDefect: false,
     reportFailure: false,
   }).then((result) => {
-    if (
-      result._tag === "Success" &&
-      result.value.contents === contents &&
-      appAtomRegistry.get(atom) === confirmed
-    ) {
+    if (result._tag === "Success" && appAtomRegistry.get(atom) === confirmed) {
       appAtomRegistry.set(atom, null);
     }
   });

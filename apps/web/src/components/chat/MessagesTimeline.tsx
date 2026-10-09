@@ -64,13 +64,10 @@ import {
   ZapIcon,
 } from "lucide-react";
 import { Button } from "../ui/button";
-import {
-  buildExpandedImagePreview,
-  type ExpandedImagePreview,
-} from "@t3tools/client-runtime/presentation/image-preview";
+import { buildExpandedImagePreview, ExpandedImagePreview } from "./ExpandedImagePreview";
 import { ProposedPlanCard } from "./ProposedPlanCard";
 import { ChangedFilesCard } from "./ChangedFilesTree";
-import { shouldAutoExpandChangedFiles } from "@t3tools/client-runtime/presentation/diff";
+import { shouldAutoExpandChangedFiles } from "./changedFilesPresentation";
 import { MessageCopyButton } from "./MessageCopyButton";
 import {
   computeStableMessagesTimelineRows,
@@ -589,7 +586,6 @@ export const MessagesTimeline = memo(function MessagesTimeline({
             }
             maintainVisibleContentPosition={maintainVisibleContentPosition}
             onScroll={handleScroll}
-            data-message-timeline-scroll
             className={cn(
               "scrollbar-gutter-both h-full min-h-0 overflow-x-hidden overscroll-y-contain px-3 [overflow-anchor:none] sm:px-5",
               topFadeEnabled && "topbar-scroll-fade",
@@ -786,8 +782,6 @@ function TimelineMinimap({
           : "opacity-0 transition-opacity duration-150 hover:opacity-100 focus-within:opacity-100",
       )}
       data-testid="timeline-minimap"
-      data-timeline-minimap
-      data-timeline-minimap-active={resolvedActiveIndex ?? ""}
       data-persistent-gutter={hasPersistentGutter ? "true" : "false"}
     >
       <div className="relative h-full w-full select-none">
@@ -866,8 +860,6 @@ function TimelineMinimap({
                 )}
                 data-in-view="false"
                 data-minimap-strip
-                data-timeline-minimap-item={item.id}
-                data-timeline-minimap-row-index={`${item.rowIndex}`}
                 key={item.id}
                 ref={(node) => {
                   if (node) {
@@ -884,7 +876,6 @@ function TimelineMinimap({
             <span
               className="pointer-events-auto absolute left-8 w-80 cursor-text select-text"
               data-minimap-preview
-              data-timeline-minimap-preview
               onMouseMove={(event) => event.stopPropagation()}
               style={{
                 top: `${activeTopPercent}%`,
@@ -1714,10 +1705,7 @@ const UserMessageElementContextChip = memo(function UserMessageElementContextChi
     <Tooltip>
       <TooltipTrigger
         render={
-          <span
-            className="inline-flex max-w-full items-center gap-1 rounded-md border border-border/70 bg-background/70 px-1.5 py-0.5 text-foreground/85 text-xs"
-            data-message-context-kind="element"
-          >
+          <span className="inline-flex max-w-full items-center gap-1 rounded-md border border-border/70 bg-background/70 px-1.5 py-0.5 text-foreground/85 text-xs">
             <MousePointerClickIcon className="size-3 shrink-0" />
             <span className="truncate">{props.context.header}</span>
           </span>
@@ -1736,10 +1724,7 @@ function UserMessagePreviewAnnotationCard(props: {
 }) {
   const ctx = use(TimelineRowCtx);
   return (
-    <div
-      className="mb-2 flex max-w-full items-center overflow-hidden rounded-lg border border-border/70 bg-background/70"
-      data-preview-annotation={props.annotation.id}
-    >
+    <div className="mb-2 flex max-w-full items-center overflow-hidden rounded-lg border border-border/70 bg-background/70">
       {props.image?.previewUrl ? (
         <button
           type="button"
@@ -2048,12 +2033,7 @@ function UserMessageReviewCommentCard({ comment }: { comment: ReviewCommentConte
   );
 
   return (
-    <div
-      className="space-y-2 rounded-lg border border-border/70 bg-background/70 p-3"
-      data-review-comment={comment.id}
-      data-review-comment-file={comment.filePath}
-      data-review-comment-range={comment.rangeLabel}
-    >
+    <div className="space-y-2 rounded-lg border border-border/70 bg-background/70 p-3">
       <div className="space-y-1">
         <div className="text-message-foreground text-xs font-medium">
           {formatWorkspaceRelativePath(comment.filePath, ctx.workspaceRoot)}

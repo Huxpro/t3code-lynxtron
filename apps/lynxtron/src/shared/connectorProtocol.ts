@@ -27,11 +27,8 @@ import type {
   TurnId,
 } from "@t3tools/contracts";
 import { ServerConfig, ServerSettingsPatch } from "@t3tools/contracts";
-import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
-import type {
-  ActivePlanState,
-  LatestProposedPlanState,
-} from "@t3tools/client-runtime/presentation/thread";
+import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
+import type { ActivePlanState, LatestProposedPlanState } from "@t3tools/lynx-logic/thread";
 import * as Schema from "effect/Schema";
 
 /** Main -> renderer push channel name (LynxWindow.sendGlobalEvent). */

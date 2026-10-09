@@ -6,28 +6,28 @@ import { truncate } from "@t3tools/shared/String";
 import {
   deriveModelPickerModels,
   deriveProviderModelSelectionProjection,
-} from "@t3tools/client-runtime/presentation/model-picker";
-import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
-import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
+} from "@t3tools/lynx-logic/modelPicker";
+import type { ProviderInstanceEntry } from "@t3tools/lynx-logic/provider";
+import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
 import {
   MAX_TERMINAL_CONTEXTS_PER_SCOPE,
   normalizeComposerTerminalContextsByScopeKey,
   type ComposerTerminalContext,
   type ComposerTerminalContextsByScopeKey,
-} from "@t3tools/client-runtime/presentation/terminal-context";
+} from "@t3tools/lynx-logic/terminalContext";
 import {
   MAX_FILE_CONTEXTS_PER_SCOPE,
   normalizeComposerFileContextsByScopeKey,
   type ComposerFileContext,
   type ComposerFileContextsByScopeKey,
-} from "@t3tools/client-runtime/presentation/file-context";
+} from "@t3tools/lynx-logic/fileContext";
 import {
   addComposerElementContext as addComposerElementContextToState,
   normalizeComposerElementContextsByScopeKey,
   removeComposerElementContext as removeComposerElementContextFromState,
   type ComposerElementContextsByScopeKey,
   type ElementContextDraft,
-} from "@t3tools/client-runtime/presentation/element-context";
+} from "@t3tools/lynx-logic/elementContext";
 import {
   buildDraftThreadTurnBootstrap,
   addComposerDraftAttachments,
@@ -52,16 +52,16 @@ import {
   type LocalDraftThreadsByProjectId,
   type ComposerDraftTextByScopeKey,
   type ComposerDraftAttachmentsByScopeKey,
-} from "@t3tools/client-runtime/presentation/draft-thread";
+} from "@t3tools/lynx-logic/draftThread";
 import {
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
   projectPortableGeneralSettingsRestore,
-} from "@t3tools/client-runtime/presentation/settings";
+} from "@t3tools/lynx-logic/settings";
 import {
   buildProviderInstanceCreatePatch,
   buildProviderInstanceDeletePatch,
   buildProviderInstanceUpdatePatch,
-} from "@t3tools/client-runtime/presentation/provider-settings";
+} from "@t3tools/lynx-logic/providerSettings";
 import { ProjectId, ThreadId } from "@t3tools/contracts";
 import type {
   ApprovalRequestId,

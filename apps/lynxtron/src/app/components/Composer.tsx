@@ -11,13 +11,13 @@ import type { MainThread } from "@lynx-js/types";
 import {
   formatTerminalContextLabel,
   type ComposerTerminalContext,
-} from "@t3tools/client-runtime/presentation/terminal-context";
-import type { ComposerFileContext } from "@t3tools/client-runtime/presentation/file-context";
+} from "@t3tools/lynx-logic/terminalContext";
+import type { ComposerFileContext } from "@t3tools/lynx-logic/fileContext";
 import {
   formatElementContextLabel,
   formatElementContextSourceLabel,
   type ElementContextDraft,
-} from "@t3tools/client-runtime/presentation/element-context";
+} from "@t3tools/lynx-logic/elementContext";
 import {
   resolveCompactComposerControlsAlign,
   shouldUseCompactComposerFooter,
@@ -32,7 +32,7 @@ import {
   getComposerRuntimeModePresentation,
   projectComposerContext,
   type ContextWindowSnapshot,
-} from "@t3tools/client-runtime/presentation/composer";
+} from "@t3tools/lynx-logic/composer";
 import {
   type ProviderInteractionMode,
   type RuntimeMode,

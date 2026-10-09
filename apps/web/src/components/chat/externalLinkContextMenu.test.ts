@@ -140,10 +140,6 @@ describe("external chat link context menu", () => {
     ["file:///tmp/example.txt", null],
     ["javascript:void(0)", null],
     ["not a URL", null],
-    ["https://User@Example.COM:8443/docs?q=1#top", "example.com"],
-    ["https://[::1]:3000/", "[::1]"],
-    ["https://lynxjs.org/next/lynxtron", "lynxjs.org"],
-    ["https://", null],
     [undefined, null],
   ])("resolves the external web-link host for %s as %s", (href, expected) => {
     expect(resolveExternalWebLinkHost(href)).toBe(expected);

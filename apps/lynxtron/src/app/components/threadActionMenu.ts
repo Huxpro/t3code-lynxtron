@@ -1,5 +1,5 @@
 import { scopedThreadKey, scopeThreadRef } from "@t3tools/client-runtime/environment";
-import { markThreadUnreadInTimestampRecord } from "@t3tools/client-runtime/presentation/sidebar";
+import { markThreadUnreadInTimestampRecord } from "@t3tools/lynx-logic/sidebar";
 import {
   canSnooze,
   effectiveSnoozed,

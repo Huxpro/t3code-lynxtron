@@ -5,13 +5,13 @@ import {
   formatTerminalContextLabel,
   formatTerminalContextRange,
   normalizeTerminalContextText,
-} from "@t3tools/client-runtime/presentation/terminal-context";
+} from "@t3tools/lynx-logic/terminalContext";
 export {
   buildTerminalContextBlock,
   formatTerminalContextLabel,
   formatTerminalContextRange,
   normalizeTerminalContextText,
-} from "@t3tools/client-runtime/presentation/terminal-context";
+} from "@t3tools/lynx-logic/terminalContext";
 
 import { extractTrailingElementContexts, type ParsedElementContextEntry } from "./elementContext";
 import {
@@ -19,7 +19,7 @@ import {
   extractTrailingTerminalContexts,
   type ExtractedTerminalContexts,
   type ParsedUserContextEntry,
-} from "@t3tools/client-runtime/presentation/user-message";
+} from "@t3tools/lynx-logic/userMessage";
 export { extractTrailingTerminalContexts };
 export type { ExtractedTerminalContexts };
 

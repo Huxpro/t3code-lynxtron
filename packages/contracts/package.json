@@ -15,10 +15,6 @@
       "types": "./src/settings.ts",
       "import": "./src/settings.ts"
     },
-    "./settings-constants": {
-      "types": "./src/settingsConstants.ts",
-      "import": "./src/settingsConstants.ts"
-    },
     "./keybinding-constants": {
       "types": "./src/keybindingConstants.ts",
       "import": "./src/keybindingConstants.ts"

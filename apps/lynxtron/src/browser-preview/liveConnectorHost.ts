@@ -75,8 +75,8 @@ import {
   type UploadChatAttachment,
   type VcsStatusResult,
 } from "@t3tools/contracts";
-import { buildThreadTurnStartCommand } from "@t3tools/client-runtime/operations/thread-dispatch";
-import { projectAuthAccess } from "@t3tools/client-runtime/presentation/connections";
+import { buildThreadTurnStartCommand } from "@t3tools/lynx-logic/threadDispatch";
+import { projectAuthAccess } from "@t3tools/lynx-logic/connections";
 import { applyShellStreamEvent } from "@t3tools/client-runtime/state/shell";
 import {
   applyAuthAccessStreamEvent,
@@ -93,10 +93,7 @@ import {
   EMPTY_TERMINAL_BUFFER_STATE,
   type TerminalBufferState,
 } from "@t3tools/client-runtime/state/terminal";
-import {
-  deriveActivePlanState,
-  findLatestProposedPlan,
-} from "@t3tools/client-runtime/presentation/thread";
+import { deriveActivePlanState, findLatestProposedPlan } from "@t3tools/lynx-logic/thread";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";

@@ -17,7 +17,7 @@ import { ProjectFavicon } from "../../../../web/src/components/ProjectFavicon.ly
 import {
   projectThreadActionConfirmation,
   resolveRenameCommit,
-} from "@t3tools/client-runtime/presentation/thread-actions";
+} from "@t3tools/lynx-logic/threadActions";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
 import { useThreadShells } from "../../../../web/src/state/entities";
 import { showNativeConfirm } from "../platform/clientCapabilities.lynx";

@@ -1,10 +1,5 @@
 import * as React from "react";
-import {
-  hasUnseenThreadCompletion,
-  resolveThreadStatusPill,
-  type ThreadStatusPill,
-} from "@t3tools/client-runtime/presentation/sidebar";
-import { defaultAnimateLayoutChanges, type AnimateLayoutChanges } from "../lib/dnd";
+import { defaultAnimateLayoutChanges, type AnimateLayoutChanges } from "@dnd-kit/sortable";
 import type { ContextMenuItem } from "@t3tools/contracts";
 import type { SidebarProjectSortOrder, SidebarThreadSortOrder } from "@t3tools/contracts/settings";
 import {
@@ -16,8 +11,8 @@ import {
 import type { SidebarThreadSummary, Thread } from "../types";
 import type { ThreadRouteTarget } from "../threadRoutes";
 import { cn } from "../lib/utils";
+import { isLatestTurnSettled } from "../session-logic";
 import { resolveServerBackedAppStageLabel } from "../branding.logic";
-import { formatRelativeTimeLabel } from "../timestampFormat";
 
 export const THREAD_SELECTION_SAFE_SELECTOR = "[data-thread-item], [data-thread-selection-safe]";
 export const THREAD_JUMP_HINT_SHOW_DELAY_MS = 100;
@@ -129,8 +124,19 @@ export function buildBulkTitleRegenerationContextMenuItem(input: {
   };
 }
 
-export { resolveThreadStatusPill };
-export type { ThreadStatusPill };
+export interface ThreadStatusPill {
+  label:
+    | "Working"
+    | "Monitoring"
+    | "Connecting"
+    | "Completed"
+    | "Pending Approval"
+    | "Awaiting Input"
+    | "Plan Ready";
+  colorClass: string;
+  dotClass: string;
+  pulse: boolean;
+}
 
 // Rollup order mirrors the per-thread resolver exactly: attention states,
 // then active work, then the actionable plan prompt, then passive
@@ -170,22 +176,16 @@ export function resolveSidebarStageBadgeLabel(input: {
   return resolveServerBackedAppStageLabel(input);
 }
 
-type ThreadJumpTimeoutHandle = ReturnType<typeof globalThis.setTimeout> | number;
-
 export function createThreadJumpHintVisibilityController(input: {
   delayMs: number;
   onVisibilityChange: (visible: boolean) => void;
-  setTimeoutFn?: (callback: () => void, delayMs: number) => ThreadJumpTimeoutHandle;
-  clearTimeoutFn?: (timeoutId: ThreadJumpTimeoutHandle) => void;
+  setTimeoutFn?: typeof globalThis.setTimeout;
+  clearTimeoutFn?: typeof globalThis.clearTimeout;
 }): ThreadJumpHintVisibilityController {
   const setTimeoutFn = input.setTimeoutFn ?? globalThis.setTimeout;
-  const clearTimeoutFn =
-    input.clearTimeoutFn ??
-    ((timeoutId: ThreadJumpTimeoutHandle) => {
-      globalThis.clearTimeout(timeoutId as ReturnType<typeof globalThis.setTimeout>);
-    });
+  const clearTimeoutFn = input.clearTimeoutFn ?? globalThis.clearTimeout;
   let isVisible = false;
-  let timeoutId: ThreadJumpTimeoutHandle | null = null;
+  let timeoutId: NodeJS.Timeout | null = null;
 
   const clearPendingShow = () => {
     if (timeoutId === null) {
@@ -230,24 +230,13 @@ export function useThreadJumpHintVisibility(): {
   const controllerRef = React.useRef<ThreadJumpHintVisibilityController | null>(null);
 
   React.useEffect(() => {
-    const setTimeoutFn =
-      typeof globalThis.setTimeout === "function"
-        ? globalThis.setTimeout.bind(globalThis)
-        : (callback: () => void) => {
-            callback();
-            return 0;
-          };
-    const clearTimeoutFn =
-      typeof globalThis.clearTimeout === "function"
-        ? globalThis.clearTimeout.bind(globalThis)
-        : () => {};
     const controller = createThreadJumpHintVisibilityController({
       delayMs: THREAD_JUMP_HINT_SHOW_DELAY_MS,
       onVisibilityChange: (visible) => {
         setShowThreadJumpHints(visible);
       },
-      setTimeoutFn,
-      clearTimeoutFn,
+      setTimeoutFn: window.setTimeout.bind(window),
+      clearTimeoutFn: window.clearTimeout.bind(window),
     });
     controllerRef.current = controller;
 
@@ -268,7 +257,14 @@ export function useThreadJumpHintVisibility(): {
 }
 
 export function hasUnseenCompletion(thread: ThreadStatusInput): boolean {
-  return hasUnseenThreadCompletion(thread);
+  if (!thread.latestTurn?.completedAt) return false;
+  const completedAt = Date.parse(thread.latestTurn.completedAt);
+  if (Number.isNaN(completedAt)) return false;
+  if (!thread.lastVisitedAt) return false;
+
+  const lastVisitedAt = Date.parse(thread.lastVisitedAt);
+  if (Number.isNaN(lastVisitedAt)) return true;
+  return completedAt > lastVisitedAt;
 }
 
 export function shouldClearThreadSelectionOnMouseDown(target: HTMLElement | null): boolean {
@@ -509,10 +505,6 @@ export function resolveSidebarThreadStatus(thread: SidebarThreadStatusInput): Si
   return "ready";
 }
 
-export function shouldChooseProjectForNewThread(projectCount: number): boolean {
-  return projectCount > 1;
-}
-
 /** NaN-safe Date.parse for sort comparators: a malformed timestamp must not
     poison the whole ordering, so it sinks to the epoch instead. */
 export function parseTimestampMs(isoDate: string): number {
@@ -553,7 +545,7 @@ export function firstValidTimestamp(
 export function sortThreadsForSidebar<
   T extends { readonly id: string; readonly createdAt: string },
 >(threads: readonly T[]): T[] {
-  return [...threads].sort(
+  return [...threads].toSorted(
     (left, right) =>
       parseTimestampMs(right.createdAt) - parseTimestampMs(left.createdAt) ||
       left.id.localeCompare(right.id),
@@ -614,30 +606,6 @@ export function resolveSettledTimestamp(thread: SettledTimestampInput): string |
   return latest ?? firstValidTimestamp(thread.updatedAt);
 }
 
-function compactSidebarTimeLabel(label: string): string {
-  if (label === "just now") return "now";
-  return label.endsWith(" ago") ? label.slice(0, -4) : label;
-}
-
-/** Compact relative label ("5m", "now") for a thread's latest activity. */
-export function sidebarV2ThreadTimeLabel(thread: {
-  readonly latestUserMessageAt?: string | null | undefined;
-  readonly updatedAt: string;
-}): string {
-  return compactSidebarTimeLabel(
-    formatRelativeTimeLabel(thread.latestUserMessageAt ?? thread.updatedAt),
-  );
-}
-
-/**
- * Settled rows read "how long ago did this wrap up", matching their sort key:
- * both go through resolveSettledTimestamp so label and order can't disagree.
- */
-export function sidebarV2SettledTimeLabel(thread: SettledTimestampInput): string {
-  const timestamp = resolveSettledTimestamp(thread);
-  return timestamp === null ? "" : compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
-}
-
 // Settled rows are history, so they order by when the work ENDED, not when
 // the thread was created or last touched.
 export function sortSettledThreadsForSidebar<
@@ -647,7 +615,7 @@ export function sortSettledThreadsForSidebar<
     const timestamp = resolveSettledTimestamp(thread);
     return timestamp === null ? 0 : Date.parse(timestamp);
   };
-  return [...threads].sort(
+  return [...threads].toSorted(
     (left, right) => timestampMs(right) - timestampMs(left) || left.id.localeCompare(right.id),
   );
 }
@@ -672,6 +640,97 @@ export function formatWorkingDurationLabel(elapsedMs: number): string {
   const minutes = Math.floor(seconds / 60);
   if (minutes < 60) return `${minutes}m`;
   return `${Math.floor(minutes / 60)}h ${minutes % 60}m`;
+}
+
+export function resolveThreadStatusPill(input: {
+  thread: ThreadStatusInput;
+}): ThreadStatusPill | null {
+  const { thread } = input;
+
+  if (thread.hasPendingApprovals) {
+    return {
+      label: "Pending Approval",
+      colorClass: "text-amber-600 dark:text-amber-300/90",
+      dotClass: "bg-amber-500 dark:bg-amber-300/90",
+      pulse: false,
+    };
+  }
+
+  if (thread.hasPendingUserInput) {
+    return {
+      label: "Awaiting Input",
+      colorClass: "text-indigo-600 dark:text-indigo-300/90",
+      dotClass: "bg-indigo-500 dark:bg-indigo-300/90",
+      pulse: false,
+    };
+  }
+
+  if (thread.session?.status === "running") {
+    return {
+      label: "Working",
+      colorClass: "text-sky-600 dark:text-sky-300/80",
+      dotClass: "bg-sky-500 dark:bg-sky-300/80",
+      pulse: true,
+    };
+  }
+
+  if (thread.session?.status === "starting") {
+    return {
+      label: "Connecting",
+      colorClass: "text-sky-600 dark:text-sky-300/80",
+      dotClass: "bg-sky-500 dark:bg-sky-300/80",
+      pulse: true,
+    };
+  }
+
+  // An actionable plan prompt outranks lingering background work: it needs
+  // the user's decision, while liveness merely reports (review finding).
+  const hasPlanReadyPrompt =
+    !thread.hasPendingUserInput &&
+    thread.interactionMode === "plan" &&
+    isLatestTurnSettled(thread.latestTurn, thread.session) &&
+    thread.hasActionableProposedPlan;
+  if (hasPlanReadyPrompt) {
+    return {
+      label: "Plan Ready",
+      colorClass: "text-violet-600 dark:text-violet-300/90",
+      dotClass: "bg-violet-500 dark:bg-violet-300/90",
+      pulse: false,
+    };
+  }
+
+  // The turn can settle while native background work runs on. Subagent and
+  // workflow fleets read as plain Working; Monitoring is reserved for watch
+  // loops (a parent agent babysitting a PR, tailing checks) with no other
+  // live work. Same recede treatment as Working per inbox-zero.
+  if (thread.backgroundLiveness === "working") {
+    return {
+      label: "Working",
+      colorClass: "text-sky-600 dark:text-sky-300/80",
+      dotClass: "bg-sky-500 dark:bg-sky-300/80",
+      pulse: true,
+    };
+  }
+
+  if (thread.backgroundLiveness === "monitoring") {
+    return {
+      label: "Monitoring",
+      colorClass: "text-sky-600 dark:text-sky-300/80",
+      dotClass: "bg-sky-500 dark:bg-sky-300/80",
+      pulse: false,
+    };
+  }
+
+  if (hasUnseenCompletion(thread)) {
+    return {
+      label: "Completed",
+      colorClass: "text-emerald-600 dark:text-emerald-300/90",
+      dotClass: "bg-emerald-500 dark:bg-emerald-300/90",
+      pulse: false,
+    };
+  }
+
+  return null;
 }
 
 export function resolveProjectStatusIndicator(
@@ -794,7 +853,7 @@ function sortProjectsByActivity<TProject extends SidebarProject>(
     return [...projects];
   }
 
-  return [...projects].sort((left, right) => {
+  return [...projects].toSorted((left, right) => {
     const rightTimestamp = getProjectSortTimestamp(right, getProjectThreads(right), sortOrder);
     const leftTimestamp = getProjectSortTimestamp(left, getProjectThreads(left), sortOrder);
     const byTimestamp =
@@ -899,84 +958,4 @@ export function sortScopedProjectsForSidebar<
       left.environmentId.localeCompare(right.environmentId) ||
       left.id.localeCompare(right.id),
   );
-}
-
-/**
- * A woken thread reappears at its original position, so the Woke pill carries
- * the signal until the user visits it after the wake. A never-visited thread
- * still shows it, and an unparseable visit timestamp counts as never-visited.
- */
-export function isSidebarV2ThreadWoke(
-  wokeAt: string | null,
-  lastVisitedAt: string | undefined,
-): boolean {
-  const wokeAtMs = wokeAt === null ? Number.NaN : Date.parse(wokeAt);
-  if (Number.isNaN(wokeAtMs)) return false;
-  const lastVisitedMs = lastVisitedAt === undefined ? Number.NaN : Date.parse(lastVisitedAt);
-  return Number.isNaN(lastVisitedMs) || lastVisitedMs < wokeAtMs;
-}
-
-export interface SidebarV2TopStatus {
-  readonly label: string;
-  readonly icon: "working" | "done" | "woke" | null;
-  readonly className: string;
-}
-
-/**
- * Row prominence and status pill for a sidebar thread.
- *
- * In-flight rows (working, monitoring, or waiting on approval/input) recede
- * with read ready rows: prominence is reserved for rows that need a human —
- * done (unread), failed, and freshly woken. Status hues follow the system-wide
- * convention (amber approval, indigo input, sky working).
- */
-export function resolveSidebarV2RowPresentation(input: {
-  readonly status: SidebarThreadStatus;
-  readonly isUnread: boolean;
-  readonly isWoke: boolean;
-  readonly isActive: boolean;
-  readonly isSelected: boolean;
-}): {
-  readonly isInFlight: boolean;
-  readonly shouldRecede: boolean;
-  readonly topStatus: SidebarV2TopStatus | null;
-} {
-  const { status } = input;
-  const isInFlight =
-    status === "working" || status === "monitoring" || status === "approval" || status === "input";
-  const shouldRecede =
-    (status === "ready" || isInFlight) &&
-    !input.isUnread &&
-    !input.isWoke &&
-    !input.isActive &&
-    !input.isSelected;
-  const topStatus: SidebarV2TopStatus | null =
-    status === "working"
-      ? {
-          label: "Working",
-          icon: "working",
-          // No shimmer: a label that animates forever repaints every vsync on
-          // high-refresh displays. Working rests dim; only the open thread
-          // gets the label at full strength.
-          className: cn("text-sky-600 dark:text-sky-400", !input.isActive && "opacity-75"),
-        }
-      : status === "monitoring"
-        ? // Monitoring is calm background presence, so it keeps full strength.
-          { label: "Monitoring", icon: null, className: "text-sky-600 dark:text-sky-400" }
-        : status === "approval"
-          ? { label: "Approval", icon: null, className: "text-amber-700 dark:text-amber-300" }
-          : status === "input"
-            ? { label: "Input", icon: null, className: "text-indigo-600 dark:text-indigo-300" }
-            : status === "failed"
-              ? { label: "Failed", icon: null, className: "text-red-700 dark:text-red-300" }
-              : input.isWoke
-                ? { label: "Woke", icon: "woke", className: "text-amber-700 dark:text-amber-300" }
-                : input.isUnread
-                  ? {
-                      label: "Done",
-                      icon: "done",
-                      className: "text-emerald-700 dark:text-emerald-300",
-                    }
-                  : null;
-  return { isInFlight, shouldRecede, topStatus };
 }

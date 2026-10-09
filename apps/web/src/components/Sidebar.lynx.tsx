@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { scopeProjectRef, scopeThreadRef } from "@t3tools/client-runtime/environment";
-import { resolveThreadStatusPill } from "@t3tools/client-runtime/presentation/sidebar";
+import { resolveThreadStatusPill } from "@t3tools/lynx-logic/sidebar";
 import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
 import { ProjectId } from "@t3tools/contracts";
 

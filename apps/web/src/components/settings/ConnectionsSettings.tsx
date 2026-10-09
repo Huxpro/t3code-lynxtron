@@ -18,7 +18,9 @@ import {
   AuthReviewWriteScope,
   AuthStandardClientScopes,
   AuthTerminalOperateScope,
+  type AuthClientSession,
   type AuthEnvironmentScope,
+  type AuthPairingLink,
   type AdvertisedEndpoint,
   type DesktopDiscoveredSshHost,
   type DesktopSshEnvironmentTarget,
@@ -28,15 +30,10 @@ import {
 } from "@t3tools/contracts";
 import { connectionStatusText } from "@t3tools/client-runtime/connection";
 import {
-  fixedNetworkAccessPresentation,
-  projectAuthAccess,
-  shouldShowAuthorizedClients,
-  type AuthClientSessionPresentation,
-} from "@t3tools/client-runtime/presentation/connections";
-import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
+import * as DateTime from "effect/DateTime";
 import * as Option from "effect/Option";
 
 import { useCopyToClipboard } from "../../hooks/useCopyToClipboard";
@@ -86,6 +83,7 @@ import { Switch } from "../ui/switch";
 import { stackedThreadToast, toastManager } from "../ui/toast";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "../ui/empty";
 import { AnimatedHeight } from "../AnimatedHeight";
 import { Textarea } from "../ui/textarea";
 import { getPairingTokenFromUrl, setPairingTokenOnUrl } from "../../pairingUrl";
@@ -97,6 +95,7 @@ import {
   revokeServerPairingLink,
   isLoopbackHostname,
   usePrimarySessionState,
+  type ServerClientSessionRecord,
   type ServerPairingLinkRecord,
 } from "~/environments/primary";
 import { isDesktopLocalConnectionTarget } from "~/connection/desktopLocal";
@@ -131,7 +130,6 @@ import { ConnectionStatusDot } from "../ConnectionStatusDot";
 import { ServerUpdateAction, ServerUpdateProgress } from "../ServerUpdateAction";
 import { CloudEnvironmentConnectRows } from "../cloud/CloudEnvironmentConnectList";
 import { ITEM_ROW_CLASSNAME, ITEM_ROW_INNER_CLASSNAME } from "./itemRows";
-import { AccessListRowSurface, EmptyRemoteEnvironments } from "./SettingsSurfaces";
 
 const DEFAULT_TAILSCALE_SERVE_PORT = 443;
 const EMPTY_ADVERTISED_ENDPOINTS: ReadonlyArray<AdvertisedEndpoint> = [];
@@ -384,6 +382,44 @@ function endpointRowClassName(presentation: AccessSectionPresentation, isAvailab
   }
 
   return cn(ENDPOINT_ROW_CLASSNAME, !isAvailable && "bg-muted/24");
+}
+
+function sortDesktopPairingLinks(links: ReadonlyArray<ServerPairingLinkRecord>) {
+  return [...links].toSorted(
+    (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+  );
+}
+
+function sortDesktopClientSessions(sessions: ReadonlyArray<ServerClientSessionRecord>) {
+  return [...sessions].toSorted((left, right) => {
+    if (left.current !== right.current) {
+      return left.current ? -1 : 1;
+    }
+    if (left.connected !== right.connected) {
+      return left.connected ? -1 : 1;
+    }
+    return new Date(right.issuedAt).getTime() - new Date(left.issuedAt).getTime();
+  });
+}
+
+function toDesktopPairingLinkRecord(pairingLink: AuthPairingLink): ServerPairingLinkRecord {
+  return {
+    ...pairingLink,
+    createdAt: DateTime.formatIso(pairingLink.createdAt),
+    expiresAt: DateTime.formatIso(pairingLink.expiresAt),
+  };
+}
+
+function toDesktopClientSessionRecord(clientSession: AuthClientSession): ServerClientSessionRecord {
+  return {
+    ...clientSession,
+    issuedAt: DateTime.formatIso(clientSession.issuedAt),
+    expiresAt: DateTime.formatIso(clientSession.expiresAt),
+    lastConnectedAt:
+      clientSession.lastConnectedAt === null
+        ? null
+        : DateTime.formatIso(clientSession.lastConnectedAt),
+  };
 }
 
 function selectPairingEndpoint(
@@ -756,7 +792,6 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
           <Button
             size="xs"
             variant="destructive-outline"
-            className={`settings-connections-revoke-pairing--${pairingLink.id}`}
             disabled={revokingPairingLinkId === pairingLink.id}
             onClick={() => void onRevoke(pairingLink.id)}
           >
@@ -860,71 +895,87 @@ const PairingLinkListRow = memo(function PairingLinkListRow({
 });
 
 type ConnectedClientListRowProps = {
-  clientSession: AuthClientSessionPresentation;
+  clientSession: ServerClientSessionRecord;
+  presentation?: AccessSectionPresentation;
   revokingClientSessionId: string | null;
-  onRevokeSession: (sessionId: AuthClientSessionPresentation["sessionId"]) => void;
+  onRevokeSession: (sessionId: ServerClientSessionRecord["sessionId"]) => void;
 };
 
 const ConnectedClientListRow = memo(function ConnectedClientListRow({
   clientSession,
+  presentation = "current",
   revokingClientSessionId,
   onRevokeSession,
 }: ConnectedClientListRowProps) {
   const nowMs = useRelativeTimeTick(1_000);
-  const statusTooltip = clientSession.isLive
-    ? clientSession.lastConnectedAt
-      ? `Connected for ${formatElapsedDurationLabel(clientSession.lastConnectedAt, nowMs)}`
+  const isLive = clientSession.current || clientSession.connected;
+  const lastConnectedAt = clientSession.lastConnectedAt;
+  const statusTooltip = isLive
+    ? lastConnectedAt
+      ? `Connected for ${formatElapsedDurationLabel(lastConnectedAt, nowMs)}`
       : "Connected"
-    : clientSession.lastConnectedAt
-      ? `Last connected at ${formatAccessTimestamp(clientSession.lastConnectedAt)}`
+    : lastConnectedAt
+      ? `Last connected at ${formatAccessTimestamp(lastConnectedAt)}`
       : "Not connected yet.";
+  const deviceInfoBits = [
+    clientSession.client.deviceType !== "unknown"
+      ? clientSession.client.deviceType[0]?.toUpperCase() + clientSession.client.deviceType.slice(1)
+      : null,
+    clientSession.client.os ?? null,
+    clientSession.client.browser ?? null,
+    clientSession.client.ipAddress ?? null,
+  ].filter((value): value is string => value !== null);
+  const primaryLabel =
+    clientSession.client.label ??
+    ([clientSession.client.os, clientSession.client.browser].filter(Boolean).join(" · ") ||
+      clientSession.subject);
 
   return (
-    <AccessListRowSurface
-      statusDot={
-        <ConnectionStatusDot
-          tooltipText={statusTooltip}
-          dotClassName={clientSession.isLive ? "bg-success" : "bg-muted-foreground/30"}
-          pingClassName={clientSession.isLive ? "bg-success/60 duration-2000" : null}
-        />
-      }
-      primaryLabel={clientSession.primaryLabel}
-      primaryTrailing={
-        clientSession.current ? (
-          <span className="text-[10px] text-muted-foreground/80 rounded-md border border-border/50 bg-muted/50 px-1 py-0.5">
-            This device
-          </span>
-        ) : null
-      }
-      description={
-        <>
-          {clientSession.deviceInfoBits.length > 0 ? (
-            <>
-              {clientSession.deviceInfoBits.join(" · ")}
-              <span aria-hidden> · </span>
-            </>
+    <div className={accessRowClassName(presentation)}>
+      <div className={ITEM_ROW_INNER_CLASSNAME}>
+        <div className="min-w-0 flex-1 space-y-1">
+          <div className="flex min-h-5 items-center gap-1.5">
+            <ConnectionStatusDot
+              tooltipText={statusTooltip}
+              dotClassName={isLive ? "bg-success" : "bg-muted-foreground/30"}
+              pingClassName={isLive ? "bg-success/60 duration-2000" : null}
+            />
+            <h3 className="text-sm font-medium text-foreground">{primaryLabel}</h3>
+            {clientSession.current ? (
+              <span className="text-[10px] text-muted-foreground/80 rounded-md border border-border/50 bg-muted/50 px-1 py-0.5">
+                This device
+              </span>
+            ) : null}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {deviceInfoBits.length > 0 ? (
+              <>
+                {deviceInfoBits.join(" · ")}
+                <span aria-hidden> · </span>
+              </>
+            ) : null}
+            <AccessScopeSummary scopes={clientSession.scopes} label="Client scopes" />
+          </p>
+        </div>
+        <div className="flex w-full shrink-0 items-center gap-2 sm:w-auto sm:justify-end">
+          {!clientSession.current ? (
+            <Button
+              size="xs"
+              variant="destructive-outline"
+              disabled={revokingClientSessionId === clientSession.sessionId}
+              onClick={() => void onRevokeSession(clientSession.sessionId)}
+            >
+              {revokingClientSessionId === clientSession.sessionId ? "Revoking…" : "Revoke"}
+            </Button>
           ) : null}
-          <AccessScopeSummary scopes={clientSession.scopes} label="Client scopes" />
-        </>
-      }
-      control={
-        !clientSession.current ? (
-          <Button
-            size="xs"
-            variant="destructive-outline"
-            disabled={revokingClientSessionId === clientSession.sessionId}
-            onClick={() => void onRevokeSession(clientSession.sessionId)}
-          >
-            {revokingClientSessionId === clientSession.sessionId ? "Revoking…" : "Revoke"}
-          </Button>
-        ) : null
-      }
-    />
+        </div>
+      </div>
+    </div>
   );
 });
 
 type AuthorizedClientsHeaderActionProps = {
-  clientSessions: ReadonlyArray<AuthClientSessionPresentation>;
+  clientSessions: ReadonlyArray<ServerClientSessionRecord>;
   isRevokingOtherClients: boolean;
   onRevokeOtherClients: () => void;
 };
@@ -992,7 +1043,7 @@ const AuthorizedClientsHeaderAction = memo(function AuthorizedClientsHeaderActio
       >
         <DialogTrigger
           render={
-            <Button size="xs" variant="default" className="settings-connections-create-pairing">
+            <Button size="xs" variant="default">
               <PlusIcon className="size-3" />
               Create link
             </Button>
@@ -1104,11 +1155,11 @@ type PairingClientsListProps = {
   presentation?: AccessSectionPresentation;
   isLoading: boolean;
   pairingLinks: ReadonlyArray<ServerPairingLinkRecord>;
-  clientSessions: ReadonlyArray<AuthClientSessionPresentation>;
+  clientSessions: ReadonlyArray<ServerClientSessionRecord>;
   revokingPairingLinkId: string | null;
   revokingClientSessionId: string | null;
   onRevokePairingLink: (id: string) => void;
-  onRevokeClientSession: (sessionId: AuthClientSessionPresentation["sessionId"]) => void;
+  onRevokeClientSession: (sessionId: ServerClientSessionRecord["sessionId"]) => void;
 };
 
 const PairingClientsList = memo(function PairingClientsList({
@@ -1143,6 +1194,7 @@ const PairingClientsList = memo(function PairingClientsList({
         <ConnectedClientListRow
           key={clientSession.sessionId}
           clientSession={clientSession}
+          presentation={presentation}
           revokingClientSessionId={revokingClientSessionId}
           onRevokeSession={onRevokeClientSession}
         />
@@ -1655,6 +1707,24 @@ function CloudLinkRow({ canManageRelay }: { readonly canManageRelay: boolean }) 
   return hasCloudPublicConfig() ? <ConfiguredCloudLinkRow canManageRelay={canManageRelay} /> : null;
 }
 
+function EmptyRemoteEnvironments({ cloudEnabled = true }: { readonly cloudEnabled?: boolean }) {
+  return (
+    <Empty className="min-h-52">
+      <EmptyMedia variant="icon">
+        <ChevronsLeftRightEllipsisIcon />
+      </EmptyMedia>
+      <EmptyHeader>
+        <EmptyTitle>No saved remote environments</EmptyTitle>
+        <EmptyDescription>
+          {cloudEnabled
+            ? "Click “Add environment” to pair another environment, or connect one from T3 Connect."
+            : "Click “Add environment” to pair another environment."}
+        </EmptyDescription>
+      </EmptyHeader>
+    </Empty>
+  );
+}
+
 function CloudRemoteEnvironmentRows({
   primaryEnvironmentId,
   savedEnvironments,
@@ -1666,10 +1736,10 @@ function CloudRemoteEnvironmentRows({
     <CloudEnvironmentConnectRows
       primaryEnvironmentId={primaryEnvironmentId}
       savedEnvironments={savedEnvironments}
-      empty={<EmptyRemoteEnvironments icon={<ChevronsLeftRightEllipsisIcon />} />}
+      empty={<EmptyRemoteEnvironments />}
     />
   ) : savedEnvironments.length === 0 ? (
-    <EmptyRemoteEnvironments cloudEnabled={false} icon={<ChevronsLeftRightEllipsisIcon />} />
+    <EmptyRemoteEnvironments cloudEnabled={false} />
   ) : null;
 }
 
@@ -1860,24 +1930,24 @@ export function ConnectionsSettings() {
   const desktopPairingLinks = useMemo(() => {
     const event = authAccessChanges.data;
     if (event?.type !== "snapshot") return [];
-    const presentation = projectAuthAccess(event.payload);
-    const credentials = new Map(
-      event.payload.pairingLinks.map((pairingLink) => [pairingLink.id, pairingLink.credential]),
+    return sortDesktopPairingLinks(
+      event.payload.pairingLinks.map((pairingLink: AuthPairingLink) =>
+        toDesktopPairingLinkRecord(pairingLink),
+      ),
     );
-    return presentation.pairingLinks.map<ServerPairingLinkRecord>((pairingLink) => ({
-      ...pairingLink,
-      credential: credentials.get(pairingLink.id) ?? "",
-    }));
   }, [authAccessChanges.data]);
   const desktopClientSessions = useMemo(() => {
     const event = authAccessChanges.data;
     if (event?.type !== "snapshot") return [];
-    return projectAuthAccess(event.payload).clientSessions;
+    return sortDesktopClientSessions(
+      event.payload.clientSessions.map((clientSession: AuthClientSession) =>
+        toDesktopClientSessionRecord(clientSession),
+      ),
+    );
   }, [authAccessChanges.data]);
   const isLocalBackendNetworkAccessible = desktopBridge
     ? desktopServerExposureState?.mode === "network-accessible"
     : currentAuthPolicy === "remote-reachable";
-  const fixedNetworkAccess = fixedNetworkAccessPresentation(currentAuthPolicy);
   const trimmedTailscaleServePortInput = tailscaleServePortInput.trim();
   const parsedTailscaleServePort = Number(trimmedTailscaleServePortInput);
   const isTailscaleServePortValid =
@@ -2024,7 +2094,7 @@ export function ConnectionsSettings() {
   }, []);
 
   const handleRevokeDesktopClientSession = useCallback(
-    async (sessionId: AuthClientSessionPresentation["sessionId"]) => {
+    async (sessionId: ServerClientSessionRecord["sessionId"]) => {
       setRevokingDesktopClientSessionId(sessionId);
       setDesktopAccessManagementMutationError(null);
       try {
@@ -2278,10 +2348,6 @@ export function ConnectionsSettings() {
   );
   const isLocalBackendRemotelyReachable =
     isLocalBackendNetworkAccessible || tailscaleHttpsEndpoint?.status === "available";
-  const showAuthorizedClients = shouldShowAuthorizedClients({
-    canManageAccess: canManageLocalBackend,
-    authPolicy: isLocalBackendRemotelyReachable ? "remote-reachable" : currentAuthPolicy,
-  });
   const defaultDesktopNetworkAdvertisedEndpoint = useMemo(
     () =>
       selectPairingEndpoint(visibleDesktopNetworkAdvertisedEndpoints, defaultAdvertisedEndpointKey),
@@ -2918,16 +2984,19 @@ export function ConnectionsSettings() {
   );
   const renderDisabledNetworkAccessRow = () => (
     <SettingsRow
-      className="settings-connections-network-access"
       title="Network access"
-      description={fixedNetworkAccess.description}
+      description={
+        currentAuthPolicy === "remote-reachable"
+          ? "This backend is already configured for remote access. Network exposure changes must be made where the server is launched."
+          : "This backend is only reachable on this machine. Restart it with a non-loopback host to enable remote pairing."
+      }
       control={
         <Tooltip>
           <TooltipTrigger
             render={
               <span className="inline-flex">
                 <Switch
-                  checked={fixedNetworkAccess.checked}
+                  checked={isLocalBackendNetworkAccessible}
                   disabled
                   aria-label="Enable network access"
                 />
@@ -3007,7 +3076,7 @@ export function ConnectionsSettings() {
             )}
           </SettingsSection>
 
-          {showAuthorizedClients ? (
+          {isLocalBackendRemotelyReachable ? (
             <SettingsSection
               title="Authorized clients"
               headerAction={

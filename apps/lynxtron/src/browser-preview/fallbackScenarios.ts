@@ -34,11 +34,8 @@ import {
   type ServerProvider,
   type TurnId as TurnIdType,
 } from "@t3tools/contracts";
-import type { AuthAccessPresentation } from "@t3tools/client-runtime/presentation/connections";
-import type {
-  ActivePlanState,
-  LatestProposedPlanState,
-} from "@t3tools/client-runtime/presentation/thread";
+import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
+import type { ActivePlanState, LatestProposedPlanState } from "@t3tools/lynx-logic/thread";
 import type { TerminalSessionPresentation } from "../shared/connectorProtocol.ts";
 
 /**

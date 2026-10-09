@@ -14,20 +14,17 @@ import {
   sortAddProjectProviderSources,
   type AddProjectRemoteSource,
 } from "@t3tools/client-runtime/operations/projects";
-import type {
-  SearchOverlayMode,
-  SearchOverlayOpenIntent,
-} from "@t3tools/client-runtime/presentation/search-overlay";
+import type { SearchOverlayMode, SearchOverlayOpenIntent } from "@t3tools/lynx-logic/searchOverlay";
 import {
   getProjectFilePickerMatches,
   PROJECT_FILE_PICKER_RESULT_LIMIT,
-} from "@t3tools/client-runtime/presentation/file-picker";
-import { formatRelativeTimeLabel } from "@t3tools/client-runtime/presentation/time";
+} from "@t3tools/lynx-logic/filePicker";
+import { formatRelativeTimeLabel } from "@t3tools/lynx-logic/time";
 import {
   parseCommandPaletteSearchQuery,
   projectCommandPaletteThread,
   rankCommandPaletteSearchItems,
-} from "@t3tools/client-runtime/presentation/command-palette";
+} from "@t3tools/lynx-logic/commandPalette";
 import {
   PaletteEmptySurface,
   PaletteFooterSurface,

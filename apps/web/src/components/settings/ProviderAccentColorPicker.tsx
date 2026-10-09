@@ -6,9 +6,17 @@ import { useCallback, useEffect, useMemo, useRef, useState, type PointerEvent } 
 import { ColorSelector } from "../color-selector";
 import { Button } from "../ui/button";
 import { Popover, PopoverPopup, PopoverTrigger } from "../ui/popover";
-import { normalizeProviderAccentColor } from "@t3tools/client-runtime/presentation/provider";
+import { normalizeProviderAccentColor } from "../../providerInstances";
 import { cn } from "../../lib/utils";
-import { PROVIDER_ACCENT_SWATCHES } from "./providerDriverCatalog";
+
+const PROVIDER_ACCENT_SWATCHES = [
+  "#2563eb",
+  "#16a34a",
+  "#ea580c",
+  "#dc2626",
+  "#7c3aed",
+  "#0891b2",
+] as const;
 
 const FALLBACK_ACCENT_COLOR = PROVIDER_ACCENT_SWATCHES[0];
 

@@ -1,4 +1,4 @@
-import { terminalCloseConfirmation } from "@t3tools/client-runtime/presentation/terminal-context";
+import { terminalCloseConfirmation } from "@t3tools/lynx-logic/terminalContext";
 
 import { showNativeConfirm } from "../../../lynxtron/src/app/platform/clientCapabilities.lynx";
 

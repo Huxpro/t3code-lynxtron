@@ -45,7 +45,7 @@ describe("Settings primitive contract", () => {
     }
   });
 
-  it("keeps all selected platform leaves at the Web import paths", () => {
+  it("keeps a Lynx leaf beside every selected Web primitive", () => {
     const expectedStems = [
       "apps/web/src/components/settings/settingsLayout",
       "apps/web/src/components/settings/generalSettingsHost",
@@ -61,19 +61,17 @@ describe("Settings primitive contract", () => {
     ];
 
     for (const stem of expectedStems) {
-      for (const platform of ["web", "lynx"]) {
-        const relativePath = `${stem}.${platform}.tsx`;
-        const source = readFileSync(path.join(repoRoot, relativePath), "utf8");
-        assert.match(source, /export /u, relativePath);
-      }
+      const relativePath = `${stem}.lynx.tsx`;
+      const source = readFileSync(path.join(repoRoot, relativePath), "utf8");
+      assert.match(source, /export /u, relativePath);
     }
   });
 
   it("renders both clients from one physical General Settings composition", () => {
-    const compositionPath = "apps/web/src/components/settings/GeneralSettingsContent.tsx";
+    const compositionPath = "apps/web/src/components/settings/GeneralSettingsContent.lynx.tsx";
     const composition = readFileSync(path.join(repoRoot, compositionPath), "utf8");
     const webAdapter = readFileSync(
-      path.join(repoRoot, "apps/web/src/components/settings/GeneralSettingsPanel.tsx"),
+      path.join(repoRoot, "apps/web/src/components/settings/GeneralSettingsPanel.lynx.tsx"),
       "utf8",
     );
     const lynxAdapter = readFileSync(

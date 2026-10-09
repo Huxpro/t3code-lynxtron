@@ -11,18 +11,13 @@
     "src/app/overrides.css",
     "src/app/tailwind.css"
   ],
-  "removedSelectorCount": 5,
+  "removedSelectorCount": 0,
   "removedDeclarationCount": 1,
-  "retainedSupportedSelectorCount": 2,
+  "retainedSupportedSelectorCount": 1,
   "retainedSupportedDeclarationCount": 2,
-  "transformedSelectorCount": 35,
-  "transformedDeclarationCount": 9,
+  "transformedSelectorCount": 34,
+  "transformedDeclarationCount": 7,
   "transformedSelectors": [
-    {
-      "from": ".dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]:is(.dark *)",
-      "to": ".dark .dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]",
-      "transformations": ["dark-is-to-descendant"]
-    },
     {
       "from": ".dark\\:border-amber-400\\/30:is(.dark *)",
       "to": ".dark .dark\\:border-amber-400\\/30",
@@ -196,28 +191,6 @@
   ],
   "transformedDeclarations": [
     {
-      "property": "--skeleton-highlight",
-      "value": "var(--alpha(var(--color-white)/4%))",
-      "selector": ".dark .dark\\:\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/4\\%\\)\\]",
-      "replacements": [
-        {
-          "prop": "--skeleton-highlight",
-          "value": "rgba(255, 255, 255, 0.04)"
-        }
-      ]
-    },
-    {
-      "property": "--skeleton-highlight",
-      "value": "var(--alpha(var(--color-white)/64%))",
-      "selector": ".\\[--skeleton-highlight\\:--alpha\\(var\\(--color-white\\)\\/64\\%\\)\\]",
-      "replacements": [
-        {
-          "prop": "--skeleton-highlight",
-          "value": "rgba(255, 255, 255, 0.64)"
-        }
-      ]
-    },
-    {
       "property": "font-variant-numeric",
       "value": "tabular-nums",
       "selector": ".composer-context-window-popup__usage,\n.composer-context-window-popup__total",
@@ -315,10 +288,7 @@
       "semanticEquivalent": "lynx-text-selection-disabled-by-default"
     }
   ],
-  "retainedSupportedSelectors": [
-    ".\\[\\&_svg\\:not\\(\\[class\\*\\=\\'size-\\'\\]\\)\\]\\:size-3 svg:not([class*='size-'])",
-    ".active\\:bg-accent:active"
-  ],
+  "retainedSupportedSelectors": [".active\\:bg-accent:active"],
   "retainedSupportedDeclarations": [
     {
       "property": "display",
@@ -331,13 +301,7 @@
       "selector": ".grid-cols-\\[4ch_4ch\\]"
     }
   ],
-  "removedSelectors": [
-    ".after\\:absolute::after",
-    ".after\\:bg-\\[linear-gradient\\(120deg\\2c transparent_40\\%\\2c var\\(--skeleton-highlight\\)\\2c transparent_60\\%\\)\\]::after",
-    ".after\\:inset-0::after",
-    ".enabled\\:hover\\:bg-sidebar-row-hover:hover:enabled",
-    ".enabled\\:hover\\:text-sidebar-foreground:hover:enabled"
-  ],
+  "removedSelectors": [],
   "removedDeclarations": [
     {
       "property": "tab-size",

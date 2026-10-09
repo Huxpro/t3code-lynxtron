@@ -4,7 +4,7 @@ import {
   normalizeMediaQuery,
   type MediaQueryInput,
   type ResponsiveBreakpointQuery,
-} from "@t3tools/client-runtime/platform";
+} from "@t3tools/lynx-logic/mediaQuery";
 
 import { clientCapabilities } from "../platform/clientCapabilities";
 

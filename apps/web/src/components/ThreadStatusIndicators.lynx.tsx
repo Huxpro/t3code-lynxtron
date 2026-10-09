@@ -7,11 +7,8 @@ import {
   type PrStatusIndicator,
   type TerminalStatusIndicator,
   type ThreadPr,
-} from "@t3tools/client-runtime/presentation/source-control";
-import {
-  resolveThreadStatusPill,
-  type ThreadStatusPill,
-} from "@t3tools/client-runtime/presentation/sidebar";
+} from "@t3tools/lynx-logic/sourceControl";
+import { resolveThreadStatusPill, type ThreadStatusPill } from "@t3tools/lynx-logic/sidebar";
 
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import type { SidebarThreadSummary } from "../types";

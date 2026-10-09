@@ -30,6 +30,8 @@ function navigate(input: {
   readonly to?: string;
   readonly params?: Record<string, string>;
   readonly replace?: boolean;
+  /** Accepted for parity with the Web router; Lynx routes carry no search state. */
+  readonly search?: Record<string, unknown>;
 }): Promise<void> {
   navigateLynx(resolveTo(input), { replace: input.replace });
   return Promise.resolve();
@@ -55,6 +57,10 @@ export function useRouter() {
   };
 }
 
+export function useLocation(): { pathname: string };
+export function useLocation<T>(options: {
+  readonly select: (location: { pathname: string }) => T;
+}): T;
 export function useLocation<T>(options?: {
   readonly select?: (location: { pathname: string }) => T;
 }): T | { pathname: string } {

@@ -19,7 +19,7 @@ import * as Equal from "effect/Equal";
 export {
   isProjectGroupingEnabled,
   projectGroupingModeFromToggle,
-} from "@t3tools/client-runtime/presentation/settings";
+} from "@t3tools/lynx-logic/settings";
 
 const LAST_ENABLED_PROJECT_GROUPING_MODE_KEY = "t3code:last-enabled-project-grouping-mode";
 
@@ -297,4 +297,4 @@ export function formatDiagnosticsDescription(input: {
   return `${mode}.`;
 }
 
-export { buildProviderInstanceUpdatePatch } from "@t3tools/client-runtime/presentation/provider-settings";
+export { buildProviderInstanceUpdatePatch } from "@t3tools/lynx-logic/providerSettings";

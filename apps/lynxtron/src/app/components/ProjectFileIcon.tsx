@@ -1,4 +1,4 @@
-import { projectFileIconPresentation } from "@t3tools/client-runtime/presentation/files";
+import { projectFileIconPresentation } from "@t3tools/lynx-logic/files";
 
 export function ProjectFileIcon({ path }: { readonly path: string }) {
   const presentation = projectFileIconPresentation(path);

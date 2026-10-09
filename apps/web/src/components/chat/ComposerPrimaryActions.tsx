@@ -6,7 +6,6 @@ import { StageBackdropButtonArt, useSidebarStageBackdropVariant } from "../Sideb
 import { Button } from "../ui/button";
 import { Menu, MenuItem, MenuPopup, MenuTrigger } from "../ui/menu";
 import { Spinner } from "../ui/spinner";
-import { formatPendingPrimaryActionLabel } from "@t3tools/client-runtime/presentation/pending-user-input";
 
 interface PendingActionState {
   questionIndex: number;
@@ -37,7 +36,23 @@ interface ComposerPrimaryActionsProps {
   onImplementPlanInNewThread: () => void;
 }
 
-export { formatPendingPrimaryActionLabel };
+export const formatPendingPrimaryActionLabel = (input: {
+  compact: boolean;
+  isLastQuestion: boolean;
+  isResponding: boolean;
+  questionIndex: number;
+}) => {
+  if (input.isResponding) {
+    return "Submitting...";
+  }
+  if (input.compact) {
+    return input.isLastQuestion ? "Submit" : "Next";
+  }
+  if (!input.isLastQuestion) {
+    return "Next question";
+  }
+  return input.questionIndex > 0 ? "Submit answers" : "Submit answer";
+};
 
 const preventPointerFocus: PointerEventHandler<HTMLElement> = (event) => {
   event.preventDefault();
@@ -105,7 +120,6 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
               onClick={onPreviousPendingQuestion}
               disabled={pendingAction.isResponding}
               aria-label="Previous question"
-              data-pending-question-action="previous"
             >
               <ChevronLeftIcon className="size-3.5" />
             </Button>
@@ -117,7 +131,6 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
               {...pointerFocusProps}
               onClick={onPreviousPendingQuestion}
               disabled={pendingAction.isResponding}
-              data-pending-question-action="previous"
             >
               Previous
             </Button>
@@ -136,7 +149,6 @@ export const ComposerPrimaryActions = memo(function ComposerPrimaryActions({
             pendingAction.isResponding ||
             (pendingAction.isLastQuestion ? !pendingAction.isComplete : !pendingAction.canAdvance)
           }
-          data-pending-question-action={pendingAction.isLastQuestion ? "submit" : "next"}
         >
           {formatPendingPrimaryActionLabel({
             compact,

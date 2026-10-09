@@ -12,7 +12,6 @@ import {
 } from "../ui/menu";
 
 export const CompactComposerControlsMenu = memo(function CompactComposerControlsMenu(props: {
-  align: "start" | "end";
   interactionMode: ProviderInteractionMode;
   runtimeMode: RuntimeMode;
   showInteractionModeToggle: boolean;
@@ -29,13 +28,12 @@ export const CompactComposerControlsMenu = memo(function CompactComposerControls
             variant="ghost"
             className="shrink-0 px-2 text-muted-foreground/70 hover:text-foreground/80"
             aria-label="More composer controls"
-            data-floating-anchor="composer-compact-controls-menu"
           />
         }
       >
         <EllipsisIcon aria-hidden="true" className="size-4" />
       </MenuTrigger>
-      <MenuPopup align={props.align} relationId="composer-compact-controls-menu">
+      <MenuPopup align="start">
         {props.traitsMenuContent ? (
           <>
             {props.traitsMenuContent}

@@ -3,7 +3,7 @@ import {
   hasUnseenThreadCompletion,
   resolveThreadStatusPill,
   type ThreadStatusPill,
-} from "@t3tools/client-runtime/presentation/sidebar";
+} from "@t3tools/lynx-logic/sidebar";
 import { defaultAnimateLayoutChanges, type AnimateLayoutChanges } from "../lib/dnd";
 import type { ContextMenuItem } from "@t3tools/contracts";
 import type { SidebarProjectSortOrder, SidebarThreadSortOrder } from "@t3tools/contracts/settings";

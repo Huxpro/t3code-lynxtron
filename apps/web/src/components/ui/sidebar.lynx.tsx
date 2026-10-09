@@ -20,7 +20,7 @@ import {
   resolveResponsiveThreadSidebarWidth,
   resolveResponsiveThreadSidebarMaximumWidth,
   resolveThreadMobileSidebarWidth,
-} from "@t3tools/client-runtime/presentation/sidebar-width";
+} from "@t3tools/lynx-logic/sidebarWidth";
 
 import { useIsMobile } from "../../hooks/useMediaQuery";
 import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
