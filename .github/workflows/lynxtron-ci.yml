@@ -1,12 +1,10 @@
 name: Lynxtron CI
 
-# Minimal CI for the lynxtron-port fork branch. Intentionally separate from
-# ci.yml: it must run on a fork without upstream's Blacksmith runners, and it
-# scopes checks to the Lynxtron port surface (apps/lynxtron + apps/web build).
+# CI for the Lynx client on the fork. Separate from ci.yml: it must run without
+# upstream's Blacksmith runners, and it covers apps/lynxtron only.
 #
-# Lynxtron's app and desktop-host TypeScript programs are required checks.
-# The resolved historical debt inventory remains at
-# apps/lynxtron/docs/typecheck-debt-2026-07-29.md.
+# Runs on macOS because Lynxtron and its CEF runtime ship macOS binaries only;
+# the build and several script tests cannot run on Linux.
 
 on:
   push:
@@ -20,81 +18,8 @@ concurrency:
 
 jobs:
   checks:
-    name: Lynxtron typecheck / test / audit
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Vite+
-        uses: voidzero-dev/setup-vp@v1
-        with:
-          node-version-file: package.json
-          cache: true
-          run-install: false
-
-      - name: Install (stub the Lynxtron binary on Linux)
-        env:
-          # @lynx-js/cef-webview has no Linux binary either; its install
-          # script skips the download when this is set.
-          npm_config_skip_cef_webview_download: "1"
-        run: |
-          # @lynx-js/lynxtron's postinstall downloads a desktop binary that has
-          # no Linux release asset (404). CI only compiles and never launches
-          # the app, so let the first install fail on that script, stub the
-          # binary path (install.js short-circuits when it exists), and rerun.
-          corepack enable && corepack prepare --activate
-          pnpm install || true
-          # install.js checks __dirname/dist inside the pnpm store dir, not
-          # the workspace symlink — stub the real store location.
-          LYNX_DIR=$(find node_modules/.pnpm -maxdepth 5 -type d -path "*@lynx-js+lynxtron@*/node_modules/@lynx-js/lynxtron" | head -1)
-          test -n "$LYNX_DIR"
-          mkdir -p "$LYNX_DIR/dist" && touch "$LYNX_DIR/dist/lynxtron"
-          pnpm install
-
-      - name: Typecheck
-        id: typecheck
-        run: |
-          set -o pipefail
-          pnpm --filter @t3tools/lynxtron run typecheck 2>&1 | tee typecheck.log
-
-      - name: Report typecheck result
-        if: always()
-        run: |
-          count=$(grep -cE "error TS[0-9]+" typecheck.log || true)
-          {
-            echo "## Lynxtron typecheck"
-            if [ "${{ steps.typecheck.outcome }}" = "success" ]; then
-              echo "✅ 0 errors. This check is required."
-            else
-              echo "❌ **${count} TypeScript errors** — this required check failed."
-              echo ""
-              echo "Inventory and triage: \`apps/lynxtron/docs/typecheck-debt-2026-07-29.md\`"
-              echo ""
-              echo "Top error codes:"
-              echo '```'
-              grep -oE "error TS[0-9]+" typecheck.log | sort | uniq -c | sort -rn | head -15
-              echo '```'
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Upload typecheck log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: lynxtron-typecheck-log
-          path: typecheck.log
-
-      - name: Test
-        run: pnpm --filter @t3tools/lynxtron run test
-
-      - name: Audits (Web API + CSS compatibility)
-        run: pnpm --filter @t3tools/lynxtron run audit
-
-  build:
-    name: Web + Lynxtron build
-    runs-on: ubuntu-latest
+    name: Lynxtron typecheck / test / build
+    runs-on: macos-latest
     timeout-minutes: 40
     steps:
       - name: Checkout
@@ -107,23 +32,19 @@ jobs:
           cache: true
           run-install: false
 
-      - name: Install (stub the Lynxtron binary on Linux)
-        env:
-          # @lynx-js/cef-webview has no Linux binary either; its install
-          # script skips the download when this is set.
-          npm_config_skip_cef_webview_download: "1"
+      - name: Install
         run: |
           corepack enable && corepack prepare --activate
-          pnpm install || true
-          # install.js checks __dirname/dist inside the pnpm store dir, not
-          # the workspace symlink — stub the real store location.
-          LYNX_DIR=$(find node_modules/.pnpm -maxdepth 5 -type d -path "*@lynx-js+lynxtron@*/node_modules/@lynx-js/lynxtron" | head -1)
-          test -n "$LYNX_DIR"
-          mkdir -p "$LYNX_DIR/dist" && touch "$LYNX_DIR/dist/lynxtron"
-          pnpm install
+          pnpm install --frozen-lockfile
 
-      - name: Build web (with workspace dependencies)
-        run: pnpm --filter @t3tools/web... run build
+      - name: Typecheck
+        run: pnpm --filter @t3tools/lynxtron run typecheck
 
-      - name: Build lynxtron (with workspace dependencies)
-        run: pnpm --filter @t3tools/lynxtron... run build
+      - name: Test
+        run: pnpm --filter @t3tools/lynxtron run test
+
+      - name: Audits (Web API + CSS compatibility)
+        run: pnpm --filter @t3tools/lynxtron run audit
+
+      - name: Build (server bundle and Lynx app)
+        run: pnpm --filter t3 build:bundle && pnpm build:lynxtron
