@@ -6,22 +6,49 @@
     <link rel="icon" href="data:," />
     <title>T3 Code single-server dual-frontend workbench</title>
     <style>
-      :root { color-scheme: dark; }
-      html, body {
+      :root {
+        color-scheme: dark;
+      }
+      html,
+      body {
         margin: 0;
         background: #0b0b0c;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         color: #d4d4d8;
       }
-      #workbench { display: flex; flex-direction: row; align-items: flex-start; gap: 0; width: max-content; }
-      .pane { display: flex; flex-direction: column; background: #0b0b0c; }
-      .pane-label {
-        height: 24px; display: flex; align-items: center; padding: 0 8px;
-        font-size: 11px; letter-spacing: 0.04em; color: #8a8a92;
-        background: #141416; border-bottom: 1px solid #232326;
+      #workbench {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 0;
+        width: max-content;
       }
-      .pane-frame { display: block; border: 0; background: #161616; }
-      .pane--divider { width: 1px; align-self: stretch; background: #232326; }
+      .pane {
+        display: flex;
+        flex-direction: column;
+        background: #0b0b0c;
+      }
+      .pane-label {
+        height: 24px;
+        display: flex;
+        align-items: center;
+        padding: 0 8px;
+        font-size: 11px;
+        letter-spacing: 0.04em;
+        color: #8a8a92;
+        background: #141416;
+        border-bottom: 1px solid #232326;
+      }
+      .pane-frame {
+        display: block;
+        border: 0;
+        background: #161616;
+      }
+      .pane--divider {
+        width: 1px;
+        align-self: stretch;
+        background: #232326;
+      }
     </style>
   </head>
   <body>

@@ -36,10 +36,25 @@ const DERIVED = new Set(["pnpm-lock.yaml"]);
 const isForkOwned = (file) => FORK_OWNED.some((pattern) => pattern.test(file));
 const isLynxSibling = (file) => /\.lynx\.tsx?$/u.test(file);
 
-const { patches, additions } = JSON.parse(
-  NodeFS.readFileSync(NodePath.join(appRoot, "upstream-patches.json"), "utf8"),
-);
-const mergeBase = git(["merge-base", "HEAD", upstream]);
+const {
+  mergeBase: recordedMergeBase,
+  patches,
+  additions,
+} = JSON.parse(NodeFS.readFileSync(NodePath.join(appRoot, "upstream-patches.json"), "utf8"));
+
+// With the upstream remote present, the merge base is computed and must match
+// the recorded one, so a merge cannot land without updating the list. Without
+// it (CI on the fork), the recorded commit is used.
+function resolveMergeBase() {
+  try {
+    return git(["merge-base", "HEAD", upstream]);
+  } catch {
+    return null;
+  }
+}
+const computedMergeBase = resolveMergeBase();
+const mergeBase = computedMergeBase ?? recordedMergeBase;
+const mergeBaseIsStale = computedMergeBase !== null && computedMergeBase !== recordedMergeBase;
 const changes = git(["diff", "--name-status", "--no-renames", mergeBase])
   .split("\n")
   .filter(Boolean)
@@ -61,7 +76,14 @@ const stale = [
   ...Object.keys(additions).filter((file) => !otherAdded.some((change) => change.file === file)),
 ];
 
-console.log(`merge base ${mergeBase.slice(0, 10)} (${upstream})`);
+console.log(
+  `merge base ${mergeBase.slice(0, 10)} (${computedMergeBase ? upstream : "recorded in upstream-patches.json"})`,
+);
+if (mergeBaseIsStale) {
+  console.log(
+    `recorded mergeBase ${recordedMergeBase.slice(0, 10)} is stale; update upstream-patches.json`,
+  );
+}
 console.log(`upstream files modified or deleted: ${edited.length}`);
 console.log(`  listed in upstream-patches.json: ${listed.length}`);
 console.log(`  not listed: ${unlisted.length}`);
@@ -75,4 +97,6 @@ if (!summaryOnly) {
   }
   for (const file of stale) console.log(`stale patch entry ${file}`);
 }
-if (unlisted.length > 0 || unlistedAdded.length > 0 || stale.length > 0) NodeProcess.exitCode = 1;
+if (unlisted.length > 0 || unlistedAdded.length > 0 || stale.length > 0 || mergeBaseIsStale) {
+  NodeProcess.exitCode = 1;
+}

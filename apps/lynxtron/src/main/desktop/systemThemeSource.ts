@@ -26,24 +26,17 @@ function parseTheme(value: string | undefined): LynxtronResolvedTheme | null {
 
 function readMacOsSystemTheme(): LynxtronResolvedTheme {
   try {
-    const appearance = execFileSync(
-      "/usr/bin/defaults",
-      ["read", "-g", "AppleInterfaceStyle"],
-      {
-        encoding: "utf8",
-        stdio: ["ignore", "pipe", "ignore"],
-      },
-    ).trim();
+    const appearance = execFileSync("/usr/bin/defaults", ["read", "-g", "AppleInterfaceStyle"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
     return appearance === "Dark" ? "dark" : "light";
   } catch {
     return "light";
   }
 }
 
-function watchMacOsSystemTheme(
-  homeDirectory: string,
-  listener: ThemeListener,
-): () => void {
+function watchMacOsSystemTheme(homeDirectory: string, listener: ThemeListener): () => void {
   const preferencesDirectory = path.join(homeDirectory, "Library", "Preferences");
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
@@ -61,9 +54,7 @@ function watchMacOsSystemTheme(
   }
 }
 
-export function createSystemThemeSource(
-  options: SystemThemeSourceOptions = {},
-): SystemThemeSource {
+export function createSystemThemeSource(options: SystemThemeSourceOptions = {}): SystemThemeSource {
   const env = options.env ?? process.env;
   const platform = options.platform ?? process.platform;
   const forcedTheme = parseTheme(env.T3_LYNXTRON_SYSTEM_THEME);

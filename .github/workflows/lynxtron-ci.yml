@@ -50,5 +50,11 @@ jobs:
       - name: Test
         run: pnpm --filter @t3tools/lynxtron run test
 
+      - name: Upstream delta (every fork edit to an upstream file is listed)
+        run: node apps/lynxtron/scripts/check-upstream-delta.mjs --summary
+
+      - name: Format (Lynx-owned paths)
+        run: pnpm exec vp fmt --check apps/lynxtron/src apps/lynxtron/scripts apps/lynxtron/docs/architecture.md apps/lynxtron/AGENTS.md packages/lynx-logic
+
       - name: Audits (Web API + CSS compatibility)
         run: pnpm --filter @t3tools/lynxtron run audit

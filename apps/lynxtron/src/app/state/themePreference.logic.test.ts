@@ -1,10 +1,6 @@
 import { assert, describe, it } from "vite-plus/test";
 
-import {
-  LYNX_THEME_LABELS,
-  NEXT_LYNX_THEME,
-  resolveLynxTheme,
-} from "./themePreference.logic";
+import { LYNX_THEME_LABELS, NEXT_LYNX_THEME, resolveLynxTheme } from "./themePreference.logic";
 
 describe("Lynx theme preference", () => {
   it("resolves system to the host color scheme", () => {

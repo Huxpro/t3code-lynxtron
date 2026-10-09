@@ -46,11 +46,7 @@ describe("renderer viewport store", () => {
   it("installs viewport and reload probes only for explicit test resize mode", async () => {
     const calls: Array<{ method: string; params: Record<string, unknown> }> = [];
     const bridge = {
-      call(
-        method: string,
-        params: Record<string, unknown>,
-        callback: (value: unknown) => void,
-      ) {
+      call(method: string, params: Record<string, unknown>, callback: (value: unknown) => void) {
         calls.push({ method, params });
         callback(true);
       },

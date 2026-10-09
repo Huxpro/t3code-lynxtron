@@ -122,10 +122,16 @@ async function exchangeBearer(port, bootstrapToken) {
     client_label: "T3 Code SB0 probe",
     client_device_type: "desktop",
   }).toString();
-  const res = await httpRequest(port, "/oauth/token", "POST", {
-    "content-type": "application/x-www-form-urlencoded",
-    "content-length": String(Buffer.byteLength(form)),
-  }, form);
+  const res = await httpRequest(
+    port,
+    "/oauth/token",
+    "POST",
+    {
+      "content-type": "application/x-www-form-urlencoded",
+      "content-length": String(Buffer.byteLength(form)),
+    },
+    form,
+  );
   if (res.status !== 200) {
     throw new Error(`token exchange failed (${res.status}): ${res.body.slice(0, 200)}`);
   }
@@ -133,11 +139,17 @@ async function exchangeBearer(port, bootstrapToken) {
 }
 
 async function issueTicket(port, bearer) {
-  const res = await httpRequest(port, "/api/auth/websocket-ticket", "POST", {
-    authorization: "Bearer " + bearer,
-    "content-type": "application/json",
-    "content-length": "2",
-  }, "{}");
+  const res = await httpRequest(
+    port,
+    "/api/auth/websocket-ticket",
+    "POST",
+    {
+      authorization: "Bearer " + bearer,
+      "content-type": "application/json",
+      "content-length": "2",
+    },
+    "{}",
+  );
   if (res.status !== 200) {
     throw new Error(`ws ticket failed (${res.status}): ${res.body.slice(0, 200)}`);
   }
@@ -157,7 +169,15 @@ async function issueTicket(port, bearer) {
 function probeSocket(label, port, ticket) {
   return new Promise((resolve) => {
     const url = `ws://${HOST}:${port}/ws?wsTicket=${encodeURIComponent(ticket)}`;
-    const result = { label, url, opened: false, answered: false, firstFrame: null, closeCode: null, error: null };
+    const result = {
+      label,
+      url,
+      opened: false,
+      answered: false,
+      firstFrame: null,
+      closeCode: null,
+      error: null,
+    };
     let settled = false;
     const done = (ws) => {
       if (settled) return;
@@ -218,8 +238,7 @@ function probeSocket(label, port, ticket) {
     ws.addEventListener("message", (event) => {
       result.answered = true;
       if (result.firstFrame === null) {
-        const text =
-          typeof event.data === "string" ? event.data : "[binary]";
+        const text = typeof event.data === "string" ? event.data : "[binary]";
         result.firstFrame = text.slice(0, 240);
       }
       clearTimeout(timer);
@@ -278,8 +297,7 @@ async function main() {
 
   const serverBin = resolveServerBin();
   const baseDir =
-    argValue("--base-dir", null) ??
-    (await mkdtemp(path.join(os.tmpdir(), "t3-sb0-")));
+    argValue("--base-dir", null) ?? (await mkdtemp(path.join(os.tmpdir(), "t3-sb0-")));
   const port = await findFreePort();
   const bootstrapToken = randomBytes(24).toString("hex");
   report.server = { bin: serverBin, baseDir, port, host: HOST };
