@@ -4,7 +4,8 @@ name: Lynxtron CI
 # upstream's Blacksmith runners, and it covers apps/lynxtron only.
 #
 # Runs on macOS because Lynxtron and its CEF runtime ship macOS binaries only;
-# the build and several script tests cannot run on Linux.
+# several script tests cannot run on Linux. The Lynx app build is not run here
+# yet; build it locally with `pnpm build:lynxtron`.
 
 on:
   push:
@@ -18,12 +19,15 @@ concurrency:
 
 jobs:
   checks:
-    name: Lynxtron typecheck / test / build
+    name: Lynxtron typecheck / test
     runs-on: macos-latest
-    timeout-minutes: 40
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          # Some script tests and the upstream delta check read git history.
+          fetch-depth: 0
 
       - name: Setup Vite+
         uses: voidzero-dev/setup-vp@v1
@@ -40,11 +44,11 @@ jobs:
       - name: Typecheck
         run: pnpm --filter @t3tools/lynxtron run typecheck
 
+      - name: Build the server bundle (fixture tests launch it)
+        run: pnpm --filter t3 build:bundle
+
       - name: Test
         run: pnpm --filter @t3tools/lynxtron run test
 
       - name: Audits (Web API + CSS compatibility)
         run: pnpm --filter @t3tools/lynxtron run audit
-
-      - name: Build (server bundle and Lynx app)
-        run: pnpm --filter t3 build:bundle && pnpm build:lynxtron
