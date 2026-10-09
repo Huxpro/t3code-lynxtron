@@ -40,7 +40,7 @@ function git(cwd, args) {
   NodeChildProcess.execFileSync("git", args, { cwd, stdio: ["ignore", "ignore", "inherit"] });
 }
 
-const FIXTURE_MODEL_SELECTION = { instanceId: "codex", model: "gpt-5.6-sol" };
+const FIXTURE_MODEL_SELECTION = { instanceId: "claudeAgent", model: "claude-fable-5-1" };
 
 function writePrefs(fixture) {
   const prefsPath = NodePath.join(fixture, "lynxtron-prefs.json");

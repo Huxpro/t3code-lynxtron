@@ -30,7 +30,7 @@
     "packages/shared/src/keybindings.ts": "Adds the default mod+, binding for settings.open.",
     "packages/shared/src/preview.test.ts": "Covers preview.ts.",
     "packages/shared/src/preview.ts": "Adds describePreviewError and resolvePreviewActionUrl, used by the Lynx browser panel.",
-    "pnpm-workspace.yaml": "Allows Lynxtron build scripts, exempts the pinned Lynxtron packages from the release-age rule, and registers the app-builder-lib patch.",
+    "pnpm-workspace.yaml": "Allows Lynxtron build scripts (lynxtron-builder's postinstall fails and is turned off), exempts the pinned Lynxtron packages from the release-age rule, registers the app-builder-lib patch, and keeps Tailwind 3 for the Lynx app, whose Lynx preset does not run on the Tailwind 4 that upstream's override forces.",
     "vite.config.ts": "Keeps generated fidelity reports out of formatting."
   },
   "additions": {
