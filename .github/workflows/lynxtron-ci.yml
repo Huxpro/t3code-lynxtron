@@ -35,6 +35,10 @@ jobs:
           run-install: false
 
       - name: Install (stub the Lynxtron binary on Linux)
+        env:
+          # @lynx-js/cef-webview has no Linux binary either; its install
+          # script skips the download when this is set.
+          npm_config_skip_cef_webview_download: "1"
         run: |
           # @lynx-js/lynxtron's postinstall downloads a desktop binary that has
           # no Linux release asset (404). CI only compiles and never launches
@@ -104,6 +108,10 @@ jobs:
           run-install: false
 
       - name: Install (stub the Lynxtron binary on Linux)
+        env:
+          # @lynx-js/cef-webview has no Linux binary either; its install
+          # script skips the download when this is set.
+          npm_config_skip_cef_webview_download: "1"
         run: |
           corepack enable && corepack prepare --activate
           pnpm install || true
