@@ -115,6 +115,15 @@ fails and the fix is on the Lynx side.
    frame set against the pre-merge baseline.
 4. List upstream Web files that changed and have a `.lynx` module of the same
    name. That list is the port backlog; it does not block the merge.
+5. Before the PR merges, its description lists every dropped patch and every
+   change a user would see, and the maintainer answers it. Open an issue for
+   each dropped patch that might still be needed.
+
+An upstream merge is one PR, merged with a merge commit. The steps between the
+merge and a passing Lynx build cannot pass CI on their own, and a squash drops
+the upstream parent: the next merge would then conflict on every file and the
+recorded merge base would go stale. Everything else on this branch is
+squash-merged.
 
 ### The merge of 2026-10-09
 
