@@ -11,7 +11,7 @@ packages:
 allowBuilds:
   "@lynx-js/cef-webview": true
   "@lynx-js/lynxtron": true
-  "@lynx-js/lynxtron-builder": true
+  "@lynx-js/lynxtron-builder": false
   browser-tabs-lock: false
   bufferutil: false
   core-js: false
