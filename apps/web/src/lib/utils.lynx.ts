@@ -29,3 +29,7 @@ export const newProjectId = () => randomUUID();
 export const newThreadId = () => randomUUID();
 export const newDraftId = () => DraftId.make(randomUUID());
 export const newMessageId = () => randomUUID();
+
+export function normalizeSearchText(value: string): string {
+  return value.normalize("NFKD").replace(/\p{M}/gu, "").toLowerCase().replace(/\s+/g, " ").trim();
+}

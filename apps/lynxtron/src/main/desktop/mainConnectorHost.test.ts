@@ -62,6 +62,7 @@ function serverConfig(settings = DEFAULT_SERVER_SETTINGS): ServerConfig {
       logsDirectoryPath: "/tmp/main-connector-host-test/logs",
       localTracingEnabled: false,
       otlpTracesEnabled: false,
+      otlpLogsEnabled: false,
       otlpMetricsEnabled: false,
     },
     settings,

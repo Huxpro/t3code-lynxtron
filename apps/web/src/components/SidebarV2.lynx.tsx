@@ -5,7 +5,6 @@ import { uiActions, useProjectScopeKey } from "../../../lynxtron/src/app/state/u
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
 import {
   canSnooze,
-  effectiveSettled,
   resolveSnoozePresets,
   threadWokeAt,
 } from "@t3tools/client-runtime/state/thread-settled";
@@ -368,12 +367,8 @@ export default function SidebarV2() {
       // A pin overrides settlement, as on Web: pinned threads lead the list.
       if (pinningSupported && thread.pinnedAt != null) {
         pinned.push(thread);
-      } else if (
-        effectiveSettled(thread, {
-          now,
-          autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays,
-        })
-      ) {
+      } else if (thread.settledOverride === "settled") {
+        // The server settles threads now (upstream #8600); the client only reads it.
         settled.push(thread);
       } else {
         active.push(thread);
@@ -383,7 +378,7 @@ export default function SidebarV2() {
       activeThreads: [...sortPinnedThreadsForSidebar(pinned), ...sortThreadsForSidebar(active)],
       settledThreads: sortSettledThreadsForSidebar(settled),
     };
-  }, [clientSettings.sidebarAutoSettleAfterDays, projectScopeKey, serverConfig, threads]);
+  }, [projectScopeKey, serverConfig, threads]);
   // Upstream #5777: unsent drafts with content stay one click away above the
   // thread list. The open draft is left out so typing never repaints rows.
   const unsentDrafts = useMemo(

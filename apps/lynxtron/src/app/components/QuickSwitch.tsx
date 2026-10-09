@@ -572,7 +572,8 @@ export function QuickSwitch({
       const label = addProjectRemoteSourceLabel(source);
       items.push({
         id: `source:${source}`,
-        icon: source,
+        // Forgejo has no icon in the Lynx set yet.
+        icon: source === "forgejo" ? "git-branch" : source,
         title: `${label} repository`,
         description: `Clone ${label} ${addProjectRemoteSourcePathHint(source)}`,
         setupRequired: !readiness.ready,

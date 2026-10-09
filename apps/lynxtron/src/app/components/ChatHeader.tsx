@@ -18,7 +18,6 @@ import {
   projectThreadActionConfirmation,
   resolveRenameCommit,
 } from "@t3tools/lynx-logic/threadActions";
-import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
 import { useThreadShells } from "../../../../web/src/state/entities";
 import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { useClientSettingsState } from "../state/prefsStore";
@@ -213,10 +212,7 @@ export function ChatHeader({
       projectPath: cwd ?? null,
       settled:
         serverConfig?.environment.capabilities.threadSettlement === true &&
-        effectiveSettled(activeShell, {
-          now: new Date().toISOString(),
-          autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays,
-        }),
+        activeShell.settledOverride === "settled",
       serverConfig,
       onRename: () => setRenaming({ threadId: activeShell.id, draft: activeShell.title }),
       onDelete: () => {

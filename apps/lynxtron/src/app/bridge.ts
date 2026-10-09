@@ -93,7 +93,11 @@ export type SessionStatus = OrchestrationSessionStatus;
 
 export type MessageRole = OrchestrationMessageRole;
 
-export type ChatMessage = OrchestrationMessage;
+// Lynx does not opt in to the "reasoning" role, so the server sends those
+// messages as system messages; the transcript only knows three roles.
+export type ChatMessage = Omit<OrchestrationMessage, "role"> & {
+  readonly role: Exclude<OrchestrationMessage["role"], "reasoning">;
+};
 
 export type ActivityTone = OrchestrationThreadActivityTone;
 

@@ -42,7 +42,6 @@ describe("projectPortableGeneralSettingsRestore", () => {
       favorites: DEFAULT_CLIENT_SETTINGS.favorites,
       glassOpacity: DEFAULT_CLIENT_SETTINGS.glassOpacity,
       legacySidebarEnabled: DEFAULT_CLIENT_SETTINGS.legacySidebarEnabled,
-      sidebarAutoSettleAfterDays: DEFAULT_CLIENT_SETTINGS.sidebarAutoSettleAfterDays,
       sidebarProjectGroupingMode: DEFAULT_CLIENT_SETTINGS.sidebarProjectGroupingMode,
       timestampFormat: DEFAULT_CLIENT_SETTINGS.timestampFormat,
       wordWrap: DEFAULT_CLIENT_SETTINGS.wordWrap,
@@ -51,9 +50,10 @@ describe("projectPortableGeneralSettingsRestore", () => {
       addProjectBaseDirectory: DEFAULT_SERVER_SETTINGS.addProjectBaseDirectory,
       backgroundActivity: DEFAULT_SERVER_SETTINGS.backgroundActivity,
       defaultThreadEnvMode: DEFAULT_SERVER_SETTINGS.defaultThreadEnvMode,
-      enableLegacyTokenStreaming: DEFAULT_SERVER_SETTINGS.enableLegacyTokenStreaming,
       enableProviderUpdateChecks: DEFAULT_SERVER_SETTINGS.enableProviderUpdateChecks,
       newWorktreesStartFromOrigin: DEFAULT_SERVER_SETTINGS.newWorktreesStartFromOrigin,
+      responseStreamingMode: DEFAULT_SERVER_SETTINGS.responseStreamingMode,
+      sidebarAutoSettleAfterDays: DEFAULT_SERVER_SETTINGS.sidebarAutoSettleAfterDays,
     });
   });
 
@@ -74,7 +74,7 @@ describe("projectPortableGeneralSettingsRestore", () => {
           profile: "performance",
           overrides: {},
         },
-        enableLegacyTokenStreaming: true,
+        responseStreamingMode: "token",
         newWorktreesStartFromOrigin: false,
       },
     });
@@ -93,8 +93,8 @@ describe("projectPortableGeneralSettingsRestore", () => {
     expect(projection.clientPatch.environmentIdentificationMode).toBe(
       DEFAULT_CLIENT_SETTINGS.environmentIdentificationMode,
     );
-    expect(projection.serverPatch.enableLegacyTokenStreaming).toBe(
-      DEFAULT_SERVER_SETTINGS.enableLegacyTokenStreaming,
+    expect(projection.serverPatch.responseStreamingMode).toBe(
+      DEFAULT_SERVER_SETTINGS.responseStreamingMode,
     );
     expect(projection.serverPatch.newWorktreesStartFromOrigin).toBe(
       DEFAULT_SERVER_SETTINGS.newWorktreesStartFromOrigin,

@@ -145,6 +145,8 @@ export function projectConnectionLifecycle(input: {
         description: detail ?? recoveryDescription,
         recovery: recovery(false),
       };
+    // Upstream added "unsupported"; Lynx shows it as a failed connection.
+    case "unsupported":
     case "error": {
       const layer = input.failureLayer ? FAILURE_LAYER_PRESENTATION[input.failureLayer] : null;
       return {

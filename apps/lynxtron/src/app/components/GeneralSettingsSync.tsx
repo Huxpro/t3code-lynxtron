@@ -62,9 +62,6 @@ export function GeneralSettingsSync() {
           ? {}
           : { legacySidebarEnabled: patch.legacySidebarEnabled }),
         ...(patch.planModeEnabled === undefined ? {} : { planModeEnabled: patch.planModeEnabled }),
-        ...(patch.sidebarAutoSettleAfterDays === undefined
-          ? {}
-          : { sidebarAutoSettleAfterDays: patch.sidebarAutoSettleAfterDays }),
         ...(patch.sidebarProjectGroupingMode === undefined
           ? {}
           : { sidebarProjectGroupingMode: patch.sidebarProjectGroupingMode }),
@@ -83,11 +80,15 @@ export function GeneralSettingsSync() {
         ...(patch.newWorktreesStartFromOrigin === undefined
           ? {}
           : { newWorktreesStartFromOrigin: patch.newWorktreesStartFromOrigin }),
+        // Threads settle on the server now, so the threshold is a server setting.
+        ...(patch.sidebarAutoSettleAfterDays === undefined
+          ? {}
+          : { sidebarAutoSettleAfterDays: patch.sidebarAutoSettleAfterDays }),
       };
       if (Object.keys(clientPatch).length > 0) updateClientSettings(clientPatch);
       if (Object.keys(serverPatch).length > 0) updateServerSettings(serverPatch);
       if (patch.enableLegacyTokenStreaming === false) {
-        updateServerSettings({ enableLegacyTokenStreaming: false });
+        updateServerSettings({ responseStreamingMode: "paragraph" });
       } else if (patch.enableLegacyTokenStreaming === true) {
         void showNativeConfirm({
           message: "Turn on token-by-token output?",
@@ -95,7 +96,7 @@ export function GeneralSettingsSync() {
             "It is significantly slower than the default buffered output and hurts the reading experience. This switch exists only for backwards compatibility.",
         })
           .then((confirmed) => {
-            if (confirmed) updateServerSettings({ enableLegacyTokenStreaming: true });
+            if (confirmed) updateServerSettings({ responseStreamingMode: "token" });
           })
           .catch(() => {});
       }

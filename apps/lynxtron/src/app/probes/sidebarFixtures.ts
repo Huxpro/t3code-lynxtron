@@ -38,6 +38,7 @@ function thread(
     id: id as ThreadId,
     projectId,
     title,
+    pullRequests: [],
     modelSelection: MODEL_SELECTION,
     runtimeMode: "full-access",
     interactionMode: "default",

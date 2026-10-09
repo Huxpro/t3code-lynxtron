@@ -38,7 +38,10 @@ export interface ChatImageAttachment extends ContractChatImageAttachment {
 
 export type ChatAttachment = ChatImageAttachment;
 
-export interface ChatMessage extends Omit<OrchestrationMessage, "attachments"> {
+// Lynx does not opt in to the "reasoning" role, so the server sends those
+// messages as system messages; the transcript types only know three roles.
+export interface ChatMessage extends Omit<OrchestrationMessage, "attachments" | "role"> {
+  readonly role: Exclude<OrchestrationMessage["role"], "reasoning">;
   readonly attachments?: ReadonlyArray<ChatAttachment> | undefined;
 }
 
