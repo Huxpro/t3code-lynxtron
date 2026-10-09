@@ -1,4 +1,4 @@
-import { isRendererNeutralKeyboardPacket } from "@t3tools/shared/keyboard";
+import { isRendererNeutralKeyboardPacket } from "@t3tools/lynx-logic/keyboard";
 
 import { navigate } from "../router";
 import { getT3ClientSnapshot, t3ClientActions } from "./t3Client";

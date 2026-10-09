@@ -10,7 +10,7 @@ import {
   MODEL_PICKER_JUMP_KEYBINDING_COMMANDS,
   THREAD_JUMP_KEYBINDING_COMMANDS,
 } from "@t3tools/contracts/keybinding-constants";
-import { resolveRendererNeutralShortcutCommand } from "@t3tools/shared/keyboard";
+import { resolveRendererNeutralShortcutCommand } from "@t3tools/lynx-logic/keyboard";
 import { getPlatform, isMacPlatform } from "./lib/platformDetection";
 
 export interface ShortcutEventLike {

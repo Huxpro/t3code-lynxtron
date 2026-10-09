@@ -1,4 +1,4 @@
-import { isRendererNeutralKeyboardPacket } from "@t3tools/shared/keyboard";
+import { isRendererNeutralKeyboardPacket } from "@t3tools/lynx-logic/keyboard";
 
 import { T3_SEARCH_OVERLAY_RETURN_FOCUS_METHOD } from "../../shared/searchOverlayKeyboardProtocol.ts";
 import { callBridge, type BridgeCallModule } from "./mainConnectorTransport";

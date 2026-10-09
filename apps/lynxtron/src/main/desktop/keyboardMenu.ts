@@ -1,7 +1,7 @@
 import type {
   KeyboardPacketPlatform,
   RendererNeutralKeyboardPacket,
-} from "@t3tools/shared/keyboard";
+} from "@t3tools/lynx-logic/keyboard";
 
 export const T3_KEYBOARD_EVENT = "t3:keyboard";
 

@@ -38,7 +38,7 @@ import {
   sourceControlLoadingSettingsGeometryMatches,
 } from "./shared-workbench/settingsGates.mjs";
 import { inferSemanticRoute } from "./shared-workbench/semanticRoute.mjs";
-import componentLabCatalog from "../../web/src/components/components-lab/catalog.json" with { type: "json" };
+import componentLabCatalog from "../src/app/components-lab/catalog.json" with { type: "json" };
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const lynxAppDir = path.resolve(scriptDir, "..");
