@@ -13,16 +13,26 @@ the ownership model in `plans/10-source-first-architecture-reset.md`.
    importing pure Web modules in place. Upstream's mobile app shares the same
    way. Web is the reference the Lynx client is compared against, not a second
    consumer of fork code.
-3. **Fork at the lowest module that works.** When Lynx cannot use an upstream
-   module, it gets a module of the same name and exports beside it. Replace a
+3. **Run the upstream file; do not extract from it.** To share an upstream
+   module, keep its shape and replace what it imports: a `.lynx` module of the
+   same name and exports takes the place of the platform capability it uses.
+   Extracting logic out of an upstream file is a permanent conflict. Replace a
    primitive or a hook before replacing the component that uses it.
-4. **Every difference from upstream is named.** An edit to an upstream file is
+4. **One exception: shell and logic in one file.** When nothing below a file
+   can be replaced because it mixes the two, move the block to its own file
+   without changing behavior, send that move upstream, and carry it as a
+   listed patch until it lands.
+5. **Every difference from upstream is named.** An edit to an upstream file is
    a listed patch with a reason. A fork file inside an upstream directory is
    recognizable by its name.
-5. **Checks, not conventions.** Each invariant below is enforced by a script,
+6. **Checks, not conventions.** Each invariant below is enforced by a script,
    a typecheck, or a test. A rule nothing checks is not an invariant.
-6. **Looks and features change on purpose.** Structure can move without
+7. **Looks and features change on purpose.** Structure can move without
    sign-off only when the Native battery and the frame set still match.
+8. **Gates measure the product.** Typecheck, tests that run code, the build,
+   the Native battery, and frames are the gates. Tests that assert on source
+   text, reuse percentages, and per-screen scores are not; they were removed
+   on 2026-10-09 because they failed on renames and passed on regressions.
 
 ## Layers
 
@@ -53,7 +63,7 @@ What lives where in layer 2:
 | I3  | The Web app typechecks and its tests pass without any fork file.                                                     | `apps/web` typecheck excludes `*.lynx.*`; Web tests match `*.test.ts(x)` only |
 | I4  | Lynx typecheck, tests, and build resolve a module the same way: `.lynx` first, then the Web module.                  | `lynx.config.ts`, `src/app/tsconfig.json`, `vite.config.ts`                   |
 | I5  | Lynx-owned tests under `apps/web` are named `*.test.lynx.ts` and run in the Lynx suite.                              | `apps/lynxtron/vite.config.ts` include list                                   |
-| I6  | Tailwind for Lynx scans exactly what the Lynx bundle compiles.                                                       | `tailwind.config.mjs` content; `shellInteractionContract.test.ts`             |
+| I6  | Tailwind for Lynx scans exactly what the Lynx bundle compiles.                                                       | `tailwind.config.mjs` content globs                                           |
 | I7  | Nothing in `packages/client-runtime`, `contracts`, or `shared` is fork-only logic.                                   | I1 and I2: such a file would be an unlisted addition                          |
 
 Known gap in I4: TypeScript tries `x.lynx.ts`, `x.ts`, `x.lynx.tsx`, `x.tsx`
@@ -157,6 +167,12 @@ Limits and open questions:
 
 ## Known debts
 
+- Three carried patches are extractions, which principle 3 rules out:
+  `packages/shared/src/model.ts` (helpers moved to `providerOptions.ts`),
+  `packages/contracts/src/keybindings.ts` (constants moved to
+  `keybindingConstants.ts`), and the quick-action additions in
+  `packages/client-runtime/src/state/gitActions.ts`. Each should become a
+  Lynx-owned module or an upstream change.
 - `packages/lynx-logic` has 20 type errors under `tsgo` (test fixture typing
   and Effect diagnostics for `Date`). They moved with the code from
   `packages/client-runtime`, which is clean now.

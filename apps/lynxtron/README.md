@@ -42,14 +42,17 @@ node apps/lynxtron/scripts/run-native-battery.mjs /tmp/t3-battery/plan.json /tmp
 ```
 
 `results/summary.json` lists each gate; a failing gate keeps its report and
-process log in its own directory. Root `AGENTS.md` has the rules for evidence.
+process log in its own directory. `AGENTS.md` in this directory lists the gates.
 
 ## Architecture
 
+How the client sits on top of upstream code, and the invariants that keep it
+that way, are in [docs/architecture.md](docs/architecture.md).
+
 ```text
-src/app                     ReactLynx UI and .lynx platform adapters
-  generated/lynx.css        generated from apps/web/src/index.css
-  overrides.css             runtime-gap-only layout adapters
+src/app                     ReactLynx UI, state, and platform capabilities
+  generated/lynx.css        theme tokens generated from apps/web/src/index.css
+  overrides.css             the Lynx stylesheet
   state/                    renderer state fed by sequenced main-process events
 src/main/desktop
   main.ts                   LynxWindow host
@@ -63,9 +66,10 @@ scripts
   build-icons.mjs           temporary SVG-to-PNG adapter
 ```
 
-The renderer cannot use browser DOM APIs. Shared behavior is expressed through
-`@t3tools/client-runtime/platform`; `.web.ts` and `.lynx.ts` implementations
-provide storage, clipboard, connectivity, keyboard, and media-query behavior.
+The renderer cannot use browser DOM APIs. Where it uses an upstream Web module,
+a `.lynx` module of the same name under `apps/web/src` replaces whatever that
+module needs from the browser. Renderer-neutral logic the client owns lives in
+`packages/lynx-logic`.
 
 Electron/Web is the visual and interaction baseline. The standalone Lynx
 repository is used only for textual provenance and historical-behavior

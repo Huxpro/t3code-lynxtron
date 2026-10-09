@@ -109,42 +109,9 @@ An empty database is a bad test. Seed your worktree's `.t3` with a copy of real 
 - The server is event-sourced and its async flows emit typed receipts. Wait on receipts and worker drains, never on sleeps or polling. A test that needs a timeout to pass is wrong.
 - Upon request, user-visible frontend changes should get one integrated pass in a real client: `test-t3-app` for web, `test-t3-mobile` for mobile. The primary agent does this once after integrating. Subagents do not launch their own dev servers. Ask permission before doing computer use or spinning up browsers.
 
-## Lynxtron harnessing
+## Lynxtron client
 
-Lynxtron verification answers three separate questions: did the code compile, did the product connect, and did the rendered interaction work? Evidence for one is not evidence for the others.
-
-### The loop
-
-This path needs no computer use and never takes focus. Use it in every environment.
-
-1. **Build.** `pnpm --filter t3 build:bundle && pnpm build:lynxtron`. The Lynx build does not rebuild the server bundle the app launches.
-2. **Fixtures.** `node apps/lynxtron/scripts/prepare-native-battery.mjs <dir>` writes isolated fixtures and a plan. Never point the app at live `~/.t3/userdata`.
-3. **Gates.** `node apps/lynxtron/scripts/run-native-battery.mjs <dir>/plan.json <dir>/results`. For a slice, run focused tests, the affected typechecks, and the gates that cover the change; run the whole plan at phase exit.
-4. **Look.** Keep one background process and drive it through Lynx DevTool: `take-screenshot`, DOM and geometry reads, runtime evaluation, console, taps, and wheel scrolling (`Input.emulateTouchFromMouseEvent` with `type: "mouseWheel"`). One process serves any number of frames; restart only for a new bundle, a cold start, a viewport change, or process exit.
-
-### Rules
-
-- **Background always.** Launch with `T3_LYNXTRON_BACKGROUND=1` (the harness scripts default it on). Never raise, activate, or focus the app unless the user asks to see it; then bring forward the exact process you started, after it is ready, and say whether its state is isolated or copied.
-- **Own the process.** Record the Lynxtron PID itself at spawn, not a wrapper shell. Resolve the DevTool client from that PID's listening port and check the session's bundle URL; never pick a client by list order, remembered port, or app name. Stop only PIDs you spawned, and confirm the child server exited too.
-- **Readiness is semantic.** Require `__T3_LYNXTRON_CONNECTOR_TRANSPORT__` to report `kind === "main"` with an advancing `lastSeq()`, and a known project or model in the UI. A window that says Connecting is a failed smoke, whatever the server log says.
-- **Wait on signals, not sleeps.** A deadline may fail a run; a fixed delay must not pass one. After two identical startup failures, stop relaunching and diagnose.
-- **Baseline before blaming.** When a gate or frame looks wrong after a change, run the same check against a build without the change before calling it a regression or pre-existing.
-- **Invalid evidence is not a regression.** Wrong process or bundle, mismatched state, route, theme, or dimensions, or console errors during capture mean the harness is broken; fix that first. Keep the console with every retained frame.
-- **Web comparisons** use a named isolated browser session with the same snapshot, route, and theme, and close only that session.
-
-### With computer use
-
-Computer use covers only what DevTool cannot inject: real keyboard input and accelerators, drag, hover, text selection, focus order, and native menus and dialogs.
-
-- Use the computer use built into the agent host, through its background per-app tools on the owned PID's window. A request to verify or operate the app authorizes this; request access once per task.
-- The shell harness launches and stops the app. Computer use never launches it, never acts on another app with the same name, and never uses display-scope screenshot or click tools.
-- Prove each interaction as a chain: pre-state, real input, an observable UI or renderer-state result, then the DevTool console. Do not infer that a shortcut works because the equivalent tap does.
-
-### Without computer use
-
-- Run the loop above in full; it covers everything except real input.
-- Do not substitute Midscene, AppleScript, `open -a`, deep links, or raw event injection. They take over the user's desktop and do not prove the interaction.
-- Report the real-input checks as `pending-user-session`, each named, so a session with computer use can pick them up.
+`apps/lynxtron` is the Lynx desktop client. Its rules, gates, and run loop are in `apps/lynxtron/AGENTS.md`; its layering is in `apps/lynxtron/docs/architecture.md`.
 
 ## Pull requests
 

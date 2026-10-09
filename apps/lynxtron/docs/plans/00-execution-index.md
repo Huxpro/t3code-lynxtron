@@ -1,5 +1,7 @@
 # Execute the high-fidelity monorepo port
 
+> Superseded on 2026-10-09. The layering and gates are in `../architecture.md` and `../../AGENTS.md`; the plans below are history.
+
 This index routes active work to Plan 14 and preserves the earlier certification model as historical context. Use it to select one task at a time, preserve evidence, and stop a goal only at a defined phase exit.
 
 ## Plan metadata
