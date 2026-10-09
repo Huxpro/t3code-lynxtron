@@ -1,4 +1,4 @@
-import type { ConnectionLifecyclePresentation } from "@t3tools/client-runtime/connection/presentation";
+import type { ConnectionLifecyclePresentation } from "@t3tools/lynx-logic/connectionLifecycle";
 import type { ReactNode } from "react";
 
 import { cn } from "../../lib/cn";

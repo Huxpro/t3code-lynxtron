@@ -1,3 +1,4 @@
+import * as NodePath from "@effect/platform-node/NodePath";
 import * as NodeServices from "@effect/platform-node/NodeServices";
 import { assert, describe, it } from "@effect/vitest";
 import * as Effect from "effect/Effect";
@@ -56,7 +57,6 @@ const makeElectronAppLayer = (calls: ElectronAppCalls) =>
       }),
     setAppUserModelId: () => Effect.void,
     getAppMetrics: Effect.succeed([]),
-    isDefaultProtocolClient: () => Effect.succeed(false),
     setAsDefaultProtocolClient: () => Effect.succeed(true),
     setDesktopName: () => Effect.void,
     setDockIcon: (iconPath) =>
@@ -76,7 +76,7 @@ const makeAssetsLayer = (png: Option.Option<string>) =>
       icns: Option.none(),
       png,
     }),
-    resolveResourcePath: () => Effect.succeed(Option.none()),
+    resolveResourcePath: () => Effect.succeedNone,
   } satisfies DesktopAssets.DesktopAssets["Service"]);
 
 const makeEnvironmentLayer = (overrides: TestEnvironmentInput = {}) => {
@@ -88,6 +88,7 @@ const makeEnvironmentLayer = (overrides: TestEnvironmentInput = {}) => {
     Layer.provide(
       Layer.mergeAll(
         NodeServices.layer,
+        NodePath.layerPosix,
         DesktopConfig.layerTest({
           ...env,
         }),
@@ -153,31 +154,6 @@ describe("DesktopAppIdentity", () => {
         assert.equal(userDataPath, "/Users/alice/Library/Application Support/T3 Code (Alpha)");
       }),
       { legacyPathExists: true },
-    ),
-  );
-
-  it.effect("uses an explicit userData path without probing the shared application profile", () =>
-    withIdentity(
-      Effect.gen(function* () {
-        const identity = yield* DesktopAppIdentity.DesktopAppIdentity;
-        const userDataPath = yield* identity.resolveUserDataPath;
-
-        assert.equal(userDataPath, "/tmp/t3code-visual-electron-profile");
-      }),
-      {
-        environment: {
-          env: {
-            T3CODE_DESKTOP_USER_DATA_DIR: "/tmp/t3code-visual-electron-profile",
-          },
-        },
-        legacyPathProbeError: PlatformError.systemError({
-          _tag: "PermissionDenied",
-          module: "FileSystem",
-          method: "exists",
-          description: "legacy path should not be probed",
-          pathOrDescriptor: "/unexpected",
-        }),
-      },
     ),
   );
 

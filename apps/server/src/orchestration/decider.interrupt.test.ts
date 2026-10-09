@@ -23,6 +23,7 @@ function readModel(activeTurnId: TurnId | null): OrchestrationReadModel {
         id: ThreadId.make("thread-1"),
         projectId: ProjectId.make("project-1"),
         title: "Thread",
+        pullRequests: [],
         modelSelection: {
           instanceId: ProviderInstanceId.make("opencode"),
           model: "opencode/big-pickle",

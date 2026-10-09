@@ -19,7 +19,7 @@ import { appendTerminalContextsToPrompt } from "@t3tools/lynx-logic/terminalCont
 import { appendElementContextsToPrompt } from "@t3tools/lynx-logic/elementContext";
 import { appendFileContextsToPrompt, composerFileContext } from "@t3tools/lynx-logic/fileContext";
 import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
-import { projectConnectionLifecycle } from "@t3tools/client-runtime/connection/presentation";
+import { projectConnectionLifecycle } from "@t3tools/lynx-logic/connectionLifecycle";
 import {
   derivePendingApprovals,
   derivePendingUserInputs,

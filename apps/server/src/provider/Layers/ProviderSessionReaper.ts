@@ -1,14 +1,10 @@
-import { CommandId } from "@t3tools/contracts";
 import * as Clock from "effect/Clock";
-import * as Crypto from "effect/Crypto";
-import * as DateTime from "effect/DateTime";
 import * as Duration from "effect/Duration";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
 import * as Schedule from "effect/Schedule";
 
-import { OrchestrationEngineService } from "../../orchestration/Services/OrchestrationEngine.ts";
 import { ProjectionSnapshotQuery } from "../../orchestration/Services/ProjectionSnapshotQuery.ts";
 import { ProviderSessionDirectory } from "../Services/ProviderSessionDirectory.ts";
 import {
@@ -30,9 +26,7 @@ const makeProviderSessionReaper = (options?: ProviderSessionReaperLiveOptions) =
   Effect.gen(function* () {
     const providerService = yield* ProviderService;
     const directory = yield* ProviderSessionDirectory;
-    const orchestrationEngine = yield* OrchestrationEngineService;
     const projectionSnapshotQuery = yield* ProjectionSnapshotQuery;
-    const crypto = yield* Crypto.Crypto;
 
     const inactivityThresholdMs = Math.max(
       1,
@@ -41,42 +35,13 @@ const makeProviderSessionReaper = (options?: ProviderSessionReaperLiveOptions) =
     const sweepIntervalMs = Math.max(1, options?.sweepIntervalMs ?? DEFAULT_SWEEP_INTERVAL_MS);
 
     const sweep = Effect.gen(function* () {
-      const bindings = yield* directory.listBindings();
+      // Stopped rows stay for their resume cursors and far outnumber live
+      // ones, so the query skips them.
+      const bindings = yield* directory.listBindings({ excludeStopped: true });
       const now = yield* Clock.currentTimeMillis;
       let reapedCount = 0;
 
       for (const binding of bindings) {
-        if (binding.status === "stopped") {
-          const thread = yield* projectionSnapshotQuery
-            .getThreadShellById(binding.threadId)
-            .pipe(Effect.map(Option.getOrUndefined));
-          if (thread?.session?.status === "starting" || thread?.session?.status === "running") {
-            const reconciledAt = DateTime.formatIso(yield* DateTime.now);
-            const commandId = CommandId.make(
-              `server:provider-session-reconcile:${yield* crypto.randomUUIDv4}`,
-            );
-            yield* orchestrationEngine.dispatch({
-              type: "thread.session.set",
-              commandId,
-              threadId: binding.threadId,
-              session: {
-                ...thread.session,
-                status: "stopped",
-                activeTurnId: null,
-                lastError: null,
-                updatedAt: reconciledAt,
-              },
-              createdAt: reconciledAt,
-            });
-            yield* Effect.logInfo("provider.session.projection-reconciled", {
-              threadId: binding.threadId,
-              previousStatus: thread.session.status,
-              runtimeStatus: binding.status,
-            });
-          }
-          continue;
-        }
-
         const lastSeenMs = Date.parse(binding.lastSeenAt);
         if (Number.isNaN(lastSeenMs)) {
           yield* Effect.logWarning("provider.session.reaper.invalid-last-seen", {
@@ -87,14 +52,24 @@ const makeProviderSessionReaper = (options?: ProviderSessionReaperLiveOptions) =
           continue;
         }
 
-        const idleDurationMs = now - lastSeenMs;
-        if (idleDurationMs < inactivityThresholdMs) {
+        if (now - lastSeenMs < inactivityThresholdMs) {
           continue;
         }
 
         const thread = yield* projectionSnapshotQuery
           .getThreadShellById(binding.threadId)
           .pipe(Effect.map(Option.getOrUndefined));
+        // Ingestion updates this timestamp alongside activeTurnId when a turn
+        // settles. Long turns must get a full idle window after that transition,
+        // even though the binding was last touched when the turn was sent.
+        const lastActivityMs = Math.max(
+          lastSeenMs,
+          Date.parse(thread?.session?.updatedAt ?? binding.lastSeenAt),
+        );
+        const idleDurationMs = now - lastActivityMs;
+        if (idleDurationMs < inactivityThresholdMs) {
+          continue;
+        }
         if (thread?.session?.activeTurnId != null) {
           yield* Effect.logDebug("provider.session.reaper.skipped-active-turn", {
             threadId: binding.threadId,
@@ -145,7 +120,7 @@ const makeProviderSessionReaper = (options?: ProviderSessionReaperLiveOptions) =
       if (reapedCount > 0) {
         yield* Effect.logInfo("provider.session.reaper.sweep-complete", {
           reapedCount,
-          totalBindings: bindings.length,
+          liveBindings: bindings.length,
         });
       }
     });
