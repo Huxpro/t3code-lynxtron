@@ -15,28 +15,36 @@ across the boundary.
 - `node scripts/check-upstream-delta.mjs` must pass. Every edit to an upstream
   file needs an entry with a reason that names the problem it solves.
 
-## How to know a change works
+## Gates, by how often they run
 
-These are the gates. Nothing else blocks a change.
+| Tier    | When                      | What                                                                                          | Budget       |
+| ------- | ------------------------- | --------------------------------------------------------------------------------------------- | ------------ |
+| Quick   | Every step                | `pnpm run typecheck`, format the files you touched, `pnpm build:lynxtron`, one readiness gate | Minutes      |
+| Related | When you change a screen  | The battery gates for that screen                                                             | Under 10 min |
+| Full    | Before a milestone merges | `pnpm run test`, the whole Native battery, the frame set against the milestone's baseline     | Half an hour |
 
-1. `pnpm run typecheck` and `pnpm run test` in `apps/lynxtron`.
-2. `pnpm --filter t3 build:bundle && pnpm build:lynxtron`.
-3. `node scripts/prepare-native-battery.mjs <dir>` then
-   `node scripts/run-native-battery.mjs <dir>/plan.json <dir>/results`.
-4. Frames of the screens you touched, through Lynx DevTool, compared with the
-   same frames from before the change.
+- Frame and pixel comparison belongs to the full tier only. Between milestones,
+  look at a frame when you need to see something; do not diff frames.
+- A readiness gate is the first entry of the plan `scripts/prepare-native-battery.mjs <dir>`
+  writes; run entries with `scripts/run-native-battery.mjs`.
+- Between milestones a gate or a count may get worse. Treat them as a trend.
+  Only the milestone merge has to be no worse than its baseline.
+- A gate that fails once gets one rerun. If it passes, note it and move on.
+  Diagnose only when the same failure shows twice in a full run.
+- CI repeats typecheck, tests, formatting, and the upstream delta check. Let it;
+  do not rerun locally what CI is about to run.
 
-Rerun a failing gate once before treating it as a regression; then run it on a
-build without the change before calling it pre-existing.
+## Stop losses
 
-## Judgment over ritual
-
+- Each step has a time box. If a step has not passed the quick tier after about
+  90 minutes, or two approaches to the same problem have failed, revert the
+  step, write down why in the PR or the issue, and take the other path or the
+  next milestone that does not depend on it.
+- Do not fix what you were not asked to fix. A visual difference a refactor
+  exposes goes on a list, not into the change, unless it fails the full tier.
 - Measure the whole product: battery pass count, frames that changed, upstream
   delta count, conflicts and type errors in a trial merge. Do not tune one
-  screen's numbers while those stand still.
-- Stop losses early. After two failed attempts at the same approach, stop,
-  say what you learned, and try a different level: a different seam, a smaller
-  goal, or a question to the maintainer.
+  screen while those stand still.
 - Do not write tests that assert on source text or on a script's own code.
   Test behavior by running it.
 - A report, an evidence archive, or a fidelity score is optional. Write one
