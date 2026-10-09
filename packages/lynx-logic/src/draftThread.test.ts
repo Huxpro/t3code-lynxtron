@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 
 import {
+  PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
   ProjectId,
   ProviderInstanceId,
   ThreadId,
@@ -324,13 +325,13 @@ describe("planComposerImageAdditions", () => {
   it("stops at the per-message limit including reserved slots", () => {
     const plan = planComposerImageAdditions({
       candidates: [image("a.png"), image("b.png")],
-      reservedCount: 7,
+      reservedCount: PROVIDER_SEND_TURN_MAX_ATTACHMENTS - 1,
       hasPendingUserInput: false,
     });
     expect(plan).toEqual({
       kind: "planned",
       accepted: [image("a.png")],
-      error: "You can attach up to 8 images per message.",
+      error: `You can attach up to ${PROVIDER_SEND_TURN_MAX_ATTACHMENTS} images per message.`,
     });
   });
 

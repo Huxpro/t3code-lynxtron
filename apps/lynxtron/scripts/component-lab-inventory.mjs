@@ -279,7 +279,16 @@ export function generateComponentInventory() {
     a.localeCompare(b),
   )) {
     const files = platformFiles(logical);
-    for (const definition of componentDefinitions(authorityFile)) {
+    // A Lynx module may still export a component upstream removed from the Web module.
+    const definitions = componentDefinitions(authorityFile);
+    if (files.hasExplicitLynx && files.lynx !== authorityFile) {
+      for (const definition of componentDefinitions(files.lynx)) {
+        if (!definitions.some((entry) => entry.name === definition.name)) {
+          definitions.push(definition);
+        }
+      }
+    }
+    for (const definition of definitions) {
       const webKey = `${repoPath(files.web)}#${definition.name}`;
       const lynxKey = files.lynx ? `${repoPath(files.lynx)}#${definition.name}` : "";
       const consumers = [...(useSites.get(webKey) ?? []), ...(useSites.get(lynxKey) ?? [])]

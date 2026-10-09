@@ -129,6 +129,9 @@ function resolveContext(options: ShortcutMatchOptions | undefined): ShortcutMatc
     terminalOpen: false,
     previewFocus: false,
     previewOpen: false,
+    isWeb: false,
+    isDesktop: true,
+    editableFocus: false,
     ...options?.context,
   };
 }

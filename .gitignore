@@ -6,6 +6,7 @@ node_modules
 *.tsbuildinfo
 apps/*/dist
 apps/lynxtron/output
+apps/*/dist-exe
 infra/*/dist
 .astro
 packages/*/dist
@@ -31,6 +32,8 @@ dist-electron/
 .electron-runtime/
 .showcase/
 apps/mobile/.showcase/
+apps/mobile/.generated/
+/.generated/
 artifacts/app-store/screenshots/
 .github/pr-assets/
 native/**/target/
@@ -42,3 +45,5 @@ node_modules/
 
 # Local desktop-automation reports and logs.
 midscene_run/
+# pnpm content-addressable store; never belongs in the repo.
+.pnpm-store/

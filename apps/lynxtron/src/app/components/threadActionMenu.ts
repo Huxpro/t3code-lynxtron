@@ -41,6 +41,9 @@ export async function openThreadActionMenu(input: {
   const selection = await showNativeContextMenu(
     buildThreadActionMenuItems({
       branch: thread.branch,
+      // Lynx has no project-scoped list behind this menu and no per-thread opt-out yet.
+      projectFilter: null,
+      autoSettleEnabled: true,
       isPinned: thread.pinnedAt != null,
       isSettled: input.settled,
       isSnoozed: effectiveSnoozed(thread, { now: now.toISOString() }),
@@ -49,6 +52,8 @@ export async function openThreadActionMenu(input: {
       isRunning: thread.session?.status === "running" && thread.session.activeTurnId != null,
       supports: {
         settlement: capabilities?.threadSettlement === true,
+        // Per-thread auto-settle opt-out is not ported to Lynx yet.
+        autoSettleOptOut: false,
         snooze: capabilities?.threadSnooze === true,
         pinning: capabilities?.threadPinning === true,
         titleRegeneration: capabilities?.threadTitleRegeneration === true,

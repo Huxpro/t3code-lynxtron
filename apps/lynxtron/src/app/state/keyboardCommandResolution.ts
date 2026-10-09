@@ -19,6 +19,8 @@ export function resolveKeyboardPacketCommand(
       terminalOpen: false,
       previewFocus: false,
       previewOpen: false,
+      isWeb: false,
+      isDesktop: true,
       ...context,
     },
   });

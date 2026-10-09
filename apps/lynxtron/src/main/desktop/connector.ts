@@ -31,16 +31,16 @@ import {
   applyAuthAccessStreamEvent,
   EMPTY_AUTH_ACCESS_SNAPSHOT,
 } from "@t3tools/client-runtime/state/auth";
-import {
-  applyServerConfigProjection,
-  type ServerConfigProjection,
-} from "@t3tools/client-runtime/state/server";
+import type { ServerConfigProjection } from "@t3tools/client-runtime/state/server";
+// Upstream keeps this helper in a module with no package export.
+import { applyServerConfigProjection } from "../../../../../packages/client-runtime/src/state/serverConfigProjection.ts";
 import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
 import { applyThreadDetailEvent } from "@t3tools/client-runtime/state/threads";
 import {
   applyTerminalAttachStreamEvent,
   EMPTY_TERMINAL_BUFFER_STATE,
   type TerminalBufferState,
+  terminalOutputText,
 } from "@t3tools/client-runtime/state/terminal";
 import { deriveActivePlanState, findLatestProposedPlan } from "@t3tools/lynx-logic/thread";
 import { buildProviderInstanceEnabledPatch } from "@t3tools/lynx-logic/providerSettings";
@@ -920,8 +920,10 @@ export class T3Connector {
   private refreshArchived(): void {
     if (!this.client || this.archivedFetchPending) return;
     this.archivedFetchPending = true;
-    this.runClient(this.client[ORCHESTRATION_WS_METHODS.getArchivedShellSnapshot]({}))
-      .then((snapshot: OrchestrationShellSnapshot) => {
+    this.runClient<OrchestrationShellSnapshot>(
+      this.client[ORCHESTRATION_WS_METHODS.getArchivedShellSnapshot]({}),
+    )
+      .then((snapshot) => {
         this.archivedFetchPending = false;
         this.archivedThreads = snapshot.threads;
         this.emitShell();
@@ -1539,7 +1541,7 @@ export class T3Connector {
             terminalId: input.terminalId,
             cwd: input.cwd,
             status: buffer.status,
-            history: buffer.buffer,
+            history: terminalOutputText(buffer.output),
             error: buffer.error,
             updatedAt: buffer.updatedAt,
           });

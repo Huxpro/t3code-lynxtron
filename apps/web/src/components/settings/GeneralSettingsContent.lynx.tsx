@@ -418,7 +418,7 @@ export function GeneralSettingsContent({
           }
         />
         <SettingsRow
-          {...searchableSetting("legacy-token-streaming")}
+          {...searchableSetting("response-streaming")}
           description="Paints assistant output token by token instead of in complete chunks. Not recommended: it is significantly slower, and long responses become harder to follow. Kept only for compatibility with the old behavior."
           control={
             <GeneralSettingsSwitch

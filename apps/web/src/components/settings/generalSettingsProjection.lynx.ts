@@ -11,14 +11,14 @@ export const GENERAL_SETTINGS_DEFAULT_VALUES: GeneralSettingsValues = {
   addProjectBaseDirectory: PORTABLE_SERVER_SETTINGS_DEFAULTS.addProjectBaseDirectory,
   confirmThreadArchive: PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadArchive,
   confirmThreadDelete: PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadDelete,
-  defaultThreadEnvMode: PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode,
+  defaultThreadEnvMode: PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode ?? "local",
   diffIgnoreWhitespace: PORTABLE_CLIENT_SETTINGS_DEFAULTS.diffIgnoreWhitespace,
-  enableLegacyTokenStreaming: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableLegacyTokenStreaming,
+  enableLegacyTokenStreaming: false,
   enableProviderUpdateChecks: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableProviderUpdateChecks,
   legacySidebarEnabled: PORTABLE_CLIENT_SETTINGS_DEFAULTS.legacySidebarEnabled,
   newWorktreesStartFromOrigin: PORTABLE_SERVER_SETTINGS_DEFAULTS.newWorktreesStartFromOrigin,
   planModeEnabled: PORTABLE_CLIENT_SETTINGS_DEFAULTS.planModeEnabled,
-  sidebarAutoSettleAfterDays: PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarAutoSettleAfterDays,
+  sidebarAutoSettleAfterDays: PORTABLE_SERVER_SETTINGS_DEFAULTS.sidebarAutoSettleAfterDays,
   sidebarProjectGroupingMode: PORTABLE_CLIENT_SETTINGS_DEFAULTS.sidebarProjectGroupingMode,
   timestampFormat: PORTABLE_CLIENT_SETTINGS_DEFAULTS.timestampFormat,
 };
@@ -30,7 +30,6 @@ type GeneralClientSource = Pick<
   | "diffIgnoreWhitespace"
   | "legacySidebarEnabled"
   | "planModeEnabled"
-  | "sidebarAutoSettleAfterDays"
   | "sidebarProjectGroupingMode"
   | "timestampFormat"
 >;
@@ -39,9 +38,10 @@ type GeneralServerSource = Pick<
   PortableServerSettings,
   | "addProjectBaseDirectory"
   | "defaultThreadEnvMode"
-  | "enableLegacyTokenStreaming"
   | "enableProviderUpdateChecks"
   | "newWorktreesStartFromOrigin"
+  | "responseStreamingMode"
+  | "sidebarAutoSettleAfterDays"
 >;
 
 /**
@@ -56,14 +56,15 @@ export function projectGeneralSettingsValues(
     addProjectBaseDirectory: server.addProjectBaseDirectory,
     confirmThreadArchive: client.confirmThreadArchive,
     confirmThreadDelete: client.confirmThreadDelete,
-    defaultThreadEnvMode: server.defaultThreadEnvMode,
+    defaultThreadEnvMode: server.defaultThreadEnvMode ?? "local",
     diffIgnoreWhitespace: client.diffIgnoreWhitespace,
-    enableLegacyTokenStreaming: server.enableLegacyTokenStreaming,
+    // Upstream replaced the boolean with a mode; the switch means token-by-token.
+    enableLegacyTokenStreaming: server.responseStreamingMode === "token",
     enableProviderUpdateChecks: server.enableProviderUpdateChecks,
     legacySidebarEnabled: client.legacySidebarEnabled,
     newWorktreesStartFromOrigin: server.newWorktreesStartFromOrigin,
     planModeEnabled: client.planModeEnabled,
-    sidebarAutoSettleAfterDays: client.sidebarAutoSettleAfterDays,
+    sidebarAutoSettleAfterDays: server.sidebarAutoSettleAfterDays,
     sidebarProjectGroupingMode: client.sidebarProjectGroupingMode,
     timestampFormat: client.timestampFormat,
   };

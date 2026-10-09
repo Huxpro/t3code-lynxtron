@@ -319,6 +319,7 @@ export function createLocalDraftThread(input: {
     id: input.threadId,
     projectId: input.projectId,
     title: "New thread",
+    pullRequests: [],
     modelSelection: input.modelSelection,
     runtimeMode: input.runtimeMode ?? DEFAULT_RUNTIME_MODE,
     interactionMode: input.interactionMode ?? DEFAULT_PROVIDER_INTERACTION_MODE,

@@ -77,7 +77,6 @@ describe("connections presentation", () => {
       pairingLinks: [
         {
           id: "older",
-          credential: "older-secret",
           scopes: ["orchestration:read"],
           subject: "subject",
           createdAt: DateTime.makeUnsafe("2026-07-27T08:00:00.000Z"),
@@ -85,7 +84,6 @@ describe("connections presentation", () => {
         },
         {
           id: "newer",
-          credential: "newer-secret",
           scopes: ["orchestration:read", "orchestration:operate"],
           subject: "subject",
           label: "Tablet",

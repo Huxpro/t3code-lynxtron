@@ -25,7 +25,6 @@ export type PortableClientSettings = Pick<
   | "glassOpacity"
   | "legacySidebarEnabled"
   | "planModeEnabled"
-  | "sidebarAutoSettleAfterDays"
   | "sidebarProjectGroupingMode"
   | "timestampFormat"
   | "wordWrap"
@@ -38,9 +37,10 @@ export type PortableServerSettings = Pick<
   | "addProjectBaseDirectory"
   | "backgroundActivity"
   | "defaultThreadEnvMode"
-  | "enableLegacyTokenStreaming"
   | "enableProviderUpdateChecks"
   | "newWorktreesStartFromOrigin"
+  | "responseStreamingMode"
+  | "sidebarAutoSettleAfterDays"
 >;
 
 export type PortableServerSettingsPatch = Partial<PortableServerSettings>;
@@ -111,7 +111,7 @@ export function projectPortableGeneralSettingsRestore(input: {
       ...(client.diffIgnoreWhitespace !== clientDefaults.diffIgnoreWhitespace
         ? ["Diff whitespace changes"]
         : []),
-      ...(server.enableLegacyTokenStreaming !== serverDefaults.enableLegacyTokenStreaming
+      ...(server.responseStreamingMode !== serverDefaults.responseStreamingMode
         ? ["Stream token by token"]
         : []),
       ...(server.enableProviderUpdateChecks !== serverDefaults.enableProviderUpdateChecks
@@ -121,7 +121,8 @@ export function projectPortableGeneralSettingsRestore(input: {
       JSON.stringify(serverDefaults.backgroundActivity)
         ? ["Background activity"]
         : []),
-      ...(server.defaultThreadEnvMode !== serverDefaults.defaultThreadEnvMode
+      ...((server.defaultThreadEnvMode ?? "local") !==
+      (serverDefaults.defaultThreadEnvMode ?? "local")
         ? ["New thread mode"]
         : []),
       ...(server.newWorktreesStartFromOrigin !== serverDefaults.newWorktreesStartFromOrigin
@@ -151,9 +152,10 @@ export function projectPortableGeneralSettingsRestore(input: {
       addProjectBaseDirectory: serverDefaults.addProjectBaseDirectory,
       backgroundActivity: serverDefaults.backgroundActivity,
       defaultThreadEnvMode: serverDefaults.defaultThreadEnvMode,
-      enableLegacyTokenStreaming: serverDefaults.enableLegacyTokenStreaming,
       enableProviderUpdateChecks: serverDefaults.enableProviderUpdateChecks,
       newWorktreesStartFromOrigin: serverDefaults.newWorktreesStartFromOrigin,
+      responseStreamingMode: serverDefaults.responseStreamingMode,
+      sidebarAutoSettleAfterDays: server.sidebarAutoSettleAfterDays,
     },
   };
 }

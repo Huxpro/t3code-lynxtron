@@ -635,7 +635,15 @@ describe("resolveDefaultProviderModelSelection", () => {
 
 describe("resolveProviderInstanceEnabled", () => {
   it("matches the contracts resolver for every built-in driver and flag", () => {
-    for (const driver of ["codex", "claudeAgent", "cursor", "grok", "opencode", "fork"]) {
+    for (const driver of [
+      "codex",
+      "claudeAgent",
+      "cursor",
+      "grok",
+      "antigravity",
+      "opencode",
+      "fork",
+    ]) {
       for (const enabled of [undefined, true, false]) {
         for (const config of [{}, { enabled: true }, { enabled: false }, null]) {
           const instance = {

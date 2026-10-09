@@ -18,8 +18,7 @@ import {
 import { appendTerminalContextsToPrompt } from "@t3tools/lynx-logic/terminalContext";
 import { appendElementContextsToPrompt } from "@t3tools/lynx-logic/elementContext";
 import { appendFileContextsToPrompt, composerFileContext } from "@t3tools/lynx-logic/fileContext";
-import { effectiveSettled } from "@t3tools/client-runtime/state/thread-settled";
-import { projectConnectionLifecycle } from "@t3tools/client-runtime/connection/presentation";
+import { projectConnectionLifecycle } from "@t3tools/lynx-logic/connectionLifecycle";
 import {
   derivePendingApprovals,
   derivePendingUserInputs,
@@ -484,10 +483,7 @@ export function ChatView({ threadId }: ChatViewProps) {
   const activeThreadSettled =
     activeThread !== undefined &&
     serverConfig?.environment.capabilities.threadSettlement === true &&
-    effectiveSettled(activeThread, {
-      now: new Date().toISOString(),
-      autoSettleAfterDays: clientSettings.sidebarAutoSettleAfterDays,
-    });
+    activeThread.settledOverride === "settled";
   const workspaceMode =
     activeThread?.worktreePath != null
       ? "worktree"

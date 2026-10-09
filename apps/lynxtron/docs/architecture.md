@@ -1,7 +1,7 @@
 # Lynxtron client architecture
 
 How the Lynx client sits on top of upstream T3 Code. The layering was approved
-on 2026-10-09 and applied on the merge base `be7d35aaeb`; this document replaces
+on 2026-10-09; the current merge base is upstream `024d49520e`. This document replaces
 the ownership model in `plans/10-source-first-architecture-reset.md`.
 
 ## Principles
@@ -73,18 +73,16 @@ it replaces.
 
 ## Carried patches
 
-`apps/lynxtron/upstream-patches.json` lists 57 modified upstream files and 11
+`apps/lynxtron/upstream-patches.json` lists 31 modified upstream files and 9
 added files, each with its reason. They fall into four groups:
 
-- **Server and desktop product fixes** that are not Lynx-specific (provider
-  authentication, session reaper, review roots, interrupt target, preview
-  popups). They are marked "Upstream candidate"; sending them upstream removes
-  them from the list.
+- **Server product fixes** that are not Lynx-specific (review roots, interrupt
+  target, provider command reactor). They are marked "Upstream candidate";
+  sending them upstream removes them from the list.
 - **Lynx enablers** in packages: single-module exports, Schema-free constants
   so the Lynx bundle does not pull Effect Schema, the connection banner
   projection.
-- **Harness hooks**: environment variables the Lynxtron capture scripts set
-  (`T3CODE_DESKTOP_USER_DATA_DIR`, `T3CODE_STATIC_DIR`, two `T3_TEST_*` hooks).
+- **Harness hooks**: the `T3_TEST_*` hooks the Lynxtron capture scripts set.
 - **Build configuration**: workspace settings, root scripts, and the two
   `apps/web` entries that let `.lynx` modules under `apps/web` resolve their
   dependencies and stay out of the Web typecheck.
@@ -92,12 +90,19 @@ added files, each with its reason. They fall into four groups:
 A new patch needs a reason that names the problem it solves. "Makes reuse
 easier" is not one.
 
+The merge to `024d49520e` dropped the patches whose upstream file had been
+rewritten or removed instead of porting them: the desktop local-environment
+rendezvous and user-data override, the preview popup protocol restriction, the
+CLI static-directory hook, and the provider fixes in `ProviderRuntimeIngestion`,
+`ClaudeAdapter`, `ClaudeProvider` and `ProviderSessionReaper`. A fix that is
+still needed comes back as a new patch with its own reason.
+
 ## What the Lynx bundle takes from `apps/web`
 
-The Lynx bundle compiles 126 modules from `apps/web/src`: 114 `.lynx` modules
-and 12 upstream modules imported in place (`session-logic.ts`,
-`logicalProject.ts`, `worktreeCleanup.ts`, `lib/threadSort.ts`, and eight
-`*.logic.ts` or helper modules). Those 12 are the whole compile-time coupling
+The Lynx bundle compiles 127 modules from `apps/web/src`: 116 `.lynx` modules
+and 11 upstream modules imported in place (`logicalProject.ts`,
+`worktreeCleanup.ts`, `lib/threadSort.ts`, and `*.logic.ts` or helper
+modules). Those 11 are the whole compile-time coupling
 to upstream Web source. When upstream changes one, the Lynx build or typecheck
 fails and the fix is on the Lynx side.
 
@@ -105,11 +110,37 @@ fails and the fix is on the Lynx side.
 
 1. `git merge origin/main`. Conflicts are limited to the carried patches.
 2. Install, then typecheck and build Lynx. Errors come from the packages and
-   the 12 in-place modules; fix the Lynx side.
+   the in-place modules; fix the Lynx side.
 3. Run `check-upstream-delta.mjs`, the Lynx tests, the Native battery, and the
    frame set against the pre-merge baseline.
 4. List upstream Web files that changed and have a `.lynx` module of the same
    name. That list is the port backlog; it does not block the merge.
+
+### The merge of 2026-10-09
+
+The fork merged upstream up to `024d49520e` (1,860 commits), the commit before
+upstream's orchestrator rewrite. Conflicts were limited to the listed patches.
+What the Lynx side had to follow:
+
+- Settings that moved to the server: thread settle state
+  (`settledOverride`), auto-settle days, and `responseStreamingMode`, which
+  replaced the token-streaming switch.
+- Defaults that changed: Cursor and Antigravity ship disabled, the new-thread
+  mode inherits from the project (`null`, shown as Local), jump shortcuts need
+  the `isDesktop` shortcut context.
+- Toolchain: `apps/lynxtron` pins TypeScript 6 because Rspeedy needs the
+  TypeScript JS API that TypeScript 7 no longer ships, and Tailwind 3 through
+  scoped overrides. `scripts/lynx-regexp-loader.cjs` lowers Unicode property
+  escapes, and `src/app/polyfills.ts` adds the ES2023+ built-ins the Lynx
+  engine lacks; upstream packages use both.
+- Transcript logic is frozen as Lynx copies (`session-logic.lynx.ts`,
+  `types.lynx.ts`, `MessagesTimeline.logic.lynx.ts`) because upstream's
+  versions now model reasoning messages the Lynx transcript does not render.
+
+Not merged: `de34391427` and later (507 commits). That commit replaces
+`packages/contracts/src/orchestration.ts` with `orchestrationV2.ts`, which the
+Lynx client and connector are written against. Moving to it is a port, not a
+merge.
 
 A trial merge of `b707eeb052` (2,354 commits) on 2026-10-09, before this
 restructuring, conflicted in 154 paths, 111 of them fork-edited Web files.
@@ -167,12 +198,19 @@ Limits and open questions:
 
 ## Known debts
 
-- Three carried patches are extractions, which principle 3 rules out:
-  `packages/shared/src/model.ts` (helpers moved to `providerOptions.ts`),
+- Two carried patches are extractions, which principle 3 rules out:
   `packages/contracts/src/keybindings.ts` (constants moved to
-  `keybindingConstants.ts`), and the quick-action additions in
+  `keybindingConstants.ts`) and the quick-action additions in
   `packages/client-runtime/src/state/gitActions.ts`. Each should become a
   Lynx-owned module or an upstream change.
+- Upstream features the Lynx client does not have yet: per-project settings
+  and the project default model, per-thread auto-settle opt-out, reasoning
+  messages, the Forgejo icon, and the upstream changes to the 65 Web modules
+  that have a `.lynx` module of the same name (largest: `Sidebar.tsx`,
+  `composerDraftStore.ts`, `MessagesTimeline.logic.ts`, `session-logic.ts`).
+- The Lynx keybinding conflict logic is a copy from before the merge and
+  reports no conflicts for upstream's current defaults; it has not been
+  compared with upstream's current logic.
 - `packages/lynx-logic` has 20 type errors under `tsgo` (test fixture typing
   and Effect diagnostics for `Date`). They moved with the code from
   `packages/client-runtime`, which is clean now.
