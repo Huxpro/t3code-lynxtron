@@ -6,6 +6,7 @@ import type {
   GeneralSettingsTextInputProps,
   GeneralSettingsValueButtonProps,
 } from "./generalSettingsControlTypes";
+import { useNativeInputValue } from "../../../../lynxtron/src/app/hooks/useNativeInputValue";
 
 function joinClassNames(...values: ReadonlyArray<string | undefined>): string {
   return values.filter(Boolean).join(" ");
@@ -249,14 +250,16 @@ export function GeneralSettingsTextInput({
   value,
 }: GeneralSettingsTextInputProps) {
   const [draft, setDraft] = useState(value);
+  const native = useNativeInputValue(draft);
   return (
     <input
+      ref={native.ref}
       className="general-text-input"
       aria-label={ariaLabel}
       placeholder={placeholder}
-      {...({ value: draft } as object)}
       bindinput={(event: { detail?: { value?: string } }) => {
         const next = event.detail?.value ?? "";
+        native.noteInput(next);
         setDraft(next);
         onCommit(next);
       }}

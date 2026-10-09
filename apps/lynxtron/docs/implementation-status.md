@@ -528,6 +528,18 @@ moved by roughly 80 px; DevTool resolved from the owned PID then measured
 `data-sidebar-width="341"` and matching 341 px gap/container geometry. The
 error console stayed empty and the canonical main transport remained ready at
 sequence 15.
+A 2026-10-08 run on Lynxtron 0.0.28 used background Computer Use on exact-owned
+PIDs `49347` (window `7167`, sidebar fixture) and `66497` (window `7450`,
+long-transcript fixture). A typed `/` opened the Composer command menu; real
+`Command+K`, `Escape`, and `Command+N` behaved as above; with the model picker
+open, real `Command+2` selected the second model, which closes model-picker
+jump acceptance. A real drag on the Sidebar rail widened it from 256 to about
+340 px. A real drag and a double-click on transcript text selected nothing:
+the transcript does not enable Lynx text selection, so that item stays open.
+Settings General showed `3` in the auto-settle days field after text inputs
+moved to `setValue` (`useNativeInputValue`), and typing in the field kept the
+caret. The error console stayed empty throughout. Background Computer Use has
+no hover primitive, so tooltip hover was not re-probed.
 Physical Sidebar hover was re-probed on a two-active-thread fixture with
 exact-owned PID `22479`, window `89689`. Computer Use moved the real pointer over
 Thread Two, while a viewport-test-only state probe remained

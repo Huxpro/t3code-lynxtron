@@ -1,5 +1,7 @@
 import { type ReactNode, useCallback } from "@lynx-js/react";
 
+import { useNativeInputValue } from "../../../../lynxtron/src/app/hooks/useNativeInputValue";
+
 type InputEvent = {
   readonly detail: {
     readonly value: string;
@@ -37,13 +39,15 @@ export function Input({
   unstyled = false,
   value = "",
 }: InputProps) {
+  const { ref, noteInput } = useNativeInputValue(value);
   const handleInput = useCallback(
     (event: InputEvent) => {
+      noteInput(event.detail.value);
       if (disabled) return;
       onValueChange?.(event.detail.value);
       onChange?.({ currentTarget: { value: event.detail.value } });
     },
-    [disabled, onChange, onValueChange],
+    [disabled, noteInput, onChange, onValueChange],
   );
   const resolvedClassName = [
     unstyled ? "ui-input ui-input--unstyled" : "ui-input",
@@ -56,11 +60,11 @@ export function Input({
 
   return (
     <input
+      ref={ref}
       aria-label={ariaLabel}
       aria-disabled={disabled ? "true" : undefined}
       className={resolvedClassName}
       id={id}
-      {...({ value } as object)}
       placeholder={placeholder}
       bindblur={onBlur}
       bindinput={handleInput}

@@ -56,6 +56,7 @@ import {
   SelectValue,
 } from "../../../../web/src/components/ui/select";
 import { Button } from "../../../../web/src/components/ui/button";
+import { useNativeInputValue } from "../hooks/useNativeInputValue";
 import { stackedThreadToast, toastManager } from "../../../../web/src/components/ui/toast";
 import { useT3ProjectFileState } from "../hooks/useT3ProjectFileScripts";
 import { clientCapabilities } from "../platform/clientCapabilities";
@@ -295,6 +296,7 @@ function ProjectNameField({ group }: { readonly group: SidebarProjectSnapshot })
     };
   }, [viewport.testResize]);
 
+  const native = useNativeInputValue(draft);
   const dirty = !committing && draft !== group.displayName;
   return (
     <>
@@ -302,11 +304,13 @@ function ProjectNameField({ group }: { readonly group: SidebarProjectSnapshot })
           layer commits the edit, like a blur on Web. */}
       {dirty ? <view className="project-settings-name-dismiss" bindtap={commit} /> : null}
       <input
+        ref={native.ref}
         className="project-settings-name-input"
         aria-label="Project name"
-        {...({ value: draft } as object)}
         bindinput={(event: { detail?: { value?: unknown } }) => {
-          if (typeof event.detail?.value === "string") setDraft(event.detail.value);
+          if (typeof event.detail?.value !== "string") return;
+          native.noteInput(event.detail.value);
+          setDraft(event.detail.value);
         }}
         bindconfirm={commit}
         bindblur={commit}

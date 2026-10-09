@@ -26,6 +26,7 @@ import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { openThreadActionMenu } from "./threadActionMenu";
 import { LYNX_PRIMARY_ENVIRONMENT_ID } from "../state/environment";
 import { uiActions } from "../state/uiState";
+import { useNativeInputValue } from "../hooks/useNativeInputValue";
 import { Icon, type IconName } from "./Icon";
 import { OpenInPicker } from "./OpenInPicker";
 import { shouldCompactHeaderActions } from "./chatHeaderLayout";
@@ -191,6 +192,7 @@ export function ChatHeader({
     readonly draft: string;
   } | null>(null);
   const renameActive = renaming !== null && renaming.threadId === activeShell?.id;
+  const renameInput = useNativeInputValue(renameActive ? renaming.draft : "");
   const commitRename = () => {
     if (!renaming || !activeShell) return;
     const resolution = resolveRenameCommit({
@@ -241,12 +243,15 @@ export function ChatHeader({
             transparent layer commits the rename, like a blur on Web. */}
         <view className="chat-header-title-rename-dismiss" bindtap={commitRename} />
         <input
+          ref={renameInput.ref}
           className="chat-header-title-rename topbar__thread"
           data-chat-header-title-rename={activeShell.id}
-          {...({ value: renaming.draft, focus: true } as object)}
-          bindinput={(event: { detail?: { value?: string } }) =>
-            setRenaming({ threadId: activeShell.id, draft: event.detail?.value ?? "" })
-          }
+          {...({ focus: true } as object)}
+          bindinput={(event: { detail?: { value?: string } }) => {
+            const draft = event.detail?.value ?? "";
+            renameInput.noteInput(draft);
+            setRenaming({ threadId: activeShell.id, draft });
+          }}
           bindconfirm={commitRename}
           bindblur={commitRename}
         />
