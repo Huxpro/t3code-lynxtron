@@ -1,0 +1,7 @@
+{
+  "patches": {
+    "apps/web/package.json": "Lists @lynx-js/react so the .lynx siblings under apps/web resolve it.",
+    "apps/web/tsconfig.json": "Excludes *.lynx.* from the Web typecheck.",
+    "apps/web/vite.config.ts": "Resolves .web.* before plain extensions; removable once the .web renames are undone."
+  }
+}
