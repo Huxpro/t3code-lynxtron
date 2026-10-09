@@ -1,7 +1,7 @@
 {
   "patches": {
     ".gitignore": "Ignores apps/lynxtron/output and midscene_run/.",
-    "AGENTS.md": "Adds the Lynxtron harnessing section.",
+    "AGENTS.md": "Adds a four-line pointer to apps/lynxtron/AGENTS.md.",
     "apps/desktop/scripts/electron-launcher.mjs": "Forwards T3CODE_DESKTOP_USER_DATA_DIR so the Electron comparison harness runs on an isolated profile.",
     "apps/desktop/scripts/electron-launcher.test.mjs": "Covers electron-launcher.mjs.",
     "apps/desktop/src/app/DesktopApp.ts": "Publishes the ready local backend to a rendezvous file so Lynxtron can attach to the same environment.",

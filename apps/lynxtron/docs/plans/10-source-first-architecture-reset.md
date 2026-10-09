@@ -5,7 +5,7 @@ This plan replaces the current helper-first sequence with two architecture pilot
 ## Plan metadata
 
 - Content type: How-to
-- Status: Ready
+- Status: Superseded on 2026-10-09 by `../architecture.md`; kept as history
 - Audience: Agents continuing the T3 Code Electron-to-Lynxtron port
 - Goal: Replace preload polling and duplicated Lynx product composition with a main-owned event bridge and physically shared Web composition
 - Scope: `apps/lynxtron`, `apps/web`, `packages/client-runtime`, and the minimum internal contracts needed by both Lynxtron processes
