@@ -75,6 +75,13 @@ export default defineConfig({
         module: {
           rules: [
             {
+              // Lower Unicode property escapes the main-thread engine rejects.
+              test: /\.[cm]?[jt]sx?$/u,
+              exclude: /node_modules/u,
+              enforce: "pre",
+              use: [{ loader: require.resolve("./scripts/lynx-regexp-loader.cjs") }],
+            },
+            {
               test: /\.woff2$/u,
               resourceQuery: /inline/u,
               type: "asset/inline",

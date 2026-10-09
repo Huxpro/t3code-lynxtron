@@ -40,6 +40,8 @@ function git(cwd, args) {
   NodeChildProcess.execFileSync("git", args, { cwd, stdio: ["ignore", "ignore", "inherit"] });
 }
 
+const FIXTURE_MODEL_SELECTION = { instanceId: "codex", model: "gpt-5.6-sol" };
+
 function writePrefs(fixture) {
   const prefsPath = NodePath.join(fixture, "lynxtron-prefs.json");
   if (NodeFS.existsSync(prefsPath)) return;
@@ -49,7 +51,8 @@ function writePrefs(fixture) {
   const prefs = {
     themePreference: "dark",
     clientSettings: {},
-    modelSelection: manifest.project.defaultModelSelection,
+    // Upstream no longer gives a new project a default model, so the fixture names one.
+    modelSelection: manifest.project.defaultModelSelection ?? FIXTURE_MODEL_SELECTION,
   };
   NodeFS.writeFileSync(prefsPath, `${JSON.stringify(prefs, null, 2)}\n`);
 }

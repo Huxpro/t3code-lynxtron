@@ -3,6 +3,33 @@
 // feature-detects the gap and installs a WHATWG-complete URL/URLSearchParams.
 import "core-js/actual/url";
 import "core-js/actual/url-search-params";
+// The Lynx main-thread engine predates these ES2022 to ES2025 builtins, and
+// upstream's shared code calls several while its modules load.
+import "core-js/actual/array/at";
+import "core-js/actual/array/find-last";
+import "core-js/actual/array/find-last-index";
+import "core-js/actual/array/to-reversed";
+import "core-js/actual/array/to-sorted";
+import "core-js/actual/array/to-spliced";
+import "core-js/actual/array/with";
+import "core-js/actual/array/from-async";
+import "core-js/actual/string/at";
+import "core-js/actual/string/replace-all";
+import "core-js/actual/string/is-well-formed";
+import "core-js/actual/object/group-by";
+import "core-js/actual/map/group-by";
+import "core-js/actual/promise/with-resolvers";
+import "core-js/actual/set/union";
+import "core-js/actual/set/intersection";
+import "core-js/actual/set/difference";
+import "core-js/actual/set/symmetric-difference";
+import "core-js/actual/set/is-subset-of";
+import "core-js/actual/set/is-superset-of";
+import "core-js/actual/set/is-disjoint-from";
+import "core-js/actual/symbol/dispose";
+import "core-js/actual/symbol/async-dispose";
+import "core-js/actual/iterator";
+import "core-js/actual/structured-clone";
 
 interface LynxRuntimeGlobals {
   window?: unknown;

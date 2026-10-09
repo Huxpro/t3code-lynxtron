@@ -220,6 +220,9 @@ overrides:
   node-abi: 4.33.0
   lightningcss: "catalog:"
   tailwindcss: "catalog:"
+  # The Lynx client and its preset compile with Tailwind 3; keep them off the override above.
+  "@t3tools/lynxtron>tailwindcss": ^3.4.19
+  "@lynx-js/tailwind-preset>tailwindcss": ^3.4.19
   vite: "catalog:"
   yaml: "catalog:"
 
