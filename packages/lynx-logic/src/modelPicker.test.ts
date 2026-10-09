@@ -284,22 +284,22 @@ describe("shared model picker presentation", () => {
           models: [{ slug: "gpt-warning" }],
         }),
         provider({
-          instanceId: "claudeAgent",
-          driverKind: "claudeAgent",
+          instanceId: "cursor",
+          driverKind: "cursor",
           models: [],
         }),
         provider({
-          instanceId: "cursor",
-          driverKind: "cursor",
-          models: [{ slug: "cursor-ready", isDefault: true }],
+          instanceId: "claudeAgent",
+          driverKind: "claudeAgent",
+          models: [{ slug: "claude-ready", isDefault: true }],
         }),
       ],
       settings: DEFAULT_SERVER_SETTINGS,
     });
 
     expect(projection.selection).toEqual({
-      instanceId: ProviderInstanceId.make("cursor"),
-      model: "cursor-ready",
+      instanceId: ProviderInstanceId.make("claudeAgent"),
+      model: "claude-ready",
     });
   });
 

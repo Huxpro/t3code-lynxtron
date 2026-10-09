@@ -121,7 +121,8 @@ export function projectPortableGeneralSettingsRestore(input: {
       JSON.stringify(serverDefaults.backgroundActivity)
         ? ["Background activity"]
         : []),
-      ...(server.defaultThreadEnvMode !== serverDefaults.defaultThreadEnvMode
+      ...((server.defaultThreadEnvMode ?? "local") !==
+      (serverDefaults.defaultThreadEnvMode ?? "local")
         ? ["New thread mode"]
         : []),
       ...(server.newWorktreesStartFromOrigin !== serverDefaults.newWorktreesStartFromOrigin

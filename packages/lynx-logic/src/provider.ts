@@ -26,7 +26,12 @@ import type {
 
 // Built-in drivers that start disabled; mirrors DEFAULT_SERVER_SETTINGS.providers
 // without importing the settings schema into renderer bundles.
-const DRIVERS_DISABLED_BY_DEFAULT: ReadonlySet<string> = new Set(["grok", "opencode"]);
+const DRIVERS_DISABLED_BY_DEFAULT: ReadonlySet<string> = new Set([
+  "cursor",
+  "grok",
+  "antigravity",
+  "opencode",
+]);
 
 /**
  * Schema-free twin of contracts' `resolveProviderInstanceEnabled`: an explicit

@@ -101,20 +101,18 @@ export function deriveModelPickerModels(
     ) {
       return [];
     }
-    return entry.models.map(
-      (model): ModelPickerModel => ({
-        instanceId: entry.instanceId,
-        driverKind: entry.driverKind,
-        slug: model.slug,
-        name: model.name,
-        ...(model.shortName ? { shortName: model.shortName } : {}),
-        ...(model.subProvider ? { subProvider: model.subProvider } : {}),
-        providerDisplayName: entry.displayName,
-        isCustom: model.isCustom,
-        capabilities: model.capabilities,
-        ...(model.isDefault ? { isDefault: true } : {}),
-      }),
-    );
+    return entry.models.map((model): ModelPickerModel => ({
+      instanceId: entry.instanceId,
+      driverKind: entry.driverKind,
+      slug: model.slug,
+      name: model.name,
+      ...(model.shortName ? { shortName: model.shortName } : {}),
+      ...(model.subProvider ? { subProvider: model.subProvider } : {}),
+      providerDisplayName: entry.displayName,
+      isCustom: model.isCustom,
+      capabilities: model.capabilities,
+      ...(model.isDefault ? { isDefault: true } : {}),
+    }));
   });
 }
 

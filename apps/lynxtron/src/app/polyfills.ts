@@ -187,7 +187,7 @@ if (runtimeGlobals.TextDecoder === undefined) {
             ? new Uint8Array(input)
             : new Uint8Array(input.buffer, input.byteOffset, input.byteLength);
       let output = "";
-      for (let index = 0; index < bytes.length; ) {
+      for (let index = 0; index < bytes.length;) {
         const first = bytes[index++];
         let codePoint = first;
         let needed = 0;

@@ -1264,7 +1264,8 @@ async function createThread(
   const envMode =
     options?.envMode ??
     state.settings?.defaultThreadEnvMode ??
-    PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode;
+    PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode ??
+    "local";
   const startFromOrigin =
     options?.startFromOrigin ??
     (envMode === "worktree" &&
