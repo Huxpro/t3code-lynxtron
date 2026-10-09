@@ -32,8 +32,7 @@ const repoRoot = path.resolve(lynxAppDir, "../..");
 const WEB_DIST = path.join(repoRoot, "apps/web/dist");
 const SERVER_BIN = process.env.T3_SERVER_BIN ?? path.join(repoRoot, "apps/server/dist/bin.mjs");
 const CHROME_BIN =
-  process.env.T3_WORKBENCH_CHROME ??
-  "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+  process.env.T3_WORKBENCH_CHROME ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 function argValue(name, fallback) {
   const i = process.argv.indexOf(name);
@@ -81,7 +80,9 @@ function httpRequest(port, requestPath, method, headers, body) {
       (res) => {
         let data = "";
         res.on("data", (c) => (data += c));
-        res.on("end", () => resolve({ status: res.statusCode ?? 0, headers: res.headers, body: data }));
+        res.on("end", () =>
+          resolve({ status: res.statusCode ?? 0, headers: res.headers, body: data }),
+        );
       },
     );
     req.on("error", reject);
@@ -107,7 +108,11 @@ function startFrontServer(serverPort) {
   const server = createServer(async (req, res) => {
     const url = new URL(req.url ?? "/", `http://${HOST}`);
     const pathname = decodeURIComponent(url.pathname);
-    if (PROXY_PREFIXES.some((p) => pathname === p || pathname.startsWith(p + "/") || pathname.startsWith(p + "?"))) {
+    if (
+      PROXY_PREFIXES.some(
+        (p) => pathname === p || pathname.startsWith(p + "/") || pathname.startsWith(p + "?"),
+      )
+    ) {
       // Proxy HTTP to server.
       const proxyReq = httpProxy.request(
         { host: HOST, port: serverPort, path: req.url, method: req.method, headers: req.headers },
@@ -121,14 +126,18 @@ function startFrontServer(serverPort) {
       return;
     }
     // Static SPA: serve file or fall back to index.html.
-    let filePath = pathname === "/" ? path.join(WEB_DIST, "index.html") : safeJoin(WEB_DIST, pathname);
+    let filePath =
+      pathname === "/" ? path.join(WEB_DIST, "index.html") : safeJoin(WEB_DIST, pathname);
     let info = filePath ? await stat(filePath).catch(() => null) : null;
     if (!info || !info.isFile()) {
       filePath = path.join(WEB_DIST, "index.html");
       info = await stat(filePath).catch(() => null);
       if (!info) return void res.writeHead(404).end("not found");
     }
-    res.writeHead(200, { "content-type": MIME[path.extname(filePath)] ?? "application/octet-stream", "cache-control": "no-store" });
+    res.writeHead(200, {
+      "content-type": MIME[path.extname(filePath)] ?? "application/octet-stream",
+      "cache-control": "no-store",
+    });
     createReadStream(filePath).pipe(res);
   });
   // WS upgrade proxy for /ws.
@@ -136,7 +145,9 @@ function startFrontServer(serverPort) {
     const upstream = net.connect(serverPort, HOST, () => {
       const headerLines = [
         `${req.method} ${req.url} HTTP/1.1`,
-        ...Object.entries(req.headers).map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`),
+        ...Object.entries(req.headers).map(
+          ([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`,
+        ),
         "",
         "",
       ].join("\r\n");
@@ -213,7 +224,9 @@ async function waitForDevtools(chrome) {
       const m = buf.match(/DevTools listening on (ws:\/\/[^\s]+)/);
       if (m) {
         const wsUrl = m[1];
-        const endpoint = wsUrl.replace(/^ws:\/\//, "http://").replace(/\/devtools\/browser\/.*$/, "");
+        const endpoint = wsUrl
+          .replace(/^ws:\/\//, "http://")
+          .replace(/\/devtools\/browser\/.*$/, "");
         resolve(endpoint);
       }
     };
@@ -230,16 +243,20 @@ async function evaluate(cdp, sessionId, expression) {
     { expression, awaitPromise: true, returnByValue: true },
     sessionId,
   );
-  if (r.exceptionDetails) throw new Error(r.exceptionDetails.exception?.description ?? r.exceptionDetails.text);
+  if (r.exceptionDetails)
+    throw new Error(r.exceptionDetails.exception?.description ?? r.exceptionDetails.text);
   return r.result?.value;
 }
 
 async function main() {
   const report = { task: "SB3-spike", startedAt: new Date().toISOString(), steps: {} };
   if (!existsSync(SERVER_BIN)) throw new Error(`server bin missing: ${SERVER_BIN}`);
-  if (!existsSync(path.join(WEB_DIST, "index.html"))) throw new Error(`web build missing: ${WEB_DIST}`);
+  if (!existsSync(path.join(WEB_DIST, "index.html")))
+    throw new Error(`web build missing: ${WEB_DIST}`);
   if (!existsSync(path.join(baseDir, "userdata/state.sqlite")))
-    throw new Error(`seed missing at ${baseDir}/userdata/state.sqlite; run sb2-seed-shared-state.mjs`);
+    throw new Error(
+      `seed missing at ${baseDir}/userdata/state.sqlite; run sb2-seed-shared-state.mjs`,
+    );
 
   const serverPort = await findFreePort();
   const { randomBytes } = await import("node:crypto");
@@ -254,10 +271,14 @@ async function main() {
     tailscaleServePort: 3774,
   };
   console.log(`[sb3] server on :${serverPort} baseDir=${baseDir}`);
-  const child = spawn(process.env.T3_NODE_BIN?.trim() || "node", [SERVER_BIN, "serve", "--bootstrap-fd", "3", "--base-dir", baseDir], {
-    stdio: ["ignore", "pipe", "pipe", "pipe"],
-    env: { ...process.env, SHELL: "/bin/sh" },
-  });
+  const child = spawn(
+    process.env.T3_NODE_BIN?.trim() || "node",
+    [SERVER_BIN, "serve", "--bootstrap-fd", "3", "--base-dir", baseDir],
+    {
+      stdio: ["ignore", "pipe", "pipe", "pipe"],
+      env: { ...process.env, SHELL: "/bin/sh" },
+    },
+  );
   child.stdio[3].write(JSON.stringify(envelope) + "\n");
   child.stdio[3].end();
   let serverExited = false;
@@ -313,10 +334,15 @@ async function main() {
     front = await startFrontServer(serverPort);
     const origin = `http://${HOST}:${front.port}`;
     report.origin = origin;
-    console.log(`[sb3] front origin ${origin} (proxying ${PROXY_PREFIXES.join(",")} -> :${serverPort})`);
+    console.log(
+      `[sb3] front origin ${origin} (proxying ${PROXY_PREFIXES.join(",")} -> :${serverPort})`,
+    );
 
     // Launch headless Chrome.
-    const userDataDir = path.join(process.env.TMPDIR ?? "/tmp", `t3-sb3-${process.pid}-${Date.now()}`);
+    const userDataDir = path.join(
+      process.env.TMPDIR ?? "/tmp",
+      `t3-sb3-${process.pid}-${Date.now()}`,
+    );
     chrome = spawn(
       CHROME_BIN,
       [
@@ -339,23 +365,43 @@ async function main() {
     const { targetId } = await cdp.send("Target.createTarget", { url: "about:blank" });
     const { sessionId } = await cdp.send("Target.attachToTarget", { targetId, flatten: true });
     const console_ = [];
-    await Promise.all([cdp.send("Runtime.enable", {}, sessionId), cdp.send("Page.enable", {}, sessionId)]);
+    await Promise.all([
+      cdp.send("Runtime.enable", {}, sessionId),
+      cdp.send("Page.enable", {}, sessionId),
+    ]);
     cdp.onEvent((m) => {
       if (m.sessionId && m.sessionId !== sessionId) return;
       if (m.method === "Runtime.consoleAPICalled")
-        console_.push({ level: m.params.type, text: (m.params.args ?? []).map((a) => a.value ?? a.description ?? "").join(" ") });
+        console_.push({
+          level: m.params.type,
+          text: (m.params.args ?? []).map((a) => a.value ?? a.description ?? "").join(" "),
+        });
       else if (m.method === "Runtime.exceptionThrown")
-        console_.push({ level: "error", text: m.params.exceptionDetails.exception?.description ?? m.params.exceptionDetails.text });
+        console_.push({
+          level: "error",
+          text: m.params.exceptionDetails.exception?.description ?? m.params.exceptionDetails.text,
+        });
     });
-    await cdp.send("Emulation.setDeviceMetricsOverride", { width: 1280, height: 820, deviceScaleFactor: 1, mobile: false }, sessionId);
+    await cdp.send(
+      "Emulation.setDeviceMetricsOverride",
+      { width: 1280, height: 820, deviceScaleFactor: 1, mobile: false },
+      sessionId,
+    );
 
     const pairUrl = `${origin}/pair#token=${startupToken}`;
     console.log(`[sb3] navigating to ${pairUrl}`);
     await cdp.send("Page.navigate", { url: pairUrl }, sessionId);
 
     // Poll for populated state: the seeded project title should appear in the DOM.
-    const seed = JSON.parse(await readFile(path.join(baseDir, "..", "reports", "sb2-seed.json"), "utf8").catch(() => "null"))
-      ?? JSON.parse(await readFile(path.resolve(repoRoot, "apps/lynxtron/reports/sb2-seed.json"), "utf8"));
+    const seed =
+      JSON.parse(
+        await readFile(path.join(baseDir, "..", "reports", "sb2-seed.json"), "utf8").catch(
+          () => "null",
+        ),
+      ) ??
+      JSON.parse(
+        await readFile(path.resolve(repoRoot, "apps/lynxtron/reports/sb2-seed.json"), "utf8"),
+      );
     const projectTitle = seed?.dataset?.projects?.[0]?.title ?? "t3code-lynxtron";
     report.expectedProjectTitle = projectTitle;
 
@@ -363,7 +409,10 @@ async function main() {
     let connected = false;
     let bodyText = "";
     while (Date.now() < deadline) {
-      bodyText = (await evaluate(cdp, sessionId, "document.body ? document.body.innerText : ''").catch(() => "")) ?? "";
+      bodyText =
+        (await evaluate(cdp, sessionId, "document.body ? document.body.innerText : ''").catch(
+          () => "",
+        )) ?? "";
       if (bodyText.includes(projectTitle)) {
         connected = true;
         break;
@@ -372,17 +421,35 @@ async function main() {
     }
     report.steps.reachedPopulatedState = connected;
     report.bodyTextSample = bodyText.slice(0, 400);
-    report.consoleErrors = console_.filter((e) => e.level === "error").map((e) => e.text).slice(0, 20);
+    report.consoleErrors = console_
+      .filter((e) => e.level === "error")
+      .map((e) => e.text)
+      .slice(0, 20);
 
     // Screenshot for the record.
-    const shot = await cdp.send("Page.captureScreenshot", { format: "png", clip: { x: 0, y: 0, width: 1280, height: 820, scale: 1 }, captureBeyondViewport: true }, sessionId);
+    const shot = await cdp.send(
+      "Page.captureScreenshot",
+      {
+        format: "png",
+        clip: { x: 0, y: 0, width: 1280, height: 820, scale: 1 },
+        captureBeyondViewport: true,
+      },
+      sessionId,
+    );
     const evidenceDir = path.resolve(repoRoot, "apps/lynxtron/evidence/2026-08-03/SB3");
     await mkdir(evidenceDir, { recursive: true });
     await writeFile(path.join(evidenceDir, "web-connection.png"), Buffer.from(shot.data, "base64"));
     report.screenshot = "apps/lynxtron/evidence/2026-08-03/SB3/web-connection.png";
 
     cdp.close();
-    report.conclusion = { feasible: connected, notes: connected ? ["Real web app connected to the seeded shared server single-origin and rendered a seeded record."] : ["Web app did not reach populated state; inspect consoleErrors and bodyTextSample."] };
+    report.conclusion = {
+      feasible: connected,
+      notes: connected
+        ? [
+            "Real web app connected to the seeded shared server single-origin and rendered a seeded record.",
+          ]
+        : ["Web app did not reach populated state; inspect consoleErrors and bodyTextSample."],
+    };
   } catch (err) {
     report.error = err?.message ?? String(err);
   } finally {

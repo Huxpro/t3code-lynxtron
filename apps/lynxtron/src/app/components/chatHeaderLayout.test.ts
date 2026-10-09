@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vite-plus/test";
 
-import {
-  EXPANDED_HEADER_ACTIONS_MIN_WIDTH,
-  shouldCompactHeaderActions,
-} from "./chatHeaderLayout";
+import { EXPANDED_HEADER_ACTIONS_MIN_WIDTH, shouldCompactHeaderActions } from "./chatHeaderLayout";
 
 describe("shouldCompactHeaderActions", () => {
   it("matches the Web @3xl/header-actions threshold", () => {

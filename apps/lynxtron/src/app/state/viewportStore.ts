@@ -77,8 +77,7 @@ export function installViewportTestProbes(
   }
   target.__T3_LYNXTRON_VIEWPORT_PROBE__ = (width, height) =>
     callBridge(bridge, T3_VIEWPORT_SET_FOR_TEST_METHOD, { width, height });
-  target.__T3_LYNXTRON_RELOAD_PROBE__ = () =>
-    callBridge(bridge, T3_RELOAD_FOR_TEST_METHOD, {});
+  target.__T3_LYNXTRON_RELOAD_PROBE__ = () => callBridge(bridge, T3_RELOAD_FOR_TEST_METHOD, {});
 }
 
 export function getViewportSnapshot(): LynxtronViewportSnapshot {

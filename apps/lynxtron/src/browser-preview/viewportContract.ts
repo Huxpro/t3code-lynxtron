@@ -34,18 +34,9 @@ export function resolveBrowserPreviewViewportContract({
   requestedWidth,
   requestedHeight,
 }: BrowserPreviewViewportInput): BrowserPreviewViewportContract {
-  const cssWidth = resolvePositiveDimension(
-    innerWidth,
-    requestedWidth,
-    DEFAULT_VIEWPORT_WIDTH,
-  );
-  const cssHeight = resolvePositiveDimension(
-    innerHeight,
-    requestedHeight,
-    DEFAULT_VIEWPORT_HEIGHT,
-  );
-  const resolvedPixelRatio =
-    Number.isFinite(pixelRatio) && pixelRatio > 0 ? pixelRatio : 1;
+  const cssWidth = resolvePositiveDimension(innerWidth, requestedWidth, DEFAULT_VIEWPORT_WIDTH);
+  const cssHeight = resolvePositiveDimension(innerHeight, requestedHeight, DEFAULT_VIEWPORT_HEIGHT);
+  const resolvedPixelRatio = Number.isFinite(pixelRatio) && pixelRatio > 0 ? pixelRatio : 1;
 
   return {
     cssWidth,
