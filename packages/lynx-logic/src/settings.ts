@@ -9,7 +9,7 @@ import {
   MIN_GLASS_OPACITY_VALUE,
   PORTABLE_CLIENT_SETTINGS_DEFAULTS,
   PORTABLE_SERVER_SETTINGS_DEFAULTS,
-} from "@t3tools/contracts/settings-defaults";
+} from "./settingsDefaults.ts";
 
 export const MIN_GLASS_OPACITY = MIN_GLASS_OPACITY_VALUE;
 export const MAX_GLASS_OPACITY = MAX_GLASS_OPACITY_VALUE;

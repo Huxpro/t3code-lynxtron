@@ -1,4 +1,4 @@
-import catalog from "./catalog.json";
+import catalog from "../../../../lynxtron/src/app/components-lab/catalog.json";
 import { PRIMARY_LOCAL_ENVIRONMENT_ID } from "@t3tools/contracts";
 import { type ReactNode, useState } from "react";
 import { ComponentLabColumn, ComponentLabStack } from "./ComponentLabStack";

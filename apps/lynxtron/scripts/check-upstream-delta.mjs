@@ -6,9 +6,9 @@
 //
 // Upstream paths are meant to stay byte-identical to upstream (see
 // docs/architecture.md). A modified or deleted upstream file must be listed in
-// upstream-patches.json with its reason; anything else fails the check. Added
-// files are reported by kind, since `*.lynx.*` siblings are expected and other
-// additions inside upstream directories are not.
+// upstream-patches.json with its reason; anything else fails the check. A file
+// the fork adds inside an upstream directory must be named `*.lynx.*` or be
+// listed under "additions".
 
 import * as NodeChildProcess from "node:child_process";
 import * as NodeFS from "node:fs";
@@ -30,40 +30,49 @@ function git(gitArgs) {
   }).trim();
 }
 
-const FORK_OWNED = [/^apps\/lynxtron\//u, /^\.plans\//u, /^patches\//u];
+const FORK_OWNED = [/^apps\/lynxtron\//u, /^packages\/lynx-logic\//u, /^\.plans\//u, /^patches\//u];
+// Derived from the manifests; it differs whenever they do.
+const DERIVED = new Set(["pnpm-lock.yaml"]);
 const isForkOwned = (file) => FORK_OWNED.some((pattern) => pattern.test(file));
 const isLynxSibling = (file) => /\.lynx\.tsx?$/u.test(file);
 
-const patches = JSON.parse(
+const { patches, additions } = JSON.parse(
   NodeFS.readFileSync(NodePath.join(appRoot, "upstream-patches.json"), "utf8"),
-).patches;
+);
 const mergeBase = git(["merge-base", "HEAD", upstream]);
-const changes = git(["diff", "--name-status", "--no-renames", mergeBase, "HEAD"])
+const changes = git(["diff", "--name-status", "--no-renames", mergeBase])
   .split("\n")
   .filter(Boolean)
   .map((line) => {
     const [status, file] = line.split("\t");
     return { status, file };
   })
-  .filter((change) => !isForkOwned(change.file));
+  .filter((change) => !isForkOwned(change.file) && !DERIVED.has(change.file));
 
 const edited = changes.filter((change) => change.status !== "A");
 const listed = edited.filter((change) => change.file in patches);
 const unlisted = edited.filter((change) => !(change.file in patches));
-const stale = Object.keys(patches).filter((file) => !edited.some((change) => change.file === file));
 const added = changes.filter((change) => change.status === "A");
 const siblings = added.filter((change) => isLynxSibling(change.file));
 const otherAdded = added.filter((change) => !isLynxSibling(change.file));
+const unlistedAdded = otherAdded.filter((change) => !(change.file in additions));
+const stale = [
+  ...Object.keys(patches).filter((file) => !edited.some((change) => change.file === file)),
+  ...Object.keys(additions).filter((file) => !otherAdded.some((change) => change.file === file)),
+];
 
 console.log(`merge base ${mergeBase.slice(0, 10)} (${upstream})`);
 console.log(`upstream files modified or deleted: ${edited.length}`);
 console.log(`  listed in upstream-patches.json: ${listed.length}`);
 console.log(`  not listed: ${unlisted.length}`);
 console.log(`files added inside upstream directories: ${added.length}`);
-console.log(`  .lynx siblings: ${siblings.length}`);
-console.log(`  other: ${otherAdded.length}`);
+console.log(`  *.lynx.* modules: ${siblings.length}`);
+console.log(`  listed in upstream-patches.json: ${otherAdded.length - unlistedAdded.length}`);
+console.log(`  not listed: ${unlistedAdded.length}`);
 if (!summaryOnly) {
-  for (const change of unlisted) console.log(`unlisted ${change.status} ${change.file}`);
+  for (const change of [...unlisted, ...unlistedAdded]) {
+    console.log(`unlisted ${change.status} ${change.file}`);
+  }
   for (const file of stale) console.log(`stale patch entry ${file}`);
 }
-if (unlisted.length > 0 || stale.length > 0) NodeProcess.exitCode = 1;
+if (unlisted.length > 0 || unlistedAdded.length > 0 || stale.length > 0) NodeProcess.exitCode = 1;

@@ -19,10 +19,6 @@
       "types": "./src/keybindingConstants.ts",
       "import": "./src/keybindingConstants.ts"
     },
-    "./settings-defaults": {
-      "types": "./src/settingsDefaults.ts",
-      "import": "./src/settingsDefaults.ts"
-    },
     "./relay": {
       "types": "./src/relay.ts",
       "import": "./src/relay.ts"

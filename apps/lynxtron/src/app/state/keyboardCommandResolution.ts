@@ -4,7 +4,7 @@ import {
   keyboardPacketPlatform,
   keyboardPacketToEvent,
   resolveRendererNeutralShortcutCommand,
-} from "@t3tools/shared/keyboard";
+} from "@t3tools/lynx-logic/keyboard";
 
 export function resolveKeyboardPacketCommand(
   input: unknown,

@@ -1,4 +1,4 @@
-import { isRendererNeutralKeyboardPacket } from "@t3tools/shared/keyboard";
+import { isRendererNeutralKeyboardPacket } from "@t3tools/lynx-logic/keyboard";
 
 import { T3_COMPOSER_RETURN_FOCUS_METHOD } from "../../shared/composerKeyboardProtocol.ts";
 import { callBridge, type BridgeCallModule } from "./mainConnectorTransport";

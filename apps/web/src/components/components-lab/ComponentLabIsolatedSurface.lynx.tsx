@@ -1,4 +1,4 @@
-import isolatedCatalog from "./isolatedCatalog.json";
+import isolatedCatalog from "../../../../lynxtron/src/app/components-lab/isolatedCatalog.json";
 
 import { AppShellSurface } from "../AppShellSurface";
 import { ModelPickerEmptySurface } from "../chat/ModelPickerSurface";

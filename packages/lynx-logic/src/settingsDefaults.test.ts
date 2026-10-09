@@ -1,7 +1,7 @@
 import * as Schema from "effect/Schema";
 import { describe, expect, it } from "vite-plus/test";
 
-import { ClientSettingsSchema, ServerSettings } from "./settings.ts";
+import { ClientSettingsSchema, ServerSettings } from "@t3tools/contracts";
 import {
   PORTABLE_CLIENT_SETTINGS_DEFAULTS,
   PORTABLE_SERVER_SETTINGS_DEFAULTS,

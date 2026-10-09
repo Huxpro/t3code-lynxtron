@@ -12,8 +12,8 @@ const WEB_COMPONENT_ROOT = resolve(REPO_ROOT, "apps/web/src/components");
 const WEB_SOURCE_ROOT = resolve(REPO_ROOT, "apps/web/src");
 const LYNX_SOURCE_ROOT = resolve(REPO_ROOT, "apps/lynxtron/src/app");
 const DEFAULT_OUTPUT = resolve(APP_ROOT, "reports/components-lab/inventory.json");
-const CATALOG_PATH = resolve(WEB_COMPONENT_ROOT, "components-lab/catalog.json");
-const ISOLATED_CATALOG_PATH = resolve(WEB_COMPONENT_ROOT, "components-lab/isolatedCatalog.json");
+const CATALOG_PATH = resolve(LYNX_SOURCE_ROOT, "components-lab/catalog.json");
+const ISOLATED_CATALOG_PATH = resolve(LYNX_SOURCE_ROOT, "components-lab/isolatedCatalog.json");
 const SOURCE_EXTENSIONS = [".web.tsx", ".lynx.tsx", ".tsx", ".web.ts", ".lynx.ts", ".ts"];
 
 function normalizePath(value) {
