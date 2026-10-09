@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "@lynx-js/react";
-import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 
 import { Icon } from "./Icon";
 

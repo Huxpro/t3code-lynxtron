@@ -1,7 +1,4 @@
-import {
-  clampResizableWidth,
-  type ResizableWidthEdge,
-} from "@t3tools/client-runtime/presentation/resizable-width";
+import { clampResizableWidth, type ResizableWidthEdge } from "@t3tools/lynx-logic/resizableWidth";
 import {
   runOnBackground,
   runOnMainThread,

@@ -2,16 +2,13 @@ import {
   type KeybindingCommand,
   type KeybindingShortcut,
   type KeybindingWhenNode,
+  MODEL_PICKER_JUMP_KEYBINDING_COMMANDS,
   type ResolvedKeybindingsConfig,
+  THREAD_JUMP_KEYBINDING_COMMANDS,
   type ModelPickerJumpKeybindingCommand,
   type ThreadJumpKeybindingCommand,
 } from "@t3tools/contracts";
-import {
-  MODEL_PICKER_JUMP_KEYBINDING_COMMANDS,
-  THREAD_JUMP_KEYBINDING_COMMANDS,
-} from "@t3tools/contracts/keybinding-constants";
-import { resolveRendererNeutralShortcutCommand } from "@t3tools/shared/keyboard";
-import { getPlatform, isMacPlatform } from "./lib/platformDetection";
+import { isMacPlatform } from "./lib/utils";
 
 export interface ShortcutEventLike {
   type?: string;
@@ -97,7 +94,7 @@ function resolveEventKeys(event: ShortcutEventLike): Set<string> {
 function matchesShortcutModifiers(
   event: ShortcutModifierStateLike,
   shortcut: KeybindingShortcut,
-  platform = getPlatform(),
+  platform = navigator.platform,
 ): boolean {
   const useMetaForMod = isMacPlatform(platform);
   const expectedMeta = shortcut.metaKey || (shortcut.modKey && useMetaForMod);
@@ -113,14 +110,14 @@ function matchesShortcutModifiers(
 function matchesShortcut(
   event: ShortcutEventLike,
   shortcut: KeybindingShortcut,
-  platform = getPlatform(),
+  platform = navigator.platform,
 ): boolean {
   if (!matchesShortcutModifiers(event, shortcut, platform)) return false;
   return resolveEventKeys(event).has(shortcut.key);
 }
 
 function resolvePlatform(options: ShortcutMatchOptions | undefined): string {
-  return options?.platform ?? getPlatform();
+  return options?.platform ?? navigator.platform;
 }
 
 function resolveContext(options: ShortcutMatchOptions | undefined): ShortcutMatchContext {
@@ -156,7 +153,7 @@ function matchesWhenClause(
   return evaluateWhenNode(whenAst, context);
 }
 
-function shortcutConflictKey(shortcut: KeybindingShortcut, platform = getPlatform()): string {
+function shortcutConflictKey(shortcut: KeybindingShortcut, platform = navigator.platform): string {
   const useMetaForMod = isMacPlatform(platform);
   const metaKey = shortcut.metaKey || (shortcut.modKey && useMetaForMod);
   const ctrlKey = shortcut.ctrlKey || (shortcut.modKey && !useMetaForMod);
@@ -212,10 +209,17 @@ export function resolveShortcutCommand(
   keybindings: ResolvedKeybindingsConfig,
   options?: ShortcutMatchOptions,
 ): KeybindingCommand | null {
-  return resolveRendererNeutralShortcutCommand(event, keybindings, {
-    platform: resolvePlatform(options),
-    context: resolveContext(options),
-  });
+  const platform = resolvePlatform(options);
+  const context = resolveContext(options);
+
+  for (let index = keybindings.length - 1; index >= 0; index -= 1) {
+    const binding = keybindings[index];
+    if (!binding) continue;
+    if (!matchesWhenClause(binding.whenAst, context)) continue;
+    if (!matchesShortcut(event, binding.shortcut, platform)) continue;
+    return binding.command;
+  }
+  return null;
 }
 
 function formatShortcutKeyLabel(key: string): string {
@@ -231,7 +235,7 @@ function formatShortcutKeyLabel(key: string): string {
 
 export function formatShortcutLabel(
   shortcut: KeybindingShortcut,
-  platform = getPlatform(),
+  platform = navigator.platform,
 ): string {
   const keyLabel = formatShortcutKeyLabel(shortcut.key);
   const useMetaForMod = isMacPlatform(platform);
@@ -324,25 +328,6 @@ export function modelPickerJumpCommandForIndex(
   index: number,
 ): ModelPickerJumpKeybindingCommand | null {
   return MODEL_PICKER_JUMP_KEYBINDING_COMMANDS[index] ?? null;
-}
-
-/**
- * Pair each enabled model, in the order the picker lists it, with its jump
- * command. The shortcut labels and the jump action both read this list.
- */
-export function resolveModelPickerJumpTargets<T>(
-  items: ReadonlyArray<T>,
-  isDisabled: (item: T) => boolean,
-): ReadonlyArray<{ readonly item: T; readonly command: ModelPickerJumpKeybindingCommand }> {
-  const targets: Array<{ readonly item: T; readonly command: ModelPickerJumpKeybindingCommand }> =
-    [];
-  for (const item of items) {
-    if (isDisabled(item)) continue;
-    const command = modelPickerJumpCommandForIndex(targets.length);
-    if (!command) break;
-    targets.push({ item, command });
-  }
-  return targets;
 }
 
 export function modelPickerJumpIndexFromCommand(command: string): number | null {
@@ -476,7 +461,7 @@ export function isOpenFavoriteEditorShortcut(
 
 export function isTerminalClearShortcut(
   event: ShortcutEventLike,
-  platform = getPlatform(),
+  platform = navigator.platform,
 ): boolean {
   if (event.type !== undefined && event.type !== "keydown") {
     return false;
@@ -500,7 +485,7 @@ export function isTerminalClearShortcut(
 
 export function terminalDeleteShortcutData(
   event: ShortcutEventLike,
-  platform = getPlatform(),
+  platform = navigator.platform,
 ): string | null {
   if (event.type !== undefined && event.type !== "keydown") {
     return null;
@@ -522,7 +507,7 @@ export function terminalDeleteShortcutData(
 
 export function terminalNavigationShortcutData(
   event: ShortcutEventLike,
-  platform = getPlatform(),
+  platform = navigator.platform,
 ): string | null {
   if (event.type !== undefined && event.type !== "keydown") {
     return null;

@@ -59,9 +59,6 @@ import {
 
 export const Route = createRootRoute({
   beforeLoad: async ({ location }) => {
-    if (location.pathname === "/components-lab") {
-      return { authGateState: { status: "hosted-static" } as const };
-    }
     if (location.pathname === "/pair" && hasHostedPairingRequest(new URL(window.location.href))) {
       return {
         authGateState: {
@@ -94,7 +91,6 @@ function RootRouteView() {
   const pathname = useLocation({ select: (location) => location.pathname });
   const { authGateState } = Route.useRouteContext();
   const primaryEnvironmentAuthenticated = authGateState.status === "authenticated";
-  const isComponentsLab = pathname === "/components-lab";
 
   useEffect(() => {
     const frame = window.requestAnimationFrame(() => {
@@ -105,12 +101,7 @@ function RootRouteView() {
     };
   }, [pathname]);
 
-  if (
-    isComponentsLab ||
-    pathname === "/pair" ||
-    pathname === "/connect" ||
-    pathname.startsWith("/connect/")
-  ) {
+  if (pathname === "/pair" || pathname === "/connect" || pathname.startsWith("/connect/")) {
     return (
       <>
         <DocumentTitleSync />

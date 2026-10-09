@@ -6,7 +6,7 @@ import { pathToFileURL } from "node:url";
 import {
   floatingRelationResidual,
   measureFloatingRelation,
-} from "../../../packages/client-runtime/src/presentation/floatingRelation.ts";
+} from "../../../packages/lynx-logic/src/floatingRelation.ts";
 
 function argumentValue(name) {
   const index = process.argv.indexOf(name);

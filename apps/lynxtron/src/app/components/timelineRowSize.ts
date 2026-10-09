@@ -38,10 +38,7 @@ export function timelineRowReuseIdentifier(row: TimelineRowReuseShape): string {
       return row.kind;
   }
 }
-import {
-  reduceTimelineScrollMode,
-  type TimelineScrollMode,
-} from "@t3tools/client-runtime/presentation/transcript";
+import { reduceTimelineScrollMode, type TimelineScrollMode } from "@t3tools/lynx-logic/transcript";
 
 export function resolveNativeTimelineScrollUpdate(input: {
   readonly mode: TimelineScrollMode;

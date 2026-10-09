@@ -19,18 +19,6 @@ import {
   squashAtomCommandFailure,
   type AtomCommandResult,
 } from "@t3tools/client-runtime/state/runtime";
-import {
-  buildFileLinkParentSuffixByPath,
-  extractMarkdownLinkHrefs,
-  extractMarkdownFenceTitle,
-  findMarkdownTaskListMarkerOffset,
-  normalizeMarkdownLinkHrefKey,
-  resolveInlineCodeFileLinkMeta,
-  resolveMarkdownFileLinkMeta,
-  resolveMarkdownCodeLanguage,
-  rewriteMarkdownFileUriHref,
-  type MarkdownFileLinkMeta,
-} from "@t3tools/client-runtime/presentation/markdown";
 import * as Cause from "effect/Cause";
 import { AsyncResult } from "effect/unstable/reactivity";
 import React, {
@@ -63,12 +51,6 @@ import {
   resolveExternalWebLinkHost,
   showExternalLinkContextMenu,
 } from "./chat/externalLinkContextMenu";
-import {
-  buildFileLinkContextMenuItems,
-  FILE_LINK_COPY_LABELS,
-  fileLinkCopiedToast,
-  fileLinkFailureToast,
-} from "./chat/fileLinkContextMenu";
 import { hasSpecificPierreIconForFileName, syntheticFileNameForLanguageId } from "../pierre-icons";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 import { Button } from "./ui/button";
@@ -91,6 +73,13 @@ import {
   serializeTableElementToMarkdown,
 } from "../markdown-clipboard";
 import { remarkNormalizeListItemIndentation } from "../markdown-list-indentation";
+import {
+  normalizeMarkdownLinkDestination,
+  resolveInlineCodeFileLinkMeta,
+  resolveMarkdownFileLinkMeta,
+  rewriteMarkdownFileUriHref,
+  type MarkdownFileLinkMeta,
+} from "../markdown-links";
 import { readLocalApi } from "../localApi";
 import { cn } from "../lib/utils";
 import { useRightPanelStore } from "../rightPanelStore";
@@ -134,6 +123,7 @@ interface ChatMarkdownProps {
 
 const EMPTY_MARKDOWN_SKILLS: ReadonlyArray<Pick<ServerProviderSkill, "name" | "displayName">> = [];
 
+const CODE_FENCE_LANGUAGE_REGEX = /(?:^|\s)language-([^\s]+)/;
 const MAX_HIGHLIGHT_CACHE_ENTRIES = 500;
 const MAX_HIGHLIGHT_CACHE_MEMORY_BYTES = 50 * 1024 * 1024;
 
@@ -154,6 +144,17 @@ const highlightedCodeCache = new LRUCache<string>(
   MAX_HIGHLIGHT_CACHE_ENTRIES,
   MAX_HIGHLIGHT_CACHE_MEMORY_BYTES,
 );
+
+function findTaskListMarkerOffset(markdown: string, listItemStart: number): number | null {
+  const firstLineEnd = markdown.indexOf("\n", listItemStart);
+  const firstLine = markdown.slice(
+    listItemStart,
+    firstLineEnd === -1 ? markdown.length : firstLineEnd,
+  );
+  const match = firstLine.match(/^(?:\s*(?:[-+*]|\d+[.)])\s+)(\[[ xX]\])/);
+  if (!match?.[1]) return null;
+  return listItemStart + firstLine.indexOf(match[1]);
+}
 
 /**
  * The default `1.25rem` marker gutter (`.chat-markdown ol`) fits two-digit
@@ -176,12 +177,10 @@ export function orderedListGutterStyle(
 
 const CHAT_MARKDOWN_SANITIZE_SCHEMA = {
   ...defaultSchema,
-  tagNames: [...(defaultSchema.tagNames ?? []), "details", "summary"],
   attributes: {
     ...defaultSchema.attributes,
     "*": (defaultSchema.attributes?.["*"] ?? []).filter((attribute) => attribute !== "title"),
     code: [...(defaultSchema.attributes?.code ?? []), "dataCodeMeta", "dataInlineCode"],
-    details: [...(defaultSchema.attributes?.details ?? []), "open"],
     blockquote: [...(defaultSchema.attributes?.blockquote ?? []), "dataAlert"],
   },
   protocols: {
@@ -248,6 +247,25 @@ const GITHUB_ALERT_PRESENTATIONS: Record<
     titleClassName: "text-red-600 dark:text-red-400",
   },
 };
+
+function extractFenceLanguage(className: string | undefined): string {
+  const match = className?.match(CODE_FENCE_LANGUAGE_REGEX);
+  const raw = match?.[1] ?? "text";
+  // Shiki doesn't bundle a gitignore grammar; ini is a close match (#685)
+  return raw === "gitignore" ? "ini" : raw;
+}
+
+const FENCE_TITLE_ATTR_REGEX = /(?:^|\s)(?:title|file(?:name)?)=(?:"([^"]+)"|'([^']+)'|(\S+))/i;
+const FENCE_FILENAME_TOKEN_REGEX = /^[\w@][\w@./-]*\.[A-Za-z0-9]+$/;
+
+/** Pulls a filename out of fence meta: ```ts title="x.ts" / ```ts src/main.ts */
+function extractFenceTitle(meta: string | undefined): string | null {
+  if (!meta) return null;
+  const attrMatch = FENCE_TITLE_ATTR_REGEX.exec(meta);
+  const attrTitle = attrMatch?.[1] ?? attrMatch?.[2] ?? attrMatch?.[3];
+  if (attrTitle) return attrTitle;
+  return meta.split(/\s+/).find((candidate) => FENCE_FILENAME_TOKEN_REGEX.test(candidate)) ?? null;
+}
 
 function extractPreCodeMeta(node: unknown): string | undefined {
   const children = (
@@ -655,9 +673,6 @@ function MarkdownCodeBlock({
     <div
       className="chat-markdown-codeblock my-[0.65rem] overflow-hidden rounded-[var(--radius)] border border-border/70 bg-secondary leading-snug dark:border-transparent dark:bg-input/32"
       data-language={language}
-      data-markdown-code-block="true"
-      data-markdown-code-language={language}
-      data-markdown-code-title={fenceTitle ?? ""}
       data-wrap={wrapped ? "true" : "false"}
     >
       <div className="chat-markdown-codeblock-header flex items-center justify-between gap-2 pt-1.5 pr-1.5 pb-0 pl-3 select-none">
@@ -724,7 +739,7 @@ function SuspenseShikiCodeBlock({
   themeName,
   isStreaming,
 }: SuspenseShikiCodeBlockProps) {
-  const language = resolveMarkdownCodeLanguage(className);
+  const language = extractFenceLanguage(className);
   const cacheKey = createHighlightCacheKey(code, language, themeName);
   const cachedHighlightedHtml = !isStreaming ? highlightedCodeCache.get(cacheKey) : null;
 
@@ -810,8 +825,69 @@ interface MarkdownFileLinkProps {
   className?: string | undefined;
 }
 
+const MARKDOWN_LINK_HREF_PATTERN = /\[[^\]]*]\(([^)\s]+)(?:\s+["'][^"']*["'])?\)/g;
 const MARKDOWN_FILE_LINK_CLASS_NAME =
   "chat-markdown-file-link cursor-pointer transition-colors hover:bg-accent/70";
+
+function pathParentSegments(path: string): string[] {
+  const normalized = path.replaceAll("\\", "/");
+  const segments = normalized.split("/").filter((segment) => segment.length > 0);
+  return segments.slice(0, -1);
+}
+
+function buildFileLinkParentSuffixByPath(filePaths: ReadonlyArray<string>): Map<string, string> {
+  const groups = new Map<string, Set<string>>();
+  for (const filePath of filePaths) {
+    const pathSegments = filePath
+      .replaceAll("\\", "/")
+      .split("/")
+      .filter((segment) => segment.length > 0);
+    const basename = pathSegments[pathSegments.length - 1];
+    if (!basename) continue;
+    const group = groups.get(basename) ?? new Set<string>();
+    group.add(filePath);
+    groups.set(basename, group);
+  }
+
+  const suffixByPath = new Map<string, string>();
+  for (const group of groups.values()) {
+    const uniquePaths = [...group];
+    if (uniquePaths.length < 2) continue;
+
+    const parentSegmentsByPath = new Map(
+      uniquePaths.map((filePath) => [filePath, pathParentSegments(filePath)]),
+    );
+    const minUniqueDepthByPath = new Map<string, number>();
+
+    for (const filePath of uniquePaths) {
+      const segments = parentSegmentsByPath.get(filePath) ?? [];
+      let resolvedDepth = segments.length;
+      for (let depth = 1; depth <= segments.length; depth += 1) {
+        const candidate = segments.slice(-depth).join("/");
+        const collision = uniquePaths.some((otherPath) => {
+          if (otherPath === filePath) return false;
+          const otherSegments = parentSegmentsByPath.get(otherPath) ?? [];
+          return otherSegments.slice(-depth).join("/") === candidate;
+        });
+        if (!collision) {
+          resolvedDepth = depth;
+          break;
+        }
+      }
+      minUniqueDepthByPath.set(filePath, resolvedDepth);
+    }
+
+    for (const filePath of uniquePaths) {
+      const segments = parentSegmentsByPath.get(filePath) ?? [];
+      if (segments.length === 0) continue;
+      const minUniqueDepth = minUniqueDepthByPath.get(filePath) ?? 1;
+      const suffixDepth = Math.min(segments.length, Math.max(minUniqueDepth, 2));
+      suffixByPath.set(filePath, segments.slice(-suffixDepth).join("/"));
+    }
+  }
+
+  return suffixByPath;
+}
 
 const FENCED_CODE_SEGMENT_PATTERN = /(```[\s\S]*?(?:```|$))/;
 const INLINE_CODE_SPAN_PATTERN = /`([^`\n]+)`/g;
@@ -826,6 +902,21 @@ function extractInlineCodeSpans(text: string): string[] {
     }
   }
   return spans;
+}
+
+function extractMarkdownLinkHrefs(text: string): string[] {
+  const hrefs: string[] = [];
+  for (const match of text.matchAll(MARKDOWN_LINK_HREF_PATTERN)) {
+    const href = match[1]?.trim();
+    if (!href) continue;
+    hrefs.push(href);
+  }
+  return hrefs;
+}
+
+function normalizeMarkdownLinkHrefKey(href: string): string {
+  const normalizedHref = normalizeMarkdownLinkDestination(href);
+  return rewriteMarkdownFileUriHref(normalizedHref) ?? normalizedHref;
 }
 
 const MARKDOWN_LINK_FAVICON_CLASS_NAME = "block size-full shrink-0 select-none";
@@ -1052,7 +1143,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         );
         const error = squashAtomCommandFailure(result);
         toastManager.add(
-          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-editor", cause: error })),
+          stackedThreadToast({
+            type: "error",
+            title: "Unable to open file",
+            description: error instanceof Error ? error.message : "An error occurred.",
+          }),
         );
       } catch (cause) {
         reportMarkdownActionFailure(
@@ -1060,7 +1155,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           cause,
         );
         toastManager.add(
-          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-editor", cause })),
+          stackedThreadToast({
+            type: "error",
+            title: "Unable to open file",
+            description: cause instanceof Error ? cause.message : "An error occurred.",
+          }),
         );
       }
     })();
@@ -1090,7 +1189,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
         );
         const error = squashAtomCommandFailure(result);
         toastManager.add(
-          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-browser", cause: error })),
+          stackedThreadToast({
+            type: "error",
+            title: "Unable to open file in browser",
+            description: error instanceof Error ? error.message : "An error occurred.",
+          }),
         );
       } catch (cause) {
         reportMarkdownActionFailure(
@@ -1098,7 +1201,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           cause,
         );
         toastManager.add(
-          stackedThreadToast(fileLinkFailureToast({ kind: "open-in-browser", cause })),
+          stackedThreadToast({
+            type: "error",
+            title: "Unable to open file in browser",
+            description: cause instanceof Error ? cause.message : "An error occurred.",
+          }),
         );
       }
     })();
@@ -1119,7 +1226,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
 
       void navigator.clipboard.writeText(value).then(
         () => {
-          toastManager.add(fileLinkCopiedToast(title, value));
+          toastManager.add({
+            type: "success",
+            title: `${title} copied`,
+            description: value,
+          });
         },
         (error) => {
           reportMarkdownActionFailure(
@@ -1127,7 +1238,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
             error,
           );
           toastManager.add(
-            stackedThreadToast(fileLinkFailureToast({ kind: "copy", label: title, cause: error })),
+            stackedThreadToast({
+              type: "error",
+              title: `Failed to copy ${title.toLowerCase()}`,
+              description: error instanceof Error ? error.message : "An error occurred.",
+            }),
           );
         },
       );
@@ -1145,7 +1260,14 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
 
       try {
         const clicked = await api.contextMenu.show(
-          buildFileLinkContextMenuItems({ canOpenInBrowser: Boolean(onOpenInBrowser) }),
+          [
+            { id: "open", label: "Open in editor" },
+            ...(onOpenInBrowser
+              ? ([{ id: "open-in-browser", label: "Open in integrated browser" }] as const)
+              : []),
+            { id: "copy-relative", label: "Copy relative path" },
+            { id: "copy-full", label: "Copy full path" },
+          ] as const,
           { x: event.clientX, y: event.clientY },
         );
 
@@ -1158,11 +1280,11 @@ const MarkdownFileLink = memo(function MarkdownFileLink({
           return;
         }
         if (clicked === "copy-relative") {
-          handleCopy(displayPath, FILE_LINK_COPY_LABELS["copy-relative"]);
+          handleCopy(displayPath, "Relative path");
           return;
         }
         if (clicked === "copy-full") {
-          handleCopy(targetPath, FILE_LINK_COPY_LABELS["copy-full"]);
+          handleCopy(targetPath, "Full path");
         }
       } catch (cause) {
         reportMarkdownActionFailure(
@@ -1469,9 +1591,7 @@ function ChatMarkdown({
       li({ node, children, ...props }) {
         const listItemStart = node?.position?.start.offset;
         const markerOffset =
-          typeof listItemStart === "number"
-            ? findMarkdownTaskListMarkerOffset(text, listItemStart)
-            : null;
+          typeof listItemStart === "number" ? findTaskListMarkerOffset(text, listItemStart) : null;
         return (
           <li {...props} data-task-marker-offset={markerOffset ?? undefined}>
             {renderSkillInlineMarkdownChildren(children, skills)}
@@ -1623,8 +1743,8 @@ function ChatMarkdown({
           return <pre {...props}>{children}</pre>;
         }
 
-        const language = resolveMarkdownCodeLanguage(codeBlock.className);
-        const fenceTitle = extractMarkdownFenceTitle(extractPreCodeMeta(node));
+        const language = extractFenceLanguage(codeBlock.className);
+        const fenceTitle = extractFenceTitle(extractPreCodeMeta(node));
         return (
           <MarkdownCodeBlock
             code={codeBlock.code}

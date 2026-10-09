@@ -17,14 +17,14 @@ import {
   workGroupId,
   workGroupIdentity,
   type ToolGroupSummaryKind,
-} from "@t3tools/client-runtime/presentation/transcript";
+} from "@t3tools/lynx-logic/transcript";
 
 // Tool-group summaries are shared with the Lynx renderer through client-runtime.
 export {
   summarizeToolGroup,
   toolGroupAction,
   workLogEntryIsLocalCodeSearch,
-} from "@t3tools/client-runtime/presentation/transcript";
+} from "@t3tools/lynx-logic/transcript";
 
 export const MAX_VISIBLE_WORK_LOG_ENTRIES = 1;
 export const TIMELINE_MINIMAP_ITEM_SPACING = 8;

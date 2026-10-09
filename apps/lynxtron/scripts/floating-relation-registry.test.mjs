@@ -29,38 +29,28 @@ describe("floating relation registry", () => {
     }
   });
 
-  it("instruments every registered relation in both Web and Lynx product sources", () => {
-    const productSources = [
-      "apps/web/src/components/Sidebar.tsx",
+  it("instruments every registered relation in the Lynx product sources", () => {
+    const lynxSource = [
       "apps/web/src/components/SidebarV2.lynx.tsx",
-      "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
-      "apps/web/src/components/chat/ProviderModelPicker.tsx",
-      "apps/web/src/components/chat/ChatComposer.tsx",
-      "apps/web/src/components/BranchToolbarEnvModeSelector.tsx",
-      "apps/web/src/components/chat/OpenInPicker.tsx",
-      "apps/web/src/components/RightPanelTabs.tsx",
-      "apps/web/src/components/DiffPanel.tsx",
+      "apps/web/src/components/sidebar/SidebarV2ControlsSurface.lynx.tsx",
       "apps/lynxtron/src/app/components/Composer.tsx",
       "apps/lynxtron/src/app/components/ModelPicker.tsx",
       "apps/lynxtron/src/app/components/ChatHeader.tsx",
       "apps/lynxtron/src/app/components/OpenInPicker.tsx",
       "apps/lynxtron/src/app/components/RightPanel.tsx",
       "apps/lynxtron/src/app/components/DiffPanel.tsx",
-    ].map((source) => readFileSync(path.join(repoRoot, source), "utf8"));
-    const webSource = productSources.slice(0, 9).join("\n");
-    const lynxSource = [productSources[1], productSources[2], ...productSources.slice(9)].join(
-      "\n",
-    );
+    ]
+      .map((source) => readFileSync(path.join(repoRoot, source), "utf8"))
+      .join("\n");
 
     for (const relation of registry.relations) {
-      assert.include(webSource, relation.id, `Web relation identity: ${relation.id}`);
       assert.include(lynxSource, relation.id, `Lynx relation identity: ${relation.id}`);
     }
   });
 
   it("keeps fixed viewport coordinates out of the Sidebar relation sources", () => {
     const controls = readFileSync(
-      path.join(repoRoot, "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx"),
+      path.join(repoRoot, "apps/web/src/components/sidebar/SidebarV2ControlsSurface.lynx.tsx"),
       "utf8",
     );
     const sidebar = readFileSync(

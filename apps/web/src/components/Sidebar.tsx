@@ -117,6 +117,7 @@ import {
   resolveActiveThreadRouteRef,
   resolveThreadRouteTarget,
 } from "../threadRoutes";
+import { formatRelativeTimeLabel, parseTimestampDate } from "../timestampFormat";
 import type { SidebarThreadSummary } from "../types";
 import { cn } from "~/lib/utils";
 import { buildThreadActionMenuItems } from "./threadActionMenu.logic";
@@ -127,27 +128,20 @@ import {
   firstValidTimestampMs,
   hasUnseenCompletion,
   isSidebarNestedLinkClick,
-  isSidebarV2ThreadWoke,
   isTrailingDoubleClick,
   orderItemsByPreferredIds,
   planPinnedReorder,
   resolveAdjacentThreadId,
+  resolveSettledTimestamp,
   resolveSidebarThreadStatus,
-  resolveSidebarV2RowPresentation,
   searchSidebarThreadsByTitle,
   shouldCreateNewThreadInCurrentProject,
   resolveWorkingStartedAt,
-  sidebarV2SettledTimeLabel,
-  sidebarV2ThreadTimeLabel,
   sortLogicalProjectsForSidebar,
   sortPinnedThreadsForSidebar,
   sortSettledThreadsForSidebar,
   sortThreadsForSidebar,
 } from "./Sidebar.logic";
-import {
-  formatThreadActionConfirmationMessage,
-  projectThreadActionConfirmation,
-} from "@t3tools/client-runtime/presentation/thread-actions";
 import { resolveLocalCheckoutBranchMismatch } from "./BranchToolbar.logic";
 import {
   ThreadWorktreeIndicator,
@@ -175,7 +169,7 @@ import {
   deriveProviderEntriesByEnvironment,
   shouldShowInstanceBadge,
   type ProviderInstanceEntry,
-} from "@t3tools/client-runtime/presentation/provider";
+} from "../providerInstances";
 import { useThreadRunningTerminalIds } from "../state/terminalSessions";
 import { stackedThreadToast, toastManager } from "./ui/toast";
 import { Button } from "./ui/button";
@@ -200,6 +194,24 @@ const SETTLED_TAIL_PAGE_COUNT = 25;
 // Keep the v2 key so existing preferences survive the v2-to-default rename.
 const SETTLED_SHELF_EXPANDED_KEY = "t3code:sidebar-v2:settled-expanded";
 const SNOOZED_SHELF_EXPANDED_KEY = "t3code:sidebar-v2:snoozed-expanded";
+
+function compactSidebarTimeLabel(label: string): string {
+  if (label === "just now") return "now";
+  return label.endsWith(" ago") ? label.slice(0, -4) : label;
+}
+
+function threadTimeLabel(thread: SidebarThreadSummary): string {
+  const timestamp = thread.latestUserMessageAt ?? thread.updatedAt;
+  return compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
+}
+
+// Settled rows read "how long ago did this wrap up", matching their sort
+// key: both go through resolveSettledTimestamp so label and order can't
+// disagree.
+function settledTimeLabel(thread: SidebarThreadSummary): string {
+  const timestamp = resolveSettledTimestamp(thread);
+  return timestamp === null ? "" : compactSidebarTimeLabel(formatRelativeTimeLabel(timestamp));
+}
 
 // Floats at the row's right edge, vertically centered, while the jump
 // modifier is held. An overlay pill instead of an inline slot: the hint
@@ -254,7 +266,6 @@ function SidebarThreadTooltip({
   branchMismatch,
   terminalStatus,
   terminalProcessCount,
-  relationId,
 }: {
   thread: SidebarThreadSummary;
   projectTitle: string | null;
@@ -271,12 +282,10 @@ function SidebarThreadTooltip({
   } | null;
   terminalStatus: TerminalStatusIndicator | null;
   terminalProcessCount: number;
-  relationId: string;
 }) {
   const driverKind = providerEntry?.driverKind ?? null;
   return (
     <TooltipPopup
-      relationId={relationId}
       side="right"
       align="start"
       sideOffset={4}
@@ -808,8 +817,11 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
   // message, settling, archiving, or a change request state that settles the
   // thread. Timer wakes survive a mere visit. An unparseable visit timestamp
   // counts as never-visited, so corrupt local data cannot eat the wake signal.
+  const lastVisitedDate = lastVisitedAt === undefined ? null : parseTimestampDate(lastVisitedAt);
+  const wokeAtDate = props.wokeAt === null ? null : parseTimestampDate(props.wokeAt);
   const isWoke =
-    isSidebarV2ThreadWoke(props.wokeAt, lastVisitedAt) &&
+    wokeAtDate !== null &&
+    (lastVisitedDate === null || lastVisitedDate < wokeAtDate) &&
     !changeRequestAutoSettles(pr, {
       autoSettleOnMerge: props.autoSettleOnMerge,
       thread,
@@ -817,16 +829,68 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
   // In-flight rows (working, or waiting on approval/input) fade as a whole:
   // there is nothing for the user to do yet, so prominence is reserved for
   // rows that need a human — done (unread), read-but-unsettled, failed, and
-  // freshly woken. Status hues follow the system-wide convention (amber
-  // approval, indigo input, sky working) so a thread reads the same color
-  // everywhere it surfaces.
-  const { isInFlight, shouldRecede, topStatus } = resolveSidebarV2RowPresentation({
-    status,
-    isUnread,
-    isWoke,
-    isActive: props.isActive,
-    isSelected,
-  });
+  // freshly woken. The status label keeps its hue, so waiting rows stay
+  // findable. In-flight rows recede the same as read-ready ones (inbox-zero:
+  // working threads aren't your problem yet) — only the colored status label
+  // stands out.
+  const isInFlight =
+    status === "working" || status === "monitoring" || status === "approval" || status === "input";
+  const shouldRecede =
+    (status === "ready" || isInFlight) && !isUnread && !isWoke && !props.isActive && !isSelected;
+  // Status hues follow the system-wide convention set by sidebar v1 and the
+  // mobile Live Activity/widgets (amber approval, indigo input, sky working)
+  // so a thread reads the same color everywhere it surfaces.
+  const topStatus =
+    status === "working"
+      ? {
+          label: "Working",
+          icon: "working" as const,
+          // No shimmer: a label that animates forever is noise in a sidebar
+          // full of them (and repaints every vsync on high-refresh displays).
+          // Working is a background state, so it rests at the dim end of what
+          // the old pulse cycled through; only the thread you have open gets
+          // the label at full strength.
+          className: cn("text-sky-600 dark:text-sky-400", !props.isActive && "opacity-75"),
+        }
+      : status === "monitoring"
+        ? {
+            // Monitoring is calm background presence, not active progress
+            // (monitoring-pill D6), so it keeps the label at full strength.
+            label: "Monitoring",
+            icon: null,
+            className: "text-sky-600 dark:text-sky-400",
+          }
+        : status === "approval"
+          ? {
+              label: "Approval",
+              icon: null,
+              className: "text-amber-700 dark:text-amber-300",
+            }
+          : status === "input"
+            ? {
+                label: "Input",
+                icon: null,
+                className: "text-indigo-600 dark:text-indigo-300",
+              }
+            : status === "failed"
+              ? {
+                  label: "Failed",
+                  icon: null,
+                  className: "text-red-700 dark:text-red-300",
+                }
+              : isWoke
+                ? {
+                    label: "Woke",
+                    icon: "woke" as const,
+                    className: "text-amber-700 dark:text-amber-300",
+                  }
+                : isUnread
+                  ? {
+                      label: "Done",
+                      icon: "done" as const,
+                      className: "text-emerald-700 dark:text-emerald-300",
+                    }
+                  : null;
   const isWokeStatus = topStatus?.icon === "woke";
 
   const branchMismatch = resolveLocalCheckoutBranchMismatch({
@@ -879,7 +943,6 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
 
   const detailsTooltip = (
     <SidebarThreadTooltip
-      relationId={`sidebar-thread-details:${threadKey}`}
       thread={thread}
       projectTitle={props.projectTitle}
       projectCwd={props.projectCwd}
@@ -1143,7 +1206,6 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                 role="button"
                 tabIndex={0}
                 data-testid="sidebar-row-slim"
-                data-floating-anchor={`sidebar-thread-details:${threadKey}`}
                 aria-busy={isRegeneratingTitle || undefined}
                 className={cn(rowSurfaceClassName, "flex h-9 items-center gap-2.5 px-2.5")}
                 onClick={handleClick}
@@ -1216,8 +1278,8 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                 ) : (
                   <span className="text-xs">
                     {variantAction === "unsettle"
-                      ? sidebarV2SettledTimeLabel(thread)
-                      : sidebarV2ThreadTimeLabel(thread)}
+                      ? settledTimeLabel(thread)
+                      : threadTimeLabel(thread)}
                   </span>
                 )}
               </span>
@@ -1297,7 +1359,6 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
               role="button"
               tabIndex={0}
               data-testid="sidebar-row-card"
-              data-floating-anchor={`sidebar-thread-details:${threadKey}`}
               aria-busy={isRegeneratingTitle || undefined}
               className={rowSurfaceClassName}
               onClick={handleClick}
@@ -1414,7 +1475,7 @@ const SidebarThreadRow = memo(function SidebarThreadRow(props: {
                       </span>
                     )
                   ) : (
-                    sidebarV2ThreadTimeLabel(thread)
+                    threadTimeLabel(thread)
                   )}
                 </span>
                 {props.settlementSupported || showSnoozeButton ? (
@@ -1617,11 +1678,10 @@ const SidebarSearchResultRow = memo(function SidebarSearchResultRow(props: {
           />
           <span className="min-w-0 flex-1 truncate">{thread.title}</span>
           <span className="shrink-0 text-xs text-muted-foreground/55 tabular-nums">
-            {sidebarV2ThreadTimeLabel(thread)}
+            {threadTimeLabel(thread)}
           </span>
         </TooltipTrigger>
         <SidebarThreadTooltip
-          relationId={`sidebar-thread-details:${thread.environmentId}:${thread.id}`}
           thread={thread}
           projectTitle={props.projectTitle}
           projectCwd={props.projectCwd}
@@ -3144,12 +3204,10 @@ export default function Sidebar() {
             if (confirmThreadDelete) {
               const confirmed = await settlePromise(() =>
                 api.dialogs.confirm(
-                  formatThreadActionConfirmationMessage(
-                    projectThreadActionConfirmation({
-                      action: "delete",
-                      threadTitle: thread.title,
-                    }),
-                  ),
+                  [
+                    `Delete thread "${thread.title}"?`,
+                    "This permanently clears conversation history for this thread.",
+                  ].join("\n"),
                   { variant: "destructive" },
                 ),
               );
@@ -3421,7 +3479,6 @@ export default function Sidebar() {
                     render={
                       <SidebarMenuButton
                         aria-label="Filter threads by project"
-                        data-floating-anchor="sidebar-project-scope"
                         className="min-w-0 flex-1 ps-[calc(var(--sidebar-row-content-inset)-1px)] focus-visible:ring-offset-2 focus-visible:ring-offset-sidebar"
                       />
                     }
@@ -3441,11 +3498,7 @@ export default function Sidebar() {
                     </span>
                     <ChevronDownIcon className="-mr-px size-4 shrink-0" />
                   </MenuTrigger>
-                  <MenuPopup
-                    align="start"
-                    relationId="sidebar-project-scope"
-                    className="w-(--anchor-width)"
-                  >
+                  <MenuPopup align="start" className="w-(--anchor-width)">
                     <MenuRadioGroup
                       value={projectScopeKey ?? "all"}
                       onValueChange={(value) =>

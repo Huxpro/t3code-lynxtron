@@ -12,7 +12,6 @@ import {
   isChatNewLocalShortcut,
   isDiffToggleShortcut,
   modelPickerJumpCommandForIndex,
-  resolveModelPickerJumpTargets,
   modelPickerJumpIndexFromCommand,
   isOpenFavoriteEditorShortcut,
   isTerminalClearShortcut,
@@ -477,21 +476,6 @@ describe("model picker navigation helpers", () => {
     assert.strictEqual(modelPickerJumpIndexFromCommand("modelPicker.jump.1"), 0);
     assert.strictEqual(modelPickerJumpIndexFromCommand("modelPicker.jump.3"), 2);
     assert.isNull(modelPickerJumpIndexFromCommand("thread.jump.1"));
-  });
-
-  it("numbers enabled models in listed order and skips disabled ones", () => {
-    const targets = resolveModelPickerJumpTargets(
-      ["b", "disabled", "a", "c"],
-      (item) => item === "disabled",
-    );
-    assert.deepStrictEqual(
-      targets.map(({ item, command }) => [item, command]),
-      [
-        ["b", "modelPicker.jump.1"],
-        ["a", "modelPicker.jump.2"],
-        ["c", "modelPicker.jump.3"],
-      ],
-    );
   });
 
   it("shows jump hints only while the model picker context is active", () => {

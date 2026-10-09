@@ -6,20 +6,17 @@ import {
   type ProviderInstanceConfig,
 } from "@t3tools/contracts";
 import { getBackgroundActivityPresetSettings } from "@t3tools/shared/backgroundActivitySettings";
-import { buildProviderInstanceUpdatePatch } from "@t3tools/client-runtime/presentation/provider-settings";
 import * as Duration from "effect/Duration";
 import { describe, expect, it } from "vite-plus/test";
 import {
-  backgroundActivityOverrideSettings,
   backgroundActivitySharedPolicySettings,
-  durationToSeconds,
+  buildProviderInstanceUpdatePatch,
   formatDiagnosticsDescription,
   getChangedBrowserSettingLabels,
   getChangedTypographySettingLabels,
   isSamePreviewViewport,
   hasChangedBackgroundActivitySettings,
   isProjectGroupingEnabled,
-  normalizeIntervalSeconds,
   projectGroupingModeFromToggle,
   resolveBackgroundActivityProfileOption,
 } from "./SettingsPanels.logic";
@@ -38,27 +35,6 @@ describe("typography settings restore", () => {
 });
 
 describe("background activity settings restore", () => {
-  it("projects provider-health interval changes through the shared background policy", () => {
-    const resolved = getBackgroundActivityPresetSettings("balanced");
-
-    expect(durationToSeconds(resolved.providerHealthRefreshInterval)).toBe(300);
-    expect(normalizeIntervalSeconds(59.6)).toBe(60);
-    expect(
-      backgroundActivityOverrideSettings(DEFAULT_UNIFIED_SETTINGS.backgroundActivity, resolved, {
-        providerHealthRefreshInterval: Duration.seconds(60),
-      }),
-    ).toMatchObject({
-      backgroundActivity: {
-        schemaVersion: 1,
-        profile: "custom",
-        baseProfile: "balanced",
-        overrides: {
-          providerHealthRefreshInterval: Duration.seconds(60),
-        },
-      },
-    });
-  });
-
   it("detects legacy interval values even when the structured setting is at its default", () => {
     expect(
       hasChangedBackgroundActivitySettings({

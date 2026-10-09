@@ -1,6 +1,6 @@
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
 
-import { cn } from "~/lib/cn";
+import { cn } from "~/lib/utils";
 
 const TooltipCreateHandle = TooltipPrimitive.createHandle;
 
@@ -19,12 +19,10 @@ function TooltipPopup({
   side = "top",
   variant = "default",
   anchor,
-  relationId,
   children,
   ...props
 }: TooltipPrimitive.Popup.Props & {
   align?: TooltipPrimitive.Positioner.Props["align"];
-  relationId?: string;
   side?: TooltipPrimitive.Positioner.Props["side"];
   sideOffset?: TooltipPrimitive.Positioner.Props["sideOffset"];
   variant?: "default" | "glass";
@@ -48,7 +46,6 @@ function TooltipPopup({
               : "border bg-popover not-dark:bg-clip-padding shadow-md/5",
             className,
           )}
-          data-floating-popup={relationId}
           data-slot="tooltip-popup"
           {...props}
         >

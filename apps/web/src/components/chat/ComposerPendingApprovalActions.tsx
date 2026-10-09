@@ -23,7 +23,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="micro"
         variant="ghost-muted"
-        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--cancel`}
+        className={APPROVAL_ACTION_CLASS_NAME}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "cancel")}
       >
@@ -32,7 +32,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="micro"
         variant="ghost-muted"
-        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--decline text-destructive-foreground [:hover,[data-pressed]]:text-destructive-foreground`}
+        className={`${APPROVAL_ACTION_CLASS_NAME} text-destructive-foreground [:hover,[data-pressed]]:text-destructive-foreground`}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "decline")}
       >
@@ -41,7 +41,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="micro"
         variant="ghost-muted"
-        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--session`}
+        className={APPROVAL_ACTION_CLASS_NAME}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "acceptForSession")}
       >
@@ -50,7 +50,7 @@ export const ComposerPendingApprovalActions = memo(function ComposerPendingAppro
       <Button
         size="micro"
         variant="ghost-muted"
-        className={`${APPROVAL_ACTION_CLASS_NAME} composer-approval-action composer-approval-action--accept text-foreground`}
+        className={`${APPROVAL_ACTION_CLASS_NAME} text-foreground`}
         disabled={isResponding}
         onClick={() => void onRespondToApproval(requestId, "accept")}
       >

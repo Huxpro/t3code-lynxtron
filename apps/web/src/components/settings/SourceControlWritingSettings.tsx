@@ -2,7 +2,6 @@ import { useAtomValue } from "@effect/atom-react";
 import { useRef } from "react";
 import type { SourceControlWritingStyleMode } from "@t3tools/contracts";
 import { DEFAULT_UNIFIED_SETTINGS } from "@t3tools/contracts/settings";
-import { SOURCE_CONTROL_WRITING_STYLE_OPTIONS } from "@t3tools/client-runtime/presentation/source-control";
 import { createModelSelection } from "@t3tools/shared/model";
 import { resolveSourceControlWriterModelSelection } from "@t3tools/shared/serverSettings";
 
@@ -11,7 +10,7 @@ import {
   applyProviderInstanceSettings,
   deriveProviderInstanceEntries,
   sortProviderInstanceEntries,
-} from "@t3tools/client-runtime/presentation/provider";
+} from "../../providerInstances";
 import {
   getCustomModelOptionsByInstance,
   resolveAppModelSelectionState,
@@ -22,6 +21,24 @@ import { Select, SelectItem, SelectPopup, SelectTrigger, SelectValue } from "../
 import { Switch } from "../ui/switch";
 import { Textarea } from "../ui/textarea";
 import { SettingResetButton, SettingsRow, SettingsSection } from "./settingsLayout";
+
+const MODE_OPTIONS: Record<SourceControlWritingStyleMode, { label: string; description: string }> =
+  {
+    repo_conventions: {
+      label: "Repository conventions",
+      description: "In each project, matches recent change descriptions and change request titles.",
+    },
+    conventional_commits: {
+      label: "Conventional Commits",
+      description:
+        "Uses Conventional Commit prefixes for change descriptions; change request titles and descriptions stay concise.",
+    },
+    custom: {
+      label: "Custom instructions",
+      description:
+        "Applies your instructions to change descriptions and change request titles and descriptions in every project.",
+    },
+  };
 
 export function SourceControlWritingSettingsSection() {
   const settings = usePrimarySettings();
@@ -57,7 +74,7 @@ export function SourceControlWritingSettingsSection() {
     <SettingsSection title="Text generation">
       <SettingsRow
         title="Source control writing style"
-        description={SOURCE_CONTROL_WRITING_STYLE_OPTIONS[style.mode].description}
+        description={MODE_OPTIONS[style.mode].description}
         resetAction={
           isSourceControlWritingStyleDirty ? (
             <SettingResetButton
@@ -87,14 +104,12 @@ export function SourceControlWritingSettingsSection() {
             }}
           >
             <SelectTrigger className="w-full sm:w-56" aria-label="Source control writing style">
-              <SelectValue>{SOURCE_CONTROL_WRITING_STYLE_OPTIONS[style.mode].label}</SelectValue>
+              <SelectValue>{MODE_OPTIONS[style.mode].label}</SelectValue>
             </SelectTrigger>
             <SelectPopup align="end" alignItemWithTrigger={false}>
-              {(
-                Object.keys(SOURCE_CONTROL_WRITING_STYLE_OPTIONS) as SourceControlWritingStyleMode[]
-              ).map((mode) => (
+              {(Object.keys(MODE_OPTIONS) as SourceControlWritingStyleMode[]).map((mode) => (
                 <SelectItem key={mode} hideIndicator value={mode}>
-                  {SOURCE_CONTROL_WRITING_STYLE_OPTIONS[mode].label}
+                  {MODE_OPTIONS[mode].label}
                 </SelectItem>
               ))}
             </SelectPopup>

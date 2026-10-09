@@ -6,7 +6,7 @@ import {
   type SearchOverlayAction,
   type SearchOverlayMode,
   type SearchOverlayState,
-} from "@t3tools/client-runtime/presentation/search-overlay";
+} from "@t3tools/lynx-logic/searchOverlay";
 import {
   activatePanelSurface,
   clearPanelSurfaces,
@@ -18,7 +18,7 @@ import {
   setPanelSurfaceVisibility,
   togglePanelSurfaceVisibility,
   type PanelSurfaceState,
-} from "@t3tools/client-runtime/state/panel-surfaces";
+} from "@t3tools/lynx-logic/panelSurfaces";
 import type { ProviderInstanceId, TurnId } from "@t3tools/contracts";
 
 import { appAtomRegistry } from "./atomRegistry";

@@ -3,8 +3,8 @@ import {
   normalizePlanMarkdownForExport,
   proposedPlanTitle,
   stripDisplayedPlanMarkdown,
-} from "@t3tools/client-runtime/presentation/proposed-plan";
-import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+} from "@t3tools/lynx-logic/proposedPlan";
+import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 import type { ThreadId } from "@t3tools/contracts";
 import {
   PlanEmptySurface,

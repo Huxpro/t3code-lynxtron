@@ -6,7 +6,6 @@ import {
   buildKeybindingCommandOptions,
   buildWhenVariableOptions,
   commandLabel,
-  formatKeybindingShortcutLabel,
   keybindingConflictLabels,
   keybindingFromKeyboardEvent,
   parseWhenExpressionDraft,
@@ -63,20 +62,6 @@ describe("KeybindingsSettings.logic", () => {
         "Win32",
       ),
     ).toBe("mod+shift+k");
-  });
-
-  it("formats renderer-neutral shortcut labels for Mac and Windows", () => {
-    const shortcut = {
-      key: "k",
-      modKey: true,
-      metaKey: false,
-      ctrlKey: false,
-      altKey: true,
-      shiftKey: true,
-    };
-
-    expect(formatKeybindingShortcutLabel(shortcut, "darwin")).toBe("⌥⇧⌘K");
-    expect(formatKeybindingShortcutLabel(shortcut, "win32")).toBe("Ctrl+Alt+Shift+K");
   });
 
   it("serializes shortcuts and when expressions for upserts", () => {

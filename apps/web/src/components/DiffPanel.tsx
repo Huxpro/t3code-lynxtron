@@ -6,13 +6,6 @@ import {
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
 import { safeErrorLogAttributes } from "@t3tools/client-runtime/errors";
-import {
-  describeDiffSelection,
-  orderTurnDiffSummariesNewestFirst,
-  resolveSelectedTurnDiff,
-  resolveTurnDiffCheckpointCount,
-  summarizeChangedFiles,
-} from "@t3tools/client-runtime/presentation/diff";
 import type { ScopedThreadRef, TurnId } from "@t3tools/contracts";
 import {
   ArrowRightIcon,
@@ -51,7 +44,6 @@ import { resolveThreadRouteRef } from "../threadRoutes";
 import { useClientSettings } from "../hooks/useSettings";
 import { formatShortTimestamp } from "../timestampFormat";
 import { DiffPanelLoadingState, DiffPanelShell, type DiffPanelMode } from "./DiffPanelShell";
-import { ChangedFilesTree } from "./chat/ChangedFilesTree";
 import { DiffStatLabel } from "./chat/DiffStatLabel";
 import { AnnotatableCodeView, type AnnotatableCodeViewHandle } from "./diffs/AnnotatableCodeView";
 import { Button } from "./ui/button";
@@ -172,7 +164,17 @@ export default function DiffPanel({
   const { turnDiffSummaries, inferredCheckpointTurnCountByTurnId } =
     useTurnDiffSummaries(activeThread);
   const orderedTurnDiffSummaries = useMemo(
-    () => orderTurnDiffSummariesNewestFirst(turnDiffSummaries, inferredCheckpointTurnCountByTurnId),
+    () =>
+      [...turnDiffSummaries].toSorted((left, right) => {
+        const leftTurnCount =
+          left.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[left.turnId] ?? 0;
+        const rightTurnCount =
+          right.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[right.turnId] ?? 0;
+        if (leftTurnCount !== rightTurnCount) {
+          return rightTurnCount - leftTurnCount;
+        }
+        return right.completedAt.localeCompare(left.completedAt);
+      }),
     [inferredCheckpointTurnCountByTurnId, turnDiffSummaries],
   );
 
@@ -190,19 +192,23 @@ export default function DiffPanel({
   const selectedFilePath = diffSelection.kind === "turn" ? diffSelection.filePath : null;
   const selectedFileRevealRequestId =
     diffSelection.kind === "turn" ? diffSelection.revealRequestId : 0;
-  const selectedTurn = resolveSelectedTurnDiff(orderedTurnDiffSummaries, selectedTurnId);
+  const selectedTurn =
+    selectedTurnId === null
+      ? undefined
+      : (orderedTurnDiffSummaries.find((summary) => summary.turnId === selectedTurnId) ??
+        orderedTurnDiffSummaries[0]);
   const selectedCheckpointTurnCount =
     selectedTurn &&
-    resolveTurnDiffCheckpointCount(selectedTurn, inferredCheckpointTurnCountByTurnId);
+    (selectedTurn.checkpointTurnCount ?? inferredCheckpointTurnCountByTurnId[selectedTurn.turnId]);
   const latestTurn = orderedTurnDiffSummaries[0];
-  const { scopeLabel: selectedScopeLabel, sectionTitle: reviewSectionTitle } =
-    describeDiffSelection({
-      gitScope: selectedGitScope,
-      selectedTurn,
-      latestTurn,
-      selectedTurnCount: selectedCheckpointTurnCount,
-      turnSelected: selectedTurnId !== null,
-    });
+  const selectedScopeLabel =
+    selectedTurnId === null
+      ? selectedGitScope === "unstaged"
+        ? "Working tree"
+        : "Branch changes"
+      : selectedTurn?.turnId === latestTurn?.turnId
+        ? "Latest turn"
+        : `Turn ${selectedCheckpointTurnCount ?? "?"}`;
   const reviewSectionId = selectedTurn ? `turn:${selectedTurn.turnId}` : selectedGitScope;
   const collapseScopeKey = routeThreadRef
     ? `${routeThreadRef.environmentId}:${routeThreadRef.threadId}:${reviewSectionId}`
@@ -212,6 +218,11 @@ export default function DiffPanel({
     collapsedDiffFiles.scopeKey === collapseScopeKey
       ? collapsedDiffFiles.fileKeys
       : EMPTY_COLLAPSED_DIFF_FILE_KEYS;
+  const reviewSectionTitle = selectedTurn
+    ? `Turn ${selectedCheckpointTurnCount ?? "?"}`
+    : selectedGitScope === "unstaged"
+      ? "Working tree"
+      : "Branch changes";
   const selectedCheckpointRange = useMemo(
     () =>
       typeof selectedCheckpointTurnCount === "number"
@@ -379,15 +390,6 @@ export default function DiffPanel({
   const selectedPatchError = selectedTurn ? activeCheckpointDiff.error : branchDiffPreview.error;
   const hasResolvedPatch = typeof selectedPatch === "string";
   const hasNoNetChanges = hasResolvedPatch && selectedPatch.trim().length === 0;
-  const selectedTurnSummaryStat = useMemo(
-    () => summarizeChangedFiles(selectedTurn?.files ?? []),
-    [selectedTurn],
-  );
-  const showCheckpointSummaryFallback =
-    selectedTurn !== undefined &&
-    selectedTurn.files.length > 0 &&
-    !isLoadingSelectedPatch &&
-    !hasNoNetChanges;
   const renderablePatch = useMemo(
     () =>
       getRenderablePatch(selectedPatch, `diff-panel:${resolvedTheme}`, {
@@ -514,12 +516,11 @@ export default function DiffPanel({
           <DropdownMenuTrigger
             className="inline-flex h-6 max-w-full items-center gap-1 rounded-md bg-accent px-2 text-xs font-medium text-accent-foreground outline-none transition-colors hover:bg-accent/80 focus-visible:ring-2 focus-visible:ring-ring"
             aria-label={`Diff scope: ${selectedScopeLabel}`}
-            data-floating-anchor="diff-scope-menu"
           >
             <span className="truncate">{selectedScopeLabel}</span>
             <ChevronDownIcon className="size-3.5 shrink-0 opacity-70" />
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" data-floating-popup="diff-scope-menu" className="w-60">
+          <DropdownMenuContent align="start" className="w-60">
             <DropdownMenuItem
               className={
                 selectedTurnId === null && selectedGitScope === "unstaged"
@@ -829,13 +830,7 @@ export default function DiffPanel({
   );
 
   return (
-    <DiffPanelShell
-      mode={mode}
-      header={headerRow}
-      reviewCheckpointCount={orderedTurnDiffSummaries.length}
-      reviewSelectedTurn={selectedTurn?.turnId ?? ""}
-      reviewFileCount={selectedTurn?.files.length ?? 0}
-    >
+    <DiffPanelShell mode={mode} header={headerRow}>
       {!activeThread ? (
         <div className="flex flex-1 items-center justify-center px-5 text-center text-xs text-muted-foreground/70">
           Select a thread to inspect turn diffs.
@@ -857,7 +852,7 @@ export default function DiffPanel({
                 incomplete.
               </p>
             )}
-            {selectedPatchError && !renderablePatch && !showCheckpointSummaryFallback && (
+            {selectedPatchError && !renderablePatch && (
               <div className="px-3">
                 <p className="mb-2 text-[11px] text-error/80">{selectedPatchError}</p>
               </div>
@@ -873,44 +868,6 @@ export default function DiffPanel({
                         : "Loading branch diff..."
                   }
                 />
-              ) : showCheckpointSummaryFallback ? (
-                <div className="min-h-0 flex-1 overflow-auto p-3">
-                  <div className="mb-2 flex items-center justify-between gap-3 rounded-lg bg-muted/45 p-2.5">
-                    <div className="min-w-0">
-                      <p className="text-[13px] font-semibold text-foreground">
-                        {selectedTurn.files.length} changed{" "}
-                        {selectedTurn.files.length === 1 ? "file" : "files"}
-                      </p>
-                      <p className="mt-0.5 text-[10px] text-muted-foreground">
-                        Checkpoint for turn {selectedCheckpointTurnCount ?? "?"}
-                      </p>
-                    </div>
-                    <DiffStatLabel
-                      additions={selectedTurnSummaryStat.additions}
-                      deletions={selectedTurnSummaryStat.deletions}
-                    />
-                  </div>
-                  <div>
-                    <ChangedFilesTree
-                      turnId={selectedTurn.turnId}
-                      files={selectedTurn.files}
-                      allDirectoriesExpanded
-                      resolvedTheme={resolvedTheme}
-                      onOpenTurnDiff={(_turnId, filePath) => {
-                        if (filePath) openDiffFile(filePath);
-                      }}
-                    />
-                    <div hidden aria-hidden>
-                      {selectedTurn.files.map((file) => (
-                        <span key={file.path} data-review-file-path={file.path} />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="mt-3 rounded-lg bg-muted/45 p-2.5 text-[10px] leading-[15px] text-muted-foreground">
-                    Full patch rendering is unavailable; this view uses the canonical checkpoint
-                    file summary.
-                  </p>
-                </div>
               ) : (
                 <div className="flex h-full items-center justify-center px-3 py-2 text-xs text-muted-foreground/70">
                   <p>
@@ -923,8 +880,6 @@ export default function DiffPanel({
             ) : renderablePatch.kind === "files" ? (
               <div
                 className="min-h-0 flex-1"
-                data-review-tree
-                data-review-file-count={String(codeViewFiles.length)}
                 onClickCapture={(event) => {
                   const composedPath = event.nativeEvent.composedPath?.() ?? [];
                   for (const node of composedPath) {
@@ -1010,11 +965,6 @@ export default function DiffPanel({
                     ...(loadDiffFiles ? { loadDiffFiles } : {}),
                   }}
                 />
-                <div hidden aria-hidden>
-                  {codeViewFiles.map(({ filePath }) => (
-                    <span key={filePath} data-review-file-path={filePath} />
-                  ))}
-                </div>
               </div>
             ) : (
               <div className="min-h-0 flex-1 overflow-auto p-2">

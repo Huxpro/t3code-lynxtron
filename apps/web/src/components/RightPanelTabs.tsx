@@ -248,7 +248,6 @@ function RightPanelEmptyState(props: {
 
   const actions = [
     {
-      key: "browser",
       label: "Browser",
       description: "Open a local app or URL.",
       icon: Globe2,
@@ -259,7 +258,6 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      key: "terminal",
       label: "Terminal",
       description: "Start a shell in this workspace.",
       icon: TerminalSquare,
@@ -270,7 +268,6 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      key: "files",
       label: "Files",
       description: "Browse and read workspace files.",
       icon: Files,
@@ -281,7 +278,6 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      key: "diff",
       label: "Diff",
       description: "Review changes in this thread.",
       icon: FileDiff,
@@ -292,7 +288,6 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      key: "pull-request",
       label: "Pull request",
       description: "Open this branch's pull request.",
       icon: GitPullRequest,
@@ -303,7 +298,6 @@ function RightPanelEmptyState(props: {
       badgeCount: 0,
     },
     {
-      key: "agents",
       label: "Agents",
       description: "Follow subagents and workflows.",
       icon: Bot,
@@ -414,7 +408,6 @@ function RightPanelEmptyState(props: {
       tabIndex={0}
       onKeyDown={handleKeyDown}
       aria-label="Open a surface"
-      data-right-panel-empty-state
       data-surface-launcher-keys={availableActions.map((action) => action.shortcut).join("")}
       className={cn(
         "flex min-h-0 flex-1 items-center justify-center overflow-y-auto px-6 pt-6 outline-none",
@@ -425,20 +418,17 @@ function RightPanelEmptyState(props: {
     >
       <div className="relative w-full max-w-lg">
         <div className="absolute inset-x-0 bottom-full mb-5 text-center">
-          <h3 className="right-panel-empty__title font-medium text-foreground text-sm">
-            Open a surface
-          </h3>
-          <p className="right-panel-empty__description mt-1 text-muted-foreground text-xs">
+          <h3 className="font-medium text-foreground text-sm">Open a surface</h3>
+          <p className="mt-1 text-muted-foreground text-xs">
             Choose what to show in the right panel.
           </p>
         </div>
-        <div className="right-panel-empty-grid grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2">
           {actions.map((action) =>
             action.available ? (
               <button
                 key={action.label}
                 type="button"
-                data-right-panel-action={action.key}
                 onClick={action.onClick}
                 onMouseEnter={() => setHighlight(availableActions.indexOf(action))}
                 onMouseLeave={() =>
@@ -464,7 +454,6 @@ function RightPanelEmptyState(props: {
             ) : (
               <div
                 key={action.label}
-                data-right-panel-action={action.key}
                 className={cn(
                   "relative flex w-full flex-col items-start p-4 opacity-40",
                   cardShellClass,
@@ -813,7 +802,6 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                 <div
                   key={surface.id}
                   data-active-tab={active}
-                  data-pending-tab={pending}
                   onMouseDown={handleTabMouseDown}
                   onAuxClick={(event) => handleTabAuxClick(event, surface)}
                   onContextMenu={(event) => void handleTabContextMenu(event, surface)}
@@ -826,7 +814,7 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                 >
                   <button
                     type="button"
-                    className="right-panel-tab__close cursor-pointer group/close relative flex size-4 shrink-0 items-center justify-center rounded-sm hover:bg-muted"
+                    className="cursor-pointer group/close relative flex size-4 shrink-0 items-center justify-center rounded-sm hover:bg-muted"
                     aria-label={`Close ${title}`}
                     onClick={() => props.onCloseSurface(surface)}
                   >
@@ -898,7 +886,6 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                   render={
                     <Button
                       aria-label="Add panel surface"
-                      data-floating-anchor="right-panel-add-menu"
                       className="size-6 shrink-0 text-muted-foreground hover:text-foreground"
                       size="icon-xs"
                       variant="ghost"
@@ -911,7 +898,6 @@ export function RightPanelTabs(props: RightPanelTabsProps) {
                   align="start"
                   side="bottom"
                   sideOffset={6}
-                  data-floating-popup="right-panel-add-menu"
                   className="min-w-44"
                   onKeyDownCapture={handleAddSurfaceMenuKeyDown}
                 >

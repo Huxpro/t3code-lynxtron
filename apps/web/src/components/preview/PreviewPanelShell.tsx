@@ -10,18 +10,20 @@ import {
 import { isElectron } from "~/env";
 import { useResizableWidth } from "~/hooks/useResizableWidth";
 import { cn } from "~/lib/utils";
-import {
-  RIGHT_PANEL_DEFAULT_WIDTH,
-  RIGHT_PANEL_MAX_WIDTH_FRACTION,
-  RIGHT_PANEL_MIN_WIDTH,
-  RIGHT_PANEL_WIDTH_STORAGE_KEY,
-  resolveRightPanelMaximumWidth,
-} from "~/rightPanelLayout";
 
 import { RightPanelResizeHandle } from "./RightPanelResizeHandle";
 
 export type PreviewPanelMode = "inline" | "sheet" | "sidebar" | "embedded";
 
+const PREVIEW_PANEL_WIDTH_STORAGE_KEY = "t3code:preview-panel-width";
+const PREVIEW_PANEL_MIN_WIDTH = 360;
+/**
+ * Upper bound as a fraction of the viewport; only binds on wide screens.
+ * On narrow windows the container clamp below is what preserves the
+ * sibling column's space.
+ */
+const PREVIEW_PANEL_MAX_WIDTH_FRACTION = 0.7;
+const PREVIEW_PANEL_DEFAULT_WIDTH = 540;
 /**
  * Width reserved for the sibling column (chat, pull-request list) sharing the
  * panel's flex row. The viewport fraction alone is not enough: the app
@@ -31,21 +33,15 @@ export type PreviewPanelMode = "inline" | "sheet" | "sidebar" | "embedded";
  */
 const SIBLING_COLUMN_MIN_WIDTH = 360;
 
-/**
- * Upper bound for the inline panel. Once the flex row is measured, the row
- * minus the sibling column's minimum binds (the viewport fraction only binds
- * on wide screens). Before measurement, the shared right-panel viewport
- * estimate (also used by the Lynx renderer) stands in.
- */
 export function getPreviewPanelMaxWidth(viewportWidth: number, containerWidth?: number): number {
-  if (containerWidth === undefined) return resolveRightPanelMaximumWidth(viewportWidth);
-  const fractionCap = Math.floor(viewportWidth * RIGHT_PANEL_MAX_WIDTH_FRACTION);
-  const containerCap = Math.floor(containerWidth) - SIBLING_COLUMN_MIN_WIDTH;
+  const fractionCap = Math.floor(viewportWidth * PREVIEW_PANEL_MAX_WIDTH_FRACTION);
+  const containerCap =
+    containerWidth === undefined ? Infinity : Math.floor(containerWidth) - SIBLING_COLUMN_MIN_WIDTH;
   // Never below the panel's own minimum: when the row cannot fit both
   // columns' minimums the sibling yields, and useResizableWidth's clamp
   // must not see max < min (it would resolve the inversion to min and,
   // via drag-end persistence, overwrite the user's stored width).
-  return Math.max(RIGHT_PANEL_MIN_WIDTH, Math.min(fractionCap, containerCap));
+  return Math.max(PREVIEW_PANEL_MIN_WIDTH, Math.min(fractionCap, containerCap));
 }
 
 /**
@@ -74,9 +70,9 @@ export function PreviewPanelShell(props: {
   // container measurement (and its re-renders) everywhere else.
   const maxWidth = useClampedMaxWidth(hostRef, isInline && !props.maximized);
   const { width, handlers } = useResizableWidth({
-    storageKey: props.widthStorageKey ?? RIGHT_PANEL_WIDTH_STORAGE_KEY,
-    defaultWidth: props.defaultWidth ?? RIGHT_PANEL_DEFAULT_WIDTH,
-    minWidth: RIGHT_PANEL_MIN_WIDTH,
+    storageKey: props.widthStorageKey ?? PREVIEW_PANEL_WIDTH_STORAGE_KEY,
+    defaultWidth: props.defaultWidth ?? PREVIEW_PANEL_DEFAULT_WIDTH,
+    minWidth: PREVIEW_PANEL_MIN_WIDTH,
     maxWidth,
     edge: "left",
   });

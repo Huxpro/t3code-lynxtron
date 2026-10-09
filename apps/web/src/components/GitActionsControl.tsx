@@ -32,7 +32,6 @@ import {
   GlobeIcon,
 } from "lucide-react";
 import { Radio as RadioPrimitive } from "@base-ui/react/radio";
-import { resolveQuickAction } from "@t3tools/client-runtime/state/git-actions";
 import { AzureDevOpsIcon, BitbucketIcon, GitHubIcon, GitLabIcon } from "~/components/Icons";
 import { RadioGroup } from "~/components/ui/radio-group";
 import { Spinner } from "~/components/ui/spinner";
@@ -48,6 +47,7 @@ import {
   resolveDefaultBranchActionDialogCopy,
   resolveLiveThreadBranchUpdate,
   resolveThreadBranchMetadataPatch,
+  resolveQuickAction,
   resolveThreadBranchUpdate,
 } from "./GitActionsControl.logic";
 import { AnimatedHeight } from "./AnimatedHeight";
@@ -552,7 +552,7 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
 
   return (
     <Dialog open={props.open} onOpenChange={handleOpenChange}>
-      <DialogPopup className="max-w-xl overflow-hidden" data-git-publish-dialog="true">
+      <DialogPopup className="max-w-xl overflow-hidden">
         <div className="flex min-h-0 flex-col overflow-hidden border-foreground/10 bg-transparent">
           <DialogHeader className="border-b border-border/70 bg-foreground/[0.025] dark:border-transparent dark:bg-transparent">
             <DialogTitle>Publish repository</DialogTitle>
@@ -570,10 +570,6 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                   <button
                     key={label}
                     type="button"
-                    data-git-publish-step-label={label}
-                    data-git-publish-step-state={
-                      index === publishWizardStep ? "active" : isComplete ? "complete" : "pending"
-                    }
                     onClick={isClickable ? () => setPublishWizardStep(index) : undefined}
                     disabled={!isClickable}
                     className={cn(
@@ -639,8 +635,6 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                       return (
                         <div
                           key={option.value}
-                          data-git-publish-provider={option.value}
-                          data-git-publish-provider-ready="false"
                           className="relative flex cursor-not-allowed items-center gap-3 rounded-lg border border-border bg-background px-3 py-3 text-left opacity-55 dark:border-transparent dark:bg-white/[0.035]"
                         >
                           <option.Icon
@@ -680,8 +674,6 @@ function PublishRepositoryDialog(props: PublishRepositoryDialogProps) {
                       <RadioPrimitive.Root
                         key={option.value}
                         value={option.value}
-                        data-git-publish-provider={option.value}
-                        data-git-publish-provider-ready="true"
                         className={cn(
                           "relative flex cursor-pointer items-center gap-3 rounded-lg border px-3 py-3 text-left outline-none transition-[background-color,border-color,box-shadow]",
                           "focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:ring-offset-background",
@@ -1685,8 +1677,6 @@ export default function GitActionsControl({
           variant="outline"
           size="xs"
           disabled={initAction.isPending}
-          data-git-quick-action-kind={quickAction.kind}
-          data-git-quick-action-label={quickAction.label}
           onClick={() => {
             void (async () => {
               const result = await initAction.run();
@@ -1706,15 +1696,12 @@ export default function GitActionsControl({
           }}
         >
           <GitBranchPlusIcon className="size-3.5" aria-hidden />
-          <span className="ml-0.5">{quickAction.label}</span>
+          <span className="ml-0.5">
+            {initAction.isPending ? "Initializing..." : "Initialize Git"}
+          </span>
         </Button>
       ) : (
-        <Group
-          aria-label="Git actions"
-          className="shrink-0"
-          data-git-quick-action-kind={quickAction.kind}
-          data-git-quick-action-label={quickAction.label}
-        >
+        <Group aria-label="Git actions" className="shrink-0">
           {quickActionDisabledReason ? (
             <Popover>
               <PopoverTrigger

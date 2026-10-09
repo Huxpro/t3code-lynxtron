@@ -40,7 +40,7 @@ import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV
 import { HostText } from "./ui/hostElements";
 import { useSidebar } from "./ui/sidebar";
 import { TooltipPopup } from "./ui/tooltip";
-import type { ProviderInstanceEntry } from "@t3tools/client-runtime/presentation/provider";
+import type { ProviderInstanceEntry } from "@t3tools/lynx-logic/provider";
 import {
   clientCapabilities,
   showNativeContextMenu,
@@ -50,12 +50,12 @@ import { useOpenProjectSettings } from "../../../lynxtron/src/app/components/Pro
 import {
   isDisposableEmptyThread,
   projectThreadActionConfirmation,
-} from "@t3tools/client-runtime/presentation/thread-actions";
+} from "@t3tools/lynx-logic/threadActions";
 import {
   hasUnseenThreadCompletion,
   markThreadVisitedInTimestampRecord,
   projectSidebarThreadDetailsRows,
-} from "@t3tools/client-runtime/presentation/sidebar";
+} from "@t3tools/lynx-logic/sidebar";
 import {
   updateThreadVisitedTimestamps,
   useClientSettingsState,

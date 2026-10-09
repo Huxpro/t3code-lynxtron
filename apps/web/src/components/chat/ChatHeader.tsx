@@ -5,7 +5,6 @@ import {
   type ResolvedKeybindingsConfig,
   type ThreadId,
 } from "@t3tools/contracts";
-import { resolveRenameCommit } from "@t3tools/client-runtime/presentation/thread-actions";
 import { scopeThreadRef } from "@t3tools/client-runtime/environment";
 import {
   isAtomCommandInterrupted,
@@ -75,7 +74,19 @@ interface ChatHeaderProps {
   onDeleteProjectScript: (scriptId: string) => Promise<ProjectScriptActionResult>;
 }
 
-export { resolveRenameCommit };
+/**
+ * Rename commit rule shared with the sidebar's inline rename: trim, reject
+ * empty (the caller toasts), and skip the mutation when nothing changed.
+ */
+export function resolveRenameCommit(input: {
+  readonly title: string;
+  readonly originalTitle: string;
+}): { action: "commit"; title: string } | { action: "reject-empty" } | { action: "noop" } {
+  const trimmed = input.title.trim();
+  if (trimmed.length === 0) return { action: "reject-empty" };
+  if (trimmed === input.originalTitle) return { action: "noop" };
+  return { action: "commit", title: trimmed };
+}
 
 export function shouldShowOpenInPicker(input: {
   readonly activeProjectName: string | undefined;
@@ -240,7 +251,7 @@ export const ChatHeader = memo(function ChatHeader({
                     environmentId={activeThreadEnvironmentId}
                     cwd={activeProjectCwd ?? ""}
                     faviconPath={activeProjectFaviconPath}
-                    className="chat-header-project-icon-reference size-3.5"
+                    className="size-3.5"
                   />
                   <span className="max-w-40 truncate">{activeProjectName}</span>
                 </TooltipTrigger>

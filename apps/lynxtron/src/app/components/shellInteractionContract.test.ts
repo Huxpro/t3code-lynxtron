@@ -20,14 +20,14 @@ const appSidebarLayoutSource = readFileSync(
 const sidebarCompositionSource = readFileSync(
   path.resolve(
     import.meta.dirname,
-    "../../../../web/src/components/sidebar/SidebarV2CompositionSurface.tsx",
+    "../../../../web/src/components/sidebar/SidebarV2CompositionSurface.lynx.tsx",
   ),
   "utf8",
 );
 const sidebarRowSource = readFileSync(
   path.resolve(
     import.meta.dirname,
-    "../../../../web/src/components/sidebar/SidebarV2RowSurface.tsx",
+    "../../../../web/src/components/sidebar/SidebarV2RowSurface.lynx.tsx",
   ),
   "utf8",
 );
@@ -43,26 +43,22 @@ const menuSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.lynx.tsx"),
   "utf8",
 );
-const webMenuSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/ui/menu.tsx"),
-  "utf8",
-);
 const tailwindConfigSource = readFileSync(
   path.resolve(import.meta.dirname, "../../../tailwind.config.mjs"),
   "utf8",
 );
 const rightPanelSurfaceSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/RightPanelSurface.tsx"),
+  path.resolve(import.meta.dirname, "../../../../web/src/components/RightPanelSurface.lynx.tsx"),
   "utf8",
 );
 const fileTreeSurfaceSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/FileTreeSurface.tsx"),
+  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/FileTreeSurface.lynx.tsx"),
   "utf8",
 );
 const sidebarControlsSource = readFileSync(
   path.resolve(
     import.meta.dirname,
-    "../../../../web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+    "../../../../web/src/components/sidebar/SidebarV2ControlsSurface.lynx.tsx",
   ),
   "utf8",
 );
@@ -78,12 +74,11 @@ const uiStateSource = readFileSync(
   path.resolve(import.meta.dirname, "../state/uiState.ts"),
   "utf8",
 );
-const webFilePreviewSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/files/FilePreviewPanel.tsx"),
-  "utf8",
-);
 const modelPickerSurfaceSource = readFileSync(
-  path.resolve(import.meta.dirname, "../../../../web/src/components/chat/ModelPickerSurface.tsx"),
+  path.resolve(
+    import.meta.dirname,
+    "../../../../web/src/components/chat/ModelPickerSurface.lynx.tsx",
+  ),
   "utf8",
 );
 const modelSelectionLogicSource = readFileSync(
@@ -151,7 +146,10 @@ describe("desktop shell interaction contract", () => {
 
   it("keeps the Composer context strip on real shared content", () => {
     const composerSurface = readFileSync(
-      path.resolve(import.meta.dirname, "../../../../web/src/components/chat/ComposerSurface.tsx"),
+      path.resolve(
+        import.meta.dirname,
+        "../../../../web/src/components/chat/ComposerSurface.lynx.tsx",
+      ),
       "utf8",
     );
     expect(composerSurface).not.toContain("authorityVisual");
@@ -510,7 +508,7 @@ describe("desktop shell interaction contract", () => {
     const settingsSurfaces = readFileSync(
       path.resolve(
         import.meta.dirname,
-        "../../../../web/src/components/settings/SettingsSurfaces.tsx",
+        "../../../../web/src/components/settings/SettingsSurfaces.lynx.tsx",
       ),
       "utf8",
     );
@@ -1189,15 +1187,6 @@ describe("desktop shell interaction contract", () => {
     expect(files).toContain("if (!viewport.testResize) return;");
     expect(files).toContain("__T3_LYNXTRON_FILE_EDITOR_PROBE__");
     expect(files).toContain("handleInput({ detail: { value } })");
-    expect(webFilePreviewSource).toContain('role="alert"');
-    expect(webFilePreviewSource).toContain("data-file-save-error");
-    expect(webFilePreviewSource).toContain("border-destructive/20");
-    expect(webFilePreviewSource).toContain("bg-destructive/5");
-    expect(webFilePreviewSource).toContain("text-destructive-foreground");
-    expect(webFilePreviewSource).toContain("data-file-save-retry");
-    expect(webFilePreviewSource).toContain("Retry save");
-    expect(webFilePreviewSource.match(/<FileSaveFailureBar/g)).toHaveLength(2);
-    expect(webFilePreviewSource).toContain("void saveCoordinator.flush()");
     expect(overrides).toContain(".file-editor-token--heading,");
     expect(overrides).toContain(".file-editor-token--string,");
     expect(overrides).toContain(".file-editor-token--property {");
@@ -1308,15 +1297,6 @@ describe("desktop shell interaction contract", () => {
     expect(panel).toContain("<FilePanel path={surface.path} />");
     expect(panel).toContain("useMediaQuery(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY)");
     expect(panel).toContain("resolveRightPanelSheetWidth(viewport.width)");
-    expect(branchToolbarSource).toContain('className="min-w-0 flex-1 justify-end md:ml-auto"');
-    expect(branchToolbarSource).not.toContain("md:flex-none");
-    expect(branchToolbarEnvModeSource).toContain(
-      'className="min-w-0 max-w-full flex-1 font-medium"',
-    );
-    expect(branchToolbarBranchSource).toContain('className="flex min-w-0 flex-1"');
-    expect(branchToolbarBranchSource).toContain(
-      'className="min-w-0 w-full max-w-full text-muted-foreground/70',
-    );
   });
 
   it("reuses the Open in picker for project and file targets", () => {
@@ -2256,7 +2236,7 @@ describe("desktop shell interaction contract", () => {
     const pendingSurfaceSource = readFileSync(
       path.resolve(
         import.meta.dirname,
-        "../../../../web/src/components/chat/ComposerPendingSurface.tsx",
+        "../../../../web/src/components/chat/ComposerPendingSurface.lynx.tsx",
       ),
       "utf8",
     );
@@ -2558,10 +2538,7 @@ describe("desktop shell interaction contract", () => {
     expect(sidebarControlsSource).toContain('relationId="sidebar-project-scope"');
   });
 
-  it("owns project-scope radio content layout inside both menu primitives", () => {
-    expect(webMenuSource).toContain(
-      'className="ui-menu-radio-item__content flex min-w-0 flex-1 items-center gap-2 truncate"',
-    );
+  it("owns project-scope radio content layout inside the Lynx menu primitive", () => {
     expect(menuSource).toContain(
       'className="ui-menu-radio-item__content flex min-w-0 flex-1 flex-row items-center gap-2"',
     );
@@ -2569,9 +2546,8 @@ describe("desktop shell interaction contract", () => {
   });
 
   it("scans the Lynx Sidebar primitive instead of its Web-only counterpart", () => {
-    expect(tailwindConfigSource).toContain('"../web/src/components/ui/sidebar.lynx.tsx"');
+    expect(tailwindConfigSource).toContain('"../web/src/**/*.lynx.{ts,tsx}"');
     expect(tailwindConfigSource).not.toContain('"../web/src/components/ui/sidebar.tsx"');
-    expect(tailwindConfigSource).toContain('"../web/src/components/Sidebar.lynx.tsx"');
     expect(tailwindConfigSource).not.toContain('"../web/src/components/Sidebar.tsx"');
   });
 

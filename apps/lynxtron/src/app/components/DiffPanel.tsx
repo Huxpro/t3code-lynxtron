@@ -4,8 +4,8 @@ import {
   resolveSelectedTurnDiff,
   resolveTurnDiffCheckpointCount,
   summarizeChangedFiles,
-} from "@t3tools/client-runtime/presentation/diff";
-import { inferCheckpointTurnCountByTurnId } from "@t3tools/client-runtime/presentation/transcript";
+} from "@t3tools/lynx-logic/diff";
+import { inferCheckpointTurnCountByTurnId } from "@t3tools/lynx-logic/transcript";
 import type { OrchestrationCheckpointSummary } from "@t3tools/contracts";
 import type { ThreadId, TurnId } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";

@@ -13,7 +13,7 @@ const REPO_ROOT = resolve(import.meta.dirname, "../../..");
 describe("Components Lab inventory", () => {
   it("discovers exported function components that return through helper calls", () => {
     const definitions = componentDefinitions(
-      resolve(REPO_ROOT, "apps/web/src/components/ui/button.web.tsx"),
+      resolve(REPO_ROOT, "apps/web/src/components/ui/button.tsx"),
     );
     const button = definitions.find((definition) => definition.name === "Button");
     assert.equal(button?.exported, true);

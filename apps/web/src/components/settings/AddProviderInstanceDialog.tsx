@@ -12,8 +12,7 @@ import {
 
 import { useEnvironmentSettings, useUpdateEnvironmentSettings } from "../../hooks/useSettings";
 import { cn } from "../../lib/utils";
-import { normalizeProviderAccentColor } from "@t3tools/client-runtime/presentation/provider";
-import { buildProviderInstanceCreatePatch } from "@t3tools/client-runtime/presentation/provider-settings";
+import { normalizeProviderAccentColor } from "../../providerInstances";
 import { Button } from "../ui/button";
 import { ACPRegistryIcon, Gemini, GithubCopilotIcon, PiAgentIcon, type Icon } from "../Icons";
 import {
@@ -29,28 +28,92 @@ import { Input } from "../ui/input";
 import { RadioGroup } from "../ui/radio-group";
 import { toastManager } from "../ui/toast";
 import { DRIVER_OPTION_BY_VALUE, DRIVER_OPTIONS } from "./providerDriverMeta";
-import { COMING_SOON_PROVIDER_DRIVERS, PROVIDER_ACCENT_SWATCHES } from "./providerDriverCatalog";
 import { ProviderSettingsForm, deriveProviderSettingsFields } from "./ProviderSettingsForm";
 import { AnimatedHeight } from "../AnimatedHeight";
 import {
   ADD_PROVIDER_WIZARD_STEPS,
-  deriveProviderInstanceId,
   resolveWizardNavigation,
-  validateProviderInstanceId,
   type WizardNavigation,
 } from "./AddProviderInstanceDialog.logic";
 import { AddProviderInstanceWizardSteps } from "./AddProviderInstanceWizardSteps";
 
+const PROVIDER_ACCENT_SWATCHES = [
+  "#2563eb",
+  "#16a34a",
+  "#ea580c",
+  "#dc2626",
+  "#7c3aed",
+  "#0891b2",
+] as const;
+
+/**
+ * Normalize a user-provided label into a slug suffix for the instance id.
+ * The full id is formed by prefixing the driver slug — e.g. label "Work" on
+ * driver "codex" becomes `codex_work`. Output is trimmed to 48 chars so the
+ * final composed id stays under the 64-char slug cap enforced by
+ * `ProviderInstanceId` in `@t3tools/contracts`.
+ */
+function slugifyLabel(value: string): string {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 48);
+}
+
+function deriveInstanceId(driver: ProviderDriverKind, label: string): string {
+  const slug = slugifyLabel(label);
+  return slug ? `${driver}_${slug}` : "";
+}
+
+const INSTANCE_ID_PATTERN = /^[a-zA-Z][a-zA-Z0-9_-]*$/;
 const DEFAULT_DRIVER_KIND = ProviderDriverKind.make("codex");
 const DEFAULT_DRIVER_OPTION = DRIVER_OPTIONS[0]!;
 const EMPTY_CONFIG_DRAFT: Record<string, unknown> = {};
+interface ComingSoonDriverOption {
+  readonly value: ProviderDriverKind;
+  readonly label: string;
+  readonly icon: Icon;
+}
 
-const COMING_SOON_DRIVER_ICONS: Readonly<Record<string, Icon>> = {
-  githubCopilot: GithubCopilotIcon,
-  gemini: Gemini,
-  acpRegistry: ACPRegistryIcon,
-  piAgent: PiAgentIcon,
-};
+const COMING_SOON_DRIVER_OPTIONS: readonly ComingSoonDriverOption[] = [
+  {
+    value: ProviderDriverKind.make("githubCopilot"),
+    label: "Github Copilot",
+    icon: GithubCopilotIcon,
+  },
+  {
+    value: ProviderDriverKind.make("gemini"),
+    label: "Gemini",
+    icon: Gemini,
+  },
+  {
+    value: ProviderDriverKind.make("acpRegistry"),
+    label: "ACP Registry",
+    icon: ACPRegistryIcon,
+  },
+  {
+    value: ProviderDriverKind.make("piAgent"),
+    label: "Pi Agent",
+    icon: PiAgentIcon,
+  },
+];
+
+/**
+ * Validate an instance id against the same slug rules the server applies in
+ * `ProviderInstanceId` (see `packages/contracts/src/providerInstance.ts`).
+ * Returns a user-facing error string, or `null` if valid.
+ */
+function validateInstanceId(id: string, existing: ReadonlySet<string>): string | null {
+  if (id.length === 0) return "Instance ID is required.";
+  if (id.length > 64) return "Instance ID must be 64 characters or fewer.";
+  if (!INSTANCE_ID_PATTERN.test(id)) {
+    return "Instance ID must start with a letter and use only letters, digits, '-', or '_'.";
+  }
+  if (existing.has(id)) return `An instance named '${id}' already exists.`;
+  return null;
+}
 
 interface AddProviderInstanceDialogProps {
   readonly open: boolean;
@@ -86,12 +149,12 @@ export function AddProviderInstanceDialog({
   );
 
   const driverOption = DRIVER_OPTION_BY_VALUE[driver] ?? DEFAULT_DRIVER_OPTION;
-  const instanceId = instanceIdOverride ?? deriveProviderInstanceId(driver, label);
+  const instanceId = instanceIdOverride ?? deriveInstanceId(driver, label);
   const driverSettingsFields = useMemo(
-    () => deriveProviderSettingsFields(driverOption.settingsSchema),
-    [driverOption.settingsSchema],
+    () => deriveProviderSettingsFields(driverOption),
+    [driverOption],
   );
-  const instanceIdError = validateProviderInstanceId(instanceId, existingIds);
+  const instanceIdError = validateInstanceId(instanceId, existingIds);
   const showInstanceIdError = hasAttemptedSubmit && instanceIdError !== null;
   const previewLabel = label.trim() || `${driverOption.label} Workspace`;
   const wizardStepSummaries = [driverOption.label, previewLabel, null] as const;
@@ -140,18 +203,16 @@ export function AddProviderInstanceDialog({
       ...(hasConfig ? { config } : {}),
     };
     // `ProviderInstanceId.make` revalidates the slug; we've already checked
-    // it via `validateProviderInstanceId`, but going through the brand constructor
+    // it via `validateInstanceId`, but going through the brand constructor
     // keeps the type boundary honest and guards against any future drift in
     // the slug rules.
     const brandedId = ProviderInstanceId.make(instanceId);
+    const nextMap = {
+      ...settings.providerInstances,
+      [brandedId]: nextInstance,
+    };
     try {
-      updateSettings(
-        buildProviderInstanceCreatePatch({
-          settings,
-          instanceId: brandedId,
-          instance: nextInstance,
-        }),
-      );
+      updateSettings({ providerInstances: nextMap });
       toastManager.add({
         type: "success",
         title: "Provider instance added",
@@ -226,8 +287,8 @@ export function AddProviderInstanceDialog({
                       </RadioPrimitive.Root>
                     );
                   })}
-                  {COMING_SOON_PROVIDER_DRIVERS.map((option) => {
-                    const IconComponent = COMING_SOON_DRIVER_ICONS[option.value]!;
+                  {COMING_SOON_DRIVER_OPTIONS.map((option) => {
+                    const IconComponent = option.icon;
                     return (
                       <RadioPrimitive.Root
                         key={option.value}

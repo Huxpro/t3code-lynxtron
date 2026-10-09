@@ -13,6 +13,7 @@ import type {
   TurnId,
 } from "@t3tools/contracts";
 import {
+  isProviderSendTurnSupportedImageMimeType,
   ProviderDriverKind,
   ProviderInstanceId,
   PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
@@ -88,7 +89,6 @@ import { ComposerPendingElementContexts } from "./ComposerPendingElementContexts
 import { ComposerPendingReviewComments } from "./ComposerPendingReviewComments";
 import { ComposerPreviewAnnotationCards } from "./ComposerPreviewAnnotationCards";
 import {
-  resolveCompactComposerControlsAlign,
   shouldUseCompactComposerPrimaryActions,
   shouldUseCompactComposerFooter,
 } from "../composerFooterLayout";
@@ -112,14 +112,7 @@ import {
 } from "./composerProviderState";
 import { ContextWindowMeter } from "./ContextWindowMeter";
 import { resolveContextWindowModelDisplayName } from "./ContextWindowMeter.logic";
-import {
-  buildExpandedImagePreview,
-  type ExpandedImagePreview,
-} from "@t3tools/client-runtime/presentation/image-preview";
-import {
-  composerImagePreparationErrorMessage,
-  planComposerImageAdditions,
-} from "@t3tools/client-runtime/presentation/draft-thread";
+import { buildExpandedImagePreview, type ExpandedImagePreview } from "./ExpandedImagePreview";
 import { basenameOfPath } from "../../pierre-icons";
 import { cn, randomUUID } from "~/lib/utils";
 import { Separator } from "../ui/separator";
@@ -251,7 +244,7 @@ import {
   resolveSelectableProviderInstanceEntry,
   sortProviderInstanceEntries,
   type ProviderInstanceEntry,
-} from "@t3tools/client-runtime/presentation/provider";
+} from "../../providerInstances";
 import { type AppModelOption, getAppModelOptionsForInstance } from "../../modelSelection";
 import type { UnifiedSettings } from "@t3tools/contracts/settings";
 import type { SessionPhase, Thread } from "../../types";
@@ -359,7 +352,6 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
                   : "text-secondary-label hover:text-foreground",
               )}
               type="button"
-              data-composer-control="interaction"
               onClick={props.onToggleInteractionMode}
               aria-label={interactionModeTooltip}
             />
@@ -389,19 +381,12 @@ const ComposerFooterModeControls = memo(function ComposerFooterModeControls(prop
           onValueChange={(value) => props.onRuntimeModeChange(value!)}
         >
           <TooltipTrigger
-            render={
-              <ComposerSelectControl
-                className="font-medium"
-                aria-label="Runtime mode"
-                data-composer-control="runtime"
-                data-floating-anchor="composer-runtime-menu"
-              />
-            }
+            render={<ComposerSelectControl className="font-medium" aria-label="Runtime mode" />}
           >
             <ComposerControlIcon icon={RuntimeModeIcon} />
             <SelectValue>{runtimeModeOption.label}</SelectValue>
           </TooltipTrigger>
-          <SelectPopup alignItemWithTrigger={false} data-floating-popup="composer-runtime-menu">
+          <SelectPopup alignItemWithTrigger={false}>
             {runtimeModeOptions.map((mode) => {
               const option = runtimeModeConfig[mode];
               const OptionIcon = option.icon;
@@ -995,7 +980,6 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
   );
   const [isDragOverComposer, setIsDragOverComposer] = useState(false);
   const [isComposerFooterCompact, setIsComposerFooterCompact] = useState(false);
-  const [compactControlsAlign, setCompactControlsAlign] = useState<"start" | "end">("start");
   const [isComposerPrimaryActionsCompact, setIsComposerPrimaryActionsCompact] = useState(false);
   const [isComposerModelPickerOpen, setIsComposerModelPickerOpen] = useState(false);
   const [isComposerFocused, setIsComposerFocused] = useState(false);
@@ -1519,14 +1503,12 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       return {
         primaryActionsCompact,
         footerCompact,
-        compactControlsAlign: resolveCompactComposerControlsAlign(composerFormWidth),
       };
     };
 
     const initialCompactness = measureFooterCompactness();
     setIsComposerPrimaryActionsCompact(initialCompactness.primaryActionsCompact);
     setIsComposerFooterCompact(initialCompactness.footerCompact);
-    setCompactControlsAlign(initialCompactness.compactControlsAlign);
     if (typeof ResizeObserver === "undefined") return;
 
     const observer = new ResizeObserver(() => {
@@ -1539,7 +1521,6 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
       setIsComposerFooterCompact((previous) =>
         previous === nextCompactness.footerCompact ? previous : nextCompactness.footerCompact,
       );
-      setCompactControlsAlign(nextCompactness.compactControlsAlign);
     });
 
     observer.observe(composerForm);
@@ -2478,6 +2459,13 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
   // ------------------------------------------------------------------
   const addComposerImages = async (files: File[]) => {
     if (!activeThreadId || files.length === 0) return;
+    if (pendingUserInputs.length > 0) {
+      toastManager.add({
+        type: "error",
+        title: "Attach images after answering plan questions.",
+      });
+      return;
+    }
     // Captured before the awaits below: the user may switch threads while a
     // large image is being compressed, and the attachments and errors belong
     // to the thread the paste happened in.
@@ -2487,17 +2475,26 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
     // accepted files reserve their attachment slots (via the pending counter)
     // before the first await, keeping the total under the limit.
     const pendingCount = pendingImageCompressionsRef.current.get(threadId) ?? 0;
-    const plan = planComposerImageAdditions({
-      candidates: files.map((file) => ({ file, name: file.name, mimeType: file.type })),
-      reservedCount: composerImagesRef.current.length + pendingCount,
-      hasPendingUserInput: pendingUserInputs.length > 0,
-    });
-    if (plan.kind === "blocked-by-pending-user-input") {
-      toastManager.add({ type: "error", title: plan.message });
-      return;
+    let reservedCount = composerImagesRef.current.length + pendingCount;
+    const acceptedFiles: File[] = [];
+    let error: string | null = null;
+    for (const file of files) {
+      if (!file.type.startsWith("image/")) {
+        error = `Unsupported file type for '${file.name}'. Please attach image files only.`;
+        continue;
+      }
+      if (!isProviderSendTurnSupportedImageMimeType(file.type)) {
+        error = `'${file.name}' is not a supported image type. Attach GIF, JPEG, PNG, or WebP images.`;
+        continue;
+      }
+      if (reservedCount >= PROVIDER_SEND_TURN_MAX_ATTACHMENTS) {
+        error = `You can attach up to ${PROVIDER_SEND_TURN_MAX_ATTACHMENTS} images per message.`;
+        break;
+      }
+      acceptedFiles.push(file);
+      reservedCount += 1;
     }
-    const acceptedFiles = plan.accepted.map((candidate) => candidate.file);
-    setThreadError(threadId, plan.error);
+    setThreadError(threadId, error);
     if (acceptedFiles.length === 0) return;
 
     pendingImageCompressionsRef.current.set(threadId, pendingCount + acceptedFiles.length);
@@ -2509,7 +2506,10 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
         // refused; files already within it pass through byte-for-byte.
         const compressed = await compressImageToByteLimit(file, PROVIDER_SEND_TURN_MAX_IMAGE_BYTES);
         if (!compressed.ok) {
-          compressionError = composerImagePreparationErrorMessage(file.name, compressed.reason);
+          compressionError =
+            compressed.reason === "unreadable"
+              ? `'${file.name}' could not be read as an image.`
+              : `'${file.name}' is too large to attach, even after compression.`;
           continue;
         }
         const attachmentFile = compressed.file;
@@ -3335,7 +3335,6 @@ export const ChatComposer = memo(function ChatComposer(props: ChatComposerProps)
 
                   {isComposerFooterCompact ? (
                     <CompactComposerControlsMenu
-                      align={compactControlsAlign}
                       interactionMode={interactionMode}
                       runtimeMode={runtimeMode}
                       showInteractionModeToggle={composerProviderControls.showInteractionModeToggle}

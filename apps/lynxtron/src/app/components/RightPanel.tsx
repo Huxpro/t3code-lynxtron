@@ -32,7 +32,7 @@ import { closeTerminalSession, confirmTerminalSurfaceClose, TerminalPanel } from
 import { BrowserPanel } from "./BrowserPanel";
 import { selectWarmBrowserSurfaceIds } from "./browserPanel.logic";
 import { useT3ClientState } from "../state/t3Client";
-import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 import {
   clientCapabilities,
   isEmbeddedBrowserAvailable,

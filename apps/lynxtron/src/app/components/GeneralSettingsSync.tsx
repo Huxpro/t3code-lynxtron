@@ -5,7 +5,7 @@ import {
   projectPortableGeneralSettingsRestore,
   type PortableClientSettingsPatch,
   type PortableServerSettingsPatch,
-} from "@t3tools/client-runtime/presentation/settings";
+} from "@t3tools/lynx-logic/settings";
 
 import type { GeneralSettingsPatch } from "../../../../web/src/components/settings/GeneralSettingsContent";
 import {

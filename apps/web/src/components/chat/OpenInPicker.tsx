@@ -202,7 +202,6 @@ export const OpenInPicker = memo(function OpenInPicker({
   openInCwd,
   compact = false,
   enableShortcut = true,
-  anchor = "header-open-in-menu",
 }: {
   environmentId: EnvironmentId;
   keybindings: ResolvedKeybindingsConfig;
@@ -210,7 +209,6 @@ export const OpenInPicker = memo(function OpenInPicker({
   openInCwd: string | null;
   compact?: boolean;
   enableShortcut?: boolean;
-  anchor?: "header-open-in-menu" | "file-open-in-menu";
 }) {
   const openInEditorMutation = useAtomCommand(shellEnvironment.openInEditor, "open in editor");
   const remote = useRemoteOpenState(environmentId);
@@ -321,7 +319,6 @@ export const OpenInPicker = memo(function OpenInPicker({
           render={
             <Button
               aria-label={compact ? "Choose editor" : "Copy options"}
-              data-floating-anchor={anchor}
               size="icon-xs"
               variant="outline"
             />
@@ -329,20 +326,14 @@ export const OpenInPicker = memo(function OpenInPicker({
         >
           <ChevronDownIcon aria-hidden="true" className="size-4" />
         </MenuTrigger>
-        <MenuPopup align="end" data-floating-popup={anchor}>
+        <MenuPopup align="end">
           {remote.mode === "remote-unavailable" ? (
             <MenuItem disabled>No SSH route to {environmentLabel}</MenuItem>
           ) : (
             <>
               {options.length === 0 && <MenuItem disabled>No installed editors found</MenuItem>}
               {options.map(({ label, Icon, value, kind }) => (
-                <MenuItem
-                  key={value}
-                  data-open-editor={value}
-                  data-editor-label={label}
-                  data-preferred-editor={value === preferredEditor ? "true" : "false"}
-                  onClick={() => openInEditor(value)}
-                >
+                <MenuItem key={value} onClick={() => openInEditor(value)}>
                   <Icon aria-hidden="true" className={getOpenInIconClass(kind)} />
                   {label}
                   {value === preferredEditor && openFavoriteEditorShortcutLabel && (

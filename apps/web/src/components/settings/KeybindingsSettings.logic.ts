@@ -54,41 +54,6 @@ export function shortcutToKeybindingInput(shortcut: KeybindingShortcut): string 
   return parts.join("+");
 }
 
-function formatShortcutKeyLabel(key: string): string {
-  if (key === " ") return "Space";
-  if (key.length === 1) return key.toUpperCase();
-  if (key === "escape") return "Esc";
-  if (key === "arrowup") return "Up";
-  if (key === "arrowdown") return "Down";
-  if (key === "arrowleft") return "Left";
-  if (key === "arrowright") return "Right";
-  return key.slice(0, 1).toUpperCase() + key.slice(1);
-}
-
-export function formatKeybindingShortcutLabel(
-  shortcut: KeybindingShortcut,
-  platform: string,
-): string {
-  const keyLabel = formatShortcutKeyLabel(shortcut.key);
-  const useMetaForMod = platform.toLowerCase() === "darwin" || isMacPlatform(platform);
-  const showMeta = shortcut.metaKey || (shortcut.modKey && useMetaForMod);
-  const showCtrl = shortcut.ctrlKey || (shortcut.modKey && !useMetaForMod);
-  const showAlt = shortcut.altKey;
-  const showShift = shortcut.shiftKey;
-
-  if (useMetaForMod) {
-    return `${showCtrl ? "⌃" : ""}${showAlt ? "⌥" : ""}${showShift ? "⇧" : ""}${showMeta ? "⌘" : ""}${keyLabel}`;
-  }
-
-  const parts: string[] = [];
-  if (showCtrl) parts.push("Ctrl");
-  if (showAlt) parts.push("Alt");
-  if (showShift) parts.push("Shift");
-  if (showMeta) parts.push("Meta");
-  parts.push(keyLabel);
-  return parts.join("+");
-}
-
 export function whenAstToExpression(node: KeybindingWhenNode | undefined): string {
   if (!node) return "";
   switch (node.type) {

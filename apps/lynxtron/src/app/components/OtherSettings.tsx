@@ -1,12 +1,9 @@
-import {
-  formatRelativeTimeLabel,
-  formatRelativeTimeUntilLabel,
-} from "@t3tools/client-runtime/presentation/time";
+import { formatRelativeTimeLabel, formatRelativeTimeUntilLabel } from "@t3tools/lynx-logic/time";
 import {
   canManageAuthAccess,
   fixedNetworkAccessPresentation,
   shouldShowAuthorizedClients,
-} from "@t3tools/client-runtime/presentation/connections";
+} from "@t3tools/lynx-logic/connections";
 import {
   deriveSourceControlEmptyPresentation,
   projectSourceControlDiscovery,
@@ -14,7 +11,7 @@ import {
   SOURCE_CONTROL_LOADING_SECTIONS,
   SOURCE_CONTROL_WRITING_STYLE_OPTIONS,
   type SourceControlSummaryPart,
-} from "@t3tools/client-runtime/presentation/source-control";
+} from "@t3tools/lynx-logic/sourceControl";
 import type {
   SourceControlDiscoveryResult,
   SourceControlWritingStyleMode,

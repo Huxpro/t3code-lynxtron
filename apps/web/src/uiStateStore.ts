@@ -1,11 +1,6 @@
 import { Debouncer } from "@tanstack/react-pacer";
-import {
-  markThreadUnreadInTimestampRecord,
-  markThreadVisitedInTimestampRecord,
-  sanitizeThreadVisitedTimestampRecord,
-} from "@t3tools/client-runtime/presentation/sidebar";
-import { normalizeProjectPathForComparison } from "@t3tools/shared/path";
 import { create } from "zustand";
+import { normalizeProjectPathForComparison } from "./lib/projectPaths";
 
 export const PERSISTED_STATE_KEY = "t3code:ui-state:v1";
 const THREAD_CHANGED_FILES_EXPANSION_VERSION = 1;
@@ -88,6 +83,21 @@ function sanitizeBooleanRecord(value: unknown): Record<string, boolean> {
   );
 }
 
+function sanitizeTimestampRecord(value: unknown): Record<string, string> {
+  if (!value || typeof value !== "object") {
+    return {};
+  }
+  return Object.fromEntries(
+    Object.entries(value).filter(
+      (entry): entry is [string, string] =>
+        entry[0].length > 0 &&
+        typeof entry[1] === "string" &&
+        entry[1].length > 0 &&
+        Number.isFinite(Date.parse(entry[1])),
+    ),
+  );
+}
+
 export function parsePersistedState(parsed: PersistedUiState): UiState {
   const projectExpandedById =
     parsed.projectExpandedById === undefined
@@ -115,7 +125,7 @@ export function parsePersistedState(parsed: PersistedUiState): UiState {
   return {
     projectExpandedById,
     projectOrder,
-    threadLastVisitedAtById: sanitizeThreadVisitedTimestampRecord(parsed.threadLastVisitedAtById),
+    threadLastVisitedAtById: sanitizeTimestampRecord(parsed.threadLastVisitedAtById),
     threadChangedFilesExpandedById:
       parsed.threadChangedFilesExpansionVersion === THREAD_CHANGED_FILES_EXPANSION_VERSION
         ? sanitizePersistedThreadChangedFilesExpanded(parsed.threadChangedFilesExpandedById)
@@ -213,15 +223,25 @@ export function persistState(state: UiState): void {
 const debouncedPersistState = new Debouncer(persistState, { wait: 500 });
 
 export function markThreadVisited(state: UiState, threadId: string, visitedAt: string): UiState {
-  const threadLastVisitedAtById = markThreadVisitedInTimestampRecord(
-    state.threadLastVisitedAtById,
-    threadId,
-    visitedAt,
-  );
-  if (threadLastVisitedAtById === state.threadLastVisitedAtById) return state;
+  const visitedAtMs = Date.parse(visitedAt);
+  if (!Number.isFinite(visitedAtMs)) {
+    return state;
+  }
+  const previousVisitedAt = state.threadLastVisitedAtById[threadId];
+  const previousVisitedAtMs = previousVisitedAt ? Date.parse(previousVisitedAt) : NaN;
+  if (
+    Number.isFinite(previousVisitedAtMs) &&
+    Number.isFinite(visitedAtMs) &&
+    previousVisitedAtMs >= visitedAtMs
+  ) {
+    return state;
+  }
   return {
     ...state,
-    threadLastVisitedAtById,
+    threadLastVisitedAtById: {
+      ...state.threadLastVisitedAtById,
+      [threadId]: visitedAt,
+    },
   };
 }
 
@@ -230,15 +250,23 @@ export function markThreadUnread(
   threadId: string,
   latestTurnCompletedAt: string | null | undefined,
 ): UiState {
-  const threadLastVisitedAtById = markThreadUnreadInTimestampRecord(
-    state.threadLastVisitedAtById,
-    threadId,
-    latestTurnCompletedAt,
-  );
-  if (threadLastVisitedAtById === state.threadLastVisitedAtById) return state;
+  if (!latestTurnCompletedAt) {
+    return state;
+  }
+  const latestTurnCompletedAtMs = Date.parse(latestTurnCompletedAt);
+  if (Number.isNaN(latestTurnCompletedAtMs)) {
+    return state;
+  }
+  const unreadVisitedAt = new Date(latestTurnCompletedAtMs - 1).toISOString();
+  if (state.threadLastVisitedAtById[threadId] === unreadVisitedAt) {
+    return state;
+  }
   return {
     ...state,
-    threadLastVisitedAtById,
+    threadLastVisitedAtById: {
+      ...state.threadLastVisitedAtById,
+      [threadId]: unreadVisitedAt,
+    },
   };
 }
 

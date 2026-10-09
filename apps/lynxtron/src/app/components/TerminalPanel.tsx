@@ -6,8 +6,8 @@ import { t3ClientActions, useT3ClientState } from "../state/t3Client";
 import { presentTerminalText } from "./terminalText";
 import { terminalSplitGridSize } from "./terminalGrid.logic";
 import { terminalReturnController } from "../state/terminalKeyboard";
-import { composerDraftScopeKey } from "@t3tools/client-runtime/presentation/draft-thread";
-import { recentTerminalContext } from "@t3tools/client-runtime/presentation/terminal-context";
+import { composerDraftScopeKey } from "@t3tools/lynx-logic/draftThread";
+import { recentTerminalContext } from "@t3tools/lynx-logic/terminalContext";
 import {
   activateTerminalSession,
   addTerminalSession,

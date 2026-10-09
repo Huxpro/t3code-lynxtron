@@ -29,7 +29,7 @@ describe("Plan 11C style coverage contract", () => {
                   web: {
                     modules: [
                       {
-                        path: "apps/web/src/components/chat/ComposerSurface.tsx",
+                        path: "apps/web/src/components/chat/ComposerSurface.lynx.tsx",
                       },
                     ],
                   },
@@ -40,12 +40,11 @@ describe("Plan 11C style coverage contract", () => {
         }),
       );
       await writeFile(cssPath, ".flex{display:flex}.rounded-lg{border-radius:8px}");
-      await run(process.execPath, [
-        path.join(scriptDirectory, "style-coverage-report.mjs"),
-        reusePath,
-        cssPath,
-        outputPath,
-      ], { cwd: path.resolve(appRoot, "../..") });
+      await run(
+        process.execPath,
+        [path.join(scriptDirectory, "style-coverage-report.mjs"), reusePath, cssPath, outputPath],
+        { cwd: path.resolve(appRoot, "../..") },
+      );
 
       const report = JSON.parse(await readFile(outputPath, "utf8"));
       assert.deepEqual(report.screens, ["composer"]);
@@ -53,9 +52,7 @@ describe("Plan 11C style coverage contract", () => {
       assert.isAtLeast(report.summary.totalOccurrences, report.summary.coveredOccurrences);
       assert.isTrue(report.highestRisk.every((row) => row.classification !== "GENERATED"));
       assert.isTrue(
-        report.highestRisk.every(
-          (row) => row.screens.length > 0 && row.files.length > 0,
-        ),
+        report.highestRisk.every((row) => row.screens.length > 0 && row.files.length > 0),
       );
     } finally {
       await rm(root, { recursive: true, force: true });

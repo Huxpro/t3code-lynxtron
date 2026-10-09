@@ -1,4 +1,8 @@
-import type { ProjectScript, ProjectScriptIcon } from "@t3tools/contracts";
+import type {
+  ProjectScript,
+  ProjectScriptIcon,
+  ResolvedKeybindingsConfig,
+} from "@t3tools/contracts";
 import {
   isAtomCommandInterrupted,
   squashAtomCommandFailure,
@@ -14,13 +18,12 @@ import {
 } from "lucide-react";
 import React, { type FormEvent, type KeyboardEvent, useEffect, useState } from "react";
 
-import { keybindingFromKeyboardEvent } from "~/components/settings/KeybindingsSettings.logic";
 import {
-  resolveProjectScriptEditorPayload,
-  SCRIPT_ICONS,
-  type NewProjectScriptInput,
-  type ProjectScriptEditorRequest,
-} from "./projectScriptEditor.logic";
+  keybindingValueForCommand,
+  decodeProjectScriptKeybindingRule,
+} from "~/lib/projectScriptKeybindings";
+import { keybindingFromKeyboardEvent } from "~/components/settings/KeybindingsSettings.logic";
+import { commandForProjectScript, nextProjectScriptId } from "~/projectScripts";
 import {
   AlertDialog,
   AlertDialogClose,
@@ -46,6 +49,15 @@ import { Popover, PopoverPopup, PopoverTrigger } from "./ui/popover";
 import { Switch } from "./ui/switch";
 import { Textarea } from "./ui/textarea";
 
+export const SCRIPT_ICONS: Array<{ id: ProjectScriptIcon; label: string }> = [
+  { id: "play", label: "Play" },
+  { id: "test", label: "Test" },
+  { id: "lint", label: "Lint" },
+  { id: "configure", label: "Configure" },
+  { id: "build", label: "Build" },
+  { id: "debug", label: "Debug" },
+];
+
 export function ScriptIcon({
   icon,
   className = "size-3.5",
@@ -61,7 +73,55 @@ export function ScriptIcon({
   return <PlayIcon className={className} />;
 }
 
+export interface NewProjectScriptInput {
+  name: string;
+  command: string;
+  icon: ProjectScriptIcon;
+  runOnWorktreeCreate: boolean;
+  keybinding: string | null;
+  /** Optional URL to open in the in-app preview when this script runs. */
+  previewUrl: string | null;
+  /** When true, automatically open the preview panel pointed at `previewUrl`. */
+  autoOpenPreview: boolean;
+}
+
 export type ProjectScriptActionResult = AtomCommandResult<void, unknown>;
+
+export const EMPTY_PROJECT_SCRIPT_INPUT: NewProjectScriptInput = {
+  name: "",
+  command: "",
+  icon: "play",
+  runOnWorktreeCreate: false,
+  keybinding: null,
+  previewUrl: null,
+  autoOpenPreview: false,
+};
+
+/** What the editor dialog should open with. `scriptId: null` means "add". */
+export interface ProjectScriptEditorRequest {
+  scriptId: string | null;
+  initial: NewProjectScriptInput;
+  /** Validation error to show immediately (e.g. a failed t3.json import). */
+  error?: string;
+}
+
+export function editorRequestForScript(
+  script: ProjectScript,
+  keybindings: ResolvedKeybindingsConfig,
+): ProjectScriptEditorRequest {
+  return {
+    scriptId: script.id,
+    initial: {
+      name: script.name,
+      command: script.command,
+      icon: script.icon,
+      runOnWorktreeCreate: script.runOnWorktreeCreate,
+      keybinding: keybindingValueForCommand(keybindings, commandForProjectScript(script.id)),
+      previewUrl: script.previewUrl ?? null,
+      autoOpenPreview: script.autoOpenPreview ?? false,
+    },
+  };
+}
 
 /**
  * Add/edit dialog for a project script, shared by the chat-header scripts menu
@@ -129,25 +189,44 @@ export function ProjectScriptEditorDialog({
   const submit = async (event: FormEvent) => {
     event.preventDefault();
     if (!request) return;
-    const resolved = resolveProjectScriptEditorPayload({
-      scriptId: request.scriptId,
-      scripts,
-      form: {
-        name,
-        command,
-        icon,
-        runOnWorktreeCreate,
-        keybinding,
-        previewUrl,
-        autoOpenPreview,
-      },
-    });
-    if (!resolved.ok) {
-      setValidationError(resolved.error);
+    const trimmedName = name.trim();
+    const trimmedCommand = command.trim();
+    if (trimmedName.length === 0) {
+      setValidationError("Name is required.");
       return;
     }
+    if (trimmedCommand.length === 0) {
+      setValidationError("Command is required.");
+      return;
+    }
+
     setValidationError(null);
-    const payload = resolved.payload;
+    let payload: NewProjectScriptInput;
+    try {
+      const scriptIdForValidation =
+        request.scriptId ??
+        nextProjectScriptId(
+          trimmedName,
+          scripts.map((script) => script.id),
+        );
+      const keybindingRule = decodeProjectScriptKeybindingRule({
+        keybinding,
+        command: commandForProjectScript(scriptIdForValidation),
+      });
+      const trimmedPreviewUrl = previewUrl.trim();
+      payload = {
+        name: trimmedName,
+        command: trimmedCommand,
+        icon,
+        runOnWorktreeCreate,
+        keybinding: keybindingRule?.key ?? null,
+        previewUrl: trimmedPreviewUrl.length > 0 ? trimmedPreviewUrl : null,
+        autoOpenPreview: trimmedPreviewUrl.length > 0 ? autoOpenPreview : false,
+      } satisfies NewProjectScriptInput;
+    } catch (error) {
+      setValidationError(error instanceof Error ? error.message : "Failed to save action.");
+      return;
+    }
 
     const result = await onSubmit(request.scriptId, payload);
     if (result._tag === "Failure") {

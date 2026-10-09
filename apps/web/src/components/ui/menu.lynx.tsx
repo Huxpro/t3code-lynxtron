@@ -18,7 +18,7 @@ import {
   type FloatingAlign,
   type FloatingRect,
   type FloatingSide,
-} from "@t3tools/client-runtime/presentation/floating-relation";
+} from "@t3tools/lynx-logic/floatingRelation";
 import { HostView } from "./hostElements";
 import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
 

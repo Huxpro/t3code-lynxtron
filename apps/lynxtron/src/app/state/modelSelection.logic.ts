@@ -1,8 +1,8 @@
-import { deriveModelPickerModels } from "@t3tools/client-runtime/presentation/model-picker";
+import { deriveModelPickerModels } from "@t3tools/lynx-logic/modelPicker";
 import {
   isProviderInstancePickerReady,
   type ProviderInstanceEntry,
-} from "@t3tools/client-runtime/presentation/provider";
+} from "@t3tools/lynx-logic/provider";
 import type {
   ModelSelection,
   OrchestrationProjectShell,

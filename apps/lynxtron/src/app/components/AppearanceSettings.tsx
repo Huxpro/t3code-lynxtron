@@ -12,7 +12,7 @@ import {
   MAX_GLASS_OPACITY,
   MIN_GLASS_OPACITY,
   PORTABLE_CLIENT_SETTINGS_DEFAULTS,
-} from "@t3tools/client-runtime/presentation/settings";
+} from "@t3tools/lynx-logic/settings";
 
 const ENVIRONMENT_IDENTIFICATION_LABELS = {
   artwork: "Artwork",

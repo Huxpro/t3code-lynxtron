@@ -15,7 +15,6 @@ import { resolveShortcutCommand, shortcutLabelForCommand } from "../keybindings"
 import { cn, isMacPlatform } from "../lib/utils";
 import { primaryServerKeybindingsAtom } from "../state/server";
 import { useEnvironmentIdentificationMode, useLegacySidebarEnabled } from "../hooks/useSettings";
-import { AppSidebarComposition } from "./AppSidebarComposition";
 import LegacyThreadSidebar from "./LegacySidebar";
 import ThreadSidebar from "./Sidebar";
 import { SettingsSidebarNav } from "./settings/SettingsSidebarNav";
@@ -32,7 +31,14 @@ import {
   THREAD_SIDEBAR_MIN_WIDTH,
   THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
 } from "./threadSidebarWidth";
-import { Sidebar, SidebarTrigger, useSidebar, useSidebarVisibility } from "./ui/sidebar";
+import {
+  Sidebar,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+  useSidebar,
+  useSidebarVisibility,
+} from "./ui/sidebar";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "./ui/tooltip";
 
 const MACOS_TRAFFIC_LIGHTS_LEFT_INSET = "90px";
@@ -60,7 +66,6 @@ function readInitialThreadSidebarWidth(): number {
 
 function SidebarControl() {
   const keybindings = useAtomValue(primaryServerKeybindingsAtom);
-  const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
   const isSidebarVisible = useSidebarVisibility();
   const environmentIdentificationMode = useEnvironmentIdentificationMode();
@@ -78,14 +83,7 @@ function SidebarControl() {
       ) {
         return;
       }
-      const command = resolveShortcutCommand(event, keybindings);
-      if (command === "settings.open") {
-        event.preventDefault();
-        event.stopPropagation();
-        void navigate({ to: "/settings/general" });
-        return;
-      }
-      if (command !== "sidebar.toggle") return;
+      if (resolveShortcutCommand(event, keybindings) !== "sidebar.toggle") return;
 
       event.preventDefault();
       event.stopPropagation();
@@ -95,7 +93,7 @@ function SidebarControl() {
     // Capture before focused editors consume commands such as Mod+B for rich-text formatting.
     window.addEventListener("keydown", onKeyDown, true);
     return () => window.removeEventListener("keydown", onKeyDown, true);
-  }, [keybindings, navigate, toggleSidebar]);
+  }, [keybindings, toggleSidebar]);
 
   return (
     // The right-side layout controls carry mr-px (border compensation inside
@@ -110,7 +108,7 @@ function SidebarControl() {
           render={
             <SidebarTrigger
               className={cn(
-                "sidebar-global-toggle pointer-events-auto",
+                "pointer-events-auto",
                 isSidebarVisible &&
                   stageBackdropVariant &&
                   "focus-visible:ring-white/90 [&_svg]:stroke-white/90! [&_svg]:opacity-100! [&_svg]:hover:stroke-white! [:hover,[data-pressed]]:bg-white/15",
@@ -145,8 +143,6 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
   // sidebar is active.
   const pathname = useLocation({ select: (location) => location.pathname });
   const isOnSettings = pathname === "/settings" || pathname.startsWith("/settings/");
-  // Harness hook: which sidebar theme is mounted (settings uses the flat theme).
-  const sidebarVersion = legacySidebarEnabled && !isOnSettings ? "legacy" : "flat";
   const isMacosDesktop = isElectron && isMacPlatform(navigator.platform);
   const [sidebarWidth, setSidebarWidth] = useState(readInitialThreadSidebarWidth);
   // Subscribed rather than read once: the clamp must track live window size,
@@ -213,11 +209,24 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
   }, [navigate, pathname]);
 
   return (
-    <AppSidebarComposition
-      providerClassName="h-dvh! min-h-0!"
-      providerStyle={sidebarProviderStyle}
-      sidebarContent={
-        isOnSettings ? (
+    <SidebarProvider className="h-dvh! min-h-0!" defaultOpen style={sidebarProviderStyle}>
+      <ProjectProjectionRetention />
+      <Sidebar
+        side="left"
+        collapsible="offcanvas"
+        data-app-sidebar=""
+        className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
+        resizable={{
+          maxWidth: sidebarMaximumWidth,
+          minWidth: THREAD_SIDEBAR_MIN_WIDTH,
+          shouldAcceptWidth: ({ currentWidth, nextWidth, wrapper }) =>
+            nextWidth <= currentWidth ||
+            wrapper.clientWidth - nextWidth >= THREAD_MAIN_CONTENT_MIN_WIDTH,
+          storageKey: THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
+          onResize: setSidebarWidth,
+        }}
+      >
+        {isOnSettings ? (
           <>
             <SidebarChromeHeader isElectron={isElectron} />
             <SettingsSidebarNav pathname={pathname} />
@@ -226,36 +235,11 @@ export function AppSidebarLayout({ children }: { children: ReactNode }) {
           <LegacyThreadSidebar />
         ) : (
           <ThreadSidebar />
-        )
-      }
-      onRailDoubleClick={resetSidebarWidth}
-      renderSidebar={(content) => (
-        <Sidebar
-          side="left"
-          collapsible="offcanvas"
-          data-app-sidebar=""
-          data-sidebar-version={sidebarVersion}
-          className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
-          resizable={{
-            maxWidth: sidebarMaximumWidth,
-            minWidth: THREAD_SIDEBAR_MIN_WIDTH,
-            shouldAcceptWidth: ({ currentWidth, nextWidth, wrapper }) =>
-              nextWidth <= currentWidth ||
-              wrapper.clientWidth - nextWidth >= THREAD_MAIN_CONTENT_MIN_WIDTH,
-            storageKey: THREAD_SIDEBAR_WIDTH_STORAGE_KEY,
-            onResize: setSidebarWidth,
-          }}
-        >
-          {content}
-        </Sidebar>
-      )}
-      main={children}
-      globalControl={
-        <>
-          <ProjectProjectionRetention />
-          <SidebarControl />
-        </>
-      }
-    />
+        )}
+        <SidebarRail onDoubleClick={resetSidebarWidth} />
+      </Sidebar>
+      {children}
+      <SidebarControl />
+    </SidebarProvider>
   );
 }

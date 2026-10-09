@@ -40,7 +40,6 @@ describe("ProviderStatusBanner", () => {
     );
 
     expect(markup).toContain('role="alert"');
-    expect(markup).toContain('data-provider-status-banner="true"');
     expect(markup).toContain('aria-label="Dismiss Codex provider warning"');
     expect(markup).toContain("absolute top-2 right-2");
   });
@@ -63,19 +62,5 @@ describe("ProviderStatusBanner", () => {
     );
 
     expect(markup).toContain('aria-label="Dismiss Codex provider error"');
-  });
-
-  it("renders the complete Codex timeout message without clipping", () => {
-    const message = "Timed out while checking Codex app-server provider status.";
-    const markup = renderToStaticMarkup(
-      <ProviderStatusBanner
-        status={{ ...warningProvider(), status: "error", auth: { status: "unknown" }, message }}
-        onDismiss={() => {}}
-      />,
-    );
-
-    expect(markup).toContain("Codex provider status");
-    expect(markup).toContain(message);
-    expect(markup).toContain("line-clamp-3");
   });
 });

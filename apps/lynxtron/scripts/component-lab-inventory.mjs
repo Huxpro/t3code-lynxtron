@@ -244,7 +244,10 @@ export function generateComponentInventory() {
   ];
   const stories = new Map(catalog.map((story) => [story.id, story]));
   const componentFiles = sourceFiles(WEB_COMPONENT_ROOT);
-  const authorityFiles = componentFiles.filter((path) => !path.endsWith(".lynx.tsx"));
+  // A Lynx-owned component with no Web module of the same name is its own authority.
+  const authorityFiles = componentFiles.filter(
+    (path) => !path.endsWith(".lynx.tsx") || !existsSync(path.replace(/\.lynx\.tsx$/u, ".tsx")),
+  );
   const logicalModules = new Map();
   for (const path of authorityFiles) {
     const logical = logicalModulePath(path);

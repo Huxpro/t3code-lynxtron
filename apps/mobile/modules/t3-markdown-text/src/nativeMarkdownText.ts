@@ -1,5 +1,4 @@
 import type { MarkdownNode } from "react-native-nitro-markdown/headless";
-import { normalizeMarkdownVisibleText } from "@t3tools/client-runtime/presentation/markdown";
 
 import type { SelectableMarkdownSkill } from "./SelectableMarkdownText.types";
 import { resolveMarkdownLinkPresentation, type MarkdownFileIcon } from "./markdownLinks";
@@ -69,12 +68,66 @@ const EMPTY_CONTEXT: RunContext = {
   code: false,
 };
 
+const INLINE_HTML_TAG_PATTERN = /<\/?(?:kbd|mark|sub|sup|u)(?:\s[^>]*)?>/gi;
+
+function decodeCodePoint(codePoint: number, entity: string): string {
+  if (!Number.isInteger(codePoint) || codePoint < 0 || codePoint > 0x10ffff) {
+    return entity;
+  }
+  return String.fromCodePoint(codePoint);
+}
+
+function decodeHtmlEntitiesOnce(value: string): string {
+  return value.replace(
+    /&(?:#(\d+)|#x([0-9a-f]+)|amp|apos|gt|lt|nbsp|quot);/gi,
+    (entity, decimal: string | undefined, hexadecimal: string | undefined) => {
+      if (decimal) {
+        return decodeCodePoint(Number.parseInt(decimal, 10), entity);
+      }
+      if (hexadecimal) {
+        return decodeCodePoint(Number.parseInt(hexadecimal, 16), entity);
+      }
+      switch (entity.toLowerCase()) {
+        case "&amp;":
+          return "&";
+        case "&apos;":
+          return "'";
+        case "&gt;":
+          return ">";
+        case "&lt;":
+          return "<";
+        case "&nbsp;":
+          return "\u00a0";
+        case "&quot;":
+          return '"';
+        default:
+          return entity;
+      }
+    },
+  );
+}
+
+function decodeHtmlEntities(value: string): string {
+  let decoded = value;
+  for (let pass = 0; pass < 2; pass += 1) {
+    const next = decodeHtmlEntitiesOnce(decoded);
+    if (next === decoded) {
+      break;
+    }
+    decoded = next;
+  }
+  return decoded;
+}
+
 function textNodeContent(value: string): string {
-  return normalizeMarkdownVisibleText(value);
+  return decodeHtmlEntities(value).replace(INLINE_HTML_TAG_PATTERN, "");
 }
 
 function inlineHtmlText(value: string): string {
-  return normalizeMarkdownVisibleText(value);
+  if (/^<br\s*\/?>$/i.test(value.trim())) {
+    return "\n";
+  }
+  return decodeHtmlEntities(value.replace(/<[^>]+>/g, ""));
 }
 
 function sameRunStyle(left: NativeMarkdownTextRun, right: NativeMarkdownTextRun): boolean {

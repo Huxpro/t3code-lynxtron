@@ -1,7 +1,10 @@
 import type {
   BackgroundActivityProfile,
   BackgroundActivitySettings,
+  ProviderDriverKind,
+  ProviderInstanceConfig,
   PreviewViewportSetting,
+  ProviderInstanceId,
   ServerSettings,
   SidebarProjectGroupingMode,
   UnifiedSettings,
@@ -16,10 +19,17 @@ import {
 import * as Duration from "effect/Duration";
 import * as Equal from "effect/Equal";
 
-export {
-  isProjectGroupingEnabled,
-  projectGroupingModeFromToggle,
-} from "@t3tools/client-runtime/presentation/settings";
+export function isProjectGroupingEnabled(mode: SidebarProjectGroupingMode): boolean {
+  return mode !== "separate";
+}
+
+export function projectGroupingModeFromToggle(
+  enabled: boolean,
+  lastEnabledMode: SidebarProjectGroupingMode = "repository",
+): SidebarProjectGroupingMode {
+  if (!enabled) return "separate";
+  return lastEnabledMode === "repository_path" ? "repository_path" : "repository";
+}
 
 const LAST_ENABLED_PROJECT_GROUPING_MODE_KEY = "t3code:last-enabled-project-grouping-mode";
 
@@ -171,20 +181,6 @@ export function resolveBackgroundActivityProfileOption(
   return normalized.profile === "custom" ? "advanced" : normalized.profile;
 }
 
-const BACKGROUND_ACTIVITY_PROFILE_DESCRIPTIONS: Record<BackgroundActivityProfile, string> = {
-  balanced:
-    "Pauses background probes when clients are idle, the host is locked, or low power mode is active.",
-  performance: "Allows scoped background probes while any subscribed client remains connected.",
-  "battery-saver": "Also pauses background probes when the host or client is on battery.",
-};
-
-export function backgroundActivityProfileDescription(settings: ServerSettings): string {
-  const resolved = resolveServerBackgroundActivitySettings(settings);
-  return resolveBackgroundActivityProfileOption(settings) === "advanced"
-    ? `Uses custom background intervals with the selected shared power policy. Current shared policy: ${resolved.profile === "battery-saver" ? "Battery saver" : resolved.profile[0]?.toUpperCase() + resolved.profile.slice(1)}.`
-    : BACKGROUND_ACTIVITY_PROFILE_DESCRIPTIONS[resolved.profile];
-}
-
 export function backgroundActivitySharedPolicySettings(
   settings: ServerSettings,
   profile: BackgroundActivityProfile,
@@ -195,57 +191,6 @@ export function backgroundActivitySharedPolicySettings(
     profile: "custom",
     baseProfile: profile,
     overrides: normalized.profile === "custom" ? normalized.overrides : {},
-  };
-}
-
-export const PROVIDER_HEALTH_INTERVAL_STEP_SECONDS = 30;
-
-export function durationToSeconds(duration: Duration.Duration): number {
-  return Math.round(Duration.toMillis(duration) / 1_000);
-}
-
-export function normalizeIntervalSeconds(value: number | null, minimum = 0): number {
-  if (value === null || !Number.isFinite(value)) {
-    return minimum;
-  }
-  return Math.max(minimum, Math.round(value));
-}
-
-type BackgroundActivityOverridePatch = Partial<{
-  [Key in keyof BackgroundActivitySettings["overrides"]]:
-    | BackgroundActivitySettings["overrides"][Key]
-    | undefined;
-}>;
-
-export function backgroundActivityOverrideSettings(
-  current: BackgroundActivitySettings,
-  resolved: ReturnType<typeof resolveServerBackgroundActivitySettings>,
-  overrides: BackgroundActivityOverridePatch,
-) {
-  const nextOverrides: BackgroundActivityOverridePatch = {
-    automaticGitFetchInterval: resolved.automaticGitFetchInterval,
-    providerHealthRefreshInterval: resolved.providerHealthRefreshInterval,
-    hostPowerMonitorActiveInterval: resolved.hostPowerMonitorActiveInterval,
-    hostPowerMonitorIdleInterval: resolved.hostPowerMonitorIdleInterval,
-    idleClientTtl: resolved.idleClientTtl,
-    pauseWhenHostLocked: resolved.pauseWhenHostLocked,
-    pauseWhenHostLowPower: resolved.pauseWhenHostLowPower,
-    pauseWhenClientLowPower: resolved.pauseWhenClientLowPower,
-    pauseWhenOnBattery: resolved.pauseWhenOnBattery,
-    ...overrides,
-  };
-  for (const [key, value] of Object.entries(nextOverrides)) {
-    if (value === undefined) {
-      delete nextOverrides[key as keyof typeof nextOverrides];
-    }
-  }
-  return {
-    backgroundActivity: {
-      schemaVersion: 1 as const,
-      profile: "custom" as const,
-      baseProfile: getBackgroundActivityBaseProfile(current),
-      overrides: nextOverrides as BackgroundActivitySettings["overrides"],
-    },
   };
 }
 
@@ -297,4 +242,92 @@ export function formatDiagnosticsDescription(input: {
   return `${mode}.`;
 }
 
-export { buildProviderInstanceUpdatePatch } from "@t3tools/client-runtime/presentation/provider-settings";
+export function buildProviderInstanceUpdatePatch(input: {
+  readonly settings: Pick<ServerSettings, "providers" | "providerInstances">;
+  readonly instanceId: ProviderInstanceId;
+  readonly instance: ProviderInstanceConfig;
+  readonly driver: ProviderDriverKind;
+  readonly isDefault: boolean;
+  readonly textGenerationModelSelection?:
+    | ServerSettings["textGenerationModelSelection"]
+    | undefined;
+}): Partial<UnifiedSettings> {
+  type LegacyProviderSettings = ServerSettings["providers"][keyof ServerSettings["providers"]];
+  const legacyProviderDefaults = DEFAULT_UNIFIED_SETTINGS.providers as Record<
+    string,
+    LegacyProviderSettings | undefined
+  >;
+  const legacyProviderDefault = input.isDefault ? legacyProviderDefaults[input.driver] : undefined;
+  return {
+    ...(legacyProviderDefault !== undefined
+      ? {
+          providers: {
+            ...input.settings.providers,
+            [input.driver]: legacyProviderDefault,
+          } as ServerSettings["providers"],
+        }
+      : {}),
+    providerInstances: {
+      ...input.settings.providerInstances,
+      [input.instanceId]: input.instance,
+    },
+    ...(input.textGenerationModelSelection !== undefined
+      ? { textGenerationModelSelection: input.textGenerationModelSelection }
+      : {}),
+  };
+}
+
+// ── Background-activity interval helpers ─────────────────────────────
+// Shared by the General panel's interval rows and the Providers panel's
+// health-check row.
+
+export const PROVIDER_HEALTH_INTERVAL_STEP_SECONDS = 30;
+
+type BackgroundActivityOverridePatch = Partial<{
+  [K in keyof BackgroundActivitySettings["overrides"]]:
+    | BackgroundActivitySettings["overrides"][K]
+    | undefined;
+}>;
+
+export function durationToSeconds(duration: Duration.Duration): number {
+  return Math.round(Duration.toMillis(duration) / 1_000);
+}
+
+export function normalizeIntervalSeconds(value: number | null, minimum = 0): number {
+  if (value === null || !Number.isFinite(value)) {
+    return minimum;
+  }
+  return Math.max(minimum, Math.round(value));
+}
+
+export function backgroundActivityOverrideSettings(
+  current: BackgroundActivitySettings,
+  resolved: ReturnType<typeof resolveServerBackgroundActivitySettings>,
+  overrides: BackgroundActivityOverridePatch,
+) {
+  const nextOverrides: BackgroundActivityOverridePatch = {
+    automaticGitFetchInterval: resolved.automaticGitFetchInterval,
+    providerHealthRefreshInterval: resolved.providerHealthRefreshInterval,
+    hostPowerMonitorActiveInterval: resolved.hostPowerMonitorActiveInterval,
+    hostPowerMonitorIdleInterval: resolved.hostPowerMonitorIdleInterval,
+    idleClientTtl: resolved.idleClientTtl,
+    pauseWhenHostLocked: resolved.pauseWhenHostLocked,
+    pauseWhenHostLowPower: resolved.pauseWhenHostLowPower,
+    pauseWhenClientLowPower: resolved.pauseWhenClientLowPower,
+    pauseWhenOnBattery: resolved.pauseWhenOnBattery,
+    ...overrides,
+  };
+  for (const [key, value] of Object.entries(nextOverrides)) {
+    if (value === undefined) {
+      delete nextOverrides[key as keyof typeof nextOverrides];
+    }
+  }
+  return {
+    backgroundActivity: {
+      schemaVersion: 1 as const,
+      profile: "custom" as const,
+      baseProfile: getBackgroundActivityBaseProfile(current),
+      overrides: nextOverrides as BackgroundActivitySettings["overrides"],
+    },
+  };
+}

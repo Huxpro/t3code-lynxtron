@@ -5,7 +5,7 @@ import {
   ProviderInstanceId,
   type ServerProvider,
 } from "@t3tools/contracts";
-import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentation/provider";
+import { deriveProviderInstanceEntries } from "@t3tools/lynx-logic/provider";
 
 import {
   availableThreadModels,

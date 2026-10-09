@@ -41,7 +41,7 @@
       },
       "source": [
         "apps/web/src/components/Sidebar.tsx",
-        "apps/web/src/components/sidebar/SidebarV2ControlsSurface.tsx",
+        "apps/web/src/components/sidebar/SidebarV2ControlsSurface.lynx.tsx",
         "apps/web/src/components/ui/menu.lynx.tsx"
       ]
     },

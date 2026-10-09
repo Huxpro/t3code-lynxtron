@@ -3,9 +3,9 @@ import {
   deriveModelPickerModels,
   describeUnavailableProviderInstance,
   type ModelPickerModel,
-} from "@t3tools/client-runtime/presentation/model-picker";
-import { redactSourceControlAccount } from "@t3tools/client-runtime/presentation/source-control";
-import { getRelativeTimeState } from "@t3tools/client-runtime/presentation/time";
+} from "@t3tools/lynx-logic/modelPicker";
+import { redactSourceControlAccount } from "@t3tools/lynx-logic/sourceControl";
+import { getRelativeTimeState } from "@t3tools/lynx-logic/time";
 import {
   getProviderSummary,
   getProviderVersionLabel,
@@ -13,15 +13,15 @@ import {
   sortProviderInstanceEntries,
   type ProviderInstanceEntry,
   type ProviderStatusKey,
-} from "@t3tools/client-runtime/presentation/provider";
+} from "@t3tools/lynx-logic/provider";
 import {
   deriveProviderSettingsFields,
   nextProviderConfigWithFieldValue,
   readProviderConfigBoolean,
   readProviderConfigString,
   readProviderConfigStringArray,
-} from "@t3tools/client-runtime/presentation/provider-settings-fields";
-import { withProviderCustomModels } from "@t3tools/client-runtime/presentation/provider-settings";
+} from "@t3tools/lynx-logic/providerSettingsFields";
+import { withProviderCustomModels } from "@t3tools/lynx-logic/providerSettings";
 import {
   DEFAULT_SERVER_SETTINGS,
   ProviderDriverKind,

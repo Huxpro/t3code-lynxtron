@@ -3,7 +3,6 @@ import type {
   ContextMenuOpenContext as TreeContextMenuOpenContext,
 } from "@pierre/trees";
 import type { EnvironmentId, ProjectEntry } from "@t3tools/contracts";
-import { summarizeProjectEntries } from "@t3tools/client-runtime/presentation/files";
 import { FileTree, useFileTree, useFileTreeSearch } from "@pierre/trees/react";
 import { serializeComposerFileLink } from "@t3tools/shared/composerTrigger";
 import { RotateCw } from "lucide-react";
@@ -46,6 +45,10 @@ const TREE_UNSAFE_CSS = `
   }
   button[data-type='item'] { border-radius: 5px; }
 `;
+
+function treePath(entry: ProjectEntry): string {
+  return entry.kind === "directory" ? `${entry.path}/` : entry.path;
+}
 
 function RefreshFilesButton(props: { isPending: boolean; onRefresh: () => void }) {
   return (
@@ -109,13 +112,12 @@ export default function FileBrowserPanel({
   const composerRef = useComposerHandleContext();
   const entriesQuery = useProjectEntriesQuery(environmentId, cwd);
   const entries = entriesQuery.data?.entries ?? [];
-  const entriesSummary = useMemo(() => summarizeProjectEntries(entries), [entries]);
   const entryKinds = useMemo(
     () => new Map(entries.map((entry) => [entry.path, entry.kind] as const)),
     [entries],
   );
   const entryKindsRef = useRef<ReadonlyMap<string, ProjectEntry["kind"]>>(entryKinds);
-  const treePaths = entriesSummary.treePaths;
+  const treePaths = useMemo(() => entries.map(treePath), [entries]);
   const previousTreePathsRef = useRef<readonly string[]>([]);
   const syncingSelectionRef = useRef(false);
   const treeSelectionPathRef = useRef<string | null>(null);

@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
 import type { NodesRef } from "@lynx-js/types";
-import { isSessionWorking } from "@t3tools/client-runtime/presentation/session";
+import { isSessionWorking } from "@t3tools/lynx-logic/session";
 import {
   changedFileName,
   selectChangedFilePreview,
   shouldAutoExpandChangedFiles,
   summarizeChangedFileScopes,
   summarizeChangedFiles,
-} from "@t3tools/client-runtime/presentation/diff";
+} from "@t3tools/lynx-logic/diff";
 import {
   assistantMessageDisplayText,
   deriveActiveWorkStartedAt,
@@ -28,25 +28,25 @@ import {
   deriveRevertTurnCountByUserMessageId,
   indexCheckpointSummariesByAssistantMessageId,
   projectRevertCheckpointConfirmation,
-} from "@t3tools/client-runtime/presentation/transcript";
-import { formatDayAwareTimestamp } from "@t3tools/client-runtime/presentation/time";
-import { parseMarkdownInline } from "@t3tools/client-runtime/presentation/markdown";
-import { formatWorkspaceRelativePath } from "@t3tools/client-runtime/presentation/paths";
+} from "@t3tools/lynx-logic/transcript";
+import { formatDayAwareTimestamp } from "@t3tools/lynx-logic/time";
+import { parseMarkdownInline } from "@t3tools/lynx-logic/markdown";
+import { formatWorkspaceRelativePath } from "@t3tools/lynx-logic/paths";
 import {
   formatReviewCommentFence,
   parseReviewCommentMessageSegments,
   type ReviewCommentContext,
-} from "@t3tools/client-runtime/presentation/review-comment";
-import { type ParsedPreviewAnnotation } from "@t3tools/client-runtime/presentation/preview-annotation";
+} from "@t3tools/lynx-logic/reviewComment";
+import { type ParsedPreviewAnnotation } from "@t3tools/lynx-logic/previewAnnotation";
 import {
   deriveUserMessagePresentation,
   type ParsedUserContextEntry,
   shouldCollapseUserMessage,
-} from "@t3tools/client-runtime/presentation/user-message";
+} from "@t3tools/lynx-logic/userMessage";
 import {
   buildCollapsedProposedPlanPreviewMarkdown,
   proposedPlanTitle,
-} from "@t3tools/client-runtime/presentation/proposed-plan";
+} from "@t3tools/lynx-logic/proposedPlan";
 import type {
   OrchestrationLatestTurn,
   OrchestrationCheckpointSummary,
@@ -72,7 +72,7 @@ import {
   MarkdownRenderer,
   markdownLinkContextMenuHandler,
 } from "./MarkdownRenderer";
-import { shouldRenderBlockMarkdown } from "@t3tools/client-runtime/presentation/markdown-blocks";
+import { shouldRenderBlockMarkdown } from "@t3tools/lynx-logic/markdownBlocks";
 import { uiActions, useChangedFilesExpanded } from "../state/uiState";
 import { clientCapabilities } from "../platform/clientCapabilities.lynx";
 import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
@@ -90,8 +90,8 @@ import {
 import { resolveNativeTimelineScrollUpdate, timelineRowReuseIdentifier } from "./timelineRowSize";
 import { runMessageCopy, type MessageCopyStatus } from "./messageCopy";
 import { runMessageRevert, type MessageRevertStatus } from "./messageRevert";
-import type { ExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
-import { buildExpandedImagePreview } from "@t3tools/client-runtime/presentation/image-preview";
+import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
+import { buildExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 import {
   resolveTimelineMinimapHasPersistentGutter,
   resolveTimelineMinimapHeightStyle,

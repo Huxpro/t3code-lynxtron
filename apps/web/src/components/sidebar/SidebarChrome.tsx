@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { memo, useCallback } from "react";
-import { Link, useCanGoBack, useLocation, useNavigate } from "../../lib/router";
+import { Link, useCanGoBack, useLocation, useNavigate } from "@tanstack/react-router";
 
 import { useEnvironmentIdentificationMode } from "../../hooks/useSettings";
 import { cn } from "../../lib/utils";
@@ -20,28 +20,22 @@ import {
 } from "../SidebarStageBackdrop";
 import { Badge } from "../ui/badge";
 import {
+  SidebarFooter,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
   useSidebar,
 } from "../ui/sidebar";
-import { HostText } from "../ui/hostElements";
 import { Tooltip, TooltipPopup, TooltipTrigger } from "../ui/tooltip";
-import { SidebarChromeFooterSurface, SidebarChromeHeaderSurface } from "./SidebarChromeSurface";
-import { USAGE_PAGE_AVAILABLE } from "./sidebarPages";
 import { SidebarProviderUpdatePill } from "./SidebarProviderUpdatePill";
 import { SidebarUpdateArchitectureWarning, SidebarUpdatePill } from "./SidebarUpdatePill";
-import { T3Wordmark } from "./T3Wordmark";
 
 export const SidebarChromeHeader = memo(function SidebarChromeHeader({
   isElectron,
-  showTrigger = true,
-  leadingControl,
 }: {
   isElectron: boolean;
-  readonly showTrigger?: boolean;
-  readonly leadingControl?: ReactNode;
 }) {
   const stageLabel = useEnvironmentStageLabel();
   const environmentIdentificationMode = useEnvironmentIdentificationMode();
@@ -55,36 +49,33 @@ export const SidebarChromeHeader = memo(function SidebarChromeHeader({
       : null;
 
   return (
-    <SidebarChromeHeaderSurface
-      isElectron={isElectron}
-      backdrop={backdropVariant ? <SidebarStageBackdrop variant={backdropVariant} /> : undefined}
-      trigger={
-        leadingControl ??
-        (showTrigger ? (
-          <SidebarTrigger
-            className={cn(
-              "sidebar-header-toggle relative z-10 md:hidden",
-              backdropVariant &&
-                "focus-visible:ring-white/90 [&_svg]:stroke-white/90! [&_svg]:opacity-100! [&_svg]:hover:stroke-white! [:hover,[data-pressed]]:bg-white/15",
-              backdropVariant && resolveSidebarStageFocusRingOffsetClass(backdropVariant),
-            )}
-          />
-        ) : null)
-      }
-      brand={<SidebarBrand onBackdrop={backdropVariant !== null} />}
-      environmentPill={
-        pillLabel ? (
-          <Badge
-            className="relative z-10 ml-1 rounded-full px-1.5 text-muted-foreground"
-            data-environment-identification="pill"
-            size="sm"
-            variant="secondary"
-          >
-            {pillLabel}
-          </Badge>
-        ) : undefined
-      }
-    />
+    <SidebarHeader
+      className={cn(
+        "@container/sidebar-header relative h-[var(--workspace-topbar-height)] shrink-0 flex-row items-center px-3 py-0 md:px-0",
+        isElectron && "drag-region",
+      )}
+    >
+      {backdropVariant ? <SidebarStageBackdrop variant={backdropVariant} /> : null}
+      <SidebarTrigger
+        className={cn(
+          "relative z-10 md:hidden",
+          backdropVariant &&
+            "focus-visible:ring-white/90 [&_svg]:stroke-white/90! [&_svg]:opacity-100! [&_svg]:hover:stroke-white! [:hover,[data-pressed]]:bg-white/15",
+          backdropVariant && resolveSidebarStageFocusRingOffsetClass(backdropVariant),
+        )}
+      />
+      <SidebarBrand onBackdrop={backdropVariant !== null} />
+      {pillLabel ? (
+        <Badge
+          className="relative z-10 ml-1 rounded-full px-1.5 text-muted-foreground"
+          data-environment-identification="pill"
+          size="sm"
+          variant="secondary"
+        >
+          {pillLabel}
+        </Badge>
+      ) : null}
+    </SidebarHeader>
   );
 });
 
@@ -93,32 +84,45 @@ function SidebarBrand({ onBackdrop }: { onBackdrop: boolean }) {
     <Link
       aria-label="Go to threads"
       className={cn(
-        "sidebar-brand relative z-10 ml-[var(--workspace-titlebar-content-left)] hidden h-7 w-fit min-w-0 shrink-0 items-center gap-1 overflow-hidden rounded-md outline-hidden ring-ring focus-visible:ring-2 md:flex",
-        onBackdrop && "sidebar-brand--on-backdrop",
+        "relative z-10 ml-[var(--workspace-titlebar-content-left)] hidden h-7 w-fit min-w-0 shrink-0 items-center gap-1 overflow-hidden rounded-md outline-hidden ring-ring focus-visible:ring-2 md:flex",
         onBackdrop ? "text-white" : "text-foreground",
       )}
       to="/"
     >
-      <T3Wordmark onBackdrop={onBackdrop} />
-      <HostText
+      <T3Wordmark />
+      <span
         className={cn(
-          "sidebar-brand-code-label -translate-y-px truncate text-sm font-medium tracking-tight",
+          "-translate-y-px truncate text-sm font-medium tracking-tight",
           onBackdrop ? "text-white/70" : "text-muted-foreground",
         )}
       >
         Code
-      </HostText>
+      </span>
     </Link>
   );
 }
 
+function T3Wordmark() {
+  return (
+    <svg
+      aria-label="T3"
+      className="h-2.5 w-auto shrink-0"
+      viewBox="15.5309 37 94.3941 56.96"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M33.4509 93V47.56H15.5309V37H64.3309V47.56H46.4109V93H33.4509ZM86.7253 93.96C82.832 93.96 78.9653 93.4533 75.1253 92.44C71.2853 91.3733 68.032 89.88 65.3653 87.96L70.4053 78.04C72.5386 79.5867 75.0186 80.8133 77.8453 81.72C80.672 82.6267 83.5253 83.08 86.4053 83.08C89.6586 83.08 92.2186 82.44 94.0853 81.16C95.952 79.88 96.8853 78.12 96.8853 75.88C96.8853 73.7467 96.0586 72.0667 94.4053 70.84C92.752 69.6133 90.0853 69 86.4053 69H80.4853V60.44L96.0853 42.76L97.5253 47.4H68.1653V37H107.365V45.4L91.8453 63.08L85.2853 59.32H89.0453C95.9253 59.32 101.125 60.8667 104.645 63.96C108.165 67.0533 109.925 71.0267 109.925 75.88C109.925 79.0267 109.099 81.9867 107.445 84.76C105.792 87.48 103.259 89.6933 99.8453 91.4C96.432 93.1067 92.0586 93.96 86.7253 93.96Z"
+        fill="currentColor"
+      />
+    </svg>
+  );
+}
+
 function SidebarUtilityItem({
-  className,
   icon,
   label,
   onClick,
 }: {
-  className?: string;
   icon: ReactNode;
   label: string;
   onClick: () => void;
@@ -128,12 +132,7 @@ function SidebarUtilityItem({
       <Tooltip>
         <TooltipTrigger
           render={
-            <SidebarMenuButton
-              aria-label={label}
-              className={className}
-              onClick={onClick}
-              size="icon"
-            >
+            <SidebarMenuButton aria-label={label} onClick={onClick} size="icon">
               {icon}
             </SidebarMenuButton>
           }
@@ -195,18 +194,17 @@ export const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
   }, [canGoBack, closeMobileSidebar, navigate]);
 
   return (
-    <SidebarMenu className="flex flex-row items-center">
+    <SidebarMenu className="flex-row items-center">
       {currentFooterPage ? (
         <SidebarMenuItem className="min-w-0 flex-1">
           <SidebarMenuButton onClick={handleBackClick}>
             <ArrowLeftIcon />
-            <HostText>Back</HostText>
+            <span>Back</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       ) : (
         <>
           <SidebarUtilityItem
-            className="sidebar-settings-row"
             icon={<SettingsIcon />}
             label="Settings"
             onClick={handleSettingsClick}
@@ -218,13 +216,11 @@ export const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
               onClick={handlePullRequestsClick}
             />
           ) : null}
-          {USAGE_PAGE_AVAILABLE ? (
-            <SidebarUtilityItem
-              icon={<ChartNoAxesColumnIcon />}
-              label="Usage"
-              onClick={handleUsageClick}
-            />
-          ) : null}
+          <SidebarUtilityItem
+            icon={<ChartNoAxesColumnIcon />}
+            label="Usage"
+            onClick={handleUsageClick}
+          />
         </>
       )}
       <SidebarUpdatePill />
@@ -234,10 +230,10 @@ export const SidebarUtilityMenu = memo(function SidebarUtilityMenu() {
 
 export const SidebarChromeFooter = memo(function SidebarChromeFooter() {
   return (
-    <SidebarChromeFooterSurface>
+    <SidebarFooter className="p-[var(--sidebar-content-inset)]">
       <SidebarProviderUpdatePill />
       <SidebarUpdateArchitectureWarning />
       <SidebarUtilityMenu />
-    </SidebarChromeFooterSurface>
+    </SidebarFooter>
   );
 });

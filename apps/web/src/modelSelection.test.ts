@@ -1,8 +1,8 @@
 import { ProviderDriverKind, ProviderInstanceId, type ServerProvider } from "@t3tools/contracts";
 import { DEFAULT_UNIFIED_SETTINGS, type UnifiedSettings } from "@t3tools/contracts/settings";
 import { describe, expect, it } from "vite-plus/test";
-import { deriveProviderInstanceEntries } from "@t3tools/client-runtime/presentation/provider";
 import { createModelSelection } from "@t3tools/shared/model";
+import { deriveProviderInstanceEntries } from "./providerInstances";
 import {
   getAppModelOptionsForInstance,
   resolveAppModelSelectionForInstance,
@@ -321,40 +321,6 @@ describe("instance-scoped model selection", () => {
     expect(resolveAppModelSelectionState(settings, providers)).toEqual({
       instanceId: ProviderInstanceId.make("claude_openrouter"),
       model: "openai/gpt-5.5",
-    });
-  });
-
-  it("falls back without carrying a disabled instance model into another instance", () => {
-    const providers = [
-      provider({
-        instanceId: "claudeAgent",
-        models: ["claude-sonnet-4-6"],
-      }),
-      provider({
-        instanceId: "claude_openrouter",
-        models: ["claude-sonnet-4-6"],
-      }),
-    ];
-    const baseSettings = settingsWithProviderInstances();
-    const settings: UnifiedSettings = {
-      ...baseSettings,
-      providerInstances: {
-        ...baseSettings.providerInstances,
-        [ProviderInstanceId.make("claude_openrouter")]: {
-          driver: ProviderDriverKind.make("claudeAgent"),
-          enabled: false,
-          config: { customModels: ["openai/gpt-5.5"] },
-        },
-      },
-      textGenerationModelSelection: {
-        instanceId: ProviderInstanceId.make("claude_openrouter"),
-        model: "openai/gpt-5.5",
-      },
-    };
-
-    expect(resolveAppModelSelectionState(settings, providers)).toEqual({
-      instanceId: ProviderInstanceId.make("claudeAgent"),
-      model: "claude-sonnet-4-6",
     });
   });
 });

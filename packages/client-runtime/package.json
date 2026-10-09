@@ -19,10 +19,6 @@
       "types": "./src/environment/index.ts",
       "default": "./src/environment/index.ts"
     },
-    "./environment/scoped": {
-      "types": "./src/environment/scoped.ts",
-      "default": "./src/environment/scoped.ts"
-    },
     "./errors": {
       "types": "./src/errors/index.ts",
       "default": "./src/errors/index.ts"
@@ -39,157 +35,9 @@
       "types": "./src/operations/projects.ts",
       "default": "./src/operations/projects.ts"
     },
-    "./operations/thread-dispatch": {
-      "types": "./src/operations/threadDispatch.ts",
-      "default": "./src/operations/threadDispatch.ts"
-    },
     "./platform": {
       "types": "./src/platform/index.ts",
       "default": "./src/platform/index.ts"
-    },
-    "./presentation/time": {
-      "types": "./src/presentation/time.ts",
-      "default": "./src/presentation/time.ts"
-    },
-    "./presentation/command-palette": {
-      "types": "./src/presentation/commandPalette.ts",
-      "default": "./src/presentation/commandPalette.ts"
-    },
-    "./presentation/search-overlay": {
-      "types": "./src/presentation/searchOverlay.ts",
-      "default": "./src/presentation/searchOverlay.ts"
-    },
-    "./presentation/transcript": {
-      "types": "./src/presentation/transcript.ts",
-      "default": "./src/presentation/transcript.ts"
-    },
-    "./presentation/thread": {
-      "types": "./src/presentation/thread.ts",
-      "default": "./src/presentation/thread.ts"
-    },
-    "./presentation/thread-actions": {
-      "types": "./src/presentation/threadActions.ts",
-      "default": "./src/presentation/threadActions.ts"
-    },
-    "./presentation/session": {
-      "types": "./src/presentation/session.ts",
-      "default": "./src/presentation/session.ts"
-    },
-    "./presentation/sidebar": {
-      "types": "./src/presentation/sidebar.ts",
-      "default": "./src/presentation/sidebar.ts"
-    },
-    "./presentation/sidebar-width": {
-      "types": "./src/presentation/sidebarWidth.ts",
-      "default": "./src/presentation/sidebarWidth.ts"
-    },
-    "./presentation/resizable-width": {
-      "types": "./src/presentation/resizableWidth.ts",
-      "default": "./src/presentation/resizableWidth.ts"
-    },
-    "./presentation/model-picker": {
-      "types": "./src/presentation/modelPicker.ts",
-      "default": "./src/presentation/modelPicker.ts"
-    },
-    "./presentation/markdown": {
-      "types": "./src/presentation/markdown.ts",
-      "default": "./src/presentation/markdown.ts"
-    },
-    "./presentation/markdown-blocks": {
-      "types": "./src/presentation/markdownBlocks.ts",
-      "default": "./src/presentation/markdownBlocks.ts"
-    },
-    "./presentation/image-preview": {
-      "types": "./src/presentation/imagePreview.ts",
-      "default": "./src/presentation/imagePreview.ts"
-    },
-    "./presentation/paths": {
-      "types": "./src/presentation/paths.ts",
-      "default": "./src/presentation/paths.ts"
-    },
-    "./presentation/diff": {
-      "types": "./src/presentation/diff.ts",
-      "default": "./src/presentation/diff.ts"
-    },
-    "./presentation/draft-thread": {
-      "types": "./src/presentation/draftThread.ts",
-      "default": "./src/presentation/draftThread.ts"
-    },
-    "./presentation/files": {
-      "types": "./src/presentation/files.ts",
-      "default": "./src/presentation/files.ts"
-    },
-    "./presentation/file-picker": {
-      "types": "./src/presentation/filePicker.ts",
-      "default": "./src/presentation/filePicker.ts"
-    },
-    "./presentation/source-control": {
-      "types": "./src/presentation/sourceControl.ts",
-      "default": "./src/presentation/sourceControl.ts"
-    },
-    "./presentation/connections": {
-      "types": "./src/presentation/connections.ts",
-      "default": "./src/presentation/connections.ts"
-    },
-    "./presentation/provider": {
-      "types": "./src/presentation/provider.ts",
-      "default": "./src/presentation/provider.ts"
-    },
-    "./presentation/provider-settings": {
-      "types": "./src/presentation/providerSettings.ts",
-      "default": "./src/presentation/providerSettings.ts"
-    },
-    "./presentation/provider-settings-fields": {
-      "types": "./src/presentation/providerSettingsFields.ts",
-      "default": "./src/presentation/providerSettingsFields.ts"
-    },
-    "./presentation/proposed-plan": {
-      "types": "./src/presentation/proposedPlan.ts",
-      "default": "./src/presentation/proposedPlan.ts"
-    },
-    "./presentation/settings": {
-      "types": "./src/presentation/settings.ts",
-      "default": "./src/presentation/settings.ts"
-    },
-    "./presentation/composer": {
-      "types": "./src/presentation/composer.ts",
-      "default": "./src/presentation/composer.ts"
-    },
-    "./presentation/terminal-context": {
-      "types": "./src/presentation/terminalContext.ts",
-      "default": "./src/presentation/terminalContext.ts"
-    },
-    "./presentation/user-message": {
-      "types": "./src/presentation/userMessage.ts",
-      "default": "./src/presentation/userMessage.ts"
-    },
-    "./presentation/review-comment": {
-      "types": "./src/presentation/reviewComment.ts",
-      "default": "./src/presentation/reviewComment.ts"
-    },
-    "./presentation/preview-annotation": {
-      "types": "./src/presentation/previewAnnotation.ts",
-      "default": "./src/presentation/previewAnnotation.ts"
-    },
-    "./presentation/file-context": {
-      "types": "./src/presentation/fileContext.ts",
-      "default": "./src/presentation/fileContext.ts"
-    },
-    "./presentation/element-context": {
-      "types": "./src/presentation/elementContext.ts",
-      "default": "./src/presentation/elementContext.ts"
-    },
-    "./presentation/floating-relation": {
-      "types": "./src/presentation/floatingRelation.ts",
-      "default": "./src/presentation/floatingRelation.ts"
-    },
-    "./presentation/pending-requests": {
-      "types": "./src/presentation/pendingRequests.ts",
-      "default": "./src/presentation/pendingRequests.ts"
-    },
-    "./presentation/pending-user-input": {
-      "types": "./src/presentation/pendingUserInput.ts",
-      "default": "./src/presentation/pendingUserInput.ts"
     },
     "./providerSkills": {
       "types": "./src/providerSkills.ts",
@@ -219,10 +67,6 @@
       "types": "./src/state/filesystem.ts",
       "default": "./src/state/filesystem.ts"
     },
-    "./state/file-save-coordinator": {
-      "types": "./src/state/fileSaveCoordinator.ts",
-      "default": "./src/state/fileSaveCoordinator.ts"
-    },
     "./state/git": {
       "types": "./src/state/git.ts",
       "default": "./src/state/git.ts"
@@ -238,10 +82,6 @@
     "./state/orchestration": {
       "types": "./src/state/orchestration.ts",
       "default": "./src/state/orchestration.ts"
-    },
-    "./state/panel-surfaces": {
-      "types": "./src/state/panelSurfaces.ts",
-      "default": "./src/state/panelSurfaces.ts"
     },
     "./state/presentation": {
       "types": "./src/state/presentation.ts",
@@ -274,10 +114,6 @@
     "./state/runtime": {
       "types": "./src/state/runtime.ts",
       "default": "./src/state/runtime.ts"
-    },
-    "./state/command-result": {
-      "types": "./src/state/commandResult.ts",
-      "default": "./src/state/commandResult.ts"
     },
     "./state/server": {
       "types": "./src/state/server.ts",
