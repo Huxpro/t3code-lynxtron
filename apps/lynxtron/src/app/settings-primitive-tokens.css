@@ -1,0 +1,45 @@
+/* Lynx-owned source of the settings primitive tokens read by scripts/generate-lynx-css.mjs. */
+/*
+ * LYNX_SETTINGS_PRIMITIVE_CONTRACT
+ * Desktop Settings values shared with the Lynx host transform. Keep these
+ * aligned with settingsLayout.tsx and the base UI control variants.
+ */
+:root {
+  --settings-section-title-font-size: 18px;
+  --settings-section-title-font-weight: 600;
+  --settings-section-title-letter-spacing: -0.45px;
+  --settings-section-spacing: 48px;
+  --settings-section-header-height: 32px;
+  --settings-section-header-padding-inline: 16px;
+  --settings-section-header-gap: 12px;
+  --settings-row-radius: 14px;
+  --settings-row-padding-block: 12px;
+  --settings-row-padding-inline: 16px;
+  --settings-row-gap: 4px;
+  --settings-row-control-gap: 32px;
+  --settings-row-reset-gap: 6px;
+  --settings-row-title-font-size: 14px;
+  --settings-row-title-font-weight: 500;
+  --settings-row-description-font-size: 13px;
+  --settings-row-description-line-height: 19px;
+  --settings-control-radius: 10px;
+  --settings-control-height: 32px;
+  --settings-control-font-size: 14px;
+  --settings-control-padding-inline: 11px;
+  --settings-small-control-height: 24px;
+  --settings-small-control-radius: 8px;
+  --settings-small-control-padding-inline: 7px;
+  --settings-input-height: 30px;
+  --settings-input-small-height: 26px;
+  --settings-input-large-height: 34px;
+  --settings-textarea-min-height: 70px;
+  --settings-switch-width: 30px;
+  --settings-switch-height: 18px;
+  --settings-switch-radius: 9px;
+  --settings-switch-thumb-size: 16px;
+  --settings-switch-thumb-radius: 8px;
+  --settings-select-popup-offset: 36px;
+  --settings-select-popup-padding: 4px;
+  --settings-select-item-height: 28px;
+  --settings-select-item-radius: 6px;
+}

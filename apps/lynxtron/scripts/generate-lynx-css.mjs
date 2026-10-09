@@ -37,7 +37,10 @@ function declarations(block) {
 // The dark sidebar palette is nested as `[data-app-sidebar] { @variant dark { ... } }`.
 const sidebarSource = declarations(blockAfter("@variant dark", blockAfter("[data-app-sidebar] {")));
 const themeSource = declarations(blockAfter("@theme inline"));
-const settingsPrimitiveSource = declarations(blockAfter("LYNX_SETTINGS_PRIMITIVE_CONTRACT"));
+const settingsPrimitivePath = path.join(appRoot, "src/app/settings-primitive-tokens.css");
+const settingsPrimitiveSource = declarations(
+  blockAfter("LYNX_SETTINGS_PRIMITIVE_CONTRACT", await readFile(settingsPrimitivePath, "utf8")),
+);
 
 // Tailwind's neutral palette and the small alpha/color-mix subset used by the
 // effective dark theme are resolved at build time. Keeping the conversion here

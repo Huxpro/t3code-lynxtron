@@ -4,7 +4,7 @@ import path from "node:path";
 import { assert, describe, it } from "vite-plus/test";
 
 const repoRoot = path.resolve(import.meta.dirname, "../../..");
-const webCssPath = path.join(repoRoot, "apps/web/src/index.css");
+const webCssPath = path.join(repoRoot, "apps/lynxtron/src/app/settings-primitive-tokens.css");
 const generatedCssPath = path.join(repoRoot, "apps/lynxtron/src/app/generated/lynx.css");
 const overridesPath = path.join(repoRoot, "apps/lynxtron/src/app/overrides.css");
 
