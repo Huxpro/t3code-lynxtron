@@ -1,4 +1,11 @@
-import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
+import {
+  AVAILABLE_CONNECTION_STATE,
+  EnvironmentSupervisor,
+  type PreparedConnection,
+  PrimaryConnectionTarget,
+  type SupervisorConnectionState,
+} from "@t3tools/client-runtime/connection";
+import type { RpcSession, WsRpcProtocolClient } from "@t3tools/client-runtime/rpc";
 import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import {
   ClientOrchestrationCommand,
@@ -9,13 +16,20 @@ import {
   ProviderInstanceId,
   WS_METHODS,
 } from "@t3tools/contracts";
+import * as Cause from "effect/Cause";
+import * as Crypto from "effect/Crypto";
+import * as Effect from "effect/Effect";
+import * as Exit from "effect/Exit";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
+import * as SubscriptionRef from "effect/SubscriptionRef";
 import { AsyncResult } from "effect/unstable/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
 import type { T3ConnectorCommandBridge } from "../bridge.ts";
 import { EMPTY_GIT_ACTION_OUTCOME } from "../../shared/gitActionOutcome.ts";
+import { makeHostCrypto } from "../platform/hostCrypto.ts";
+import { upstreamOperation } from "./upstreamOperations.ts";
 import { primaryHttpBaseUrl, upstreamCommandsReady } from "./upstreamCommandPort.ts";
 import {
   createUpstreamCommandBridge,
@@ -35,6 +49,12 @@ import {
 const isClientCommand = Schema.is(ClientOrchestrationCommand);
 const codex = ProviderInstanceId.make("codex");
 const snapshot = shellSnapshot([{ id: "thread-1" }]);
+const PRIMARY_TARGET = new PrimaryConnectionTarget({
+  environmentId: EnvironmentId.make("environment-1"),
+  label: "Local",
+  httpBaseUrl: "http://127.0.0.1:4100",
+  wsBaseUrl: "ws://127.0.0.1:4100",
+});
 
 interface Sent {
   readonly dispatched: Array<ClientOrchestrationCommand>;
@@ -53,16 +73,57 @@ function harness(
   const sent: Sent = { dispatched: [], requests: [], selected: [], remembered: [] };
   const pendingModelSelections = new Map<string, ModelSelection>();
   let nextId = 0;
+  // Upstream's own operations run against a session that records what they
+  // send, with the command ids the host's `Crypto` hands out.
+  const client = {
+    [ORCHESTRATION_WS_METHODS.dispatchCommand]: (command: ClientOrchestrationCommand) =>
+      Effect.suspend(() => {
+        sent.dispatched.push(command);
+        return options.failDispatch
+          ? Effect.fail(options.failDispatch)
+          : Effect.succeed({ sequence: 8 });
+      }),
+  } as unknown as WsRpcProtocolClient;
+  const session: RpcSession = {
+    client,
+    initialConfig: Effect.succeed(serverConfig()),
+    subscribeServerConfig: (input) => client.subscribeServerConfig(input),
+    ready: Effect.void,
+    probe: Effect.void,
+    closed: Effect.never,
+  };
+  const supervisor = Effect.runSync(
+    Effect.gen(function* () {
+      return EnvironmentSupervisor.of({
+        target: PRIMARY_TARGET,
+        state: yield* SubscriptionRef.make<SupervisorConnectionState>({
+          ...AVAILABLE_CONNECTION_STATE,
+          phase: "connected",
+        }),
+        session: yield* SubscriptionRef.make(Option.some(session)),
+        prepared: yield* SubscriptionRef.make(Option.none<PreparedConnection>()),
+        connect: Effect.void,
+        disconnect: Effect.void,
+        retryNow: Effect.void,
+      });
+    }),
+  );
+  let nextCommandId = 0;
+  const crypto = makeHostCrypto(() => `command-${++nextCommandId}`);
   const port: UpstreamCommandPort = {
     request: (tag, input) => {
       sent.requests.push({ tag, input });
       return Promise.resolve(options.replies?.[tag] as never);
     },
-    dispatch: (command) => {
-      sent.dispatched.push(command);
-      return options.failDispatch
-        ? Promise.reject(options.failDispatch)
-        : Promise.resolve({ sequence: 8 });
+    operation: async (name, input) => {
+      const exit = await Effect.runPromiseExit(
+        upstreamOperation(name, input).pipe(
+          Effect.provideService(EnvironmentSupervisor, supervisor),
+          Effect.provideService(Crypto.Crypto, crypto),
+        ),
+      );
+      if (Exit.isSuccess(exit)) return exit.value;
+      throw Cause.squash(exit.cause);
     },
     gitAction: () => Promise.resolve(EMPTY_GIT_ACTION_OUTCOME),
   };
@@ -241,7 +302,11 @@ describe("thread and project commands", () => {
         "project.meta.update",
       ],
     );
-    assert.equal(new Set(sent.dispatched.map((command) => command.commandId)).size, 19);
+    // Each id is one upstream's builder asked the host's `Crypto` for.
+    assert.deepEqual(
+      sent.dispatched.map((command) => command.commandId),
+      sent.dispatched.map((_, index) => `command-${index + 1}`),
+    );
     assert.deepInclude(sent.dispatched[12], { title: "Plans" });
     assert.deepInclude(sent.dispatched[16], { title: "Renamed" });
   });

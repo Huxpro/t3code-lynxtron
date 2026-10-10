@@ -4,16 +4,16 @@
 // only while upstream is connected: otherwise every command goes to the main
 // connector as before.
 //
-// Each command here builds the request the connector builds for the same
-// call. What reaches the server is described by `UpstreamCommandPort`, so the
-// mapping can be exercised without a connection.
+// An orchestration command is sent with upstream's own operation for it, the
+// one Web and mobile use, so its shape, id and timestamp are upstream's. What
+// reaches the server is described by `UpstreamCommandPort`, so the mapping
+// can be exercised without a connection.
 import type {
   EnvironmentRpcInput,
   EnvironmentRpcSuccess,
   EnvironmentUnaryRpcTag,
 } from "@t3tools/client-runtime/rpc";
 import {
-  type ClientOrchestrationCommand,
   CommandId,
   type DispatchResult,
   type GitRunStackedActionInput,
@@ -39,6 +39,7 @@ import {
 import { type GitActionOutcome, resolveGitActionOutcome } from "../../shared/gitActionOutcome.ts";
 import { materializeTurnBootstrap } from "../../shared/turnBootstrap.ts";
 import type { T3ConnectorCommandBridge } from "../bridge.ts";
+import type { UpstreamOperationInputs, UpstreamOperationName } from "./upstreamOperations.ts";
 
 /**
  * The commands sent through upstream. The rest stay with the main connector:
@@ -107,8 +108,14 @@ export interface UpstreamCommandPort {
     tag: Tag,
     input: EnvironmentRpcInput<Tag>,
   ) => Promise<EnvironmentRpcSuccess<Tag>>;
-  /** One orchestration command. Commands for the same thread are sent in order. */
-  readonly dispatch: (command: ClientOrchestrationCommand) => Promise<DispatchResult>;
+  /**
+   * One of upstream's orchestration operations, which builds the command and
+   * sends it. Commands for the same thread are sent in order.
+   */
+  readonly operation: <Name extends UpstreamOperationName>(
+    name: Name,
+    input: UpstreamOperationInputs[Name],
+  ) => Promise<DispatchResult>;
   /** Runs a stacked git action to the end of its progress stream. */
   readonly gitAction: (input: GitRunStackedActionInput) => Promise<GitActionOutcome>;
 }
@@ -127,6 +134,7 @@ export interface UpstreamCommandContext {
   readonly pendingModelSelections: Map<string, ModelSelection>;
   /** The main connector, which still follows threads and remembers the model. */
   readonly connector: Partial<Pick<T3ConnectorCommandBridge, "selectThread" | "setModelSelection">>;
+  /** An id for what the client names itself: a message, a project, a thread. */
   readonly newId: () => string;
   readonly randomHex: (byteLength: number) => string;
   readonly now: () => string;
@@ -142,9 +150,11 @@ export function createUpstreamCommandBridge(
   port: UpstreamCommandPort,
   context: UpstreamCommandContext,
 ): UpstreamCommandBridge {
-  const commandId = () => CommandId.make(context.newId());
-  const send = async (command: ClientOrchestrationCommand): Promise<void> => {
-    await port.dispatch(command);
+  const send = async <Name extends UpstreamOperationName>(
+    name: Name,
+    input: UpstreamOperationInputs[Name],
+  ): Promise<void> => {
+    await port.operation(name, input);
   };
 
   const updateServerSettings: UpstreamCommandBridge["updateServerSettings"] = async (input) => {
@@ -179,55 +189,43 @@ export function createUpstreamCommandBridge(
         ...(pendingModelSelection ? { pendingModelSelection } : {}),
         ...(bootstrap ? { bootstrap } : {}),
         planModeEnabled: input.planModeEnabled,
-        commandId: commandId(),
+        commandId: CommandId.make(context.newId()),
         messageId: MessageId.make(context.newId()),
         createdAt: context.now(),
       });
       if (!command) {
         throw new Error(`thread ${input.threadId} is not present in the canonical snapshot`);
       }
-      await port.dispatch(command);
+      await port.operation("startThreadTurn", command);
       if (!thread && bootstrap?.createThread) {
         void context.connector.selectThread?.(input.threadId)?.catch(() => undefined);
       }
     },
 
     interrupt: (input) =>
-      send({
-        type: "thread.turn.interrupt",
-        commandId: commandId(),
+      send("interruptThreadTurn", {
         threadId: ThreadId.make(input.threadId),
         ...(input.turnId ? { turnId: input.turnId } : {}),
-        createdAt: context.now(),
       }),
 
     revertCheckpoint: (input) =>
-      send({
-        type: "thread.checkpoint.revert",
-        commandId: commandId(),
+      send("revertThreadCheckpoint", {
         threadId: ThreadId.make(input.threadId),
         turnCount: input.turnCount,
-        createdAt: context.now(),
       }),
 
     respondToApproval: (input) =>
-      send({
-        type: "thread.approval.respond",
-        commandId: commandId(),
+      send("respondToThreadApproval", {
         threadId: ThreadId.make(input.threadId),
         requestId: input.requestId,
         decision: input.decision,
-        createdAt: context.now(),
       }),
 
     respondToUserInput: (input) =>
-      send({
-        type: "thread.user-input.respond",
-        commandId: commandId(),
+      send("respondToThreadUserInput", {
         threadId: ThreadId.make(input.threadId),
         requestId: input.requestId,
         answers: input.answers,
-        createdAt: context.now(),
       }),
 
     async setModelSelection(input) {
@@ -242,9 +240,7 @@ export function createUpstreamCommandBridge(
       void remembered?.catch(() => undefined);
       context.pendingModelSelections.set(threadId, input.selection);
       try {
-        await port.dispatch({
-          type: "thread.meta.update",
-          commandId: commandId(),
+        await port.operation("updateThreadMetadata", {
           threadId: ThreadId.make(threadId),
           modelSelection: input.selection,
         });
@@ -257,21 +253,15 @@ export function createUpstreamCommandBridge(
     },
 
     setThreadRuntimeMode: (input) =>
-      send({
-        type: "thread.runtime-mode.set",
-        commandId: commandId(),
+      send("setThreadRuntimeMode", {
         threadId: ThreadId.make(input.threadId),
         runtimeMode: input.runtimeMode,
-        createdAt: context.now(),
       }),
 
     setThreadInteractionMode: (input) =>
-      send({
-        type: "thread.interaction-mode.set",
-        commandId: commandId(),
+      send("setThreadInteractionMode", {
         threadId: ThreadId.make(input.threadId),
         interactionMode: input.interactionMode,
-        createdAt: context.now(),
       }),
 
     async refreshProviders(input) {
@@ -307,109 +297,63 @@ export function createUpstreamCommandBridge(
     updateServerSettings,
 
     async deleteThread(input) {
-      await port.dispatch({
-        type: "thread.delete",
-        commandId: commandId(),
-        threadId: ThreadId.make(input.threadId),
-      });
+      await port.operation("deleteThread", { threadId: ThreadId.make(input.threadId) });
       context.pendingModelSelections.delete(input.threadId);
     },
 
     archiveThread: (input) =>
-      send({
-        type: input.unarchive ? "thread.unarchive" : "thread.archive",
-        commandId: commandId(),
+      send(input.unarchive ? "unarchiveThread" : "archiveThread", {
         threadId: ThreadId.make(input.threadId),
       }),
 
-    settleThread: (input) =>
-      send({
-        type: "thread.settle",
-        commandId: commandId(),
-        threadId: ThreadId.make(input.threadId),
-      }),
+    settleThread: (input) => send("settleThread", { threadId: ThreadId.make(input.threadId) }),
 
     unsettleThread: (input) =>
-      send({
-        type: "thread.unsettle",
-        commandId: commandId(),
-        threadId: ThreadId.make(input.threadId),
-        reason: "user",
-      }),
+      send("unsettleThread", { threadId: ThreadId.make(input.threadId), reason: "user" }),
 
     pinThread: (input) =>
-      send({
-        type: "thread.pin",
-        commandId: commandId(),
+      send("pinThread", {
         threadId: ThreadId.make(input.threadId),
         ...(input.orderKey ? { orderKey: input.orderKey } : {}),
       }),
 
-    unpinThread: (input) =>
-      send({
-        type: "thread.unpin",
-        commandId: commandId(),
-        threadId: ThreadId.make(input.threadId),
-      }),
+    unpinThread: (input) => send("unpinThread", { threadId: ThreadId.make(input.threadId) }),
 
     async renameThread(input) {
       const title = input.title.trim();
       if (!title) return;
-      await send({
-        type: "thread.meta.update",
-        commandId: commandId(),
-        threadId: ThreadId.make(input.threadId),
-        title,
-      });
+      await send("updateThreadMetadata", { threadId: ThreadId.make(input.threadId), title });
     },
 
     regenerateThreadTitle: (input) =>
-      send({
-        type: "thread.meta.update",
-        commandId: commandId(),
+      send("updateThreadMetadata", {
         threadId: ThreadId.make(input.threadId),
         regenerateTitle: true,
       }),
 
     snoozeThread: (input) =>
-      send({
-        type: "thread.snooze",
-        commandId: commandId(),
+      send("snoozeThread", {
         threadId: ThreadId.make(input.threadId),
         snoozedUntil: input.snoozedUntil,
       }),
 
     unsnoozeThread: (input) =>
-      send({
-        type: "thread.unsnooze",
-        commandId: commandId(),
-        threadId: ThreadId.make(input.threadId),
-        reason: "user",
-      }),
+      send("unsnoozeThread", { threadId: ThreadId.make(input.threadId), reason: "user" }),
 
     async updateProject(input) {
       const title = input.title.trim();
       if (!title) return;
-      await send({
-        type: "project.meta.update",
-        commandId: commandId(),
-        projectId: ProjectId.make(input.projectId),
-        title,
-      });
+      await send("updateProject", { projectId: ProjectId.make(input.projectId), title });
     },
 
     deleteProject: (input) =>
-      send({
-        type: "project.delete",
-        commandId: commandId(),
+      send("deleteProject", {
         projectId: ProjectId.make(input.projectId),
         ...(input.force === true ? { force: true } : {}),
       }),
 
     updateProjectScripts: (input) =>
-      send({
-        type: "project.meta.update",
-        commandId: commandId(),
+      send("updateProject", {
         projectId: ProjectId.make(input.projectId),
         scripts: [...input.scripts],
       }),

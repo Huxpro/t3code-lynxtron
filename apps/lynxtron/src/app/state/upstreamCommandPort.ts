@@ -8,7 +8,8 @@ import {
   createEnvironmentCommand,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
-import { ORCHESTRATION_WS_METHODS, WS_METHODS } from "@t3tools/contracts";
+import { WS_METHODS } from "@t3tools/contracts";
+import type * as Crypto from "effect/Crypto";
 import type * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Stream from "effect/Stream";
@@ -18,6 +19,7 @@ import { applyGitActionProgress, EMPTY_GIT_ACTION_OUTCOME } from "../../shared/g
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { UpstreamCommandContext, UpstreamCommandPort } from "./upstreamCommands.ts";
 import { upstreamConnectionRuntime } from "./upstreamConnectionRuntime.ts";
+import { operationThreadId, upstreamOperation } from "./upstreamOperations.ts";
 import {
   primaryEnvironmentId,
   type UpstreamPrimaryState,
@@ -89,7 +91,7 @@ const threadScheduler = createAtomCommandScheduler();
 
 async function runInPrimary<A, E>(
   label: string,
-  execute: () => Effect.Effect<A, E, EnvironmentSupervisor>,
+  execute: () => Effect.Effect<A, E, EnvironmentSupervisor | Crypto.Crypto>,
   serialKey?: string,
 ): Promise<A> {
   const environmentId = primary === null ? null : primaryEnvironmentId(primary.catalog);
@@ -110,13 +112,18 @@ async function runInPrimary<A, E>(
   throw failure instanceof Error ? failure : new Error(String(failure));
 }
 
+// A command that fails is not sent again. Upstream's session does not retry a
+// request (`retryTransientErrors: false`), and neither Web nor mobile wraps
+// these operations in a retry: a dropped transport fails the command, the
+// supervisor reconnects, and the failure stays with whoever sent it. While
+// upstream is not connected the renderer's commands go to the main connector.
 export const upstreamCommandPort: UpstreamCommandPort = {
   request: (tag, input) => runInPrimary(`lynx:command:${tag}`, () => request(tag, input)),
-  dispatch: (command) =>
+  operation: (name, input) =>
     runInPrimary(
-      `lynx:command:${command.type}`,
-      () => request(ORCHESTRATION_WS_METHODS.dispatchCommand, command),
-      "threadId" in command ? command.threadId : undefined,
+      `lynx:command:${name}`,
+      () => upstreamOperation(name, input),
+      operationThreadId(input),
     ),
   gitAction: (input) =>
     runInPrimary("lynx:command:git-action", () =>
