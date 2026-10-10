@@ -191,6 +191,12 @@ import {
 } from "./upstreamStateSource";
 import { readUpstreamRuntimeFlags } from "./upstreamPrimary";
 import {
+  type ConnectorCallProbe,
+  createConnectorCallProbe,
+  publishConnectorCalls,
+  recordConnectorCalls,
+} from "./connectorCallProbe";
+import {
   createUpstreamCommandBridge,
   routeCommandBridge,
   type UpstreamCommandBridge,
@@ -839,24 +845,32 @@ function buildMainCommandBridge(transport: MainConnectorTransport): Partial<Poll
  * of upstream's is started.
  */
 function buildCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
-  const connector = buildMainCommandBridge(transport);
-  if (readUpstreamRuntimeFlags().upstreamState !== true) return connector;
+  const mainBridge = buildMainCommandBridge(transport);
+  if (readUpstreamRuntimeFlags().upstreamState !== true) return mainBridge;
+  const probe = createConnectorCallProbe();
+  connectorCallProbe = probe;
+  publishConnectorCalls(probe.calls);
+  const connector = recordConnectorCalls(mainBridge, probe.record);
   // The connector is told nothing while upstream takes the commands, so it
   // follows no thread. When upstream stops, it is asked for the one shown.
   onUpstreamCommandsAvailability((available) => {
-    if (available) return;
+    if (available) {
+      probe.arm();
+      return;
+    }
     const state = appAtomRegistry.get(t3ClientStateAtom);
     const threadId = state.activeThreadId;
     if (!threadId || threadId === state.draftThread?.id) return;
     void connector.selectThread?.(threadId)?.catch(() => undefined);
   });
-  return routeCommandBridge({
-    connector,
-    upstream: upstreamCommandBridge(),
-    useUpstream: upstreamCommandsAvailable,
-  });
+  const upstream = upstreamCommandBridge();
+  if (upstreamCommandsAvailable()) probe.arm();
+  return routeCommandBridge({ connector, upstream, useUpstream: upstreamCommandsAvailable });
 }
 
+// Counts what still reaches the connector once upstream is ready. Null unless
+// the host turned the upstream state source on.
+let connectorCallProbe: ConnectorCallProbe | null = null;
 let upstreamBridge: UpstreamCommandBridge | null = null;
 
 /**
@@ -1271,7 +1285,10 @@ async function bootstrapT3Client(): Promise<void> {
   mainTransport = transport;
   mainCommandBridge = buildCommandBridge(transport);
   patchState({ connectorCommandsReady: true });
-  if (saved) {
+  // The connector remembers the saved selection for what it creates itself.
+  // It creates nothing while upstream takes the commands.
+  if (saved && !upstreamCommandsAvailable()) {
+    connectorCallProbe?.record("setModelSelection");
     const result = await transport.invokeSettled("setModelSelection", { selection: saved });
     if (!result.ok) {
       patchState({ modelSelectionError: result.error });
@@ -2134,6 +2151,7 @@ function settleModelSelectionMutation(input: {
   readonly selection: ModelSelection;
 }): Promise<BridgeCallResult> {
   if (mainTransport && !upstreamCommandsAvailable()) {
+    connectorCallProbe?.record("setModelSelection");
     return mainTransport.invokeSettled("setModelSelection", input);
   }
   const bridge = getBridge();

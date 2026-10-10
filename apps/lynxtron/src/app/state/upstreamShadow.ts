@@ -158,6 +158,8 @@ export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): 
     __T3_UPSTREAM_SHADOW__?: UpstreamShadowSummary & {
       readonly selected: UpstreamShadowSelected | null;
       readonly compare: UpstreamShadowComparison;
+      /** Commands still sent to the main connector; see `connectorCallProbe.ts`. */
+      readonly connectorCalls?: Readonly<Record<string, number>>;
     };
   };
   let upstream: UpstreamPrimaryState | null = null;
@@ -165,8 +167,11 @@ export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): 
   let client = appAtomRegistry.get(clientStateAtom);
   const publish = () => {
     if (upstream === null) return;
+    // The command probe publishes its counts on the same object.
+    const connectorCalls = target.__T3_UPSTREAM_SHADOW__?.connectorCalls;
     target.__T3_UPSTREAM_SHADOW__ = {
       ...summarizeUpstreamShadow(upstream, new Date()),
+      ...(connectorCalls === undefined ? {} : { connectorCalls }),
       get selected() {
         return selected === null ? null : summarizeUpstreamSelected(selected);
       },

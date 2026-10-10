@@ -14,7 +14,7 @@ export class HostCryptoUnsupportedError extends Error {
 }
 
 function unsupported(member: string): Effect.Effect<never> {
-  return Effect.die(new HostCryptoUnsupportedError(member));
+  return Effect.suspend(() => Effect.die(new HostCryptoUnsupportedError(member)));
 }
 
 function unsupportedUnsafe(member: string): never {
