@@ -16116,6 +16116,16 @@ async function changeRuntimeModeThroughMenu({
       clientMode: state?.activeThread?.runtimeMode ?? null,
       serverMode: readPersistedThreadRuntimeMode(baseDir, threadId),
       banner: await readLifecycleBanner(client).catch(() => null),
+      tappedRect: item?.rect ?? null,
+      itemsNow: await readSelectorMeasurements(client, ".composer-runtime-menu__item")
+        .then((items) =>
+          items.map((entry) => ({
+            text: entry.text,
+            rect: entry.rect,
+            checked: entry.attributes["aria-checked"],
+          })),
+        )
+        .catch(() => null),
       connectorSockets: [...log.read().matchAll(/\[connector\] socket ws:/gu)].length,
       rendererErrors: (rendererErrors ?? readErrors()).slice(0, 1500),
     })}`;
@@ -16479,9 +16489,34 @@ async function verifyLifecycleRecovery({
         const backStartedMs = Math.round(performance.now() - readyAtMs);
         const back = await change(commandBaseline.mode, false);
         const shadow = await readUpstreamShadowProbe(client);
+        const statePath = process.env.T3_LYNXTRON_UPSTREAM_STATE === "1" ? "upstream" : "connector";
+        // On the upstream path the restart must end with upstream connected
+        // to the new server and both changes sent through it. The shadow
+        // publishes the phase, so the path is checked only with it on.
+        if (statePath === "upstream") {
+          const upstreamTookCommands =
+            afterReady.upstreamPhaseAtCommand === "connected" &&
+            back.upstreamPhaseAtCommand === "connected" &&
+            shadow.phase === "connected" &&
+            shadow.connectorCalls !== null &&
+            !("setThreadRuntimeMode" in shadow.connectorCalls);
+          if (!upstreamTookCommands) {
+            throw new Error(
+              `Upstream did not reconnect and take the runtime mode changes: ${JSON.stringify({
+                upstreamPhases: { ...upstreamPhases, afterChanges: shadow.phase },
+                phaseAtCommands: [afterReady.upstreamPhaseAtCommand, back.upstreamPhaseAtCommand],
+                connectorCalls: shadow.connectorCalls,
+                shadow:
+                  process.env.T3_LYNXTRON_UPSTREAM_SHADOW === "1"
+                    ? "on"
+                    : "off; set T3_LYNXTRON_UPSTREAM_SHADOW=1",
+              })}`,
+            );
+          }
+        }
         return {
           status: "pass",
-          statePath: process.env.T3_LYNXTRON_UPSTREAM_STATE === "1" ? "upstream" : "connector",
+          statePath,
           input: "DevTool taps on the composer runtime menu",
           threadId: commandBaseline.threadId,
           // From the read that saw the banner gone to the tap on the item.
