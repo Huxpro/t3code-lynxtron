@@ -9,13 +9,19 @@
 // instead of applied, and the latest one is applied if upstream lets go, so a
 // dropped upstream connection hands the domain back to the connector.
 import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
-import type { ServerConfig, VcsStatusResult } from "@t3tools/contracts";
+import type { ModelSelection, ServerConfig, VcsStatusResult } from "@t3tools/contracts";
 import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
 import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
+import {
+  disposableThreadIds,
+  dropConfirmedModelSelections,
+  type PendingModelSelections,
+  withPendingModelSelection,
+} from "../../shared/shellOverlays.ts";
 import type {
   ConnectorShellPayload,
   ConnectorThreadPayload,
@@ -48,31 +54,44 @@ export interface UpstreamStatePayloads {
   readonly shell: ConnectorShellPayload | null;
 }
 
-/**
- * The connector-shaped payload for each domain upstream can supply right now,
- * or null where it cannot. The shell needs the archived snapshot as well as
- * the live shell: a payload without it would empty the archive list.
- */
 function isConnected(connection: UpstreamPrimaryState["connection"]): boolean {
   const state = connection === null ? null : Option.getOrNull(AsyncResult.value(connection));
   return state?.phase === "connected";
 }
 
+function liveShellSnapshot(state: Pick<UpstreamPrimaryState, "shell">) {
+  return state.shell?.status === "live" ? Option.getOrNull(state.shell.snapshot) : null;
+}
+
+const NO_PENDING_MODEL_SELECTIONS: PendingModelSelections = new Map();
+
+/**
+ * The connector-shaped payload for each domain upstream can supply right now,
+ * or null where it cannot. The shell needs the archived snapshot as well as
+ * the live shell: a payload without it would empty the archive list.
+ *
+ * The shell is shown the way the connector shows its own: a thread keeps the
+ * model selection in `pendingModelSelections` until the server reports it, and
+ * an empty disposable thread, which the connector deletes on sight, is left
+ * out.
+ */
 export function upstreamStatePayloads(
   state: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived">,
+  pendingModelSelections: PendingModelSelections = NO_PENDING_MODEL_SELECTIONS,
 ): UpstreamStatePayloads {
   if (!isConnected(state.connection)) return { config: null, shell: null };
-  const snapshot = state.shell?.status === "live" ? Option.getOrNull(state.shell.snapshot) : null;
+  const snapshot = liveShellSnapshot(state);
+  if (snapshot === null || state.archived === null) return { config: state.config, shell: null };
+  const disposable = disposableThreadIds(snapshot.threads);
   return {
     config: state.config,
-    shell:
-      snapshot === null || state.archived === null
-        ? null
-        : projectConnectorShell({
-            projects: snapshot.projects,
-            threads: snapshot.threads,
-            archivedThreads: state.archived.threads,
-          }),
+    shell: projectConnectorShell({
+      projects: snapshot.projects,
+      threads: snapshot.threads,
+      archivedThreads: state.archived.threads,
+      isHidden: (thread) => disposable.has(thread.id),
+      overlay: (thread) => withPendingModelSelection(thread, pendingModelSelections),
+    }),
   };
 }
 
@@ -214,11 +233,13 @@ let started = false;
 /**
  * Starts the upstream source once. Does nothing unless the host turned it on.
  * `clientStateAtom` is the Lynx client's own state, which says what is
- * selected.
+ * selected. `pendingModelSelections` holds the selections the client's
+ * commands are waiting on; one is removed here when the server reports it.
  */
 export function startUpstreamStateSource(
   clientStateAtom: Atom.Atom<T3ClientState>,
   sink: UpstreamStateSink,
+  pendingModelSelections: Map<string, ModelSelection> = new Map(),
 ): void {
   if (started) return;
   if (readUpstreamRuntimeFlags().upstreamState !== true) return;
@@ -235,7 +256,10 @@ export function startUpstreamStateSource(
       connectionChanged || previous?.shell !== state.shell || previous?.archived !== state.archived;
     previous = state;
     if (!configChanged && !shellChanged) return;
-    const payloads = upstreamStatePayloads(state);
+    if (shellChanged) {
+      dropConfirmedModelSelections(pendingModelSelections, liveShellSnapshot(state)?.threads ?? []);
+    }
+    const payloads = upstreamStatePayloads(state, pendingModelSelections);
     if (configChanged) router.fromUpstream("config", payloads.config, sink.applyConfig);
     if (shellChanged) router.fromUpstream("shell", payloads.shell, sink.applyShell);
   });
