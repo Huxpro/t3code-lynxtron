@@ -16009,7 +16009,6 @@ async function changeRuntimeModeThroughMenu({
           })),
         )
         .catch(() => null),
-      connectorSockets: [...log.read().matchAll(/\[connector\] socket ws:/gu)].length,
       rendererErrors: (rendererErrors ?? readErrors()).slice(0, 1500),
     })}`;
   };

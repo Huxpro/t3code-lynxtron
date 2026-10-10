@@ -189,9 +189,9 @@ export function upstreamStatePayloads(
 
 /**
  * The connector-shaped payload for the selected thread, or null while
- * upstream cannot supply all of it: the connector's payload carries the whole
- * thread, so upstream's is held back until its stream is live and every older
- * page has been loaded.
+ * upstream cannot supply all of it: the payload carries the whole thread, so
+ * it is held back until upstream's stream is live and every older page has
+ * been loaded.
  */
 export function upstreamThreadPayload(
   state: Pick<UpstreamSelectedState, "connection" | "threadId" | "thread">,

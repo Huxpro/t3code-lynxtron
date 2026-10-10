@@ -54,12 +54,12 @@ that way, are in [docs/architecture.md](docs/architecture.md).
 src/app                     ReactLynx UI, state, and platform capabilities
   generated/lynx.css        theme tokens generated from apps/web/src/index.css
   overrides.css             the Lynx stylesheet
-  state/                    renderer state fed by sequenced main-process events
+  state/                    renderer state fed by upstream's client runtime
 src/main/desktop
   main.ts                   LynxWindow host
-  mainConnectorHost.ts      main-owned connector and typed bridge handlers
+  mainConnectorHost.ts      connector lifecycle, status events, typed bridge handlers
   preload.ts                branding, preferences, clipboard, navigation
-  connector.ts              server bootstrap, auth, Effect RPC
+  connector.ts              server spawn or pairing, bearer exchange
 scripts
   audit-web-apis.mjs        DOM/BOM usage inventory
   audit-css.mjs             utility and unsupported syntax inventory

@@ -238,7 +238,7 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
       `[main-connector] connect failed: ${error instanceof Error ? error.message : String(error)}`,
     );
   });
-  console.log("[main-connector] main-owned connector host started");
+  console.log("[main-connector] connector host started");
   return host;
 }
 

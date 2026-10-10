@@ -1,8 +1,8 @@
 // What a shell source shows that the server has not said yet: a thread's
 // model selection from the moment it is picked until the server reports it,
 // and nothing for an empty disposable thread, which the cleanup deletes as
-// soon as it is seen. The main connector and the renderer's upstream source
-// both pass these to `projectConnectorShell`.
+// soon as it is seen. The renderer's upstream source passes these to
+// `projectConnectorShell`.
 import type { ModelSelection, OrchestrationThreadShell } from "@t3tools/contracts";
 import { selectRecoverableDisposableThreadIds } from "@t3tools/lynx-logic/threadActions";
 
@@ -65,9 +65,8 @@ export interface DisposableThreadCleanup {
 }
 
 /**
- * Deletes empty disposable threads as a shell source sees them, the way the
- * main connector does for its own shell: a thread is hidden from the moment
- * it is seen, deleted on the next tick if it is still empty, shown again if
+ * Deletes empty disposable threads as a shell source sees them: a thread is
+ * hidden from the moment it is seen, deleted on the next tick if it is still empty, shown again if
  * the delete fails, and tried again the next time the shell changes.
  */
 export function createDisposableThreadCleanup(options: {

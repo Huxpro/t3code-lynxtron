@@ -204,7 +204,7 @@ function primaryUnavailable(detail: string) {
 
 /**
  * Reads the primary environment's address and bearer once. `call` is the
- * bridge request; it answers null until the main connector has connected, and
+ * bridge request; it answers null until the main process has a server, and
  * that is a failure here so callers can retry it.
  */
 export const readPrimaryConnection = (call: () => Promise<unknown>) =>
@@ -261,7 +261,7 @@ const primaryConnectionListeners = new Set<() => void>();
 /**
  * Tells upstream's connection that the host may now hold a different server:
  * the main process starts a new one, on a new port with a new bearer, when it
- * reconnects. Called when the main connector reports ready. Does nothing until
+ * reconnects. Called when the main process reports ready. Does nothing until
  * the connection layer is built.
  */
 export function primaryConnectionMayHaveChanged(): void {
@@ -330,7 +330,7 @@ export const primaryRegistrations = <E, R>(input: {
   );
 };
 
-// The local environment, once the main connector has a server and that server
+// The local environment, once the main process has a server and that server
 // has answered with its identity, and again when the main process reports a
 // server at another address. The bearer needs no emission of its own:
 // `PrimaryEnvironmentAuth` reads it on every connection attempt.

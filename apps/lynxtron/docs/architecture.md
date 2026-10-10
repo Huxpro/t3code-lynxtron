@@ -46,9 +46,9 @@ What lives where in layer 2:
 - `apps/lynxtron/src/app`: the Lynx UI, its state, its stylesheet
   (`overrides.css`), routes, and platform capabilities.
 - `apps/lynxtron/src/main`: the Lynxtron main process, its preload, and the
-  connector (see Client runtime).
-- `packages/lynx-logic`: renderer-neutral logic the Lynx app, connector, and
-  browser preview share: transcript, composer, sidebar and settings
+  connector that starts the server (see Client runtime).
+- `packages/lynx-logic`: renderer-neutral logic the Lynx app and browser
+  preview share: transcript, composer, sidebar and settings
   projections, keyboard resolution, thread dispatch, panel state.
 - `apps/web/src/**/*.lynx.ts(x)`: modules the Lynx build resolves instead of
   the Web module of the same name, and Lynx-owned modules that sit next to the
@@ -58,44 +58,56 @@ What lives where in layer 2:
 
 Upstream shares client state between Web and mobile through
 `packages/client-runtime`. The Lynx client runs the same runtime in its own
-thread, the way mobile does:
+thread, the way mobile does, and it is the only path between the app and the
+server:
 
 - `src/app/platform/connectionPlatform.ts` implements the runtime's ports for
   Lynx. The preload supplies a socket, fetch and UUIDs from Node; the main
-  process supplies the address and bearer of the server it owns. Cloud session,
-  relay, DPoP, device identity and SSH report as unavailable.
+  process supplies the address and bearer of the server. Cloud session, relay,
+  DPoP, device identity and SSH report as unavailable.
 - `src/app/state/upstream*.ts` read upstream's atoms and send commands through
-  upstream's operations. Their values are applied to the client state through
-  the same functions the connector events use, so the UI does not change.
-- The main process keeps what only it can do: spawn the server, mint the
-  bearer, native dialogs, clipboard, menus, opening paths, resolving a path.
+  upstream's operations. Their values are applied to the client state in the
+  shapes of `src/shared/connectorProtocol.ts`. While upstream is not
+  connected a command fails, as it does in upstream's own clients.
+- The main process keeps what only it can do
+  (`src/main/desktop/connector.ts`, `mainConnectorHost.ts`): spawn the server
+  or pair to an existing environment, exchange the bootstrap credential for
+  the bearer, hand both to the renderer (`primaryConnection`), report its
+  status, and restart the server on `reconnect`. It opens no connection to
+  the server beyond those HTTP requests. Native dialogs, clipboard, menus,
+  opening and resolving paths are the preload's.
 
 A server the app owns and that has no project gets one for the launch
 directory. The main process names the directory with the server's address
 (`primaryConnection`), the renderer creates the project once upstream takes
 commands (`src/app/state/startupProject.ts`), and the client is not ready
-until that has finished or failed. On the connector path the connector's
-`ensureProject` does it.
+until that has finished or failed.
 
-This is the default path. `T3_LYNXTRON_UPSTREAM_STATE=0` turns it off; the
-client is then fed by the main-process connector
-(`src/main/desktop/connector.ts`), the older path. The connector also serves
-until upstream is connected and whenever it is not.
-`T3_LYNXTRON_UPSTREAM_SHADOW=1` publishes a field-by-field comparison of the
-two on `globalThis.__T3_UPSTREAM_SHADOW__`, and `connectorCalls` there lists any
-command that still reached the connector. The connector's RPC code is the next
-thing to remove.
+The status the client shows is resolved from the main process's status and
+upstream's (`resolveClientStatus`). The main process is ready once the server
+answers and it has the bearer; the client shows ready once upstream is
+connected to that server, and until then shows what the main process last
+said (starting, connecting). A failure the main process reports (the server
+exited, reconnecting) is applied at once, never held behind upstream's
+status: main knows first, and upstream's session can read as connected for
+seconds after the server is gone. When upstream loses a server the main
+process still has, the client shows reconnecting while upstream's supervisor
+retries.
 
-A failure the main process reports (the server exited, reconnecting) is applied
-at once, never held behind upstream's status: main knows first, and upstream's
-session can read as connected for seconds after the server is gone.
-
-A reconnect starts a new server on another port with a new bearer. The
-connector's ready status names that server's address; on it the platform port
+A reconnect starts a new server on another port with a new bearer. The main
+process's ready status names that server's address; on it the platform port
 emits the primary registration again and upstream's registry replaces the
-connection. The client shows ready only once the path that takes the next
-command can deliver it: upstream connected to that server, or the connector
-alone when upstream failed to reach it (`resolveClientStatus`).
+connection.
+
+The browser preview (`src/browser-preview`) does not run upstream's runtime.
+Its connector hosts supply the client's state and take its commands over the
+whole of `connectorProtocol.ts`, which is why the renderer still applies
+host snapshots and events and can send every command to its host; the build
+flag `__T3_LYNXTRON_WEB_PREVIEW__` chooses.
+
+`T3_LYNXTRON_UPSTREAM_SHADOW=1` publishes a summary of upstream's connection
+(phase, shell status, counts) on `globalThis.__T3_UPSTREAM_SHADOW__` for
+DevTool and the gates.
 
 ## Invariants
 

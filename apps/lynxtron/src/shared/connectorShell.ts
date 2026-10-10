@@ -1,7 +1,6 @@
 // The shell payload the Lynx UI reduces: the sidebar's threads in display
-// order and the archived threads in theirs. The main connector builds it from
-// its own subscription and the renderer builds it from upstream's atoms; both
-// call this so the two sources cannot disagree about filtering or order.
+// order and the archived threads in theirs. The renderer builds it from
+// upstream's atoms.
 import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
 import type { OrchestrationProjectShell, OrchestrationThreadShell } from "@t3tools/contracts";
 
