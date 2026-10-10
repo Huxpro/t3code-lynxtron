@@ -82,6 +82,14 @@ export default defineConfig({
               use: [{ loader: require.resolve("./scripts/lynx-regexp-loader.cjs") }],
             },
             {
+              // Compile upstream Web components unmodified: DOM tags become
+              // the host components in src/app/platform/hostDom.tsx.
+              test: /\.tsx$/u,
+              exclude: /node_modules/u,
+              enforce: "pre",
+              use: [{ loader: require.resolve("./scripts/lynx-dom-jsx-loader.cjs") }],
+            },
+            {
               test: /\.woff2$/u,
               resourceQuery: /inline/u,
               type: "asset/inline",
