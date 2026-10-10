@@ -169,6 +169,7 @@ const plan = [
   sidebar("settings-appearance", ["--verify-settings-appearance"]),
   sidebar("project-settings-page", ["--verify-project-settings-page"]),
   sidebar("lifecycle-reconnect", ["--verify-lifecycle-recovery"]),
+  sidebar("reconnect-command", ["--verify-lifecycle-recovery", "--verify-reconnect-command"]),
   sidebar("terminal", ["--verify-terminal-lifecycle"]),
   sidebar("right-panel-add-menu", ["--verify-right-panel-add-menu"]),
   sidebar("files-desktop", ["--verify-files-browser"]),
