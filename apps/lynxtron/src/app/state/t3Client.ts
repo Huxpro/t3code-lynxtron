@@ -180,6 +180,7 @@ import type {
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
+import { applyFromConnector, startUpstreamStateSource } from "./upstreamStateSource";
 
 interface PollBridge extends T3Bridge {}
 
@@ -702,11 +703,14 @@ function applyConnectorSnapshot(
   preferredSelection?: ModelSelection | null,
 ): void {
   applyStatusPayload(snapshot.status as StatusEventPayload);
-  if (snapshot.config) {
-    applyConfigPayload(decodeConnectorServerConfig(snapshot.config), preferredSelection);
+  const config = snapshot.config;
+  if (config) {
+    applyFromConnector("config", () =>
+      applyConfigPayload(decodeConnectorServerConfig(config), preferredSelection),
+    );
   }
   applyAccessPayload(snapshot.access);
-  applyShellPayload(snapshot.shell as ShellEventPayload);
+  applyFromConnector("shell", () => applyShellPayload(snapshot.shell as ShellEventPayload));
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
   if (activeThread) applyThreadPayload(activeThread as ThreadEventPayload);
@@ -719,13 +723,15 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
       applyStatusPayload(envelope.payload as StatusEventPayload);
       return;
     case "config":
-      applyConfigPayload(decodeConnectorServerConfig(envelope.payload));
+      applyFromConnector("config", () =>
+        applyConfigPayload(decodeConnectorServerConfig(envelope.payload)),
+      );
       return;
     case "access":
       applyAccessPayload(envelope.payload as AuthAccessPresentation);
       return;
     case "shell":
-      applyShellPayload(envelope.payload as ShellEventPayload);
+      applyFromConnector("shell", () => applyShellPayload(envelope.payload as ShellEventPayload));
       return;
     case "thread": {
       const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
@@ -1097,6 +1103,7 @@ async function bootstrapT3Client(): Promise<void> {
       draftThreadsByProjectId: savedDraftThreadsByProjectId,
     });
   }
+  startUpstreamStateSource({ applyConfig: applyConfigPayload, applyShell: applyShellPayload });
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
     bridge: NativeModules?.bridge,

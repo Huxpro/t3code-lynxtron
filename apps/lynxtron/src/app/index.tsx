@@ -39,7 +39,12 @@ import {
   useThemePreferenceState,
   useClientSettingsState,
 } from "./state/prefsStore";
-import { readPreviewInitialState, t3ClientActions, useT3ClientState } from "./state/t3Client";
+import {
+  readPreviewInitialState,
+  t3ClientActions,
+  t3ClientStateAtom,
+  useT3ClientState,
+} from "./state/t3Client";
 import {
   installResponsiveUiProbe,
   uiActions,
@@ -363,7 +368,7 @@ function ThemeBootstrap() {
 }
 
 registerCapabilityProbe();
-startUpstreamShadow();
+startUpstreamShadow(t3ClientStateAtom);
 registerKeyboardCommands();
 startViewportStore();
 

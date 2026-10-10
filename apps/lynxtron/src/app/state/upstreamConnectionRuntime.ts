@@ -4,6 +4,9 @@
 // first time `appAtomRegistry` reads one; importing this module starts nothing.
 import { Connection } from "@t3tools/client-runtime/connection";
 import { createEnvironmentCatalogAtoms } from "@t3tools/client-runtime/state/connections";
+import { createOrchestrationEnvironmentAtoms } from "@t3tools/client-runtime/state/orchestration";
+import { createServerEnvironmentAtoms } from "@t3tools/client-runtime/state/server";
+import { createEnvironmentSessionAtoms } from "@t3tools/client-runtime/state/session";
 import {
   createEnvironmentShellAtoms,
   shellSnapshotLoaderLayer,
@@ -25,3 +28,11 @@ export const upstreamConnectionRuntime = Atom.runtime(connectionLayer);
 
 export const upstreamEnvironmentCatalog = createEnvironmentCatalogAtoms(upstreamConnectionRuntime);
 export const upstreamEnvironmentShell = createEnvironmentShellAtoms(upstreamConnectionRuntime);
+export const upstreamEnvironmentSession = createEnvironmentSessionAtoms(upstreamConnectionRuntime);
+// No environment themes or usage-limit sources: the Lynx client renders
+// neither, and the main connector does not ask for them either.
+export const upstreamServerEnvironment = createServerEnvironmentAtoms(upstreamConnectionRuntime, {
+  initialConfigValueAtom: upstreamEnvironmentSession.initialConfigValueAtom,
+});
+export const upstreamOrchestrationEnvironment =
+  createOrchestrationEnvironmentAtoms(upstreamConnectionRuntime);
