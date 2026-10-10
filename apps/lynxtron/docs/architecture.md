@@ -224,14 +224,29 @@ upstream's file:
 
 - `scripts/lynx-dom-jsx-loader.cjs` rewrites the DOM tags in an upstream
   `.tsx` to the components `src/app/platform/hostDom.tsx` exports. The exports
-  are the tag map. An unmapped tag, an event prop other than `onClick`, or a
-  DOM `ref` fails the build, and so does a DOM tag in a Lynx-owned file.
+  are the tag map. An unmapped tag, an event prop other than `onClick`,
+  `onKeyDown` and `onKeyUp`, or a DOM `ref` fails the build, and so does a DOM
+  tag in a Lynx-owned file. A key handler is called with the Lynx key event's
+  key and modifiers (`platform/hostDomEvents.ts`); `stopPropagation` throws.
+- A DOM box that holds a string becomes a `<view>` around a `<text>`. The text
+  takes colour, family, size and line height from the box through the engine,
+  and font weight and white-space through `scripts/postcss-lynx-text-carry.mjs`
+  and the `.lynx-box-text` rule, so a component's label needs no rule of its
+  own and a consumer's semantic class on the box still wins. The box's classes
+  are not copied onto the text: there a utility class would beat the semantic
+  class that overrides it on the box.
 - `src/app/host-dom-elements.d.ts` types those tags with the host components'
   props, so the upstream file is typechecked as it will run.
 - A package the upstream file imports is replaced the same way as a module:
   `src/app/platform/base-ui/*` stands in for `@base-ui/react/*` through a
   bundler alias and a tsconfig path. `use-render` is where a tag named as a
   string (`defaultTagName: "label"`) reaches its host component.
+- `src/app/platform/tanstack/react-router.tsx` stands in for
+  `@tanstack/react-router` over the Lynx pathname router (`useNavigate`,
+  `useLocation`, `useParams({ strict: false })`, `useRouter`, `Link`).
+  `routePaths.ts` maps upstream route patterns to pathnames. Search params,
+  hash, history state, relative routes, and routes the Lynx app has no screen
+  for throw with the name of the API that asked.
 - The upstream file joins the Tailwind content list. Lynx rules that selected
   the old copy by class select upstream's `data-slot` instead.
 - `scripts/component-share-candidates.mjs` lists the remaining `.lynx.tsx`
@@ -252,6 +267,15 @@ Limits and open questions:
 - Lynx CSS and battery gates select the copies by their own class names
   (`composer-approval-action--accept`, `sidebar-brand`). Switching such a
   component is a look change and a gate change, not a build change.
+- `ui/badge` stays a Lynx copy. Upstream marks size and variant only by
+  utility classes, the box would gain declarations the copy never had
+  (`relative`, `gap-1`, `whitespace-nowrap`, `transition-shadow`), and the
+  label would take its size from the box instead of its own rule, so the switch
+  cannot be shown to leave the badge's look as it is without frames.
+- `text-overflow` is not carried to a box's text: the DOM does not inherit it
+  and a custom property cannot be stopped at one level. `text-transform` does
+  not exist in the engine. Letter spacing and text decoration are left to the
+  engine's inheritance and have not been checked on frames.
 - Not measured: render cost of host components versus static Lynx templates,
   and the four switched components in a running app.
 
