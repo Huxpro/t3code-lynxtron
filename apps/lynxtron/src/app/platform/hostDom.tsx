@@ -7,6 +7,8 @@ import { Children, isValidElement, type ReactNode } from "@lynx-js/react";
 
 import { HostButton, HostText, HostView } from "~/components/ui/hostElements";
 
+import { textClassName } from "./hostDomClasses";
+
 // A handler upstream wrote for a DOM event. It is called with a Lynx event, so
 // the parameter is `never`: a handler that reads its event does not typecheck
 // when written inline, and one typed elsewhere is accepted as upstream typed it.
@@ -51,11 +53,15 @@ function splitHandlers(props: Record<string, unknown>) {
   return { attributes, needsHostView };
 }
 
-// Lynx draws text only inside <text>.
-function wrapText(children: ReactNode): ReactNode {
-  return Children.map(children, (child) =>
-    typeof child === "string" || typeof child === "number" ? <HostText>{child}</HostText> : child,
-  );
+// Lynx draws text only inside <text>, and a <view> does not hand its font
+// weight to that <text>: the element's text classes are repeated on it.
+function wrapText(children: ReactNode, className: unknown): ReactNode {
+  let textClass: string | undefined;
+  return Children.map(children, (child) => {
+    if (typeof child !== "string" && typeof child !== "number") return child;
+    textClass ??= textClassName(className);
+    return <HostText className={textClass}>{child}</HostText>;
+  });
 }
 
 function Box({ children, bindtap, onClick, ...rest }: HostDomProps) {
@@ -64,13 +70,13 @@ function Box({ children, bindtap, onClick, ...rest }: HostDomProps) {
   if (needsHostView) {
     return (
       <HostView {...attributes} onClick={tap}>
-        {wrapText(children)}
+        {wrapText(children, rest.className)}
       </HostView>
     );
   }
   return (
     <view {...attributes} bindtap={tap}>
-      {wrapText(children)}
+      {wrapText(children, rest.className)}
     </view>
   );
 }
@@ -84,7 +90,7 @@ function Button({ children, bindtap, onClick, disabled, type: _type, ...rest }: 
       {...(isDisabled ? { disabled: true } : {})}
       onClick={isDisabled ? undefined : tapHandler({ bindtap, onClick })}
     >
-      {wrapText(children)}
+      {wrapText(children, rest.className)}
     </HostButton>
   );
 }

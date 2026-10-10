@@ -663,6 +663,16 @@
   background-color: var(--sidebar-control-surface);
   border-radius: 4px;
 }
+/* The keycap's letters are a <text> inside the box, which carries upstream's
+ * own text classes; the Lynx keycap type is set on it directly. */
+[data-slot="kbd"] > .lynx-host-text {
+  color: var(--sidebar-muted-foreground);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 14px;
+  text-align: center;
+}
 .quick-switch-setup-badge {
   flex-shrink: 0;
   height: 20px;
@@ -7789,7 +7799,8 @@
   opacity: 0.64;
 }
 
-[data-slot="label"] {
+[data-slot="label"],
+[data-slot="label"] > .lynx-host-text {
   color: var(--foreground);
   font-size: var(--settings-control-font-size);
   line-height: 16px;
@@ -11832,6 +11843,12 @@
   letter-spacing: 1.2px;
   box-sizing: border-box;
 }
+.quick-switch-action-row > [data-slot="kbd"] > .lynx-host-text {
+  color: rgba(var(--muted-foreground-rgb), 0.7);
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 1.2px;
+}
 .quick-switch-action-row > .qs-row__icon-img {
   opacity: 0.64;
 }
@@ -11906,6 +11923,11 @@
   font-size: 12px;
   line-height: 20px;
   text-align: center;
+}
+.quick-switch-footer-group [data-slot="kbd"] > .lynx-host-text {
+  color: var(--foreground);
+  font-size: 12px;
+  line-height: 20px;
 }
 .theme-light .palette-footer {
   background-color: rgba(39, 39, 42, 0.025);
