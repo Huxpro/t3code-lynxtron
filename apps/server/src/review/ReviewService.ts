@@ -16,7 +16,6 @@ import {
 } from "@t3tools/contracts";
 
 import * as ServerConfig from "../config.ts";
-import * as ProjectionSnapshotQuery from "../orchestration/Services/ProjectionSnapshotQuery.ts";
 import * as GitVcsDriver from "../vcs/GitVcsDriver.ts";
 import * as VcsDriverRegistry from "../vcs/VcsDriverRegistry.ts";
 
@@ -39,7 +38,6 @@ export const make = Effect.gen(function* () {
   const path = yield* Path.Path;
   const vcsRegistry = yield* VcsDriverRegistry.VcsDriverRegistry;
   const git = yield* GitVcsDriver.GitVcsDriver;
-  const projectionSnapshotQuery = yield* ProjectionSnapshotQuery.ProjectionSnapshotQuery;
 
   const canonicalizePath = (value: string) => {
     const resolvedPath = path.resolve(value);
@@ -69,30 +67,15 @@ export const make = Effect.gen(function* () {
     operation: "ReviewService.getDiffPreview" | "ReviewService.getDiffFileContents",
     cwd: string,
   ) {
-    const [candidate, workspaceRoot, worktreesRoot, shell] = yield* Effect.all([
+    const [candidate, workspaceRoot, worktreesRoot] = yield* Effect.all([
       canonicalizePath(cwd),
       canonicalizePath(config.cwd),
       canonicalizePath(config.worktreesDir),
-      projectionSnapshotQuery.getShellSnapshot().pipe(
-        Effect.mapError(
-          (cause) =>
-            new VcsRepositoryDetectionError({
-              operation: "ReviewService.assertWorkspaceBoundCwd.readProjects",
-              cwd,
-              detail: "Failed to read registered projects while validating the review workspace.",
-              cause,
-            }),
-        ),
-      ),
     ]);
 
     if (isWithinRoot(candidate, workspaceRoot) || isWithinRoot(candidate, worktreesRoot)) {
       return;
     }
-    const registeredRoots = yield* Effect.all(
-      shell.projects.map((project) => canonicalizePath(project.workspaceRoot)),
-    );
-    if (registeredRoots.some((root) => isWithinRoot(candidate, root))) return;
 
     return yield* new VcsRepositoryDetectionError({
       operation,

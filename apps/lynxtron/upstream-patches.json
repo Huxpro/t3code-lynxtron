@@ -3,8 +3,6 @@
   "patches": {
     ".gitignore": "Ignores apps/lynxtron/output and midscene_run/.",
     "AGENTS.md": "Adds a four-line pointer to apps/lynxtron/AGENTS.md.",
-    "apps/server/src/review/ReviewService.test.ts": "Covers ReviewService.ts.",
-    "apps/server/src/review/ReviewService.ts": "Product fix: allows review diffs for any registered project root. Upstream candidate.",
     "apps/server/src/sourceControl/SourceControlDiscovery.ts": "Adds a typed discovery error and test-only env hooks that force loading and error states for Lynxtron captures.",
     "apps/server/src/vcs/GitVcsDriverCore.test.ts": "Adds a test for status on a repository with an unborn HEAD; no source change.",
     "apps/server/src/ws.ts": "Adds a test-only write delay hook so Lynxtron captures can observe the file-saving state.",
