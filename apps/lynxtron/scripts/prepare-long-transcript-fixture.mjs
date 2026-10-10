@@ -44,9 +44,8 @@ export async function prepareLongTranscriptFixture(baseDirectory, options = {}) 
   configureScriptedProvider(baseDir, { chunkDelayMs: 0 });
   const { threadId, state } = await seedThroughApp(baseDir, async (app) => {
     const createdThreadId = await app.createThread(title);
-    let latest;
     for (let turn = 1; turn <= turnCount; turn += 1) {
-      latest = await app.runTurn(
+      const latest = await app.runTurn(
         createdThreadId,
         `Inspect transcript turn ${turn} and preserve its stable scroll position.`,
       );
@@ -54,7 +53,7 @@ export async function prepareLongTranscriptFixture(baseDirectory, options = {}) 
         throw new Error(`Turn ${turn} did not complete: ${JSON.stringify(latest.latestTurn)}`);
       }
     }
-    return { threadId: createdThreadId, state: latest };
+    return { threadId: createdThreadId, state: await app.settleThread(createdThreadId) };
   });
   // Every turn is one user message and one reply, each a row of its own.
   const messageCount = turnCount * 2;

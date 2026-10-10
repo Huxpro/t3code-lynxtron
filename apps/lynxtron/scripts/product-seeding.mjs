@@ -124,7 +124,9 @@ const STATE_EXPRESSION = `(() => {
  * - `waitForState(predicate, label)`: that state once `predicate` holds;
  * - `command(name, input)`: a command, sent as the UI sends it;
  * - `createThread(title)`: a thread on the one project, shown in the app;
- * - `runTurn(threadId, text)`: a prompt, and the state once its turn is done.
+ * - `runTurn(threadId, text)`: a prompt, and the state once its turn is done;
+ * - `settleThread(threadId)`: the thread settled, as a user leaves a finished
+ *   one, and the state once it is.
  *
  * The preferences file the app saves is put back as it was. One DevTool
  * session stays open for the whole run: a session opened later than about
@@ -251,6 +253,15 @@ export async function seedThroughApp(baseDir, seed, { timeoutMs = 60_000 } = {})
           `the turn for ${JSON.stringify(text.slice(0, 60))}`,
         );
         return settled;
+      },
+      async settleThread(threadId) {
+        await command("settleThread", { threadId });
+        return waitForState(
+          (current) =>
+            current.activeThreadId === threadId &&
+            current.activeThread?.settledOverride === "settled",
+          "the thread to be settled",
+        );
       },
     });
     seeded = true;

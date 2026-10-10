@@ -86,7 +86,7 @@ export async function prepareReviewFixture(baseDirectory, options = {}) {
     const threadId = await app.createThread(title);
     const turn = await app.runTurn(threadId, prompt);
     // The checkpoint is taken after the turn ends.
-    const state = await app.waitForState(
+    await app.waitForState(
       (current) =>
         current.checkpoints.some(
           (checkpoint) =>
@@ -94,7 +94,7 @@ export async function prepareReviewFixture(baseDirectory, options = {}) {
         ),
       "the turn's checkpoint",
     );
-    return { threadId, state };
+    return { threadId, state: await app.settleThread(threadId) };
   });
 
   const { threadId, state } = seeded;

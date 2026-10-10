@@ -65,10 +65,8 @@ export async function prepareMessageCardFixture(baseDirectory) {
   configureScriptedProvider(baseDir, { chunkDelayMs: 0 });
   const { threadId, state } = await seedThroughApp(baseDir, async (app) => {
     const createdThreadId = await app.createThread(title);
-    return {
-      threadId: createdThreadId,
-      state: await app.runTurn(createdThreadId, MESSAGE_CARD_PROMPT),
-    };
+    await app.runTurn(createdThreadId, MESSAGE_CARD_PROMPT);
+    return { threadId: createdThreadId, state: await app.settleThread(createdThreadId) };
   });
   const userMessage = state.messages.find((message) => message.role === "user");
   if (state.latestTurn.state !== "completed" || userMessage === undefined) {
