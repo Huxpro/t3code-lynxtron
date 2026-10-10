@@ -1208,17 +1208,16 @@
 .lynx-sidebar-chrome-header .sidebar-brand--on-backdrop .sidebar-brand-code-label {
   color: rgba(255, 255, 255, 0.7);
 }
-/* Upstream wraps the brand and the pill in a clipped one-line row. On Lynx the
- * brand is placed against the header itself, so the row neither positions nor
- * clips it. */
+/* Upstream wraps the brand and the pill in a clipped one-line row that starts
+ * 12px in from the header's corner. The brand keeps its place in the header:
+ * 130px, 12px from that corner. */
 .drag-region > .flex-wrap {
-  position: static;
   overflow: visible;
 }
 .drag-region .w-fit {
   position: absolute;
-  left: 130px;
-  top: 12px;
+  left: 118px;
+  top: 0;
   z-index: 30;
   display: flex;
   flex-direction: row;
@@ -7791,9 +7790,11 @@
 .viewport-responsive .sidebar-global-toggle-icon {
   opacity: 0.54;
 }
-.viewport-responsive .sidebar-brand-host,
-.viewport-responsive .drag-region .w-fit {
+.viewport-responsive .sidebar-brand-host {
   left: 130px;
+}
+.viewport-responsive .drag-region .w-fit {
+  left: 118px;
 }
 .viewport-responsive .lynx-sidebar-global-control--on-backdrop .sidebar-global-toggle-icon {
   opacity: 0.96;
