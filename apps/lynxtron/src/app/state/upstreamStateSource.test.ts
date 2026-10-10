@@ -1,3 +1,4 @@
+import { ProviderInstanceId } from "@t3tools/contracts";
 import { assert, describe, it } from "vite-plus/test";
 
 import {
@@ -95,6 +96,45 @@ describe("upstreamStatePayloads", () => {
       upstreamStatePayloads({ ...base, shell: shellState("synchronizing", null), archived }).shell,
       null,
     );
+  });
+
+  it("shows a pending model selection until the server reports it", () => {
+    const state = {
+      connection: connection("connected"),
+      shell: shellState("live", live),
+      config: null,
+      archived,
+    };
+    const selection = { instanceId: ProviderInstanceId.make("claudeAgent"), model: "opus" };
+    const { shell } = upstreamStatePayloads(state, new Map([["thread-old", selection]]));
+    assert.deepEqual(
+      shell?.threads.map((thread) => [thread.id, thread.modelSelection.model]),
+      [
+        ["thread-new", "gpt-5"],
+        ["thread-old", "opus"],
+      ],
+    );
+    // Nothing else about the thread is replaced, and the others are untouched.
+    assert.deepEqual(shell?.threads[1], { ...live.threads[0]!, modelSelection: selection });
+    assert.strictEqual(shell?.threads[0], live.threads[1]);
+  });
+
+  it("leaves out an empty disposable thread, which the cleanup is deleting", () => {
+    const snapshot = shellSnapshot([
+      { id: "thread-kept", latestUserMessageAt: "2026-10-08T00:00:00.000Z" },
+      { id: "thread-empty", title: "New thread", latestUserMessageAt: null },
+      { id: "thread-named", title: "Plans", latestUserMessageAt: null },
+    ]);
+    const { shell } = upstreamStatePayloads({
+      connection: connection("connected"),
+      shell: shellState("live", snapshot),
+      config: null,
+      archived,
+    });
+    assert.deepEqual(shell?.threads.map((thread) => thread.id).toSorted(), [
+      "thread-kept",
+      "thread-named",
+    ]);
   });
 });
 

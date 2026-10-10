@@ -110,7 +110,6 @@ import {
   type VcsStatusResult,
 } from "@t3tools/contracts";
 import type { ThreadTurnStartBootstrap, UploadChatAttachment } from "@t3tools/contracts";
-import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 import { resolveRemotePairingTarget } from "@t3tools/shared/remote";
 import { discoverDesktopLocalEnvironment } from "./localEnvironmentRendezvous.ts";
 import {
@@ -129,6 +128,16 @@ import {
   type LatestPendingMutation,
 } from "../../shared/latestPendingMutation.ts";
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
+import {
+  applyGitActionProgress,
+  EMPTY_GIT_ACTION_OUTCOME,
+  resolveGitActionOutcome,
+} from "../../shared/gitActionOutcome.ts";
+import {
+  dropConfirmedModelSelections,
+  withPendingModelSelection,
+} from "../../shared/shellOverlays.ts";
+import { materializeTurnBootstrap as materializeSharedTurnBootstrap } from "../../shared/turnBootstrap.ts";
 import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import * as Context from "effect/Context";
@@ -214,14 +223,7 @@ export function materializeTurnBootstrap(
   bootstrap: ThreadTurnStartBootstrap | undefined,
   randomId: () => string = crypto.randomUUID,
 ): ThreadTurnStartBootstrap | undefined {
-  if (!bootstrap?.prepareWorktree) return bootstrap;
-  return {
-    ...bootstrap,
-    prepareWorktree: {
-      ...bootstrap.prepareWorktree,
-      branch: bootstrap.prepareWorktree.branch ?? buildTemporaryWorktreeBranchName(randomId),
-    },
-  };
+  return materializeSharedTurnBootstrap(bootstrap, randomId);
 }
 
 /** Ask the OS for a free loopback TCP port so the server never collides with a
@@ -955,12 +957,10 @@ export class T3Connector {
     } else if (item.kind !== "synchronized" && this.shellSnapshot) {
       this.shellSnapshot = applyShellStreamEvent(this.shellSnapshot, item);
     }
-    for (const [threadId, selection] of this.pendingThreadModelSelections) {
-      const thread = this.shellSnapshot?.threads.find((candidate) => candidate.id === threadId);
-      if (thread && JSON.stringify(thread.modelSelection) === JSON.stringify(selection)) {
-        this.pendingThreadModelSelections.delete(threadId);
-      }
-    }
+    dropConfirmedModelSelections(
+      this.pendingThreadModelSelections,
+      this.shellSnapshot?.threads ?? [],
+    );
     for (const threadId of this.pendingThreadRuntimeModes.keys()) {
       const thread = this.shellSnapshot?.threads.find((candidate) => candidate.id === threadId);
       if (thread) {
@@ -998,19 +998,18 @@ export class T3Connector {
         archivedThreads: this.archivedThreads,
         isHidden: (thread) => this.pendingDisposableThreadDeletes.has(thread.id),
         overlay: (thread) => {
-          const pendingSelection = this.pendingThreadModelSelections.get(thread.id);
+          const selected = withPendingModelSelection(thread, this.pendingThreadModelSelections);
           const pendingRuntimeMode = this.pendingThreadRuntimeModes.get(thread.id);
           const pendingInteractionMode = this.pendingThreadInteractionModes.get(thread.id);
-          return pendingSelection || pendingRuntimeMode || pendingInteractionMode
+          return pendingRuntimeMode || pendingInteractionMode
             ? {
-                ...thread,
-                ...(pendingSelection ? { modelSelection: pendingSelection } : {}),
+                ...selected,
                 ...(pendingRuntimeMode ? { runtimeMode: pendingRuntimeMode.value } : {}),
                 ...(pendingInteractionMode
                   ? { interactionMode: pendingInteractionMode.value }
                   : {}),
               }
-            : thread;
+            : selected;
         },
       }),
     );
@@ -1612,20 +1611,16 @@ export class T3Connector {
 
   async runGitAction(input: GitRunStackedActionInput): Promise<GitRunStackedActionResult> {
     if (!this.client || !this.protocolContext) throw new Error("not connected");
-    let result: GitRunStackedActionResult | null = null;
-    let failure: string | null = null;
+    let outcome = EMPTY_GIT_ACTION_OUTCOME;
     const stream = this.client[WS_METHODS.gitRunStackedAction](input);
     await this.runClient(
       Stream.runForEach(stream as Stream.Stream<GitActionProgressEvent, unknown, any>, (event) =>
         Effect.sync(() => {
-          if (event.kind === "action_finished") result = event.result;
-          if (event.kind === "action_failed") failure = event.message;
+          outcome = applyGitActionProgress(outcome, event);
         }),
       ),
     );
-    if (failure) throw new Error(failure);
-    if (!result) throw new Error("Git action completed without a result.");
-    return result;
+    return resolveGitActionOutcome(outcome);
   }
 
   async publishRepository(

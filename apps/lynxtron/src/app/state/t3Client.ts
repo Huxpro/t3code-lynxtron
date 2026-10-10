@@ -115,7 +115,7 @@ import type {
   TurnId,
   UploadChatAttachment,
 } from "@t3tools/contracts";
-import { newThreadId } from "../../../../web/src/lib/utils";
+import { newThreadId, randomHex, randomUUID } from "../../../../web/src/lib/utils";
 
 import type {
   ActivePlanState,
@@ -188,6 +188,14 @@ import {
   terminalDomain,
   type VcsStatusPayload,
 } from "./upstreamStateSource";
+import { readUpstreamRuntimeFlags } from "./upstreamPrimary";
+import { createUpstreamCommandBridge, routeCommandBridge } from "./upstreamCommands";
+import {
+  startUpstreamCommands,
+  upstreamCommandPort,
+  upstreamCommandsAvailable,
+  upstreamCommandState,
+} from "./upstreamCommandPort";
 
 interface PollBridge extends T3Bridge {}
 
@@ -322,6 +330,9 @@ const pendingThreadInteractionModes = new Map<
 const pendingThreadModeCommands = new Map<string, Promise<void>>();
 const canonicalThreadRuntimeModes = new Map<string, RuntimeMode>();
 const canonicalThreadInteractionModes = new Map<string, ProviderInteractionMode>();
+// Thread model selections sent through upstream that the server has not
+// confirmed yet. Empty unless the host turned the upstream state source on.
+const upstreamPendingModelSelections = new Map<string, ModelSelection>();
 
 function getPreloadBridge(): Partial<PollBridge> | undefined {
   "background only";
@@ -792,6 +803,31 @@ function buildMainCommandBridge(transport: MainConnectorTransport): Partial<Poll
   return bridge as Partial<PollBridge>;
 }
 
+/**
+ * The command bridge for a transport. With the upstream state source on, the
+ * commands upstream's connection can carry go through it while it is
+ * connected; the main connector takes them otherwise, and always takes the
+ * rest. Without the switch this is the main connector's bridge and nothing
+ * of upstream's is started.
+ */
+function buildCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
+  const connector = buildMainCommandBridge(transport);
+  if (readUpstreamRuntimeFlags().upstreamState !== true) return connector;
+  startUpstreamCommands();
+  return routeCommandBridge({
+    connector,
+    upstream: createUpstreamCommandBridge(upstreamCommandPort, {
+      ...upstreamCommandState,
+      pendingModelSelections: upstreamPendingModelSelections,
+      connector,
+      newId: randomUUID,
+      randomHex,
+      now: () => new Date().toISOString(),
+    }),
+    useUpstream: upstreamCommandsAvailable,
+  });
+}
+
 function installTransportDevToolHook(): void {
   const diagnosticsGlobal = globalThis as {
     __T3_LYNXTRON_CONNECTOR_TRANSPORT__?: {
@@ -1128,13 +1164,17 @@ async function bootstrapT3Client(): Promise<void> {
       draftThreadsByProjectId: savedDraftThreadsByProjectId,
     });
   }
-  startUpstreamStateSource(t3ClientStateAtom, {
-    applyConfig: applyConfigPayload,
-    applyShell: applyShellPayload,
-    applyThread: applyActiveThreadPayload,
-    applyTerminal: applyTerminalPayload,
-    applyVcsStatus: applyVcsStatusPayload,
-  });
+  startUpstreamStateSource(
+    t3ClientStateAtom,
+    {
+      applyConfig: applyConfigPayload,
+      applyShell: applyShellPayload,
+      applyThread: applyActiveThreadPayload,
+      applyTerminal: applyTerminalPayload,
+      applyVcsStatus: applyVcsStatusPayload,
+    },
+    upstreamPendingModelSelections,
+  );
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
     bridge: NativeModules?.bridge,
@@ -1160,7 +1200,7 @@ async function bootstrapT3Client(): Promise<void> {
     return;
   }
   mainTransport = transport;
-  mainCommandBridge = buildMainCommandBridge(transport);
+  mainCommandBridge = buildCommandBridge(transport);
   patchState({ connectorCommandsReady: true });
   if (saved) {
     const result = await transport.invokeSettled("setModelSelection", { selection: saved });
@@ -2024,7 +2064,7 @@ function settleModelSelectionMutation(input: {
   readonly threadId: string | undefined;
   readonly selection: ModelSelection;
 }): Promise<BridgeCallResult> {
-  if (mainTransport) {
+  if (mainTransport && !upstreamCommandsAvailable()) {
     return mainTransport.invokeSettled("setModelSelection", input);
   }
   const bridge = getBridge();
