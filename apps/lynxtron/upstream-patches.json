@@ -1,11 +1,10 @@
 {
-  "mergeBase": "de343914273eceb852a1d1d739cd1d38df7796ee",
+  "mergeBase": "dacd2cb649eea06a00244bd181eb400735e923d5",
   "patches": {
     ".gitignore": "Ignores apps/lynxtron/output and midscene_run/.",
     "AGENTS.md": "Adds a four-line pointer to apps/lynxtron/AGENTS.md.",
     "apps/server/src/sourceControl/SourceControlDiscovery.ts": "Adds a typed discovery error and test-only env hooks that force loading and error states for Lynxtron captures.",
     "apps/server/src/vcs/GitVcsDriverCore.test.ts": "Adds a test for status on a repository with an unborn HEAD; no source change.",
-    "apps/server/src/ws.ts": "Adds a test-only write delay hook so Lynxtron captures can observe the file-saving state.",
     "apps/web/package.json": "Lists @lynx-js/react and @t3tools/lynx-logic so the .lynx modules under apps/web resolve them.",
     "apps/web/tsconfig.json": "Excludes *.lynx.* from the Web typecheck.",
     "package.json": "Adds the dev:lynxtron, build:lynxtron and start:lynxtron scripts.",
@@ -14,6 +13,7 @@
     "packages/client-runtime/src/errors/transport.test.ts": "Covers errors/transport.ts.",
     "packages/client-runtime/src/errors/transport.ts": "Adds presentThreadCommandErrorMessage, used by the Lynx client for failed thread commands.",
     "packages/client-runtime/src/state/gitActions.ts": "Adds Initialize Git, Publish repository and provider-specific change-request wording to the quick-action resolver the Lynx header uses.",
+    "packages/client-runtime/src/state/projectCommands.test.ts": "Adds a test for the projectCommands.ts change to the file upstream now has.",
     "packages/client-runtime/src/state/projectCommands.ts": "Product fix: optimistic file atoms keep a five-minute idle TTL so unsaved edits survive reopening a file panel.",
     "packages/contracts/package.json": "Exports ./keybinding-constants.",
     "packages/contracts/src/ipc.test.ts": "Covers ipc.ts.",
@@ -33,7 +33,6 @@
     ".github/workflows/lynxtron-ci.yml": "CI for the Lynx client.",
     ".impeccable.md": "Design context for the design skills used on the Lynx client.",
     "packages/client-runtime/src/state/gitActions.test.ts": "Covers the gitActions.ts change.",
-    "packages/client-runtime/src/state/projectCommands.test.ts": "Covers the projectCommands.ts change.",
     "packages/contracts/src/keybindingConstants.ts": "Schema-free jump-command arrays imported by keybindings.ts and the Lynx keybindings module.",
     "packages/shared/src/localEnvironmentRendezvous.test.ts": "Covers localEnvironmentRendezvous.ts.",
     "packages/shared/src/localEnvironmentRendezvous.ts": "Rendezvous descriptor shared by apps/desktop and the Lynxtron main process.",
