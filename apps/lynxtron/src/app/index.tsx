@@ -30,6 +30,7 @@ import { resolveLynxSettingsPanel } from "./settingsPanel";
 import { appAtomRegistry } from "./state/atomRegistry";
 import { registerCapabilityProbe } from "./state/capabilityProbe";
 import { registerKeyboardCommands } from "./state/keyboardCommands";
+import { startUpstreamShadow } from "./state/upstreamShadow";
 import {
   getPref,
   hasPref,
@@ -362,6 +363,7 @@ function ThemeBootstrap() {
 }
 
 registerCapabilityProbe();
+startUpstreamShadow();
 registerKeyboardCommands();
 startViewportStore();
 
