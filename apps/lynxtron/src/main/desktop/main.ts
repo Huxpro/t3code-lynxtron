@@ -193,11 +193,11 @@ function nudgeFramedWindowViewport(win: ResizableWindow, delayMs = 600): void {
 }
 
 /**
- * Main-owned connector (authoritative since AR2). Main instantiates the
- * prebuilt connector bundle, registers the typed lynxBridge handlers, and
- * pushes sequenced events with sendGlobalEvent. The renderer bootstraps with
- * one ready-and-snapshot exchange and then consumes pushed events; no
- * renderer-side polling remains.
+ * The server connection the main process owns. Main instantiates the prebuilt
+ * connector bundle, which starts or finds the server and gets its bearer,
+ * registers the typed lynxBridge handlers, and pushes its status as sequenced
+ * events with sendGlobalEvent. The renderer reads the address and bearer and
+ * talks to the server itself.
  */
 function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
   const connectorPath = path.join(__dirname, "connector.bundle.cjs");
@@ -210,9 +210,6 @@ function startMainConnectorHost(win: GlobalEventWindow): MainConnectorHost {
     removeHandler: (method) => lynxBridge.removeHandler(method),
     createConnector: (events) => new T3Connector(events),
     onLog: (line) => console.log(line),
-    testSocketOpenErrorForThreadModelSelectionOnce:
-      process.env.T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE === "1",
-    testSendPromptErrorOnce: process.env.T3_TEST_SEND_PROMPT_ERROR_ONCE === "1",
   });
   host.attach();
   win.on("closed", () => {

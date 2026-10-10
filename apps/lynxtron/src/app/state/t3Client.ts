@@ -174,8 +174,8 @@ import {
 } from "../../shared/latestPendingMutation";
 import type {
   ConnectorEventEnvelope,
-  ConnectorSnapshot,
   ConnectorStatusPayload,
+  ConnectorSyncReply,
   ConnectorThreadPayload,
   ProjectRepoContext,
   TerminalSessionPresentation,
@@ -801,7 +801,7 @@ function applyTerminalPayload(session: TerminalSessionPresentation): void {
 
 /** Applies what a host's snapshot carries. The main process's carries its status alone. */
 function applyConnectorSnapshot(
-  snapshot: ConnectorSnapshot,
+  snapshot: ConnectorSyncReply["snapshot"],
   preferredSelection?: ModelSelection | null,
 ): void {
   applyConnectorStatus(snapshot.status);

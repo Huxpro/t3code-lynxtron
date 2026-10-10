@@ -247,7 +247,9 @@ describe("connector protocol guards", () => {
     assert.isFalse(isConnectorSyncReply({ seq: -1, snapshot }));
     assert.isFalse(isConnectorSyncReply({ snapshot }));
     assert.isFalse(isConnectorSyncReply({ seq: 1, snapshot: null }));
-    assert.isFalse(isConnectorSyncReply({ seq: 1, snapshot: { status: { status: "ready" } } }));
+    // The main process's reply carries its status alone.
+    assert.isTrue(isConnectorSyncReply({ seq: 1, snapshot: { status: { status: "ready" } } }));
+    assert.isFalse(isConnectorSyncReply({ seq: 1, snapshot: { shell: snapshot.shell } }));
     assert.isFalse(isConnectorSyncReply(null));
   });
 });

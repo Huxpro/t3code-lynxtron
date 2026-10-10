@@ -10,6 +10,7 @@ import {
   T3_CONNECTOR_METHODS,
   type ConnectorEventEnvelope,
   type ConnectorSnapshot,
+  type ConnectorSyncReply,
 } from "../../shared/connectorProtocol.ts";
 
 async function assertRejects(promise: Promise<unknown>, pattern: RegExp): Promise<void> {
@@ -46,7 +47,7 @@ interface Harness {
   };
   emit: (envelope: unknown) => void;
   applied: ConnectorEventEnvelope[];
-  snapshots: ConnectorSnapshot[];
+  snapshots: Array<ConnectorSyncReply["snapshot"]>;
   commandLog: Array<{ method: string; params: Record<string, unknown> }>;
   replyWith: (method: string, reply: unknown) => void;
   logs: string[];
@@ -54,7 +55,7 @@ interface Harness {
 
 function createHarness(): Harness {
   const applied: ConnectorEventEnvelope[] = [];
-  const snapshots: ConnectorSnapshot[] = [];
+  const snapshots: Array<ConnectorSyncReply["snapshot"]> = [];
   const commandLog: Array<{ method: string; params: Record<string, unknown> }> = [];
   const listeners = new Map<string, Array<(...args: unknown[]) => void>>();
   const replies = new Map<string, unknown>();

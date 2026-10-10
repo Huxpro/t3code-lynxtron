@@ -19,7 +19,7 @@ import {
   isConnectorSyncReply,
   type ConnectorCommandName,
   type ConnectorEventEnvelope,
-  type ConnectorSnapshot,
+  type ConnectorSyncReply,
 } from "../../shared/connectorProtocol.ts";
 
 export interface BridgeCallModule {
@@ -34,7 +34,7 @@ export interface GlobalEventListenerRegistry {
 export interface MainConnectorTransportOptions {
   readonly bridge: BridgeCallModule | undefined;
   readonly eventRegistry: GlobalEventListenerRegistry | undefined;
-  readonly applySnapshot: (snapshot: ConnectorSnapshot) => void;
+  readonly applySnapshot: (snapshot: ConnectorSyncReply["snapshot"]) => void;
   readonly applyEvent: (event: ConnectorEventEnvelope) => void;
   readonly onLog?: (line: string) => void;
   /** One-shot readiness-probe guard; not a transport timer. */
