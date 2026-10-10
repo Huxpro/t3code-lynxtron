@@ -927,6 +927,7 @@ function installTransportDevToolHook(): void {
       sessionStatus: SessionStatus;
       activeTurnId: TurnId | null;
       latestTurn: OrchestrationLatestTurn | null;
+      checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
       activeProject?: ProjectSummary;
       activeThread?: ThreadSummary;
       environmentLabel: string | null;
@@ -1038,6 +1039,7 @@ function installTransportDevToolHook(): void {
         : [],
       clientSettings: getClientSettingsState(),
       messages: state.messages,
+      checkpoints: state.checkpoints,
       sessionStatus: state.sessionStatus,
       sessionError: state.sessionError,
       activeTurnId: state.activeTurnId,
