@@ -56,3 +56,6 @@ engine limits and workarounds are in `docs/compat-matrix.md`.
   keep working.
 - Computer use covers only what DevTool cannot inject: real keys, drag,
   selection. It has no hover; report hover checks as pending.
+  It sees one app per bundle id: before acting, `app_list_windows` must show a
+  window titled "T3 Code". If another Lynxtron app is open it binds to that
+  one instead; report the check as pending rather than act on it.
