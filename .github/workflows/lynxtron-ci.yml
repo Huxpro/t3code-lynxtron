@@ -53,6 +53,9 @@ jobs:
       - name: Upstream delta (every fork edit to an upstream file is listed)
         run: node apps/lynxtron/scripts/check-upstream-delta.mjs --summary
 
+      - name: Share report (upstream source run as-is; a trend, not a gate)
+        run: node apps/lynxtron/scripts/share-report.mjs
+
       - name: Format (Lynx-owned paths)
         run: pnpm exec vp fmt --check apps/lynxtron/src apps/lynxtron/scripts apps/lynxtron/docs/architecture.md apps/lynxtron/AGENTS.md packages/lynx-logic
 
