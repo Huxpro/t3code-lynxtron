@@ -1,18 +1,12 @@
 # Lynxtron compatibility matrix
 
-> **Plan 11C authority notice (2026-08-04).** This matrix remains the runtime
-> capability registry. It does not rank current UI work or certify visual
-> fidelity. H6 links measured residuals to these runtime IDs; H7 owns the next
-> port priority order.
-
-Generated evidence lives in `../reports/`. Run `pnpm run audit` after upstream UI
-changes. Status values are intentionally finite:
-`supported`, `runtime-gap`, `adapter`, `rewrite`, or `out-of-scope`.
+What the Lynx engine and Lynxtron host support, and how the client works around
+what they do not. `pnpm run audit` regenerates the counts in `../reports/`.
+Status values: `supported`, `runtime-gap`, `adapter`, `rewrite`, `out-of-scope`.
 
 ## Plan 14 decisions (2026-09-29, Lynxtron 0.0.28)
 
-Runtime findings and surface decisions from Plan 14 M1-M6; evidence under
-`../evidence/2026-09-29/`.
+Runtime findings and surface decisions as of Lynxtron 0.0.28.
 
 | Item                                | Status       | Decision / workaround                                                                                              |
 | ----------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------ |

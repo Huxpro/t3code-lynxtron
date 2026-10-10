@@ -17,11 +17,6 @@ pnpm --filter @t3tools/lynxtron typecheck
 vp test run apps/lynxtron/src/main/desktop/serverPaths.test.ts
 pnpm build:lynxtron
 pnpm start:lynxtron
-
-# With the production client running, capture through Lynx DevTool.
-pnpm --dir apps/lynxtron run capture:lynx -- \
-  --output reports/screenshots/lynx-new-thread.png \
-  --snapshot <snapshot-id>
 ```
 
 The connector finds `apps/server/dist/bin.mjs` relative to its built location.
@@ -42,7 +37,7 @@ node apps/lynxtron/scripts/run-native-battery.mjs /tmp/t3-battery/plan.json /tmp
 ```
 
 `results/summary.json` lists each gate; a failing gate keeps its report and
-process log in its own directory. `AGENTS.md` in this directory lists the gates.
+process log in its own directory. `AGENTS.md` in this directory says when to run them.
 
 ## Architecture
 
@@ -71,11 +66,4 @@ a `.lynx` module of the same name under `apps/web/src` replaces whatever that
 module needs from the browser. Renderer-neutral logic the client owns lives in
 `packages/lynx-logic`.
 
-Electron/Web is the visual and interaction baseline. The standalone Lynx
-repository is used only for textual provenance and historical-behavior
-discovery. See [the screenshot evidence policy](reports/screenshots/README.md)
-for the repeatable DevTool capture and visual-diff workflow.
-
-See [compat-matrix.md](docs/compat-matrix.md), [port-ledger.md](docs/port-ledger.md),
-and [implementation-status.md](docs/implementation-status.md) for measured
-coverage and explicit runtime-gated work.
+Runtime capabilities and workarounds are in [docs/compat-matrix.md](docs/compat-matrix.md).
