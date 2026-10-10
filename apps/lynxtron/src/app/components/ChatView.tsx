@@ -35,10 +35,8 @@ import {
   deriveModelPickerModels,
   getTriggerDisplayModelName,
 } from "@t3tools/lynx-logic/modelPicker";
-import {
-  deriveLatestContextWindowSnapshot,
-  formatProviderDisplayName,
-} from "@t3tools/lynx-logic/composer";
+import { formatProviderDisplayName } from "@t3tools/lynx-logic/composer";
+import { deriveLatestContextWindowSnapshot } from "../../../../web/src/lib/contextWindow";
 import {
   projectProviderStatusNotice,
   resolveSelectableProviderInstanceEntry,

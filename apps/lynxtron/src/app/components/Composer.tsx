@@ -25,12 +25,14 @@ import {
   type ComposerTraitsMenuSectionPresentation,
   deriveComposerControlState,
   deriveComposerSendState,
-  formatContextWindowTokens,
   getComposerInteractionModePresentation,
   getComposerRuntimeModePresentation,
   projectComposerContext,
-  type ContextWindowSnapshot,
 } from "@t3tools/lynx-logic/composer";
+import {
+  formatContextWindowTokens,
+  type ContextWindowSnapshot,
+} from "../../../../web/src/lib/contextWindow";
 import {
   type ProviderInteractionMode,
   type RuntimeMode,
