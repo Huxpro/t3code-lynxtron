@@ -364,10 +364,15 @@ export function SidebarMenuButton({
   readonly render?: ReactElement<Record<string, unknown>>;
   readonly size?: "default" | "sm" | "lg" | "icon";
 }) {
+  const ariaLabel = props["aria-label"];
   // The engine matches no attribute selectors, so the icon size is a class.
   const buttonClassName = cn(
     "flex min-w-0 items-center",
     size === "icon" && "sidebar-menu-button--icon",
+    // Names the button by its label, so a rule can remove a link to a screen
+    // this client does not have.
+    typeof ariaLabel === "string" &&
+      `sidebar-menu-button--${ariaLabel.toLowerCase().replace(/[^a-z0-9]+/gu, "-")}`,
     disabled && "opacity-50",
     className,
   );

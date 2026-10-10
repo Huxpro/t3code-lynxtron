@@ -1555,8 +1555,10 @@
   height: 32px;
   box-sizing: border-box;
 }
-/* Lynx has no Usage screen, so upstream's link to it is not shown. */
-.sidebar-footer .lucide-chart-no-axes-column {
+/* Lynx has no Usage or Pull Requests screen, so upstream's links to them are
+ * removed whole: a hidden icon would leave a button that leads nowhere. */
+.sidebar-footer .sidebar-menu-button--usage,
+.sidebar-footer .sidebar-menu-button--pull-requests {
   display: none;
 }
 .sidebar-footer > .flex-row {
