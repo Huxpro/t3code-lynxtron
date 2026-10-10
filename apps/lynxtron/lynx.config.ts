@@ -52,6 +52,11 @@ export default defineConfig({
       "@base-ui/react/merge-props$": require.resolve("./src/app/platform/base-ui/merge-props.ts"),
       "@base-ui/react/separator$": require.resolve("./src/app/platform/base-ui/separator.tsx"),
       "@base-ui/react/use-render$": require.resolve("./src/app/platform/base-ui/use-render.ts"),
+      // Upstream components navigate through the Lynx pathname router. The
+      // TanStack route files under src/app/routes are not in the bundle and
+      // are excluded from the app typecheck, which resolves this specifier
+      // the same way.
+      "@tanstack/react-router$": require.resolve("./src/app/platform/tanstack/react-router.tsx"),
       "@formkit/auto-animate$": require.resolve("./src/app/auto-animate-shim.ts"),
       "lucide-react$": require.resolve("./src/app/lucide-react-shim.tsx"),
       react$: require.resolve("./src/app/react-tanstack-shim.ts"),
