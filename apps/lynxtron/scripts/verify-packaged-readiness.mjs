@@ -3241,15 +3241,19 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
   };
 }
 
+// The server's state, opened read only: the server owns the file and every
+// write to it. The gates read it to check what the product persisted.
+function openPersistedState(baseDir) {
+  return new DatabaseSync(path.join(baseDir, "userdata", "statev2.sqlite"), { readOnly: true });
+}
+
 function readPersistedThreadIds(baseDir) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return database
       .prepare(
         `SELECT thread_id AS threadId
-         FROM projection_threads
+         FROM orchestration_v2_projection_threads
          WHERE deleted_at IS NULL
          ORDER BY created_at ASC, thread_id ASC`,
       )
@@ -3261,9 +3265,7 @@ function readPersistedThreadIds(baseDir) {
 }
 
 function readPersistedProjects(baseDir) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return database
       .prepare(
@@ -3279,44 +3281,30 @@ function readPersistedProjects(baseDir) {
 }
 
 function readPersistedEmptyThreadIds(baseDir) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return database
       .prepare(
         `SELECT thread.thread_id AS threadId
-         FROM projection_threads AS thread
+         FROM orchestration_v2_projection_threads AS thread
          WHERE thread.deleted_at IS NULL
            AND thread.archived_at IS NULL
            AND thread.title = 'New thread'
-           AND thread.pending_approval_count = 0
-           AND thread.pending_user_input_count = 0
-           AND thread.has_actionable_proposed_plan = 0
            AND NOT EXISTS (
              SELECT 1
-             FROM projection_thread_messages AS message
+             FROM orchestration_v2_projection_messages AS message
              WHERE message.thread_id = thread.thread_id
            )
            AND NOT EXISTS (
              SELECT 1
-             FROM projection_turns AS turn
-             WHERE turn.thread_id = thread.thread_id
+             FROM orchestration_v2_projection_runs AS run
+             WHERE run.thread_id = thread.thread_id
            )
-           AND (
-             NOT EXISTS (
-               SELECT 1
-               FROM projection_thread_sessions AS session
-               WHERE session.thread_id = thread.thread_id
-             )
-             OR EXISTS (
-               SELECT 1
-               FROM projection_thread_sessions AS session
-               WHERE session.thread_id = thread.thread_id
-                 AND session.status = 'idle'
-                 AND session.active_turn_id IS NULL
-                 AND session.last_error IS NULL
-             )
+           AND NOT EXISTS (
+             SELECT 1
+             FROM orchestration_v2_projection_runtime_requests AS request
+             WHERE request.thread_id = thread.thread_id
+               AND request.status = 'pending'
            )
          ORDER BY thread.created_at DESC, thread.thread_id ASC`,
       )
@@ -3328,29 +3316,17 @@ function readPersistedEmptyThreadIds(baseDir) {
 }
 
 function readResolvedUserInputAnswers(baseDir, requestId) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
-    const rows = database
+    const row = database
       .prepare(
         `SELECT payload_json AS payload
-         FROM projection_thread_activities
-         WHERE kind = 'user-input.resolved'
-         ORDER BY created_at DESC, activity_id DESC`,
+         FROM orchestration_v2_projection_runtime_requests
+         WHERE runtime_request_id = ? AND status = 'resolved'`,
       )
-      .all();
-    for (const row of rows) {
-      const payload = JSON.parse(row.payload);
-      if (
-        payload?.requestId === requestId &&
-        payload.answers &&
-        typeof payload.answers === "object"
-      ) {
-        return payload.answers;
-      }
-    }
-    return null;
+      .get(requestId);
+    const answers = row ? JSON.parse(row.payload)?.answers : null;
+    return answers && typeof answers === "object" ? answers : null;
   } finally {
     database.close();
   }
@@ -4466,50 +4442,32 @@ async function verifyNewThreadProjects({
 }
 
 function readPersistedThreadModelSelection(baseDir, threadId) {
-  const escapedThreadId = threadId.replaceAll("'", "''");
-  const query = spawnSync(
-    process.env.T3_NODE_BIN?.trim() || "node",
-    [
-      path.join(REPO_ROOT, "apps/server/scripts/t3-sqlite-state.ts"),
-      "query",
-      "--base-dir",
-      baseDir,
-      "--sql",
-      `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`,
-    ],
-    { cwd: REPO_ROOT, encoding: "utf8" },
-  );
-  if (query.status !== 0) {
-    throw new Error(
-      `Could not read persisted model selection: ${query.stderr || query.stdout || "unknown"}`,
-    );
+  const database = openPersistedState(baseDir);
+  try {
+    const row = database
+      .prepare(
+        "SELECT payload_json AS payload FROM orchestration_v2_projection_threads WHERE thread_id = ?",
+      )
+      .get(threadId);
+    return row ? (JSON.parse(row.payload)?.modelSelection ?? null) : null;
+  } finally {
+    database.close();
   }
-  const report = JSON.parse(query.stdout);
-  const stored = report.rows?.[0]?.model_selection_json;
-  return typeof stored === "string" ? JSON.parse(stored) : null;
 }
 
 function readPersistedThreadInteractionMode(baseDir, threadId) {
-  const escapedThreadId = threadId.replaceAll("'", "''");
-  const query = spawnSync(
-    process.env.T3_NODE_BIN?.trim() || "node",
-    [
-      path.join(REPO_ROOT, "apps/server/scripts/t3-sqlite-state.ts"),
-      "query",
-      "--base-dir",
-      baseDir,
-      "--sql",
-      `SELECT interaction_mode FROM projection_threads WHERE thread_id = '${escapedThreadId}'`,
-    ],
-    { cwd: REPO_ROOT, encoding: "utf8" },
-  );
-  if (query.status !== 0) {
-    throw new Error(
-      `Could not read persisted interaction mode: ${query.stderr || query.stdout || "unknown"}`,
+  const database = openPersistedState(baseDir);
+  try {
+    return (
+      database
+        .prepare(
+          "SELECT interaction_mode AS interactionMode FROM orchestration_v2_projection_threads WHERE thread_id = ?",
+        )
+        .get(threadId)?.interactionMode ?? null
     );
+  } finally {
+    database.close();
   }
-  const report = JSON.parse(query.stdout);
-  return report.rows?.[0]?.interaction_mode ?? null;
 }
 
 async function selectSessionlessFixtureThread({ baseDir, child, client, timeoutMs }) {
@@ -6379,42 +6337,36 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
 }
 
 function readPersistedJourneyCounts(baseDir, threadId) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     const count = (sql) => database.prepare(sql).get(threadId).count;
+    const userMessages = database
+      .prepare(
+        "SELECT payload_json AS payload FROM orchestration_v2_projection_messages WHERE thread_id = ? AND role = 'user' ORDER BY created_at",
+      )
+      .all(threadId)
+      .map((row) => JSON.parse(row.payload));
+    const first = userMessages[0];
     return {
-      userMessages: count(
-        "SELECT COUNT(*) AS count FROM projection_thread_messages WHERE thread_id = ? AND role = 'user'",
-      ),
+      userMessages: userMessages.length,
       assistantMessages: count(
-        "SELECT COUNT(*) AS count FROM projection_thread_messages WHERE thread_id = ? AND role = 'assistant'",
+        "SELECT COUNT(*) AS count FROM orchestration_v2_projection_messages WHERE thread_id = ? AND role = 'assistant'",
       ),
-      turns: count("SELECT COUNT(*) AS count FROM projection_turns WHERE thread_id = ?"),
-      userMessageAttachments: database
-        .prepare(
-          "SELECT attachments_json AS attachments FROM projection_thread_messages WHERE thread_id = ? AND role = 'user'",
-        )
-        .all(threadId)
-        .map((row) => JSON.parse(row.attachments ?? "[]").length),
-      userMessage: (() => {
-        const row = database
-          .prepare(
-            "SELECT text, attachments_json AS attachments FROM projection_thread_messages WHERE thread_id = ? AND role = 'user' ORDER BY created_at LIMIT 1",
-          )
-          .get(threadId);
-        return row
-          ? {
-              text: row.text,
-              attachments: JSON.parse(row.attachments ?? "[]").map((attachment) => ({
-                name: attachment.name,
-                mimeType: attachment.mimeType,
-                sizeBytes: attachment.sizeBytes,
-              })),
-            }
-          : null;
-      })(),
+      // A turn is a run.
+      turns: count(
+        "SELECT COUNT(*) AS count FROM orchestration_v2_projection_runs WHERE thread_id = ?",
+      ),
+      userMessageAttachments: userMessages.map((message) => (message.attachments ?? []).length),
+      userMessage: first
+        ? {
+            text: first.text,
+            attachments: (first.attachments ?? []).map((attachment) => ({
+              name: attachment.name,
+              mimeType: attachment.mimeType,
+              sizeBytes: attachment.sizeBytes,
+            })),
+          }
+        : null,
     };
   } finally {
     database.close();
@@ -6993,7 +6945,7 @@ async function verifyM1LocalJourney({
         draftScopeKey,
         provider: modelSelection,
         fixtureStateSha256: createHash("sha256")
-          .update(readFileSync(path.join(fixtureDir, "userdata", "state.sqlite")))
+          .update(readFileSync(path.join(fixtureDir, "userdata", "statev2.sqlite")))
           .digest("hex"),
       },
       entry: { draftThreadId, projectId: draft.activeThread?.projectId },
@@ -15878,13 +15830,13 @@ async function verifySidebarScopeBehavior({ child, client, height, timeoutMs, wi
 }
 
 function readPersistedThreadRuntimeMode(baseDir, threadId) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return (
       database
-        .prepare("SELECT runtime_mode AS runtimeMode FROM projection_threads WHERE thread_id = ?")
+        .prepare(
+          "SELECT runtime_mode AS runtimeMode FROM orchestration_v2_projection_threads WHERE thread_id = ?",
+        )
         .get(threadId)?.runtimeMode ?? null
     );
   } finally {

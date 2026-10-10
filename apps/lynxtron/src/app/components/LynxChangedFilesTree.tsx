@@ -1,6 +1,6 @@
+import type { OrchestrationCheckpointFile } from "@t3tools/lynx-logic/orchestration";
 import { useCallback, useMemo, useState, type ReactNode } from "@lynx-js/react";
 import { buildChangedFilesTree, type ChangedFilesTreeNode } from "@t3tools/lynx-logic/diff";
-import type { OrchestrationCheckpointFile } from "@t3tools/contracts";
 
 import { hasNonZeroStat } from "../../../../web/src/components/chat/DiffStatLabel";
 import {

@@ -10,6 +10,15 @@
  * deleted the hand-built Web reference host. It is contracts-only fixture data:
  * no product JSX, renderer imports, or transport code.
  */
+import type {
+  OrchestrationCheckpointSummary,
+  OrchestrationLatestTurn,
+  OrchestrationMessage,
+  OrchestrationProposedPlan,
+  OrchestrationSessionStatus,
+  OrchestrationThreadActivity,
+  OrchestrationThreadShell,
+} from "@t3tools/lynx-logic/orchestration";
 import {
   DEFAULT_SERVER_SETTINGS,
   CheckpointRef,
@@ -22,14 +31,7 @@ import {
   ThreadId,
   TurnId,
   type DesktopAppBranding,
-  type OrchestrationCheckpointSummary,
-  type OrchestrationLatestTurn,
-  type OrchestrationMessage,
   type OrchestrationProjectShell,
-  type OrchestrationProposedPlan,
-  type OrchestrationSessionStatus,
-  type OrchestrationThreadActivity,
-  type OrchestrationThreadShell,
   type ServerConfig,
   type ServerProvider,
   type TurnId as TurnIdType,

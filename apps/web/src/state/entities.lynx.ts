@@ -1,9 +1,6 @@
 import { useMemo } from "@lynx-js/react";
-import type {
-  EnvironmentProject,
-  EnvironmentThread,
-  EnvironmentThreadShell,
-} from "@t3tools/client-runtime/state/shell";
+import type { EnvironmentProject } from "@t3tools/client-runtime/state/shell";
+import type { EnvironmentThreadShell } from "@t3tools/lynx-logic/orchestration";
 import type {
   EnvironmentId,
   ScopedProjectRef,
@@ -143,8 +140,8 @@ export function useThreadShell(ref: ScopedThreadRef | null): EnvironmentThreadSh
   );
 }
 
-export function useThread(ref: ScopedThreadRef | null): EnvironmentThread | null {
-  return useThreadShell(ref) as EnvironmentThread | null;
+export function useThread(ref: ScopedThreadRef | null): EnvironmentThreadShell | null {
+  return useThreadShell(ref);
 }
 
 export function readProject(ref: ScopedProjectRef): EnvironmentProject | null {

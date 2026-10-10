@@ -3,7 +3,7 @@
 // upstream's connection is not started, until `startUpstreamCommands` runs.
 import { EnvironmentSupervisor } from "@t3tools/client-runtime/connection";
 import { environmentEndpointUrl } from "@t3tools/client-runtime/environment";
-import { PrimaryEnvironmentAuth } from "@t3tools/client-runtime/platform";
+import { ClientCapabilities } from "@t3tools/client-runtime/platform";
 import {
   executeEnvironmentHttpRequest,
   makeEnvironmentHttpApiGroupClient,
@@ -24,6 +24,7 @@ import * as Stream from "effect/Stream";
 import type { HttpClient } from "effect/unstable/http";
 import { AsyncResult } from "effect/unstable/reactivity";
 
+import { projectThreadShell } from "../../shared/orchestrationProjection.ts";
 import { applyGitActionProgress, EMPTY_GIT_ACTION_OUTCOME } from "../../shared/gitActionOutcome.ts";
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { UpstreamCommandContext, UpstreamCommandPort } from "./upstreamCommands.ts";
@@ -84,10 +85,11 @@ export const upstreamCommandState: Pick<
   UpstreamCommandContext,
   "threads" | "projects" | "config" | "httpBaseUrl"
 > = {
-  threads: () => [
-    ...(Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.threads ?? []),
-    ...(primary?.archived?.threads ?? []),
-  ],
+  threads: () =>
+    [
+      ...(Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.threads ?? []),
+      ...(primary?.archived?.threads ?? []),
+    ].map(projectThreadShell),
   projects: () => Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.projects ?? [],
   config: () => primary?.config ?? null,
   httpBaseUrl: () => primaryHttpBaseUrl(primary),
@@ -116,7 +118,10 @@ function runInPrimary<A, E>(
   execute: () => Effect.Effect<
     A,
     E,
-    EnvironmentSupervisor | Crypto.Crypto | HttpClient.HttpClient | PrimaryEnvironmentAuth
+    | EnvironmentSupervisor.EnvironmentSupervisor
+    | Crypto.Crypto
+    | HttpClient.HttpClient
+    | ClientCapabilities.PrimaryEnvironmentAuth
   >,
   serialKey?: string,
 ): Promise<A> {
@@ -149,12 +154,12 @@ function authRequest<A, E>(
 ): Promise<A> {
   return runInPrimary(`lynx:auth:${pathname}`, () =>
     Effect.gen(function* () {
-      const supervisor = yield* EnvironmentSupervisor;
+      const supervisor = yield* EnvironmentSupervisor.EnvironmentSupervisor;
       const target = supervisor.target;
       if (target._tag !== "PrimaryConnectionTarget") {
         return yield* Effect.fail(new Error("not connected"));
       }
-      const auth = yield* PrimaryEnvironmentAuth;
+      const auth = yield* ClientCapabilities.PrimaryEnvironmentAuth;
       const bearer = Option.getOrUndefined(yield* auth.bearerToken);
       const client = yield* makeEnvironmentHttpApiGroupClient(target.httpBaseUrl, "auth");
       return yield* executeEnvironmentHttpRequest(

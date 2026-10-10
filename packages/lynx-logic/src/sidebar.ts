@@ -1,5 +1,4 @@
-import type { OrchestrationThreadShell } from "@t3tools/contracts";
-
+import type { OrchestrationThreadShell } from "./orchestration.ts";
 import { isLatestTurnSettled } from "./session.ts";
 
 export type SidebarThreadStatusKind =

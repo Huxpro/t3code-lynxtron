@@ -46,6 +46,7 @@ import {
   type UpdateThreadMetadataInput,
   updateThreadMetadata,
 } from "@t3tools/client-runtime/operations";
+import type * as Effect from "effect/Effect";
 
 /** The input each operation takes, by the name upstream exports it under. */
 export interface UpstreamOperationInputs {
@@ -74,7 +75,21 @@ export interface UpstreamOperationInputs {
 
 export type UpstreamOperationName = keyof UpstreamOperationInputs;
 
-type OperationEffect = ReturnType<typeof createProject>;
+// What an operation answers with differs: a dispatch names the event sequence,
+// a first turn names the thread it launched. No command reads either.
+type AnyOperationEffect = ReturnType<
+  | typeof createProject
+  | typeof createThread
+  | typeof updateThreadMetadata
+  | typeof startThreadTurn
+  | typeof interruptThreadTurn
+  | typeof revertThreadCheckpoint
+>;
+type OperationEffect = Effect.Effect<
+  unknown,
+  Effect.Error<AnyOperationEffect>,
+  Effect.Services<AnyOperationEffect>
+>;
 
 const OPERATIONS: {
   readonly [Name in UpstreamOperationName]: (

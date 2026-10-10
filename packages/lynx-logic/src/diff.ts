@@ -1,4 +1,5 @@
-import type { OrchestrationCheckpointFile, TurnId } from "@t3tools/contracts";
+import type { OrchestrationCheckpointFile } from "./orchestration.ts";
+import type { TurnId } from "@t3tools/contracts";
 
 export type ChangedFile = OrchestrationCheckpointFile;
 

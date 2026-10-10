@@ -4,7 +4,6 @@
 // the host launches with `T3_LYNXTRON_UPSTREAM_SHADOW=1`.
 import type { SupervisorConnectionState } from "@t3tools/client-runtime/connection";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
-import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
 import * as Cause from "effect/Cause";
 import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
@@ -16,7 +15,11 @@ import {
   type UpstreamPrimaryState,
   watchUpstreamPrimary,
 } from "./upstreamPrimary.ts";
-import { type UpstreamSelectedState, watchUpstreamSelected } from "./upstreamSelected.ts";
+import {
+  threadHasOlderHistory,
+  type UpstreamSelectedState,
+  watchUpstreamSelected,
+} from "./upstreamSelected.ts";
 
 export interface UpstreamShadowSummary {
   /** The connection phase, or what the runtime is waiting for before it has one. */
@@ -52,7 +55,7 @@ export function summarizeUpstreamSelected(state: UpstreamSelectedState): Upstrea
     threadId: state.threadId,
     threadStatus: thread?.status ?? null,
     threadMessages: data === null ? null : data.messages.length,
-    threadHasOlderTurns: thread !== null && threadHasOlderTurns(thread),
+    threadHasOlderTurns: thread !== null && threadHasOlderHistory(thread),
     threadError: thread === null ? null : Option.getOrNull(thread.error),
     terminals: state.terminals?.length ?? null,
     vcsCwd: state.vcsCwd,

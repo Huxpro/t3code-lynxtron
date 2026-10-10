@@ -11,7 +11,7 @@ import {
 import { resolveThreadStatusPill, type ThreadStatusPill } from "@t3tools/lynx-logic/sidebar";
 
 import { Icon } from "../../../lynxtron/src/app/components/Icon";
-import type { SidebarThreadSummary } from "../types";
+import type { EnvironmentThreadShell as SidebarThreadSummary } from "@t3tools/lynx-logic/orchestration";
 import { formatWorktreePathForDisplay } from "../worktreeCleanup";
 
 export {

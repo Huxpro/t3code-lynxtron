@@ -1,3 +1,4 @@
+import type { OrchestrationCheckpointSummary } from "@t3tools/lynx-logic/orchestration";
 import {
   describeDiffSelection,
   orderTurnDiffSummariesNewestFirst,
@@ -6,7 +7,6 @@ import {
   summarizeChangedFiles,
 } from "@t3tools/lynx-logic/diff";
 import { inferCheckpointTurnCountByTurnId } from "@t3tools/lynx-logic/transcript";
-import type { OrchestrationCheckpointSummary } from "@t3tools/contracts";
 import type { ThreadId, TurnId } from "@t3tools/contracts";
 import { useEffect, useMemo, useState } from "@lynx-js/react";
 

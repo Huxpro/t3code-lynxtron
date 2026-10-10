@@ -1,6 +1,7 @@
+import type { OrchestrationThreadActivity } from "./orchestration.ts";
 import { describe, expect, it } from "vite-plus/test";
 
-import { EventId, ThreadId, TurnId, type OrchestrationThreadActivity } from "@t3tools/contracts";
+import { EventId, ThreadId, TurnId } from "@t3tools/contracts";
 
 import { deriveActivePlanState, findLatestProposedPlan } from "./thread.ts";
 

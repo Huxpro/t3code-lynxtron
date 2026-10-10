@@ -22,7 +22,6 @@ import {
   type GeneralSettingsSurfaceActions,
   type GeneralSettingsSurfaceSnapshot,
 } from "../../../../web/src/components/settings/generalSettingsStore";
-import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { navigate } from "../router";
 import { useClientSettingsState } from "../state/prefsStore";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
@@ -87,19 +86,6 @@ export function GeneralSettingsSync() {
       };
       if (Object.keys(clientPatch).length > 0) updateClientSettings(clientPatch);
       if (Object.keys(serverPatch).length > 0) updateServerSettings(serverPatch);
-      if (patch.enableLegacyTokenStreaming === false) {
-        updateServerSettings({ responseStreamingMode: "paragraph" });
-      } else if (patch.enableLegacyTokenStreaming === true) {
-        void showNativeConfirm({
-          message: "Turn on token-by-token output?",
-          detail:
-            "It is significantly slower than the default buffered output and hurts the reading experience. This switch exists only for backwards compatibility.",
-        })
-          .then((confirmed) => {
-            if (confirmed) updateServerSettings({ responseStreamingMode: "token" });
-          })
-          .catch(() => {});
-      }
     };
     const snapshot: GeneralSettingsSurfaceSnapshot = {
       backgroundActivityDescription: settings

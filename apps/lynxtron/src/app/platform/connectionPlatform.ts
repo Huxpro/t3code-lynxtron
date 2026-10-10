@@ -20,22 +20,16 @@ import {
 } from "@t3tools/client-runtime/connection";
 import { fetchRemoteEnvironmentDescriptor } from "@t3tools/client-runtime/environment";
 import {
-  ClientPresentation,
-  CloudSession,
-  ConnectionRegistrationStore,
-  ConnectionTargetStore,
+  ClientCapabilities,
   EMPTY_CONNECTION_CATALOG_DOCUMENT,
-  EnvironmentCacheStore,
+  Persistence,
   PlatformConnectionSource,
-  PrimaryEnvironmentAuth,
   putRemoteDpopTokenInCatalog,
   registerConnectionInCatalog,
-  RelayDeviceIdentity,
   removeCatalogValue,
   removeConnectionFromCatalog,
   replaceCatalogValue,
   setConnectionEnabledInCatalog,
-  SshEnvironmentGateway,
 } from "@t3tools/client-runtime/platform";
 import { ManagedRelay } from "@t3tools/client-runtime/relay";
 import { remoteHttpClientLayer } from "@t3tools/client-runtime/rpc";
@@ -335,10 +329,10 @@ export const primaryRegistrations = <E, R>(input: {
 // server at another address. The bearer needs no emission of its own:
 // `PrimaryEnvironmentAuth` reads it on every connection attempt.
 const platformConnectionSourceLayer = Layer.effect(
-  PlatformConnectionSource,
+  PlatformConnectionSource.PlatformConnectionSource,
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient;
-    return PlatformConnectionSource.of({
+    return PlatformConnectionSource.PlatformConnectionSource.of({
       registrations: primaryRegistrations({
         reads: primaryConnectionReads,
         connection: readHostPrimaryConnection,
@@ -369,8 +363,8 @@ function sshUnsupported() {
 
 const capabilitiesLayer = Layer.succeedContext(
   Context.make(
-    CloudSession,
-    CloudSession.of({
+    ClientCapabilities.CloudSession,
+    ClientCapabilities.CloudSession.of({
       identity: Effect.succeedNone,
       clerkToken: Effect.fail(
         new ConnectionBlockedError({ reason: "unsupported", detail: CLOUD_UNSUPPORTED_DETAIL }),
@@ -378,24 +372,27 @@ const capabilitiesLayer = Layer.succeedContext(
     }),
   ).pipe(
     Context.add(
-      PrimaryEnvironmentAuth,
-      PrimaryEnvironmentAuth.of({
+      ClientCapabilities.PrimaryEnvironmentAuth,
+      ClientCapabilities.PrimaryEnvironmentAuth.of({
         bearerToken: readHostPrimaryConnection.pipe(
           Effect.map((connection) => Option.some(connection.bearer)),
         ),
       }),
     ),
-    Context.add(RelayDeviceIdentity, RelayDeviceIdentity.of({ deviceId: Effect.succeedNone })),
     Context.add(
-      ClientPresentation,
-      ClientPresentation.of({
+      ClientCapabilities.RelayDeviceIdentity,
+      ClientCapabilities.RelayDeviceIdentity.of({ deviceId: Effect.succeedNone }),
+    ),
+    Context.add(
+      ClientCapabilities.ClientPresentation,
+      ClientCapabilities.ClientPresentation.of({
         metadata: { label: "T3 Code Lynxtron", deviceType: "desktop", surface: "desktop" },
         scopes: AuthStandardClientScopes,
       }),
     ),
     Context.add(
-      SshEnvironmentGateway,
-      SshEnvironmentGateway.of({
+      ClientCapabilities.SshEnvironmentGateway,
+      ClientCapabilities.SshEnvironmentGateway.of({
         provision: sshUnsupported,
         prepare: sshUnsupported,
         disconnect: () => Effect.void,
@@ -459,16 +456,16 @@ const storageLayer = Layer.effectContext(
     });
 
     return Context.make(
-      ConnectionTargetStore,
-      ConnectionTargetStore.of({
+      Persistence.ConnectionTargetStore,
+      Persistence.ConnectionTargetStore.of({
         list: Effect.map(read, (document) => document.targets),
         listDisabled: Effect.map(read, (document) => document.disabledEnvironmentIds),
       }),
     ).pipe(
       Context.add(GitHubRoutingPermissions, githubRoutingPermissions),
       Context.add(
-        ConnectionRegistrationStore,
-        ConnectionRegistrationStore.of({
+        Persistence.ConnectionRegistrationStore,
+        Persistence.ConnectionRegistrationStore.of({
           register: (registration) =>
             update((document) => registerConnectionInCatalog(document, registration)),
           remove: (target) => update((document) => removeConnectionFromCatalog(document, target)),
@@ -563,8 +560,8 @@ const storageLayer = Layer.effectContext(
 // A cache that holds nothing: every load misses and the live subscription
 // supplies the data. The shell and thread atoms already keep what they show.
 const environmentCacheLayer = Layer.succeed(
-  EnvironmentCacheStore,
-  EnvironmentCacheStore.of({
+  Persistence.EnvironmentCacheStore,
+  Persistence.EnvironmentCacheStore.of({
     loadShell: () => Effect.succeedNone,
     saveShell: () => Effect.void,
     loadThread: () => Effect.succeedNone,

@@ -104,7 +104,7 @@ function harness(
   };
   const supervisor = Effect.runSync(
     Effect.gen(function* () {
-      return EnvironmentSupervisor.of({
+      return EnvironmentSupervisor.EnvironmentSupervisor.of({
         target: PRIMARY_TARGET,
         state: yield* SubscriptionRef.make<SupervisorConnectionState>({
           ...AVAILABLE_CONNECTION_STATE,
@@ -128,7 +128,7 @@ function harness(
     operation: async (name, input) => {
       const exit = await Effect.runPromiseExit(
         upstreamOperation(name, input).pipe(
-          Effect.provideService(EnvironmentSupervisor, supervisor),
+          Effect.provideService(EnvironmentSupervisor.EnvironmentSupervisor, supervisor),
           Effect.provideService(Crypto.Crypto, crypto),
         ),
       );

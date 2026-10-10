@@ -2,9 +2,8 @@ import type {
   OrchestrationProposedPlan,
   OrchestrationProposedPlanId,
   OrchestrationThreadActivity,
-  ThreadId,
-  TurnId,
-} from "@t3tools/contracts";
+} from "./orchestration.ts";
+import type { ThreadId, TurnId } from "@t3tools/contracts";
 
 export interface ActivePlanState {
   readonly createdAt: string;

@@ -1,5 +1,9 @@
 // Contract-shaped values for the upstream state tests, decoded from the wire
 // form the server sends so defaults and brands are the real ones.
+import type {
+  OrchestrationShellSnapshot,
+  OrchestrationThread,
+} from "@t3tools/lynx-logic/orchestration";
 import {
   AVAILABLE_CONNECTION_STATE,
   PrimaryConnectionTarget,
@@ -16,8 +20,6 @@ import type { EnvironmentThreadState } from "@t3tools/client-runtime/state/threa
 import {
   DEFAULT_SERVER_SETTINGS,
   EnvironmentId,
-  OrchestrationShellSnapshot,
-  OrchestrationThread,
   type ServerConfig,
   ServerProvider,
   type TerminalAttachStreamEvent,

@@ -39,6 +39,7 @@ interface LynxRuntimeGlobals {
   navigator?: unknown;
   sessionStorage?: unknown;
   queueMicrotask?: (callback: () => void) => void;
+  Intl?: unknown;
   TextEncoder?: unknown;
   TextDecoder?: unknown;
   Response?: unknown;
@@ -98,6 +99,27 @@ if (runtimeGlobals.queueMicrotask === undefined) {
   runtimeGlobals.queueMicrotask = (callback) => {
     void Promise.resolve().then(callback);
   };
+}
+// The main-thread engine has no `Intl`. Upstream's shared modules build
+// number and date formatters while they load (`@t3tools/shared/usageFormat`),
+// and nothing on the main thread formats with them: text is produced on the
+// background thread, which has the real `Intl`. Here a formatter only has to
+// construct, so the module that builds one can load.
+if (runtimeGlobals.Intl === undefined) {
+  class FormatterStandIn {
+    format(value: unknown): string {
+      return String(value);
+    }
+
+    formatToParts(): ReadonlyArray<never> {
+      return [];
+    }
+
+    resolvedOptions(): Record<string, never> {
+      return {};
+    }
+  }
+  runtimeGlobals.Intl = { NumberFormat: FormatterStandIn, DateTimeFormat: FormatterStandIn };
 }
 if (typeof Object.hasOwn !== "function") {
   Object.hasOwn = (object, property) => Object.prototype.hasOwnProperty.call(object, property);

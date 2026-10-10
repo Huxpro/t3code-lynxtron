@@ -1,7 +1,7 @@
 import type { SidebarThreadStatus } from "../../../../web/src/components/Sidebar.logic";
 import { cn } from "../../../../web/src/lib/utils";
 import { formatRelativeTimeLabel } from "../../../../web/src/timestampFormat";
-import type { SidebarThreadSummary } from "../../../../web/src/types";
+import type { OrchestrationThreadShell } from "@t3tools/lynx-logic/orchestration";
 
 export function shouldChooseProjectForNewThread(projectCount: number): boolean {
   return projectCount > 1;
@@ -34,7 +34,7 @@ export function searchSidebarThreadsByTitle<T extends { readonly title: string }
 }
 
 type SettledTimestampInput = Pick<
-  SidebarThreadSummary,
+  OrchestrationThreadShell,
   "settledAt" | "latestUserMessageAt" | "latestTurn" | "updatedAt"
 >;
 
@@ -126,7 +126,7 @@ export interface SidebarV2TopStatus {
 /**
  * Row prominence and status pill for a sidebar thread.
  *
- * In-flight rows (working, monitoring, or waiting on approval/input) recede
+ * In-flight rows (working, waiting on background work, or waiting on approval/input) recede
  * with read ready rows: prominence is reserved for rows that need a human —
  * done (unread), failed, and freshly woken. Status hues follow the system-wide
  * convention (amber approval, indigo input, sky working).
@@ -144,7 +144,7 @@ export function resolveSidebarV2RowPresentation(input: {
 } {
   const { status } = input;
   const isInFlight =
-    status === "working" || status === "monitoring" || status === "approval" || status === "input";
+    status === "working" || status === "waiting" || status === "approval" || status === "input";
   const shouldRecede =
     (status === "ready" || isInFlight) &&
     !input.isUnread &&
@@ -161,15 +161,19 @@ export function resolveSidebarV2RowPresentation(input: {
           // gets the label at full strength.
           className: cn("text-sky-600 dark:text-sky-400", !input.isActive && "opacity-75"),
         }
-      : status === "monitoring"
-        ? // Monitoring is calm background presence, so it keeps full strength.
-          { label: "Monitoring", icon: null, className: "text-sky-600 dark:text-sky-400" }
+      : status === "waiting"
+        ? // Waiting on background work is calm presence, so it keeps full strength.
+          { label: "Waiting", icon: null, className: "text-sky-600 dark:text-sky-400" }
         : status === "approval"
           ? { label: "Approval", icon: null, className: "text-amber-700 dark:text-amber-300" }
           : status === "input"
             ? { label: "Input", icon: null, className: "text-indigo-600 dark:text-indigo-300" }
-            : status === "failed"
-              ? { label: "Failed", icon: null, className: "text-red-700 dark:text-red-300" }
+            : status === "failed" || status === "limited"
+              ? {
+                  label: status === "limited" ? "Limited" : "Failed",
+                  icon: null,
+                  className: "text-red-700 dark:text-red-300",
+                }
               : input.isWoke
                 ? { label: "Woke", icon: "woke", className: "text-amber-700 dark:text-amber-300" }
                 : input.isUnread

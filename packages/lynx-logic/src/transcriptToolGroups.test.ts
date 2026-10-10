@@ -1,6 +1,7 @@
+import type { OrchestrationThreadActivity } from "./orchestration.ts";
 import { describe, expect, it } from "vite-plus/test";
 
-import { EventId, TurnId, type OrchestrationThreadActivity } from "@t3tools/contracts";
+import { EventId, TurnId } from "@t3tools/contracts";
 
 import {
   computeStableMessagesTimelineRows,

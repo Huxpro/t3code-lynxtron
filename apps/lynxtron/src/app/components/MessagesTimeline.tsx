@@ -1,3 +1,8 @@
+import type {
+  OrchestrationCheckpointSummary,
+  OrchestrationLatestTurn,
+  OrchestrationProposedPlan,
+} from "@t3tools/lynx-logic/orchestration";
 import { useCallback, useEffect, useMemo, useRef, useState } from "@lynx-js/react";
 import type { NodesRef } from "@lynx-js/types";
 import { isSessionWorking } from "@t3tools/lynx-logic/session";
@@ -47,13 +52,7 @@ import {
   buildCollapsedProposedPlanPreviewMarkdown,
   proposedPlanTitle,
 } from "../../../../web/src/proposedPlan";
-import type {
-  OrchestrationLatestTurn,
-  OrchestrationCheckpointSummary,
-  OrchestrationProposedPlan,
-  ThreadId,
-  TurnId,
-} from "@t3tools/contracts";
+import type { ThreadId, TurnId } from "@t3tools/contracts";
 import {
   TranscriptRowSurface,
   type TranscriptRowElements,

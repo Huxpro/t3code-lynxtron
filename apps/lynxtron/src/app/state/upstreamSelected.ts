@@ -4,10 +4,7 @@
 // thread's terminal atoms and one status atom are mounted, for as long as the
 // thread is selected. Nothing is read until the first watcher.
 import type { TerminalBufferState } from "@t3tools/client-runtime/state/terminal";
-import {
-  type EnvironmentThreadState,
-  requestOlderThreadTurns,
-} from "@t3tools/client-runtime/state/threads";
+import type { EnvironmentThreadState } from "@t3tools/client-runtime/state/threads";
 import {
   type EnvironmentId,
   type TerminalSummary,
@@ -21,6 +18,7 @@ import { appAtomRegistry } from "./atomRegistry.ts";
 import type { T3ClientState } from "./t3Client.ts";
 import {
   upstreamEnvironmentThreads,
+  upstreamLoadEarlierHistory,
   upstreamTerminalEnvironment,
   upstreamVcsEnvironment,
 } from "./upstreamConnectionRuntime.ts";
@@ -73,15 +71,22 @@ export function clientSelection(client: SelectingClientState): UpstreamSelection
   };
 }
 
+/** Whether upstream holds a window of the thread and can still load what is before it. */
+export function threadHasOlderHistory(thread: EnvironmentThreadState): boolean {
+  return thread.history.hasMoreHistory && thread.history.error === null;
+}
+
 /**
  * The cursor to ask the next older page with, or null when there is nothing
  * to ask for now. The Lynx client shows a thread whole, so a thread upstream
- * loaded as a window is paged until it has no older turns.
+ * loaded as a window is paged until it has no older history. A page that
+ * failed is not asked for again: the thread is shown as far as it loaded.
  */
-export function olderTurnsCursor(thread: EnvironmentThreadState): string | null {
-  if (thread.status !== "live") return null;
-  const page = Option.getOrNull(thread.page);
-  return page === null || !page.hasMore || page.loadingOlder ? null : page.beforeCursor;
+export function olderHistoryCursor(thread: EnvironmentThreadState): string | null {
+  if (thread.status !== "live" || !threadHasOlderHistory(thread) || thread.history.loading) {
+    return null;
+  }
+  return thread.history.historyCursor ?? "";
 }
 
 type Watcher = (state: UpstreamSelectedState) => void;
@@ -123,9 +128,13 @@ function followThread(): void {
     (result) => {
       const thread = Option.getOrNull(AsyncResult.value(result));
       publish({ thread });
-      const cursor = thread === null ? null : olderTurnsCursor(thread);
+      const cursor = thread === null ? null : olderHistoryCursor(thread);
       if (cursor === null || cursor === requested) return;
-      if (requestOlderThreadTurns(environment, threadId)) requested = cursor;
+      requested = cursor;
+      void upstreamLoadEarlierHistory.run(appAtomRegistry, {
+        environmentId: environment,
+        input: { threadId },
+      });
     },
     { immediate: true },
   );

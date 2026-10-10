@@ -3,7 +3,8 @@
 // and nothing for an empty disposable thread, which the cleanup deletes as
 // soon as it is seen. The renderer's upstream source passes these to
 // `projectConnectorShell`.
-import type { ModelSelection, OrchestrationThreadShell } from "@t3tools/contracts";
+import type { OrchestrationThreadShell } from "@t3tools/lynx-logic/orchestration";
+import type { ModelSelection } from "@t3tools/contracts";
 import { selectRecoverableDisposableThreadIds } from "@t3tools/lynx-logic/threadActions";
 
 /** The selection each thread was last asked to use, by thread id. */

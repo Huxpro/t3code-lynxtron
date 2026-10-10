@@ -14,6 +14,18 @@
  * the contract while retaining the canonical orchestration shell types.
  */
 import type {
+  OrchestrationCheckpointSummary,
+  OrchestrationLatestTurn,
+  OrchestrationMessage,
+  OrchestrationMessageRole,
+  OrchestrationProposedPlan,
+  OrchestrationSessionStatus,
+  OrchestrationThreadActivity,
+  OrchestrationThreadActivityTone,
+  OrchestrationThreadShell,
+  ThreadTurnStartBootstrap,
+} from "@t3tools/lynx-logic/orchestration";
+import type {
   DesktopAppBranding,
   AssetCreateUrlInput,
   EditorId,
@@ -21,20 +33,11 @@ import type {
   FilesystemBrowseResult,
   GitRunStackedActionInput,
   GitRunStackedActionResult,
-  OrchestrationLatestTurn,
-  OrchestrationMessage,
-  OrchestrationMessageRole,
-  OrchestrationCheckpointSummary,
   OrchestrationGetTurnDiffInput,
   OrchestrationGetTurnDiffResult,
   ReviewDiffPreviewInput,
   ReviewDiffPreviewResult,
   OrchestrationProjectShell,
-  OrchestrationProposedPlan,
-  OrchestrationSessionStatus,
-  OrchestrationThreadActivity,
-  OrchestrationThreadActivityTone,
-  OrchestrationThreadShell,
   ApprovalRequestId,
   ProviderApprovalDecision,
   ProviderUserInputAnswers,
@@ -73,13 +76,13 @@ import type {
   VcsStatusResult,
   RuntimeMode,
   ModelSelection,
-  ThreadTurnStartBootstrap,
   UploadChatAttachment,
 } from "@t3tools/contracts";
 import type { ModelPickerModel } from "@t3tools/lynx-logic/modelPicker";
 import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
 import type { ActivePlanState, LatestProposedPlanState } from "@t3tools/lynx-logic/thread";
 import type { ConnectorAssetUrlResult, ProjectRepoContext } from "../shared/connectorProtocol";
+import type { ContextWindowSnapshot } from "../../../web/src/lib/contextWindow";
 
 export type ConnectionStatus =
   | "idle"
@@ -139,6 +142,8 @@ export interface ThreadEventPayload {
   readonly proposedPlans?: ReadonlyArray<OrchestrationProposedPlan>;
   /** The session's running turn id, when a turn is actively executing. */
   readonly activeTurnId?: TurnId | null;
+  /** Context window usage of the thread, where the source can supply it. */
+  readonly contextWindow?: ContextWindowSnapshot | null;
 }
 
 export type { ActivePlanState, LatestProposedPlanState };

@@ -8,7 +8,8 @@ import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell"
 import type {
   AuthAccessSnapshot,
   AuthAccessStreamEvent,
-  OrchestrationShellSnapshot,
+  OrchestrationV2ArchivedShellSnapshot,
+  OrchestrationV2ShellSnapshot,
   ServerConfig,
 } from "@t3tools/contracts";
 import * as Option from "effect/Option";
@@ -56,7 +57,7 @@ export interface UpstreamPrimaryState {
   /** The current server config: the session's first one until the stream is live. */
   readonly config: ServerConfig | null;
   /** The archived threads, which the shell stream does not carry. */
-  readonly archived: OrchestrationShellSnapshot | null;
+  readonly archived: OrchestrationV2ArchivedShellSnapshot | null;
   /** The pairing links and client sessions, or null before the server has said. */
   readonly access: AuthAccessSnapshot | null;
 }
@@ -130,7 +131,7 @@ function follow(): void {
         environmentId,
         input: {},
       });
-      let shellSnapshot: OrchestrationShellSnapshot | null = null;
+      let shellSnapshot: OrchestrationV2ShellSnapshot | null = null;
       const stops = [
         appAtomRegistry.subscribe(
           upstreamEnvironmentCatalog.stateAtom(environmentId),
