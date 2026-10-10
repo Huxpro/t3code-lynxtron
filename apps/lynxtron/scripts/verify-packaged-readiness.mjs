@@ -4112,6 +4112,8 @@ async function verifyNewThreadDraftLifecycle({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -6844,6 +6846,8 @@ async function verifyM1LocalJourney({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -8785,7 +8789,7 @@ async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
     input:
       "Runtime menu tap on Supervised; renderer input fixture + DevTool taps on Send, Approve and Stop",
     provider: expected,
-    statePath: process.env.T3_LYNXTRON_UPSTREAM_STATE === "1" ? "upstream" : "connector",
+    statePath: process.env.T3_LYNXTRON_UPSTREAM_STATE === "0" ? "connector" : "upstream",
     threadId,
     approval: {
       streamedLengths: approvalStreaming,
@@ -10096,6 +10100,8 @@ async function verifyApprovalDeclineMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -13262,6 +13268,8 @@ async function verifyProjectActionKeybindingMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -13509,6 +13517,8 @@ async function verifyBetaMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -13735,6 +13745,8 @@ async function verifyArchiveMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -14170,6 +14182,8 @@ async function verifyConnectionsMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -15993,6 +16007,230 @@ async function verifySidebarScopeBehavior({ child, client, height, timeoutMs, wi
   };
 }
 
+function readPersistedThreadRuntimeMode(baseDir, threadId) {
+  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
+    readOnly: true,
+  });
+  try {
+    return (
+      database
+        .prepare("SELECT runtime_mode AS runtimeMode FROM projection_threads WHERE thread_id = ?")
+        .get(threadId)?.runtimeMode ?? null
+    );
+  } finally {
+    database.close();
+  }
+}
+
+const RUNTIME_MODE_LABELS = {
+  "approval-required": "Supervised",
+  "auto-accept-edits": "Auto-accept edits",
+  auto: "Auto",
+  "full-access": "Full access",
+};
+
+async function readUpstreamShadowProbe(client) {
+  const value = commandResult(
+    await client.runCdp("Runtime.evaluate", {
+      expression:
+        "JSON.stringify({phase:globalThis.__T3_UPSTREAM_SHADOW__?.phase ?? null,connectorCalls:globalThis.__T3_UPSTREAM_SHADOW__?.connectorCalls ?? null})",
+      returnByValue: true,
+    }),
+  )?.value;
+  return typeof value === "string" ? JSON.parse(value) : { phase: null, connectorCalls: null };
+}
+
+// One runtime-mode change made through the composer's runtime menu, which
+// dispatches `setThreadRuntimeMode` on whichever path feeds the client. The
+// client shows the new mode before the server answers and puts the old one
+// back when the command fails, so the server's own row is what confirms it.
+// `menuHeld` says the menu was opened earlier and may still be open.
+async function changeRuntimeModeThroughMenu({
+  baseDir,
+  child,
+  client,
+  devToolCli,
+  context = {},
+  log,
+  menuHeld = false,
+  mode,
+  threadId,
+  timeoutMs,
+}) {
+  const label = RUNTIME_MODE_LABELS[mode];
+  const target = (items) =>
+    items.find(
+      (item) =>
+        measurementVisible(item) &&
+        item.text.includes(label) &&
+        item.attributes["aria-checked"] === "false",
+    );
+  const startedAt = performance.now();
+  const sinceStart = () => Math.round(performance.now() - startedAt);
+  // A menu opened before this call is measured again, since the page may have
+  // moved under it, and tapped; the loop below reopens one that had closed.
+  let item = menuHeld
+    ? target(await readSelectorMeasurements(client, ".composer-runtime-menu__item"))
+    : undefined;
+  const tappedHeldMenu = item !== undefined;
+  const openAndTap = async () => {
+    await tapSelector({ child, client, selector: ".composer-toolbar-control--runtime", timeoutMs });
+    item = target(
+      await waitForSelectorMeasurements({
+        child,
+        client,
+        selector: ".composer-runtime-menu__item",
+        timeoutMs,
+        predicate: (items) => target(items) !== undefined,
+      }),
+    );
+    await tapMeasurement({ client, measurement: item });
+  };
+  if (item) await tapMeasurement({ client, measurement: item });
+  else await openAndTap();
+  let tapMs = sinceStart();
+  const shadowAtCommand = await readUpstreamShadowProbe(client);
+  const readErrors = () =>
+    readRendererErrors({
+      clientId: client.identity.clientId,
+      devToolCli,
+      sessionId: client.identity.sessionId,
+    });
+  // The client logs a rejected change as an object the console does not
+  // expand. On a failure only, the same command is sent once more through the
+  // diagnostic transport, which always reaches the connector, for its answer.
+  const probeConnector = async () => {
+    await client.runCdp("Runtime.evaluate", {
+      expression: `(globalThis.__T3_RECONNECT_COMMAND_PROBE__ = "pending", globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.invoke("setThreadRuntimeMode", ${JSON.stringify(
+        { threadId, runtimeMode: mode },
+      )}).then(() => { globalThis.__T3_RECONNECT_COMMAND_PROBE__ = "accepted"; }, (error) => { globalThis.__T3_RECONNECT_COMMAND_PROBE__ = "rejected: " + (error?.message ?? String(error)); }), "sent")`,
+      returnByValue: true,
+    });
+    return waitForRuntimeValue({
+      child,
+      client,
+      expression: "globalThis.__T3_RECONNECT_COMMAND_PROBE__",
+      predicate: (value) => value !== "pending",
+      timeoutMs: 10_000,
+    }).catch(() => "no answer");
+  };
+  const describeFailure = async (reason, rendererErrors = null) => {
+    const failedMs = sinceStart();
+    const connectorProbe = await probeConnector().catch((error) => String(error));
+    const state = await readClientState(client).catch(() => null);
+    return `${reason}: ${JSON.stringify({
+      ...context,
+      mode,
+      tapMs,
+      failedMs,
+      tappedHeldMenu,
+      shadowAtCommand,
+      connectorProbe,
+      shadowNow: await readUpstreamShadowProbe(client).catch(() => null),
+      clientMode: state?.activeThread?.runtimeMode ?? null,
+      serverMode: readPersistedThreadRuntimeMode(baseDir, threadId),
+      banner: await readLifecycleBanner(client).catch(() => null),
+      tappedRect: item?.rect ?? null,
+      itemsNow: await readSelectorMeasurements(client, ".composer-runtime-menu__item")
+        .then((items) =>
+          items.map((entry) => ({
+            text: entry.text,
+            rect: entry.rect,
+            checked: entry.attributes["aria-checked"],
+          })),
+        )
+        .catch(() => null),
+      connectorSockets: [...log.read().matchAll(/\[connector\] socket ws:/gu)].length,
+      rendererErrors: (rendererErrors ?? readErrors()).slice(0, 1500),
+    })}`;
+  };
+  // The tap landed once the client shows the mode. From then on a client
+  // that no longer shows it has had the command rejected.
+  let applied = false;
+  let retapped = false;
+  let confirmedMs = null;
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    if (child.exitCode !== null || child.signalCode !== null) {
+      throw new Error("Lynxtron exited before the runtime mode change was confirmed.");
+    }
+    // Read before the state: a menu that is gone while the state is unchanged
+    // either had closed before the tap, or took it and was already refused.
+    const heldMenuGone =
+      tappedHeldMenu && !applied && !retapped
+        ? (await readOptionalMeasurement(client, ".composer-runtime-menu")) === null
+        : false;
+    const clientMode = (await readClientState(client))?.activeThread?.runtimeMode;
+    const serverMode = readPersistedThreadRuntimeMode(baseDir, threadId);
+    if (clientMode === mode) applied = true;
+    else if (applied) {
+      throw new Error(await describeFailure("The runtime mode change was rolled back"));
+    } else if (heldMenuGone) {
+      // A refused change is logged; a tap that chose nothing logs nothing.
+      const rendererErrors = readErrors();
+      if (rendererErrors) {
+        throw new Error(
+          await describeFailure(
+            "The runtime mode change was rolled back before it was read",
+            rendererErrors,
+          ),
+        );
+      }
+      retapped = true;
+      await openAndTap();
+      tapMs = sinceStart();
+      continue;
+    }
+    if (applied && serverMode === mode) {
+      confirmedMs = sinceStart();
+      break;
+    }
+    await waitForChildExit(child, 50);
+  }
+  if (confirmedMs === null) {
+    throw new Error(
+      await describeFailure(
+        applied
+          ? "The server did not confirm the runtime mode change"
+          : "The runtime menu tap did not change the mode",
+      ),
+    );
+  }
+  // The command settles after the server's row is written; the client must
+  // still show the mode then, in its state and on the control.
+  const control = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-toolbar-control--runtime",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.trim() === label,
+  }).catch(async () => {
+    throw new Error(await describeFailure("The runtime control did not show the confirmed mode"));
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-runtime-menu",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  const settled = await readClientState(client);
+  const toast = await readOptionalMeasurement(client, ".ui-toast");
+  const banner = await readLifecycleBanner(client);
+  if (settled?.activeThread?.runtimeMode !== mode || toast || banner) {
+    throw new Error(await describeFailure("The runtime mode change surfaced an error"));
+  }
+  return {
+    mode,
+    label: control.text.trim(),
+    tappedHeldMenu: tappedHeldMenu && !retapped,
+    tapMs,
+    confirmedMs,
+    upstreamPhaseAtCommand: shadowAtCommand.phase,
+    connectorCallsAtCommand: shadowAtCommand.connectorCalls,
+  };
+}
+
 async function verifyLifecycleRecovery({
   baseDir,
   child,
@@ -16003,6 +16241,7 @@ async function verifyLifecycleRecovery({
   projectId,
   timeoutMs,
   verifyComposerReconnect,
+  verifyReconnectCommand,
 }) {
   await waitForLifecycleBannerToClear({ child, client, timeoutMs });
   const reconnectFixture = verifyComposerReconnect
@@ -16110,6 +16349,33 @@ async function verifyLifecycleRecovery({
     port: initialPort,
   });
   const beforeInterrupt = await readRendererReadiness(client);
+  // The command is only sent to the server for a thread the server has.
+  const commandBaseline = verifyReconnectCommand
+    ? await waitForClientState({
+        child,
+        client,
+        timeoutMs,
+        predicate: (state) =>
+          typeof state?.activeThreadId === "string" &&
+          state.activeThreadId !== state.draftThreadId &&
+          state.threadIds?.includes(state.activeThreadId) &&
+          typeof state.activeThread?.runtimeMode === "string",
+      }).then((state) => ({
+        threadId: state.activeThreadId,
+        mode: state.activeThread.runtimeMode,
+      }))
+    : null;
+  if (
+    commandBaseline &&
+    readPersistedThreadRuntimeMode(baseDir, commandBaseline.threadId) !== commandBaseline.mode
+  ) {
+    throw new Error(
+      `The client and the server disagree on the runtime mode before the restart: ${JSON.stringify({
+        commandBaseline,
+        serverMode: readPersistedThreadRuntimeMode(baseDir, commandBaseline.threadId),
+      })}`,
+    );
+  }
 
   process.kill(server.processId, "SIGKILL");
   const failure = await waitForLifecycleBanner({
@@ -16121,6 +16387,10 @@ async function verifyLifecycleRecovery({
   if (!failure.text.includes("Server exited") || !failure.text.includes("Reconnect")) {
     throw new Error(`Lifecycle failure lacks recovery guidance: ${JSON.stringify(failure)}`);
   }
+  // Upstream's own connection phase at each step, where the shadow publishes it.
+  const upstreamPhases = commandBaseline
+    ? { serverExited: (await readUpstreamShadowProbe(client)).phase }
+    : null;
   const disabledComposer = await waitForMeasurement({
     child,
     client,
@@ -16163,6 +16433,12 @@ async function verifyLifecycleRecovery({
     phase: "reconnecting",
     timeoutMs,
   });
+  // The runtime menu is opened after the client reports ready, as a user
+  // would. A menu held open across the reconnect sometimes ignores taps (fork
+  // issue #48), which is a different defect from the one this gate is about.
+  if (commandBaseline) {
+    upstreamPhases.reconnecting = (await readUpstreamShadowProbe(client)).phase;
+  }
   // "Reconnecting..." is the longest action label; both actions stay one line.
   const actionGeometry = {};
   for (const [key, selector] of [
@@ -16178,14 +16454,16 @@ async function verifyLifecycleRecovery({
     }
     actionGeometry[key] = { text: label.text.trim(), button: button.rect, label: label.rect };
   }
-  const reconnectingScreenshot = devToolCli
-    ? captureNativeScreenshot({
-        client,
-        devToolCli,
-        outputDirectory,
-        name: "native-lifecycle-reconnecting.png",
-      })
-    : null;
+  // A frame takes long enough to miss the moment the command gate waits for.
+  const reconnectingScreenshot =
+    devToolCli && !commandBaseline
+      ? captureNativeScreenshot({
+          client,
+          devToolCli,
+          outputDirectory,
+          name: "native-lifecycle-reconnecting.png",
+        })
+      : null;
   await waitForLogOccurrence(child, log, "T3 Code server is ready", 2, timeoutMs);
   const afterRecovery = await waitForSequenceAdvance({
     child,
@@ -16194,6 +16472,72 @@ async function verifyLifecycleRecovery({
     timeoutMs,
   });
   await waitForLifecycleBannerToClear({ child, client, timeoutMs });
+  // Nothing may run between the banner clearing, which is the client saying
+  // it is ready, and the first change: the gate is about that moment.
+  const reconnectCommand = commandBaseline
+    ? await (async () => {
+        const readyAtMs = performance.now();
+        const otherMode =
+          commandBaseline.mode === "approval-required" ? "full-access" : "approval-required";
+        const change = (mode, menuHeld) =>
+          changeRuntimeModeThroughMenu({
+            baseDir,
+            child,
+            client,
+            context: { upstreamPhases },
+            devToolCli,
+            log,
+            menuHeld,
+            mode,
+            threadId: commandBaseline.threadId,
+            timeoutMs,
+          });
+        const afterReady = await change(otherMode, false);
+        const backStartedMs = Math.round(performance.now() - readyAtMs);
+        const back = await change(commandBaseline.mode, false);
+        const shadow = await readUpstreamShadowProbe(client);
+        const statePath = process.env.T3_LYNXTRON_UPSTREAM_STATE === "0" ? "connector" : "upstream";
+        // On the upstream path the restart must end with upstream connected
+        // to the new server and both changes sent through it. The shadow
+        // publishes the phase, so the path is checked only with it on.
+        if (statePath === "upstream") {
+          const upstreamTookCommands =
+            afterReady.upstreamPhaseAtCommand === "connected" &&
+            back.upstreamPhaseAtCommand === "connected" &&
+            shadow.phase === "connected" &&
+            shadow.connectorCalls !== null &&
+            !("setThreadRuntimeMode" in shadow.connectorCalls);
+          if (!upstreamTookCommands) {
+            throw new Error(
+              `Upstream did not reconnect and take the runtime mode changes: ${JSON.stringify({
+                upstreamPhases: { ...upstreamPhases, afterChanges: shadow.phase },
+                phaseAtCommands: [afterReady.upstreamPhaseAtCommand, back.upstreamPhaseAtCommand],
+                connectorCalls: shadow.connectorCalls,
+                shadow:
+                  process.env.T3_LYNXTRON_UPSTREAM_SHADOW === "1"
+                    ? "on"
+                    : "off; set T3_LYNXTRON_UPSTREAM_SHADOW=1",
+              })}`,
+            );
+          }
+        }
+        return {
+          status: "pass",
+          statePath,
+          input: "DevTool taps on the composer runtime menu",
+          threadId: commandBaseline.threadId,
+          // From the read that saw the banner gone to the tap on the item.
+          readyToCommandMs: afterReady.tapMs,
+          afterReady,
+          back: { ...back, sinceReadyMs: backStartedMs + back.tapMs },
+          connectorRetries: [...log.read().matchAll(/hit a stale transport; reconnecting once/gu)]
+            .length,
+          upstreamPhases: { ...upstreamPhases, afterChanges: shadow.phase },
+          // Null unless the app runs with the upstream shadow, which publishes them.
+          connectorCalls: shadow.connectorCalls,
+        };
+      })()
+    : undefined;
   const recoveredProjection = await waitForSessionComposerProjection({
     child,
     client,
@@ -16273,6 +16617,7 @@ async function verifyLifecycleRecovery({
           recoveredStatePreserved: recoveredReconnectState !== null,
         }
       : undefined,
+    reconnectCommand,
     sequence: { before: beforeInterrupt.lastSeq, after: afterRecovery.lastSeq },
     finalBanner: null,
   };
@@ -16466,6 +16811,8 @@ async function runOnce({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -17372,6 +17719,7 @@ async function runOnce({
             projectId: fixtureManifestProjectId,
             timeoutMs,
             verifyComposerReconnect: shouldVerifyComposerReconnect,
+            verifyReconnectCommand: shouldVerifyReconnectCommand,
           })
         : undefined;
     const rendererErrors = readRendererErrors({
@@ -17612,6 +17960,7 @@ const shouldVerifyFloatingRelations = process.argv.includes("--verify-floating-r
 const verifySidebarScope = process.argv.includes("--verify-sidebar-scope");
 const shouldVerifyLifecycleRecovery = process.argv.includes("--verify-lifecycle-recovery");
 const shouldVerifyComposerReconnect = process.argv.includes("--verify-composer-reconnect");
+const shouldVerifyReconnectCommand = process.argv.includes("--verify-reconnect-command");
 const verifyComposerBranding = process.argv.includes("--verify-composer-branding");
 const shouldVerifyNewThreadDraftLifecycle = process.argv.includes(
   "--verify-new-thread-draft-lifecycle",
@@ -17739,6 +18088,14 @@ if (
 }
 if (shouldVerifyHeroComposerState && !expectedModelLabel) {
   throw new Error("--verify-hero-composer-state requires --expected-model-label.");
+}
+if (
+  shouldVerifyReconnectCommand &&
+  (!shouldVerifyLifecycleRecovery || shouldVerifyComposerReconnect)
+) {
+  throw new Error(
+    "--verify-reconnect-command requires --verify-lifecycle-recovery without --verify-composer-reconnect.",
+  );
 }
 if (shouldVerifyComposerReconnect && !shouldVerifyLifecycleRecovery) {
   throw new Error("--verify-composer-reconnect requires --verify-lifecycle-recovery.");

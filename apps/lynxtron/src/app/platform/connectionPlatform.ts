@@ -39,13 +39,14 @@ import {
 } from "@t3tools/client-runtime/platform";
 import { ManagedRelay } from "@t3tools/client-runtime/relay";
 import { remoteHttpClientLayer } from "@t3tools/client-runtime/rpc";
-import { AuthStandardClientScopes } from "@t3tools/contracts";
+import { AuthStandardClientScopes, type EnvironmentId } from "@t3tools/contracts";
 import { RelayWebClientId } from "@t3tools/contracts/relay";
 import * as Context from "effect/Context";
 import * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
+import * as Queue from "effect/Queue";
 import * as Ref from "effect/Ref";
 import * as Schedule from "effect/Schedule";
 import * as Schema from "effect/Schema";
@@ -237,34 +238,98 @@ const readHostPrimaryConnection = readPrimaryConnection(() => {
     : Promise.reject(new Error("the bridge is unavailable"));
 });
 
-// One emission: the local environment, once the main connector has a server
-// and that server has answered with its identity. The address is not followed
-// afterwards; the bearer is, because `PrimaryEnvironmentAuth` reads it on
-// every connection attempt.
+const primaryConnectionListeners = new Set<() => void>();
+
+/**
+ * Tells upstream's connection that the host may now hold a different server:
+ * the main process starts a new one, on a new port with a new bearer, when it
+ * reconnects. Called when the main connector reports ready. Does nothing until
+ * the connection layer is built.
+ */
+export function primaryConnectionMayHaveChanged(): void {
+  for (const listener of primaryConnectionListeners) listener();
+}
+
+// One element when the stream starts and one for each later call above.
+const primaryConnectionReads = Stream.callback<void>(
+  (queue) =>
+    Effect.acquireRelease(
+      Effect.sync(() => {
+        const listener = () => {
+          Queue.offerUnsafe(queue, undefined);
+        };
+        primaryConnectionListeners.add(listener);
+        listener();
+        return listener;
+      }),
+      (listener) => Effect.sync(() => primaryConnectionListeners.delete(listener)),
+    ),
+  { bufferSize: 1, strategy: "sliding" },
+);
+
+/**
+ * The platform's registrations: the primary environment at the address the
+ * host holds, read again for each element of `reads`. A new element ends a
+ * read that is still waiting for the host and starts another. `describe` asks
+ * the server at an address who it is, and is skipped while the address is the
+ * one already registered. Upstream's registry replaces the environment's
+ * connection when the registered address differs.
+ */
+export const primaryRegistrations = <E, R>(input: {
+  readonly reads: Stream.Stream<unknown>;
+  readonly connection: Effect.Effect<PrimaryConnection, E, R>;
+  readonly describe: (
+    connection: PrimaryConnection,
+  ) => Effect.Effect<{ readonly environmentId: EnvironmentId; readonly label: string }, E, R>;
+  readonly schedule?: Schedule.Schedule<unknown, E>;
+}) => {
+  let registered: PrimaryConnectionRegistration | undefined;
+  const load = Effect.gen(function* () {
+    const connection = yield* input.connection;
+    if (
+      registered !== undefined &&
+      registered.target.httpBaseUrl === connection.httpBaseUrl &&
+      registered.target.wsBaseUrl === connection.wsBaseUrl
+    ) {
+      return registered;
+    }
+    const descriptor = yield* input.describe(connection);
+    const registration = new PrimaryConnectionRegistration({
+      target: new PrimaryConnectionTarget({
+        environmentId: descriptor.environmentId,
+        label: descriptor.label,
+        httpBaseUrl: connection.httpBaseUrl,
+        wsBaseUrl: connection.wsBaseUrl,
+      }),
+    });
+    registered = registration;
+    return registration;
+  });
+  return input.reads.pipe(
+    Stream.switchMap(() => Stream.fromEffect(waitForPrimaryConnection(load, input.schedule))),
+    Stream.changes,
+    Stream.map((registration) => [registration]),
+  );
+};
+
+// The local environment, once the main connector has a server and that server
+// has answered with its identity, and again when the main process reports a
+// server at another address. The bearer needs no emission of its own:
+// `PrimaryEnvironmentAuth` reads it on every connection attempt.
 const platformConnectionSourceLayer = Layer.effect(
   PlatformConnectionSource,
   Effect.gen(function* () {
     const httpClient = yield* HttpClient.HttpClient;
-    const loadRegistration = Effect.gen(function* () {
-      const connection = yield* readHostPrimaryConnection;
-      const descriptor = yield* fetchRemoteEnvironmentDescriptor({
-        httpBaseUrl: connection.httpBaseUrl,
-      }).pipe(
-        Effect.mapError((error) => mapRemoteEnvironmentError(error)),
-        Effect.provideService(HttpClient.HttpClient, httpClient),
-      );
-      return new PrimaryConnectionRegistration({
-        target: new PrimaryConnectionTarget({
-          environmentId: descriptor.environmentId,
-          label: descriptor.label,
-          httpBaseUrl: connection.httpBaseUrl,
-          wsBaseUrl: connection.wsBaseUrl,
-        }),
-      });
-    });
     return PlatformConnectionSource.of({
-      registrations: Stream.fromEffect(waitForPrimaryConnection(loadRegistration)).pipe(
-        Stream.map((registration) => [registration]),
+      registrations: primaryRegistrations({
+        reads: primaryConnectionReads,
+        connection: readHostPrimaryConnection,
+        describe: (connection) =>
+          fetchRemoteEnvironmentDescriptor({ httpBaseUrl: connection.httpBaseUrl }).pipe(
+            Effect.mapError((error) => mapRemoteEnvironmentError(error)),
+            Effect.provideService(HttpClient.HttpClient, httpClient),
+          ),
+      }).pipe(
         Stream.catch((error) =>
           Stream.fromEffect(
             Effect.logWarning("Could not discover the primary environment.", { error }),

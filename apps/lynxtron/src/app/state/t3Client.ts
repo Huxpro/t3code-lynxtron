@@ -182,10 +182,12 @@ import type {
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
+import { primaryConnectionMayHaveChanged } from "../platform/connectionPlatform";
 import { closedTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import {
   applyFromConnector,
   startUpstreamStateSource,
+  statusFromConnector,
   terminalDomain,
   type VcsStatusPayload,
 } from "./upstreamStateSource";
@@ -583,17 +585,15 @@ function applyStatusPayload(status: StatusEventPayload): void {
 /**
  * Applies the main connector's status. What only the main process knows, the
  * kind of connection and whether its paths are local, is taken at once; the
- * status itself is held while upstream's connection supplies it.
+ * status itself is shown when `resolveClientStatus` says it is.
  */
 function applyConnectorStatus(status: ConnectorStatusPayload): void {
-  // The main process is the first to know that the server it owns exited.
-  // Upstream's session can still read as connected for a moment, so a failure
-  // the connector reports is never held behind it.
-  if (status.status === "error" || status.status === "reconnecting") {
-    applyStatusPayload(status);
-    return;
-  }
-  if (applyFromConnector("status", () => applyStatusPayload(status))) return;
+  // A reconnect starts a new server at another address, and the connector is
+  // ready once it has one.
+  if (status.status === "ready") primaryConnectionMayHaveChanged();
+  const shown = statusFromConnector(status);
+  if (shown !== null) applyStatusPayload(shown);
+  if (shown === status) return;
   if (typeof status.pathsResolveLocally === "boolean") {
     setEnvironmentPathsResolveLocally(status.pathsResolveLocally);
   }

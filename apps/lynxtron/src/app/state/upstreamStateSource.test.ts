@@ -1,17 +1,23 @@
-import { AuthAccessSnapshot, ProviderInstanceId } from "@t3tools/contracts";
+import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
+import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
+import { AuthAccessSnapshot, EnvironmentId, ProviderInstanceId } from "@t3tools/contracts";
+import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import { AsyncResult } from "effect/unstable/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
 import { authAccessSnapshot } from "./upstreamPrimary.ts";
+import type { ConnectorStatusPayload } from "../../shared/connectorProtocol.ts";
 import {
   createUpstreamStateRouter,
+  createUpstreamStatusReader,
   ownedShellThreads,
+  resolveClientStatus,
   terminalDomain,
   threadWasReset,
+  type UpstreamStatusView,
   upstreamAccessPayload,
   upstreamStatePayloads,
-  upstreamStatusPayload,
   upstreamTerminalPayloads,
   upstreamThreadPayload,
   upstreamVcsPayload,
@@ -177,28 +183,181 @@ describe("the shell the cleanup acts on", () => {
   });
 });
 
-describe("upstreamStatusPayload", () => {
-  it("reports ready while upstream is connected with a live shell", () => {
-    assert.deepEqual(
-      upstreamStatusPayload({
-        connection: connection("connected"),
-        shell: shellState("live", live),
-      }),
-      { status: "ready" },
+const FIRST_SERVER = "http://127.0.0.1:4100/";
+const SECOND_SERVER = "http://127.0.0.1:4207/";
+
+function catalogAt(httpBaseUrl: string) {
+  const environmentId = EnvironmentId.make("environment-local");
+  const catalog: EnvironmentCatalogState = {
+    isReady: true,
+    entries: new Map([
+      [
+        environmentId,
+        {
+          target: new PrimaryConnectionTarget({
+            environmentId,
+            label: "Local",
+            httpBaseUrl,
+            wsBaseUrl: httpBaseUrl.replace("http", "ws"),
+          }),
+          profile: Option.none(),
+          enabled: true,
+        },
+      ],
+    ]),
+  };
+  return AsyncResult.success(catalog);
+}
+
+function primaryState(
+  httpBaseUrl: string,
+  phase: Parameters<typeof connection>[0] | null,
+  shell = shellState("live", live),
+) {
+  return {
+    catalog: catalogAt(httpBaseUrl),
+    connection: phase === null ? null : connection(phase),
+    shell,
+    config: serverConfig(),
+    archived,
+  };
+}
+
+describe("createUpstreamStatusReader", () => {
+  it("is ready once upstream is connected with what the commands read", () => {
+    const read = createUpstreamStatusReader();
+    assert.deepEqual(read(primaryState(FIRST_SERVER, null)), {
+      ready: false,
+      failed: false,
+      httpBaseUrl: FIRST_SERVER,
+    });
+    assert.deepEqual(read(primaryState(FIRST_SERVER, "connecting")), {
+      ready: false,
+      failed: false,
+      httpBaseUrl: FIRST_SERVER,
+    });
+    assert.isFalse(read(primaryState(FIRST_SERVER, "connected", shellState("cached", live))).ready);
+    assert.deepEqual(read(primaryState(FIRST_SERVER, "connected")), {
+      ready: true,
+      failed: false,
+      httpBaseUrl: FIRST_SERVER,
+    });
+  });
+
+  it("has failed once an attempt at the registered server ended without a connection", () => {
+    for (const phase of ["backoff", "blocked", "offline"] as const) {
+      const read = createUpstreamStatusReader();
+      read(primaryState(FIRST_SERVER, null));
+      assert.isTrue(read(primaryState(FIRST_SERVER, phase)).failed, phase);
+    }
+    const read = createUpstreamStatusReader();
+    read(primaryState(FIRST_SERVER, null));
+    assert.isFalse(read(primaryState(FIRST_SERVER, "available")).failed);
+  });
+
+  it("counts nothing the old connection said once the server is registered elsewhere", () => {
+    for (const phase of ["backoff", "connected"] as const) {
+      const read = createUpstreamStatusReader();
+      const before = primaryState(FIRST_SERVER, phase);
+      read(primaryState(FIRST_SERVER, null));
+      read(before);
+      // The catalog names the new address while the state is still the old connection's.
+      const moved = { ...before, catalog: catalogAt(SECOND_SERVER) };
+      assert.deepEqual(read(moved), { ready: false, failed: false, httpBaseUrl: SECOND_SERVER });
+      assert.deepEqual(read({ ...moved, connection: connection("connecting") }), {
+        ready: false,
+        failed: false,
+        httpBaseUrl: SECOND_SERVER,
+      });
+      assert.isTrue(read({ ...moved, connection: connection("connected") }).ready);
+    }
+  });
+});
+
+describe("resolveClientStatus", () => {
+  const upstream = (view: Partial<UpstreamStatusView> = {}): UpstreamStatusView => ({
+    ready: false,
+    failed: false,
+    httpBaseUrl: FIRST_SERVER,
+    ...view,
+  });
+  const connectorReady = { status: "ready", httpBaseUrl: FIRST_SERVER } as const;
+
+  it("shows the connector's status as it is while the upstream source is off", () => {
+    assert.strictEqual(resolveClientStatus(connectorReady, null), connectorReady);
+  });
+
+  it("shows a failure the main process reports even while upstream reads as ready", () => {
+    for (const status of ["error", "reconnecting"] as const) {
+      const failure = { status, detail: "Server exited" };
+      assert.strictEqual(resolveClientStatus(failure, upstream({ ready: true })), failure);
+    }
+  });
+
+  it("holds the connector's ready while upstream is still on its way to that server", () => {
+    assert.isNull(resolveClientStatus(connectorReady, upstream()));
+    // Upstream is registered at the server that was replaced, whatever it says.
+    const replaced = { status: "ready", httpBaseUrl: SECOND_SERVER } as const;
+    assert.isNull(resolveClientStatus(replaced, upstream({ ready: true })));
+    assert.isNull(resolveClientStatus(replaced, upstream({ failed: true })));
+  });
+
+  it("shows ready once upstream takes the commands for that server", () => {
+    assert.strictEqual(
+      resolveClientStatus(connectorReady, upstream({ ready: true })),
+      connectorReady,
+    );
+    assert.deepEqual(resolveClientStatus({ status: "connecting" }, upstream({ ready: true })), {
+      status: "ready",
+    });
+  });
+
+  it("shows the connector's ready when upstream could not reach that server", () => {
+    assert.strictEqual(
+      resolveClientStatus(connectorReady, upstream({ failed: true })),
+      connectorReady,
     );
   });
 
-  it("leaves the status to the connector while upstream is not serving the client", () => {
-    assert.isNull(upstreamStatusPayload({ connection: null, shell: null }));
-    assert.isNull(
-      upstreamStatusPayload({ connection: connection("backoff"), shell: shellState("live", live) }),
-    );
-    assert.isNull(
-      upstreamStatusPayload({
-        connection: connection("connected"),
-        shell: shellState("cached", live),
-      }),
-    );
+  it("shows the connector's own progress until either path is ready", () => {
+    const connecting = { status: "connecting", detail: "Waiting" } as const;
+    assert.strictEqual(resolveClientStatus(connecting, upstream()), connecting);
+  });
+
+  it("is ready after a server restart only once upstream has reached the new server", () => {
+    const read = createUpstreamStatusReader();
+    const shown: Array<string | null> = [];
+    let connector: ConnectorStatusPayload = { status: "connecting" };
+    let view = read(primaryState(FIRST_SERVER, null));
+    const fromConnector = (status: ConnectorStatusPayload) => {
+      connector = status;
+      shown.push(resolveClientStatus(connector, view)?.status ?? null);
+    };
+    const fromUpstream = (state: ReturnType<typeof primaryState>) => {
+      view = read(state);
+      shown.push(resolveClientStatus(connector, view)?.status ?? null);
+    };
+
+    fromConnector({ status: "ready", httpBaseUrl: FIRST_SERVER });
+    fromUpstream(primaryState(FIRST_SERVER, "connected"));
+    assert.deepEqual(shown, [null, "ready"]);
+
+    // The server is killed: main says so first, upstream notices later.
+    shown.length = 0;
+    fromConnector({ status: "error", detail: "Server exited" });
+    fromConnector({ status: "reconnecting" });
+    const dropped = primaryState(FIRST_SERVER, "backoff");
+    fromUpstream(dropped);
+    assert.deepEqual(shown, ["error", "reconnecting", "reconnecting"]);
+
+    // The new server is up for the connector; upstream follows it there.
+    shown.length = 0;
+    fromConnector({ status: "ready", httpBaseUrl: SECOND_SERVER });
+    const moved = { ...dropped, catalog: catalogAt(SECOND_SERVER) };
+    fromUpstream(moved);
+    fromUpstream({ ...moved, connection: connection("connecting") });
+    fromUpstream({ ...moved, connection: connection("connected") });
+    assert.deepEqual(shown, [null, null, null, "ready"]);
   });
 });
 
