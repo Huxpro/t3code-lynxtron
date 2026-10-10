@@ -8650,13 +8650,6 @@ async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
       `The interrupted reply kept growing: ${JSON.stringify({ settledLength, afterLength })}`,
     );
   }
-  const connectorCalls = commandResult(
-    await client.runCdp("Runtime.evaluate", {
-      expression: "JSON.stringify(globalThis.__T3_UPSTREAM_SHADOW__?.connectorCalls ?? null)",
-      returnByValue: true,
-    }),
-  )?.value;
-
   // Checked last, so a turn that ends in the wrong state still reports the
   // rest of the journey.
   const sameTurn = interrupted.latestTurn.turnId === running.activeTurnId;
@@ -8681,7 +8674,6 @@ async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
     input:
       "Runtime menu tap on Supervised; renderer input fixture + DevTool taps on Send, Approve and Stop",
     provider: expected,
-    statePath: process.env.T3_LYNXTRON_UPSTREAM_STATE === "0" ? "connector" : "upstream",
     threadId,
     approval: {
       streamedLengths: approvalStreaming,
@@ -8694,8 +8686,6 @@ async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
       sessionStatus: interrupted.sessionStatus,
     },
     timing,
-    // Null unless the app runs on the upstream path, which is what counts them.
-    connectorCalls: typeof connectorCalls === "string" ? JSON.parse(connectorCalls) : null,
   };
 }
 
@@ -15912,12 +15902,11 @@ const RUNTIME_MODE_LABELS = {
 async function readUpstreamShadowProbe(client) {
   const value = commandResult(
     await client.runCdp("Runtime.evaluate", {
-      expression:
-        "JSON.stringify({phase:globalThis.__T3_UPSTREAM_SHADOW__?.phase ?? null,connectorCalls:globalThis.__T3_UPSTREAM_SHADOW__?.connectorCalls ?? null})",
+      expression: "JSON.stringify({phase:globalThis.__T3_UPSTREAM_SHADOW__?.phase ?? null})",
       returnByValue: true,
     }),
   )?.value;
-  return typeof value === "string" ? JSON.parse(value) : { phase: null, connectorCalls: null };
+  return typeof value === "string" ? JSON.parse(value) : { phase: null };
 }
 
 // One runtime-mode change made through the composer's runtime menu, which
@@ -16107,7 +16096,6 @@ async function changeRuntimeModeThroughMenu({
     tapMs,
     confirmedMs,
     upstreamPhaseAtCommand: shadowAtCommand.phase,
-    connectorCallsAtCommand: shadowAtCommand.connectorCalls,
   };
 }
 
@@ -16371,45 +16359,29 @@ async function verifyLifecycleRecovery({
         const backStartedMs = Math.round(performance.now() - readyAtMs);
         const back = await change(commandBaseline.mode, false);
         const shadow = await readUpstreamShadowProbe(client);
-        const statePath = process.env.T3_LYNXTRON_UPSTREAM_STATE === "0" ? "connector" : "upstream";
-        // On the upstream path the restart must end with upstream connected
-        // to the new server and both changes sent through it. The shadow
-        // publishes the phase, so the path is checked only with it on.
-        if (statePath === "upstream") {
-          const upstreamTookCommands =
-            afterReady.upstreamPhaseAtCommand === "connected" &&
-            back.upstreamPhaseAtCommand === "connected" &&
-            shadow.phase === "connected" &&
-            shadow.connectorCalls !== null &&
-            !("setThreadRuntimeMode" in shadow.connectorCalls);
-          if (!upstreamTookCommands) {
-            throw new Error(
-              `Upstream did not reconnect and take the runtime mode changes: ${JSON.stringify({
-                upstreamPhases: { ...upstreamPhases, afterChanges: shadow.phase },
-                phaseAtCommands: [afterReady.upstreamPhaseAtCommand, back.upstreamPhaseAtCommand],
-                connectorCalls: shadow.connectorCalls,
-                shadow:
-                  process.env.T3_LYNXTRON_UPSTREAM_SHADOW === "1"
-                    ? "on"
-                    : "off; set T3_LYNXTRON_UPSTREAM_SHADOW=1",
-              })}`,
-            );
-          }
+        // The restart must end with upstream connected to the new server,
+        // which is what sends both changes. The shadow publishes the phase.
+        const upstreamReconnected =
+          afterReady.upstreamPhaseAtCommand === "connected" &&
+          back.upstreamPhaseAtCommand === "connected" &&
+          shadow.phase === "connected";
+        if (!upstreamReconnected) {
+          throw new Error(
+            `Upstream did not reconnect before the runtime mode changes: ${JSON.stringify({
+              upstreamPhases: { ...upstreamPhases, afterChanges: shadow.phase },
+              phaseAtCommands: [afterReady.upstreamPhaseAtCommand, back.upstreamPhaseAtCommand],
+            })}`,
+          );
         }
         return {
           status: "pass",
-          statePath,
           input: "DevTool taps on the composer runtime menu",
           threadId: commandBaseline.threadId,
           // From the read that saw the banner gone to the tap on the item.
           readyToCommandMs: afterReady.tapMs,
           afterReady,
           back: { ...back, sinceReadyMs: backStartedMs + back.tapMs },
-          connectorRetries: [...log.read().matchAll(/hit a stale transport; reconnecting once/gu)]
-            .length,
           upstreamPhases: { ...upstreamPhases, afterChanges: shadow.phase },
-          // Null unless the app runs with the upstream shadow, which publishes them.
-          connectorCalls: shadow.connectorCalls,
         };
       })()
     : undefined;

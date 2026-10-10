@@ -21,11 +21,11 @@ const INVALID: T3ProjectFileState = { status: "invalid", scripts: NO_SCRIPTS };
 
 export function useT3ProjectFileState(cwd: string | null): T3ProjectFileState {
   const [state, setState] = useState<T3ProjectFileState>(LOADING);
-  const { connectorCommandsReady } = useT3ClientState();
+  const { commandsReady } = useT3ClientState();
 
   useEffect(() => {
     let cancelled = false;
-    if (!cwd || !connectorCommandsReady) {
+    if (!cwd || !commandsReady) {
       setState(cwd ? LOADING : MISSING);
       return;
     }
@@ -50,7 +50,7 @@ export function useT3ProjectFileState(cwd: string | null): T3ProjectFileState {
     return () => {
       cancelled = true;
     };
-  }, [connectorCommandsReady, cwd]);
+  }, [commandsReady, cwd]);
 
   return state;
 }

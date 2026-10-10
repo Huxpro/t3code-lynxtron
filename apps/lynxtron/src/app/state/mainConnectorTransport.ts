@@ -1,10 +1,12 @@
 /**
- * Renderer side of the main-owned connector transport (AR1 spike).
+ * Renderer side of the transport to the host: the main process in the app, a
+ * connector host in the browser preview.
  *
- * Probes the typed `lynxBridge` request path once at startup; when main
- * answers, connector state flows as pushed sequenced events fed into the same
- * Effect Atom application functions. When the probe fails, the caller exposes
- * an honest unavailable state; there is no polling fallback.
+ * Probes the typed `lynxBridge` request path once at startup; when the host
+ * answers, what it reports flows as pushed sequenced events. The main process
+ * reports its status and takes `reconnect`; a preview host also supplies the
+ * client's state and takes every command. When the probe fails, the caller
+ * exposes an honest unavailable state; there is no polling fallback.
  *
  * The only timer here is a one-shot guard around the readiness probe so a
  * missing main handler cannot hang startup; there is no polling loop.
@@ -43,7 +45,6 @@ export interface MainConnectorTransport {
   readonly kind: "main";
   readonly lastSeq: number;
   invoke(method: ConnectorCommandName, params?: unknown): Promise<unknown>;
-  invokeSettled(method: ConnectorCommandName, params?: unknown): Promise<BridgeCallResult>;
   /** Force a full resync; used by tests and the DevTool hook. */
   resync(): Promise<void>;
   dispose(): void;
@@ -112,9 +113,9 @@ export async function callBridge(
 }
 
 /**
- * Start the push transport when main owns the connector. Returns `null` when
- * the typed bridge is unavailable or main did not answer the readiness probe
- * with a well-formed sync reply.
+ * Start the push transport. Returns `null` when the typed bridge is
+ * unavailable or the host did not answer the readiness probe with a
+ * well-formed sync reply.
  */
 export async function startMainConnectorTransport(
   options: MainConnectorTransportOptions,
@@ -132,14 +133,6 @@ export async function startMainConnectorTransport(
 
   const invoke = (method: ConnectorCommandName, params?: unknown): Promise<unknown> =>
     callBridge(bridgeModule, T3_CONNECTOR_METHODS.command, {
-      method,
-      ...(params === undefined ? {} : { params: params as Record<string, unknown> }),
-    } as Record<string, unknown>);
-  const invokeSettled = (
-    method: ConnectorCommandName,
-    params?: unknown,
-  ): Promise<BridgeCallResult> =>
-    callBridgeSettled(bridgeModule, T3_CONNECTOR_METHODS.command, {
       method,
       ...(params === undefined ? {} : { params: params as Record<string, unknown> }),
     } as Record<string, unknown>);
@@ -224,7 +217,6 @@ export async function startMainConnectorTransport(
       return lastSeq;
     },
     invoke,
-    invokeSettled,
     resync,
     dispose: () => {
       if (disposed) return;

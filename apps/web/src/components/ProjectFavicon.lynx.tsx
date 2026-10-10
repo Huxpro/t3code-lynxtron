@@ -23,10 +23,10 @@ export function ProjectFavicon({
     () => loadedProjectFaviconUrls.get(cacheKey) ?? null,
   );
   const [failed, setFailed] = useState(false);
-  const { connectorCommandsReady } = useT3ClientState();
+  const { commandsReady } = useT3ClientState();
 
   useEffect(() => {
-    if (!connectorCommandsReady) return;
+    if (!commandsReady) return;
     let active = true;
     setFailed(false);
     void t3ClientActions
@@ -45,7 +45,7 @@ export function ProjectFavicon({
     return () => {
       active = false;
     };
-  }, [cacheKey, connectorCommandsReady, cwd]);
+  }, [cacheKey, commandsReady, cwd]);
 
   if (src && !failed) {
     return (

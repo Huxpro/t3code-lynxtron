@@ -173,7 +173,6 @@ import {
   type LatestPendingMutation,
 } from "../../shared/latestPendingMutation";
 import type {
-  ConnectorCommandName,
   ConnectorEventEnvelope,
   ConnectorSnapshot,
   ConnectorStatusPayload,
@@ -237,7 +236,7 @@ export interface T3ClientState {
   readonly status: ConnectionStatus;
   readonly statusDetail?: string | undefined;
   readonly connectionKind?: "owned-local" | "existing-environment" | undefined;
-  readonly connectorCommandsReady: boolean;
+  readonly commandsReady: boolean;
   readonly vcsStatus: VcsStatusResult | null;
   readonly vcsStatusCwd: string | null;
   readonly vcsStatusPending: boolean;
@@ -283,7 +282,7 @@ export interface T3ClientState {
 
 const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   status: "idle",
-  connectorCommandsReady: false,
+  commandsReady: false,
   vcsStatus: null,
   vcsStatusCwd: null,
   vcsStatusPending: false,
@@ -423,7 +422,7 @@ function clientReadiness(): ClientReadiness {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   return resolveClientReadiness({
     status: state.status,
-    commandsReady: state.connectorCommandsReady && mainCommandBridge !== null,
+    commandsReady: state.commandsReady && mainCommandBridge !== null,
     revision: stateRevision,
   });
 }
@@ -914,11 +913,6 @@ function upstreamCommandBridge(): UpstreamCommandBridge {
 
 function installTransportDevToolHook(): void {
   const diagnosticsGlobal = globalThis as {
-    __T3_LYNXTRON_CONNECTOR_TRANSPORT__?: {
-      kind: "main" | "unavailable";
-      lastSeq: () => number;
-      invoke: (method: string, params?: unknown) => Promise<unknown>;
-    };
     __T3_LYNXTRON_READINESS__?: () => ClientReadiness;
     __T3_LYNXTRON_COMMAND__?: (name: string, input?: unknown) => Promise<unknown>;
     __T3_LYNXTRON_CLIENT_STATE__?: () => {
@@ -984,14 +978,6 @@ function installTransportDevToolHook(): void {
     __T3_LYNXTRON_COMPOSER_ELEMENT_CONTEXT_FIXTURE__?: (context: ElementContextDraft) => boolean;
     __T3_LYNXTRON_MODEL_SELECTION_FIXTURE__?: (instanceId: string, model: string) => boolean;
     __T3_LYNXTRON_MTS_PROVIDER_FIXTURE__?: (provider: ServerProvider) => boolean;
-  };
-  diagnosticsGlobal.__T3_LYNXTRON_CONNECTOR_TRANSPORT__ = {
-    kind: mainTransport ? ("main" as const) : ("unavailable" as const),
-    lastSeq: () => mainTransport?.lastSeq ?? -1,
-    invoke: (method, params) => {
-      if (!mainTransport) return Promise.reject(new Error("main transport is not active"));
-      return mainTransport.invoke(method as ConnectorCommandName, params);
-    },
   };
   diagnosticsGlobal.__T3_LYNXTRON_READINESS__ = clientReadiness;
   // The command bridge the UI calls, so a harness command takes the path a
@@ -1293,7 +1279,7 @@ async function bootstrapT3Client(): Promise<void> {
     reportConnectionStatus("error");
     patchState({
       status: "error",
-      connectorCommandsReady: false,
+      commandsReady: false,
       statusDetail:
         "The host did not answer (typed bridge probe failed). The renderer cannot reach the backend.",
     });
@@ -1301,15 +1287,13 @@ async function bootstrapT3Client(): Promise<void> {
   }
   mainTransport = transport;
   mainCommandBridge = buildCommandBridge(transport);
-  patchState({ connectorCommandsReady: true });
+  patchState({ commandsReady: true });
   if (hostSuppliesState()) {
     // A connector host remembers the saved selection for what it creates
     // itself, and follows the thread it is told is shown.
     if (saved) {
-      const result = await transport.invokeSettled("setModelSelection", { selection: saved });
-      if (!result.ok) {
-        patchState({ modelSelectionError: result.error });
-      }
+      const result = await settleModelSelectionMutation({ threadId: undefined, selection: saved });
+      if (!result.ok) patchState({ modelSelectionError: result.error });
     }
     const current = appAtomRegistry.get(t3ClientStateAtom);
     const activeThreadId = current.activeThreadId;
