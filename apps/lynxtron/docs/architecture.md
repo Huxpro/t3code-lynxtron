@@ -141,13 +141,14 @@ What the Lynx side had to follow:
   scoped overrides. `scripts/lynx-regexp-loader.cjs` lowers Unicode property
   escapes, and `src/app/polyfills.ts` adds the ES2023+ built-ins the Lynx
   engine lacks; upstream packages use both.
-- The Lynx transcript is derived by `packages/lynx-logic/src/transcript.ts`.
-  `session-logic.lynx.ts` and `MessagesTimeline.logic.lynx.ts` remain as Lynx
-  copies: upstream's `MessagesTimeline.logic.ts` imports a markdown parser stack
-  the Lynx engine does not start with (tried 2026-10-09, blank window). Upstream's
-  versions also model reasoning messages the Lynx transcript does not render;
-  this client does not opt in to them, so the server sends them as system
-  messages.
+- The Lynx transcript is derived by `packages/lynx-logic/src/transcript.ts`;
+  the app uses only the minimap helpers from upstream's `session-logic.ts` and
+  `MessagesTimeline.logic.ts`, which run in place. Upstream's versions model
+  reasoning messages the Lynx transcript does not render; this client does not
+  opt in to them, so the server sends them as system messages.
+- Upstream's markdown parser decodes entities through the DOM in its browser
+  build. `lynx.config.ts` points `decode-named-character-reference` at the
+  table-based build; without that the window stays blank.
 
 Not merged: `de34391427` and later (507 commits). That commit replaces
 `packages/contracts/src/orchestration.ts` with `orchestrationV2.ts`, which the

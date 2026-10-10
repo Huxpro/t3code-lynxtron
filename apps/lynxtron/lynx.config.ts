@@ -8,6 +8,13 @@ import { createRequire } from "node:module";
 import path from "node:path";
 
 const require = createRequire(import.meta.url);
+// The markdown parser upstream's client runtime uses decodes entities with the
+// DOM in its browser build. Lynx has no DOM, so it gets the table-based build.
+const decodeNamedCharacterReference = createRequire(
+  createRequire(
+    path.resolve(import.meta.dirname, "../../packages/client-runtime/package.json"),
+  ).resolve("remark-parse"),
+).resolve("decode-named-character-reference");
 const probeEntry = process.env.T3_LYNXTRON_PROBE_ENTRY?.trim();
 const probeOutput = process.env.T3_LYNXTRON_PROBE_OUTPUT?.trim();
 const probePageConfig = process.env.T3_LYNXTRON_PROBE_PAGE_CONFIG?.trim();
@@ -49,6 +56,7 @@ export default defineConfig({
     alias: {
       "~": path.resolve(import.meta.dirname, "../web/src"),
       "@formkit/auto-animate$": require.resolve("./src/app/auto-animate-shim.ts"),
+      "decode-named-character-reference$": decodeNamedCharacterReference,
       "lucide-react$": require.resolve("./src/app/lucide-react-shim.tsx"),
       react$: require.resolve("./src/app/react-tanstack-shim.ts"),
       "react-dom$": require.resolve("./src/app/react-dom-stub.ts"),
