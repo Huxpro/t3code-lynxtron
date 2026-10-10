@@ -42,6 +42,9 @@ engine limits and workarounds are in `docs/compat-matrix.md`.
 
 ## Running the app
 
+- `scripts/dev-instance.mjs` runs one owned, hidden instance on an isolated
+  base dir: `start`, `ready`, `eval`, `shot`, `tap`, `console`, `stop`. When the
+  window is blank or a gate cannot connect, read `console` first.
 - Launch in the background (`T3_LYNXTRON_BACKGROUND=1`) with an isolated
   `T3_LYNXTRON_BASE_DIR`, never `~/.t3/userdata`. A background window is never
   shown; add `T3_LYNXTRON_BACKGROUND_WINDOW=visible` only for a computer-use
