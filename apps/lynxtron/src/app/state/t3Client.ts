@@ -193,6 +193,12 @@ import {
 } from "./upstreamStateSource";
 import { readUpstreamRuntimeFlags } from "./upstreamPrimary";
 import {
+  changesState,
+  type ClientReadiness,
+  createHarnessCommand,
+  resolveClientReadiness,
+} from "./harnessHooks";
+import {
   type ConnectorCallProbe,
   createConnectorCallProbe,
   publishConnectorCalls,
@@ -329,6 +335,8 @@ let shellFingerprint = "";
 let threadFingerprint = "";
 let mainTransport: MainConnectorTransport | null = null;
 let mainCommandBridge: Partial<PollBridge> | null = null;
+// How many times the client state has changed; see `clientReadiness`.
+let stateRevision = 0;
 let mtsProviderFixture: ServerProvider | undefined;
 let lastUserInputResponse:
   | {
@@ -377,6 +385,7 @@ function patchState(partial: Partial<T3ClientState>): void {
     ...partial,
   };
   appAtomRegistry.set(t3ClientStateAtom, next);
+  if (changesState(previous, partial)) stateRevision += 1;
   if (next.draftThreadsByProjectId !== previous.draftThreadsByProjectId) {
     setPref(
       "draftThreadsByProjectId",
@@ -401,12 +410,23 @@ function patchState(partial: Partial<T3ClientState>): void {
         title: thread.title,
       })),
       activeThreadId: next.activeThreadId ?? null,
+      readiness: clientReadiness(),
       transport: {
         kind: mainTransport ? "main" : "unavailable",
         lastSeq: mainTransport?.lastSeq ?? -1,
       },
     });
   }
+}
+
+/** Whether the client is ready, and the revision of the state the UI renders from. */
+function clientReadiness(): ClientReadiness {
+  const state = appAtomRegistry.get(t3ClientStateAtom);
+  return resolveClientReadiness({
+    status: state.status,
+    commandsReady: state.connectorCommandsReady && mainCommandBridge !== null,
+    revision: stateRevision,
+  });
 }
 
 function activeVcsCwd(state: T3ClientState): string | null {
@@ -927,6 +947,8 @@ function installTransportDevToolHook(): void {
       lastSeq: () => number;
       invoke: (method: string, params?: unknown) => Promise<unknown>;
     };
+    __T3_LYNXTRON_READINESS__?: () => ClientReadiness;
+    __T3_LYNXTRON_COMMAND__?: (name: string, input?: unknown) => Promise<unknown>;
     __T3_LYNXTRON_CLIENT_STATE__?: () => {
       activeThreadId?: string | undefined;
       sessionStatus: SessionStatus;
@@ -999,6 +1021,13 @@ function installTransportDevToolHook(): void {
       return mainTransport.invoke(method as ConnectorCommandName, params);
     },
   };
+  diagnosticsGlobal.__T3_LYNXTRON_READINESS__ = clientReadiness;
+  // The command bridge the UI calls, so a harness command takes the path a
+  // UI command takes.
+  diagnosticsGlobal.__T3_LYNXTRON_COMMAND__ = createHarnessCommand(
+    () => mainCommandBridge ?? undefined,
+    CONNECTOR_COMMAND_NAMES,
+  );
   diagnosticsGlobal.__T3_LYNXTRON_CLIENT_STATE__ = () => {
     const state = appAtomRegistry.get(t3ClientStateAtom);
     const activeThread =
