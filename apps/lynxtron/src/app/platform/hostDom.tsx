@@ -8,6 +8,7 @@ import { Children, isValidElement, type ReactNode } from "@lynx-js/react";
 import { HostButton, HostText, HostView } from "~/components/ui/hostElements";
 
 import { textClassName } from "./hostDomClasses";
+import { type DomKeyHandler, hostKeyHandler } from "./hostDomEvents";
 
 // A handler upstream wrote for a DOM event. It is called with a Lynx event, so
 // the parameter is `never`: a handler that reads its event does not typecheck
@@ -22,6 +23,9 @@ export type HostDomProps = Record<string, unknown> & {
   readonly bindtap?: DomHandler;
   /** An `onClick` that arrives through a props spread. */
   readonly onClick?: DomHandler;
+  /** Called with the Lynx key event's key and modifiers; see `hostDomEvents`. */
+  readonly onKeyDown?: DomKeyHandler;
+  readonly onKeyUp?: DomKeyHandler;
 };
 
 function tapHandler(props: Pick<HostDomProps, "bindtap" | "onClick">): LynxHandler | undefined {
@@ -35,6 +39,7 @@ const HOST_VIEW_HANDLERS = new Set([
   "onContextMenu",
   "onDoubleClick",
   "onKeyDown",
+  "onKeyUp",
   "onMouseEnter",
   "onMouseLeave",
 ]);
@@ -46,11 +51,17 @@ function splitHandlers(props: Record<string, unknown>) {
     if (!/^on[A-Z]/u.test(name)) {
       attributes[name] = props[name];
     } else if (HOST_VIEW_HANDLERS.has(name) && props[name] !== undefined) {
-      attributes[name] = props[name];
+      attributes[name] = isKeyHandlerName(name)
+        ? hostKeyHandler(props[name] as DomKeyHandler)
+        : props[name];
       needsHostView = true;
     }
   }
   return { attributes, needsHostView };
+}
+
+function isKeyHandlerName(name: string): name is "onKeyDown" | "onKeyUp" {
+  return name === "onKeyDown" || name === "onKeyUp";
 }
 
 // Lynx draws text only inside <text>, and a <view> does not hand its font
@@ -83,7 +94,10 @@ function Box({ children, bindtap, onClick, ...rest }: HostDomProps) {
 
 function Button({ children, bindtap, onClick, disabled, type: _type, ...rest }: HostDomProps) {
   const isDisabled = disabled === true;
-  const { attributes } = splitHandlers(rest);
+  // A disabled DOM button receives neither clicks nor keys.
+  const { attributes } = splitHandlers(
+    isDisabled ? { ...rest, onKeyDown: undefined, onKeyUp: undefined } : rest,
+  );
   return (
     <HostButton
       {...attributes}
@@ -110,13 +124,16 @@ function isInlineContent(children: ReactNode): boolean {
 }
 
 // A span, p, heading or label is text when it only holds text, and a box when
-// it is empty (a dot, a spacer), is a flex or grid container, or holds elements.
+// it is empty (a dot, a spacer), is a flex or grid container, holds elements, or
+// listens for keys, which only a <view> receives.
 function Inline({ children, bindtap, onClick, ...rest }: HostDomProps) {
   const className = typeof rest.className === "string" ? rest.className : "";
   if (
     Children.count(children) === 0 ||
     BOX_DISPLAY_CLASS.test(className) ||
-    !isInlineContent(children)
+    !isInlineContent(children) ||
+    rest.onKeyDown !== undefined ||
+    rest.onKeyUp !== undefined
   ) {
     return (
       <Box {...rest} bindtap={bindtap} onClick={onClick}>

@@ -11,6 +11,10 @@
 //   - a DOM tag hostDom does not export
 //   - an event prop on a DOM tag with no exact Lynx equivalent
 //   - `ref` or `dangerouslySetInnerHTML` on a DOM tag (DOM node access)
+// `ref` stays refused: upstream hands the node to code that calls DOM methods
+// on it synchronously (`scrollIntoView`, `classList`, `addEventListener`,
+// `getBoundingClientRect`, pointer capture), and a Lynx ref answers
+// measurement and focus only asynchronously through `invoke`.
 // Lynx-owned files are not rewritten; a DOM tag in one of them also fails.
 const fs = require("node:fs");
 const path = require("node:path");
@@ -20,8 +24,14 @@ const WEB_SOURCE = path.resolve(__dirname, "../../web/src") + path.sep;
 const HOST_MODULE = path.resolve(__dirname, "../src/app/platform/hostDom.tsx");
 const HOST_NAMESPACE = "__LynxHostDom";
 
-// DOM event props whose Lynx binding has the same meaning.
-const EVENT_PROPS = new Map([["onClick", "bindtap"]]);
+// DOM event props the host components implement, and the prop each is written
+// as. `onClick` becomes the Lynx binding; key handlers keep their name and the
+// host module calls them with the Lynx key event's key and modifiers.
+const EVENT_PROPS = new Map([
+  ["onClick", "bindtap"],
+  ["onKeyDown", "onKeyDown"],
+  ["onKeyUp", "onKeyUp"],
+]);
 
 const REFUSED_PROPS = new Map([
   ["ref", "a DOM node ref has no Lynx equivalent"],
@@ -119,6 +129,8 @@ function scanDomJsx(source, resourcePath, tags) {
               const refusal = REFUSED_PROPS.get(name);
               if (refusal) {
                 problems.push(`${name} on <${tag}>: ${refusal} (line ${line(attribute)})`);
+              } else if (EVENT_PROPS.get(name) === name) {
+                // Implemented under its own name.
               } else if (EVENT_PROPS.has(name)) {
                 edits.push({
                   start: attribute.name.getStart(file),
@@ -190,6 +202,7 @@ module.exports = function lynxDomJsxLoader(source) {
   return source;
 };
 
+module.exports.EVENT_PROPS = EVENT_PROPS;
 module.exports.assertNoDomJsx = assertNoDomJsx;
 module.exports.isUpstreamComponent = isUpstreamComponent;
 module.exports.readHostTags = readHostTags;
