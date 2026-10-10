@@ -29,7 +29,6 @@ import * as SubscriptionRef from "effect/SubscriptionRef";
 import { AsyncResult } from "effect/unstable/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
-import type { T3ConnectorCommandBridge } from "../bridge.ts";
 import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
 import { EMPTY_GIT_ACTION_OUTCOME } from "../../shared/gitActionOutcome.ts";
 import { makeHostCrypto } from "../platform/hostCrypto.ts";
@@ -37,8 +36,6 @@ import { upstreamOperation } from "./upstreamOperations.ts";
 import { primaryHttpBaseUrl, upstreamCommandsReady } from "./upstreamCommandPort.ts";
 import {
   createUpstreamCommandBridge,
-  routeCommandBridge,
-  UPSTREAM_COMMAND_NAMES,
   type UpstreamCommandContext,
   type UpstreamCommandPort,
 } from "./upstreamCommands.ts";
@@ -210,61 +207,14 @@ function harness(
   return { bridge, sent, pendingModelSelections };
 }
 
-describe("routeCommandBridge", () => {
-  const record = (calls: Array<string>, source: string) =>
-    Object.fromEntries(
-      [...UPSTREAM_COMMAND_NAMES, "reconnect"].map((name) => [
-        name,
-        (input?: unknown) => {
-          calls.push(`${source}:${name}:${JSON.stringify(input)}`);
-          return Promise.resolve(source);
-        },
-      ]),
-    );
-
-  it("asks at each call whether upstream takes the command", async () => {
-    const calls: Array<string> = [];
-    let connected = false;
-    const bridge = routeCommandBridge({
-      connector: record(calls, "connector"),
-      upstream: record(calls, "upstream"),
-      useUpstream: () => connected,
-    });
-    assert.equal(await bridge.interrupt?.({ threadId: "thread-1" }), "connector");
-    connected = true;
-    assert.equal(await bridge.interrupt?.({ threadId: "thread-1" }), "upstream");
-    connected = false;
-    assert.equal(await bridge.interrupt?.({ threadId: "thread-1" }), "connector");
-    assert.deepEqual(calls, [
-      'connector:interrupt:{"threadId":"thread-1"}',
-      'upstream:interrupt:{"threadId":"thread-1"}',
-      'connector:interrupt:{"threadId":"thread-1"}',
-    ]);
-  });
-
-  it("leaves only restarting the server with the connector while upstream is connected", async () => {
-    const calls: Array<string> = [];
-    const bridge: Record<string, ((input?: unknown) => Promise<unknown>) | undefined> =
-      routeCommandBridge({
-        connector: record(calls, "connector"),
-        upstream: record(calls, "upstream"),
-        useUpstream: () => true,
-      });
-    for (const name of CONNECTOR_COMMAND_NAMES) await bridge[name]?.();
+describe("the commands upstream carries", () => {
+  it("are every command the UI sends but restarting the server", () => {
+    const { bridge } = harness();
+    const carried: Record<string, unknown> = bridge;
     assert.deepEqual(
-      calls.filter((call) => call.startsWith("connector:")),
-      ["connector:reconnect:undefined"],
+      CONNECTOR_COMMAND_NAMES.filter((name) => typeof carried[name] !== "function"),
+      ["reconnect"],
     );
-    assert.equal(calls.length, CONNECTOR_COMMAND_NAMES.length);
-  });
-
-  it("leaves a command the connector does not offer unavailable", () => {
-    const bridge = routeCommandBridge({
-      connector: {} as Partial<T3ConnectorCommandBridge>,
-      upstream: record([], "upstream"),
-      useUpstream: () => true,
-    });
-    assert.equal(bridge.interrupt, undefined);
   });
 });
 

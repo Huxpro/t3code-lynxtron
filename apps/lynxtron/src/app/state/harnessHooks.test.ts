@@ -8,7 +8,7 @@ import {
   failOperationOnce,
   resolveClientReadiness,
 } from "./harnessHooks.ts";
-import { routeCommandBridge, type UpstreamCommandPort } from "./upstreamCommands.ts";
+import type { UpstreamCommandPort } from "./upstreamCommands.ts";
 import type { UpstreamOperationInputs } from "./upstreamOperations.ts";
 
 describe("resolveClientReadiness", () => {
@@ -83,29 +83,20 @@ describe("failOperationOnce", () => {
 describe("createHarnessCommand", () => {
   const names = ["reconnect", "archiveThread"];
 
-  it("takes the path the bridge takes at the moment of the call", async () => {
-    let upstreamUp = false;
-    const answering = (source: string, commands: ReadonlyArray<string>) =>
+  it("sends the command through the bridge in place at the moment of the call", async () => {
+    const answering = (source: string) =>
       Object.fromEntries(
-        commands.map((name) => [name, (input?: unknown) => Promise.resolve({ source, input })]),
+        names.map((name) => [name, (input?: unknown) => Promise.resolve({ source, input })]),
       );
-    const bridge = routeCommandBridge({
-      connector: answering("connector", names),
-      upstream: answering("upstream", ["archiveThread"]),
-      useUpstream: () => upstreamUp,
-    });
+    let bridge = answering("first");
     const command = createHarnessCommand(() => bridge, names);
 
     assert.deepEqual(await command("archiveThread", { threadId: "thread-1" }), {
-      source: "connector",
+      source: "first",
       input: { threadId: "thread-1" },
     });
-    upstreamUp = true;
-    assert.deepEqual(await command("archiveThread", { threadId: "thread-1" }), {
-      source: "upstream",
-      input: { threadId: "thread-1" },
-    });
-    assert.deepEqual(await command("reconnect"), { source: "connector", input: undefined });
+    bridge = answering("second");
+    assert.deepEqual(await command("reconnect"), { source: "second", input: undefined });
   });
 
   it("rejects with the command's own failure, thrown or returned", async () => {

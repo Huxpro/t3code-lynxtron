@@ -70,8 +70,6 @@ export function primaryHttpBaseUrl(state: Pick<CommandState, "catalog"> | null):
 
 let primary: UpstreamPrimaryState | null = null;
 let started = false;
-let available = false;
-const availabilityListeners = new Set<(available: boolean) => void>();
 
 /** Starts following upstream's primary environment for the commands. Idempotent. */
 export function startUpstreamCommands(): void {
@@ -79,21 +77,7 @@ export function startUpstreamCommands(): void {
   started = true;
   watchUpstreamPrimary((state) => {
     primary = state;
-    const next = upstreamCommandsReady(state);
-    if (next === available) return;
-    available = next;
-    for (const listener of availabilityListeners) listener(next);
   });
-}
-
-/** Whether a command sent now would go through upstream. */
-export function upstreamCommandsAvailable(): boolean {
-  return upstreamCommandsReady(primary);
-}
-
-/** Calls `listener` each time upstream starts or stops taking the commands. */
-export function onUpstreamCommandsAvailability(listener: (available: boolean) => void): void {
-  availabilityListeners.add(listener);
 }
 
 export const upstreamCommandState: Pick<
@@ -109,8 +93,8 @@ export const upstreamCommandState: Pick<
   httpBaseUrl: () => primaryHttpBaseUrl(primary),
 };
 
-// Upstream sends a thread's commands one at a time; so does the connector for
-// the mode commands, whose order decides the mode the thread ends in.
+// Upstream sends a thread's commands one at a time, which matters for the
+// mode commands: their order decides the mode the thread ends in.
 const threadScheduler = createAtomCommandScheduler();
 
 function requirePrimaryEnvironment() {
@@ -185,8 +169,7 @@ function authRequest<A, E>(
 // A command that fails is not sent again. Upstream's session does not retry a
 // request (`retryTransientErrors: false`), and neither Web nor mobile wraps
 // these operations in a retry: a dropped transport fails the command, the
-// supervisor reconnects, and the failure stays with whoever sent it. While
-// upstream is not connected the renderer's commands go to the main connector.
+// supervisor reconnects, and the failure stays with whoever sent it.
 export const upstreamCommandPort: UpstreamCommandPort = {
   request: (tag, input) => runInPrimary(`lynx:command:${tag}`, () => request(tag, input)),
   operation: (name, input) =>

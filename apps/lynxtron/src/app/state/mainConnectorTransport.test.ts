@@ -10,6 +10,7 @@ import {
   T3_CONNECTOR_METHODS,
   type ConnectorEventEnvelope,
   type ConnectorSnapshot,
+  type ConnectorSyncReply,
 } from "../../shared/connectorProtocol.ts";
 
 async function assertRejects(promise: Promise<unknown>, pattern: RegExp): Promise<void> {
@@ -46,7 +47,7 @@ interface Harness {
   };
   emit: (envelope: unknown) => void;
   applied: ConnectorEventEnvelope[];
-  snapshots: ConnectorSnapshot[];
+  snapshots: Array<ConnectorSyncReply["snapshot"]>;
   commandLog: Array<{ method: string; params: Record<string, unknown> }>;
   replyWith: (method: string, reply: unknown) => void;
   logs: string[];
@@ -54,7 +55,7 @@ interface Harness {
 
 function createHarness(): Harness {
   const applied: ConnectorEventEnvelope[] = [];
-  const snapshots: ConnectorSnapshot[] = [];
+  const snapshots: Array<ConnectorSyncReply["snapshot"]> = [];
   const commandLog: Array<{ method: string; params: Record<string, unknown> }> = [];
   const listeners = new Map<string, Array<(...args: unknown[]) => void>>();
   const replies = new Map<string, unknown>();
@@ -227,25 +228,6 @@ describe("main connector transport", () => {
       transport!.invoke("discoverSourceControl"),
       /Source-control discovery is unavailable/,
     );
-  });
-
-  it("keeps settled command errors fulfilled for Lynx mutation consumers", async () => {
-    const harness = createHarness();
-    harness.replyWith(T3_CONNECTOR_METHODS.ready, { seq: 0, snapshot: makeSnapshot("t1") });
-    harness.replyWith(T3_CONNECTOR_METHODS.command, {
-      __t3BridgeError: 'SocketOpenError: timeout waiting for "open"',
-    });
-    const transport = await startHarness(harness);
-
-    const result = await transport!.invokeSettled("setModelSelection", {
-      threadId: "t1",
-      selection: { instanceId: "codex", model: "gpt-5.6-sol" },
-    });
-
-    assert.deepEqual(result, {
-      ok: false,
-      error: 'SocketOpenError: timeout waiting for "open"',
-    });
   });
 
   it("stops listening after dispose", async () => {

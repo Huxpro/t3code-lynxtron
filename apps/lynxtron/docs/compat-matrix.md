@@ -33,7 +33,7 @@ Runtime findings and surface decisions as of Lynxtron 0.0.28.
 | `matchMedia`                    |        9 sites / 4 files | adapter     | shared query parser + host-driven LynxWindow viewport subscription   |
 | measurement / observers         | see `web-api-audit.json` | adapter     | Lynx ref UI methods; probe before each overlay port                  |
 | Selection API                   | see `web-api-audit.json` | runtime-gap | R8                                                                   |
-| WebSocket / fetch               |   renderer use forbidden | adapter     | Node connector owns all transport                                    |
+| WebSocket / fetch               |   renderer use forbidden | adapter     | the preload's Node socket and fetch, through `connectionPlatform.ts` |
 
 ## CSS and interaction
 

@@ -125,7 +125,7 @@ export const clientCapabilities: ClientUiCapabilities = {
   connectivity: {
     isOnline: () => {
       "background only";
-      // Backed by the main-owned connector status stream (AR2); the preload
+      // Backed by the client status, which follows the main process and upstream; the preload
       // no longer exposes connector state.
       return appAtomRegistry.get(connectionStatusAtom) !== "error";
     },

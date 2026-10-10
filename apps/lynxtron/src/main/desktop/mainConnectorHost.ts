@@ -1,41 +1,31 @@
 /**
- * Main-owned connector host (AR1 spike).
+ * Main-side host of the server connection.
  *
- * Owns the T3Connector lifecycle inside the Lynxtron main process and exposes
- * one typed internal protocol to the renderer:
- *   - `ready` / `resync` return one serializable snapshot plus the latest
- *     monotonic sequence,
- *   - `command` dispatches allowlisted connector commands,
- *   - every connector callback is mirrored to the renderer as a sequenced
- *     `sendGlobalEvent` envelope.
+ * Owns the T3Connector lifecycle inside the Lynxtron main process and tells
+ * the renderer about it:
+ *   - `ready` / `resync` return the current status plus the latest monotonic
+ *     sequence,
+ *   - `primaryConnection` returns the address and bearer of the server, which
+ *     the renderer connects to itself,
+ *   - `command` takes `reconnect`, which replaces the connector and with it
+ *     the server it owns,
+ *   - every status change and log line is pushed to the renderer as a
+ *     sequenced `sendGlobalEvent` envelope.
  *
  * The class is deliberately free of Lynxtron/runtime imports: the window,
- * handler registry, and connector factory are injected so focused tests and
- * the node smoke script can drive it without the Lynxtron binary. The wiring
- * that binds it to `lynxBridge` and the prebuilt connector bundle lives in
- * `main.ts`.
+ * handler registry, and connector factory are injected so focused tests can
+ * drive it without the Lynxtron binary. The wiring that binds it to
+ * `lynxBridge` and the prebuilt connector bundle lives in `main.ts`.
  */
 import {
   T3_CONNECTOR_EVENT,
   T3_CONNECTOR_METHODS,
-  decodeConnectorCommandParams,
-  encodeConnectorCommandResult,
-  encodeConnectorServerConfig,
-  isConnectorCommandName,
   type ConnectorCommandRequest,
   type ConnectorEventEnvelope,
   type ConnectorEventPayload,
-  type ConnectorServerConfig,
-  type ConnectorShellPayload,
-  type ConnectorSnapshot,
   type ConnectorStatusPayload,
   type ConnectorSyncReply,
-  type ConnectorThreadPayload,
-  type TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
-import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
-import { isTransportConnectionErrorMessage } from "@t3tools/client-runtime/errors";
-import type { ServerConfig } from "@t3tools/contracts";
 
 export interface MainConnectorWindow {
   sendGlobalEvent(eventName: string, ...args: unknown[]): boolean;
@@ -58,20 +48,15 @@ export async function settleMainConnectorHandler(
 
 export interface ConnectorLike {
   connect(): Promise<unknown>;
-  readonly connectionKind?: "owned-local" | "existing-environment";
-  readonly pathsResolveLocally?: boolean;
-  recoverTransport?(): Promise<void>;
+  readonly connectionKind?: "owned-local" | "existing-environment" | undefined;
+  readonly pathsResolveLocally?: boolean | undefined;
+  /** The server's address and bearer, or null before there is one. */
+  primaryConnection?(): unknown;
   dispose(): void;
-  [method: string]: unknown;
 }
 
 export interface ConnectorEventCallbacks {
   onStatus: (status: string, detail?: string) => void;
-  onConfig: (config: ServerConfig) => void;
-  onAccess: (access: AuthAccessPresentation) => void;
-  onShell: (payload: ConnectorShellPayload) => void;
-  onThread: (threadId: string, payload: ConnectorThreadPayload) => void;
-  onTerminal: (threadId: string, terminalId: string, payload: TerminalSessionPresentation) => void;
   onLog: (line: string) => void;
 }
 
@@ -81,66 +66,14 @@ export interface MainConnectorHostOptions {
   readonly removeHandler?: (method: string) => void;
   readonly createConnector: (events: ConnectorEventCallbacks) => ConnectorLike;
   readonly onLog?: (line: string) => void;
-  readonly testSocketOpenErrorForThreadModelSelectionOnce?: boolean;
-  readonly testSendPromptErrorOnce?: boolean;
 }
 
-const EMPTY_ACCESS: AuthAccessPresentation = {
-  pairingLinks: [],
-  clientSessions: [],
-  pairingLinkCount: 0,
-  clientSessionCount: 0,
-  hasEntries: false,
-};
-
-const RETRYABLE_COMMANDS = new Set<ConnectorCommandRequest["method"]>([
-  "setModelSelection",
-  "setThreadRuntimeMode",
-  "setThreadInteractionMode",
-]);
-
-/**
- * Dispatch one allowlisted command to the connector. Request shapes mirror
- * the established preload bridge surface so the renderer command path is
- * identical in both transports; per-command adapters keep the connector's
- * positional signatures out of the wire protocol.
- */
-export function dispatchConnectorCommand(
-  connector: ConnectorLike,
-  request: ConnectorCommandRequest,
-): unknown {
-  const params = decodeConnectorCommandParams(request.method, request.params) as
-    | Record<string, unknown>
-    | undefined;
-  switch (request.method) {
-    case "selectThread":
-      return (connector.selectThread as (threadId: string) => void)(params as unknown as string);
-    case "revokePairingLink":
-      return (connector.revokePairingLink as (id: string) => Promise<boolean>)(
-        params?.id as string,
-      );
-    case "revokeClientSession":
-      return (connector.revokeClientSession as (sessionId: string) => Promise<boolean>)(
-        params?.sessionId as string,
-      );
-    case "revokeOtherClientSessions":
-      return (connector.revokeOtherClientSessions as () => Promise<number>)();
-    case "discoverSourceControl":
-      return (connector.discoverSourceControl as () => Promise<unknown>)();
-    default: {
-      const fn = connector[request.method];
-      if (typeof fn !== "function") {
-        throw new Error(`Connector does not implement command "${request.method}"`);
-      }
-      return (fn as (input: unknown) => unknown).call(connector, params ?? {});
-    }
-  }
-}
+/** What the main process pushes: its status and its log. */
+type MainConnectorEvent = Extract<ConnectorEventPayload, { readonly kind: "status" | "log" }>;
 
 /** The address a ready connector reached, as the status payload carries it. */
 function readyServerAddress(connector: ConnectorLike): { readonly httpBaseUrl?: string } {
-  const read = connector.primaryConnection;
-  const connection: unknown = typeof read === "function" ? read.call(connector) : null;
+  const connection = connector.primaryConnection?.() ?? null;
   const httpBaseUrl =
     typeof connection === "object" && connection !== null && "httpBaseUrl" in connection
       ? connection.httpBaseUrl
@@ -155,21 +88,11 @@ export class MainConnectorHost {
   private reconnectPromise: Promise<unknown> | undefined;
   private connectorGeneration = 0;
   private disposed = false;
-  private testSocketOpenErrorForThreadModelSelectionPending: boolean;
-  private testSendPromptErrorPending: boolean;
   private seq = 0;
   private status: ConnectorStatusPayload = { status: "idle" };
-  private config: ConnectorServerConfig | null = null;
-  private access: AuthAccessPresentation = EMPTY_ACCESS;
-  private shell: ConnectorShellPayload = { projects: [], threads: [] };
-  private readonly threads: Record<string, ConnectorThreadPayload> = {};
-  private readonly terminals: Record<string, TerminalSessionPresentation> = {};
 
   constructor(options: MainConnectorHostOptions) {
     this.options = options;
-    this.testSocketOpenErrorForThreadModelSelectionPending =
-      options.testSocketOpenErrorForThreadModelSelectionOnce === true;
-    this.testSendPromptErrorPending = options.testSendPromptErrorOnce === true;
   }
 
   /** Register the typed renderer->main handlers. Idempotent. */
@@ -178,10 +101,10 @@ export class MainConnectorHost {
     registerHandler(T3_CONNECTOR_METHODS.ready, () => this.syncReply());
     registerHandler(T3_CONNECTOR_METHODS.resync, () => this.syncReply());
     registerHandler(T3_CONNECTOR_METHODS.command, (params) => this.handleCommand(params));
-    registerHandler(T3_CONNECTOR_METHODS.primaryConnection, () => {
-      const read = this.connector?.primaryConnection;
-      return typeof read === "function" ? read.call(this.connector) : null;
-    });
+    registerHandler(
+      T3_CONNECTOR_METHODS.primaryConnection,
+      () => this.connector?.primaryConnection?.() ?? null,
+    );
   }
 
   /** Boot the connector (and its spawned server). Idempotent. */
@@ -197,72 +120,19 @@ export class MainConnectorHost {
   }
 
   private syncReply(): ConnectorSyncReply {
-    return {
-      seq: this.seq,
-      snapshot: {
-        status: this.status,
-        config: this.config,
-        access: this.access,
-        shell: this.shell,
-        threads: { ...this.threads },
-        terminals: { ...this.terminals },
-      },
-    };
+    return { seq: this.seq, snapshot: { status: this.status } };
   }
 
-  private async handleCommand(params: unknown): Promise<unknown> {
+  /** The one command the main process takes: restarting the connection. */
+  private handleCommand(params: unknown): Promise<unknown> {
     if (this.disposed) {
       return Promise.reject(new Error("connector host is disposed"));
     }
-    const request = params as ConnectorCommandRequest | null | undefined;
-    if (!request || !isConnectorCommandName(request.method)) {
-      return Promise.reject(
-        new Error(
-          `Rejected connector command: ${String((request as { method?: unknown } | null)?.method)}`,
-        ),
-      );
+    const method = (params as Partial<ConnectorCommandRequest> | null | undefined)?.method;
+    if (method !== "reconnect") {
+      return Promise.reject(new Error(`Rejected connector command: ${String(method)}`));
     }
-    if (request.method === "reconnect") {
-      return this.reconnect();
-    }
-    const dispatch = () => {
-      const connector = this.connector;
-      if (!connector) throw new Error("connector is not started");
-      if (
-        this.testSocketOpenErrorForThreadModelSelectionPending &&
-        request.method === "setModelSelection" &&
-        typeof (request.params as { threadId?: unknown } | undefined)?.threadId === "string"
-      ) {
-        this.testSocketOpenErrorForThreadModelSelectionPending = false;
-        throw new Error('SocketOpenError: timeout waiting for "open"');
-      }
-      if (this.testSendPromptErrorPending && request.method === "sendPrompt") {
-        this.testSendPromptErrorPending = false;
-        throw new Error("Injected sendPrompt failure");
-      }
-      return Promise.resolve(dispatchConnectorCommand(connector, request));
-    };
-    try {
-      return encodeConnectorCommandResult(request.method, await dispatch());
-    } catch (error) {
-      const cause = error instanceof Error ? error : new Error(String(error));
-      if (
-        !RETRYABLE_COMMANDS.has(request.method) ||
-        !isTransportConnectionErrorMessage(cause.message)
-      ) {
-        throw cause;
-      }
-      this.options.onLog?.(
-        `[main-connector] ${request.method} hit a stale transport; reconnecting once`,
-      );
-      const connector = this.connector;
-      if (connector?.recoverTransport) {
-        await connector.recoverTransport();
-      } else {
-        await this.reconnect();
-      }
-      return encodeConnectorCommandResult(request.method, await dispatch());
-    }
+    return this.reconnect();
   }
 
   /** Replace the owned connector while keeping the renderer protocol stable. */
@@ -290,39 +160,25 @@ export class MainConnectorHost {
     }
 
     const isCurrent = () => !this.disposed && generation === this.connectorGeneration;
-    const emitCurrent = (event: ConnectorEventPayload) => {
-      if (isCurrent()) this.emit(event);
-    };
     const connector = this.options.createConnector({
       onStatus: (status, detail) => {
+        if (!isCurrent()) return;
         const nextStatus =
           reconnecting && (status === "starting-server" || status === "connecting")
             ? "reconnecting"
             : (status as ConnectorStatusPayload["status"]);
-        const connectionKind = connector.connectionKind as
-          | "owned-local"
-          | "existing-environment"
-          | undefined;
-        emitCurrent({
+        const { connectionKind, pathsResolveLocally } = connector;
+        this.emit({
           kind: "status",
           payload: {
             status: nextStatus,
             ...(detail === undefined ? {} : { detail }),
             ...(connectionKind === undefined ? {} : { connectionKind }),
-            ...(typeof connector.pathsResolveLocally === "boolean"
-              ? { pathsResolveLocally: connector.pathsResolveLocally }
-              : {}),
+            ...(pathsResolveLocally === undefined ? {} : { pathsResolveLocally }),
             ...(nextStatus === "ready" ? readyServerAddress(connector) : {}),
           },
         });
       },
-      onConfig: (config) =>
-        emitCurrent({ kind: "config", payload: encodeConnectorServerConfig(config) }),
-      onAccess: (access) => emitCurrent({ kind: "access", payload: access }),
-      onShell: (payload) => emitCurrent({ kind: "shell", payload }),
-      onThread: (threadId, payload) => emitCurrent({ kind: "thread", threadId, payload }),
-      onTerminal: (threadId, terminalId, payload) =>
-        emitCurrent({ kind: "terminal", threadId, terminalId, payload }),
       onLog: (line) => {
         if (!isCurrent()) return;
         this.options.onLog?.(line);
@@ -346,30 +202,9 @@ export class MainConnectorHost {
     return connect;
   }
 
-  private emit(event: ConnectorEventPayload): void {
+  private emit(event: MainConnectorEvent): void {
     if (this.disposed) return;
-    switch (event.kind) {
-      case "status":
-        this.status = event.payload;
-        break;
-      case "config":
-        this.config = event.payload;
-        break;
-      case "access":
-        this.access = event.payload;
-        break;
-      case "shell":
-        this.shell = event.payload;
-        break;
-      case "thread":
-        this.threads[event.threadId] = event.payload;
-        break;
-      case "terminal":
-        this.terminals[`${event.threadId}\u0000${event.terminalId}`] = event.payload;
-        break;
-      case "log":
-        break;
-    }
+    if (event.kind === "status") this.status = event.payload;
     this.seq += 1;
     const envelope: ConnectorEventEnvelope = { ...event, seq: this.seq };
     const delivered = this.options.window.sendGlobalEvent(T3_CONNECTOR_EVENT, envelope);

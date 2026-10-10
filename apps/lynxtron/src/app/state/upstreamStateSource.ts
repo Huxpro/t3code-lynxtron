@@ -1,16 +1,13 @@
 // Feeds the Lynx client's connection status, auth access, server config,
 // shell, selected thread, that thread's terminals and its VCS status from
-// upstream's atoms instead of the main connector's events and replies. It runs unless the
-// host launches with `T3_LYNXTRON_UPSTREAM_STATE=0`; with that every connector payload is
-// applied as it arrives and nothing here subscribes to anything.
+// upstream's atoms. The app starts it at launch; the browser preview does not,
+// and is fed by its own connector host instead.
 //
-// Upstream owns a domain while its connection is up and it has the data the
-// connector's payload carries. Connector payloads for an owned domain are held
-// instead of applied, and the latest one is applied if upstream lets go, so a
-// dropped upstream connection hands the domain back to the connector.
+// A domain is applied whenever upstream has the data for it. While upstream
+// has none, the client keeps what it last showed.
 //
-// The connection status is not a domain that changes hands: it is resolved
-// from the connector's latest status and upstream's, in `resolveClientStatus`.
+// The connection status is resolved from the main process's latest status and
+// upstream's, in `resolveClientStatus`.
 import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
 import type { ModelSelection, ServerConfig, VcsStatusResult } from "@t3tools/contracts";
 import { type AuthAccessPresentation, projectAuthAccess } from "@t3tools/lynx-logic/connections";
@@ -39,30 +36,15 @@ import { requestedStartupProjectCwd } from "../platform/connectionPlatform.ts";
 import { createStartupProjectStep } from "./startupProject.ts";
 import type { T3ClientState } from "./t3Client.ts";
 import { primaryHttpBaseUrl, upstreamCommandsReady } from "./upstreamCommandPort.ts";
-import {
-  readUpstreamRuntimeFlags,
-  type UpstreamPrimaryState,
-  watchUpstreamPrimary,
-} from "./upstreamPrimary.ts";
+import { type UpstreamPrimaryState, watchUpstreamPrimary } from "./upstreamPrimary.ts";
 import {
   type UpstreamSelectedState,
   type UpstreamTerminal,
   watchUpstreamSelected,
 } from "./upstreamSelected.ts";
 
-/** Each terminal session is a domain of its own, named by its key. */
-export type UpstreamStateDomain =
-  | "access"
-  | "config"
-  | "shell"
-  | "thread"
-  | "vcs"
-  | `terminal:${string}`;
-
-export function terminalDomain(
-  session: Pick<TerminalSessionPresentation, "threadId" | "terminalId">,
-): UpstreamStateDomain {
-  return `terminal:${terminalSessionKey(session.threadId, session.terminalId)}`;
+function terminalKey(session: Pick<TerminalSessionPresentation, "threadId" | "terminalId">) {
+  return terminalSessionKey(session.threadId, session.terminalId);
 }
 
 export interface UpstreamStatePayloads {
@@ -125,28 +107,30 @@ export function createUpstreamStatusReader(): (state: StatusState) => UpstreamSt
 }
 
 /**
- * The status the client shows, given the main connector's latest status and
+ * The status the client shows, given the main process's latest status and
  * upstream's view, or null to keep showing what it shows. `upstream` is null
- * when the upstream state source is off.
+ * in the browser preview, whose host's status is the whole story.
  *
- * Ready means the path that takes the next command can deliver it. Upstream
- * takes the commands while it is ready, so the connector's ready is shown only
- * once upstream is ready for the same server, or has failed to reach it and
- * the connector takes the commands instead. While upstream is still on its
- * way the client keeps its status. A failure the main process reports is
- * shown at once: it is the first to know that the server it owns exited, and
- * upstream's session can read as connected for seconds after that.
+ * Ready means a command sent now reaches the server, and upstream is what
+ * sends it. So the main process's ready is shown only once upstream is ready
+ * for the same server; while upstream is on its way the client keeps its
+ * status, and when upstream has lost that server the client says it is
+ * reconnecting, which is what upstream's supervisor is doing. A failure the
+ * main process reports is shown at once: it is the first to know that the
+ * server it owns exited, and upstream's session can read as connected for
+ * seconds after that.
  */
 export function resolveClientStatus(
   connector: ConnectorStatusPayload,
   upstream: UpstreamStatusView | null,
 ): ConnectorStatusPayload | null {
   if (upstream === null) return connector;
-  if (connector.status === "error" || connector.status === "reconnecting") return connector;
-  if (connector.status !== "ready") return upstream.ready ? { status: "ready" } : connector;
+  if (connector.status !== "ready") return connector;
   const sameServer =
     connector.httpBaseUrl === undefined || connector.httpBaseUrl === upstream.httpBaseUrl;
-  return sameServer && (upstream.ready || upstream.failed) ? connector : null;
+  if (!sameServer) return null;
+  if (upstream.ready) return connector;
+  return upstream.failed ? { ...connector, status: "reconnecting" } : null;
 }
 
 /**
@@ -160,10 +144,7 @@ export function upstreamAccessPayload(
   return projectAuthAccess(state.access);
 }
 
-/**
- * The threads of the shell upstream supplies, or null while it supplies none
- * and the connector's shell is the one shown.
- */
+/** The threads of the shell upstream supplies, or null while it supplies none. */
 export function ownedShellThreads(
   state: Pick<UpstreamPrimaryState, "connection" | "shell" | "archived">,
 ) {
@@ -208,9 +189,9 @@ export function upstreamStatePayloads(
 
 /**
  * The connector-shaped payload for the selected thread, or null while
- * upstream cannot supply all of it: the connector's payload carries the whole
- * thread, so upstream's is held back until its stream is live and every older
- * page has been loaded.
+ * upstream cannot supply all of it: the payload carries the whole thread, so
+ * it is held back until upstream's stream is live and every older page has
+ * been loaded.
  */
 export function upstreamThreadPayload(
   state: Pick<UpstreamSelectedState, "connection" | "threadId" | "thread">,
@@ -224,8 +205,7 @@ export function upstreamThreadPayload(
 
 /**
  * Whether the client emptied the thread upstream supplies, which it does when
- * the thread is selected again. The connector answers that with its payload,
- * which is held, so upstream's has to be applied again.
+ * the thread is selected again, so upstream's has to be applied again.
  */
 export function threadWasReset(
   payload: ConnectorThreadPayload,
@@ -266,7 +246,7 @@ export function upstreamTerminalPayloads(
   return state.terminals.flatMap((terminal) => upstreamTerminalPayload(terminal) ?? []);
 }
 
-/** A directory's VCS status, the same value from either source. */
+/** A directory's VCS status. */
 export interface VcsStatusPayload {
   readonly cwd: string;
   readonly status: VcsStatusResult;
@@ -286,8 +266,7 @@ export function upstreamVcsPayload(
 /**
  * Whether the client is waiting for, or shows something other than, the
  * status upstream supplies. The client marks the status pending when it asks
- * the connector to refresh it; the reply is held, so upstream's is applied
- * again.
+ * for a refresh, so upstream's is applied again.
  */
 export function vcsStatusDiverged(
   payload: VcsStatusPayload,
@@ -299,50 +278,13 @@ export function vcsStatusDiverged(
   );
 }
 
-/**
- * Decides, per domain, whether a connector payload is applied or held.
- * `fromUpstream` with a payload takes the domain; with null it gives the
- * domain back and applies the connector payload that was held meanwhile.
- */
-export function createUpstreamStateRouter() {
-  const owned = new Set<UpstreamStateDomain>();
-  const held = new Map<UpstreamStateDomain, () => void>();
-  return {
-    /** Returns whether the payload was applied; false means it is held. */
-    fromConnector(domain: UpstreamStateDomain, apply: () => void): boolean {
-      if (owned.has(domain)) {
-        held.set(domain, apply);
-        return false;
-      }
-      apply();
-      return true;
-    },
-    fromUpstream<T>(domain: UpstreamStateDomain, payload: T | null, apply: (payload: T) => void) {
-      if (payload !== null) {
-        owned.add(domain);
-        apply(payload);
-        return;
-      }
-      if (!owned.delete(domain)) return;
-      const replay = held.get(domain);
-      held.delete(domain);
-      replay?.();
-    },
-  };
-}
-
-const router = createUpstreamStateRouter();
-
-/** Applies a connector payload for `domain` unless upstream currently owns it. */
-export const applyFromConnector = router.fromConnector;
-
 let connectorStatus: ConnectorStatusPayload | null = null;
-// Null until the upstream source starts, which it only does when turned on.
+// Null until the upstream source starts, which the browser preview never does.
 let upstreamStatus: UpstreamStatusView | null = null;
 
 /**
- * Takes the main connector's latest status and returns the status to show,
- * or null to keep the one shown.
+ * Takes the main process's latest status and returns the status to show, or
+ * null to keep the one shown.
  */
 export function statusFromConnector(status: ConnectorStatusPayload): ConnectorStatusPayload | null {
   connectorStatus = status;
@@ -360,9 +302,26 @@ export interface UpstreamStateSink {
 }
 
 let started = false;
+let terminalSink: UpstreamStateSink["applyTerminal"] | null = null;
+// The terminals upstream supplies, by key, each with the value it was last
+// projected from: output arrives in many small chunks, and only the terminal
+// that got one is projected again.
+const terminals = new Map<string, UpstreamTerminal>();
+const closedTerminals = new Map<string, TerminalSessionPresentation>();
 
 /**
- * Starts the upstream source once. Does nothing unless the host turned it on.
+ * Shows a terminal the client closed as closed. While upstream still lists
+ * the terminal its output keeps arriving, so the closed session is applied
+ * when upstream's list drops it.
+ */
+export function applyClosedTerminal(session: TerminalSessionPresentation): void {
+  const key = terminalKey(session);
+  if (terminals.has(key)) closedTerminals.set(key, session);
+  else terminalSink?.(session);
+}
+
+/**
+ * Starts the upstream source once.
  * `clientStateAtom` is the Lynx client's own state, which says what is
  * selected. `pendingModelSelections` holds the selections the client's
  * commands are waiting on; one is removed here when the server reports it.
@@ -379,8 +338,9 @@ export function startUpstreamStateSource(
   createStartupProject?: (workspaceRoot: string) => Promise<unknown>,
 ): void {
   if (started) return;
-  if (readUpstreamRuntimeFlags().upstreamState !== true) return;
   started = true;
+  terminalSink = sink.applyTerminal;
+  upstreamStatus = { ready: false, failed: false, httpBaseUrl: null };
 
   // The watcher fires for every connection and catalog change; a domain is
   // projected and applied again only when what it is built from changed.
@@ -399,7 +359,7 @@ export function startUpstreamStateSource(
             pendingModelSelections,
             cleanup?.isHidden,
           );
-          if (shell !== null) router.fromUpstream("shell", shell, sink.applyShell);
+          if (shell !== null) sink.applyShell(shell);
         },
       })
     : null;
@@ -408,7 +368,8 @@ export function startUpstreamStateSource(
     const status =
       view.ready && startupProject?.observe(state) === false ? { ...view, ready: false } : view;
     if (
-      status.ready === upstreamStatus?.ready &&
+      upstreamStatus !== null &&
+      status.ready === upstreamStatus.ready &&
       status.failed === upstreamStatus.failed &&
       status.httpBaseUrl === upstreamStatus.httpBaseUrl
     ) {
@@ -437,28 +398,23 @@ export function startUpstreamStateSource(
     previous = state;
     publishStatus(state);
     if (accessChanged) {
-      router.fromUpstream("access", upstreamAccessPayload(state), sink.applyAccess);
+      const access = upstreamAccessPayload(state);
+      if (access !== null) sink.applyAccess(access);
     }
     if (!configChanged && !shellChanged) return;
     if (shellChanged) {
       dropConfirmedModelSelections(pendingModelSelections, liveShellSnapshot(state)?.threads ?? []);
-      // The cleanup runs on the shell upstream supplies; while it supplies
-      // none, the connector's own cleanup is the one that acts.
       const threads = ownedShellThreads(state);
       if (threads !== null) cleanup?.observe(threads);
     }
     const payloads = upstreamStatePayloads(state, pendingModelSelections, cleanup?.isHidden);
-    if (configChanged) router.fromUpstream("config", payloads.config, sink.applyConfig);
-    if (shellChanged) router.fromUpstream("shell", payloads.shell, sink.applyShell);
+    if (configChanged && payloads.config !== null) sink.applyConfig(payloads.config);
+    if (shellChanged && payloads.shell !== null) sink.applyShell(payloads.shell);
   });
 
   let selected: UpstreamSelectedState | null = null;
   let thread: ConnectorThreadPayload | null = null;
   let vcs: VcsStatusPayload | null = null;
-  // The terminals upstream owns, by domain, each with the value it was last
-  // projected from: output arrives in many small chunks, and only the
-  // terminal that got one is projected again.
-  const terminals = new Map<UpstreamStateDomain, UpstreamTerminal>();
   watchUpstreamSelected(clientStateAtom, (state) => {
     const connectionChanged = selected?.connection !== state.connection;
     const threadChanged =
@@ -471,33 +427,38 @@ export function startUpstreamStateSource(
     selected = state;
     if (threadChanged) {
       thread = upstreamThreadPayload(state);
-      router.fromUpstream("thread", thread, sink.applyThread);
+      if (thread !== null) sink.applyThread(thread);
     }
     if (vcsChanged) {
       vcs = upstreamVcsPayload(state);
-      router.fromUpstream("vcs", vcs, sink.applyVcsStatus);
+      if (vcs !== null) sink.applyVcsStatus(vcs);
     }
     if (!terminalsChanged) return;
     const listed = new Map(
       (isConnected(state.connection) ? (state.terminals ?? []) : []).map((terminal) => [
-        terminalDomain(terminal.summary),
+        terminalKey(terminal.summary),
         terminal,
       ]),
     );
-    for (const domain of terminals.keys()) {
-      if (listed.has(domain)) continue;
-      terminals.delete(domain);
-      router.fromUpstream(domain, null, sink.applyTerminal);
+    for (const key of terminals.keys()) {
+      if (listed.has(key)) continue;
+      terminals.delete(key);
+      const closed = closedTerminals.get(key);
+      closedTerminals.delete(key);
+      if (closed) sink.applyTerminal(closed);
     }
-    for (const [domain, terminal] of listed) {
-      const previous = terminals.get(domain);
+    for (const [key, terminal] of listed) {
+      const previous = terminals.get(key);
       if (previous?.buffer === terminal.buffer && previous.summary.cwd === terminal.summary.cwd) {
         continue;
       }
       const session = upstreamTerminalPayload(terminal);
-      if (session === null) terminals.delete(domain);
-      else terminals.set(domain, terminal);
-      router.fromUpstream(domain, session, sink.applyTerminal);
+      if (session === null) {
+        terminals.delete(key);
+        continue;
+      }
+      terminals.set(key, terminal);
+      sink.applyTerminal(session);
     }
   });
 
@@ -512,10 +473,10 @@ export function startUpstreamStateSource(
     void Promise.resolve().then(() => {
       reapplying = false;
       if (thread !== null && threadReset(appAtomRegistry.get(clientStateAtom))) {
-        router.fromUpstream("thread", thread, sink.applyThread);
+        sink.applyThread(thread);
       }
       if (vcs !== null && vcsDiverged(appAtomRegistry.get(clientStateAtom))) {
-        router.fromUpstream("vcs", vcs, sink.applyVcsStatus);
+        sink.applyVcsStatus(vcs);
       }
     });
   });

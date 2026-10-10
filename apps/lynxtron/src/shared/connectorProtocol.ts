@@ -1,17 +1,25 @@
 /**
- * Typed main-owned connector protocol shared by the Lynxtron main process and
- * the Lynx renderer (AR1 spike).
+ * Typed protocol between the Lynx renderer and its host.
+ *
+ * In the app the host is the Lynxtron main process. It uses a small part of
+ * this: its status and log as events, a snapshot that carries the status
+ * alone, the `reconnect` command, and `primaryConnection`. State and every
+ * other command go through upstream's client runtime in the renderer.
+ *
+ * In the browser preview the host is a connector host
+ * (`src/browser-preview`), which uses all of it: it supplies the client's
+ * state as snapshots and events and takes every command.
  *
  * Transport legs:
- *   - renderer -> main: `NativeModules.bridge.call(method, params, cb)` against
+ *   - renderer -> host: `NativeModules.bridge.call(method, params, cb)` against
  *     handlers registered with `lynxBridge.handle` in main.
- *   - main -> renderer: sequenced envelopes pushed with
+ *   - host -> renderer: sequenced envelopes pushed with
  *     `LynxWindow.sendGlobalEvent(T3_CONNECTOR_EVENT, envelope)` and received
  *     through `lynx.getJSModule("GlobalEventEmitter")`.
  *
  * Every payload is JSON-serializable canonical state (contracts DTOs and
- * renderer-neutral presentations). No Effect values, functions, class
- * instances, or credentials cross the bridge.
+ * renderer-neutral presentations). No Effect values, functions or class
+ * instances cross the bridge.
  */
 import type {
   AssetCreateUrlResult,
@@ -31,16 +39,16 @@ import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
 import type { ActivePlanState, LatestProposedPlanState } from "@t3tools/lynx-logic/thread";
 import * as Schema from "effect/Schema";
 
-/** Main -> renderer push channel name (LynxWindow.sendGlobalEvent). */
+/** Host -> renderer push channel name (LynxWindow.sendGlobalEvent). */
 export const T3_CONNECTOR_EVENT = "t3:connector-event";
 
-/** Renderer -> main invoke method names (lynxBridge.handle). */
+/** Renderer -> host invoke method names (lynxBridge.handle). */
 export const T3_CONNECTOR_METHODS = {
   /** Renderer readiness: returns one current snapshot plus the latest sequence. */
   ready: "t3:connector.ready",
   /** Sequence-gap recovery: returns one current snapshot plus the latest sequence. */
   resync: "t3:connector.resync",
-  /** Typed command dispatch into the connector. */
+  /** Typed command dispatch. The main process takes `reconnect` alone. */
   command: "t3:connector.command",
   /** Address and bearer of the primary environment, or null before it is connected. */
   primaryConnection: "t3:connector.primary-connection",
@@ -274,9 +282,13 @@ export type ConnectorEventPayload =
 /** One sequenced main -> renderer event. `seq` is strictly monotonic per window. */
 export type ConnectorEventEnvelope = ConnectorEventPayload & { readonly seq: number };
 
-/** Serializable mirror of the connector state used for ready/resync replies. */
-export interface ConnectorSnapshot {
+/** What the main process answers ready/resync with: its status alone. */
+export interface ConnectorStatusSnapshot {
   readonly status: ConnectorStatusPayload;
+}
+
+/** The whole client state, which a browser preview host answers ready/resync with. */
+export interface ConnectorSnapshot extends ConnectorStatusSnapshot {
   readonly config: ConnectorServerConfig | null;
   readonly access: AuthAccessPresentation;
   readonly shell: ConnectorShellPayload;
@@ -284,13 +296,8 @@ export interface ConnectorSnapshot {
   readonly terminals: Readonly<Record<string, TerminalSessionPresentation>>;
 }
 
-export interface ConnectorSyncRequest {
-  /** Renderer-observed latest sequence; informational for main-side diagnostics. */
-  readonly lastSeq?: number;
-}
-
 export interface ConnectorSyncReply {
-  readonly snapshot: ConnectorSnapshot;
+  readonly snapshot: ConnectorStatusSnapshot & Partial<ConnectorSnapshot>;
   readonly seq: number;
 }
 
@@ -309,7 +316,7 @@ export function projectRepoContext(input: {
   };
 }
 
-/** Allowlisted connector commands the renderer may invoke through main. */
+/** The commands the UI sends. A browser preview host takes them all. */
 export const CONNECTOR_COMMAND_NAMES = [
   "reconnect",
   "createAssetUrl",
@@ -418,17 +425,6 @@ export function isConnectorSyncReply(value: unknown): value is ConnectorSyncRepl
     return false;
   }
   if (typeof candidate.snapshot !== "object" || candidate.snapshot === null) return false;
-  const snapshot = candidate.snapshot as {
-    status?: unknown;
-    shell?: unknown;
-    threads?: unknown;
-  };
-  return (
-    typeof snapshot.status === "object" &&
-    snapshot.status !== null &&
-    typeof snapshot.shell === "object" &&
-    snapshot.shell !== null &&
-    typeof snapshot.threads === "object" &&
-    snapshot.threads !== null
-  );
+  const snapshot = candidate.snapshot as { status?: unknown };
+  return typeof snapshot.status === "object" && snapshot.status !== null;
 }

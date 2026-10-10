@@ -106,7 +106,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     status,
     statusDetail,
     connectionKind,
-    connectorCommandsReady,
+    commandsReady,
     vcsStatus,
     vcsStatusCwd,
     vcsStatusPending,

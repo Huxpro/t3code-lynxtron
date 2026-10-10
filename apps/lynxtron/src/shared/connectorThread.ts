@@ -1,7 +1,5 @@
-// The thread payload the Lynx UI reduces for the thread it shows. The main
-// connector builds it from its own subscription and the renderer builds it
-// from upstream's thread atom; both call this so the two sources cannot
-// disagree about plans, session fields or message roles.
+// The thread payload the Lynx UI reduces for the thread it shows. The
+// renderer builds it from upstream's thread atom.
 import type { OrchestrationThread } from "@t3tools/contracts";
 import { deriveActivePlanState, findLatestProposedPlan } from "@t3tools/lynx-logic/thread";
 
