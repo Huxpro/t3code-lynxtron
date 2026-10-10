@@ -663,6 +663,11 @@
   background-color: var(--sidebar-control-surface);
   border-radius: 4px;
 }
+/* Upstream's keycap is a box around its label. The engine does not carry the
+ * box's weight into the text, so the label states it. */
+[data-slot="kbd"] > .lynx-host-text {
+  font-weight: 500;
+}
 .quick-switch-setup-badge {
   flex-shrink: 0;
   height: 20px;
