@@ -108,6 +108,8 @@ export function nextProjectScriptsForSubmit(
   scriptId: string | null,
   input: NewProjectScriptInput,
 ): { readonly scriptId: string; readonly scripts: ReadonlyArray<ProjectScript> } {
+  // The Lynx editor has no "wait for setup" control.
+  const scriptInput = { ...input, waitForSetup: false };
   const clearSetup = (script: ProjectScript): ProjectScript =>
     input.runOnWorktreeCreate && script.runOnWorktreeCreate
       ? { ...script, runOnWorktreeCreate: false }
@@ -119,10 +121,10 @@ export function nextProjectScriptsForSubmit(
     );
     return {
       scriptId: nextId,
-      scripts: [...scripts.map(clearSetup), buildProjectScript(nextId, input)],
+      scripts: [...scripts.map(clearSetup), buildProjectScript(nextId, scriptInput)],
     };
   }
-  const updated = buildProjectScript(scriptId, input);
+  const updated = buildProjectScript(scriptId, scriptInput);
   return {
     scriptId,
     scripts: scripts.map((script) => (script.id === scriptId ? updated : clearSetup(script))),

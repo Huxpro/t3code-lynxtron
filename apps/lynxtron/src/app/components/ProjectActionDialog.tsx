@@ -9,14 +9,10 @@ import type { ProjectSummary } from "../bridge";
 
 import { uiActions } from "../state/uiState";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
-import {
-  PROJECT_SCRIPT_KEYBINDING_HELPER,
-  commandForProjectScript,
-} from "../../../../web/src/projectScripts";
-import {
-  keybindingValueForCommand,
-  projectScriptKeybindingChange,
-} from "../../../../web/src/lib/projectScriptKeybindings";
+import { commandForProjectScript } from "../../../../web/src/projectScripts";
+import { keybindingValueForCommand } from "../../../../web/src/lib/projectScriptKeybindings";
+import { PROJECT_SCRIPT_KEYBINDING_HELPER } from "../logic/projectScripts";
+import { projectScriptKeybindingChange } from "../logic/projectScriptKeybindings";
 import {
   EMPTY_PROJECT_SCRIPT_INPUT,
   resolveProjectScriptEditorPayload,
@@ -54,7 +50,7 @@ export async function persistProjectScripts(input: {
   readonly projectId: string;
   readonly scripts: ReadonlyArray<ProjectScript>;
   readonly keybinding: string | null;
-  readonly command: KeybindingCommand;
+  readonly command: KeybindingCommand | null;
   readonly keybindings: ResolvedKeybindingsConfig;
 }): Promise<void> {
   const previousKeybinding = keybindingValueForCommand(input.keybindings, input.command);
