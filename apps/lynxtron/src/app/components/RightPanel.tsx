@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "@lynx-js/react";
 import { useMediaQuery } from "../../../../web/src/hooks/useMediaQuery";
+import { RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY } from "../../../../web/src/rightPanelLayout";
 import {
   RIGHT_PANEL_DEFAULT_WIDTH,
-  RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY,
   RIGHT_PANEL_MIN_WIDTH,
   RIGHT_PANEL_WIDTH_STORAGE_KEY,
   resolveRightPanelMaximumWidth,
   resolveRightPanelSheetWidth,
-} from "../../../../web/src/rightPanelLayout";
+} from "../logic/rightPanelLayout";
 import {
   RightPanelEmptySurface,
   RightPanelTabSurface,

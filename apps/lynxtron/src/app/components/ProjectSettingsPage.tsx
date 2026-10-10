@@ -42,7 +42,7 @@ import {
   resolveRegroupedProjectKey,
   sortProjectSettingsGroups,
   type ProjectGroupingSelection,
-} from "../../../../web/src/components/settings/ProjectSettingsPanel.logic";
+} from "../logic/projectSettingsPanel";
 import {
   SettingsPageContainer,
   SettingsRow,

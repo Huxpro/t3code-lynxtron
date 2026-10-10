@@ -4,8 +4,8 @@ import type {
   T3ProjectFileScript,
 } from "@t3tools/contracts";
 
-import { buildProjectScript, nextProjectScriptId } from "../../projectScripts";
-import type { NewProjectScriptInput } from "../projectScriptEditor.logic";
+import { buildProjectScript, nextProjectScriptId } from "../../../../web/src/projectScripts";
+import type { NewProjectScriptInput } from "../../../../web/src/components/projectScriptEditor.logic";
 
 export const PROJECT_GROUPING_MODE_LABELS: Record<SidebarProjectGroupingMode, string> = {
   repository: "Group by repository",

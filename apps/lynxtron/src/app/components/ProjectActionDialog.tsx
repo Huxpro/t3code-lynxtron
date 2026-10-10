@@ -18,7 +18,7 @@ import {
   resolveProjectScriptEditorPayload,
   type ProjectScriptEditorRequest,
 } from "../../../../web/src/components/projectScriptEditor.logic";
-import { nextProjectScriptsForSubmit } from "../../../../web/src/components/settings/ProjectSettingsPanel.logic";
+import { nextProjectScriptsForSubmit } from "../logic/projectSettingsPanel";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { Icon, type IconName } from "./Icon";
