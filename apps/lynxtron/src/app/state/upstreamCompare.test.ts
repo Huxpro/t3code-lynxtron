@@ -1,12 +1,22 @@
 import { assert, describe, it } from "vite-plus/test";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
-import { compareServerConfig, compareShell, MAX_DIFFERENCES } from "./upstreamCompare.ts";
+import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import {
+  compareServerConfig,
+  compareShell,
+  compareThread,
+  MAX_DIFFERENCES,
+  textDigest,
+} from "./upstreamCompare.ts";
+import {
+  clientMessages,
   provider,
   serverConfig,
   shellSnapshot,
+  threadDetail,
   type WireThread,
+  type WireThreadDetail,
 } from "./upstreamState.fixtures.ts";
 
 function clientConfig(config: ReturnType<typeof serverConfig>) {
@@ -183,5 +193,113 @@ describe("compareShell", () => {
     const result = compareShell(shell(many), clientShell(shell([])));
     assert.equal(result.differences.length, MAX_DIFFERENCES);
     assert.equal(result.differences.at(-1), "and 11 more");
+  });
+});
+
+function threadPayload(detail: WireThreadDetail) {
+  return projectConnectorThread(threadDetail(detail));
+}
+
+/** The client state the reducer leaves after applying a thread payload. */
+function clientThread(detail: WireThreadDetail) {
+  const thread = threadDetail(detail);
+  const payload = projectConnectorThread(thread);
+  return {
+    activeThreadId: payload.threadId,
+    messages: clientMessages(thread),
+    checkpoints: payload.checkpoints,
+    sessionStatus: payload.sessionStatus,
+    sessionError: payload.sessionError ?? null,
+    activities: payload.activities ?? [],
+    latestTurn: payload.latestTurn ?? null,
+    proposedPlans: payload.proposedPlans ?? [],
+    activeTurnId: payload.activeTurnId ?? null,
+  };
+}
+
+describe("compareThread", () => {
+  const detail: WireThreadDetail = {
+    messages: [{ id: "message-1", role: "user" }, { id: "message-2" }],
+    activities: [{ id: "activity-1", payload: { command: "ls" } }],
+    session: { status: "running", activeTurnId: "turn-1" },
+  };
+
+  it("is not ready without upstream's thread or while the client shows another", () => {
+    assert.equal(compareThread(null, clientThread(detail)).ready, false);
+    assert.equal(
+      compareThread(threadPayload(detail), clientThread({ ...detail, id: "thread-2" })).ready,
+      false,
+    );
+  });
+
+  it("reads equal when both sides reduced the same thread", () => {
+    assert.deepEqual(compareThread(threadPayload(detail), clientThread(detail)), {
+      ready: true,
+      equal: true,
+      differences: [],
+    });
+  });
+
+  it("reports message text by id, length and hash, never the text", () => {
+    const upstream = threadPayload({
+      ...detail,
+      messages: [
+        { id: "message-1", role: "user" },
+        { id: "message-2", text: "streamed so far" },
+      ],
+    });
+    const client = clientThread({
+      ...detail,
+      messages: [
+        { id: "message-1", role: "user" },
+        { id: "message-2", text: "streamed so" },
+      ],
+    });
+    const { differences } = compareThread(upstream, client);
+    assert.deepEqual(differences, [
+      `message message-2.text: upstream ${textDigest("streamed so far")}, client ${textDigest("streamed so")}`,
+    ]);
+    assert.match(differences[0] ?? "", /upstream 15 chars #[0-9a-f]{8}, client 11 chars #/);
+  });
+
+  it("tells same-length texts apart", () => {
+    const { differences } = compareThread(
+      threadPayload({ messages: [{ id: "message-1", text: "abcd" }] }),
+      clientThread({ messages: [{ id: "message-1", text: "abce" }] }),
+    );
+    assert.equal(differences.length, 1);
+    assert.notEqual(textDigest("abcd"), textDigest("abce"));
+  });
+
+  it("reports rows one side lacks, session fields and activity payloads", () => {
+    const upstream = threadPayload({
+      messages: [{ id: "message-1" }, { id: "message-2" }],
+      activities: [{ id: "activity-1", payload: { command: "ls -la" } }],
+      session: { status: "running", activeTurnId: "turn-1" },
+    });
+    const client = clientThread({
+      messages: [{ id: "message-1" }],
+      activities: [{ id: "activity-1", payload: { command: "ls" } }, { id: "activity-2" }],
+      session: { status: "ready" },
+    });
+    const { equal, differences } = compareThread(upstream, client);
+    assert.equal(equal, false);
+    assert.deepEqual(differences, [
+      'sessionStatus: upstream "running", client "ready"',
+      'activeTurnId: upstream "turn-1", client null',
+      "message message-2: only upstream",
+      "activity activity-2: only client",
+      `activity activity-1.payload: upstream ${textDigest('{"command":"ls -la"}')}, client ${textDigest('{"command":"ls"}')}`,
+    ]);
+  });
+
+  it("reports rows both sides have in a different order", () => {
+    const { differences } = compareThread(
+      threadPayload({ messages: [{ id: "message-1" }, { id: "message-2" }] }),
+      clientThread({ messages: [{ id: "message-2" }, { id: "message-1" }] }),
+    );
+    assert.deepEqual(differences, [
+      "message order: differs from position 0 (upstream message-1, client message-2)",
+    ]);
   });
 });

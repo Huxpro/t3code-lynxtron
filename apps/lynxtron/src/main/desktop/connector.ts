@@ -41,7 +41,6 @@ import {
   type TerminalBufferState,
   terminalOutputText,
 } from "@t3tools/client-runtime/state/terminal";
-import { deriveActivePlanState, findLatestProposedPlan } from "@t3tools/lynx-logic/thread";
 import { buildProviderInstanceEnabledPatch } from "@t3tools/lynx-logic/providerSettings";
 import {
   WsRpcGroup,
@@ -131,6 +130,7 @@ import {
   type LatestPendingMutation,
 } from "../../shared/latestPendingMutation.ts";
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
+import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -1111,27 +1111,7 @@ export class T3Connector {
   private emitThread(threadId: string) {
     const thread = this.threadSnapshots.get(threadId);
     if (!thread) return;
-    const activePlan = deriveActivePlanState(
-      thread.activities,
-      thread.latestTurn?.turnId ?? undefined,
-    );
-    const activeProposedPlan = findLatestProposedPlan(
-      thread.proposedPlans,
-      thread.latestTurn?.turnId,
-    );
-    this.events.onThread(threadId, {
-      threadId,
-      messages: thread.messages,
-      checkpoints: thread.checkpoints,
-      sessionStatus: thread.session?.status ?? "idle",
-      sessionError: thread.session?.lastError ?? null,
-      activities: thread.activities,
-      activePlan,
-      activeProposedPlan,
-      latestTurn: thread.latestTurn ?? null,
-      proposedPlans: thread.proposedPlans,
-      activeTurnId: thread.session?.activeTurnId ?? null,
-    });
+    this.events.onThread(threadId, projectConnectorThread(thread));
   }
 
   async ensureProject(): Promise<void> {

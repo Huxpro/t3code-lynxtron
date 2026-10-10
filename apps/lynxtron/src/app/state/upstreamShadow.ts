@@ -5,20 +5,27 @@
 // `T3_LYNXTRON_UPSTREAM_SHADOW=1`.
 import type { SupervisorConnectionState } from "@t3tools/client-runtime/connection";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
+import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
 import * as Cause from "effect/Cause";
 import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { T3ClientState } from "./t3Client.ts";
-import { compareServerConfig, compareShell, type DomainComparison } from "./upstreamCompare.ts";
+import {
+  compareServerConfig,
+  compareShell,
+  compareThread,
+  type DomainComparison,
+} from "./upstreamCompare.ts";
 import {
   primaryEnvironmentId,
   readUpstreamRuntimeFlags,
   type UpstreamPrimaryState,
   watchUpstreamPrimary,
 } from "./upstreamPrimary.ts";
-import { upstreamStatePayloads } from "./upstreamStateSource.ts";
+import { type UpstreamSelectedState, watchUpstreamSelected } from "./upstreamSelected.ts";
+import { upstreamStatePayloads, upstreamThreadPayload } from "./upstreamStateSource.ts";
 
 export interface UpstreamShadowSummary {
   /** The connection phase, or what the runtime is waiting for before it has one. */
@@ -37,6 +44,30 @@ export type UpstreamShadowInput = Pick<UpstreamPrimaryState, "catalog" | "connec
 export interface UpstreamShadowComparison {
   readonly config: DomainComparison;
   readonly shell: DomainComparison;
+  /** The selected thread. Compared when read: it changes with every token. */
+  readonly thread: DomainComparison;
+}
+
+/** What upstream holds for the selection, in a line, for reading next to `compare`. */
+export interface UpstreamShadowSelected {
+  readonly threadId: string | null;
+  readonly threadStatus: NonNullable<UpstreamSelectedState["thread"]>["status"] | null;
+  readonly threadMessages: number | null;
+  /** Older turns upstream has not loaded yet; the thread is not compared until it has. */
+  readonly threadHasOlderTurns: boolean;
+  readonly threadError: string | null;
+}
+
+export function summarizeUpstreamSelected(state: UpstreamSelectedState): UpstreamShadowSelected {
+  const thread = state.thread;
+  const data = thread === null ? null : Option.getOrNull(thread.data);
+  return {
+    threadId: state.threadId,
+    threadStatus: thread?.status ?? null,
+    threadMessages: data === null ? null : data.messages.length,
+    threadHasOlderTurns: thread !== null && threadHasOlderTurns(thread),
+    threadError: thread === null ? null : Option.getOrNull(thread.error),
+  };
 }
 
 type ComparedClientState = Pick<
@@ -44,11 +75,11 @@ type ComparedClientState = Pick<
   "status" | "serverConfig" | "providers" | "settings" | "projects" | "threads" | "archivedThreads"
 >;
 
-/** How each domain upstream can supply compares with the Lynx client's state. */
+/** How the domains of the primary environment compare with the Lynx client's state. */
 export function compareUpstreamState(
   state: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived">,
   client: ComparedClientState,
-): UpstreamShadowComparison {
+): Pick<UpstreamShadowComparison, "config" | "shell"> {
   const payloads = upstreamStatePayloads(state);
   return {
     config: compareServerConfig(payloads.config, client),
@@ -108,21 +139,36 @@ export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): 
   started = true;
 
   const target = globalThis as {
-    __T3_UPSTREAM_SHADOW__?: UpstreamShadowSummary & { readonly compare: UpstreamShadowComparison };
+    __T3_UPSTREAM_SHADOW__?: UpstreamShadowSummary & {
+      readonly selected: UpstreamShadowSelected | null;
+      readonly compare: UpstreamShadowComparison;
+    };
   };
   let upstream: UpstreamPrimaryState | null = null;
+  let selected: UpstreamSelectedState | null = null;
   let client = appAtomRegistry.get(clientStateAtom);
   const publish = () => {
     if (upstream === null) return;
     target.__T3_UPSTREAM_SHADOW__ = {
       ...summarizeUpstreamShadow(upstream, new Date()),
-      compare: compareUpstreamState(upstream, client),
+      get selected() {
+        return selected === null ? null : summarizeUpstreamSelected(selected);
+      },
+      compare: {
+        ...compareUpstreamState(upstream, client),
+        get thread() {
+          return compareThread(selected === null ? null : upstreamThreadPayload(selected), client);
+        },
+      },
     };
   };
 
   watchUpstreamPrimary((state) => {
     upstream = state;
     publish();
+  });
+  watchUpstreamSelected(clientStateAtom, (state) => {
+    selected = state;
   });
   // The client state changes with every streamed token; only the fields the
   // comparison reads are worth a new one.

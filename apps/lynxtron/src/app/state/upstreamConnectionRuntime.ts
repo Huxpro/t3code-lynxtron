@@ -11,7 +11,10 @@ import {
   createEnvironmentShellAtoms,
   shellSnapshotLoaderLayer,
 } from "@t3tools/client-runtime/state/shell";
-import { threadSnapshotLoaderLayer } from "@t3tools/client-runtime/state/threads";
+import {
+  createEnvironmentThreadStateAtoms,
+  threadSnapshotLoaderLayer,
+} from "@t3tools/client-runtime/state/threads";
 import * as Layer from "effect/Layer";
 import { Atom } from "effect/unstable/reactivity";
 
@@ -36,3 +39,5 @@ export const upstreamServerEnvironment = createServerEnvironmentAtoms(upstreamCo
 });
 export const upstreamOrchestrationEnvironment =
   createOrchestrationEnvironmentAtoms(upstreamConnectionRuntime);
+export const upstreamEnvironmentThreads =
+  createEnvironmentThreadStateAtoms(upstreamConnectionRuntime);

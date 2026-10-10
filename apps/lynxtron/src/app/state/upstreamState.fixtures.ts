@@ -5,10 +5,12 @@ import {
   type SupervisorConnectionState,
 } from "@t3tools/client-runtime/connection";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
+import type { EnvironmentThreadState } from "@t3tools/client-runtime/state/threads";
 import {
   DEFAULT_SERVER_SETTINGS,
   EnvironmentId,
   OrchestrationShellSnapshot,
+  OrchestrationThread,
   type ServerConfig,
   ServerProvider,
 } from "@t3tools/contracts";
@@ -16,7 +18,10 @@ import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import { AsyncResult } from "effect/unstable/reactivity";
 
+import type { ChatMessage } from "../bridge.ts";
+
 const decodeShellSnapshot = Schema.decodeUnknownSync(OrchestrationShellSnapshot);
+const decodeThread = Schema.decodeUnknownSync(OrchestrationThread);
 const decodeProvider = Schema.decodeUnknownSync(ServerProvider);
 
 export interface WireThread {
@@ -135,4 +140,102 @@ export function shellState(
   snapshot: OrchestrationShellSnapshot | null,
 ): EnvironmentShellState {
   return { status, snapshot: Option.fromNullOr(snapshot), error: Option.none() };
+}
+
+export interface WireMessage {
+  readonly id: string;
+  readonly role?: "user" | "assistant" | "system" | "reasoning";
+  readonly text?: string;
+  readonly turnId?: string | null;
+  readonly streaming?: boolean;
+}
+
+export interface WireThreadDetail {
+  readonly id?: string;
+  readonly messages?: ReadonlyArray<WireMessage>;
+  readonly activities?: ReadonlyArray<{
+    readonly id: string;
+    readonly kind?: string;
+    readonly payload?: unknown;
+  }>;
+  readonly session?: {
+    readonly status:
+      | "idle"
+      | "starting"
+      | "running"
+      | "ready"
+      | "interrupted"
+      | "stopped"
+      | "error";
+    readonly activeTurnId?: string | null;
+    readonly lastError?: string | null;
+  } | null;
+}
+
+/** A thread with its detail, as the server's thread snapshot carries it. */
+export function threadDetail(detail: WireThreadDetail = {}): OrchestrationThread {
+  const id = detail.id ?? "thread-1";
+  return decodeThread({
+    ...wireThread({ id }),
+    deletedAt: null,
+    messages: (detail.messages ?? []).map((message) => ({
+      id: message.id,
+      role: message.role ?? "assistant",
+      text: message.text ?? `Text of ${message.id}`,
+      turnId: message.turnId ?? null,
+      streaming: message.streaming ?? false,
+      createdAt: "2026-10-09T00:00:00.000Z",
+      updatedAt: "2026-10-09T00:00:00.000Z",
+    })),
+    proposedPlans: [],
+    activities: (detail.activities ?? []).map((activity) => ({
+      id: activity.id,
+      tone: "tool",
+      kind: activity.kind ?? "tool.completed",
+      summary: `Summary of ${activity.id}`,
+      payload: activity.payload ?? {},
+      turnId: null,
+      createdAt: "2026-10-09T00:00:00.000Z",
+    })),
+    checkpoints: [],
+    session:
+      detail.session == null
+        ? null
+        : {
+            threadId: id,
+            status: detail.session.status,
+            providerName: "codex",
+            runtimeMode: "full-access",
+            activeTurnId: detail.session.activeTurnId ?? null,
+            lastError: detail.session.lastError ?? null,
+            updatedAt: "2026-10-09T00:00:00.000Z",
+          },
+  });
+}
+
+export function threadState(
+  status: EnvironmentThreadState["status"],
+  thread: OrchestrationThread | null,
+  page: { readonly hasMore: boolean; readonly loadingOlder?: boolean } | null = null,
+): EnvironmentThreadState {
+  return {
+    status,
+    data: Option.fromNullOr(thread),
+    error: Option.none(),
+    page:
+      page === null
+        ? Option.none()
+        : Option.some({
+            beforeCursor: page.hasMore ? "cursor-1" : null,
+            hasMore: page.hasMore,
+            loadingOlder: page.loadingOlder ?? false,
+          }),
+  };
+}
+
+/** A thread's messages as the Lynx client's state holds them. */
+export function clientMessages(thread: OrchestrationThread): ReadonlyArray<ChatMessage> {
+  return thread.messages.filter(
+    (message): message is typeof message & ChatMessage => message.role !== "reasoning",
+  );
 }

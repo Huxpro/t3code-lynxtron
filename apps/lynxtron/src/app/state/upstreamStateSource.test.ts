@@ -1,7 +1,20 @@
 import { assert, describe, it } from "vite-plus/test";
 
-import { createUpstreamStateRouter, upstreamStatePayloads } from "./upstreamStateSource.ts";
-import { connection, serverConfig, shellSnapshot, shellState } from "./upstreamState.fixtures.ts";
+import {
+  createUpstreamStateRouter,
+  threadWasReset,
+  upstreamStatePayloads,
+  upstreamThreadPayload,
+} from "./upstreamStateSource.ts";
+import {
+  clientMessages,
+  connection,
+  serverConfig,
+  shellSnapshot,
+  shellState,
+  threadDetail,
+  threadState,
+} from "./upstreamState.fixtures.ts";
 
 const live = shellSnapshot([
   { id: "thread-old", latestUserMessageAt: "2026-10-02T00:00:00.000Z" },
@@ -76,6 +89,82 @@ describe("upstreamStatePayloads", () => {
       upstreamStatePayloads({ ...base, shell: shellState("synchronizing", null), archived }).shell,
       null,
     );
+  });
+});
+
+describe("upstreamThreadPayload", () => {
+  const thread = threadDetail({
+    messages: [{ id: "message-1", role: "user" }, { id: "message-2" }],
+    session: { status: "running", activeTurnId: "turn-1" },
+  });
+  const selected = { connection: connection("connected"), threadId: "thread-1" };
+
+  it("builds the connector's thread payload from a live, whole thread", () => {
+    const payload = upstreamThreadPayload({ ...selected, thread: threadState("live", thread) });
+    assert.equal(payload?.threadId, "thread-1");
+    assert.strictEqual(payload?.messages, thread.messages);
+    assert.equal(payload?.sessionStatus, "running");
+    assert.equal(payload?.activeTurnId, "turn-1");
+
+    const paged = threadState("live", thread, { hasMore: false });
+    assert.strictEqual(
+      upstreamThreadPayload({ ...selected, thread: paged })?.messages,
+      thread.messages,
+    );
+  });
+
+  it("supplies nothing while older turns are still to be loaded", () => {
+    const windowed = threadState("live", thread, { hasMore: true });
+    assert.equal(upstreamThreadPayload({ ...selected, thread: windowed }), null);
+  });
+
+  it("supplies nothing until the thread is live on a connected environment", () => {
+    for (const status of ["empty", "cached", "synchronizing", "deleted"] as const) {
+      assert.equal(
+        upstreamThreadPayload({ ...selected, thread: threadState(status, thread) }),
+        null,
+      );
+    }
+    assert.equal(upstreamThreadPayload({ ...selected, thread: null }), null);
+    assert.equal(
+      upstreamThreadPayload({
+        connection: connection("backoff"),
+        threadId: "thread-1",
+        thread: threadState("live", thread),
+      }),
+      null,
+    );
+  });
+
+  it("supplies nothing for a thread other than the selected one", () => {
+    assert.equal(
+      upstreamThreadPayload({
+        ...selected,
+        threadId: "thread-2",
+        thread: threadState("live", thread),
+      }),
+      null,
+    );
+  });
+});
+
+describe("threadWasReset", () => {
+  const payload = upstreamThreadPayload({
+    connection: connection("connected"),
+    threadId: "thread-1",
+    thread: threadState("live", threadDetail({ messages: [{ id: "message-1" }] })),
+  });
+
+  it("sees the client empty the thread upstream supplies", () => {
+    assert.ok(payload);
+    assert.equal(threadWasReset(payload, { activeThreadId: "thread-1", messages: [] }), true);
+  });
+
+  it("leaves a client that shows the thread, or another thread, alone", () => {
+    assert.ok(payload);
+    const messages = clientMessages(threadDetail({ messages: [{ id: "message-1" }] }));
+    assert.equal(threadWasReset(payload, { activeThreadId: "thread-1", messages }), false);
+    assert.equal(threadWasReset(payload, { activeThreadId: "thread-2", messages: [] }), false);
   });
 });
 

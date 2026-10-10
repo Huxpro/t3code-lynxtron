@@ -176,6 +176,7 @@ import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
   ConnectorSnapshot,
+  ConnectorThreadPayload,
   ProjectRepoContext,
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
@@ -698,6 +699,12 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
   });
 }
 
+/** Applies a thread payload from either source if it is for the thread shown. */
+function applyActiveThreadPayload(payload: ConnectorThreadPayload): void {
+  if (payload.threadId !== appAtomRegistry.get(t3ClientStateAtom).activeThreadId) return;
+  applyThreadPayload(payload as ThreadEventPayload);
+}
+
 function applyConnectorSnapshot(
   snapshot: ConnectorSnapshot,
   preferredSelection?: ModelSelection | null,
@@ -713,7 +720,7 @@ function applyConnectorSnapshot(
   applyFromConnector("shell", () => applyShellPayload(snapshot.shell as ShellEventPayload));
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
-  if (activeThread) applyThreadPayload(activeThread as ThreadEventPayload);
+  if (activeThread) applyFromConnector("thread", () => applyActiveThreadPayload(activeThread));
   patchState({ terminalSessions: snapshot.terminals });
 }
 
@@ -733,13 +740,9 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
     case "shell":
       applyFromConnector("shell", () => applyShellPayload(envelope.payload as ShellEventPayload));
       return;
-    case "thread": {
-      const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
-      if (envelope.threadId === activeThreadId) {
-        applyThreadPayload(envelope.payload as ThreadEventPayload);
-      }
+    case "thread":
+      applyFromConnector("thread", () => applyActiveThreadPayload(envelope.payload));
       return;
-    }
     case "terminal":
       patchState({
         terminalSessions: {
@@ -1103,7 +1106,11 @@ async function bootstrapT3Client(): Promise<void> {
       draftThreadsByProjectId: savedDraftThreadsByProjectId,
     });
   }
-  startUpstreamStateSource({ applyConfig: applyConfigPayload, applyShell: applyShellPayload });
+  startUpstreamStateSource(t3ClientStateAtom, {
+    applyConfig: applyConfigPayload,
+    applyShell: applyShellPayload,
+    applyThread: applyActiveThreadPayload,
+  });
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
     bridge: NativeModules?.bridge,
