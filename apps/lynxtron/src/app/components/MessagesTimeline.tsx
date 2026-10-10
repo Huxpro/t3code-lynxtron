@@ -98,6 +98,7 @@ import {
   resolveTimelineMinimapTopPercent,
   TIMELINE_MINIMAP_MIN_ITEMS,
 } from "../../../../web/src/components/chat/MessagesTimeline.logic";
+import { TIMELINE_CONTENT_MAX_WIDTH } from "../logic/messagesTimeline";
 
 type LynxChatMessage = Omit<ChatMessage, "attachments"> & {
   readonly attachments?: ReadonlyArray<
@@ -1551,8 +1552,10 @@ export function MessagesTimeline({
           </list-item>
         ) : null}
       </list>
-      {resolveTimelineMinimapHasPersistentGutter(timelineViewportWidth) &&
-      minimapItems.length >= TIMELINE_MINIMAP_MIN_ITEMS ? (
+      {resolveTimelineMinimapHasPersistentGutter(
+        timelineViewportWidth,
+        TIMELINE_CONTENT_MAX_WIDTH,
+      ) && minimapItems.length >= TIMELINE_MINIMAP_MIN_ITEMS ? (
         <HostView
           className="timeline-minimap"
           data-timeline-minimap
