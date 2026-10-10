@@ -1,7 +1,7 @@
 # Lynxtron client architecture
 
 How the Lynx client sits on top of upstream T3 Code. The layering was approved
-on 2026-10-09; the current merge base is upstream `de34391427`.
+on 2026-10-09; the current merge base is upstream `dacd2cb649`.
 
 ## Principles
 
@@ -135,7 +135,7 @@ it replaces.
 
 ## Carried patches
 
-`apps/lynxtron/upstream-patches.json` lists 27 modified upstream files and 8
+`apps/lynxtron/upstream-patches.json` lists 27 modified upstream files and 7
 added files, each with its reason. They fall into four groups:
 
 - **Product fixes** that are not Lynx-specific (optimistic file atoms, the
@@ -245,7 +245,54 @@ Conflicts were limited to the listed patches. What the Lynx side had to follow:
 - The browser preview's live connector host (`src/browser-preview`) still
   speaks the old contract and does not typecheck.
 
-Not merged: the 506 commits after `de34391427`.
+### The merge to `dacd2cb649` (2026-10-10)
+
+The fork merged the 652 commits after `de34391427`. Seven paths conflicted,
+all listed patches or derived files. What the Lynx side had to follow:
+
+- Dropped patch: the write-delay hook in `apps/server/src/ws.ts`
+  (`T3_TEST_PROJECT_WRITE_DELAY_MS`, which let a capture observe the
+  file-saving state). Upstream rewrote the handler table and no script set the
+  variable any more. Upstream added its own
+  `packages/client-runtime/src/state/projectCommands.test.ts`; the fork's test
+  for the idle TTL is now a patch to that file instead of an added file.
+- Effect 4.0.2 moved `effect/unstable/{http,reactivity,rpc,socket}` to
+  `effect/{http,reactivity,rpc,socket}`.
+- Provider settings are instances only. `settings.providers` is gone and the
+  Cursor, Grok and OpenCode settings schemas moved to `@t3tools/provider-*`.
+  A default instance without an entry is on only for Codex and Claude. The
+  Lynx provider logic, the settings catalog and the fixtures follow; a
+  settings file with the old map is still migrated by the server.
+- Writes that need a permission (source control, scheduled tasks) are refused
+  by the runtime unless the caller installs `RpcPermissionGuard`. Upstream's
+  check is not exported, so `upstreamCommandPort.ts` installs one that asks
+  the same question of the session upstream fetched.
+- The connection store saves routes per environment (`register` with routes,
+  `setRoutes`, `remove` by environment id); `ClientPresentation` no longer
+  names scopes.
+- The main-thread engine cannot compile a BigInt literal, and one in the
+  main-thread script fails the whole bundle before any console exists: the
+  window is blank, DevTool evaluate gets no answer, and the only trace is
+  `An error occurred when parse json` in the app's log.
+  `scripts/lynx-bigint-loader.cjs` writes each literal as a `BigInt` call.
+- `sidebar/SidebarChrome.tsx`, one of the four components compiled from
+  upstream's file, gained a component that takes a DOM ref. The DOM loader
+  leaves out components named in its `UNRENDERED_COMPONENTS` list, replacing
+  the body with a throw; see the loader's header for when that is allowed.
+- A secret request (`secret_request`) is shown as an information row; the
+  Lynx client has no prompt to answer one.
+- The temporary worktree branch prefix is `t3/`, not `t3code/`.
+
+Not ported, by decision of this merge (backlog): read-only and scoped clients
+beyond the menu flag, connection routes and learned addresses, on-demand tool
+output (`getTurnItem`), provider goals, pull request watches, secret prompts,
+subagent stop, workspace-preparation retry, run-on-settle project actions
+(kept when a script is edited, not editable), ACP registry, Muse and Pi
+providers, MCP apps, thread search streaming, storage cleanup, outdated-server
+update, and the exports upstream added to shadowed Web modules
+(`CommandListVirtualized`, `TooltipScrollDismissArea`,
+`resolveComposerDraftKey`, `useAcknowledgeThreadWoke`, `useChildThreadInputs`,
+`useEnvironmentSupportsServerBrowser`, `updateOutdatedServer`).
 
 A trial merge of `b707eeb052` (2,354 commits) on 2026-10-09, before this
 restructuring, conflicted in 154 paths, 111 of them fork-edited Web files.

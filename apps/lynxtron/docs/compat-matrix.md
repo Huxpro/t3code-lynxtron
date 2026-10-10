@@ -12,6 +12,7 @@ Runtime findings and surface decisions as of Lynxtron 0.0.28.
 | ----------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------ |
 | Fixed box height from `top` (R15)   | runtime-gap  | Lynx sizes a `position: fixed` box by the space below its `top`; top-side Menu/Popover anchor by `bottom` instead        |
 | Partial core `URL` (R16)            | adapter      | Lynx core ships only `href`/`searchParams`; `src/app/polyfills.ts` installs core-js WHATWG `URL`                         |
+| BigInt literals on the main thread  | adapter      | The engine cannot compile `0n` and the bundle fails to load; `scripts/lynx-bigint-loader.cjs` writes `BigInt("0")`       |
 | No `Intl` on the main thread        | adapter      | Upstream modules build formatters while they load; `src/app/polyfills.ts` installs a stand-in there that only constructs |
 | Native list recycled cells          | supported    | Removed rows stay in the list's pool outside its bounds, invisible; gates count only nodes inside `.timeline-list`       |
 | Owned local server                  | supported    | M1 journey                                                                                                               |
