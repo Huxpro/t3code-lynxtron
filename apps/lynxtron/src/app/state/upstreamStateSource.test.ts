@@ -6,6 +6,7 @@ import { assert, describe, it } from "vite-plus/test";
 import { authAccessSnapshot } from "./upstreamPrimary.ts";
 import {
   createUpstreamStateRouter,
+  ownedShellThreads,
   terminalDomain,
   threadWasReset,
   upstreamAccessPayload,
@@ -140,6 +141,39 @@ describe("upstreamStatePayloads", () => {
       "thread-kept",
       "thread-named",
     ]);
+  });
+});
+
+describe("the shell the cleanup acts on", () => {
+  const snapshot = shellSnapshot([
+    { id: "thread-kept", latestUserMessageAt: "2026-10-08T00:00:00.000Z" },
+    { id: "thread-empty", title: "New thread", latestUserMessageAt: null },
+    { id: "thread-failed", title: "New thread", latestUserMessageAt: null },
+  ]);
+  const state = {
+    connection: connection("connected"),
+    shell: shellState("live", snapshot),
+    config: null,
+    archived,
+  };
+
+  it("leaves out only the threads the cleanup hides", () => {
+    const { shell } = upstreamStatePayloads(
+      state,
+      new Map(),
+      (threadId) => threadId === "thread-empty",
+    );
+    assert.deepEqual(shell?.threads.map((thread) => thread.id).toSorted(), [
+      "thread-failed",
+      "thread-kept",
+    ]);
+  });
+
+  it("is upstream's only while upstream supplies the shell", () => {
+    assert.strictEqual(ownedShellThreads(state), snapshot.threads);
+    assert.isNull(ownedShellThreads({ ...state, archived: null }));
+    assert.isNull(ownedShellThreads({ ...state, connection: connection("backoff") }));
+    assert.isNull(ownedShellThreads({ ...state, shell: shellState("cached", snapshot) }));
   });
 });
 

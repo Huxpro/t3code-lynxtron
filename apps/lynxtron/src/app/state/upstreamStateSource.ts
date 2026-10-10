@@ -18,6 +18,8 @@ import { projectConnectorShell } from "../../shared/connectorShell.ts";
 import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import {
+  createDisposableThreadCleanup,
+  type DisposableThreadCleanup,
   disposableThreadIds,
   dropConfirmedModelSelections,
   type PendingModelSelections,
@@ -99,6 +101,17 @@ export function upstreamAccessPayload(
   return projectAuthAccess(state.access);
 }
 
+/**
+ * The threads of the shell upstream supplies, or null while it supplies none
+ * and the connector's shell is the one shown.
+ */
+export function ownedShellThreads(
+  state: Pick<UpstreamPrimaryState, "connection" | "shell" | "archived">,
+) {
+  if (!isConnected(state.connection) || state.archived === null) return null;
+  return liveShellSnapshot(state)?.threads ?? null;
+}
+
 const NO_PENDING_MODEL_SELECTIONS: PendingModelSelections = new Map();
 
 /**
@@ -108,24 +121,27 @@ const NO_PENDING_MODEL_SELECTIONS: PendingModelSelections = new Map();
  *
  * The shell is shown the way the connector shows its own: a thread keeps the
  * model selection in `pendingModelSelections` until the server reports it, and
- * an empty disposable thread, which the connector deletes on sight, is left
- * out.
+ * a thread `isHidden` names, one the cleanup is deleting, is left out. Without
+ * `isHidden` every empty disposable thread is left out, as if each were being
+ * deleted.
  */
 export function upstreamStatePayloads(
   state: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived">,
   pendingModelSelections: PendingModelSelections = NO_PENDING_MODEL_SELECTIONS,
+  isHidden?: (threadId: string) => boolean,
 ): UpstreamStatePayloads {
   if (!isConnected(state.connection)) return { config: null, shell: null };
   const snapshot = liveShellSnapshot(state);
   if (snapshot === null || state.archived === null) return { config: state.config, shell: null };
-  const disposable = disposableThreadIds(snapshot.threads);
+  const disposable = isHidden ? null : disposableThreadIds(snapshot.threads);
+  const hidden = isHidden ?? ((threadId: string) => disposable?.has(threadId) === true);
   return {
     config: state.config,
     shell: projectConnectorShell({
       projects: snapshot.projects,
       threads: snapshot.threads,
       archivedThreads: state.archived.threads,
-      isHidden: (thread) => disposable.has(thread.id),
+      isHidden: (thread) => hidden(thread.id),
       overlay: (thread) => withPendingModelSelection(thread, pendingModelSelections),
     }),
   };
@@ -278,11 +294,14 @@ let started = false;
  * `clientStateAtom` is the Lynx client's own state, which says what is
  * selected. `pendingModelSelections` holds the selections the client's
  * commands are waiting on; one is removed here when the server reports it.
+ * `deleteDisposableThread` deletes an empty disposable thread seen in the
+ * shell upstream supplies; without it such threads are only left out.
  */
 export function startUpstreamStateSource(
   clientStateAtom: Atom.Atom<T3ClientState>,
   sink: UpstreamStateSink,
   pendingModelSelections: Map<string, ModelSelection> = new Map(),
+  deleteDisposableThread?: (threadId: string) => Promise<unknown>,
 ): void {
   if (started) return;
   if (readUpstreamRuntimeFlags().upstreamState !== true) return;
@@ -295,6 +314,20 @@ export function startUpstreamStateSource(
     "connection" | "shell" | "config" | "archived" | "access"
   > | null = null;
   let statusFromUpstream = false;
+  const cleanup: DisposableThreadCleanup | null = deleteDisposableThread
+    ? createDisposableThreadCleanup({
+        deleteThread: deleteDisposableThread,
+        onRevealed: () => {
+          if (previous === null) return;
+          const { shell } = upstreamStatePayloads(
+            previous,
+            pendingModelSelections,
+            cleanup?.isHidden,
+          );
+          if (shell !== null) router.fromUpstream("shell", shell, sink.applyShell);
+        },
+      })
+    : null;
   watchUpstreamPrimary((state) => {
     const connectionChanged = previous?.connection !== state.connection;
     const configChanged = connectionChanged || previous?.config !== state.config;
@@ -313,8 +346,12 @@ export function startUpstreamStateSource(
     if (!configChanged && !shellChanged) return;
     if (shellChanged) {
       dropConfirmedModelSelections(pendingModelSelections, liveShellSnapshot(state)?.threads ?? []);
+      // The cleanup runs on the shell upstream supplies; while it supplies
+      // none, the connector's own cleanup is the one that acts.
+      const threads = ownedShellThreads(state);
+      if (threads !== null) cleanup?.observe(threads);
     }
-    const payloads = upstreamStatePayloads(state, pendingModelSelections);
+    const payloads = upstreamStatePayloads(state, pendingModelSelections, cleanup?.isHidden);
     if (configChanged) router.fromUpstream("config", payloads.config, sink.applyConfig);
     if (shellChanged) router.fromUpstream("shell", payloads.shell, sink.applyShell);
   });

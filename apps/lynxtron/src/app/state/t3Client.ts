@@ -190,7 +190,11 @@ import {
   type VcsStatusPayload,
 } from "./upstreamStateSource";
 import { readUpstreamRuntimeFlags } from "./upstreamPrimary";
-import { createUpstreamCommandBridge, routeCommandBridge } from "./upstreamCommands";
+import {
+  createUpstreamCommandBridge,
+  routeCommandBridge,
+  type UpstreamCommandBridge,
+} from "./upstreamCommands";
 import {
   onUpstreamCommandsAvailability,
   startUpstreamCommands,
@@ -846,36 +850,48 @@ function buildCommandBridge(transport: MainConnectorTransport): Partial<PollBrid
     if (!threadId || threadId === state.draftThread?.id) return;
     void connector.selectThread?.(threadId)?.catch(() => undefined);
   });
-  startUpstreamCommands();
   return routeCommandBridge({
     connector,
-    upstream: createUpstreamCommandBridge(upstreamCommandPort, {
-      ...upstreamCommandState,
-      pendingModelSelections: upstreamPendingModelSelections,
-      modelSelection: () => appAtomRegistry.get(t3ClientStateAtom).modelSelection,
-      resolveWorkspacePath: (workspaceRoot) => {
-        const resolve = getPreloadBridge()?.resolveWorkspacePath;
-        if (!resolve) throw new Error("The host cannot resolve a workspace path.");
-        return resolve(workspaceRoot);
-      },
-      terminalClosed: ({ threadId, terminalId }) => {
-        const key = terminalSessionKey(threadId, terminalId);
-        const session = closedTerminalSession({
-          threadId,
-          terminalId,
-          cwd: appAtomRegistry.get(t3ClientStateAtom).terminalSessions[key]?.cwd ?? ".",
-          closedAt: new Date().toISOString(),
-        });
-        // Held while upstream still supplies the terminal, and applied when
-        // its list drops it.
-        applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
-      },
-      newId: randomUUID,
-      randomHex,
-      now: () => new Date().toISOString(),
-    }),
+    upstream: upstreamCommandBridge(),
     useUpstream: upstreamCommandsAvailable,
   });
+}
+
+let upstreamBridge: UpstreamCommandBridge | null = null;
+
+/**
+ * The commands as upstream's connection carries them. Made on first use, and
+ * only when the host turned the upstream state source on.
+ */
+function upstreamCommandBridge(): UpstreamCommandBridge {
+  "background only";
+  startUpstreamCommands();
+  upstreamBridge ??= createUpstreamCommandBridge(upstreamCommandPort, {
+    ...upstreamCommandState,
+    pendingModelSelections: upstreamPendingModelSelections,
+    modelSelection: () => appAtomRegistry.get(t3ClientStateAtom).modelSelection,
+    resolveWorkspacePath: (workspaceRoot) => {
+      const resolve = getPreloadBridge()?.resolveWorkspacePath;
+      if (!resolve) throw new Error("The host cannot resolve a workspace path.");
+      return resolve(workspaceRoot);
+    },
+    terminalClosed: ({ threadId, terminalId }) => {
+      const key = terminalSessionKey(threadId, terminalId);
+      const session = closedTerminalSession({
+        threadId,
+        terminalId,
+        cwd: appAtomRegistry.get(t3ClientStateAtom).terminalSessions[key]?.cwd ?? ".",
+        closedAt: new Date().toISOString(),
+      });
+      // Held while upstream still supplies the terminal, and applied when
+      // its list drops it.
+      applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
+    },
+    newId: randomUUID,
+    randomHex,
+    now: () => new Date().toISOString(),
+  });
+  return upstreamBridge;
 }
 
 function installTransportDevToolHook(): void {
@@ -1226,6 +1242,7 @@ async function bootstrapT3Client(): Promise<void> {
       applyVcsStatus: applyVcsStatusPayload,
     },
     upstreamPendingModelSelections,
+    (threadId) => upstreamCommandBridge().deleteThread({ threadId }),
   );
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
