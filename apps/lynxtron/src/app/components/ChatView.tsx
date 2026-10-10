@@ -924,6 +924,7 @@ export function ChatView({ threadId }: ChatViewProps) {
         showContextStrip={showComposerContextStrip}
         worktreePath={activeThread?.worktreePath ?? undefined}
         cwd={cwd}
+        providerDriverKind={activeProviderStatus?.driver}
         providerSkills={activeProviderStatus?.skills ?? []}
         providerSlashCommands={activeProviderStatus?.slashCommands ?? []}
         workspaceMode={workspaceMode}

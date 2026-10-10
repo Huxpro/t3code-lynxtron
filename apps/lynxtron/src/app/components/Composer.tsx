@@ -40,6 +40,7 @@ import {
 } from "@t3tools/contracts";
 import type {
   ProjectEntry,
+  ProviderDriverKind,
   ServerProviderSkill,
   ServerProviderSlashCommand,
 } from "@t3tools/contracts";
@@ -103,6 +104,8 @@ interface ComposerProps {
   showContextStrip: boolean;
   worktreePath?: string;
   cwd?: string;
+  /** Driver of the provider that owns `providerSkills` and `providerSlashCommands`. */
+  providerDriverKind?: ProviderDriverKind;
   providerSkills?: ReadonlyArray<ServerProviderSkill>;
   providerSlashCommands?: ReadonlyArray<ServerProviderSlashCommand>;
   workspaceMode: "local" | "worktree";
@@ -201,6 +204,7 @@ export function Composer({
   showContextStrip,
   worktreePath,
   cwd,
+  providerDriverKind,
   providerSkills = [],
   providerSlashCommands = [],
   workspaceMode,
@@ -782,27 +786,38 @@ export function Composer({
       ...BUILT_IN_COMPOSER_COMMANDS.filter(
         (command) => planModeEnabled || (command.name !== "plan" && command.name !== "default"),
       ).map((command) => ({
+        id: `slash:${command.name}`,
         type: "slash-command" as const,
         command: command.name,
+        label: `/${command.name}`,
         description: command.description,
       })),
-      ...providerSlashCommands.map((command) => ({
-        type: "provider-slash-command" as const,
-        provider: "",
-        command,
-        description: command.description ?? command.input?.hint ?? "",
-      })),
-      ...providerSkills
-        .filter((skill) => skill.enabled)
-        .map((skill) => ({
-          type: "skill" as const,
-          provider: "",
-          skill,
-          description:
-            skill.shortDescription ??
-            skill.description ??
-            (skill.scope ? `${skill.scope} skill` : ""),
-        })),
+      // Provider commands and skills come from the provider this driver names.
+      ...(providerDriverKind
+        ? [
+            ...providerSlashCommands.map((command) => ({
+              id: `provider-slash-command:${providerDriverKind}:${command.name}`,
+              type: "provider-slash-command" as const,
+              provider: providerDriverKind,
+              command,
+              label: `/${command.name}`,
+              description: command.description ?? command.input?.hint ?? "",
+            })),
+            ...providerSkills
+              .filter((skill) => skill.enabled)
+              .map((skill) => ({
+                id: `skill:${providerDriverKind}:${skill.name}`,
+                type: "skill" as const,
+                provider: providerDriverKind,
+                skill,
+                label: `/skill:${skill.name}`,
+                description:
+                  skill.shortDescription ??
+                  skill.description ??
+                  (skill.scope ? `${skill.scope} skill` : ""),
+              })),
+          ]
+        : []),
     ],
     composerTrigger?.kind === "slash-command" ? composerTrigger.query : "",
   );
