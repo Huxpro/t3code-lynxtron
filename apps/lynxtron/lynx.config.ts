@@ -96,6 +96,13 @@ export default defineConfig({
               use: [{ loader: require.resolve("./scripts/lynx-regexp-loader.cjs") }],
             },
             {
+              // Write BigInt literals as calls: the main-thread engine cannot
+              // compile one, and upstream's connection code has them.
+              test: /\.[cm]?[jt]sx?$/u,
+              enforce: "pre",
+              use: [{ loader: require.resolve("./scripts/lynx-bigint-loader.cjs") }],
+            },
+            {
               // Compile upstream Web components unmodified: DOM tags become
               // the host components in src/app/platform/hostDom.tsx.
               test: /\.tsx$/u,

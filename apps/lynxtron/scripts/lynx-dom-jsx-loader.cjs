@@ -16,6 +16,12 @@
 // `getBoundingClientRect`, pointer capture), and a Lynx ref answers
 // measurement and focus only asynchronously through `invoke`.
 // Lynx-owned files are not rewritten; a DOM tag in one of them also fails.
+//
+// One exception, by name: `UNRENDERED_COMPONENTS` lists components of an
+// upstream file that the Lynx app never renders and that the rewrite cannot
+// express. Their bodies are replaced by a throw naming the component, so the
+// rest of the file still compiles from upstream's source and a render of one
+// is loud. A component goes on the list only when no Lynx module imports it.
 const fs = require("node:fs");
 const path = require("node:path");
 const ts = require("typescript");
@@ -37,6 +43,18 @@ const REFUSED_PROPS = new Map([
   ["ref", "a DOM node ref has no Lynx equivalent"],
   ["dangerouslySetInnerHTML", "Lynx cannot render HTML strings"],
 ]);
+
+// Path under apps/web/src -> top-level function components left out.
+const UNRENDERED_COMPONENTS = new Map([
+  // Measures the brand with a DOM ref and ResizeObserver for Web's resizable
+  // sidebar minimum; the Lynx sidebar has a fixed minimum.
+  ["components/sidebar/SidebarChrome.tsx", new Set(["SidebarBrandWidthProbe"])],
+]);
+
+function unrenderedComponents(resourcePath) {
+  if (!resourcePath.startsWith(WEB_SOURCE)) return undefined;
+  return UNRENDERED_COMPONENTS.get(resourcePath.slice(WEB_SOURCE.length).split(path.sep).join("/"));
+}
 
 function isUpstreamComponent(resourcePath) {
   return (
@@ -95,7 +113,7 @@ function describeFile(resourcePath) {
 }
 
 /** Every DOM tag in a file, with what the rewrite would do to it. */
-function scanDomJsx(source, resourcePath, tags) {
+function scanDomJsx(source, resourcePath, tags, unrendered = new Set()) {
   const file = ts.createSourceFile(
     resourcePath,
     source,
@@ -109,6 +127,22 @@ function scanDomJsx(source, resourcePath, tags) {
   const line = (node) => file.getLineAndCharacterOfPosition(node.getStart(file)).line + 1;
 
   const visit = (node) => {
+    if (
+      ts.isFunctionDeclaration(node) &&
+      node.parent === file &&
+      node.name &&
+      node.body &&
+      unrendered.has(node.name.text)
+    ) {
+      edits.push({
+        start: node.body.getStart(file),
+        end: node.body.getEnd(),
+        text: `{ throw new Error(${JSON.stringify(
+          `[lynx-dom-jsx] ${node.name.text} is not compiled for Lynx.`,
+        )}); }${"\n".repeat(node.body.getText(file).split("\n").length - 1)}`,
+      });
+      return;
+    }
     const isOpening = ts.isJsxOpeningElement(node) || ts.isJsxSelfClosingElement(node);
     if (isOpening || ts.isJsxClosingElement(node)) {
       const tag = intrinsicTagName(node.tagName);
@@ -158,8 +192,14 @@ function scanDomJsx(source, resourcePath, tags) {
  * `tags` is the set of tag names the host module exports. Throws when the file
  * uses something the rewrite cannot express.
  */
-function transformDomJsx(source, resourcePath, tags, hostModule = HOST_MODULE) {
-  const { edits, problems } = scanDomJsx(source, resourcePath, tags);
+function transformDomJsx(
+  source,
+  resourcePath,
+  tags,
+  hostModule = HOST_MODULE,
+  unrendered = unrenderedComponents(resourcePath),
+) {
+  const { edits, problems } = scanDomJsx(source, resourcePath, tags, unrendered);
   if (problems.length > 0) {
     throw new Error(
       `[lynx-dom-jsx] ${describeFile(resourcePath)} cannot be compiled for Lynx:\n` +
