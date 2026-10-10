@@ -1608,7 +1608,7 @@ function readSourceControlDetails(root) {
 
 function readSidebarStageIdentity(root) {
   const backdrop = root?.querySelector("[data-stage-backdrop-variant]") ?? null;
-  const brand = root?.querySelector(".sidebar-brand") ?? null;
+  const brand = root?.querySelector('[aria-label="Go to threads"]') ?? null;
   const backdropBox = readElementBox(backdrop);
   return {
     variant: backdrop?.getAttribute("data-stage-backdrop-variant") ?? null,
@@ -1618,7 +1618,7 @@ function readSidebarStageIdentity(root) {
       backdropBox.style.display !== "none" &&
       backdropBox.rect.width > 0 &&
       backdropBox.rect.height > 0,
-    brandOnBackdrop: brand?.classList.contains("sidebar-brand--on-backdrop") ?? false,
+    brandOnBackdrop: brand?.classList.contains("text-white") ?? false,
   };
 }
 
@@ -3132,13 +3132,15 @@ function readLynxPane() {
         chrome: {
           sidebar: readElementBox(root?.querySelector("[data-app-sidebar]")),
           resizeRail: readElementBox(root?.querySelector(".sidebar-resize-rail")),
-          header: readElementBox(root?.querySelector(".lynx-sidebar-chrome-header")),
-          brand: readElementBox(root?.querySelector(".sidebar-brand")),
+          header: readElementBox(root?.querySelector('[class~="@container/sidebar-header"]')),
+          brand: readElementBox(root?.querySelector('[aria-label="Go to threads"]')),
           footer: readElementBox(root?.querySelector("[data-sidebar='footer']")),
           settingsFooter: readSettingsNavigationChrome(root).footer,
           settingsBack: readSettingsNavigationChrome(root).back,
           settingsBackLabel: readSettingsNavigationChrome(root).backLabel,
-          settingsRow: readElementBox(root?.querySelector(".sidebar-settings-row")),
+          settingsRow: readElementBox(
+            root?.querySelector('[data-slot="sidebar-footer"] [aria-label="Settings"]'),
+          ),
           settingsAuthority: readElementBox(root?.querySelector(".sidebar-settings-authority")),
           searchRow: readElementBox(root?.querySelector(".sidebar-v2-control-row--search")),
           searchPrimary: readElementBox(root?.querySelector(".sidebar-v2-control-primary")),
@@ -4644,13 +4646,15 @@ function readWebPane() {
         chrome: {
           sidebar: readElementBox(doc.querySelector("[data-app-sidebar]")),
           resizeRail: readElementBox(doc.querySelector(".sidebar-resize-rail")),
-          header: readElementBox(doc.querySelector(".lynx-sidebar-chrome-header")),
-          brand: readElementBox(doc.querySelector(".sidebar-brand")),
+          header: readElementBox(doc.querySelector('[class~="@container/sidebar-header"]')),
+          brand: readElementBox(doc.querySelector('[aria-label="Go to threads"]')),
           footer: readElementBox(doc.querySelector("[data-sidebar='footer']")),
           settingsFooter: readSettingsNavigationChrome(doc).footer,
           settingsBack: readSettingsNavigationChrome(doc).back,
           settingsBackLabel: readSettingsNavigationChrome(doc).backLabel,
-          settingsRow: readElementBox(doc.querySelector(".sidebar-settings-row")),
+          settingsRow: readElementBox(
+            doc.querySelector('[data-slot="sidebar-footer"] [aria-label="Settings"]'),
+          ),
           settingsAuthority: readElementBox(doc.querySelector(".sidebar-settings-authority")),
           searchRow: readElementBox(doc.querySelector(".sidebar-v2-control-row--search")),
           searchPrimary: readElementBox(doc.querySelector(".sidebar-v2-control-primary")),

@@ -241,8 +241,13 @@ export function SidebarTrigger({
   children,
   className,
   onClick,
+  // Upstream picks a button look; the Lynx trigger is a bare box its caller styles.
+  variant: _variant,
   ...props
-}: ElementProps & { readonly onClick?: (event: unknown) => void }) {
+}: ElementProps & {
+  readonly onClick?: (event: unknown) => void;
+  readonly variant?: string;
+}) {
   const { toggleSidebar } = useSidebar();
   return (
     <view
@@ -351,7 +356,7 @@ export function SidebarMenuButton({
   disabled = false,
   onClick,
   render: _render,
-  size: _size,
+  size,
   ...props
 }: ElementProps & {
   readonly disabled?: boolean;
@@ -359,18 +364,25 @@ export function SidebarMenuButton({
   readonly render?: ReactElement<Record<string, unknown>>;
   readonly size?: "default" | "sm" | "lg" | "icon";
 }) {
+  // The engine matches no attribute selectors, so the icon size is a class.
+  const buttonClassName = cn(
+    "flex min-w-0 items-center",
+    size === "icon" && "sidebar-menu-button--icon",
+    disabled && "opacity-50",
+    className,
+  );
   if (isValidElement(_render)) {
     return cloneElement(_render, {
       ...props,
       children,
-      className: cn("flex min-w-0 items-center", disabled && "opacity-50", className),
+      className: buttonClassName,
       "data-sidebar": "menu-button",
     });
   }
   return (
     <view
       {...props}
-      className={cn("flex min-w-0 items-center", disabled && "opacity-50", className)}
+      className={buttonClassName}
       bindtap={disabled ? undefined : onClick}
       data-sidebar="menu-button"
     >
@@ -379,7 +391,22 @@ export function SidebarMenuButton({
   );
 }
 
-export const SidebarFooter = Container;
+// Upstream's footer. `sidebar-footer` is what its Lynx rules and gates select.
+export function SidebarFooter({ children, className, ...props }: ElementProps) {
+  return (
+    <view
+      {...props}
+      className={cn(
+        "sidebar-footer flex flex-col gap-2 p-[var(--sidebar-content-inset)]",
+        className,
+      )}
+      data-sidebar="footer"
+      data-slot="sidebar-footer"
+    >
+      {children}
+    </view>
+  );
+}
 export const SidebarGroupAction = Container;
 export const SidebarGroupContent = Container;
 export const SidebarGroupLabel = Container;
@@ -392,7 +419,18 @@ export function SidebarInset({ children, className, ...props }: ElementProps) {
   );
 }
 export const SidebarInput = Container;
-export const SidebarMenu = Container;
+export function SidebarMenu({ children, className, ...props }: ElementProps) {
+  return (
+    <view
+      {...props}
+      {...(className === undefined ? {} : { className })}
+      data-sidebar="menu"
+      data-slot="sidebar-menu"
+    >
+      {children}
+    </view>
+  );
+}
 export const SidebarMenuAction = Container;
 export const SidebarMenuBadge = Container;
 export const SidebarMenuItem = Container;

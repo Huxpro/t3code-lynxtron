@@ -952,12 +952,19 @@ async function waitForSelectorAttributeMeasurement({
   );
 }
 
+// Upstream's SidebarChrome carries no Lynx class names: the brand is found by
+// place in the titlebar row (it takes `text-white` on stage artwork), the
+// Settings button by its label. DevTool selectors take no quoted values.
+const SIDEBAR_BRAND = ".drag-region > .w-fit";
+const SIDEBAR_FOOTER = ".sidebar-footer";
+const SIDEBAR_SETTINGS_BUTTON = `${SIDEBAR_FOOTER} [aria-label=Settings]`;
+
 async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentIdentificationMode) {
   const [sidebar] = await readSelectorRects(client, ".sidebar");
   const [threadList] = await readSelectorRects(client, ".sidebar-v2-thread-list");
   const rows = await readSelectorRects(client, ".sidebar-v2-row-item");
   const cards = await readSelectorRects(client, ".sidebar-v2-row-card");
-  const brand = await readOptionalMeasurement(client, ".sidebar-brand");
+  const brand = await readOptionalMeasurement(client, SIDEBAR_BRAND);
   const backdrop = await readOptionalMeasurement(client, ".sidebar__brand-bg");
   const clientState = await readClientState(client);
   const activeStatus = await readOptionalMeasurement(
@@ -1115,8 +1122,8 @@ async function verifySidebarGeometry(client, viewportWidth, expectedEnvironmentI
           Math.abs(backdrop.rect.x - sidebar.x) > 1 ||
           Math.abs(backdrop.rect.width - sidebar.width) > 1 ||
           Math.abs(backdrop.rect.height - 80) > 1 ||
-          !brand.attributes.class?.includes("sidebar-brand--on-backdrop"))) ||
-      (!artworkExpected && brand.attributes.class?.includes("sidebar-brand--on-backdrop")))
+          !brand.attributes.class?.split(/\s+/u).includes("text-white"))) ||
+      (!artworkExpected && brand.attributes.class?.split(/\s+/u).includes("text-white")))
   ) {
     throw new Error(
       `Sidebar branding mode drifted: ${JSON.stringify({
@@ -11396,10 +11403,10 @@ async function verifyFilesBrowser({
       ? { mode: "authority-viewport" }
       : await (async () => {
           const [footer, settingsRow, settingsAuthority, settingsRowBoxSizing] = await Promise.all([
-            readOptionalMeasurement(client, ".sidebar-footer"),
-            readOptionalMeasurement(client, ".sidebar-settings-row"),
+            readOptionalMeasurement(client, SIDEBAR_FOOTER),
+            readOptionalMeasurement(client, SIDEBAR_SETTINGS_BUTTON),
             readOptionalMeasurement(client, ".sidebar-settings-authority"),
-            readFirstSelectorStyleValue(client, ".sidebar-settings-row", "box-sizing"),
+            readFirstSelectorStyleValue(client, SIDEBAR_SETTINGS_BUTTON, "box-sizing"),
           ]);
           if (
             !measurementVisible(footer) &&
@@ -13058,7 +13065,7 @@ function readIsolatedClientSettings(baseDir) {
 }
 
 async function openBetaSettings({ child, client, timeoutMs }) {
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
@@ -13309,7 +13316,7 @@ async function verifyBetaMutation({
 }
 
 async function openArchiveSettings({ child, client, timeoutMs }) {
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
@@ -13515,7 +13522,7 @@ async function verifyArchiveMutation({
 }
 
 async function openConnectionsSettings({ child, client, timeoutMs }) {
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
@@ -13964,7 +13971,7 @@ async function verifyConnectionsMutation({
 
 async function verifyDevBranding(client) {
   const backdrop = await readOptionalMeasurement(client, ".sidebar-stage-backdrop--dev");
-  const brand = await readOptionalMeasurement(client, ".sidebar-brand");
+  const brand = await readOptionalMeasurement(client, SIDEBAR_BRAND);
   if (
     backdrop?.attributes["data-stage-backdrop-variant"] !== "dev" ||
     !backdrop.rect ||
@@ -14559,7 +14566,7 @@ async function verifySettingsAppearance({
   semanticOnly,
   timeoutMs,
 }) {
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
@@ -14679,7 +14686,7 @@ async function verifySettingsRouteBehavior({
   let archive = null;
   let keybindings = null;
   let sourceControl = null;
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   observed.push(
     await waitForRoutePanel({
       child,
@@ -14939,7 +14946,7 @@ async function verifySettingsRouteBehavior({
   await waitForChatRoute({ child, client, timeoutMs });
 
   for (let cycle = 1; cycle <= 2; cycle += 1) {
-    await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+    await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
     await waitForRoutePanel({
       child,
       client,
@@ -15031,7 +15038,7 @@ async function verifySourceControlErrorBehavior({
   timeoutMs,
 }) {
   const discoveryProbe = await waitForSourceControlDiscoveryError({ child, client, timeoutMs });
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
@@ -15131,7 +15138,7 @@ async function verifySourceControlErrorBehavior({
 
 async function verifyProvidersSettings({ child, client, devToolCli, outputDirectory, timeoutMs }) {
   const beforeSequence = await readRendererReadiness(client);
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
@@ -15259,7 +15266,7 @@ async function verifyProviderInstanceDialog({ baseDir, child, client, height, ti
   const displayName = "Fidelity Codex";
   const approximately = (actual, expected, tolerance = 3) =>
     typeof actual === "number" && Math.abs(actual - expected) <= tolerance;
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
@@ -15508,7 +15515,7 @@ async function verifySourceControlLoadingBehavior({
     params: { cwd: projectCwd },
     timeoutMs,
   });
-  await tapSelector({ child, client, selector: ".sidebar-settings-row", timeoutMs });
+  await tapSelector({ child, client, selector: SIDEBAR_SETTINGS_BUTTON, timeoutMs });
   await waitForRoutePanel({
     child,
     client,
