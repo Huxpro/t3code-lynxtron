@@ -1,11 +1,16 @@
-import { ProviderInstanceId } from "@t3tools/contracts";
+import { AuthAccessSnapshot, ProviderInstanceId } from "@t3tools/contracts";
+import * as Schema from "effect/Schema";
+import { AsyncResult } from "effect/unstable/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
+import { authAccessSnapshot } from "./upstreamPrimary.ts";
 import {
   createUpstreamStateRouter,
   terminalDomain,
   threadWasReset,
+  upstreamAccessPayload,
   upstreamStatePayloads,
+  upstreamStatusPayload,
   upstreamTerminalPayloads,
   upstreamThreadPayload,
   upstreamVcsPayload,
@@ -135,6 +140,68 @@ describe("upstreamStatePayloads", () => {
       "thread-kept",
       "thread-named",
     ]);
+  });
+});
+
+describe("upstreamStatusPayload", () => {
+  it("reports ready while upstream is connected with a live shell", () => {
+    assert.deepEqual(
+      upstreamStatusPayload({
+        connection: connection("connected"),
+        shell: shellState("live", live),
+      }),
+      { status: "ready" },
+    );
+  });
+
+  it("leaves the status to the connector while upstream is not serving the client", () => {
+    assert.isNull(upstreamStatusPayload({ connection: null, shell: null }));
+    assert.isNull(
+      upstreamStatusPayload({ connection: connection("backoff"), shell: shellState("live", live) }),
+    );
+    assert.isNull(
+      upstreamStatusPayload({
+        connection: connection("connected"),
+        shell: shellState("cached", live),
+      }),
+    );
+  });
+});
+
+describe("upstreamAccessPayload", () => {
+  const access = Schema.decodeUnknownSync(Schema.toCodecJson(AuthAccessSnapshot))({
+    pairingLinks: [
+      {
+        id: "link-1",
+        scopes: ["orchestration:read"],
+        subject: "one-time-token",
+        label: "Phone",
+        createdAt: "2026-10-09T10:00:00.000Z",
+        expiresAt: "2026-10-09T10:05:00.000Z",
+      },
+    ],
+    clientSessions: [],
+  });
+
+  it("presents the access snapshot the way the Lynx settings read it", () => {
+    const payload = upstreamAccessPayload({ connection: connection("connected"), access });
+    assert.deepInclude(payload?.pairingLinks[0], { id: "link-1", label: "Phone", scopeCount: 1 });
+    assert.deepInclude(payload, { pairingLinkCount: 1, clientSessionCount: 0, hasEntries: true });
+  });
+
+  it("supplies nothing before the stream has delivered or while disconnected", () => {
+    assert.isNull(upstreamAccessPayload({ connection: connection("connected"), access: null }));
+    assert.isNull(upstreamAccessPayload({ connection: connection("backoff"), access }));
+  });
+
+  it("reads the snapshot upstream's access stream holds", () => {
+    assert.strictEqual(
+      authAccessSnapshot(
+        AsyncResult.success({ version: 1, revision: 3, type: "snapshot", payload: access }),
+      ),
+      access,
+    );
+    assert.isNull(authAccessSnapshot(AsyncResult.initial()));
   });
 });
 

@@ -176,6 +176,7 @@ import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
   ConnectorSnapshot,
+  ConnectorStatusPayload,
   ConnectorThreadPayload,
   ProjectRepoContext,
   TerminalSessionPresentation,
@@ -564,6 +565,22 @@ function applyStatusPayload(status: StatusEventPayload): void {
   }
 }
 
+/**
+ * Applies the main connector's status. What only the main process knows, the
+ * kind of connection and whether its paths are local, is taken at once; the
+ * status itself is held while upstream's connection supplies it.
+ */
+function applyConnectorStatus(status: ConnectorStatusPayload): void {
+  if (applyFromConnector("status", () => applyStatusPayload(status))) return;
+  if (typeof status.pathsResolveLocally === "boolean") {
+    setEnvironmentPathsResolveLocally(status.pathsResolveLocally);
+  }
+  const current = appAtomRegistry.get(t3ClientStateAtom);
+  if (status.connectionKind !== undefined && status.connectionKind !== current.connectionKind) {
+    patchState({ connectionKind: status.connectionKind });
+  }
+}
+
 function applyConfigPayload(
   config: ServerConfig,
   preferredSelection?: ModelSelection | null,
@@ -748,14 +765,14 @@ function applyConnectorSnapshot(
   snapshot: ConnectorSnapshot,
   preferredSelection?: ModelSelection | null,
 ): void {
-  applyStatusPayload(snapshot.status as StatusEventPayload);
+  applyConnectorStatus(snapshot.status);
   const config = snapshot.config;
   if (config) {
     applyFromConnector("config", () =>
       applyConfigPayload(decodeConnectorServerConfig(config), preferredSelection),
     );
   }
-  applyAccessPayload(snapshot.access);
+  applyFromConnector("access", () => applyAccessPayload(snapshot.access));
   applyFromConnector("shell", () => applyShellPayload(snapshot.shell as ShellEventPayload));
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
@@ -768,7 +785,7 @@ function applyConnectorSnapshot(
 function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
   switch (envelope.kind) {
     case "status":
-      applyStatusPayload(envelope.payload as StatusEventPayload);
+      applyConnectorStatus(envelope.payload);
       return;
     case "config":
       applyFromConnector("config", () =>
@@ -776,7 +793,9 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
       );
       return;
     case "access":
-      applyAccessPayload(envelope.payload as AuthAccessPresentation);
+      applyFromConnector("access", () =>
+        applyAccessPayload(envelope.payload as AuthAccessPresentation),
+      );
       return;
     case "shell":
       applyFromConnector("shell", () => applyShellPayload(envelope.payload as ShellEventPayload));
@@ -1198,6 +1217,8 @@ async function bootstrapT3Client(): Promise<void> {
   startUpstreamStateSource(
     t3ClientStateAtom,
     {
+      applyStatus: applyStatusPayload,
+      applyAccess: applyAccessPayload,
       applyConfig: applyConfigPayload,
       applyShell: applyShellPayload,
       applyThread: applyActiveThreadPayload,

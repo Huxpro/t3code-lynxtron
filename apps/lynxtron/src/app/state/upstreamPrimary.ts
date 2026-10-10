@@ -4,12 +4,18 @@
 import type { SupervisorConnectionState } from "@t3tools/client-runtime/connection";
 import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
-import type { OrchestrationShellSnapshot, ServerConfig } from "@t3tools/contracts";
+import type {
+  AuthAccessSnapshot,
+  AuthAccessStreamEvent,
+  OrchestrationShellSnapshot,
+  ServerConfig,
+} from "@t3tools/contracts";
 import * as Option from "effect/Option";
 import { AsyncResult } from "effect/unstable/reactivity";
 
 import { appAtomRegistry } from "./atomRegistry.ts";
 import {
+  upstreamAuthEnvironment,
   upstreamEnvironmentCatalog,
   upstreamEnvironmentShell,
   upstreamOrchestrationEnvironment,
@@ -53,6 +59,16 @@ export interface UpstreamPrimaryState {
   readonly config: ServerConfig | null;
   /** The archived threads, which the shell stream does not carry. */
   readonly archived: OrchestrationShellSnapshot | null;
+  /** The pairing links and client sessions, or null before the server has said. */
+  readonly access: AuthAccessSnapshot | null;
+}
+
+/** The snapshot upstream's access stream holds, which it delivers whole each time. */
+export function authAccessSnapshot(
+  result: AsyncResult.AsyncResult<AuthAccessStreamEvent, unknown>,
+): AuthAccessSnapshot | null {
+  const event = Option.getOrNull(AsyncResult.value(result));
+  return event?.type === "snapshot" ? event.payload : null;
 }
 
 /** The primary local environment in a catalog, if the host has registered it. */
@@ -83,6 +99,7 @@ function follow(): void {
       shell: null,
       config: null,
       archived: null,
+      access: null,
     };
     const next = { ...base, ...patch };
     current = next;
@@ -99,7 +116,14 @@ function follow(): void {
       }
       stopFollowing();
       followed = environmentId;
-      publish({ catalog, connection: null, shell: null, config: null, archived: null });
+      publish({
+        catalog,
+        connection: null,
+        shell: null,
+        config: null,
+        archived: null,
+        access: null,
+      });
       if (environmentId === null) {
         stopFollowing = () => {};
         return;
@@ -123,6 +147,11 @@ function follow(): void {
         appAtomRegistry.subscribe(
           archivedAtom,
           (archived) => publish({ archived: Option.getOrNull(AsyncResult.value(archived)) }),
+          { immediate: true },
+        ),
+        appAtomRegistry.subscribe(
+          upstreamAuthEnvironment.accessChanges({ environmentId, input: null }),
+          (access) => publish({ access: authAccessSnapshot(access) }),
           { immediate: true },
         ),
         appAtomRegistry.subscribe(

@@ -10,6 +10,7 @@
 // dropped upstream connection hands the domain back to the connector.
 import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
 import type { ModelSelection, ServerConfig, VcsStatusResult } from "@t3tools/contracts";
+import { type AuthAccessPresentation, projectAuthAccess } from "@t3tools/lynx-logic/connections";
 import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
@@ -24,6 +25,7 @@ import {
 } from "../../shared/shellOverlays.ts";
 import type {
   ConnectorShellPayload,
+  ConnectorStatusPayload,
   ConnectorThreadPayload,
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
@@ -41,7 +43,14 @@ import {
 } from "./upstreamSelected.ts";
 
 /** Each terminal session is a domain of its own, named by its key. */
-export type UpstreamStateDomain = "config" | "shell" | "thread" | "vcs" | `terminal:${string}`;
+export type UpstreamStateDomain =
+  | "status"
+  | "access"
+  | "config"
+  | "shell"
+  | "thread"
+  | "vcs"
+  | `terminal:${string}`;
 
 export function terminalDomain(
   session: Pick<TerminalSessionPresentation, "threadId" | "terminalId">,
@@ -61,6 +70,33 @@ function isConnected(connection: UpstreamPrimaryState["connection"]): boolean {
 
 function liveShellSnapshot(state: Pick<UpstreamPrimaryState, "shell">) {
   return state.shell?.status === "live" ? Option.getOrNull(state.shell.snapshot) : null;
+}
+
+/**
+ * The connection status while upstream's session is connected and its shell
+ * is live, or null while it is not. That means the server is being reached,
+ * whatever the main connector's own socket is doing. Without it the client is
+ * served by the connector, so the connector's status is the one that
+ * describes it; it also carries what only the main process knows, such as a
+ * server that exited.
+ */
+export function upstreamStatusPayload(
+  state: Pick<UpstreamPrimaryState, "connection" | "shell">,
+): ConnectorStatusPayload | null {
+  return isConnected(state.connection) && liveShellSnapshot(state) !== null
+    ? { status: "ready" }
+    : null;
+}
+
+/**
+ * The pairing links and client sessions as the Lynx settings show them, or
+ * null while upstream is not connected or its access stream has not delivered.
+ */
+export function upstreamAccessPayload(
+  state: Pick<UpstreamPrimaryState, "connection" | "access">,
+): AuthAccessPresentation | null {
+  if (!isConnected(state.connection) || state.access === null) return null;
+  return projectAuthAccess(state.access);
 }
 
 const NO_PENDING_MODEL_SELECTIONS: PendingModelSelections = new Map();
@@ -197,9 +233,14 @@ export function createUpstreamStateRouter() {
   const owned = new Set<UpstreamStateDomain>();
   const held = new Map<UpstreamStateDomain, () => void>();
   return {
-    fromConnector(domain: UpstreamStateDomain, apply: () => void): void {
-      if (owned.has(domain)) held.set(domain, apply);
-      else apply();
+    /** Returns whether the payload was applied; false means it is held. */
+    fromConnector(domain: UpstreamStateDomain, apply: () => void): boolean {
+      if (owned.has(domain)) {
+        held.set(domain, apply);
+        return false;
+      }
+      apply();
+      return true;
     },
     fromUpstream<T>(domain: UpstreamStateDomain, payload: T | null, apply: (payload: T) => void) {
       if (payload !== null) {
@@ -221,6 +262,8 @@ const router = createUpstreamStateRouter();
 export const applyFromConnector = router.fromConnector;
 
 export interface UpstreamStateSink {
+  readonly applyStatus: (status: ConnectorStatusPayload) => void;
+  readonly applyAccess: (access: AuthAccessPresentation) => void;
   readonly applyConfig: (config: ServerConfig) => void;
   readonly applyShell: (shell: ConnectorShellPayload) => void;
   readonly applyThread: (thread: ConnectorThreadPayload) => void;
@@ -247,14 +290,26 @@ export function startUpstreamStateSource(
 
   // The watcher fires for every connection and catalog change; a domain is
   // projected and applied again only when what it is built from changed.
-  let previous: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived"> | null =
-    null;
+  let previous: Pick<
+    UpstreamPrimaryState,
+    "connection" | "shell" | "config" | "archived" | "access"
+  > | null = null;
+  let statusFromUpstream = false;
   watchUpstreamPrimary((state) => {
     const connectionChanged = previous?.connection !== state.connection;
     const configChanged = connectionChanged || previous?.config !== state.config;
     const shellChanged =
       connectionChanged || previous?.shell !== state.shell || previous?.archived !== state.archived;
+    const accessChanged = connectionChanged || previous?.access !== state.access;
     previous = state;
+    const status = upstreamStatusPayload(state);
+    if ((status !== null) !== statusFromUpstream) {
+      statusFromUpstream = status !== null;
+      router.fromUpstream("status", status, sink.applyStatus);
+    }
+    if (accessChanged) {
+      router.fromUpstream("access", upstreamAccessPayload(state), sink.applyAccess);
+    }
     if (!configChanged && !shellChanged) return;
     if (shellChanged) {
       dropConfirmedModelSelections(pendingModelSelections, liveShellSnapshot(state)?.threads ?? []);
