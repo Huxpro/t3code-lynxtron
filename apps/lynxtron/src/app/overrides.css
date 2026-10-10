@@ -1208,7 +1208,14 @@
 .lynx-sidebar-chrome-header .sidebar-brand--on-backdrop .sidebar-brand-code-label {
   color: rgba(255, 255, 255, 0.7);
 }
-.drag-region > .w-fit {
+/* Upstream wraps the brand and the pill in a clipped one-line row. On Lynx the
+ * brand is placed against the header itself, so the row neither positions nor
+ * clips it. */
+.drag-region > .flex-wrap {
+  position: static;
+  overflow: visible;
+}
+.drag-region .w-fit {
   position: absolute;
   left: 130px;
   top: 12px;
@@ -1221,20 +1228,20 @@
   margin-left: 0;
   color: var(--foreground);
 }
-.drag-region > .w-fit.text-white {
+.drag-region .w-fit.text-white {
   color: #ffffff;
 }
 /* Upstream's box around the wordmark and the label: the old brand row. */
-.drag-region > .w-fit > .inline-flex {
+.drag-region .w-fit > .inline-flex {
   flex-direction: row;
   align-items: center;
   gap: 4px;
 }
-.drag-region > .w-fit.text-white .truncate {
+.drag-region .w-fit.text-white .truncate {
   color: rgba(255, 255, 255, 0.7);
 }
 /* The pill followed an empty trigger box and the header's 8px gap. */
-.drag-region > .ui-badge {
+.drag-region .ui-badge {
   margin-left: 12px;
 }
 .sidebar-v2-search {
@@ -1538,7 +1545,7 @@
 }
 /* The label is a span inside upstream's box, which holds the type utilities
    the Lynx copy wrote on the text itself. */
-.drag-region > .w-fit .truncate {
+.drag-region .w-fit .truncate {
   color: var(--muted-foreground);
   font-size: 14px;
   font-weight: 500;
@@ -1975,14 +1982,14 @@
 .drag-region {
   -x-app-region: drag;
 }
-.drag-region > .w-fit,
-.drag-region > .w-fit view,
-.drag-region > .w-fit text,
-.drag-region > .w-fit image,
-.drag-region > .ui-badge,
-.drag-region > .ui-badge view,
-.drag-region > .ui-badge text,
-.drag-region > .ui-badge image,
+.drag-region .w-fit,
+.drag-region .w-fit view,
+.drag-region .w-fit text,
+.drag-region .w-fit image,
+.drag-region .ui-badge,
+.drag-region .ui-badge view,
+.drag-region .ui-badge text,
+.drag-region .ui-badge image,
 .lynx-titlebar-no-drag,
 .lynx-titlebar-no-drag view,
 .lynx-titlebar-no-drag text,
@@ -2503,7 +2510,7 @@
 .t3-dm-sans-ready .lynx-sidebar-project-title,
 .t3-dm-sans-ready .thread-status-label__copy,
 .t3-dm-sans-ready .sidebar-brand-code-label,
-.t3-dm-sans-ready .drag-region > .w-fit .truncate,
+.t3-dm-sans-ready .drag-region .w-fit .truncate,
 .t3-dm-sans-ready .transcript-working-label {
   font-family: "T3 DM Sans", var(--font-sans);
 }
@@ -2545,7 +2552,7 @@
   transform: translate(-0.5px, -1.5px) scaleX(1.135);
 }
 .t3-dm-sans-ready .sidebar-brand-code-label,
-.t3-dm-sans-ready .drag-region > .w-fit .truncate {
+.t3-dm-sans-ready .drag-region .w-fit .truncate {
   text-stroke-color: var(--muted-foreground);
   text-stroke-width: 0.15px;
   transform: translateX(-0.5px) scaleX(1.03);
@@ -7785,7 +7792,7 @@
   opacity: 0.54;
 }
 .viewport-responsive .sidebar-brand-host,
-.viewport-responsive .drag-region > .w-fit {
+.viewport-responsive .drag-region .w-fit {
   left: 130px;
 }
 .viewport-responsive .lynx-sidebar-global-control--on-backdrop .sidebar-global-toggle-icon {
@@ -7810,7 +7817,7 @@
   right: 12px;
   overflow: hidden;
 }
-.sidebar-width-responsive .drag-region > .w-fit {
+.sidebar-width-responsive .drag-region .w-fit {
   overflow: hidden;
 }
 .sidebar-width-responsive .sidebar-global-toggle-icon {

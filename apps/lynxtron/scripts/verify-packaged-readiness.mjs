@@ -938,7 +938,7 @@ async function waitForSelectorAttributeMeasurement({
 // Upstream's SidebarChrome carries no Lynx class names: the brand is found by
 // place in the titlebar row (it takes `text-white` on stage artwork), the
 // Settings button by its label. DevTool selectors take no quoted values.
-const SIDEBAR_BRAND = ".drag-region > .w-fit";
+const SIDEBAR_BRAND = ".drag-region .w-fit";
 const SIDEBAR_FOOTER = ".sidebar-footer";
 const SIDEBAR_SETTINGS_BUTTON = `${SIDEBAR_FOOTER} [aria-label=Settings]`;
 
