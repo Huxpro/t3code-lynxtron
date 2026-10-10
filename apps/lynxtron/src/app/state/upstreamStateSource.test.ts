@@ -2,8 +2,10 @@ import { assert, describe, it } from "vite-plus/test";
 
 import {
   createUpstreamStateRouter,
+  terminalDomain,
   threadWasReset,
   upstreamStatePayloads,
+  upstreamTerminalPayloads,
   upstreamThreadPayload,
 } from "./upstreamStateSource.ts";
 import {
@@ -12,6 +14,7 @@ import {
   serverConfig,
   shellSnapshot,
   shellState,
+  terminal,
   threadDetail,
   threadState,
 } from "./upstreamState.fixtures.ts";
@@ -168,6 +171,50 @@ describe("threadWasReset", () => {
   });
 });
 
+describe("upstreamTerminalPayloads", () => {
+  it("builds a connector session for each terminal whose stream has delivered", () => {
+    const sessions = upstreamTerminalPayloads({
+      connection: connection("connected"),
+      terminals: [
+        terminal({ terminalId: "term-1", cwd: "/work/a", history: "one\n", output: ["two\n"] }),
+        terminal({ terminalId: "term-2" }, false),
+      ],
+    });
+    assert.deepEqual(sessions, [
+      {
+        threadId: "thread-1",
+        terminalId: "term-1",
+        cwd: "/work/a",
+        status: "running",
+        history: "one\ntwo\n",
+        error: null,
+        updatedAt: "2026-10-09T00:00:00.000Z",
+      },
+    ]);
+  });
+
+  it("supplies an empty list for a thread the server lists no terminals for", () => {
+    assert.deepEqual(
+      upstreamTerminalPayloads({ connection: connection("connected"), terminals: [] }),
+      [],
+    );
+  });
+
+  it("supplies nothing before the server has listed terminals or while disconnected", () => {
+    assert.equal(
+      upstreamTerminalPayloads({ connection: connection("connected"), terminals: null }),
+      null,
+    );
+    assert.equal(
+      upstreamTerminalPayloads({
+        connection: connection("backoff"),
+        terminals: [terminal({ terminalId: "term-1" })],
+      }),
+      null,
+    );
+  });
+});
+
 describe("createUpstreamStateRouter", () => {
   it("applies connector payloads while upstream does not own the domain", () => {
     const router = createUpstreamStateRouter();
@@ -203,5 +250,22 @@ describe("createUpstreamStateRouter", () => {
     fromUpstream(null);
     router.fromConnector("config", () => applied.push("connector-3"));
     assert.deepEqual(applied, ["upstream-1", "connector-2", "connector-3"]);
+  });
+});
+
+describe("createUpstreamStateRouter with terminals", () => {
+  it("holds and hands back each terminal session on its own", () => {
+    const router = createUpstreamStateRouter();
+    const applied: string[] = [];
+    const one = terminalDomain({ threadId: "thread-1", terminalId: "term-1" });
+    const two = terminalDomain({ threadId: "thread-1", terminalId: "term-2" });
+    router.fromUpstream(one, "upstream-1", (payload) => applied.push(payload));
+    router.fromConnector(one, () => applied.push("connector-1 closed"));
+    router.fromConnector(two, () => applied.push("connector-2"));
+    assert.deepEqual(applied, ["upstream-1", "connector-2"]);
+
+    // The server stopped listing the first terminal: the connector's last word on it applies.
+    router.fromUpstream<string>(one, null, (payload) => applied.push(payload));
+    assert.deepEqual(applied, ["upstream-1", "connector-2", "connector-1 closed"]);
   });
 });

@@ -1,5 +1,6 @@
-// Feeds the Lynx client's server config, shell and selected thread from
-// upstream's atoms instead of the main connector's events. It runs only when the host launches
+// Feeds the Lynx client's server config, shell, selected thread and that
+// thread's terminals from upstream's atoms instead of the main connector's
+// events. It runs only when the host launches
 // with `T3_LYNXTRON_UPSTREAM_STATE=1`; without it every connector payload is
 // applied as it arrives and nothing here subscribes to anything.
 //
@@ -13,10 +14,12 @@ import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
+import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import type {
   ConnectorShellPayload,
   ConnectorThreadPayload,
+  TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { T3ClientState } from "./t3Client.ts";
@@ -25,9 +28,20 @@ import {
   type UpstreamPrimaryState,
   watchUpstreamPrimary,
 } from "./upstreamPrimary.ts";
-import { type UpstreamSelectedState, watchUpstreamSelected } from "./upstreamSelected.ts";
+import {
+  type UpstreamSelectedState,
+  type UpstreamTerminal,
+  watchUpstreamSelected,
+} from "./upstreamSelected.ts";
 
-export type UpstreamStateDomain = "config" | "shell" | "thread";
+/** Each terminal session is a domain of its own, named by its key. */
+export type UpstreamStateDomain = "config" | "shell" | "thread" | `terminal:${string}`;
+
+export function terminalDomain(
+  session: Pick<TerminalSessionPresentation, "threadId" | "terminalId">,
+): UpstreamStateDomain {
+  return `terminal:${terminalSessionKey(session.threadId, session.terminalId)}`;
+}
 
 export interface UpstreamStatePayloads {
   readonly config: ServerConfig | null;
@@ -95,6 +109,34 @@ export function threadWasReset(
 }
 
 /**
+ * The connector-shaped session for one terminal, or null until its attach
+ * stream has delivered the terminal's first snapshot.
+ */
+export function upstreamTerminalPayload(
+  terminal: UpstreamTerminal,
+): TerminalSessionPresentation | null {
+  const { summary, buffer } = terminal;
+  if (buffer === null || buffer.version === 0) return null;
+  return projectTerminalSession({
+    threadId: summary.threadId,
+    terminalId: summary.terminalId,
+    cwd: summary.cwd,
+    buffer,
+  });
+}
+
+/**
+ * The sessions upstream can supply for the selected thread's terminals, or
+ * null while it is not connected or the server has not listed its terminals.
+ */
+export function upstreamTerminalPayloads(
+  state: Pick<UpstreamSelectedState, "connection" | "terminals">,
+): ReadonlyArray<TerminalSessionPresentation> | null {
+  if (!isConnected(state.connection) || state.terminals === null) return null;
+  return state.terminals.flatMap((terminal) => upstreamTerminalPayload(terminal) ?? []);
+}
+
+/**
  * Decides, per domain, whether a connector payload is applied or held.
  * `fromUpstream` with a payload takes the domain; with null it gives the
  * domain back and applies the connector payload that was held meanwhile.
@@ -130,6 +172,7 @@ export interface UpstreamStateSink {
   readonly applyConfig: (config: ServerConfig) => void;
   readonly applyShell: (shell: ConnectorShellPayload) => void;
   readonly applyThread: (thread: ConnectorThreadPayload) => void;
+  readonly applyTerminal: (session: TerminalSessionPresentation) => void;
 }
 
 let started = false;
@@ -165,16 +208,44 @@ export function startUpstreamStateSource(
 
   let selected: UpstreamSelectedState | null = null;
   let thread: ConnectorThreadPayload | null = null;
+  // The terminals upstream owns, by domain, each with the value it was last
+  // projected from: output arrives in many small chunks, and only the
+  // terminal that got one is projected again.
+  const terminals = new Map<UpstreamStateDomain, UpstreamTerminal>();
   watchUpstreamSelected(clientStateAtom, (state) => {
     const connectionChanged = selected?.connection !== state.connection;
     const threadChanged =
       connectionChanged ||
       selected?.threadId !== state.threadId ||
       selected?.thread !== state.thread;
+    const terminalsChanged = connectionChanged || selected?.terminals !== state.terminals;
     selected = state;
-    if (!threadChanged) return;
-    thread = upstreamThreadPayload(state);
-    router.fromUpstream("thread", thread, sink.applyThread);
+    if (threadChanged) {
+      thread = upstreamThreadPayload(state);
+      router.fromUpstream("thread", thread, sink.applyThread);
+    }
+    if (!terminalsChanged) return;
+    const listed = new Map(
+      (isConnected(state.connection) ? (state.terminals ?? []) : []).map((terminal) => [
+        terminalDomain(terminal.summary),
+        terminal,
+      ]),
+    );
+    for (const domain of terminals.keys()) {
+      if (listed.has(domain)) continue;
+      terminals.delete(domain);
+      router.fromUpstream(domain, null, sink.applyTerminal);
+    }
+    for (const [domain, terminal] of listed) {
+      const previous = terminals.get(domain);
+      if (previous?.buffer === terminal.buffer && previous.summary.cwd === terminal.summary.cwd) {
+        continue;
+      }
+      const session = upstreamTerminalPayload(terminal);
+      if (session === null) terminals.delete(domain);
+      else terminals.set(domain, terminal);
+      router.fromUpstream(domain, session, sink.applyTerminal);
+    }
   });
 
   // The client state changes with every streamed token, so the check is a

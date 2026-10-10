@@ -10,18 +10,26 @@ describe("clientSelection", () => {
   it("follows the selected thread when the server has it, listed or archived", () => {
     assert.deepEqual(clientSelection({ activeThreadId: "thread-a", threads, archivedThreads }), {
       threadId: "thread-a",
+      terminalThreadId: "thread-a",
     });
     assert.deepEqual(
       clientSelection({ activeThreadId: "thread-archived", threads, archivedThreads }),
-      { threadId: "thread-archived" },
+      { threadId: "thread-archived", terminalThreadId: "thread-archived" },
     );
   });
 
-  it("follows nothing for a local draft or with no selection", () => {
+  it("follows a local draft's terminals but not its thread, which the server lacks", () => {
     assert.deepEqual(clientSelection({ activeThreadId: "draft-1", threads, archivedThreads }), {
       threadId: null,
+      terminalThreadId: "draft-1",
     });
-    assert.deepEqual(clientSelection({ threads, archivedThreads }), { threadId: null });
+  });
+
+  it("follows nothing with no selection", () => {
+    assert.deepEqual(clientSelection({ threads, archivedThreads }), {
+      threadId: null,
+      terminalThreadId: null,
+    });
   });
 });
 

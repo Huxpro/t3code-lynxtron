@@ -39,7 +39,6 @@ import {
   applyTerminalAttachStreamEvent,
   EMPTY_TERMINAL_BUFFER_STATE,
   type TerminalBufferState,
-  terminalOutputText,
 } from "@t3tools/client-runtime/state/terminal";
 import { buildProviderInstanceEnabledPatch } from "@t3tools/lynx-logic/providerSettings";
 import {
@@ -130,6 +129,7 @@ import {
   type LatestPendingMutation,
 } from "../../shared/latestPendingMutation.ts";
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
+import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
@@ -1505,7 +1505,7 @@ export class T3Connector {
   }
 
   private terminalKey(threadId: string, terminalId: string): string {
-    return `${threadId}\u0000${terminalId}`;
+    return terminalSessionKey(threadId, terminalId);
   }
 
   private emitTerminal(state: TerminalSessionPresentation): void {
@@ -1529,15 +1529,14 @@ export class T3Connector {
       (event) =>
         Effect.sync(() => {
           buffer = applyTerminalAttachStreamEvent(buffer, event);
-          this.emitTerminal({
-            threadId: input.threadId,
-            terminalId: input.terminalId,
-            cwd: input.cwd,
-            status: buffer.status,
-            history: terminalOutputText(buffer.output),
-            error: buffer.error,
-            updatedAt: buffer.updatedAt,
-          });
+          this.emitTerminal(
+            projectTerminalSession({
+              threadId: input.threadId,
+              terminalId: input.terminalId,
+              cwd: input.cwd,
+              buffer,
+            }),
+          );
         }),
     );
     this.terminalFibers.set(key, this.forkClient(consume));

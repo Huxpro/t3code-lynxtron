@@ -7,6 +7,7 @@ import type { ServerConfig } from "@t3tools/contracts";
 import type {
   ConnectorShellPayload,
   ConnectorThreadPayload,
+  TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import type { T3ClientState } from "./t3Client.ts";
 
@@ -309,6 +310,41 @@ export function compareThread(
       diffValues(`${path}.turnId`, left.turnId, right.turnId, lines);
       diffValues(`${path}.implementedAt`, left.implementedAt, right.implementedAt, lines);
       diffLarge(`${path}.planMarkdown`, left.planMarkdown, right.planMarkdown, lines);
+    },
+    out,
+  );
+  return comparison(out);
+}
+
+/**
+ * The selected thread's terminals. `upstream` is what upstream supplies for
+ * `threadId`. A terminal the client has closed and the server no longer lists
+ * is not a difference. History is reported by length and hash.
+ */
+export function compareTerminals(
+  upstream: ReadonlyArray<TerminalSessionPresentation> | null,
+  threadId: string | null,
+  client: Pick<T3ClientState, "activeThreadId" | "terminalSessions">,
+): DomainComparison {
+  if (upstream === null || threadId === null || threadId !== client.activeThreadId) {
+    return NOT_READY;
+  }
+  const out: string[] = [];
+  const supplied = new Set(upstream.map((session) => session.terminalId));
+  diffRows(
+    "terminal",
+    upstream,
+    Object.values(client.terminalSessions).filter(
+      (session) =>
+        session.threadId === threadId &&
+        (session.status !== "closed" || supplied.has(session.terminalId)),
+    ),
+    (session) => session.terminalId,
+    (path, left, right, lines) => {
+      diffValues(`${path}.status`, left.status, right.status, lines);
+      diffValues(`${path}.cwd`, left.cwd, right.cwd, lines);
+      diffValues(`${path}.error`, left.error, right.error, lines);
+      diffLarge(`${path}.history`, left.history, right.history, lines);
     },
     out,
   );

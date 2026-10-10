@@ -15,6 +15,7 @@ import type { T3ClientState } from "./t3Client.ts";
 import {
   compareServerConfig,
   compareShell,
+  compareTerminals,
   compareThread,
   type DomainComparison,
 } from "./upstreamCompare.ts";
@@ -25,7 +26,11 @@ import {
   watchUpstreamPrimary,
 } from "./upstreamPrimary.ts";
 import { type UpstreamSelectedState, watchUpstreamSelected } from "./upstreamSelected.ts";
-import { upstreamStatePayloads, upstreamThreadPayload } from "./upstreamStateSource.ts";
+import {
+  upstreamStatePayloads,
+  upstreamTerminalPayloads,
+  upstreamThreadPayload,
+} from "./upstreamStateSource.ts";
 
 export interface UpstreamShadowSummary {
   /** The connection phase, or what the runtime is waiting for before it has one. */
@@ -46,6 +51,8 @@ export interface UpstreamShadowComparison {
   readonly shell: DomainComparison;
   /** The selected thread. Compared when read: it changes with every token. */
   readonly thread: DomainComparison;
+  /** The selected thread's terminals. Compared when read, like the thread. */
+  readonly terminal: DomainComparison;
 }
 
 /** What upstream holds for the selection, in a line, for reading next to `compare`. */
@@ -56,6 +63,8 @@ export interface UpstreamShadowSelected {
   /** Older turns upstream has not loaded yet; the thread is not compared until it has. */
   readonly threadHasOlderTurns: boolean;
   readonly threadError: string | null;
+  /** How many terminals the server lists for the thread, or null before it has said. */
+  readonly terminals: number | null;
 }
 
 export function summarizeUpstreamSelected(state: UpstreamSelectedState): UpstreamShadowSelected {
@@ -67,6 +76,7 @@ export function summarizeUpstreamSelected(state: UpstreamSelectedState): Upstrea
     threadMessages: data === null ? null : data.messages.length,
     threadHasOlderTurns: thread !== null && threadHasOlderTurns(thread),
     threadError: thread === null ? null : Option.getOrNull(thread.error),
+    terminals: state.terminals?.length ?? null,
   };
 }
 
@@ -158,6 +168,13 @@ export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): 
         ...compareUpstreamState(upstream, client),
         get thread() {
           return compareThread(selected === null ? null : upstreamThreadPayload(selected), client);
+        },
+        get terminal() {
+          return compareTerminals(
+            selected === null ? null : upstreamTerminalPayloads(selected),
+            selected?.terminalThreadId ?? null,
+            client,
+          );
         },
       },
     };

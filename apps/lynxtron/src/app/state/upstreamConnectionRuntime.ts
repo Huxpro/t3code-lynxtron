@@ -11,6 +11,7 @@ import {
   createEnvironmentShellAtoms,
   shellSnapshotLoaderLayer,
 } from "@t3tools/client-runtime/state/shell";
+import { createTerminalEnvironmentAtoms } from "@t3tools/client-runtime/state/terminal";
 import {
   createEnvironmentThreadStateAtoms,
   threadSnapshotLoaderLayer,
@@ -41,3 +42,5 @@ export const upstreamOrchestrationEnvironment =
   createOrchestrationEnvironmentAtoms(upstreamConnectionRuntime);
 export const upstreamEnvironmentThreads =
   createEnvironmentThreadStateAtoms(upstreamConnectionRuntime);
+export const upstreamTerminalEnvironment =
+  createTerminalEnvironmentAtoms(upstreamConnectionRuntime);

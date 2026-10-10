@@ -5,6 +5,11 @@ import {
   type SupervisorConnectionState,
 } from "@t3tools/client-runtime/connection";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
+import {
+  applyTerminalAttachStreamEvent,
+  EMPTY_TERMINAL_BUFFER_STATE,
+  type TerminalBufferState,
+} from "@t3tools/client-runtime/state/terminal";
 import type { EnvironmentThreadState } from "@t3tools/client-runtime/state/threads";
 import {
   DEFAULT_SERVER_SETTINGS,
@@ -13,6 +18,9 @@ import {
   OrchestrationThread,
   type ServerConfig,
   ServerProvider,
+  type TerminalAttachStreamEvent,
+  TerminalSessionSnapshot,
+  TerminalSummary,
 } from "@t3tools/contracts";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
@@ -22,6 +30,8 @@ import type { ChatMessage } from "../bridge.ts";
 
 const decodeShellSnapshot = Schema.decodeUnknownSync(OrchestrationShellSnapshot);
 const decodeThread = Schema.decodeUnknownSync(OrchestrationThread);
+const decodeTerminalSnapshot = Schema.decodeUnknownSync(TerminalSessionSnapshot);
+const decodeTerminalSummary = Schema.decodeUnknownSync(TerminalSummary);
 const decodeProvider = Schema.decodeUnknownSync(ServerProvider);
 
 export interface WireThread {
@@ -238,4 +248,60 @@ export function clientMessages(thread: OrchestrationThread): ReadonlyArray<ChatM
   return thread.messages.filter(
     (message): message is typeof message & ChatMessage => message.role !== "reasoning",
   );
+}
+
+export interface WireTerminal {
+  readonly terminalId: string;
+  readonly threadId?: string;
+  readonly cwd?: string;
+  readonly status?: "starting" | "running" | "exited" | "error";
+  /** The history in the attach stream's first snapshot. */
+  readonly history?: string;
+  /** Output chunks that arrived after the snapshot. */
+  readonly output?: ReadonlyArray<string>;
+  /** Other attach events that arrived after the output. */
+  readonly then?: ReadonlyArray<"exited" | "closed" | "cleared">;
+}
+
+/**
+ * A terminal as the server lists it, with the buffer upstream's attach stream
+ * reduces from the server's events. `attached: false` is a terminal whose
+ * stream has not delivered its snapshot yet.
+ */
+export function terminal(
+  wire: WireTerminal,
+  attached = true,
+): { readonly summary: TerminalSummary; readonly buffer: TerminalBufferState | null } {
+  const base = {
+    threadId: wire.threadId ?? "thread-1",
+    terminalId: wire.terminalId,
+    cwd: wire.cwd ?? "/work/project-1",
+    worktreePath: null,
+    status: wire.status ?? "running",
+    pid: 4242,
+    exitCode: null,
+    exitSignal: null,
+    label: "zsh",
+    updatedAt: "2026-10-09T00:00:00.000Z",
+  };
+  const summary = decodeTerminalSummary({ ...base, hasRunningSubprocess: false });
+  if (!attached) return { summary, buffer: null };
+  const target = { threadId: base.threadId, terminalId: base.terminalId };
+  const events: ReadonlyArray<TerminalAttachStreamEvent> = [
+    {
+      type: "snapshot",
+      snapshot: decodeTerminalSnapshot({ ...base, history: wire.history ?? "" }),
+    },
+    ...(wire.output ?? []).map((data) => ({ ...target, type: "output" as const, data })),
+    ...(wire.then ?? []).map((type) =>
+      type === "exited" ? { ...target, type, exitCode: 0, exitSignal: null } : { ...target, type },
+    ),
+  ];
+  return {
+    summary,
+    buffer: events.reduce(
+      (buffer, event) => applyTerminalAttachStreamEvent(buffer, event),
+      EMPTY_TERMINAL_BUFFER_STATE,
+    ),
+  };
 }

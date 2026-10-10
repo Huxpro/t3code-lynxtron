@@ -1,19 +1,24 @@
 import { assert, describe, it } from "vite-plus/test";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
+import { terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import {
   compareServerConfig,
   compareShell,
+  compareTerminals,
   compareThread,
   MAX_DIFFERENCES,
   textDigest,
 } from "./upstreamCompare.ts";
+import { upstreamTerminalPayloads } from "./upstreamStateSource.ts";
 import {
   clientMessages,
+  connection,
   provider,
   serverConfig,
   shellSnapshot,
+  terminal,
   threadDetail,
   type WireThread,
   type WireThreadDetail,
@@ -193,6 +198,79 @@ describe("compareShell", () => {
     const result = compareShell(shell(many), clientShell(shell([])));
     assert.equal(result.differences.length, MAX_DIFFERENCES);
     assert.equal(result.differences.at(-1), "and 11 more");
+  });
+});
+
+function terminalSessions(...wires: ReadonlyArray<Parameters<typeof terminal>[0]>) {
+  return (
+    upstreamTerminalPayloads({
+      connection: connection("connected"),
+      terminals: wires.map((wire) => terminal(wire)),
+    }) ?? []
+  );
+}
+
+function clientTerminals(
+  sessions: ReturnType<typeof terminalSessions>,
+  activeThreadId = "thread-1",
+) {
+  return {
+    activeThreadId,
+    terminalSessions: Object.fromEntries(
+      sessions.map((session) => [
+        terminalSessionKey(session.threadId, session.terminalId),
+        session,
+      ]),
+    ),
+  };
+}
+
+describe("compareTerminals", () => {
+  const first = { terminalId: "term-1", history: "$ ls\n", output: ["a.ts\n"] };
+
+  it("is not ready before upstream lists terminals or for another thread", () => {
+    const client = clientTerminals(terminalSessions(first));
+    assert.equal(compareTerminals(null, "thread-1", client).ready, false);
+    assert.equal(compareTerminals(terminalSessions(first), "thread-2", client).ready, false);
+    assert.equal(compareTerminals(terminalSessions(first), null, client).ready, false);
+  });
+
+  it("reads equal when both sides hold the same sessions, or none", () => {
+    const sessions = terminalSessions(first, { terminalId: "term-2" });
+    assert.deepEqual(compareTerminals(sessions, "thread-1", clientTerminals(sessions)), {
+      ready: true,
+      equal: true,
+      differences: [],
+    });
+    assert.equal(compareTerminals([], "thread-1", clientTerminals([])).equal, true);
+  });
+
+  it("reports history by terminal id, length and hash, never the output", () => {
+    const upstream = terminalSessions({ ...first, output: ["a.ts\n", "b.ts\n"] });
+    const client = clientTerminals(terminalSessions(first));
+    assert.deepEqual(compareTerminals(upstream, "thread-1", client).differences, [
+      `terminal term-1.history: upstream ${textDigest("$ ls\na.ts\nb.ts\n")}, client ${textDigest("$ ls\na.ts\n")}`,
+    ]);
+  });
+
+  it("reports status and terminals only one side has", () => {
+    const upstream = terminalSessions({ ...first, then: ["exited"] }, { terminalId: "term-2" });
+    const client = clientTerminals(terminalSessions(first, { terminalId: "term-3" }));
+    assert.deepEqual(compareTerminals(upstream, "thread-1", client).differences, [
+      "terminal term-2: only upstream",
+      "terminal term-3: only client",
+      'terminal term-1.status: upstream "exited", client "running"',
+    ]);
+  });
+
+  it("ignores other threads' terminals and ones the client closed that the server dropped", () => {
+    const sessions = terminalSessions(first);
+    const client = clientTerminals([
+      ...sessions,
+      ...terminalSessions({ terminalId: "term-9", threadId: "thread-2" }),
+      ...terminalSessions({ terminalId: "term-closed", then: ["closed"] }),
+    ]);
+    assert.equal(compareTerminals(sessions, "thread-1", client).equal, true);
   });
 });
 

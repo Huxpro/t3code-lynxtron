@@ -181,7 +181,12 @@ import type {
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
-import { applyFromConnector, startUpstreamStateSource } from "./upstreamStateSource";
+import { terminalSessionKey } from "../../shared/connectorTerminal.ts";
+import {
+  applyFromConnector,
+  startUpstreamStateSource,
+  terminalDomain,
+} from "./upstreamStateSource";
 
 interface PollBridge extends T3Bridge {}
 
@@ -705,6 +710,15 @@ function applyActiveThreadPayload(payload: ConnectorThreadPayload): void {
   applyThreadPayload(payload as ThreadEventPayload);
 }
 
+function applyTerminalPayload(session: TerminalSessionPresentation): void {
+  patchState({
+    terminalSessions: {
+      ...appAtomRegistry.get(t3ClientStateAtom).terminalSessions,
+      [terminalSessionKey(session.threadId, session.terminalId)]: session,
+    },
+  });
+}
+
 function applyConnectorSnapshot(
   snapshot: ConnectorSnapshot,
   preferredSelection?: ModelSelection | null,
@@ -721,7 +735,9 @@ function applyConnectorSnapshot(
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
   if (activeThread) applyFromConnector("thread", () => applyActiveThreadPayload(activeThread));
-  patchState({ terminalSessions: snapshot.terminals });
+  for (const session of Object.values(snapshot.terminals)) {
+    applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
+  }
 }
 
 function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
@@ -744,12 +760,9 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
       applyFromConnector("thread", () => applyActiveThreadPayload(envelope.payload));
       return;
     case "terminal":
-      patchState({
-        terminalSessions: {
-          ...appAtomRegistry.get(t3ClientStateAtom).terminalSessions,
-          [`${envelope.threadId}\u0000${envelope.terminalId}`]: envelope.payload,
-        },
-      });
+      applyFromConnector(terminalDomain(envelope.payload), () =>
+        applyTerminalPayload(envelope.payload),
+      );
       return;
     case "log":
       // Mirror host logs to the renderer console, matching the preload path.
@@ -1110,6 +1123,7 @@ async function bootstrapT3Client(): Promise<void> {
     applyConfig: applyConfigPayload,
     applyShell: applyShellPayload,
     applyThread: applyActiveThreadPayload,
+    applyTerminal: applyTerminalPayload,
   });
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
