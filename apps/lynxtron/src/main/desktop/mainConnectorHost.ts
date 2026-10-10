@@ -167,6 +167,10 @@ export class MainConnectorHost {
     registerHandler(T3_CONNECTOR_METHODS.ready, () => this.syncReply());
     registerHandler(T3_CONNECTOR_METHODS.resync, () => this.syncReply());
     registerHandler(T3_CONNECTOR_METHODS.command, (params) => this.handleCommand(params));
+    registerHandler(T3_CONNECTOR_METHODS.primaryConnection, () => {
+      const read = this.connector?.primaryConnection;
+      return typeof read === "function" ? read.call(this.connector) : null;
+    });
   }
 
   /** Boot the connector (and its spawned server). Idempotent. */
