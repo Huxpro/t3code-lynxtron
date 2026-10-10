@@ -8,9 +8,11 @@ import {
 import type { RpcSession, WsRpcProtocolClient } from "@t3tools/client-runtime/rpc";
 import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import {
+  type AuthPairingCredentialResult,
   ClientOrchestrationCommand,
   EnvironmentId,
   type ModelSelection,
+  TerminalSessionSnapshot,
   ORCHESTRATION_WS_METHODS,
   ProjectId,
   ProviderInstanceId,
@@ -18,6 +20,7 @@ import {
 } from "@t3tools/contracts";
 import * as Cause from "effect/Cause";
 import * as Crypto from "effect/Crypto";
+import * as DateTime from "effect/DateTime";
 import * as Effect from "effect/Effect";
 import * as Exit from "effect/Exit";
 import * as Option from "effect/Option";
@@ -27,6 +30,7 @@ import { AsyncResult } from "effect/unstable/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
 import type { T3ConnectorCommandBridge } from "../bridge.ts";
+import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
 import { EMPTY_GIT_ACTION_OUTCOME } from "../../shared/gitActionOutcome.ts";
 import { makeHostCrypto } from "../platform/hostCrypto.ts";
 import { upstreamOperation } from "./upstreamOperations.ts";
@@ -47,6 +51,7 @@ import {
 } from "./upstreamState.fixtures.ts";
 
 const isClientCommand = Schema.is(ClientOrchestrationCommand);
+const decodeTerminalSnapshot = Schema.decodeUnknownSync(TerminalSessionSnapshot);
 const codex = ProviderInstanceId.make("codex");
 const snapshot = shellSnapshot([{ id: "thread-1" }]);
 const PRIMARY_TARGET = new PrimaryConnectionTarget({
@@ -59,18 +64,26 @@ const PRIMARY_TARGET = new PrimaryConnectionTarget({
 interface Sent {
   readonly dispatched: Array<ClientOrchestrationCommand>;
   readonly requests: Array<{ readonly tag: string; readonly input: unknown }>;
-  readonly selected: Array<string>;
-  readonly remembered: Array<ModelSelection>;
+  readonly terminal: Array<Record<string, unknown>>;
+  readonly closedTerminals: Array<{ readonly threadId: string; readonly terminalId: string }>;
+  readonly auth: Array<Record<string, unknown>>;
 }
 
 function harness(
   options: {
     readonly replies?: Readonly<Record<string, unknown>>;
     readonly failDispatch?: Error;
+    readonly failTerminalClose?: Error;
     readonly context?: Partial<UpstreamCommandContext>;
   } = {},
 ) {
-  const sent: Sent = { dispatched: [], requests: [], selected: [], remembered: [] };
+  const sent: Sent = {
+    dispatched: [],
+    requests: [],
+    terminal: [],
+    closedTerminals: [],
+    auth: [],
+  };
   const pendingModelSelections = new Map<string, ModelSelection>();
   let nextId = 0;
   // Upstream's own operations run against a session that records what they
@@ -126,21 +139,68 @@ function harness(
       throw Cause.squash(exit.cause);
     },
     gitAction: () => Promise.resolve(EMPTY_GIT_ACTION_OUTCOME),
+    terminal: {
+      open: (input) => {
+        sent.terminal.push({ open: input });
+        return Promise.resolve(
+          decodeTerminalSnapshot({
+            threadId: input.threadId,
+            terminalId: input.terminalId,
+            cwd: input.cwd,
+            worktreePath: null,
+            status: "running",
+            pid: 4321,
+            history: "",
+            exitCode: null,
+            exitSignal: null,
+            label: "zsh",
+            updatedAt: "2026-10-10T00:00:00.000Z",
+          }),
+        );
+      },
+      close: (input) => {
+        sent.terminal.push({ close: input });
+        return options.failTerminalClose
+          ? Promise.reject(options.failTerminalClose)
+          : Promise.resolve();
+      },
+    },
+    auth: {
+      createPairingCredential: (input) => {
+        sent.auth.push({ createPairingCredential: input });
+        return Promise.resolve({
+          id: "link-1",
+          credential: "ABCD-1234",
+          ...(input.label === undefined ? {} : { label: input.label }),
+          expiresAt: DateTime.makeUnsafe("2026-10-10T00:05:00.000Z"),
+        } satisfies AuthPairingCredentialResult);
+      },
+      revokePairingLink: (input) => {
+        sent.auth.push({ revokePairingLink: input });
+        return Promise.resolve({ revoked: true });
+      },
+      revokeClient: (input) => {
+        sent.auth.push({ revokeClient: input });
+        return Promise.resolve({ revoked: false });
+      },
+      revokeOtherClients: () => {
+        sent.auth.push({ revokeOtherClients: null });
+        return Promise.resolve({ revokedCount: 2 });
+      },
+    },
   };
   const bridge = createUpstreamCommandBridge(port, {
     threads: () => snapshot.threads,
+    projects: () => snapshot.projects,
     config: () => serverConfig(),
     httpBaseUrl: () => "ws://127.0.0.1:4100",
     pendingModelSelections,
-    connector: {
-      selectThread: (threadId) => {
-        sent.selected.push(threadId);
-        return Promise.resolve();
-      },
-      setModelSelection: (input) => {
-        sent.remembered.push(input.selection);
-        return Promise.resolve();
-      },
+    modelSelection: () => ({ instanceId: codex, model: "gpt-5" }),
+    // What the host answers for a home-relative path.
+    resolveWorkspacePath: (workspaceRoot) =>
+      workspaceRoot.startsWith("~/") ? `/Users/tester/${workspaceRoot.slice(2)}` : workspaceRoot,
+    terminalClosed: (terminal) => {
+      sent.closedTerminals.push(terminal);
     },
     newId: () => `id-${++nextId}`,
     randomHex: () => "0a1b2c3d",
@@ -153,7 +213,7 @@ function harness(
 describe("routeCommandBridge", () => {
   const record = (calls: Array<string>, source: string) =>
     Object.fromEntries(
-      [...UPSTREAM_COMMAND_NAMES, "reconnect", "createProject", "selectThread"].map((name) => [
+      [...UPSTREAM_COMMAND_NAMES, "reconnect"].map((name) => [
         name,
         (input?: unknown) => {
           calls.push(`${source}:${name}:${JSON.stringify(input)}`);
@@ -182,20 +242,20 @@ describe("routeCommandBridge", () => {
     ]);
   });
 
-  it("keeps the commands only the main process can carry out on the connector", async () => {
+  it("leaves only restarting the server with the connector while upstream is connected", async () => {
     const calls: Array<string> = [];
-    const bridge = routeCommandBridge({
-      connector: record(calls, "connector"),
-      upstream: record(calls, "upstream"),
-      useUpstream: () => true,
-    });
-    await bridge.reconnect?.();
-    await bridge.createProject?.({ workspaceRoot: "~/work" });
-    await bridge.selectThread?.("thread-1");
+    const bridge: Record<string, ((input?: unknown) => Promise<unknown>) | undefined> =
+      routeCommandBridge({
+        connector: record(calls, "connector"),
+        upstream: record(calls, "upstream"),
+        useUpstream: () => true,
+      });
+    for (const name of CONNECTOR_COMMAND_NAMES) await bridge[name]?.();
     assert.deepEqual(
-      calls.map((call) => call.split(":").slice(0, 2).join(":")),
-      ["connector:reconnect", "connector:createProject", "connector:selectThread"],
+      calls.filter((call) => call.startsWith("connector:")),
+      ["connector:reconnect:undefined"],
     );
+    assert.equal(calls.length, CONNECTOR_COMMAND_NAMES.length);
   });
 
   it("leaves a command the connector does not offer unavailable", () => {
@@ -325,6 +385,142 @@ describe("thread and project commands", () => {
   });
 });
 
+describe("a command the transport drops", () => {
+  it("fails once and is not sent again", async () => {
+    const { bridge, sent } = harness({ failDispatch: new Error("Local disconnected.") });
+    let message = "";
+    await bridge.archiveThread({ threadId: "thread-1" }).catch((error: Error) => {
+      message = error.message;
+    });
+    assert.equal(message, "Local disconnected.");
+    assert.equal(sent.dispatched.length, 1);
+  });
+});
+
+describe("createProject", () => {
+  it("creates a project at the path the host resolved, as upstream's clients do", async () => {
+    const { bridge, sent } = harness();
+    const { projectId } = await bridge.createProject({ workspaceRoot: "~/work/site" });
+    const [command] = sent.dispatched;
+    assert.isTrue(isClientCommand(command));
+    assert.deepInclude<Record<string, unknown>>(command ?? {}, {
+      type: "project.create",
+      projectId,
+      title: "site",
+      workspaceRoot: "/Users/tester/work/site",
+      createWorkspaceRootIfMissing: true,
+      defaultModelSelection: null,
+    });
+  });
+
+  it("returns the project that already has the resolved path and sends nothing", async () => {
+    const { bridge, sent } = harness({
+      context: { resolveWorkspacePath: () => "/work/project-1" },
+    });
+    assert.deepEqual(await bridge.createProject({ workspaceRoot: "~/project-1/" }), {
+      projectId: "project-1",
+    });
+    assert.deepEqual(sent.dispatched, []);
+  });
+});
+
+describe("createThread and selectThread", () => {
+  it("creates a thread in the first project with the client's model", async () => {
+    const { bridge, sent } = harness();
+    const { threadId } = await bridge.createThread({});
+    const [command] = sent.dispatched;
+    assert.isTrue(isClientCommand(command));
+    assert.deepInclude<Record<string, unknown>>(command ?? {}, {
+      type: "thread.create",
+      threadId,
+      projectId: "project-1",
+      title: "New thread",
+      modelSelection: { instanceId: codex, model: "gpt-5" },
+    });
+  });
+
+  it("refuses to create a thread without a project or a model", async () => {
+    const messages: Array<string> = [];
+    const note = (error: Error) => void messages.push(error.message);
+    await harness({ context: { projects: () => [] } })
+      .bridge.createThread({})
+      .catch(note);
+    await harness({ context: { modelSelection: () => undefined } })
+      .bridge.createThread({})
+      .catch(note);
+    assert.deepEqual(messages, ["no project available", "no model available"]);
+  });
+
+  it("asks nobody to follow a selected thread", async () => {
+    const { bridge, sent } = harness();
+    await bridge.selectThread("thread-1");
+    assert.deepEqual([sent.dispatched, sent.requests], [[], []]);
+  });
+});
+
+describe("terminals", () => {
+  it("opens through upstream's command and returns the server's session", async () => {
+    const { bridge, sent } = harness();
+    const input = { threadId: "thread-1", terminalId: "default", cwd: "/work/project-1" };
+    const session = await bridge.openTerminal(input);
+    assert.deepInclude(session, { terminalId: "default", status: "running", pid: 4321 });
+    assert.deepEqual(sent.terminal, [{ open: input }]);
+  });
+
+  it("ends the client's session once the server has closed a terminal", async () => {
+    const { bridge, sent } = harness();
+    const input = { threadId: "thread-1", terminalId: "split-1", deleteHistory: true };
+    await bridge.closeTerminal(input);
+    assert.deepEqual(sent.terminal, [{ close: input }]);
+    assert.deepEqual(sent.closedTerminals, [{ threadId: "thread-1", terminalId: "split-1" }]);
+  });
+
+  it("leaves the sessions alone when a close fails or names a whole thread", async () => {
+    const failing = harness({ failTerminalClose: new Error("terminal is busy") });
+    let message = "";
+    await failing.bridge
+      .closeTerminal({ threadId: "thread-1", terminalId: "split-1" })
+      .catch((error: Error) => {
+        message = error.message;
+      });
+    assert.equal(message, "terminal is busy");
+    assert.deepEqual(failing.sent.closedTerminals, []);
+
+    const wholeThread = harness();
+    await wholeThread.bridge.closeTerminal({ threadId: "thread-1", deleteHistory: true });
+    assert.deepEqual(wholeThread.sent.closedTerminals, []);
+  });
+});
+
+describe("pairing and client sessions", () => {
+  it("creates a pairing credential and reports when it expires as text", async () => {
+    const { bridge, sent } = harness();
+    assert.deepEqual(await bridge.createPairingCredential({ label: "  Phone " }), {
+      id: "link-1",
+      credential: "ABCD-1234",
+      label: "Phone",
+      expiresAt: "2026-10-10T00:05:00.000Z",
+    });
+    await bridge.createPairingCredential();
+    assert.deepEqual(sent.auth, [
+      { createPairingCredential: { label: "Phone" } },
+      { createPairingCredential: {} },
+    ]);
+  });
+
+  it("answers a revocation with what the server did", async () => {
+    const { bridge, sent } = harness();
+    assert.equal(await bridge.revokePairingLink({ id: "link-1" }), true);
+    assert.equal(await bridge.revokeClientSession({ sessionId: "session-1" }), false);
+    assert.equal(await bridge.revokeOtherClientSessions(), 2);
+    assert.deepEqual(sent.auth, [
+      { revokePairingLink: { id: "link-1" } },
+      { revokeClient: { sessionId: "session-1" } },
+      { revokeOtherClients: null },
+    ]);
+  });
+});
+
 describe("sendPrompt", () => {
   it("starts a turn on a known thread with its modes and the pending selection", async () => {
     const { bridge, sent, pendingModelSelections } = harness();
@@ -339,7 +535,6 @@ describe("sendPrompt", () => {
       runtimeMode: "full-access",
       createdAt: "2026-10-10T00:00:00.000Z",
     });
-    assert.deepEqual(sent.selected, []);
   });
 
   it("creates a draft's thread with the turn and names its temporary worktree branch", async () => {
@@ -368,8 +563,6 @@ describe("sendPrompt", () => {
     assert.deepInclude(command.bootstrap?.createThread, { branch: null, worktreePath: null });
     assert.equal(command.bootstrap?.prepareWorktree?.branch, "t3code/0a1b2c3d");
     assert.equal(command.titleSeed, "hello");
-    // The connector follows the new thread so it can take over if upstream drops.
-    assert.deepEqual(sent.selected, ["thread-draft"]);
   });
 
   it("refuses a thread the server does not have and sends nothing", async () => {
@@ -397,7 +590,6 @@ describe("setModelSelection", () => {
       modelSelection: selection,
     });
     assert.deepEqual([...pendingModelSelections], [["thread-1", selection]]);
-    assert.deepEqual(sent.remembered, [selection]);
   });
 
   it("drops the pending selection when the command fails", async () => {
@@ -410,11 +602,10 @@ describe("setModelSelection", () => {
     assert.equal(pendingModelSelections.size, 0);
   });
 
-  it("only tells the connector when no thread is named", async () => {
+  it("sends nothing when no thread is named", async () => {
     const { bridge, sent, pendingModelSelections } = harness();
     await bridge.setModelSelection({ selection });
     assert.deepEqual(sent.dispatched, []);
-    assert.deepEqual(sent.remembered, [selection]);
     assert.equal(pendingModelSelections.size, 0);
   });
 

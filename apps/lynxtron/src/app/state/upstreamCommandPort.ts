@@ -1,24 +1,36 @@
 // Upstream's connection as the port the renderer's commands are sent through,
 // and what those commands read from upstream's state. Nothing is read, and
 // upstream's connection is not started, until `startUpstreamCommands` runs.
-import type { EnvironmentSupervisor } from "@t3tools/client-runtime/connection";
-import { request, runStream } from "@t3tools/client-runtime/rpc";
+import { EnvironmentSupervisor } from "@t3tools/client-runtime/connection";
+import { environmentEndpointUrl } from "@t3tools/client-runtime/environment";
+import { PrimaryEnvironmentAuth } from "@t3tools/client-runtime/platform";
 import {
+  executeEnvironmentHttpRequest,
+  makeEnvironmentHttpApiGroupClient,
+  request,
+  runStream,
+} from "@t3tools/client-runtime/rpc";
+import {
+  type AtomCommandResult,
   createAtomCommandScheduler,
   createEnvironmentCommand,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
 import { WS_METHODS } from "@t3tools/contracts";
 import type * as Crypto from "effect/Crypto";
-import type * as Effect from "effect/Effect";
+import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Stream from "effect/Stream";
+import type { HttpClient } from "effect/unstable/http";
 import { AsyncResult } from "effect/unstable/reactivity";
 
 import { applyGitActionProgress, EMPTY_GIT_ACTION_OUTCOME } from "../../shared/gitActionOutcome.ts";
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { UpstreamCommandContext, UpstreamCommandPort } from "./upstreamCommands.ts";
-import { upstreamConnectionRuntime } from "./upstreamConnectionRuntime.ts";
+import {
+  upstreamConnectionRuntime,
+  upstreamTerminalEnvironment,
+} from "./upstreamConnectionRuntime.ts";
 import { operationThreadId, upstreamOperation } from "./upstreamOperations.ts";
 import {
   primaryEnvironmentId,
@@ -58,6 +70,8 @@ export function primaryHttpBaseUrl(state: Pick<CommandState, "catalog"> | null):
 
 let primary: UpstreamPrimaryState | null = null;
 let started = false;
+let available = false;
+const availabilityListeners = new Set<(available: boolean) => void>();
 
 /** Starts following upstream's primary environment for the commands. Idempotent. */
 export function startUpstreamCommands(): void {
@@ -65,6 +79,10 @@ export function startUpstreamCommands(): void {
   started = true;
   watchUpstreamPrimary((state) => {
     primary = state;
+    const next = upstreamCommandsReady(state);
+    if (next === available) return;
+    available = next;
+    for (const listener of availabilityListeners) listener(next);
   });
 }
 
@@ -73,14 +91,20 @@ export function upstreamCommandsAvailable(): boolean {
   return upstreamCommandsReady(primary);
 }
 
+/** Calls `listener` each time upstream starts or stops taking the commands. */
+export function onUpstreamCommandsAvailability(listener: (available: boolean) => void): void {
+  availabilityListeners.add(listener);
+}
+
 export const upstreamCommandState: Pick<
   UpstreamCommandContext,
-  "threads" | "config" | "httpBaseUrl"
+  "threads" | "projects" | "config" | "httpBaseUrl"
 > = {
   threads: () => [
     ...(Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.threads ?? []),
     ...(primary?.archived?.threads ?? []),
   ],
+  projects: () => Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.projects ?? [],
   config: () => primary?.config ?? null,
   httpBaseUrl: () => primaryHttpBaseUrl(primary),
 };
@@ -89,13 +113,30 @@ export const upstreamCommandState: Pick<
 // the mode commands, whose order decides the mode the thread ends in.
 const threadScheduler = createAtomCommandScheduler();
 
-async function runInPrimary<A, E>(
-  label: string,
-  execute: () => Effect.Effect<A, E, EnvironmentSupervisor | Crypto.Crypto>,
-  serialKey?: string,
-): Promise<A> {
+function requirePrimaryEnvironment() {
   const environmentId = primary === null ? null : primaryEnvironmentId(primary.catalog);
   if (environmentId === null) throw new Error("not connected");
+  return environmentId;
+}
+
+/** A command's value, or its failure as the error the renderer's caller sees. */
+async function settled<A, E>(running: Promise<AtomCommandResult<A, E>>): Promise<A> {
+  const result = await running;
+  if (result._tag === "Success") return result.value;
+  const failure = squashAtomCommandFailure(result);
+  throw failure instanceof Error ? failure : new Error(String(failure));
+}
+
+function runInPrimary<A, E>(
+  label: string,
+  execute: () => Effect.Effect<
+    A,
+    E,
+    EnvironmentSupervisor | Crypto.Crypto | HttpClient.HttpClient | PrimaryEnvironmentAuth
+  >,
+  serialKey?: string,
+): Promise<A> {
+  const environmentId = requirePrimaryEnvironment();
   const command = createEnvironmentCommand(upstreamConnectionRuntime, {
     label,
     execute,
@@ -106,10 +147,39 @@ async function runInPrimary<A, E>(
           concurrency: { mode: "serial" as const, key: () => serialKey },
         }),
   });
-  const result = await command.run(appAtomRegistry, { environmentId, input: undefined });
-  if (result._tag === "Success") return result.value;
-  const failure = squashAtomCommandFailure(result);
-  throw failure instanceof Error ? failure : new Error(String(failure));
+  return settled(command.run(appAtomRegistry, { environmentId, input: undefined }));
+}
+
+const AUTH_REQUEST_TIMEOUT_MS = 10_000;
+
+type AuthClient = Effect.Success<ReturnType<typeof makeEnvironmentHttpApiGroupClient<"auth">>>;
+
+/**
+ * One call to the primary environment's HTTP auth API, authorized the way
+ * upstream authorizes the primary connection: with the bearer
+ * `PrimaryEnvironmentAuth` reads from the host at the time of the call.
+ */
+function authRequest<A, E>(
+  pathname: string,
+  call: (client: AuthClient, headers: { readonly authorization?: string }) => Effect.Effect<A, E>,
+): Promise<A> {
+  return runInPrimary(`lynx:auth:${pathname}`, () =>
+    Effect.gen(function* () {
+      const supervisor = yield* EnvironmentSupervisor;
+      const target = supervisor.target;
+      if (target._tag !== "PrimaryConnectionTarget") {
+        return yield* Effect.fail(new Error("not connected"));
+      }
+      const auth = yield* PrimaryEnvironmentAuth;
+      const bearer = Option.getOrUndefined(yield* auth.bearerToken);
+      const client = yield* makeEnvironmentHttpApiGroupClient(target.httpBaseUrl, "auth");
+      return yield* executeEnvironmentHttpRequest(
+        environmentEndpointUrl(target.httpBaseUrl, pathname),
+        AUTH_REQUEST_TIMEOUT_MS,
+        call(client, bearer === undefined ? {} : { authorization: `Bearer ${bearer}` }),
+      );
+    }),
+  );
 }
 
 // A command that fails is not sent again. Upstream's session does not retry a
@@ -131,4 +201,38 @@ export const upstreamCommandPort: UpstreamCommandPort = {
         Stream.runFold(() => EMPTY_GIT_ACTION_OUTCOME, applyGitActionProgress),
       ),
     ),
+  terminal: {
+    open: (input) =>
+      settled(
+        upstreamTerminalEnvironment.open.run(appAtomRegistry, {
+          environmentId: requirePrimaryEnvironment(),
+          input,
+        }),
+      ),
+    close: (input) =>
+      settled(
+        upstreamTerminalEnvironment.close.run(appAtomRegistry, {
+          environmentId: requirePrimaryEnvironment(),
+          input,
+        }),
+      ),
+  },
+  auth: {
+    createPairingCredential: (payload) =>
+      authRequest("/api/auth/pairing-token", (client, headers) =>
+        client.pairingCredential({ headers, payload }),
+      ),
+    revokePairingLink: (payload) =>
+      authRequest("/api/auth/pairing-links/revoke", (client, headers) =>
+        client.revokePairingLink({ headers, payload }),
+      ),
+    revokeClient: (payload) =>
+      authRequest("/api/auth/clients/revoke", (client, headers) =>
+        client.revokeClient({ headers, payload }),
+      ),
+    revokeOtherClients: () =>
+      authRequest("/api/auth/clients/revoke-others", (client, headers) =>
+        client.revokeOtherClients({ headers }),
+      ),
+  },
 };

@@ -13,6 +13,7 @@ import * as os from "node:os";
 
 import { resolveLynxtronPrefsPath } from "./prefsPath";
 import { resolveLynxtronAppBranding } from "./appBranding";
+import { resolveWorkspacePath } from "./workspacePath";
 
 // P3-S1 capability probe (R3/R5): report whether preload shares main's JS
 // realm (main plants a pid marker when T3_LYNXTRON_CAPABILITY_PROBE=1). A
@@ -151,6 +152,8 @@ contextBridge.exposeInLynxBTS({
     };
   },
   randomUUID: () => crypto.randomUUID(),
+  // Filesystem facts only Node has: where `~` and a relative path point.
+  resolveWorkspacePath: (value: string) => resolveWorkspacePath(value, os.homedir()),
   // Launch switches the renderer cannot read from its own environment.
   getRuntimeFlags: () => ({
     upstreamShadow: process.env.T3_LYNXTRON_UPSTREAM_SHADOW === "1",

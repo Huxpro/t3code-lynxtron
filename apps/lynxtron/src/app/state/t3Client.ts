@@ -181,7 +181,7 @@ import type {
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
-import { terminalSessionKey } from "../../shared/connectorTerminal.ts";
+import { closedTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import {
   applyFromConnector,
   startUpstreamStateSource,
@@ -191,13 +191,17 @@ import {
 import { readUpstreamRuntimeFlags } from "./upstreamPrimary";
 import { createUpstreamCommandBridge, routeCommandBridge } from "./upstreamCommands";
 import {
+  onUpstreamCommandsAvailability,
   startUpstreamCommands,
   upstreamCommandPort,
   upstreamCommandsAvailable,
   upstreamCommandState,
 } from "./upstreamCommandPort";
 
-interface PollBridge extends T3Bridge {}
+interface PollBridge extends T3Bridge {
+  /** The absolute path a typed workspace root names on the host. */
+  resolveWorkspacePath(workspaceRoot: string): string;
+}
 
 declare const NativeModules: {
   nodejs?: { exposed?: Partial<PollBridge> };
@@ -814,13 +818,39 @@ function buildMainCommandBridge(transport: MainConnectorTransport): Partial<Poll
 function buildCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
   const connector = buildMainCommandBridge(transport);
   if (readUpstreamRuntimeFlags().upstreamState !== true) return connector;
+  // The connector is told nothing while upstream takes the commands, so it
+  // follows no thread. When upstream stops, it is asked for the one shown.
+  onUpstreamCommandsAvailability((available) => {
+    if (available) return;
+    const state = appAtomRegistry.get(t3ClientStateAtom);
+    const threadId = state.activeThreadId;
+    if (!threadId || threadId === state.draftThread?.id) return;
+    void connector.selectThread?.(threadId)?.catch(() => undefined);
+  });
   startUpstreamCommands();
   return routeCommandBridge({
     connector,
     upstream: createUpstreamCommandBridge(upstreamCommandPort, {
       ...upstreamCommandState,
       pendingModelSelections: upstreamPendingModelSelections,
-      connector,
+      modelSelection: () => appAtomRegistry.get(t3ClientStateAtom).modelSelection,
+      resolveWorkspacePath: (workspaceRoot) => {
+        const resolve = getPreloadBridge()?.resolveWorkspacePath;
+        if (!resolve) throw new Error("The host cannot resolve a workspace path.");
+        return resolve(workspaceRoot);
+      },
+      terminalClosed: ({ threadId, terminalId }) => {
+        const key = terminalSessionKey(threadId, terminalId);
+        const session = closedTerminalSession({
+          threadId,
+          terminalId,
+          cwd: appAtomRegistry.get(t3ClientStateAtom).terminalSessions[key]?.cwd ?? ".",
+          closedAt: new Date().toISOString(),
+        });
+        // Held while upstream still supplies the terminal, and applied when
+        // its list drops it.
+        applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
+      },
       newId: randomUUID,
       randomHex,
       now: () => new Date().toISOString(),

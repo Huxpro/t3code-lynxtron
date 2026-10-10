@@ -13,19 +13,36 @@ import type {
   EnvironmentRpcSuccess,
   EnvironmentUnaryRpcTag,
 } from "@t3tools/client-runtime/rpc";
+import { buildProjectCreateCommand } from "@t3tools/client-runtime/operations/projects";
+import { findProjectByPath } from "@t3tools/client-runtime/state/projects";
 import {
+  type AuthClientSessionRevokeResult,
+  type AuthCreatePairingCredentialInput,
+  type AuthOtherClientSessionsRevokeResult,
+  type AuthPairingCredentialResult,
+  type AuthPairingLinkRevokeResult,
+  type AuthRevokeClientSessionInput,
+  type AuthRevokePairingLinkInput,
+  AuthSessionId,
   CommandId,
+  DEFAULT_PROVIDER_INTERACTION_MODE,
+  DEFAULT_RUNTIME_MODE,
   type DispatchResult,
   type GitRunStackedActionInput,
   MessageId,
   type ModelSelection,
   ORCHESTRATION_WS_METHODS,
+  type OrchestrationProjectShell,
   type OrchestrationThreadShell,
   ProjectId,
   type ServerConfig,
+  type TerminalCloseInput,
+  type TerminalOpenInput,
+  type TerminalSessionSnapshot,
   ThreadId,
   WS_METHODS,
 } from "@t3tools/contracts";
+import * as DateTime from "effect/DateTime";
 import { deriveProviderModelSelectionProjection } from "@t3tools/lynx-logic/modelPicker";
 import { buildProviderInstanceEnabledPatch } from "@t3tools/lynx-logic/providerSettings";
 import { buildThreadTurnStartCommand } from "@t3tools/lynx-logic/threadDispatch";
@@ -42,15 +59,14 @@ import type { T3ConnectorCommandBridge } from "../bridge.ts";
 import type { UpstreamOperationInputs, UpstreamOperationName } from "./upstreamOperations.ts";
 
 /**
- * The commands sent through upstream. The rest stay with the main connector:
- * `reconnect` restarts the server it owns; the pairing and session commands
- * are HTTP calls made with the bearer it holds; `selectThread`, `openTerminal`
- * and `closeTerminal` manage its own subscriptions, which are what the client
- * falls back to; `createProject` resolves the path with Node; and
- * `createThread` uses its remembered project and model.
+ * The commands sent through upstream: every connector command but
+ * `reconnect`, which restarts the server the main process owns.
  */
 export const UPSTREAM_COMMAND_NAMES = [
   "createAssetUrl",
+  "createProject",
+  "createThread",
+  "selectThread",
   "sendPrompt",
   "interrupt",
   "revertCheckpoint",
@@ -94,8 +110,14 @@ export const UPSTREAM_COMMAND_NAMES = [
   "lookupRepository",
   "cloneRepository",
   "discoverSourceControl",
+  "createPairingCredential",
+  "revokePairingLink",
+  "revokeClientSession",
+  "revokeOtherClientSessions",
+  "openTerminal",
   "writeTerminal",
   "resizeTerminal",
+  "closeTerminal",
 ] as const satisfies ReadonlyArray<ConnectorCommandName>;
 
 export type UpstreamCommandName = (typeof UPSTREAM_COMMAND_NAMES)[number];
@@ -118,12 +140,39 @@ export interface UpstreamCommandPort {
   ) => Promise<DispatchResult>;
   /** Runs a stacked git action to the end of its progress stream. */
   readonly gitAction: (input: GitRunStackedActionInput) => Promise<GitActionOutcome>;
+  /**
+   * Upstream's terminal lifecycle commands, which it runs one at a time per
+   * thread. Opening starts the process when it is not running; the session is
+   * then read through upstream's attach, as in Web's terminal drawer.
+   */
+  readonly terminal: {
+    readonly open: (input: TerminalOpenInput) => Promise<TerminalSessionSnapshot>;
+    readonly close: (input: TerminalCloseInput) => Promise<void>;
+  };
+  /**
+   * The environment's HTTP auth endpoints, called with the bearer upstream's
+   * `PrimaryEnvironmentAuth` supplies.
+   */
+  readonly auth: {
+    readonly createPairingCredential: (
+      input: AuthCreatePairingCredentialInput,
+    ) => Promise<AuthPairingCredentialResult>;
+    readonly revokePairingLink: (
+      input: AuthRevokePairingLinkInput,
+    ) => Promise<AuthPairingLinkRevokeResult>;
+    readonly revokeClient: (
+      input: AuthRevokeClientSessionInput,
+    ) => Promise<AuthClientSessionRevokeResult>;
+    readonly revokeOtherClients: () => Promise<AuthOtherClientSessionsRevokeResult>;
+  };
 }
 
 /** What the commands read from upstream's state and from this client. */
 export interface UpstreamCommandContext {
   /** The server's threads, archived ones included, as upstream holds them. */
   readonly threads: () => ReadonlyArray<OrchestrationThreadShell>;
+  /** The server's projects, as upstream holds them. */
+  readonly projects: () => ReadonlyArray<OrchestrationProjectShell>;
   readonly config: () => ServerConfig | null;
   /** The primary environment's HTTP address, which asset URLs are relative to. */
   readonly httpBaseUrl: () => string | null;
@@ -132,8 +181,21 @@ export interface UpstreamCommandContext {
    * selection before it is sent; the shell source removes it once confirmed.
    */
   readonly pendingModelSelections: Map<string, ModelSelection>;
-  /** The main connector, which still follows threads and remembers the model. */
-  readonly connector: Partial<Pick<T3ConnectorCommandBridge, "selectThread" | "setModelSelection">>;
+  /** The model the client would start a new thread with. */
+  readonly modelSelection: () => ModelSelection | undefined;
+  /**
+   * The absolute path a typed workspace root names on the host: `~` expanded
+   * and a relative path resolved, which only Node can do.
+   */
+  readonly resolveWorkspacePath: (workspaceRoot: string) => string;
+  /**
+   * Called once the server has closed a terminal. Upstream stops listing a
+   * closed terminal; the client still shows its session, which this ends.
+   */
+  readonly terminalClosed: (terminal: {
+    readonly threadId: string;
+    readonly terminalId: string;
+  }) => void;
   /** An id for what the client names itself: a message, a project, a thread. */
   readonly newId: () => string;
   readonly randomHex: (byteLength: number) => string;
@@ -174,6 +236,45 @@ export function createUpstreamCommandBridge(
       );
     },
 
+    // As mobile's add-project flow: an existing project for the path is
+    // returned, and a new one is created with upstream's command for it.
+    async createProject(input) {
+      const workspaceRoot = context.resolveWorkspacePath(input.workspaceRoot);
+      const existing = findProjectByPath(context.projects(), workspaceRoot);
+      if (existing) return { projectId: existing.id };
+      const command = buildProjectCreateCommand({
+        commandId: CommandId.make(context.newId()),
+        projectId: ProjectId.make(context.newId()),
+        workspaceRoot,
+        createdAt: context.now(),
+      });
+      await port.operation("createProject", command);
+      return { projectId: command.projectId };
+    },
+
+    async createThread(input) {
+      const projectId = input.projectId ?? context.projects()[0]?.id;
+      if (!projectId) throw new Error("no project available");
+      const modelSelection = context.modelSelection();
+      if (!modelSelection) throw new Error("no model available");
+      const threadId = ThreadId.make(context.newId());
+      await port.operation("createThread", {
+        threadId,
+        projectId: ProjectId.make(projectId),
+        title: input.title ?? "New thread",
+        modelSelection,
+        runtimeMode: DEFAULT_RUNTIME_MODE,
+        interactionMode: DEFAULT_PROVIDER_INTERACTION_MODE,
+        branch: null,
+        worktreePath: null,
+      });
+      return { threadId };
+    },
+
+    // Upstream follows the thread the client shows by itself; there is no
+    // subscription to ask for.
+    async selectThread() {},
+
     async sendPrompt(rawInput) {
       // A draft thread's branch and worktree arrive absent when unset; the
       // server expects them as null, as the connector's decoder supplies them.
@@ -197,9 +298,6 @@ export function createUpstreamCommandBridge(
         throw new Error(`thread ${input.threadId} is not present in the canonical snapshot`);
       }
       await port.operation("startThreadTurn", command);
-      if (!thread && bootstrap?.createThread) {
-        void context.connector.selectThread?.(input.threadId)?.catch(() => undefined);
-      }
     },
 
     interrupt: (input) =>
@@ -229,15 +327,10 @@ export function createUpstreamCommandBridge(
       }),
 
     async setModelSelection(input) {
-      // The connector keeps the last selection for the projects and threads
-      // it still creates; telling it without a thread sends nothing.
-      const remembered = context.connector.setModelSelection?.({ selection: input.selection });
+      // Without a thread there is nothing to tell the server: the client keeps
+      // the selection a new thread starts with.
       const threadId = input.threadId;
-      if (!threadId) {
-        await remembered;
-        return;
-      }
-      void remembered?.catch(() => undefined);
+      if (!threadId) return;
       context.pendingModelSelections.set(threadId, input.selection);
       try {
         await port.operation("updateThreadMetadata", {
@@ -396,12 +489,45 @@ export function createUpstreamCommandBridge(
     cloneRepository: (input) => port.request(WS_METHODS.sourceControlCloneRepository, input),
     discoverSourceControl: () => port.request(WS_METHODS.serverDiscoverSourceControl, {}),
 
+    async createPairingCredential(input) {
+      const label = input?.label?.trim();
+      const created = await port.auth.createPairingCredential(label ? { label } : {});
+      return {
+        id: created.id,
+        credential: created.credential,
+        ...(created.label === undefined ? {} : { label: created.label }),
+        expiresAt: DateTime.formatIso(created.expiresAt),
+      };
+    },
+
+    async revokePairingLink(input) {
+      return (await port.auth.revokePairingLink({ id: input.id })).revoked;
+    },
+
+    async revokeClientSession(input) {
+      const sessionId = AuthSessionId.make(input.sessionId);
+      return (await port.auth.revokeClient({ sessionId })).revoked;
+    },
+
+    async revokeOtherClientSessions() {
+      return (await port.auth.revokeOtherClients()).revokedCount;
+    },
+
+    openTerminal: (input) => port.terminal.open(input),
+
     async writeTerminal(input) {
       await port.request(WS_METHODS.terminalWrite, input);
     },
 
     async resizeTerminal(input) {
       await port.request(WS_METHODS.terminalResize, input);
+    },
+
+    async closeTerminal(input) {
+      await port.terminal.close(input);
+      if (input.terminalId) {
+        context.terminalClosed({ threadId: input.threadId, terminalId: input.terminalId });
+      }
     },
   };
 }
