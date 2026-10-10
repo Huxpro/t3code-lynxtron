@@ -98,12 +98,12 @@ still needed comes back as a new patch with its own reason.
 
 ## What the Lynx bundle takes from `apps/web`
 
-The Lynx bundle compiles 127 modules from `apps/web/src`: 112 `.lynx` modules
-and 15 upstream modules imported in place. Eleven are logic
+The Lynx bundle compiles 127 modules from `apps/web/src`: 111 `.lynx` modules
+and 16 upstream modules imported in place. Eleven are logic
 (`logicalProject.ts`, `worktreeCleanup.ts`, `lib/threadSort.ts`, and
-`*.logic.ts` or helper modules); four are components compiled unmodified
-(`chat/DiffStatLabel`, `ui/kbd`, `ui/separator`, `ui/label`; see "Frontend
-shared layer"). Those 15 are the whole compile-time coupling to upstream Web
+`*.logic.ts` or helper modules); five are components compiled unmodified
+(`chat/DiffStatLabel`, `ui/kbd`, `ui/separator`, `ui/label`, `ui/badge`; see
+"Frontend shared layer"). Those 16 are the whole compile-time coupling to upstream Web
 source. When upstream changes one, the Lynx build or typecheck fails and the fix
 is on the Lynx side.
 
@@ -186,19 +186,35 @@ Lynx and substitute below it.
 | Seams                     | 46 `components/ui` primitives, platform hooks | 14%               | A `.lynx` module with the same exports (today's model). |
 | Platform-native surfaces  | 149 files, 116k lines                         | 49%               | A Lynx implementation of the whole module.              |
 
-A pilot on 2026-10-10 built the mechanism and switched four components to
+A pilot on 2026-10-10 built the mechanism and switched five components to
 upstream's file:
 
 - `scripts/lynx-dom-jsx-loader.cjs` rewrites the DOM tags in an upstream
   `.tsx` to the components `src/app/platform/hostDom.tsx` exports. The exports
-  are the tag map. An unmapped tag, an event prop other than `onClick`, or a
-  DOM `ref` fails the build, and so does a DOM tag in a Lynx-owned file.
+  are the tag map. An unmapped tag, an event prop other than `onClick`,
+  `onKeyDown` and `onKeyUp`, or a DOM `ref` fails the build, and so does a DOM
+  tag in a Lynx-owned file.
+- A key handler is called with the Lynx key event's key and modifiers
+  (`platform/hostDomEvents.ts`). The event arrives after it was dispatched:
+  `preventDefault` does nothing and `stopPropagation` throws.
+- `ref` stays refused. Upstream hands the node to code that calls DOM methods
+  on it synchronously (`scrollIntoView`, `classList`, `getBoundingClientRect`,
+  pointer capture); a Lynx ref answers only asynchronously through `invoke`.
+- A box repeats its text classes on the `<text>` that draws its bare text
+  (`platform/hostDomClasses.ts`), because a Lynx `<view>` does not hand font
+  weight to the text inside it.
 - `src/app/host-dom-elements.d.ts` types those tags with the host components'
   props, so the upstream file is typechecked as it will run.
 - A package the upstream file imports is replaced the same way as a module:
   `src/app/platform/base-ui/*` stands in for `@base-ui/react/*` through a
   bundler alias and a tsconfig path. `use-render` is where a tag named as a
   string (`defaultTagName: "label"`) reaches its host component.
+- `src/app/platform/tanstack/react-router.tsx` stands in for
+  `@tanstack/react-router` the same way, on top of `src/app/router.ts`. A Lynx
+  location is a pathname only, so a navigation that carries search, hash or
+  history state, or targets an upstream route Lynx has no screen for, throws
+  with the name of the API. The TanStack files under `src/app/routes` are not
+  in the bundle and are excluded from the app typecheck.
 - The upstream file joins the Tailwind content list. Lynx rules that selected
   the old copy by class select upstream's `data-slot` instead.
 - `scripts/component-share-candidates.mjs` lists the remaining `.lynx.tsx`
@@ -220,7 +236,8 @@ Limits and open questions:
   (`composer-approval-action--accept`, `sidebar-brand`). Switching such a
   component is a look change and a gate change, not a build change.
 - Not measured: render cost of host components versus static Lynx templates,
-  and the four switched components in a running app.
+  the five switched components in a running app, and whether a Lynx `<view>`
+  that upstream marks `tabIndex={0}` receives key events at all.
 
 ## Known debts
 
