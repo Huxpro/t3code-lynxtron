@@ -342,6 +342,20 @@ export function resolveConnectorLaunchTarget(
   };
 }
 
+/** The directory a server this process owns gets its first project from. */
+function startupProjectCwd(): string {
+  return process.env.T3_LYNXTRON_PROJECT_CWD ?? process.cwd();
+}
+
+/**
+ * Whether the renderer, not this connector, creates the startup project: it
+ * does while the upstream state source is on, the same switch the preload
+ * hands it in `getRuntimeFlags`.
+ */
+function rendererEnsuresStartupProject(): boolean {
+  return process.env.T3_LYNXTRON_UPSTREAM_STATE !== "0";
+}
+
 export class T3Connector {
   private child: ChildProcess | undefined;
   private httpBaseUrl = "";
@@ -493,7 +507,9 @@ export class T3Connector {
     }
     const bearer = JSON.parse(exchange.body).access_token as string;
     this.bearer = bearer;
-    return this.finishConnection({ ensureProject: true });
+    // With the upstream state source on, the renderer ensures the startup
+    // project through upstream's connection (see `primaryConnection`).
+    return this.finishConnection({ ensureProject: !rendererEnsuresStartupProject() });
   }
 
   private async connectExistingEnvironment(
@@ -608,9 +624,22 @@ export class T3Connector {
     readonly httpBaseUrl: string;
     readonly wsBaseUrl: string;
     readonly bearer: string;
+    /**
+     * The directory the renderer makes this server's first project from when
+     * the server has none. Present only for a server this process owns, and
+     * only when the renderer is the one that ensures it.
+     */
+    readonly startupProjectCwd?: string;
   } | null {
     if (!this.bearer || !this.httpBaseUrl) return null;
-    return { httpBaseUrl: this.httpBaseUrl, wsBaseUrl: this.wsBaseUrl, bearer: this.bearer };
+    return {
+      httpBaseUrl: this.httpBaseUrl,
+      wsBaseUrl: this.wsBaseUrl,
+      bearer: this.bearer,
+      ...(this.ownsServer && rendererEnsuresStartupProject()
+        ? { startupProjectCwd: startupProjectCwd() }
+        : {}),
+    };
   }
 
   private async issueSocketUrl(): Promise<string> {
@@ -1133,7 +1162,7 @@ export class T3Connector {
       return;
     }
     if (!this.client) return;
-    const workspaceRoot = process.env.T3_LYNXTRON_PROJECT_CWD ?? process.cwd();
+    const workspaceRoot = startupProjectCwd();
     const projectId = crypto.randomUUID();
     const command = {
       type: "project.create",
