@@ -7,6 +7,8 @@ import {
   upstreamStatePayloads,
   upstreamTerminalPayloads,
   upstreamThreadPayload,
+  upstreamVcsPayload,
+  vcsStatusDiverged,
 } from "./upstreamStateSource.ts";
 import {
   clientMessages,
@@ -17,6 +19,7 @@ import {
   terminal,
   threadDetail,
   threadState,
+  vcsStatus,
 } from "./upstreamState.fixtures.ts";
 
 const live = shellSnapshot([
@@ -211,6 +214,53 @@ describe("upstreamTerminalPayloads", () => {
         terminals: [terminal({ terminalId: "term-1" })],
       }),
       null,
+    );
+  });
+});
+
+describe("upstreamVcsPayload", () => {
+  const status = vcsStatus({ refName: "feature", files: ["a.ts"] });
+
+  it("pairs the stream's status with the directory it is for", () => {
+    const payload = upstreamVcsPayload({
+      connection: connection("connected"),
+      vcsCwd: "/work/project-1",
+      vcs: status,
+    });
+    assert.equal(payload?.cwd, "/work/project-1");
+    assert.strictEqual(payload?.status, status);
+  });
+
+  it("supplies nothing before the first status, without a directory or while disconnected", () => {
+    const connected = connection("connected");
+    assert.equal(upstreamVcsPayload({ connection: connected, vcsCwd: "/work", vcs: null }), null);
+    assert.equal(upstreamVcsPayload({ connection: connected, vcsCwd: null, vcs: status }), null);
+    assert.equal(
+      upstreamVcsPayload({ connection: connection("backoff"), vcsCwd: "/work", vcs: status }),
+      null,
+    );
+  });
+});
+
+describe("vcsStatusDiverged", () => {
+  const status = vcsStatus();
+  const payload = { cwd: "/work/project-1", status };
+  const shown = { vcsStatus: status, vcsStatusCwd: "/work/project-1", vcsStatusPending: false };
+
+  it("leaves a client that shows upstream's status alone", () => {
+    assert.equal(vcsStatusDiverged(payload, shown), false);
+  });
+
+  it("sees a client that asked for a refresh, or shows another value", () => {
+    assert.equal(vcsStatusDiverged(payload, { ...shown, vcsStatusPending: true }), true);
+    assert.equal(vcsStatusDiverged(payload, { ...shown, vcsStatus: null }), true);
+    assert.equal(vcsStatusDiverged(payload, { ...shown, vcsStatus: vcsStatus() }), true);
+  });
+
+  it("leaves a client that moved to another directory alone", () => {
+    assert.equal(
+      vcsStatusDiverged(payload, { ...shown, vcsStatusCwd: "/work/other", vcsStatusPending: true }),
+      false,
     );
   });
 });

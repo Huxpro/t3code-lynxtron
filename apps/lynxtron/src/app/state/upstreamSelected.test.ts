@@ -4,31 +4,37 @@ import { clientSelection, olderTurnsCursor } from "./upstreamSelected.ts";
 import { shellSnapshot, threadDetail, threadState } from "./upstreamState.fixtures.ts";
 
 describe("clientSelection", () => {
-  const threads = shellSnapshot([{ id: "thread-a" }]).threads;
-  const archivedThreads = shellSnapshot([{ id: "thread-archived" }]).threads;
+  const client = {
+    threads: shellSnapshot([{ id: "thread-a" }]).threads,
+    archivedThreads: shellSnapshot([{ id: "thread-archived" }]).threads,
+    vcsStatusCwd: "/work/project-1",
+  };
 
   it("follows the selected thread when the server has it, listed or archived", () => {
-    assert.deepEqual(clientSelection({ activeThreadId: "thread-a", threads, archivedThreads }), {
+    assert.deepEqual(clientSelection({ ...client, activeThreadId: "thread-a" }), {
       threadId: "thread-a",
       terminalThreadId: "thread-a",
+      vcsCwd: "/work/project-1",
     });
-    assert.deepEqual(
-      clientSelection({ activeThreadId: "thread-archived", threads, archivedThreads }),
-      { threadId: "thread-archived", terminalThreadId: "thread-archived" },
+    assert.equal(
+      clientSelection({ ...client, activeThreadId: "thread-archived" }).threadId,
+      "thread-archived",
     );
   });
 
   it("follows a local draft's terminals but not its thread, which the server lacks", () => {
-    assert.deepEqual(clientSelection({ activeThreadId: "draft-1", threads, archivedThreads }), {
+    assert.deepEqual(clientSelection({ ...client, activeThreadId: "draft-1" }), {
       threadId: null,
       terminalThreadId: "draft-1",
+      vcsCwd: "/work/project-1",
     });
   });
 
-  it("follows nothing with no selection", () => {
-    assert.deepEqual(clientSelection({ threads, archivedThreads }), {
+  it("follows nothing with no selection and no directory", () => {
+    assert.deepEqual(clientSelection({ ...client, vcsStatusCwd: null }), {
       threadId: null,
       terminalThreadId: null,
+      vcsCwd: null,
     });
   });
 });

@@ -10,6 +10,7 @@ import type {
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import type { T3ClientState } from "./t3Client.ts";
+import type { VcsStatusPayload } from "./upstreamStateSource.ts";
 
 export interface DomainComparison {
   /** Both sides have the domain's data. Nothing is compared until they do. */
@@ -348,5 +349,28 @@ export function compareTerminals(
     },
     out,
   );
+  return comparison(out);
+}
+
+/**
+ * The VCS status of the directory the client shows, field by field. Nothing
+ * is compared while the client is still waiting for its own.
+ */
+export function compareVcsStatus(
+  upstream: VcsStatusPayload | null,
+  client: Pick<T3ClientState, "vcsStatus" | "vcsStatusCwd" | "vcsStatusPending">,
+): DomainComparison {
+  if (
+    upstream === null ||
+    client.vcsStatus === null ||
+    client.vcsStatusPending ||
+    client.vcsStatusCwd !== upstream.cwd
+  ) {
+    return NOT_READY;
+  }
+  const out: string[] = [];
+  if (upstream.status !== client.vcsStatus) {
+    diffValues("status", upstream.status, client.vcsStatus, out);
+  }
   return comparison(out);
 }

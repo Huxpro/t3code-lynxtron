@@ -16,6 +16,7 @@ import {
   createEnvironmentThreadStateAtoms,
   threadSnapshotLoaderLayer,
 } from "@t3tools/client-runtime/state/threads";
+import { createVcsEnvironmentAtoms } from "@t3tools/client-runtime/state/vcs";
 import * as Layer from "effect/Layer";
 import { Atom } from "effect/unstable/reactivity";
 
@@ -44,3 +45,4 @@ export const upstreamEnvironmentThreads =
   createEnvironmentThreadStateAtoms(upstreamConnectionRuntime);
 export const upstreamTerminalEnvironment =
   createTerminalEnvironmentAtoms(upstreamConnectionRuntime);
+export const upstreamVcsEnvironment = createVcsEnvironmentAtoms(upstreamConnectionRuntime);

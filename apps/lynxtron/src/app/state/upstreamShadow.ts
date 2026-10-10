@@ -17,6 +17,7 @@ import {
   compareShell,
   compareTerminals,
   compareThread,
+  compareVcsStatus,
   type DomainComparison,
 } from "./upstreamCompare.ts";
 import {
@@ -30,6 +31,7 @@ import {
   upstreamStatePayloads,
   upstreamTerminalPayloads,
   upstreamThreadPayload,
+  upstreamVcsPayload,
 } from "./upstreamStateSource.ts";
 
 export interface UpstreamShadowSummary {
@@ -53,6 +55,8 @@ export interface UpstreamShadowComparison {
   readonly thread: DomainComparison;
   /** The selected thread's terminals. Compared when read, like the thread. */
   readonly terminal: DomainComparison;
+  /** The VCS status of the directory the client shows. Compared when read. */
+  readonly vcs: DomainComparison;
 }
 
 /** What upstream holds for the selection, in a line, for reading next to `compare`. */
@@ -65,6 +69,7 @@ export interface UpstreamShadowSelected {
   readonly threadError: string | null;
   /** How many terminals the server lists for the thread, or null before it has said. */
   readonly terminals: number | null;
+  readonly vcsCwd: string | null;
 }
 
 export function summarizeUpstreamSelected(state: UpstreamSelectedState): UpstreamShadowSelected {
@@ -77,6 +82,7 @@ export function summarizeUpstreamSelected(state: UpstreamSelectedState): Upstrea
     threadHasOlderTurns: thread !== null && threadHasOlderTurns(thread),
     threadError: thread === null ? null : Option.getOrNull(thread.error),
     terminals: state.terminals?.length ?? null,
+    vcsCwd: state.vcsCwd,
   };
 }
 
@@ -175,6 +181,9 @@ export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): 
             selected?.terminalThreadId ?? null,
             client,
           );
+        },
+        get vcs() {
+          return compareVcsStatus(selected === null ? null : upstreamVcsPayload(selected), client);
         },
       },
     };

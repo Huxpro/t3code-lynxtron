@@ -186,6 +186,7 @@ import {
   applyFromConnector,
   startUpstreamStateSource,
   terminalDomain,
+  type VcsStatusPayload,
 } from "./upstreamStateSource";
 
 interface PollBridge extends T3Bridge {}
@@ -391,6 +392,12 @@ function activeVcsCwd(state: T3ClientState): string | null {
   return activeThread?.worktreePath ?? activeProject?.workspaceRoot ?? null;
 }
 
+/** Applies a directory's VCS status from either source if it is the one shown. */
+function applyVcsStatusPayload(payload: VcsStatusPayload): void {
+  if (payload.cwd !== appAtomRegistry.get(t3ClientStateAtom).vcsStatusCwd) return;
+  patchState({ vcsStatus: payload.status, vcsStatusCwd: payload.cwd, vcsStatusPending: false });
+}
+
 function refreshVcsStatusProjection(): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const cwd = activeVcsCwd(state);
@@ -406,17 +413,19 @@ function refreshVcsStatusProjection(): void {
   }
   patchState({ vcsStatusCwd: cwd, vcsStatusPending: true });
   void bridge.readVcsStatus({ cwd }).then(
-    (vcsStatus) => {
-      if (requestSequence !== vcsStatusRequestSequence) return;
-      patchState({ vcsStatus, vcsStatusCwd: cwd, vcsStatusPending: false });
-    },
-    (cause) => {
-      if (requestSequence !== vcsStatusRequestSequence) return;
-      if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
-        console.error("[t3-client] failed to read VCS status", { cwd, cause });
-      }
-      patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
-    },
+    (vcsStatus) =>
+      applyFromConnector("vcs", () => {
+        if (requestSequence !== vcsStatusRequestSequence) return;
+        applyVcsStatusPayload({ cwd, status: vcsStatus });
+      }),
+    (cause) =>
+      applyFromConnector("vcs", () => {
+        if (requestSequence !== vcsStatusRequestSequence) return;
+        if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
+          console.error("[t3-client] failed to read VCS status", { cwd, cause });
+        }
+        patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
+      }),
   );
 }
 
@@ -1124,6 +1133,7 @@ async function bootstrapT3Client(): Promise<void> {
     applyShell: applyShellPayload,
     applyThread: applyActiveThreadPayload,
     applyTerminal: applyTerminalPayload,
+    applyVcsStatus: applyVcsStatusPayload,
   });
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({

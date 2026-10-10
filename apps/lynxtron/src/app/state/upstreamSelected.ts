@@ -1,13 +1,19 @@
 // What upstream's atoms hold for what the Lynx client has selected: the thread
-// it shows and that thread's terminals. The Lynx client shows one thread at a
-// time, so one thread atom and that thread's terminal atoms are mounted, for
-// as long as the thread is selected. Nothing is read until the first watcher.
+// it shows, that thread's terminals and its working directory's VCS status.
+// The Lynx client shows one thread at a time, so one thread atom, that
+// thread's terminal atoms and one status atom are mounted, for as long as the
+// thread is selected. Nothing is read until the first watcher.
 import type { TerminalBufferState } from "@t3tools/client-runtime/state/terminal";
 import {
   type EnvironmentThreadState,
   requestOlderThreadTurns,
 } from "@t3tools/client-runtime/state/threads";
-import { type EnvironmentId, type TerminalSummary, ThreadId } from "@t3tools/contracts";
+import {
+  type EnvironmentId,
+  type TerminalSummary,
+  ThreadId,
+  type VcsStatusResult,
+} from "@t3tools/contracts";
 import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
@@ -16,6 +22,7 @@ import type { T3ClientState } from "./t3Client.ts";
 import {
   upstreamEnvironmentThreads,
   upstreamTerminalEnvironment,
+  upstreamVcsEnvironment,
 } from "./upstreamConnectionRuntime.ts";
 import {
   primaryEnvironmentId,
@@ -28,6 +35,8 @@ export interface UpstreamSelection {
   readonly threadId: string | null;
   /** The thread whose terminals are shown: the selected thread, draft or not. */
   readonly terminalThreadId: string | null;
+  /** The directory the client shows VCS status for. */
+  readonly vcsCwd: string | null;
 }
 
 export interface UpstreamTerminal {
@@ -41,9 +50,14 @@ export interface UpstreamSelectedState extends UpstreamSelection {
   readonly thread: EnvironmentThreadState | null;
   /** The terminals the server has for the thread, or null before it has said. */
   readonly terminals: ReadonlyArray<UpstreamTerminal> | null;
+  /** The status stream's value for `vcsCwd`, or null before its first event. */
+  readonly vcs: VcsStatusResult | null;
 }
 
-type SelectingClientState = Pick<T3ClientState, "activeThreadId" | "threads" | "archivedThreads">;
+type SelectingClientState = Pick<
+  T3ClientState,
+  "activeThreadId" | "threads" | "archivedThreads" | "vcsStatusCwd"
+>;
 
 /** What the Lynx client's state asks upstream to follow. */
 export function clientSelection(client: SelectingClientState): UpstreamSelection {
@@ -52,7 +66,11 @@ export function clientSelection(client: SelectingClientState): UpstreamSelection
     threadId !== undefined &&
     (client.threads.some((thread) => thread.id === threadId) ||
       client.archivedThreads.some((thread) => thread.id === threadId));
-  return { threadId: known ? threadId : null, terminalThreadId: threadId ?? null };
+  return {
+    threadId: known ? threadId : null,
+    terminalThreadId: threadId ?? null,
+    vcsCwd: client.vcsStatusCwd,
+  };
 }
 
 /**
@@ -73,13 +91,16 @@ let current: UpstreamSelectedState = {
   connection: null,
   threadId: null,
   terminalThreadId: null,
+  vcsCwd: null,
   thread: null,
   terminals: null,
+  vcs: null,
 };
 let environmentId: EnvironmentId | null = null;
-let selection: UpstreamSelection = { threadId: null, terminalThreadId: null };
+let selection: UpstreamSelection = { threadId: null, terminalThreadId: null, vcsCwd: null };
 let stopThread = () => {};
 let stopTerminals = () => {};
+let stopVcs = () => {};
 let following = false;
 
 function publish(patch: Partial<UpstreamSelectedState>): void {
@@ -171,6 +192,18 @@ function followTerminals(): void {
   };
 }
 
+function followVcs(): void {
+  stopVcs();
+  stopVcs = () => {};
+  publish({ vcsCwd: selection.vcsCwd, vcs: null });
+  if (environmentId === null || selection.vcsCwd === null) return;
+  stopVcs = appAtomRegistry.subscribe(
+    upstreamVcsEnvironment.status({ environmentId, input: { cwd: selection.vcsCwd } }),
+    (result) => publish({ vcs: Option.getOrNull(AsyncResult.value(result)) }),
+    { immediate: true },
+  );
+}
+
 function follow(): void {
   watchUpstreamPrimary((primary) => {
     const nextEnvironmentId = primaryEnvironmentId(primary.catalog);
@@ -179,6 +212,7 @@ function follow(): void {
       current = { ...current, connection: primary.connection };
       followThread();
       followTerminals();
+      followVcs();
       return;
     }
     if (primary.connection !== current.connection) publish({ connection: primary.connection });
@@ -190,6 +224,7 @@ function select(next: UpstreamSelection): void {
   selection = next;
   if (next.threadId !== previous.threadId) followThread();
   if (next.terminalThreadId !== previous.terminalThreadId) followTerminals();
+  if (next.vcsCwd !== previous.vcsCwd) followVcs();
 }
 
 /**
@@ -222,7 +257,8 @@ export function watchUpstreamSelected(
       scheduled ||
       (previous.activeThreadId === next.activeThreadId &&
         previous.threads === next.threads &&
-        previous.archivedThreads === next.archivedThreads)
+        previous.archivedThreads === next.archivedThreads &&
+        previous.vcsStatusCwd === next.vcsStatusCwd)
     ) {
       return;
     }

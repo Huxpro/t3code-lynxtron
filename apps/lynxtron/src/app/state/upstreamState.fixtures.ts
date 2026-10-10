@@ -21,7 +21,10 @@ import {
   type TerminalAttachStreamEvent,
   TerminalSessionSnapshot,
   TerminalSummary,
+  type VcsStatusResult,
+  VcsStatusStreamEvent,
 } from "@t3tools/contracts";
+import { applyGitStatusStreamEvent } from "@t3tools/shared/git";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import { AsyncResult } from "effect/unstable/reactivity";
@@ -32,6 +35,7 @@ const decodeShellSnapshot = Schema.decodeUnknownSync(OrchestrationShellSnapshot)
 const decodeThread = Schema.decodeUnknownSync(OrchestrationThread);
 const decodeTerminalSnapshot = Schema.decodeUnknownSync(TerminalSessionSnapshot);
 const decodeTerminalSummary = Schema.decodeUnknownSync(TerminalSummary);
+const decodeVcsStatusEvent = Schema.decodeUnknownSync(VcsStatusStreamEvent);
 const decodeProvider = Schema.decodeUnknownSync(ServerProvider);
 
 export interface WireThread {
@@ -304,4 +308,46 @@ export function terminal(
       EMPTY_TERMINAL_BUFFER_STATE,
     ),
   };
+}
+
+export interface WireVcsStatus {
+  readonly refName?: string;
+  readonly files?: ReadonlyArray<string>;
+  readonly aheadCount?: number;
+  readonly pr?: { readonly number: number; readonly title: string } | null;
+}
+
+/** A status as upstream's stream reduces it from the server's snapshot event. */
+export function vcsStatus(wire: WireVcsStatus = {}): VcsStatusResult {
+  const files = (wire.files ?? []).map((path) => ({ path, insertions: 2, deletions: 1 }));
+  const refName = wire.refName ?? "main";
+  return applyGitStatusStreamEvent(
+    null,
+    decodeVcsStatusEvent({
+      _tag: "snapshot",
+      local: {
+        isRepo: true,
+        hasPrimaryRemote: true,
+        isDefaultRef: refName === "main",
+        refName,
+        hasWorkingTreeChanges: files.length > 0,
+        workingTree: { files, insertions: files.length * 2, deletions: files.length },
+      },
+      remote: {
+        hasUpstream: true,
+        aheadCount: wire.aheadCount ?? 0,
+        behindCount: 0,
+        pr:
+          wire.pr == null
+            ? null
+            : {
+                ...wire.pr,
+                url: `https://example.test/pr/${wire.pr.number}`,
+                baseRef: "main",
+                headRef: refName,
+                state: "open",
+              },
+      },
+    }),
+  );
 }

@@ -8,6 +8,7 @@ import {
   compareShell,
   compareTerminals,
   compareThread,
+  compareVcsStatus,
   MAX_DIFFERENCES,
   textDigest,
 } from "./upstreamCompare.ts";
@@ -20,6 +21,7 @@ import {
   shellSnapshot,
   terminal,
   threadDetail,
+  vcsStatus,
   type WireThread,
   type WireThreadDetail,
 } from "./upstreamState.fixtures.ts";
@@ -379,5 +381,49 @@ describe("compareThread", () => {
     assert.deepEqual(differences, [
       "message order: differs from position 0 (upstream message-1, client message-2)",
     ]);
+  });
+});
+
+describe("compareVcsStatus", () => {
+  const cwd = "/work/project-1";
+  const client = (status: ReturnType<typeof vcsStatus> | null, pending = false) => ({
+    vcsStatus: status,
+    vcsStatusCwd: cwd,
+    vcsStatusPending: pending,
+  });
+
+  it("is not ready until both sides have a settled status for the same directory", () => {
+    const status = vcsStatus();
+    assert.equal(compareVcsStatus(null, client(status)).ready, false);
+    assert.equal(compareVcsStatus({ cwd, status }, client(null)).ready, false);
+    assert.equal(compareVcsStatus({ cwd, status }, client(status, true)).ready, false);
+    assert.equal(compareVcsStatus({ cwd: "/work/other", status }, client(status)).ready, false);
+  });
+
+  it("reads equal for the same status read twice", () => {
+    const wire = { refName: "feature", files: ["a.ts"], pr: { number: 7, title: "Add a" } };
+    assert.deepEqual(compareVcsStatus({ cwd, status: vcsStatus(wire) }, client(vcsStatus(wire))), {
+      ready: true,
+      equal: true,
+      differences: [],
+    });
+  });
+
+  it("names the fields that differ", () => {
+    const upstream = vcsStatus({ refName: "feature", files: ["a.ts", "b.ts"], aheadCount: 2 });
+    const { differences } = compareVcsStatus(
+      { cwd, status: upstream },
+      client(vcsStatus({ refName: "feature", files: ["a.ts"] })),
+    );
+    assert.deepEqual(
+      differences.map((line) => line.split(":")[0]),
+      [
+        "status.workingTree.files",
+        "status.workingTree.insertions",
+        "status.workingTree.deletions",
+        "status.aheadCount",
+      ],
+    );
+    assert.equal(differences[3], "status.aheadCount: upstream 2, client 0");
   });
 });
