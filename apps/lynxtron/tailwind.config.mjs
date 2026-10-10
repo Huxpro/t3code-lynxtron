@@ -124,6 +124,7 @@ export default {
     "../web/src/components/chat/modelPickerModelHighlights.ts",
     "../web/src/components/settings/settingsSearch.ts",
     "../web/src/components/threadActionMenu.logic.ts",
+    "../web/src/components/ui/kbd.tsx",
     "../web/src/lib/threadSort.ts",
     "../web/src/logicalProject.ts",
     "../web/src/providerSkillSearch.ts",
@@ -137,6 +138,9 @@ export default {
   // Blocking them keeps rendering unchanged. Removing an entry turns the class
   // on, which changes how that surface looks; check the surface first.
   blocklist: [
+    // From upstream components compiled unmodified: rules for DOM-only
+    // structure (`svg` descendants) that no Lynx element can match.
+    "[&_svg:not([class*='size-'])]:size-3",
     "-my-1",
     "bg-background/45",
     "bg-muted/55",
