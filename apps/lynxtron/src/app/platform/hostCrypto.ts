@@ -27,6 +27,7 @@ export function makeHostCrypto(randomUUID: () => string): Crypto.Crypto {
     "~effect/Crypto": "~effect/Crypto",
     randomUUIDv4: Effect.sync(randomUUID),
     randomUUIDv7: unsupported("randomUUIDv7"),
+    randomULID: unsupported("randomULID"),
     randomBytes: () => unsupported("randomBytes"),
     digest: () => unsupported("digest"),
     random: unsupported("random"),

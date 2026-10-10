@@ -30,10 +30,11 @@ import {
   removeConnectionFromCatalog,
   replaceCatalogValue,
   setConnectionEnabledInCatalog,
+  setRoutesInCatalog,
 } from "@t3tools/client-runtime/platform";
 import { ManagedRelay } from "@t3tools/client-runtime/relay";
-import { remoteHttpClientLayer } from "@t3tools/client-runtime/rpc";
-import { AuthStandardClientScopes, type EnvironmentId } from "@t3tools/contracts";
+import { layerRemoteHttpClient } from "@t3tools/client-runtime/rpc";
+import type { EnvironmentId } from "@t3tools/contracts";
 import { RelayWebClientId } from "@t3tools/contracts/relay";
 import * as Context from "effect/Context";
 import * as Crypto from "effect/Crypto";
@@ -45,8 +46,8 @@ import * as Ref from "effect/Ref";
 import * as Schedule from "effect/Schedule";
 import * as Schema from "effect/Schema";
 import * as Stream from "effect/Stream";
-import { HttpClient } from "effect/unstable/http";
-import * as Socket from "effect/unstable/socket/Socket";
+import { HttpClient } from "effect/http";
+import * as Socket from "effect/socket/Socket";
 
 import { T3_CONNECTOR_METHODS } from "../../shared/connectorProtocol.ts";
 import { type BridgeCallModule, callBridge } from "../state/mainConnectorTransport.ts";
@@ -80,7 +81,7 @@ declare const NativeModules:
     }
   | undefined;
 
-type RemoteFetch = Parameters<typeof remoteHttpClientLayer>[0];
+type RemoteFetch = Parameters<typeof layerRemoteHttpClient>[0];
 
 interface HostFetchInit {
   readonly method?: string;
@@ -157,7 +158,7 @@ const hostHttpFetch: HostHttpFetch = (request) => {
     : Promise.reject(new Error("The host provides no HTTP port."));
 };
 
-const httpClientLayer = remoteHttpClientLayer(makeHostFetch(hostHttpFetch));
+const httpClientLayer = layerRemoteHttpClient(makeHostFetch(hostHttpFetch));
 
 // Command ids come from the host: upstream's command builders ask `Crypto`
 // for a UUID, and the preload's `randomUUID` is Node's.
@@ -387,7 +388,6 @@ const capabilitiesLayer = Layer.succeedContext(
       ClientCapabilities.ClientPresentation,
       ClientCapabilities.ClientPresentation.of({
         metadata: { label: "T3 Code Lynxtron", deviceType: "desktop", surface: "desktop" },
-        scopes: AuthStandardClientScopes,
       }),
     ),
     Context.add(
@@ -466,9 +466,12 @@ const storageLayer = Layer.effectContext(
       Context.add(
         Persistence.ConnectionRegistrationStore,
         Persistence.ConnectionRegistrationStore.of({
-          register: (registration) =>
-            update((document) => registerConnectionInCatalog(document, registration)),
-          remove: (target) => update((document) => removeConnectionFromCatalog(document, target)),
+          register: (registration, routes) =>
+            update((document) => registerConnectionInCatalog(document, registration, routes)),
+          setRoutes: (environmentId, routes) =>
+            update((document) => setRoutesInCatalog(document, environmentId, routes)),
+          remove: (environmentId) =>
+            update((document) => removeConnectionFromCatalog(document, environmentId)),
           setEnabled: (environmentId, enabled) =>
             update((document) => setConnectionEnabledInCatalog(document, environmentId, enabled)),
         }),

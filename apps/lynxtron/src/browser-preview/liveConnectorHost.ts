@@ -105,8 +105,8 @@ import * as Stream from "effect/Stream";
 import * as Fiber from "effect/Fiber";
 import * as Scope from "effect/Scope";
 import * as Schedule from "effect/Schedule";
-import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
-import * as Socket from "effect/unstable/socket/Socket";
+import { RpcClient, RpcSerialization } from "effect/rpc";
+import * as Socket from "effect/socket/Socket";
 
 import {
   T3_CONNECTOR_EVENT,

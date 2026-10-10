@@ -1,7 +1,7 @@
 import { AuthAccessSnapshot, EnvironmentId, ProviderInstanceId } from "@t3tools/contracts";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
 import { projectThread, projectThreadShell } from "../../shared/orchestrationProjection.ts";

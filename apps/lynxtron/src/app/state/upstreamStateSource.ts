@@ -16,7 +16,7 @@ import type {
 } from "@t3tools/contracts";
 import { type AuthAccessPresentation, projectAuthAccess } from "@t3tools/lynx-logic/connections";
 import * as Option from "effect/Option";
-import { AsyncResult, type Atom } from "effect/unstable/reactivity";
+import { AsyncResult, type Atom } from "effect/reactivity";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
 import { projectThread, projectThreadShell } from "../../shared/orchestrationProjection.ts";

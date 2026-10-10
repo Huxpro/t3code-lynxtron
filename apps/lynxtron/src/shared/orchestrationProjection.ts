@@ -425,6 +425,21 @@ function activityDrafts(
           payload: {},
         },
       ];
+    // The Lynx client has no secret prompt. The row says the agent asked, so a
+    // turn that waits on one does not look idle; it is answered from Web.
+    case "secret_request":
+      return [
+        {
+          idSuffix: "",
+          tone: "info",
+          kind: "runtime.warning",
+          summary:
+            item.secretStatus === "pending"
+              ? `Secret requested: ${item.label}`
+              : `Secret ${item.secretStatus}: ${item.label}`,
+          payload: { message: item.reason },
+        },
+      ];
     // Messages and proposed plans are rows of their own. A checkpoint is read
     // from the thread's checkpoints. Interrupt records, handoffs, forks and
     // created threads have no row in the Lynx transcript.

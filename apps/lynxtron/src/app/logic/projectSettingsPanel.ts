@@ -108,8 +108,13 @@ export function nextProjectScriptsForSubmit(
   scriptId: string | null,
   input: NewProjectScriptInput,
 ): { readonly scriptId: string; readonly scripts: ReadonlyArray<ProjectScript> } {
-  // The Lynx editor has no "wait for setup" control.
-  const scriptInput = { ...input, waitForSetup: false };
+  // The Lynx editor has no "wait for setup" or "run on settle" control; an
+  // edited script keeps the settle role it was saved with.
+  const scriptInput = {
+    ...input,
+    waitForSetup: false,
+    runOnSettle: scripts.find((script) => script.id === scriptId)?.runOnSettle === true,
+  };
   const clearSetup = (script: ProjectScript): ProjectScript =>
     input.runOnWorktreeCreate && script.runOnWorktreeCreate
       ? { ...script, runOnWorktreeCreate: false }

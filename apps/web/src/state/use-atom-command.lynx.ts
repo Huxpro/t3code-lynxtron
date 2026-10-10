@@ -1,6 +1,6 @@
 import { RegistryContext } from "@effect/atom-react";
 import * as Cause from "effect/Cause";
-import { AsyncResult, type AtomRegistry } from "effect/unstable/reactivity";
+import { AsyncResult, type AtomRegistry } from "effect/reactivity";
 import { useCallback, useContext } from "react";
 
 interface LynxAtomCommand<W, A, E> {

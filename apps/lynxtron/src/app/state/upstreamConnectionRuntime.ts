@@ -18,7 +18,7 @@ import {
 } from "@t3tools/client-runtime/state/shell";
 import { createTerminalEnvironmentAtoms } from "@t3tools/client-runtime/state/terminal";
 import {
-  boundedThreadSnapshotLoaderLayer,
+  BoundedThreadSnapshotLoader,
   createEnvironmentThreadStateAtoms,
   ThreadHistoryController,
 } from "@t3tools/client-runtime/state/threads";
@@ -26,12 +26,12 @@ import { createVcsEnvironmentAtoms } from "@t3tools/client-runtime/state/vcs";
 import type { ThreadId } from "@t3tools/contracts";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
-import { Atom } from "effect/unstable/reactivity";
+import { Atom } from "effect/reactivity";
 
 import { connectionPlatformLayer } from "../platform/connectionPlatform.ts";
 
 const snapshotLoaderLayer = Layer.mergeAll(
-  boundedThreadSnapshotLoaderLayer,
+  BoundedThreadSnapshotLoader.layer,
   ShellSnapshotLoader.layer,
   ThreadHistoryController.layer,
 );

@@ -6,7 +6,7 @@ import type {
 } from "@t3tools/lynx-logic/orchestration";
 import { useAtomValue } from "@effect/atom-react";
 import { useEffect } from "@lynx-js/react";
-import { Atom } from "effect/unstable/reactivity";
+import { Atom } from "effect/reactivity";
 import { presentThreadCommandErrorMessage } from "@t3tools/client-runtime/errors";
 import { truncate } from "@t3tools/shared/String";
 import {
@@ -2438,8 +2438,6 @@ function updateProviderInstance(
     settings: state.settings,
     instanceId,
     instance,
-    driver: entry.driverKind,
-    isDefault: entry.isDefault,
   });
   return updateServerSettings(patch)
     .catch((error: unknown) => {

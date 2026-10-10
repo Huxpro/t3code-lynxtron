@@ -6,7 +6,7 @@ import type { SupervisorConnectionState } from "@t3tools/client-runtime/connecti
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
 import * as Cause from "effect/Cause";
 import * as Option from "effect/Option";
-import { AsyncResult, type Atom } from "effect/unstable/reactivity";
+import { AsyncResult, type Atom } from "effect/reactivity";
 
 import type { T3ClientState } from "./t3Client.ts";
 import {

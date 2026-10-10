@@ -3,7 +3,7 @@
  * leaves (e.g. connectivity) can read backend health without importing the
  * client-state module and creating an import cycle.
  */
-import { Atom } from "effect/unstable/reactivity";
+import { Atom } from "effect/reactivity";
 
 import type { ConnectionStatus } from "../bridge";
 import { appAtomRegistry } from "./atomRegistry";

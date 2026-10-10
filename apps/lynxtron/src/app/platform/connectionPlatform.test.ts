@@ -1,5 +1,5 @@
 import { ClientCapabilities } from "@t3tools/client-runtime/platform";
-import { remoteHttpClientLayer } from "@t3tools/client-runtime/rpc";
+import { layerRemoteHttpClient } from "@t3tools/client-runtime/rpc";
 import { EnvironmentId } from "@t3tools/contracts";
 import type * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
@@ -7,7 +7,7 @@ import * as Option from "effect/Option";
 import * as Queue from "effect/Queue";
 import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
-import { HttpClient, HttpClientRequest } from "effect/unstable/http";
+import { HttpClient, HttpClientRequest } from "effect/http";
 import { assert, describe, it } from "vite-plus/test";
 
 import {
@@ -22,7 +22,7 @@ import {
 
 function hostWith(reply: HostHttpResponse) {
   const requests: Array<HostHttpRequest> = [];
-  const layer = remoteHttpClientLayer(
+  const layer = layerRemoteHttpClient(
     makeHostFetch((request) => {
       requests.push(request);
       return Promise.resolve(reply);

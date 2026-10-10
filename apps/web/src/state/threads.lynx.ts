@@ -1,6 +1,6 @@
 import * as Option from "effect/Option";
 import * as Cause from "effect/Cause";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 
 import { t3ClientActions } from "../../../lynxtron/src/app/state/t3Client";
 

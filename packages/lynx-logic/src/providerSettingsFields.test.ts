@@ -1,4 +1,4 @@
-import { CodexSettings, OpenCodeSettings } from "@t3tools/contracts";
+import { CodexSettings } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
 import {
@@ -18,17 +18,13 @@ describe("provider settings fields", () => {
   });
 
   it("preserves opaque config while updating annotated fields", () => {
-    const serverUrl = deriveProviderSettingsFields(OpenCodeSettings).find(
-      (field) => field.key === "serverUrl",
+    const homePath = deriveProviderSettingsFields(CodexSettings).find(
+      (field) => field.key === "homePath",
     );
-    expect(serverUrl).toBeDefined();
+    expect(homePath).toBeDefined();
     expect(
-      nextProviderConfigWithFieldValue(
-        { forkOwned: true, serverUrl: "http://old" },
-        serverUrl!,
-        "http://new",
-      ),
-    ).toEqual({ forkOwned: true, serverUrl: "http://new" });
+      nextProviderConfigWithFieldValue({ forkOwned: true, homePath: "/old" }, homePath!, "/new"),
+    ).toEqual({ forkOwned: true, homePath: "/new" });
   });
 
   it("reads only string entries from opaque config arrays", () => {

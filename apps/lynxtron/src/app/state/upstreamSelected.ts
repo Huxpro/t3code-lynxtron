@@ -12,7 +12,7 @@ import {
   type VcsStatusResult,
 } from "@t3tools/contracts";
 import * as Option from "effect/Option";
-import { AsyncResult, type Atom } from "effect/unstable/reactivity";
+import { AsyncResult, type Atom } from "effect/reactivity";
 
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { T3ClientState } from "./t3Client.ts";

@@ -26,7 +26,7 @@ import * as Exit from "effect/Exit";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import * as SubscriptionRef from "effect/SubscriptionRef";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
 import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
@@ -571,7 +571,7 @@ describe("sendPrompt", () => {
       title: "hello",
       generateTitle: true,
       modelSelection: { instanceId: codex, model: "gpt-5" },
-      workspaceStrategy: { type: "worktree", baseRef: "main", branch: "t3code/0a1b2c3d" },
+      workspaceStrategy: { type: "worktree", baseRef: "main", branch: "t3/0a1b2c3d" },
     });
     assert.deepInclude(sent.launches[0]?.initialMessage, { text: "hello" });
   });

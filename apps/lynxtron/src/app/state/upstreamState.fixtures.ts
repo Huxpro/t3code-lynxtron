@@ -42,7 +42,7 @@ import { applyGitStatusStreamEvent } from "@t3tools/shared/git";
 import * as DateTime from "effect/DateTime";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 
 import { projectThread, projectThreadShell } from "../../shared/orchestrationProjection.ts";
 import type { ChatMessage } from "../bridge.ts";

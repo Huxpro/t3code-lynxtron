@@ -96,7 +96,6 @@ describe("shared model picker presentation", () => {
         }),
       ]),
       {
-        providers: {} as never,
         providerInstances: {
           [ProviderInstanceId.make("codex_work")]: {
             driver: ProviderDriverKind.make("codex"),
@@ -229,10 +228,9 @@ describe("shared model picker presentation", () => {
         ],
         settings: {
           ...DEFAULT_SERVER_SETTINGS,
-          providers: {
-            ...DEFAULT_SERVER_SETTINGS.providers,
-            codex: {
-              ...DEFAULT_SERVER_SETTINGS.providers.codex,
+          providerInstances: {
+            [ProviderInstanceId.make("codex")]: {
+              driver: ProviderDriverKind.make("codex"),
               enabled: false,
             },
           },

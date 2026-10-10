@@ -1,9 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "@lynx-js/react";
-import {
-  normalizePlanMarkdownForExport,
-  proposedPlanTitle,
-  stripDisplayedPlanMarkdown,
-} from "../../../../web/src/proposedPlan";
+import { normalizePlanMarkdownForExport } from "../../../../web/src/proposedPlan";
+import { proposedPlanTitle, stripDisplayedPlanMarkdown } from "@t3tools/shared/proposedPlanText";
 import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 import type { ThreadId } from "@t3tools/contracts";
 import {

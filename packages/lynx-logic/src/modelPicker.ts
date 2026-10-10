@@ -81,7 +81,7 @@ export interface ProviderModelCatalog {
 
 export interface ProviderModelCatalogInput {
   readonly providers: ReadonlyArray<ServerProvider>;
-  readonly settings: Pick<ServerSettings, "providerInstances" | "providers">;
+  readonly settings: Pick<ServerSettings, "providerInstances">;
 }
 
 export interface ProviderModelSelectionProjection extends ProviderModelCatalog {

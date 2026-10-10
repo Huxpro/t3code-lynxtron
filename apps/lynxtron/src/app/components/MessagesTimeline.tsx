@@ -48,10 +48,8 @@ import {
   type ParsedUserContextEntry,
   shouldCollapseUserMessage,
 } from "@t3tools/lynx-logic/userMessage";
-import {
-  buildCollapsedProposedPlanPreviewMarkdown,
-  proposedPlanTitle,
-} from "../../../../web/src/proposedPlan";
+import { buildCollapsedProposedPlanPreviewMarkdown } from "../../../../web/src/proposedPlan";
+import { proposedPlanTitle } from "@t3tools/shared/proposedPlanText";
 import type { ThreadId, TurnId } from "@t3tools/contracts";
 import {
   TranscriptRowSurface,

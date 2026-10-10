@@ -40,6 +40,8 @@ export async function openThreadActionMenu(input: {
   const snoozePresets = resolveSnoozePresets(now);
   const selection = await showNativeContextMenu(
     buildThreadActionMenuItems({
+      // The Lynx client connects with its own server's bearer, never a read-only grant.
+      canOperate: true,
       branch: thread.branch,
       // Lynx has no project-scoped list behind this menu and no per-thread opt-out yet.
       projectFilter: null,
