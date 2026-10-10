@@ -19,6 +19,7 @@
     "packages/client-runtime/src/errors/transport.ts": "Adds presentThreadCommandErrorMessage, used by the Lynx client for failed thread commands.",
     "packages/client-runtime/src/state/gitActions.ts": "Adds Initialize Git, Publish repository and provider-specific change-request wording to the quick-action resolver the Lynx header uses.",
     "packages/client-runtime/src/state/projectCommands.ts": "Product fix: optimistic file atoms keep a five-minute idle TTL so unsaved edits survive reopening a file panel.",
+    "packages/client-runtime/src/state/threadReducer.ts": "Upstream candidate. A streaming assistant chunk that arrives after a turn was interrupted set the turn back to running, and the final chunk then marked it completed, so the client showed an interrupted turn as completed until a resync. The server's projection keeps the state in that case. Found by the live-turn battery gate.",
     "packages/contracts/package.json": "Exports ./keybinding-constants.",
     "packages/contracts/src/ipc.test.ts": "Covers ipc.ts.",
     "packages/contracts/src/ipc.ts": "Adds the Latest desktop stage label used by Lynxtron branding.",
