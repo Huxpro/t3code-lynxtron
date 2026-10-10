@@ -8,8 +8,9 @@
 //   node scripts/run-native-battery.mjs <output-dir>/plan.json <output-dir>/results
 //
 // Fixtures are isolated state directories; nothing here reads live T3 data.
-// Entries that need a real provider turn are left out; add them by hand. The
-// live-turn entry runs its turns against the scripted provider instead.
+// Entries that need a real provider turn are left out; add them by hand. Every
+// thread and turn in a fixture is made by the product: the built app, hidden,
+// sends the commands, and the scripted provider answers them.
 
 import * as NodeChildProcess from "node:child_process";
 import * as NodeFS from "node:fs";
@@ -17,7 +18,7 @@ import * as NodePath from "node:path";
 import * as NodeProcess from "node:process";
 import * as NodeURL from "node:url";
 
-import { SCRIPTED_MODEL_ID } from "./fixtures/scripted-provider.mjs";
+import { configureScriptedProvider } from "./product-seeding.mjs";
 
 const appRoot = NodePath.resolve(NodePath.dirname(NodeURL.fileURLToPath(import.meta.url)), "..");
 const repoRoot = NodePath.resolve(appRoot, "../..");
@@ -37,6 +38,34 @@ function script(name, args) {
       stdio: ["ignore", "ignore", "inherit"],
     },
   );
+}
+
+function git(cwd, args) {
+  NodeChildProcess.execFileSync("git", args, { cwd, stdio: ["ignore", "ignore", "inherit"] });
+}
+
+// A fixture whose turns run gets a workspace of its own, because an agent may
+// edit it. In a Git workspace the server also takes a checkpoint after every
+// turn, which is what a review needs and what a long thread does not.
+function createWorkspace(name, files, { repository }) {
+  const workspace = NodePath.join(outputDir, "workspaces", name);
+  NodeFS.mkdirSync(workspace, { recursive: true });
+  for (const [file, content] of Object.entries(files)) {
+    NodeFS.writeFileSync(NodePath.join(workspace, file), content);
+  }
+  if (!repository) return workspace;
+  git(workspace, ["init", "-q"]);
+  git(workspace, ["add", "."]);
+  git(workspace, [
+    "-c",
+    "user.name=fixture",
+    "-c",
+    "user.email=fixture@example.invalid",
+    "commit",
+    "-qm",
+    `Initial ${name} fixture`,
+  ]);
+  return workspace;
 }
 
 const FIXTURE_MODEL_SELECTION = { instanceId: "claudeAgent", model: "claude-fable-5-1" };
@@ -65,63 +94,36 @@ NodeFS.cpSync(fixture("empty"), fixture("sidebar"), { recursive: true });
 script("prepare-sidebar-visual-state.mjs", ["--base-dir", fixture("sidebar")]);
 writePrefs(fixture("sidebar"));
 
-// The message-card, long-transcript and review fixtures are not built. Their
-// seeders (`prepare-*-projection-fixture.mjs`) write the projection tables of
-// the orchestrator upstream replaced, and state has to come from the product.
-// Until they create their threads through the server, the entries that need
-// them are left out of the plan and named when it is written.
-const LEFT_OUT = [
-  "review-diff",
-  "diff-scope",
-  "checkpoint-revert-refusal",
-  "message-cards",
-  "transcript-recycling",
-];
+// The review fixture's turn edits a file, which the server checkpoints.
+const reviewWorkspace = createWorkspace(
+  "review",
+  {
+    "review-fixture.txt": "original review fixture\n",
+    "review-secondary.ts": "export const reviewState = 'before';\n",
+  },
+  { repository: true },
+);
+script("prepare-visual-state.mjs", ["--output", fixture("review"), "--workspace", reviewWorkspace]);
+script("prepare-review-fixture.mjs", ["--base-dir", fixture("review")]);
+
+const transcriptWorkspace = (name, repository) =>
+  createWorkspace(name, { "README.md": `The ${name} fixture workspace.\n` }, { repository });
+const messageCardWorkspace = transcriptWorkspace("message-card", true);
+// A checkpoint after each of 120 turns keeps the server busy long after the
+// turns have ended; the thread needs none.
+const longTranscriptWorkspace = transcriptWorkspace("long-transcript", false);
+for (const [name, workspace] of [
+  ["message-card", messageCardWorkspace],
+  ["long-transcript", longTranscriptWorkspace],
+]) {
+  script("prepare-visual-state.mjs", ["--output", fixture(name), "--workspace", workspace]);
+  script(`prepare-${name}-fixture.mjs`, ["--base-dir", fixture(name)]);
+}
 
 // The live-turn fixture is the empty state with one provider: the Grok driver
 // pointed at the scripted provider, and every real provider switched off.
-const SCRIPTED_MODEL_SELECTION = { instanceId: "grok", model: SCRIPTED_MODEL_ID };
 NodeFS.cpSync(fixture("empty"), fixture("live-turn"), { recursive: true });
-const scriptedProviderLauncher = NodePath.join(fixture("live-turn"), "scripted-provider");
-NodeFS.writeFileSync(
-  scriptedProviderLauncher,
-  `#!/bin/sh\nexec ${JSON.stringify(NodeProcess.execPath)} ${JSON.stringify(
-    NodePath.join(appRoot, "scripts/fixtures/scripted-provider.mjs"),
-  )} "$@"\n`,
-  { mode: 0o755 },
-);
-NodeFS.writeFileSync(
-  NodePath.join(fixture("live-turn"), "userdata", "settings.json"),
-  `${JSON.stringify(
-    {
-      // Codex and Claude run unconfigured, so they are switched off by name.
-      // The gates enable OpenCode in a state that does not decide it. Every
-      // other built-in driver stays off without an entry.
-      providerInstances: {
-        codex: { driver: "codex", enabled: false },
-        claudeAgent: { driver: "claudeAgent", enabled: false },
-        opencode: { driver: "opencode", enabled: false },
-        grok: {
-          driver: "grok",
-          enabled: true,
-          config: { binaryPath: scriptedProviderLauncher },
-        },
-      },
-      // Thread titles are generated by a provider too; keep that on the script.
-      textGenerationModelSelection: SCRIPTED_MODEL_SELECTION,
-    },
-    null,
-    2,
-  )}\n`,
-);
-NodeFS.writeFileSync(
-  NodePath.join(fixture("live-turn"), "lynxtron-prefs.json"),
-  `${JSON.stringify(
-    { themePreference: "dark", clientSettings: {}, modelSelection: SCRIPTED_MODEL_SELECTION },
-    null,
-    2,
-  )}\n`,
-);
+configureScriptedProvider(fixture("live-turn"));
 
 const sidebar = (name, flags, viewport = {}) => ({
   name,
@@ -129,6 +131,12 @@ const sidebar = (name, flags, viewport = {}) => ({
   cwd: repoRoot,
   flags,
   ...viewport,
+});
+const review = (name, flags) => ({
+  name,
+  fixture: fixture("review"),
+  cwd: reviewWorkspace,
+  flags,
 });
 const plan = [
   sidebar("readiness-1280-dark", ["--runs", "3", "--expected-theme", "dark"]),
@@ -152,6 +160,15 @@ const plan = [
   }),
   sidebar("sidebar-thread-menu", ["--verify-sidebar-thread-menu"]),
   sidebar("header-thread-menu", ["--verify-header-thread-menu"]),
+  review("review-diff", ["--verify-review-diff-state"]),
+  review("diff-scope", ["--verify-diff-scope-menu"]),
+  review("checkpoint-revert-refusal", ["--verify-checkpoint-revert"]),
+  {
+    name: "message-cards",
+    fixture: fixture("message-card"),
+    cwd: messageCardWorkspace,
+    flags: ["--verify-message-card-state"],
+  },
   {
     name: "live-turn",
     fixture: fixture("live-turn"),
@@ -159,9 +176,20 @@ const plan = [
     flags: ["--verify-live-turn"],
     timeoutMs: 90000,
   },
+  {
+    name: "transcript-recycling",
+    script: "scripts/verify-long-transcript-recycling.mjs",
+    args: [
+      "--fixture-dir",
+      fixture("long-transcript"),
+      "--project-cwd",
+      longTranscriptWorkspace,
+      "--output",
+      "{out}",
+    ],
+  },
 ];
 
 const planPath = NodePath.join(outputDir, "plan.json");
 NodeFS.writeFileSync(planPath, `${JSON.stringify(plan, null, 2)}\n`);
 console.log(planPath);
-console.error(`Left out, no fixture: ${LEFT_OUT.join(", ")}`);

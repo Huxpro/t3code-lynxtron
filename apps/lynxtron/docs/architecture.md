@@ -238,10 +238,14 @@ Conflicts were limited to the listed patches. What the Lynx side had to follow:
   `@t3tools/shared/usageFormat` builds formatters while it loads.
   `src/app/polyfills.ts` installs a stand-in there that only constructs.
 - State is in `userdata/statev2.sqlite`. The gates read it; nothing writes it.
-  The message-card, long-transcript and review fixtures wrote the old
-  projection tables and are not built until they create their threads
-  through the server, so the battery leaves out the five entries that use
-  them.
+  A fixture's threads and turns are made by the product: the built app,
+  hidden, sends the commands the UI sends (`scripts/product-seeding.mjs`) and
+  the scripted provider answers. A fixture's times are therefore the times it
+  was prepared at, and relative-time labels in a frame move with the clock.
+- The server refuses to restore files for a thread that works in its project's
+  checkout, and upstream's clients offer to rewind the conversation only. The
+  Lynx client always asks for the files, so its revert fails on such a thread
+  and shows "Revert failed" without the reason.
 - The browser preview's live connector host (`src/browser-preview`) still
   speaks the old contract and does not typecheck.
 

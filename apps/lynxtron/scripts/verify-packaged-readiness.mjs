@@ -7792,7 +7792,12 @@ async function verifyCheckpointRevert({
 }) {
   const checkpoint = reviewFixture.checkpoint;
   const fixturePath = path.join(projectCwd, checkpoint.files[0].path);
-  const baselineRef = checkpoint.checkpointRef.replace(/\/turn\/\d+$/u, "/turn/0");
+  // A thread's checkpoint refs end in the number of the turn they follow; the
+  // one before this turn's is the tree the turn started from.
+  const baselineRef = checkpoint.checkpointRef.replace(
+    /\d+$/u,
+    String(checkpoint.checkpointTurnCount - 1),
+  );
   const readGitFile = (ref) =>
     spawnSync("git", ["-C", projectCwd, "show", `${ref}:${checkpoint.files[0].path}`], {
       encoding: "utf8",
@@ -7852,16 +7857,32 @@ async function verifyCheckpointRevert({
 
   await tapRevert();
   await waitForLogText(child, log, '"answer":"confirm"', timeoutMs);
-  // A projection fixture has no provider session, so the server refuses the
-  // revert. The refusal must be visible and nothing may move.
-  const failureDeadline = Date.now() + timeoutMs;
-  let failureRow = null;
-  while (Date.now() < failureDeadline && !failureRow) {
-    const rows = await readSelectorMeasurements(client, "[data-timeline-row-kind]");
-    failureRow = rows.find((row) => row.text.includes("Checkpoint revert failed")) ?? null;
-    if (!failureRow) await waitForChildExit(child, 200);
+  // The fixture's thread works in the project's own checkout, where the server
+  // refuses to restore files: another thread may have changed them. It refuses
+  // the command itself, so there is no transcript row; the message the revert
+  // was asked on must say so, and nothing may move.
+  const failure = await waitForValue({
+    child,
+    timeoutMs,
+    read: async () => ({
+      meta: (await readSelectorMeasurements(client, ".transcript-user-meta")).find(
+        (meta) => meta.attributes["data-message-revert-state"] === "failed",
+      ),
+      label: await readOptionalMeasurement(client, ".transcript-message-meta__failure"),
+    }),
+    predicate: (value) => value.meta !== undefined && value.label?.text.trim() === "Revert failed",
+  }).catch(() => {
+    throw new Error("The refused revert never surfaced on its message.");
+  });
+  // The UI shows that the revert failed, not why. The same command through
+  // the bridge gives the server's reason for the report.
+  const refused = await trySendCommand(client, "revertCheckpoint", {
+    threadId: reviewFixture.threadId,
+    turnCount: checkpoint.checkpointTurnCount - 1,
+  });
+  if (refused.status !== "error") {
+    throw new Error(`The server did not refuse the revert: ${JSON.stringify(refused)}`);
   }
-  if (!failureRow) throw new Error("The refused revert never surfaced in the transcript.");
   const afterFailure = await readClientState(client);
   const card = await readOptionalMeasurement(client, ".turn-diff-card");
   if (
@@ -7894,7 +7915,12 @@ async function verifyCheckpointRevert({
       afterCancel: cancelled.messages.length,
       afterRefusedRevert: afterFailure.messages.length,
     },
-    refusal: { row: failureRow.text.trim().slice(0, 200), checkpointCardKept: true },
+    refusal: {
+      messageRevertState: failure.meta.attributes["data-message-revert-state"],
+      label: failure.label.text.trim(),
+      serverReason: refused.message,
+      checkpointCardKept: true,
+    },
     workspace: { file: checkpoint.files[0].path, unchanged: true },
   };
 }
