@@ -7789,7 +7789,7 @@
   opacity: 0.64;
 }
 
-.ui-label {
+[data-slot="label"] {
   color: var(--foreground);
   font-size: var(--settings-control-font-size);
   line-height: 16px;

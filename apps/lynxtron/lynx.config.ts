@@ -56,7 +56,9 @@ export default defineConfig({
     alias: {
       "~": path.resolve(import.meta.dirname, "../web/src"),
       // Lynx implementations of the Base UI primitives upstream's ui components style.
+      "@base-ui/react/merge-props$": require.resolve("./src/app/platform/base-ui/merge-props.ts"),
       "@base-ui/react/separator$": require.resolve("./src/app/platform/base-ui/separator.tsx"),
+      "@base-ui/react/use-render$": require.resolve("./src/app/platform/base-ui/use-render.ts"),
       "@formkit/auto-animate$": require.resolve("./src/app/auto-animate-shim.ts"),
       "decode-named-character-reference$": decodeNamedCharacterReference,
       "lucide-react$": require.resolve("./src/app/lucide-react-shim.tsx"),

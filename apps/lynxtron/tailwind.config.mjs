@@ -126,6 +126,7 @@ export default {
     "../web/src/components/settings/settingsSearch.ts",
     "../web/src/components/threadActionMenu.logic.ts",
     "../web/src/components/ui/kbd.tsx",
+    "../web/src/components/ui/label.tsx",
     "../web/src/components/ui/separator.tsx",
     "../web/src/lib/threadSort.ts",
     "../web/src/logicalProject.ts",
