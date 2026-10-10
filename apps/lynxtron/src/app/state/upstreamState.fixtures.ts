@@ -41,7 +41,9 @@ const decodeProvider = Schema.decodeUnknownSync(ServerProvider);
 export interface WireThread {
   readonly id: string;
   readonly title?: string;
-  readonly latestUserMessageAt?: string;
+  readonly modelSelection?: { readonly instanceId: string; readonly model: string };
+  /** Null for a thread nobody has written in. */
+  readonly latestUserMessageAt?: string | null;
   readonly updatedAt?: string;
   readonly archivedAt?: string | null;
   readonly settledOverride?: "settled" | "active" | null;
@@ -54,7 +56,7 @@ function wireThread(thread: WireThread) {
     id: thread.id,
     projectId: "project-1",
     title: thread.title ?? `Thread ${thread.id}`,
-    modelSelection: { instanceId: "codex", model: "gpt-5" },
+    modelSelection: thread.modelSelection ?? { instanceId: "codex", model: "gpt-5" },
     runtimeMode: "full-access",
     interactionMode: "default",
     branch: null,
@@ -66,7 +68,8 @@ function wireThread(thread: WireThread) {
     settledOverride: thread.settledOverride ?? null,
     settledAt: thread.settledAt ?? null,
     session: null,
-    latestUserMessageAt: thread.latestUserMessageAt ?? updatedAt,
+    latestUserMessageAt:
+      thread.latestUserMessageAt === undefined ? updatedAt : thread.latestUserMessageAt,
     hasPendingApprovals: false,
     hasPendingUserInput: false,
     hasActionableProposedPlan: false,
