@@ -1,6 +1,7 @@
 // What upstream's atoms hold for the primary environment, followed once and
-// handed to whoever watches: the shadow that reports it and the state source
-// that feeds it to the Lynx client. Nothing is read until the first watcher.
+// handed to whoever watches: the state source that feeds it to the Lynx
+// client, the commands, and the shadow that reports it. Nothing is read until
+// the first watcher.
 import type { SupervisorConnectionState } from "@t3tools/client-runtime/connection";
 import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
@@ -23,13 +24,8 @@ import {
 } from "./upstreamConnectionRuntime.ts";
 
 export interface UpstreamRuntimeFlags {
-  /** Publish what upstream's atoms hold, and how it compares, for DevTool. */
+  /** Publish a summary of what upstream's atoms hold, for DevTool. */
   readonly upstreamShadow?: boolean;
-  /**
-   * Feed server config, shell, the selected thread, its terminals and its VCS
-   * status to the Lynx client from upstream's atoms.
-   */
-  readonly upstreamState?: boolean;
   /** Test only: the first prompt sent through upstream fails. */
   readonly testSendPromptErrorOnce?: boolean;
 }

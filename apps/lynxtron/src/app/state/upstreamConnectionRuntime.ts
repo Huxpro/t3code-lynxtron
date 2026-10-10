@@ -36,7 +36,7 @@ export const upstreamEnvironmentCatalog = createEnvironmentCatalogAtoms(upstream
 export const upstreamEnvironmentShell = createEnvironmentShellAtoms(upstreamConnectionRuntime);
 export const upstreamEnvironmentSession = createEnvironmentSessionAtoms(upstreamConnectionRuntime);
 // No environment themes or usage-limit sources: the Lynx client renders
-// neither, and the main connector does not ask for them either.
+// neither.
 export const upstreamServerEnvironment = createServerEnvironmentAtoms(upstreamConnectionRuntime, {
   initialConfigValueAtom: upstreamEnvironmentSession.initialConfigValueAtom,
 });

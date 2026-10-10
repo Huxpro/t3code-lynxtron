@@ -185,10 +185,9 @@ import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilitie
 import { primaryConnectionMayHaveChanged } from "../platform/connectionPlatform";
 import { closedTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import {
-  applyFromConnector,
+  applyClosedTerminal,
   startUpstreamStateSource,
   statusFromConnector,
-  terminalDomain,
   type VcsStatusPayload,
 } from "./upstreamStateSource";
 import { readUpstreamRuntimeFlags } from "./upstreamPrimary";
@@ -199,22 +198,10 @@ import {
   failOperationOnce,
   resolveClientReadiness,
 } from "./harnessHooks";
+import { createUpstreamCommandBridge, type UpstreamCommandBridge } from "./upstreamCommands";
 import {
-  type ConnectorCallProbe,
-  createConnectorCallProbe,
-  publishConnectorCalls,
-  recordConnectorCalls,
-} from "./connectorCallProbe";
-import {
-  createUpstreamCommandBridge,
-  routeCommandBridge,
-  type UpstreamCommandBridge,
-} from "./upstreamCommands";
-import {
-  onUpstreamCommandsAvailability,
   startUpstreamCommands,
   upstreamCommandPort,
-  upstreamCommandsAvailable,
   upstreamCommandState,
 } from "./upstreamCommandPort";
 
@@ -233,6 +220,18 @@ declare const lynx:
       getJSModule?: (name: string) => GlobalEventListenerRegistry | undefined;
     }
   | undefined;
+
+declare const __T3_LYNXTRON_WEB_PREVIEW__: boolean;
+
+/**
+ * Whether the host on the other side of the bridge supplies the client's
+ * state and takes its commands. The browser preview's connector hosts do. In
+ * the app the main process only reports its status and restarts its server;
+ * state and commands go through upstream's client runtime.
+ */
+function hostSuppliesState(): boolean {
+  return __T3_LYNXTRON_WEB_PREVIEW__;
+}
 
 export interface T3ClientState {
   readonly status: ConnectionStatus;
@@ -357,7 +356,7 @@ const pendingThreadModeCommands = new Map<string, Promise<void>>();
 const canonicalThreadRuntimeModes = new Map<string, RuntimeMode>();
 const canonicalThreadInteractionModes = new Map<string, ProviderInteractionMode>();
 // Thread model selections sent through upstream that the server has not
-// confirmed yet. Empty unless the host turned the upstream state source on.
+// confirmed yet.
 const upstreamPendingModelSelections = new Map<string, ModelSelection>();
 
 function getPreloadBridge(): Partial<PollBridge> | undefined {
@@ -372,9 +371,8 @@ function getPreloadBridge(): Partial<PollBridge> | undefined {
 function getBridge(): Partial<PollBridge> | undefined {
   "background only";
   const preload = getPreloadBridge();
-  // The main-owned transport overrides only connector-owned commands; preload
-  // keeps branding, preference storage, clipboard, and shell navigation in
-  // both transports.
+  // The command bridge carries the commands; the preload keeps branding,
+  // preference storage, clipboard, and shell navigation.
   if (mainCommandBridge) return { ...preload, ...mainCommandBridge };
   return preload;
 }
@@ -441,7 +439,7 @@ function activeVcsCwd(state: T3ClientState): string | null {
   return activeThread?.worktreePath ?? activeProject?.workspaceRoot ?? null;
 }
 
-/** Applies a directory's VCS status from either source if it is the one shown. */
+/** Applies a directory's VCS status if it is the one shown. */
 function applyVcsStatusPayload(payload: VcsStatusPayload): void {
   if (payload.cwd !== appAtomRegistry.get(t3ClientStateAtom).vcsStatusCwd) return;
   patchState({ vcsStatus: payload.status, vcsStatusCwd: payload.cwd, vcsStatusPending: false });
@@ -462,24 +460,22 @@ function refreshVcsStatusProjection(): void {
   }
   patchState({ vcsStatusCwd: cwd, vcsStatusPending: true });
   void bridge.readVcsStatus({ cwd }).then(
-    (vcsStatus) =>
-      applyFromConnector("vcs", () => {
-        if (requestSequence !== vcsStatusRequestSequence) return;
-        applyVcsStatusPayload({ cwd, status: vcsStatus });
-      }),
-    (cause) =>
-      applyFromConnector("vcs", () => {
-        if (requestSequence !== vcsStatusRequestSequence) return;
-        // A read that fails because the server just went away can arrive
-        // well before the status that says so, more so on a loaded machine;
-        // decide once the status has had time to settle.
-        setTimeout(() => {
-          if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
-            console.error("[t3-client] failed to read VCS status", { cwd, cause });
-          }
-        }, 5_000);
-        patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
-      }),
+    (vcsStatus) => {
+      if (requestSequence !== vcsStatusRequestSequence) return;
+      applyVcsStatusPayload({ cwd, status: vcsStatus });
+    },
+    (cause) => {
+      if (requestSequence !== vcsStatusRequestSequence) return;
+      // A read that fails because the server just went away can arrive
+      // well before the status that says so, more so on a loaded machine;
+      // decide once the status has had time to settle.
+      setTimeout(() => {
+        if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
+          console.error("[t3-client] failed to read VCS status", { cwd, cause });
+        }
+      }, 5_000);
+      patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
+    },
   );
 }
 
@@ -604,13 +600,13 @@ function applyStatusPayload(status: StatusEventPayload): void {
 }
 
 /**
- * Applies the main connector's status. What only the main process knows, the
- * kind of connection and whether its paths are local, is taken at once; the
- * status itself is shown when `resolveClientStatus` says it is.
+ * Applies the host's status. What only the main process knows, the kind of
+ * connection and whether its paths are local, is taken at once; the status
+ * itself is shown when `resolveClientStatus` says it is.
  */
 function applyConnectorStatus(status: ConnectorStatusPayload): void {
-  // A reconnect starts a new server at another address, and the connector is
-  // ready once it has one.
+  // A reconnect starts a new server at another address, and the main process
+  // is ready once it has one.
   if (status.status === "ready") primaryConnectionMayHaveChanged();
   const shown = statusFromConnector(status);
   if (shown !== null) applyStatusPayload(shown);
@@ -789,7 +785,7 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
   });
 }
 
-/** Applies a thread payload from either source if it is for the thread shown. */
+/** Applies a thread payload if it is for the thread shown. */
 function applyActiveThreadPayload(payload: ConnectorThreadPayload): void {
   if (payload.threadId !== appAtomRegistry.get(t3ClientStateAtom).activeThreadId) return;
   applyThreadPayload(payload as ThreadEventPayload);
@@ -804,24 +800,22 @@ function applyTerminalPayload(session: TerminalSessionPresentation): void {
   });
 }
 
+/** Applies what a host's snapshot carries. The main process's carries its status alone. */
 function applyConnectorSnapshot(
   snapshot: ConnectorSnapshot,
   preferredSelection?: ModelSelection | null,
 ): void {
   applyConnectorStatus(snapshot.status);
-  const config = snapshot.config;
-  if (config) {
-    applyFromConnector("config", () =>
-      applyConfigPayload(decodeConnectorServerConfig(config), preferredSelection),
-    );
+  if (snapshot.config) {
+    applyConfigPayload(decodeConnectorServerConfig(snapshot.config), preferredSelection);
   }
-  applyFromConnector("access", () => applyAccessPayload(snapshot.access));
-  applyFromConnector("shell", () => applyShellPayload(snapshot.shell as ShellEventPayload));
+  if (snapshot.access) applyAccessPayload(snapshot.access);
+  if (snapshot.shell) applyShellPayload(snapshot.shell as ShellEventPayload);
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
-  const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
-  if (activeThread) applyFromConnector("thread", () => applyActiveThreadPayload(activeThread));
-  for (const session of Object.values(snapshot.terminals)) {
-    applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
+  const activeThread = activeThreadId ? snapshot.threads?.[activeThreadId] : undefined;
+  if (activeThread) applyActiveThreadPayload(activeThread);
+  for (const session of Object.values(snapshot.terminals ?? {})) {
+    applyTerminalPayload(session);
   }
 }
 
@@ -831,25 +825,19 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
       applyConnectorStatus(envelope.payload);
       return;
     case "config":
-      applyFromConnector("config", () =>
-        applyConfigPayload(decodeConnectorServerConfig(envelope.payload)),
-      );
+      applyConfigPayload(decodeConnectorServerConfig(envelope.payload));
       return;
     case "access":
-      applyFromConnector("access", () =>
-        applyAccessPayload(envelope.payload as AuthAccessPresentation),
-      );
+      applyAccessPayload(envelope.payload as AuthAccessPresentation);
       return;
     case "shell":
-      applyFromConnector("shell", () => applyShellPayload(envelope.payload as ShellEventPayload));
+      applyShellPayload(envelope.payload as ShellEventPayload);
       return;
     case "thread":
-      applyFromConnector("thread", () => applyActiveThreadPayload(envelope.payload));
+      applyActiveThreadPayload(envelope.payload);
       return;
     case "terminal":
-      applyFromConnector(terminalDomain(envelope.payload), () =>
-        applyTerminalPayload(envelope.payload),
-      );
+      applyTerminalPayload(envelope.payload);
       return;
     case "log":
       // Mirror host logs to the renderer console, matching the preload path.
@@ -858,7 +846,8 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
   }
 }
 
-function buildMainCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
+/** Every command sent to the host, which is how the browser preview takes them. */
+function buildHostCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
   const bridge: Record<string, (input?: unknown) => Promise<unknown>> = {};
   for (const method of CONNECTOR_COMMAND_NAMES) {
     bridge[method] = async (input?: unknown) =>
@@ -871,49 +860,28 @@ function buildMainCommandBridge(transport: MainConnectorTransport): Partial<Poll
 }
 
 /**
- * The command bridge for a transport. With the upstream state source on, the
- * commands upstream's connection can carry go through it while it is
- * connected; the main connector takes them otherwise, and always takes the
- * rest. Without the switch this is the main connector's bridge and nothing
- * of upstream's is started.
+ * The command bridge the UI calls. In the app every command goes through
+ * upstream's connection and fails as upstream's clients' commands fail when
+ * it is down; only `reconnect`, which restarts the server the main process
+ * owns, goes to the main process.
  */
 function buildCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
-  const mainBridge = buildMainCommandBridge(transport);
-  if (readUpstreamRuntimeFlags().upstreamState !== true) return mainBridge;
-  const probe = createConnectorCallProbe();
-  connectorCallProbe = probe;
-  publishConnectorCalls(probe.calls);
-  const connector = recordConnectorCalls(mainBridge, probe.record);
-  // The connector is told nothing while upstream takes the commands, so it
-  // follows no thread. When upstream stops, it is asked for the one shown.
-  onUpstreamCommandsAvailability((available) => {
-    if (available) {
-      probe.arm();
-      return;
-    }
-    const state = appAtomRegistry.get(t3ClientStateAtom);
-    const threadId = state.activeThreadId;
-    if (!threadId || threadId === state.draftThread?.id) return;
-    void connector.selectThread?.(threadId)?.catch(() => undefined);
-  });
-  const upstream = upstreamCommandBridge();
-  if (upstreamCommandsAvailable()) probe.arm();
-  return routeCommandBridge({ connector, upstream, useUpstream: upstreamCommandsAvailable });
+  if (hostSuppliesState()) return buildHostCommandBridge(transport);
+  return {
+    ...upstreamCommandBridge(),
+    reconnect: async () => {
+      await transport.invoke("reconnect");
+    },
+  };
 }
 
-// Counts what still reaches the connector once upstream is ready. Null unless
-// the host turned the upstream state source on.
-let connectorCallProbe: ConnectorCallProbe | null = null;
 let upstreamBridge: UpstreamCommandBridge | null = null;
 
-/**
- * The commands as upstream's connection carries them. Made on first use, and
- * only when the host turned the upstream state source on.
- */
+/** The commands as upstream's connection carries them. Made on first use. */
 function upstreamCommandBridge(): UpstreamCommandBridge {
   "background only";
   startUpstreamCommands();
-  // A gate's injected failure, where a prompt now goes: upstream's port.
+  // A gate's injected failure, where a prompt goes: upstream's port.
   const port = readUpstreamRuntimeFlags().testSendPromptErrorOnce
     ? failOperationOnce(upstreamCommandPort, "startThreadTurn", "Injected sendPrompt failure")
     : upstreamCommandPort;
@@ -928,15 +896,14 @@ function upstreamCommandBridge(): UpstreamCommandBridge {
     },
     terminalClosed: ({ threadId, terminalId }) => {
       const key = terminalSessionKey(threadId, terminalId);
-      const session = closedTerminalSession({
-        threadId,
-        terminalId,
-        cwd: appAtomRegistry.get(t3ClientStateAtom).terminalSessions[key]?.cwd ?? ".",
-        closedAt: new Date().toISOString(),
-      });
-      // Held while upstream still supplies the terminal, and applied when
-      // its list drops it.
-      applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
+      applyClosedTerminal(
+        closedTerminalSession({
+          threadId,
+          terminalId,
+          cwd: appAtomRegistry.get(t3ClientStateAtom).terminalSessions[key]?.cwd ?? ".",
+          closedAt: new Date().toISOString(),
+        }),
+      );
     },
     newId: randomUUID,
     randomHex,
@@ -1240,10 +1207,11 @@ function startT3Client(): void {
 
 async function bootstrapT3Client(): Promise<void> {
   "background only";
-  // AR2: the main-owned push transport is authoritative. The renderer
-  // bootstraps with one ready-and-snapshot exchange, consumes sequenced push
-  // events, and routes commands through the typed main handlers. There is no
-  // polling fallback; a failed probe surfaces an honest error state.
+  // The renderer bootstraps with one ready-and-snapshot exchange with its
+  // host and consumes its sequenced push events. In the app those carry the
+  // main process's status, and state and commands go through upstream's
+  // client runtime; the browser preview's host carries all of it. There is
+  // no polling fallback; a failed probe surfaces an honest error state.
   let eventRegistry: GlobalEventListenerRegistry | undefined;
   try {
     eventRegistry =
@@ -1290,28 +1258,30 @@ async function bootstrapT3Client(): Promise<void> {
       draftThreadsByProjectId: savedDraftThreadsByProjectId,
     });
   }
-  startUpstreamStateSource(
-    t3ClientStateAtom,
-    {
-      applyStatus: applyStatusPayload,
-      applyAccess: applyAccessPayload,
-      applyConfig: applyConfigPayload,
-      applyShell: applyShellPayload,
-      applyThread: applyActiveThreadPayload,
-      applyTerminal: applyTerminalPayload,
-      applyVcsStatus: applyVcsStatusPayload,
-    },
-    upstreamPendingModelSelections,
-    (threadId) => upstreamCommandBridge().deleteThread({ threadId }),
-    (workspaceRoot) => upstreamCommandBridge().createProject({ workspaceRoot }),
-  );
+  if (!hostSuppliesState()) {
+    startUpstreamStateSource(
+      t3ClientStateAtom,
+      {
+        applyStatus: applyStatusPayload,
+        applyAccess: applyAccessPayload,
+        applyConfig: applyConfigPayload,
+        applyShell: applyShellPayload,
+        applyThread: applyActiveThreadPayload,
+        applyTerminal: applyTerminalPayload,
+        applyVcsStatus: applyVcsStatusPayload,
+      },
+      upstreamPendingModelSelections,
+      (threadId) => upstreamCommandBridge().deleteThread({ threadId }),
+      (workspaceRoot) => upstreamCommandBridge().createProject({ workspaceRoot }),
+    );
+  }
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
     bridge: NativeModules?.bridge,
     eventRegistry,
     applySnapshot: (snapshot) => {
       // The first snapshot applies the locally saved model selection as the
-      // preferred projection, matching the former connect()-time behavior.
+      // preferred projection.
       applyConnectorSnapshot(snapshot, firstSnapshotApplied ? null : saved);
       firstSnapshotApplied = true;
     },
@@ -1325,28 +1295,29 @@ async function bootstrapT3Client(): Promise<void> {
       status: "error",
       connectorCommandsReady: false,
       statusDetail:
-        "Main-owned connector transport unavailable (typed bridge probe failed). The renderer cannot reach the backend.",
+        "The host did not answer (typed bridge probe failed). The renderer cannot reach the backend.",
     });
     return;
   }
   mainTransport = transport;
   mainCommandBridge = buildCommandBridge(transport);
   patchState({ connectorCommandsReady: true });
-  // The connector remembers the saved selection for what it creates itself.
-  // It creates nothing while upstream takes the commands.
-  if (saved && !upstreamCommandsAvailable()) {
-    connectorCallProbe?.record("setModelSelection");
-    const result = await transport.invokeSettled("setModelSelection", { selection: saved });
-    if (!result.ok) {
-      patchState({ modelSelectionError: result.error });
+  if (hostSuppliesState()) {
+    // A connector host remembers the saved selection for what it creates
+    // itself, and follows the thread it is told is shown.
+    if (saved) {
+      const result = await transport.invokeSettled("setModelSelection", { selection: saved });
+      if (!result.ok) {
+        patchState({ modelSelectionError: result.error });
+      }
+    }
+    const current = appAtomRegistry.get(t3ClientStateAtom);
+    const activeThreadId = current.activeThreadId;
+    if (activeThreadId && activeThreadId !== current.draftThread?.id) {
+      void mainCommandBridge.selectThread?.(activeThreadId);
     }
   }
   refreshVcsStatusProjection();
-  const current = appAtomRegistry.get(t3ClientStateAtom);
-  const activeThreadId = current.activeThreadId;
-  if (activeThreadId && activeThreadId !== current.draftThread?.id) {
-    void mainCommandBridge.selectThread?.(activeThreadId);
-  }
   installTransportDevToolHook();
 }
 
@@ -2197,10 +2168,6 @@ function settleModelSelectionMutation(input: {
   readonly threadId: string | undefined;
   readonly selection: ModelSelection;
 }): Promise<BridgeCallResult> {
-  if (mainTransport && !upstreamCommandsAvailable()) {
-    connectorCallProbe?.record("setModelSelection");
-    return mainTransport.invokeSettled("setModelSelection", input);
-  }
   const bridge = getBridge();
   if (!bridge?.setModelSelection) {
     return Promise.resolve({ ok: false, error: "Model selection updates are unavailable." });

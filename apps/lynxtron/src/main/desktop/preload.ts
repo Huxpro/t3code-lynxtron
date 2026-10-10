@@ -157,9 +157,7 @@ contextBridge.exposeInLynxBTS({
   // Launch switches the renderer cannot read from its own environment.
   getRuntimeFlags: () => ({
     upstreamShadow: process.env.T3_LYNXTRON_UPSTREAM_SHADOW === "1",
-    // On unless turned off: the connector path is the fallback, not the default.
-    upstreamState: process.env.T3_LYNXTRON_UPSTREAM_STATE !== "0",
-    // The same switch the main connector reads, for a prompt upstream sends.
+    // Test only: the first prompt the renderer sends fails.
     testSendPromptErrorOnce: process.env.T3_TEST_SEND_PROMPT_ERROR_ONCE === "1",
   }),
   openExternal: async (url: string) => {

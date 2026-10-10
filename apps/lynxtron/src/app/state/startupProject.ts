@@ -4,10 +4,6 @@
 // and the renderer creates a project for it once upstream can take commands,
 // with the command the "add project" flow sends. The client does not report
 // ready until that has finished or failed.
-//
-// This is the upstream path's version of the main connector's `ensureProject`,
-// which still does the same when the host launches with
-// `T3_LYNXTRON_UPSTREAM_STATE=0`.
 import * as Option from "effect/Option";
 
 import { primaryHttpBaseUrl, upstreamCommandsReady } from "./upstreamCommandPort.ts";
@@ -29,8 +25,8 @@ export type StartupProjectDecision =
 /**
  * What to do about the startup project, given what upstream holds for the
  * server and the directory the host asked for, or null when it asked for none
- * (a server the app is paired to and does not own). As the connector does, a
- * server that has any project is left alone, whatever directory it is for.
+ * (a server the app is paired to and does not own). A server that has any
+ * project is left alone, whatever directory it is for.
  */
 export function decideStartupProject(
   state: StartupProjectState,

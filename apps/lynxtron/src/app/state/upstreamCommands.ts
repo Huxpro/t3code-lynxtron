@@ -1,8 +1,6 @@
-// The connector commands the renderer can send to the server itself, through
-// upstream's connection, instead of asking the main process to send them. It
-// is used unless the host launches with `T3_LYNXTRON_UPSTREAM_STATE=0`, and
-// only while upstream is connected: otherwise every command goes to the main
-// connector as before.
+// The client's commands as the renderer sends them to the server itself,
+// through upstream's connection. While upstream is not connected a command
+// fails, as it does in upstream's own clients.
 //
 // An orchestration command is sent with upstream's own operation for it, the
 // one Web and mobile use, so its shape, id and timestamp are upstream's. What
@@ -533,25 +531,3 @@ export function createUpstreamCommandBridge(
 }
 
 type Command = (input?: unknown) => Promise<unknown>;
-
-/**
- * The command bridge the renderer calls: each command `upstream` implements
- * goes to it while `useUpstream()` holds, asked at the moment of the call,
- * and to `connector` otherwise. Every other command is the connector's own.
- */
-export function routeCommandBridge<Bridge extends Partial<T3ConnectorCommandBridge>>(input: {
-  readonly connector: Bridge;
-  readonly upstream: Partial<UpstreamCommandBridge>;
-  readonly useUpstream: () => boolean;
-}): Bridge {
-  const connector = input.connector as Record<string, Command | undefined>;
-  const upstream = input.upstream as Record<string, Command | undefined>;
-  const routed: Record<string, Command | undefined> = { ...connector };
-  for (const name of UPSTREAM_COMMAND_NAMES) {
-    const viaConnector = connector[name];
-    const viaUpstream = upstream[name];
-    if (!viaConnector || !viaUpstream) continue;
-    routed[name] = (params) => (input.useUpstream() ? viaUpstream(params) : viaConnector(params));
-  }
-  return routed as Bridge;
-}

@@ -7,11 +7,9 @@ import { assert, describe, it } from "vite-plus/test";
 import { authAccessSnapshot } from "./upstreamPrimary.ts";
 import type { ConnectorStatusPayload } from "../../shared/connectorProtocol.ts";
 import {
-  createUpstreamStateRouter,
   createUpstreamStatusReader,
   ownedShellThreads,
   resolveClientStatus,
-  terminalDomain,
   threadWasReset,
   type UpstreamStatusView,
   upstreamAccessPayload,
@@ -174,7 +172,7 @@ describe("the shell the cleanup acts on", () => {
     ]);
   });
 
-  it("is upstream's only while upstream supplies the shell", () => {
+  it("is there only while upstream supplies the shell", () => {
     assert.strictEqual(ownedShellThreads(state), snapshot.threads);
     assert.isNull(ownedShellThreads({ ...state, archived: null }));
     assert.isNull(ownedShellThreads({ ...state, connection: connection("backoff") }));
@@ -259,7 +257,7 @@ describe("resolveClientStatus", () => {
   });
   const connectorReady = { status: "ready", httpBaseUrl: FIRST_SERVER } as const;
 
-  it("shows the connector's status as it is while the upstream source is off", () => {
+  it("shows the host's status as it is in the browser preview", () => {
     assert.strictEqual(resolveClientStatus(connectorReady, null), connectorReady);
   });
 
@@ -270,7 +268,7 @@ describe("resolveClientStatus", () => {
     }
   });
 
-  it("holds the connector's ready while upstream is still on its way to that server", () => {
+  it("holds the main process's ready while upstream is still on its way to that server", () => {
     assert.isNull(resolveClientStatus(connectorReady, upstream()));
     // Upstream is registered at the server that was replaced, whatever it says.
     const replaced = { status: "ready", httpBaseUrl: SECOND_SERVER } as const;
@@ -283,21 +281,19 @@ describe("resolveClientStatus", () => {
       resolveClientStatus(connectorReady, upstream({ ready: true })),
       connectorReady,
     );
-    assert.deepEqual(resolveClientStatus({ status: "connecting" }, upstream({ ready: true })), {
-      status: "ready",
+  });
+
+  it("says it is reconnecting when upstream has lost the server the main process has", () => {
+    assert.deepEqual(resolveClientStatus(connectorReady, upstream({ failed: true })), {
+      status: "reconnecting",
+      httpBaseUrl: FIRST_SERVER,
     });
   });
 
-  it("shows the connector's ready when upstream could not reach that server", () => {
-    assert.strictEqual(
-      resolveClientStatus(connectorReady, upstream({ failed: true })),
-      connectorReady,
-    );
-  });
-
-  it("shows the connector's own progress until either path is ready", () => {
+  it("shows the main process's own progress until it is ready", () => {
     const connecting = { status: "connecting", detail: "Waiting" } as const;
     assert.strictEqual(resolveClientStatus(connecting, upstream()), connecting);
+    assert.strictEqual(resolveClientStatus(connecting, upstream({ ready: true })), connecting);
   });
 
   it("is ready after a server restart only once upstream has reached the new server", () => {
@@ -538,60 +534,5 @@ describe("vcsStatusDiverged", () => {
       vcsStatusDiverged(payload, { ...shown, vcsStatusCwd: "/work/other", vcsStatusPending: true }),
       false,
     );
-  });
-});
-
-describe("createUpstreamStateRouter", () => {
-  it("applies connector payloads while upstream does not own the domain", () => {
-    const router = createUpstreamStateRouter();
-    const applied: string[] = [];
-    router.fromConnector("shell", () => applied.push("connector-1"));
-    router.fromUpstream<string>("shell", null, (payload) => applied.push(payload));
-    router.fromConnector("shell", () => applied.push("connector-2"));
-    assert.deepEqual(applied, ["connector-1", "connector-2"]);
-  });
-
-  it("holds connector payloads for a domain upstream owns, and only that domain", () => {
-    const router = createUpstreamStateRouter();
-    const applied: string[] = [];
-    router.fromUpstream("shell", "upstream-1", (payload) => applied.push(payload));
-    router.fromConnector("shell", () => applied.push("connector-shell"));
-    router.fromConnector("config", () => applied.push("connector-config"));
-    router.fromUpstream("shell", "upstream-2", (payload) => applied.push(payload));
-    assert.deepEqual(applied, ["upstream-1", "connector-config", "upstream-2"]);
-  });
-
-  it("applies the latest held connector payload when upstream gives the domain back", () => {
-    const router = createUpstreamStateRouter();
-    const applied: string[] = [];
-    const fromUpstream = (payload: string | null) =>
-      router.fromUpstream("config", payload, (value) => applied.push(value));
-    fromUpstream("upstream-1");
-    router.fromConnector("config", () => applied.push("connector-1"));
-    router.fromConnector("config", () => applied.push("connector-2"));
-    fromUpstream(null);
-    assert.deepEqual(applied, ["upstream-1", "connector-2"]);
-
-    // Handed back: the connector applies directly again and nothing replays twice.
-    fromUpstream(null);
-    router.fromConnector("config", () => applied.push("connector-3"));
-    assert.deepEqual(applied, ["upstream-1", "connector-2", "connector-3"]);
-  });
-});
-
-describe("createUpstreamStateRouter with terminals", () => {
-  it("holds and hands back each terminal session on its own", () => {
-    const router = createUpstreamStateRouter();
-    const applied: string[] = [];
-    const one = terminalDomain({ threadId: "thread-1", terminalId: "term-1" });
-    const two = terminalDomain({ threadId: "thread-1", terminalId: "term-2" });
-    router.fromUpstream(one, "upstream-1", (payload) => applied.push(payload));
-    router.fromConnector(one, () => applied.push("connector-1 closed"));
-    router.fromConnector(two, () => applied.push("connector-2"));
-    assert.deepEqual(applied, ["upstream-1", "connector-2"]);
-
-    // The server stopped listing the first terminal: the connector's last word on it applies.
-    router.fromUpstream<string>(one, null, (payload) => applied.push(payload));
-    assert.deepEqual(applied, ["upstream-1", "connector-2", "connector-1 closed"]);
   });
 });

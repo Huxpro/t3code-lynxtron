@@ -1,8 +1,7 @@
-// Shadow mode: runs upstream's connection runtime next to the Lynx client's own
-// state and publishes what it sees on `globalThis.__T3_UPSTREAM_SHADOW__`,
-// with a comparison of the two under `compare`, for DevTool to read. Nothing
-// in the UI reads it. It runs only when the host launches with
-// `T3_LYNXTRON_UPSTREAM_SHADOW=1`.
+// A diagnostic summary of what upstream's connection runtime holds for the
+// primary environment, published on `globalThis.__T3_UPSTREAM_SHADOW__` for
+// DevTool and the gates to read. Nothing in the UI reads it. It runs only when
+// the host launches with `T3_LYNXTRON_UPSTREAM_SHADOW=1`.
 import type { SupervisorConnectionState } from "@t3tools/client-runtime/connection";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
 import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
@@ -10,16 +9,7 @@ import * as Cause from "effect/Cause";
 import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
-import { appAtomRegistry } from "./atomRegistry.ts";
 import type { T3ClientState } from "./t3Client.ts";
-import {
-  compareServerConfig,
-  compareShell,
-  compareTerminals,
-  compareThread,
-  compareVcsStatus,
-  type DomainComparison,
-} from "./upstreamCompare.ts";
 import {
   primaryEnvironmentId,
   readUpstreamRuntimeFlags,
@@ -27,12 +17,6 @@ import {
   watchUpstreamPrimary,
 } from "./upstreamPrimary.ts";
 import { type UpstreamSelectedState, watchUpstreamSelected } from "./upstreamSelected.ts";
-import {
-  upstreamStatePayloads,
-  upstreamTerminalPayloads,
-  upstreamThreadPayload,
-  upstreamVcsPayload,
-} from "./upstreamStateSource.ts";
 
 export interface UpstreamShadowSummary {
   /** The connection phase, or what the runtime is waiting for before it has one. */
@@ -48,23 +32,12 @@ export interface UpstreamShadowSummary {
 
 export type UpstreamShadowInput = Pick<UpstreamPrimaryState, "catalog" | "connection" | "shell">;
 
-export interface UpstreamShadowComparison {
-  readonly config: DomainComparison;
-  readonly shell: DomainComparison;
-  /** The selected thread. Compared when read: it changes with every token. */
-  readonly thread: DomainComparison;
-  /** The selected thread's terminals. Compared when read, like the thread. */
-  readonly terminal: DomainComparison;
-  /** The VCS status of the directory the client shows. Compared when read. */
-  readonly vcs: DomainComparison;
-}
-
-/** What upstream holds for the selection, in a line, for reading next to `compare`. */
+/** What upstream holds for the selection, in a line. */
 export interface UpstreamShadowSelected {
   readonly threadId: string | null;
   readonly threadStatus: NonNullable<UpstreamSelectedState["thread"]>["status"] | null;
   readonly threadMessages: number | null;
-  /** Older turns upstream has not loaded yet; the thread is not compared until it has. */
+  /** Older turns upstream has not loaded yet; the thread is not shown until it has. */
   readonly threadHasOlderTurns: boolean;
   readonly threadError: string | null;
   /** How many terminals the server lists for the thread, or null before it has said. */
@@ -83,23 +56,6 @@ export function summarizeUpstreamSelected(state: UpstreamSelectedState): Upstrea
     threadError: thread === null ? null : Option.getOrNull(thread.error),
     terminals: state.terminals?.length ?? null,
     vcsCwd: state.vcsCwd,
-  };
-}
-
-type ComparedClientState = Pick<
-  T3ClientState,
-  "status" | "serverConfig" | "providers" | "settings" | "projects" | "threads" | "archivedThreads"
->;
-
-/** How the domains of the primary environment compare with the Lynx client's state. */
-export function compareUpstreamState(
-  state: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived">,
-  client: ComparedClientState,
-): Pick<UpstreamShadowComparison, "config" | "shell"> {
-  const payloads = upstreamStatePayloads(state);
-  return {
-    config: compareServerConfig(payloads.config, client),
-    shell: compareShell(payloads.shell, client),
   };
 }
 
@@ -146,8 +102,8 @@ let started = false;
 
 /**
  * Starts the shadow once. Does nothing unless the host turned it on.
- * `clientStateAtom` is the Lynx client's own state, which upstream's is
- * compared with.
+ * `clientStateAtom` is the Lynx client's own state, which says what is
+ * selected.
  */
 export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): void {
   if (started) return;
@@ -157,65 +113,18 @@ export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): 
   const target = globalThis as {
     __T3_UPSTREAM_SHADOW__?: UpstreamShadowSummary & {
       readonly selected: UpstreamShadowSelected | null;
-      readonly compare: UpstreamShadowComparison;
-      /** Commands still sent to the main connector; see `connectorCallProbe.ts`. */
-      readonly connectorCalls?: Readonly<Record<string, number>>;
     };
   };
-  let upstream: UpstreamPrimaryState | null = null;
   let selected: UpstreamSelectedState | null = null;
-  let client = appAtomRegistry.get(clientStateAtom);
-  const publish = () => {
-    if (upstream === null) return;
-    // The command probe publishes its counts on the same object.
-    const connectorCalls = target.__T3_UPSTREAM_SHADOW__?.connectorCalls;
+  watchUpstreamPrimary((state) => {
     target.__T3_UPSTREAM_SHADOW__ = {
-      ...summarizeUpstreamShadow(upstream, new Date()),
-      ...(connectorCalls === undefined ? {} : { connectorCalls }),
+      ...summarizeUpstreamShadow(state, new Date()),
       get selected() {
         return selected === null ? null : summarizeUpstreamSelected(selected);
       },
-      compare: {
-        ...compareUpstreamState(upstream, client),
-        get thread() {
-          return compareThread(selected === null ? null : upstreamThreadPayload(selected), client);
-        },
-        get terminal() {
-          return compareTerminals(
-            selected === null ? null : upstreamTerminalPayloads(selected),
-            selected?.terminalThreadId ?? null,
-            client,
-          );
-        },
-        get vcs() {
-          return compareVcsStatus(selected === null ? null : upstreamVcsPayload(selected), client);
-        },
-      },
     };
-  };
-
-  watchUpstreamPrimary((state) => {
-    upstream = state;
-    publish();
   });
   watchUpstreamSelected(clientStateAtom, (state) => {
     selected = state;
-  });
-  // The client state changes with every streamed token; only the fields the
-  // comparison reads are worth a new one.
-  appAtomRegistry.subscribe(clientStateAtom, (next) => {
-    const previous = client;
-    client = next;
-    if (
-      previous.status !== next.status ||
-      previous.serverConfig !== next.serverConfig ||
-      previous.providers !== next.providers ||
-      previous.settings !== next.settings ||
-      previous.projects !== next.projects ||
-      previous.threads !== next.threads ||
-      previous.archivedThreads !== next.archivedThreads
-    ) {
-      publish();
-    }
   });
 }
