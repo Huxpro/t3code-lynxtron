@@ -447,9 +447,13 @@ function refreshVcsStatusProjection(): void {
     (cause) =>
       applyFromConnector("vcs", () => {
         if (requestSequence !== vcsStatusRequestSequence) return;
-        if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
-          console.error("[t3-client] failed to read VCS status", { cwd, cause });
-        }
+        // A read that fails because the server just went away can arrive
+        // before the status that says so; decide once the status has settled.
+        setTimeout(() => {
+          if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
+            console.error("[t3-client] failed to read VCS status", { cwd, cause });
+          }
+        }, 1_000);
         patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
       }),
   );
@@ -581,6 +585,13 @@ function applyStatusPayload(status: StatusEventPayload): void {
  * status itself is held while upstream's connection supplies it.
  */
 function applyConnectorStatus(status: ConnectorStatusPayload): void {
+  // The main process is the first to know that the server it owns exited.
+  // Upstream's session can still read as connected for a moment, so a failure
+  // the connector reports is never held behind it.
+  if (status.status === "error" || status.status === "reconnecting") {
+    applyStatusPayload(status);
+    return;
+  }
   if (applyFromConnector("status", () => applyStatusPayload(status))) return;
   if (typeof status.pathsResolveLocally === "boolean") {
     setEnvironmentPathsResolveLocally(status.pathsResolveLocally);
