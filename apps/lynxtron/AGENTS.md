@@ -43,8 +43,10 @@ engine limits and workarounds are in `docs/compat-matrix.md`.
 ## Running the app
 
 - Launch in the background (`T3_LYNXTRON_BACKGROUND=1`) with an isolated
-  `T3_LYNXTRON_BASE_DIR`, never `~/.t3/userdata`. Do not raise the window unless
-  asked. Stop only the PID you started and confirm its server child exited.
+  `T3_LYNXTRON_BASE_DIR`, never `~/.t3/userdata`. A background window is never
+  shown; add `T3_LYNXTRON_BACKGROUND_WINDOW=visible` only for a computer-use
+  check, which needs real pixels. Stop only the PID you started and confirm its
+  server child exited.
 - Ready means `__T3_LYNXTRON_CONNECTOR_TRANSPORT__` reports `kind === "main"`
   with `lastSeq()` advancing. Read it right after launch: background-thread
   evaluate stops answering after about 20 seconds; DOM reads, frames and taps

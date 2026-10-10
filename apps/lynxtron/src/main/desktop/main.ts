@@ -279,8 +279,11 @@ app.whenReady().then(() => {
     },
   });
 
-  if (launchInBackground) win.showInactive();
-  else win.show();
+  // A background launch never puts the window on screen: DevTool frames, DOM
+  // reads and taps work without it. Computer use needs real pixels, so
+  // T3_LYNXTRON_BACKGROUND_WINDOW=visible shows it without taking focus.
+  if (!launchInBackground) win.show();
+  else if (process.env.T3_LYNXTRON_BACKGROUND_WINDOW === "visible") win.showInactive();
   const viewportHost = startLynxtronViewportHost(
     win,
     {
