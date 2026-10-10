@@ -1281,7 +1281,7 @@ async function bootstrapT3Client(): Promise<void> {
       status: "error",
       commandsReady: false,
       statusDetail:
-        "The host did not answer (typed bridge probe failed). The renderer cannot reach the backend.",
+        "Main-owned connector transport unavailable (typed bridge probe failed). The renderer cannot reach the backend.",
     });
     return;
   }
