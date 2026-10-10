@@ -113,6 +113,7 @@ export default {
     "../web/src/**/*.lynx.{ts,tsx}",
     "../web/src/branding.logic.ts",
     "../web/src/components/BranchToolbar.logic.ts",
+    "../web/src/components/Sidebar.logic.ts",
     "../web/src/components/chat/externalLinkContextMenu.ts",
     "../web/src/components/chat/modelPickerModelHighlights.ts",
     "../web/src/components/settings/settingsSearch.ts",

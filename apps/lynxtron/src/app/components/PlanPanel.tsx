@@ -3,7 +3,7 @@ import {
   normalizePlanMarkdownForExport,
   proposedPlanTitle,
   stripDisplayedPlanMarkdown,
-} from "@t3tools/lynx-logic/proposedPlan";
+} from "../../../../web/src/proposedPlan";
 import type { ExpandedImagePreview } from "@t3tools/lynx-logic/imagePreview";
 import type { ThreadId } from "@t3tools/contracts";
 import {

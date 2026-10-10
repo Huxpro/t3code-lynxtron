@@ -1,7 +1,7 @@
 import type { ProjectScript } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
-import { EMPTY_PROJECT_SCRIPT_INPUT } from "../projectScriptEditor.logic";
+import { EMPTY_PROJECT_SCRIPT_INPUT } from "../../../../web/src/components/projectScriptEditor.logic";
 import {
   countThreadsByProjectMember,
   findProjectGroupKey,
@@ -19,7 +19,7 @@ import {
   resolveProjectRename,
   resolveRegroupedProjectKey,
   sortProjectSettingsGroups,
-} from "./ProjectSettingsPanel.logic";
+} from "./projectSettingsPanel";
 
 const script = (id: string, overrides: Partial<ProjectScript> = {}): ProjectScript => ({
   id,

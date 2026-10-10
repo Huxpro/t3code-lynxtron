@@ -24,7 +24,7 @@ describe("project script editor", () => {
     ).toEqual({ ok: false, error: "Command is required." });
   });
 
-  it("rejects an invalid keybinding", () => {
+  it("rejects a keybinding the keybinding rule schema refuses", () => {
     const result = resolveProjectScriptEditorPayload({
       scriptId: null,
       scripts: [],
@@ -32,7 +32,7 @@ describe("project script editor", () => {
         ...EMPTY_PROJECT_SCRIPT_INPUT,
         name: "Test",
         command: "bun test",
-        keybinding: "mod+shift",
+        keybinding: "k".repeat(65),
       },
     });
     expect(result).toEqual({ ok: false, error: "Invalid keybinding." });

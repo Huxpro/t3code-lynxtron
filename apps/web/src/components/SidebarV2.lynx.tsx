@@ -21,18 +21,20 @@ import {
   resolveSidebarThreadStatus,
   resolveWorkingStartedAt,
   formatWorkingDurationLabel,
-  searchSidebarThreadsByTitle,
-  shouldChooseProjectForNewThread,
   sortScopedProjectsForSidebar,
   sortPinnedThreadsForSidebar,
-  sortSettledThreadsForSidebar,
   sortThreadsForSidebar,
+} from "./Sidebar.logic";
+import {
+  searchSidebarThreadsByTitle,
+  shouldChooseProjectForNewThread,
+  sortSettledThreadsForSidebar,
   isSidebarV2ThreadWoke,
   resolveSidebarV2RowPresentation,
   sidebarV2SettledTimeLabel,
   sidebarV2ThreadTimeLabel,
   type SidebarV2TopStatus,
-} from "./Sidebar.logic";
+} from "../../../lynxtron/src/app/logic/sidebar";
 import { openThreadActionMenu } from "../../../lynxtron/src/app/components/threadActionMenu";
 import { SidebarV2CompositionSurface } from "./sidebar/SidebarV2CompositionSurface";
 import { SidebarV2RowSurface, type SidebarV2RowStatus } from "./sidebar/SidebarV2RowSurface";

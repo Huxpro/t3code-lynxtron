@@ -46,7 +46,7 @@ import {
 import {
   buildCollapsedProposedPlanPreviewMarkdown,
   proposedPlanTitle,
-} from "@t3tools/lynx-logic/proposedPlan";
+} from "../../../../web/src/proposedPlan";
 import type {
   OrchestrationLatestTurn,
   OrchestrationCheckpointSummary,
@@ -78,7 +78,7 @@ import { clientCapabilities } from "../platform/clientCapabilities.lynx";
 import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { t3ClientActions } from "../state/t3Client";
 import { useClientSettingsState } from "../state/prefsStore";
-import { deriveDisplayedUserMessageState } from "../../../../web/src/lib/terminalContext";
+import { deriveDisplayedUserMessageState } from "../logic/terminalContext";
 import { LynxChangedFilesTree } from "./LynxChangedFilesTree";
 import { ProjectFileIcon } from "./ProjectFileIcon";
 import {

@@ -42,7 +42,7 @@ import {
   resolveRegroupedProjectKey,
   sortProjectSettingsGroups,
   type ProjectGroupingSelection,
-} from "../../../../web/src/components/settings/ProjectSettingsPanel.logic";
+} from "../logic/projectSettingsPanel";
 import {
   SettingsPageContainer,
   SettingsRow,
@@ -604,11 +604,10 @@ function ProjectDetail({ group }: { readonly group: SidebarProjectSnapshot }) {
               </text>
             ) : (
               scripts.map((script) => {
-                const shortcutLabel = shortcutLabelForCommand(
-                  keybindings,
-                  commandForProjectScript(script.id),
-                  "MacIntel",
-                );
+                const scriptCommand = commandForProjectScript(script.id);
+                const shortcutLabel = scriptCommand
+                  ? shortcutLabelForCommand(keybindings, scriptCommand, "MacIntel")
+                  : null;
                 return (
                   <view
                     key={script.id}

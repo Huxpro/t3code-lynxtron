@@ -75,9 +75,9 @@ export default defineConfig({
         module: {
           rules: [
             {
-              // Lower Unicode property escapes the main-thread engine rejects.
+              // Lower Unicode property escapes the main-thread engine rejects,
+              // in packages too: upstream modules bring their parsers with them.
               test: /\.[cm]?[jt]sx?$/u,
-              exclude: /node_modules/u,
               enforce: "pre",
               use: [{ loader: require.resolve("./scripts/lynx-regexp-loader.cjs") }],
             },

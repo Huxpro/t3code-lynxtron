@@ -48,6 +48,8 @@ export function ComposerPendingApprovalSurface({
 export interface ComposerPendingQuestionOption {
   readonly label: string;
   readonly description: string;
+  /** The provider's id for the option; the label stands in when it has none. */
+  readonly value?: string | undefined;
 }
 
 /**
@@ -63,7 +65,7 @@ export function ComposerPendingQuestionSurface({
   questionCount,
   multiSelect,
   options,
-  selectedOptionLabels,
+  selectedOptionValues,
   responding,
   selectedIcon,
   collapsed = false,
@@ -77,14 +79,14 @@ export function ComposerPendingQuestionSurface({
   readonly questionCount: number;
   readonly multiSelect: boolean;
   readonly options: ReadonlyArray<ComposerPendingQuestionOption>;
-  readonly selectedOptionLabels: ReadonlyArray<string>;
+  readonly selectedOptionValues: ReadonlyArray<string>;
   readonly responding: boolean;
   readonly selectedIcon?: ReactNode;
   readonly collapsed?: boolean;
   /** Chevron glyph; the surface points it up while collapsed. */
   readonly toggleIcon?: ReactNode;
   readonly onToggleCollapsed?: () => void;
-  readonly onSelect: (optionLabel: string) => void;
+  readonly onSelect: (optionValue: string) => void;
 }) {
   return (
     <HostView
@@ -149,7 +151,8 @@ export function ComposerPendingQuestionSurface({
           ) : null}
           <HostView className="composer-pending-question__options mt-2 flex flex-col gap-0.5">
             {options.map((option, index) => {
-              const selected = selectedOptionLabels.includes(option.label);
+              const optionValue = option.value ?? option.label;
+              const selected = selectedOptionValues.includes(optionValue);
               return (
                 <HostButton
                   key={option.label}
@@ -157,7 +160,7 @@ export function ComposerPendingQuestionSurface({
                   disabled={responding}
                   data-question-option={option.label}
                   data-question-option-selected={selected ? "true" : "false"}
-                  onClick={() => onSelect(option.label)}
+                  onClick={() => onSelect(optionValue)}
                   className={cn(
                     "composer-pending-question__option group flex w-full items-center gap-2 rounded-md px-2.5 py-2 text-left outline-none",
                     selected

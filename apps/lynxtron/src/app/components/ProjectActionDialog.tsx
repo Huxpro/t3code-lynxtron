@@ -9,20 +9,16 @@ import type { ProjectSummary } from "../bridge";
 
 import { uiActions } from "../state/uiState";
 import { t3ClientActions, useT3ClientState } from "../state/t3Client";
-import {
-  PROJECT_SCRIPT_KEYBINDING_HELPER,
-  commandForProjectScript,
-} from "../../../../web/src/projectScripts";
-import {
-  keybindingValueForCommand,
-  projectScriptKeybindingChange,
-} from "../../../../web/src/lib/projectScriptKeybindings";
+import { commandForProjectScript } from "../../../../web/src/projectScripts";
+import { keybindingValueForCommand } from "../../../../web/src/lib/projectScriptKeybindings";
+import { PROJECT_SCRIPT_KEYBINDING_HELPER } from "../logic/projectScripts";
+import { projectScriptKeybindingChange } from "../logic/projectScriptKeybindings";
 import {
   EMPTY_PROJECT_SCRIPT_INPUT,
   resolveProjectScriptEditorPayload,
   type ProjectScriptEditorRequest,
 } from "../../../../web/src/components/projectScriptEditor.logic";
-import { nextProjectScriptsForSubmit } from "../../../../web/src/components/settings/ProjectSettingsPanel.logic";
+import { nextProjectScriptsForSubmit } from "../logic/projectSettingsPanel";
 import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapshot";
 import { showNativeConfirm } from "../platform/clientCapabilities.lynx";
 import { Icon, type IconName } from "./Icon";
@@ -54,7 +50,7 @@ export async function persistProjectScripts(input: {
   readonly projectId: string;
   readonly scripts: ReadonlyArray<ProjectScript>;
   readonly keybinding: string | null;
-  readonly command: KeybindingCommand;
+  readonly command: KeybindingCommand | null;
   readonly keybindings: ResolvedKeybindingsConfig;
 }): Promise<void> {
   const previousKeybinding = keybindingValueForCommand(input.keybindings, input.command);

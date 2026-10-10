@@ -2,7 +2,6 @@ import { describe, expect, it } from "vite-plus/test";
 
 import {
   RIGHT_PANEL_DEFAULT_WIDTH,
-  RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY,
   resolveRightPanelSheetWidth,
   RIGHT_PANEL_MIN_WIDTH,
   resolveRightPanelMaximumWidth,
@@ -12,7 +11,6 @@ describe("right panel layout", () => {
   it("shares the 540px default and 360px minimum across panel kinds", () => {
     expect(RIGHT_PANEL_DEFAULT_WIDTH).toBe(540);
     expect(RIGHT_PANEL_MIN_WIDTH).toBe(360);
-    expect(RIGHT_PANEL_INLINE_LAYOUT_MEDIA_QUERY).toBe("(max-width: 1023px)");
   });
 
   it("matches the responsive sheet widths used by the Web surface", () => {
