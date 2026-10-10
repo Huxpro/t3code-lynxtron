@@ -1,5 +1,3 @@
-import { PrimaryConnectionTarget } from "@t3tools/client-runtime/connection";
-import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import { AuthAccessSnapshot, EnvironmentId, ProviderInstanceId } from "@t3tools/contracts";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
@@ -24,6 +22,7 @@ import {
   vcsStatusDiverged,
 } from "./upstreamStateSource.ts";
 import {
+  catalogAt,
   clientMessages,
   connection,
   serverConfig,
@@ -185,29 +184,6 @@ describe("the shell the cleanup acts on", () => {
 
 const FIRST_SERVER = "http://127.0.0.1:4100/";
 const SECOND_SERVER = "http://127.0.0.1:4207/";
-
-function catalogAt(httpBaseUrl: string) {
-  const environmentId = EnvironmentId.make("environment-local");
-  const catalog: EnvironmentCatalogState = {
-    isReady: true,
-    entries: new Map([
-      [
-        environmentId,
-        {
-          target: new PrimaryConnectionTarget({
-            environmentId,
-            label: "Local",
-            httpBaseUrl,
-            wsBaseUrl: httpBaseUrl.replace("http", "ws"),
-          }),
-          profile: Option.none(),
-          enabled: true,
-        },
-      ],
-    ]),
-  };
-  return AsyncResult.success(catalog);
-}
 
 function primaryState(
   httpBaseUrl: string,

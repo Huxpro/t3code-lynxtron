@@ -172,7 +172,8 @@ const commands = {
     const value = await withSession(async (session) => {
       let latest = "";
       await waitUntil(async () => {
-        latest = await evaluate(session, READY_EXPRESSION);
+        // Evaluate can fail while the app is still starting; keep waiting.
+        latest = await evaluate(session, READY_EXPRESSION).catch((error) => String(error));
         return latest.includes('"ready":true');
       }, 30_000);
       return latest;

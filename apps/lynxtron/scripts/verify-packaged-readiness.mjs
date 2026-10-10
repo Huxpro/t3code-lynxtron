@@ -15041,6 +15041,26 @@ async function verifySettingsRouteBehavior({
       ) {
         throw new Error(
           `Keybindings read-only table drifted: ${JSON.stringify({
+            // The rows that fail the geometry or attribute checks, so an
+            // intermittent failure names its cause.
+            offenders: rows
+              .filter((row, index) => {
+                const expectedHeight = index === rows.length - 1 ? 40 : 41;
+                return (
+                  !row.rect ||
+                  Math.abs(row.rect.x - 294) > 1 ||
+                  Math.abs(row.rect.width - 948) > 1 ||
+                  Math.abs(row.rect.height - expectedHeight) > 1 ||
+                  !row.attributes["data-keybinding-command"] ||
+                  !row.attributes["data-keybinding-shortcut"] ||
+                  !row.attributes["data-keybinding-when"]
+                );
+              })
+              .slice(0, 5)
+              .map((row) => ({ rect: row.rect, attributes: row.attributes })),
+            hasChatNew: rows.some(
+              (row) => row.attributes["data-keybinding-command"] === "chat.new",
+            ),
             conflicts,
             conflictIndicators,
             first,

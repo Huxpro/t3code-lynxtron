@@ -35,6 +35,8 @@ import type {
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { appAtomRegistry } from "./atomRegistry.ts";
+import { requestedStartupProjectCwd } from "../platform/connectionPlatform.ts";
+import { createStartupProjectStep } from "./startupProject.ts";
 import type { T3ClientState } from "./t3Client.ts";
 import { primaryHttpBaseUrl, upstreamCommandsReady } from "./upstreamCommandPort.ts";
 import {
@@ -366,12 +368,15 @@ let started = false;
  * commands are waiting on; one is removed here when the server reports it.
  * `deleteDisposableThread` deletes an empty disposable thread seen in the
  * shell upstream supplies; without it such threads are only left out.
+ * `createStartupProject` is the "add project" command; with it the status is
+ * not ready until the project the host asked for exists or could not be made.
  */
 export function startUpstreamStateSource(
   clientStateAtom: Atom.Atom<T3ClientState>,
   sink: UpstreamStateSink,
   pendingModelSelections: Map<string, ModelSelection> = new Map(),
   deleteDisposableThread?: (threadId: string) => Promise<unknown>,
+  createStartupProject?: (workspaceRoot: string) => Promise<unknown>,
 ): void {
   if (started) return;
   if (readUpstreamRuntimeFlags().upstreamState !== true) return;
@@ -381,7 +386,7 @@ export function startUpstreamStateSource(
   // projected and applied again only when what it is built from changed.
   let previous: Pick<
     UpstreamPrimaryState,
-    "connection" | "shell" | "config" | "archived" | "access"
+    "catalog" | "connection" | "shell" | "config" | "archived" | "access"
   > | null = null;
   const readStatus = createUpstreamStatusReader();
   const cleanup: DisposableThreadCleanup | null = deleteDisposableThread
@@ -398,6 +403,31 @@ export function startUpstreamStateSource(
         },
       })
     : null;
+  const publishStatus = (state: StatusState) => {
+    const view = readStatus(state);
+    const status =
+      view.ready && startupProject?.observe(state) === false ? { ...view, ready: false } : view;
+    if (
+      status.ready === upstreamStatus?.ready &&
+      status.failed === upstreamStatus.failed &&
+      status.httpBaseUrl === upstreamStatus.httpBaseUrl
+    ) {
+      return;
+    }
+    upstreamStatus = status;
+    const shown = connectorStatus === null ? null : resolveClientStatus(connectorStatus, status);
+    if (shown !== null) sink.applyStatus(shown);
+  };
+  const startupProject = createStartupProject
+    ? createStartupProjectStep({
+        requestedCwd: requestedStartupProjectCwd,
+        create: createStartupProject,
+        onSettled: () => {
+          if (previous !== null) publishStatus(previous);
+        },
+        log: (line) => console.log(line),
+      })
+    : null;
   watchUpstreamPrimary((state) => {
     const connectionChanged = previous?.connection !== state.connection;
     const configChanged = connectionChanged || previous?.config !== state.config;
@@ -405,16 +435,7 @@ export function startUpstreamStateSource(
       connectionChanged || previous?.shell !== state.shell || previous?.archived !== state.archived;
     const accessChanged = connectionChanged || previous?.access !== state.access;
     previous = state;
-    const status = readStatus(state);
-    if (
-      status.ready !== upstreamStatus?.ready ||
-      status.failed !== upstreamStatus.failed ||
-      status.httpBaseUrl !== upstreamStatus.httpBaseUrl
-    ) {
-      upstreamStatus = status;
-      const shown = connectorStatus === null ? null : resolveClientStatus(connectorStatus, status);
-      if (shown !== null) sink.applyStatus(shown);
-    }
+    publishStatus(state);
     if (accessChanged) {
       router.fromUpstream("access", upstreamAccessPayload(state), sink.applyAccess);
     }
