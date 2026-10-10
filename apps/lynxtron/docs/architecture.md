@@ -45,13 +45,41 @@ What lives where in layer 2:
 
 - `apps/lynxtron/src/app`: the Lynx UI, its state, its stylesheet
   (`overrides.css`), routes, and platform capabilities.
-- `apps/lynxtron/src/main`: the Lynxtron main process and connector.
+- `apps/lynxtron/src/main`: the Lynxtron main process, its preload, and the
+  connector (see Client runtime).
 - `packages/lynx-logic`: renderer-neutral logic the Lynx app, connector, and
   browser preview share: transcript, composer, sidebar and settings
   projections, keyboard resolution, thread dispatch, panel state.
 - `apps/web/src/**/*.lynx.ts(x)`: modules the Lynx build resolves instead of
   the Web module of the same name, and Lynx-owned modules that sit next to the
   Web code they are composed with. The Web build and typecheck never see them.
+
+## Client runtime
+
+Upstream shares client state between Web and mobile through
+`packages/client-runtime`. The Lynx client runs the same runtime in its own
+thread, the way mobile does:
+
+- `src/app/platform/connectionPlatform.ts` implements the runtime's ports for
+  Lynx. The preload supplies a socket, fetch and UUIDs from Node; the main
+  process supplies the address and bearer of the server it owns. Cloud session,
+  relay, DPoP, device identity and SSH report as unavailable.
+- `src/app/state/upstream*.ts` read upstream's atoms and send commands through
+  upstream's operations. Their values are applied to the client state through
+  the same functions the connector events use, so the UI does not change.
+- The main process keeps what only it can do: spawn the server, mint the
+  bearer, native dialogs, clipboard, menus, opening paths, resolving a path.
+
+This path is on with `T3_LYNXTRON_UPSTREAM_STATE=1`. Without it the client is
+fed by the main-process connector (`src/main/desktop/connector.ts`), which is
+the older path and the fallback while upstream is not connected.
+`T3_LYNXTRON_UPSTREAM_SHADOW=1` publishes a field-by-field comparison of the
+two on `globalThis.__T3_UPSTREAM_SHADOW__`, and `connectorCalls` there lists any
+command that still reached the connector. The connector's RPC code goes away
+once the flag is the default.
+
+A failure the main process reports (the server exited, reconnecting) is applied
+at once, never held behind upstream's status: main knows first.
 
 ## Invariants
 
@@ -248,10 +276,6 @@ Limits and open questions:
 - `tailwind.config.mjs` blocks 36 classes that Lynx-owned source carries but
   that had no generated rule before content was widened. Each one is a class
   that does nothing today; unblocking it changes that surface.
-- Scripts that compare Lynx against a Web build read hooks the fork used to
-  add to Web source (`__T3_WORKBENCH_*`, `data-*` identities). Web is upstream
-  now, so those flows in `capture-shared-workbench.mjs` and the
-  `verify-electron-*` scripts need retargeting before they are trusted again.
 - `.lynx` modules live inside `apps/web`, which costs the two `apps/web`
   config patches and means a fork-added path can collide with one upstream
   adds later (three did in the trial merge).
