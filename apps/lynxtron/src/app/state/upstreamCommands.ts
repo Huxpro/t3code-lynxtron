@@ -529,5 +529,3 @@ export function createUpstreamCommandBridge(
     },
   };
 }
-
-type Command = (input?: unknown) => Promise<unknown>;
