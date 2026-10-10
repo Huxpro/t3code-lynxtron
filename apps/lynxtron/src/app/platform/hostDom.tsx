@@ -13,13 +13,15 @@ import { HostButton, HostText, HostView } from "~/components/ui/hostElements";
 type DomHandler = (event: never) => void;
 type LynxHandler = (event: unknown) => void;
 
+// Props reach these components from DOM-typed upstream code, where an optional
+// prop may be present and undefined.
 export type HostDomProps = Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly className?: string;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
   /** What the loader turns a written `onClick` into. */
-  readonly bindtap?: DomHandler;
+  readonly bindtap?: DomHandler | undefined;
   /** An `onClick` that arrives through a props spread. */
-  readonly onClick?: DomHandler;
+  readonly onClick?: DomHandler | undefined;
 };
 
 function tapHandler(props: Pick<HostDomProps, "bindtap" | "onClick">): LynxHandler | undefined {
@@ -129,12 +131,13 @@ function Inline({ children, bindtap, onClick, ...rest }: HostDomProps) {
 
 function Img({ alt, src, bindtap, onClick, ...rest }: HostDomProps) {
   const { attributes } = splitHandlers(rest);
+  const tap = tapHandler({ bindtap, onClick });
   return (
     <image
       {...attributes}
-      accessibility-label={typeof alt === "string" ? alt : undefined}
+      {...(typeof alt === "string" ? { "accessibility-label": alt } : {})}
       src={typeof src === "string" ? src : ""}
-      bindtap={tapHandler({ bindtap, onClick })}
+      {...(tap ? { bindtap: tap } : {})}
     />
   );
 }
