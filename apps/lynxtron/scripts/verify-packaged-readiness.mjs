@@ -8785,7 +8785,7 @@ async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
     input:
       "Runtime menu tap on Supervised; renderer input fixture + DevTool taps on Send, Approve and Stop",
     provider: expected,
-    statePath: process.env.T3_LYNXTRON_UPSTREAM_STATE === "1" ? "upstream" : "connector",
+    statePath: process.env.T3_LYNXTRON_UPSTREAM_STATE === "0" ? "connector" : "upstream",
     threadId,
     approval: {
       streamedLengths: approvalStreaming,

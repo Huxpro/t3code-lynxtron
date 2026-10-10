@@ -1,7 +1,7 @@
 // A count of the commands the renderer still sent to the main connector after
 // upstream's connection became ready, for a run to read from DevTool as
 // `globalThis.__T3_UPSTREAM_SHADOW__.connectorCalls` and assert on. It exists
-// only when the host launches with `T3_LYNXTRON_UPSTREAM_STATE=1`. Commands
+// unless the host launches with `T3_LYNXTRON_UPSTREAM_STATE=0`. Commands
 // sent before upstream was ready are the bootstrap and are not counted; a
 // command sent while upstream is down again is, since that is a fallback
 // worth seeing.

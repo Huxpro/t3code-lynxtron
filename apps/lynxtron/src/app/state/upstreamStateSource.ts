@@ -1,7 +1,7 @@
 // Feeds the Lynx client's connection status, auth access, server config,
 // shell, selected thread, that thread's terminals and its VCS status from
-// upstream's atoms instead of the main connector's events and replies. It runs only when the host launches
-// with `T3_LYNXTRON_UPSTREAM_STATE=1`; without it every connector payload is
+// upstream's atoms instead of the main connector's events and replies. It runs unless the
+// host launches with `T3_LYNXTRON_UPSTREAM_STATE=0`; with that every connector payload is
 // applied as it arrives and nothing here subscribes to anything.
 //
 // Upstream owns a domain while its connection is up and it has the data the

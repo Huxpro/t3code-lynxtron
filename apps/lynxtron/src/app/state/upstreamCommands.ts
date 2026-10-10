@@ -1,6 +1,6 @@
 // The connector commands the renderer can send to the server itself, through
 // upstream's connection, instead of asking the main process to send them. It
-// is used only when the host launches with `T3_LYNXTRON_UPSTREAM_STATE=1`, and
+// is used unless the host launches with `T3_LYNXTRON_UPSTREAM_STATE=0`, and
 // only while upstream is connected: otherwise every command goes to the main
 // connector as before.
 //

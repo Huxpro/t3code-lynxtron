@@ -70,13 +70,14 @@ thread, the way mobile does:
 - The main process keeps what only it can do: spawn the server, mint the
   bearer, native dialogs, clipboard, menus, opening paths, resolving a path.
 
-This path is on with `T3_LYNXTRON_UPSTREAM_STATE=1`. Without it the client is
-fed by the main-process connector (`src/main/desktop/connector.ts`), which is
-the older path and the fallback while upstream is not connected.
+This is the default path. `T3_LYNXTRON_UPSTREAM_STATE=0` turns it off; the
+client is then fed by the main-process connector
+(`src/main/desktop/connector.ts`), the older path. The connector also serves
+until upstream is connected and whenever it is not.
 `T3_LYNXTRON_UPSTREAM_SHADOW=1` publishes a field-by-field comparison of the
 two on `globalThis.__T3_UPSTREAM_SHADOW__`, and `connectorCalls` there lists any
-command that still reached the connector. The connector's RPC code goes away
-once the flag is the default.
+command that still reached the connector. The connector's RPC code is the next
+thing to remove.
 
 A failure the main process reports (the server exited, reconnecting) is applied
 at once, never held behind upstream's status: main knows first, and upstream's
