@@ -7924,7 +7924,7 @@
   font-family: var(--font-sans);
 }
 .ui-select-separator,
-.ui-separator--horizontal {
+[data-slot="separator"][data-orientation="horizontal"] {
   width: 100%;
   height: 1px;
   background-color: var(--border);
@@ -7943,7 +7943,7 @@
   padding: 6px 8px;
   box-sizing: border-box;
 }
-.ui-separator--vertical {
+[data-slot="separator"][data-orientation="vertical"] {
   width: 1px;
   height: 100%;
   background-color: var(--border);
@@ -12903,7 +12903,7 @@
   height: 64px;
   gap: 32px;
 }
-.component-lab-separator-row > .ui-separator--horizontal {
+.component-lab-separator-row > [data-slot="separator"][data-orientation="horizontal"] {
   width: 320px;
 }
 .component-lab-separator--vertical {

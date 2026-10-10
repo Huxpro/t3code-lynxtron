@@ -32,8 +32,18 @@ const repoRoot = NodePath.resolve(appRoot, "../..");
 const webSource = NodePath.join(repoRoot, "apps/web/src");
 const componentsRoot = NodePath.join(webSource, "components");
 const EXTENSIONS = [".lynx.tsx", ".lynx.ts", ".tsx", ".ts"];
-// Packages lynx.config.ts aliases to a Lynx module.
-const ALIASED_PACKAGES = new Set(["react", "react-dom", "lucide-react", "@formkit/auto-animate"]);
+// Packages the Lynx build aliases to a Lynx module: the shims in lynx.config.ts
+// and every package specifier src/app/tsconfig.json maps to a Lynx file.
+const ALIASED_PACKAGES = new Set([
+  "react",
+  "react-dom",
+  "lucide-react",
+  "@formkit/auto-animate",
+  ...Object.keys(
+    JSON.parse(NodeFS.readFileSync(NodePath.join(appRoot, "src/app/tsconfig.json"), "utf8"))
+      .compilerOptions.paths,
+  ).filter((specifier) => !specifier.includes("*")),
+]);
 const WORKSPACE_PACKAGES = {
   "@t3tools/client-runtime": "packages/client-runtime",
   "@t3tools/contracts": "packages/contracts",

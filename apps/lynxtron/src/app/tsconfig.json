@@ -21,6 +21,7 @@
     "esModuleInterop": true,
     "types": ["@lynx-js/types"],
     "paths": {
+      "@base-ui/react/separator": ["./platform/base-ui/separator.tsx"],
       "~/*": ["../../../web/src/*"]
     }
   },
