@@ -182,9 +182,7 @@ try {
           (thread) => thread.id === fixture.threadId && thread.title === fixture.title,
         );
         return value.status === "ready" &&
-          value.transport?.kind === "main" &&
-          Number.isInteger(value.transport.lastSeq) &&
-          value.transport.lastSeq >= 0 &&
+          value.readiness?.ready === true &&
           value.activeThreadId === fixture.threadId &&
           expectedThread
           ? value

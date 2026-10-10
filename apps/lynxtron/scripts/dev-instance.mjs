@@ -38,7 +38,7 @@ const devToolCli = NodePath.resolve(
 );
 const APP_NAME = "@t3tools/lynxtron";
 const READY_EXPRESSION =
-  "JSON.stringify({kind:globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__?.kind ?? null,lastSeq:globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__?.lastSeq?.() ?? null})";
+  "JSON.stringify(globalThis.__T3_LYNXTRON_READINESS__?.() ?? {ready:false,status:null,revision:null})";
 
 const [command, baseDirArgument, ...rest] = NodeProcess.argv.slice(2);
 if (!command || !baseDirArgument) {
@@ -173,12 +173,12 @@ const commands = {
       let latest = "";
       await waitUntil(async () => {
         latest = await evaluate(session, READY_EXPRESSION);
-        return latest.includes('"kind":"main"');
+        return latest.includes('"ready":true');
       }, 30_000);
       return latest;
     });
     console.log(value);
-    if (!value.includes('"kind":"main"')) NodeProcess.exitCode = 1;
+    if (!value.includes('"ready":true')) NodeProcess.exitCode = 1;
   },
   async eval() {
     console.log(await withSession((session) => evaluate(session, rest[0] ?? "undefined")));
