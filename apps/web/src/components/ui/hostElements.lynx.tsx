@@ -1,7 +1,13 @@
 import { runOnBackground, type ReactNode, useMainThreadRef } from "@lynx-js/react";
 
-interface HostKeyEvent {
+/** What a key handler on a host element receives: the fields of a Lynx key event. */
+export interface HostKeyEvent {
   readonly key: string;
+  readonly repeat: boolean;
+  readonly altKey: boolean;
+  readonly ctrlKey: boolean;
+  readonly metaKey: boolean;
+  readonly shiftKey: boolean;
 }
 
 interface MainThreadKeyEvent extends HostKeyEvent {}
@@ -47,6 +53,7 @@ export function HostView({
   onAuxClick,
   onContextMenu,
   onKeyDown,
+  onKeyUp,
   onMouseEnter,
   onMouseLeave,
   ...props
@@ -60,6 +67,7 @@ export function HostView({
   readonly onAuxClick?: ((event: unknown) => void) | undefined;
   readonly onContextMenu?: ((event: unknown) => void) | undefined;
   readonly onKeyDown?: ((event: unknown) => void) | undefined;
+  readonly onKeyUp?: ((event: unknown) => void) | undefined;
   readonly onMouseEnter?: ((event: unknown) => void) | undefined;
   readonly onMouseLeave?: ((event: unknown) => void) | undefined;
 }) {
@@ -78,6 +86,23 @@ export function HostView({
     if (!onKeyDown) return;
     runOnBackground(onKeyDown)({
       key: event.key,
+      repeat: event.repeat,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
+    });
+  };
+  const handleKeyUp = (event: MainThreadKeyEvent) => {
+    "main thread";
+    if (!onKeyUp) return;
+    runOnBackground(onKeyUp)({
+      key: event.key,
+      repeat: event.repeat,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
     });
   };
   const handleMouseEnter = (event: MainThreadMouseEvent) => {
@@ -132,6 +157,7 @@ export function HostView({
       {...hostAttribute("event-through", eventThrough)}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
+      {...(onKeyUp ? { "main-thread:bindkeyup": handleKeyUp } : {})}
       {...(onMouseEnter || hoverRevealSelector || injectedMouseEnter
         ? { "main-thread:bindmouseenter": handleMouseEnter }
         : {})}
@@ -281,6 +307,7 @@ export function HostButton({
   onAuxClick,
   onContextMenu,
   onKeyDown,
+  onKeyUp,
   onMouseEnter,
   onMouseLeave,
   stopTapPropagation,
@@ -291,6 +318,7 @@ export function HostButton({
   readonly onAuxClick?: ((event: unknown) => void) | undefined;
   readonly onContextMenu?: ((event: unknown) => void) | undefined;
   readonly onKeyDown?: ((event: unknown) => void) | undefined;
+  readonly onKeyUp?: ((event: unknown) => void) | undefined;
   readonly onMouseEnter?: ((event: unknown) => void) | undefined;
   readonly onMouseLeave?: ((event: unknown) => void) | undefined;
   readonly stopTapPropagation?: boolean | undefined;
@@ -300,6 +328,23 @@ export function HostButton({
     if (!onKeyDown) return;
     runOnBackground(onKeyDown)({
       key: event.key,
+      repeat: event.repeat,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
+    });
+  };
+  const handleKeyUp = (event: MainThreadKeyEvent) => {
+    "main thread";
+    if (!onKeyUp) return;
+    runOnBackground(onKeyUp)({
+      key: event.key,
+      repeat: event.repeat,
+      altKey: event.altKey,
+      ctrlKey: event.ctrlKey,
+      metaKey: event.metaKey,
+      shiftKey: event.shiftKey,
     });
   };
   const handleMouseEnter = (event: MainThreadMouseEvent) => {
@@ -327,6 +372,7 @@ export function HostButton({
       aria-expanded={ariaExpanded}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
+      {...(onKeyUp ? { "main-thread:bindkeyup": handleKeyUp } : {})}
       {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
       {...(onMouseLeave ? { "main-thread:bindmouseleave": handleMouseLeave } : {})}

@@ -25,7 +25,7 @@ import * as NodeURL from "node:url";
 
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
-const { readHostTags } = require("./lynx-dom-jsx-loader.cjs");
+const { EVENT_PROPS, readHostTags } = require("./lynx-dom-jsx-loader.cjs");
 
 const appRoot = NodePath.resolve(NodePath.dirname(NodeURL.fileURLToPath(import.meta.url)), "..");
 const repoRoot = NodePath.resolve(appRoot, "../..");
@@ -50,7 +50,6 @@ const WORKSPACE_PACKAGES = {
   "@t3tools/lynx-logic": "packages/lynx-logic",
   "@t3tools/shared": "packages/shared",
 };
-const EVENT_PROPS = new Set(["onClick"]);
 
 const isFile = (path) => NodeFS.existsSync(path) && NodeFS.statSync(path).isFile();
 const isLynxModule = (path) => /\.lynx\.tsx?$/u.test(path);
