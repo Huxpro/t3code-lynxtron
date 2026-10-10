@@ -65,10 +65,16 @@ function isKeyHandlerName(name: string): name is "onKeyDown" | "onKeyUp" {
   return name === "onKeyDown" || name === "onKeyUp";
 }
 
-// Lynx draws text only inside <text>.
+// Lynx draws text only inside <text>. `lynx-box-text` gives the text the font
+// weight and white-space of its box, which the engine does not hand down (see
+// the rule in overrides.css).
 function wrapText(children: ReactNode): ReactNode {
   return Children.map(children, (child) =>
-    typeof child === "string" || typeof child === "number" ? <HostText>{child}</HostText> : child,
+    typeof child === "string" || typeof child === "number" ? (
+      <HostText className="lynx-box-text">{child}</HostText>
+    ) : (
+      child
+    ),
   );
 }
 

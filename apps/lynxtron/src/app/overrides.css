@@ -53,6 +53,19 @@
   line-height: inherit;
   text-align: inherit;
 }
+/* The text hostDom wraps for a DOM box that holds a string. A view's font
+ * weight does not reach its text, and white-space only takes effect on a text,
+ * so the build states every declaration of those properties as a custom
+ * property too (scripts/postcss-lynx-text-carry.mjs) and the text reads its
+ * box's value here. No component needs a rule for its own label. */
+.app-theme-root {
+  --lynx-text-font-weight: normal;
+  --lynx-text-white-space: normal;
+}
+.lynx-box-text {
+  font-weight: var(--lynx-text-font-weight);
+  white-space: var(--lynx-text-white-space);
+}
 
 .lynx-scroll-area {
   display: flex;
@@ -662,11 +675,6 @@
   text-align: center;
   background-color: var(--sidebar-control-surface);
   border-radius: 4px;
-}
-/* Upstream's keycap is a box around its label. The engine does not carry the
- * box's weight into the text, so the label states it. */
-[data-slot="kbd"] > .lynx-host-text {
-  font-weight: 500;
 }
 .quick-switch-setup-badge {
   flex-shrink: 0;
