@@ -448,12 +448,13 @@ function refreshVcsStatusProjection(): void {
       applyFromConnector("vcs", () => {
         if (requestSequence !== vcsStatusRequestSequence) return;
         // A read that fails because the server just went away can arrive
-        // before the status that says so; decide once the status has settled.
+        // well before the status that says so, more so on a loaded machine;
+        // decide once the status has had time to settle.
         setTimeout(() => {
           if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
             console.error("[t3-client] failed to read VCS status", { cwd, cause });
           }
-        }, 1_000);
+        }, 5_000);
         patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
       }),
   );
