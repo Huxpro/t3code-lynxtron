@@ -2,7 +2,6 @@ import { defineConfig } from "@lynx-js/rspeedy";
 import { pluginLynxConfig } from "@lynx-js/config-rsbuild-plugin";
 import { pluginRspeedyDevReady } from "@lynx-js/lynxtron-dev-plugins/rspeedy";
 import { pluginReactLynx } from "@lynx-js/react-rsbuild-plugin";
-import { tanstackRouter } from "@tanstack/router-plugin/rspack";
 import { rspack } from "@rspack/core";
 import { createRequire } from "node:module";
 import path from "node:path";
@@ -59,6 +58,9 @@ export default defineConfig({
       "@base-ui/react/merge-props$": require.resolve("./src/app/platform/base-ui/merge-props.ts"),
       "@base-ui/react/separator$": require.resolve("./src/app/platform/base-ui/separator.tsx"),
       "@base-ui/react/use-render$": require.resolve("./src/app/platform/base-ui/use-render.ts"),
+      // Upstream components navigate through the Lynx pathname router; the
+      // app typecheck resolves this specifier the same way.
+      "@tanstack/react-router$": require.resolve("./src/app/platform/tanstack/react-router.tsx"),
       "@formkit/auto-animate$": require.resolve("./src/app/auto-animate-shim.ts"),
       "decode-named-character-reference$": decodeNamedCharacterReference,
       "lucide-react$": require.resolve("./src/app/lucide-react-shim.tsx"),
@@ -127,11 +129,6 @@ export default defineConfig({
         plugins: [
           new rspack.DefinePlugin({
             __T3_LYNXTRON_WEB_PREVIEW__: JSON.stringify(webPreview),
-          }),
-          tanstackRouter({
-            target: "react",
-            routesDirectory: "./src/app/routes",
-            generatedRouteTree: "./src/app/routeTree.gen.ts",
           }),
         ],
       },
