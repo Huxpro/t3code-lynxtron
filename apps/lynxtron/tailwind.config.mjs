@@ -91,6 +91,12 @@ function alphaSemanticColor(name, baseAlpha) {
   };
 }
 
+// Upstream names for colors that are aliases in its stylesheet (index.css).
+const aliasedSemanticColors = {
+  "diff-addition": "var(--success)",
+  "diff-deletion": "var(--destructive)",
+};
+
 const semanticColors = Object.fromEntries(
   semanticColorNames.map((name) => [
     name,
@@ -114,10 +120,14 @@ export default {
     "../web/src/branding.logic.ts",
     "../web/src/components/BranchToolbar.logic.ts",
     "../web/src/components/Sidebar.logic.ts",
+    "../web/src/components/chat/DiffStatLabel.tsx",
     "../web/src/components/chat/externalLinkContextMenu.ts",
     "../web/src/components/chat/modelPickerModelHighlights.ts",
     "../web/src/components/settings/settingsSearch.ts",
     "../web/src/components/threadActionMenu.logic.ts",
+    "../web/src/components/ui/kbd.tsx",
+    "../web/src/components/ui/label.tsx",
+    "../web/src/components/ui/separator.tsx",
     "../web/src/lib/threadSort.ts",
     "../web/src/logicalProject.ts",
     "../web/src/providerSkillSearch.ts",
@@ -131,6 +141,9 @@ export default {
   // Blocking them keeps rendering unchanged. Removing an entry turns the class
   // on, which changes how that surface looks; check the surface first.
   blocklist: [
+    // From upstream components compiled unmodified: rules for DOM-only
+    // structure (`svg` descendants) that no Lynx element can match.
+    "[&_svg:not([class*='size-'])]:size-3",
     "-my-1",
     "bg-background/45",
     "bg-muted/55",
@@ -217,7 +230,7 @@ export default {
   ],
   theme: {
     extend: {
-      colors: semanticColors,
+      colors: { ...semanticColors, ...aliasedSemanticColors },
       fontFamily: {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],

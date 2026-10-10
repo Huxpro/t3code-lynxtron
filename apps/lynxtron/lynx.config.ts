@@ -55,6 +55,10 @@ export default defineConfig({
   resolve: {
     alias: {
       "~": path.resolve(import.meta.dirname, "../web/src"),
+      // Lynx implementations of the Base UI primitives upstream's ui components style.
+      "@base-ui/react/merge-props$": require.resolve("./src/app/platform/base-ui/merge-props.ts"),
+      "@base-ui/react/separator$": require.resolve("./src/app/platform/base-ui/separator.tsx"),
+      "@base-ui/react/use-render$": require.resolve("./src/app/platform/base-ui/use-render.ts"),
       "@formkit/auto-animate$": require.resolve("./src/app/auto-animate-shim.ts"),
       "decode-named-character-reference$": decodeNamedCharacterReference,
       "lucide-react$": require.resolve("./src/app/lucide-react-shim.tsx"),
@@ -88,6 +92,14 @@ export default defineConfig({
               test: /\.[cm]?[jt]sx?$/u,
               enforce: "pre",
               use: [{ loader: require.resolve("./scripts/lynx-regexp-loader.cjs") }],
+            },
+            {
+              // Compile upstream Web components unmodified: DOM tags become
+              // the host components in src/app/platform/hostDom.tsx.
+              test: /\.tsx$/u,
+              exclude: /node_modules/u,
+              enforce: "pre",
+              use: [{ loader: require.resolve("./scripts/lynx-dom-jsx-loader.cjs") }],
             },
             {
               test: /\.woff2$/u,

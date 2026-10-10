@@ -641,12 +641,12 @@
   opacity: 0.78;
   transform: translate(-1px, -1px);
 }
-.lynx-kbd-group {
+[data-slot="kbd-group"] {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
-.lynx-kbd {
+[data-slot="kbd"] {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -662,6 +662,11 @@
   text-align: center;
   background-color: var(--sidebar-control-surface);
   border-radius: 4px;
+}
+/* Upstream's keycap is a box around its label. The engine does not carry the
+ * box's weight into the text, so the label states it. */
+[data-slot="kbd"] > .lynx-host-text {
+  font-weight: 500;
 }
 .quick-switch-setup-badge {
   flex-shrink: 0;
@@ -7789,7 +7794,7 @@
   opacity: 0.64;
 }
 
-.ui-label {
+[data-slot="label"] {
   color: var(--foreground);
   font-size: var(--settings-control-font-size);
   line-height: 16px;
@@ -7924,7 +7929,7 @@
   font-family: var(--font-sans);
 }
 .ui-select-separator,
-.ui-separator--horizontal {
+[data-slot="separator"][data-orientation="horizontal"] {
   width: 100%;
   height: 1px;
   background-color: var(--border);
@@ -7943,7 +7948,7 @@
   padding: 6px 8px;
   box-sizing: border-box;
 }
-.ui-separator--vertical {
+[data-slot="separator"][data-orientation="vertical"] {
   width: 1px;
   height: 100%;
   background-color: var(--border);
@@ -11821,7 +11826,7 @@
   font-size: 12px;
   line-height: 16px;
 }
-.quick-switch-action-row > .lynx-kbd {
+.quick-switch-action-row > [data-slot="kbd"] {
   height: 16px;
   padding-left: 0;
   padding-right: 0;
@@ -11894,7 +11899,7 @@
   line-height: 20px;
   font-weight: 500;
 }
-.quick-switch-footer-group .lynx-kbd {
+.quick-switch-footer-group [data-slot="kbd"] {
   height: 20px;
   min-width: 20px;
   padding-left: 4px;
@@ -11910,7 +11915,7 @@
 .theme-light .palette-footer {
   background-color: rgba(39, 39, 42, 0.025);
 }
-.theme-light .quick-switch-footer-group .lynx-kbd {
+.theme-light .quick-switch-footer-group [data-slot="kbd"] {
   background-color: rgba(39, 39, 42, 0.08);
 }
 .model-picker-anchor {
@@ -12903,7 +12908,7 @@
   height: 64px;
   gap: 32px;
 }
-.component-lab-separator-row > .ui-separator--horizontal {
+.component-lab-separator-row > [data-slot="separator"][data-orientation="horizontal"] {
   width: 320px;
 }
 .component-lab-separator--vertical {
