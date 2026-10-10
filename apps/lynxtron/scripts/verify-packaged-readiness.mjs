@@ -386,30 +386,34 @@ async function waitForOwnedSession({ child, devToolCli, expectedBundleUrl, timeo
   );
 }
 
+const NOT_READY = { ready: false, status: null, revision: null };
+
+/**
+ * The client's own readiness: `ready` once the status the UI shows is ready
+ * and commands have a path to the server, and `revision`, which grows each
+ * time the client state the UI renders from changes.
+ */
 async function readRendererReadiness(client) {
   const response = await client.runCdp("Runtime.evaluate", {
-    expression:
-      "JSON.stringify({kind:globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__?.kind ?? null,lastSeq:globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__?.lastSeq?.() ?? null})",
+    expression: "JSON.stringify(globalThis.__T3_LYNXTRON_READINESS__?.() ?? null)",
     returnByValue: true,
   });
   const value = commandResult(response)?.value;
-  return typeof value === "string" ? JSON.parse(value) : { kind: null, lastSeq: null };
+  return (typeof value === "string" ? JSON.parse(value) : null) ?? NOT_READY;
 }
 
-async function waitForMainTransport({ child, client, timeoutMs }) {
+async function waitForClientReady({ child, client, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest;
   while (Date.now() < deadline) {
     if (child.exitCode !== null || child.signalCode !== null) {
       throw new Error("Lynxtron exited before renderer readiness.");
     }
-    latest = await readRendererReadiness(client).catch(() => ({ kind: null, lastSeq: null }));
-    if (latest.kind === "main" && Number.isInteger(latest.lastSeq) && latest.lastSeq >= 0) {
-      return latest;
-    }
+    latest = await readRendererReadiness(client).catch(() => NOT_READY);
+    if (latest.ready === true && Number.isInteger(latest.revision)) return latest;
     await waitForChildExit(child, 100);
   }
-  throw new Error(`Renderer did not expose a main transport: ${JSON.stringify({ latest })}`);
+  throw new Error(`The client did not become ready: ${JSON.stringify({ latest })}`);
 }
 
 async function verifyExpectedTheme({ child, client, expectedTheme, timeoutMs }) {
@@ -427,52 +431,48 @@ async function verifyExpectedTheme({ child, client, expectedTheme, timeoutMs }) 
   };
 }
 
-async function invokeSemanticAdvance(client, modelSelection) {
+/**
+ * Sends a command through the command bridge the UI calls, so it takes the
+ * path a UI command takes, and returns its JSON result or its failure.
+ */
+async function trySendCommand(client, method, params) {
   const response = await client.runCdp("Runtime.evaluate", {
-    expression: `globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.invoke("setModelSelection", ${JSON.stringify(
-      { selection: modelSelection },
-    )}).then(() => true)`,
-    awaitPromise: true,
-    returnByValue: true,
-  });
-  const result = commandResult(response);
-  if (response?.exceptionDetails || result?.value !== true) {
-    throw new Error(`Semantic readiness command failed: ${JSON.stringify(response)}`);
-  }
-}
-
-async function invokeConnector(client, method, params) {
-  const response = await client.runCdp("Runtime.evaluate", {
-    expression: `globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.invoke(${JSON.stringify(
-      method,
-    )}, ${JSON.stringify(params)}).then((value) => JSON.stringify(value ?? null))`,
+    expression: `globalThis.__T3_LYNXTRON_COMMAND__(${JSON.stringify(method)}, ${JSON.stringify(
+      params,
+    )}).then((value) => JSON.stringify({status:"success",value:value ?? null})).catch((error) => JSON.stringify({status:"error",message:error instanceof Error?error.message:String(error)}))`,
     awaitPromise: true,
     returnByValue: true,
   });
   const result = commandResult(response);
   if (response?.exceptionDetails || typeof result?.value !== "string") {
-    throw new Error(`Connector command ${method} failed: ${JSON.stringify(response)}`);
+    return { status: "transport-error", response };
   }
   return JSON.parse(result.value);
 }
 
-async function waitForConnectorCommand({ child, client, method, params, timeoutMs }) {
+async function sendCommand(client, method, params) {
+  const outcome = await trySendCommand(client, method, params);
+  if (outcome.status !== "success") {
+    throw new Error(`Command ${method} failed: ${JSON.stringify(outcome)}`);
+  }
+  return outcome.value;
+}
+
+async function waitForCommand({ child, client, method, params, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latestError = null;
   while (Date.now() < deadline) {
     if (child.exitCode !== null || child.signalCode !== null) {
-      throw new Error(`Lynxtron exited before connector command ${method} became ready.`);
+      throw new Error(`Lynxtron exited before command ${method} became ready.`);
     }
     try {
-      return await invokeConnector(client, method, params);
+      return await sendCommand(client, method, params);
     } catch (error) {
       latestError = error instanceof Error ? error.message : String(error);
     }
     await waitForChildExit(child, 100);
   }
-  throw new Error(
-    `Connector command ${method} did not become ready: ${JSON.stringify({ latestError })}`,
-  );
+  throw new Error(`Command ${method} did not become ready: ${JSON.stringify({ latestError })}`);
 }
 
 async function waitForSourceControlDiscoveryError({ child, client, timeoutMs }) {
@@ -482,17 +482,7 @@ async function waitForSourceControlDiscoveryError({ child, client, timeoutMs }) 
     if (child.exitCode !== null || child.signalCode !== null) {
       throw new Error("Lynxtron exited before Source Control discovery became ready.");
     }
-    const response = await client.runCdp("Runtime.evaluate", {
-      expression:
-        'globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.invoke("discoverSourceControl", {}).then((value) => JSON.stringify({status:"success",value})).catch((error) => JSON.stringify({status:"error",message:error instanceof Error?error.message:String(error)}))',
-      awaitPromise: true,
-      returnByValue: true,
-    });
-    const result = commandResult(response);
-    latest =
-      typeof result?.value === "string"
-        ? JSON.parse(result.value)
-        : { status: "transport-error", value: result?.value ?? null };
+    latest = await trySendCommand(client, "discoverSourceControl", {});
     if (
       latest.status === "error" &&
       latest.message === "Source-control discovery is unavailable in this test environment."
@@ -504,20 +494,6 @@ async function waitForSourceControlDiscoveryError({ child, client, timeoutMs }) 
   throw new Error(
     `Source Control discovery did not reach the injected typed error: ${JSON.stringify({ latest })}`,
   );
-}
-
-async function readConnectorSnapshot(client) {
-  const response = await client.runCdp("Runtime.evaluate", {
-    expression:
-      "globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.resync().then(() => JSON.stringify(globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.lastSeq()))",
-    awaitPromise: true,
-    returnByValue: true,
-  });
-  const result = commandResult(response);
-  return {
-    response,
-    lastSeq: typeof result?.value === "string" ? JSON.parse(result.value) : (result?.value ?? null),
-  };
 }
 
 async function readClientState(client) {
@@ -623,22 +599,22 @@ async function waitForFileContents({ child, filePath, predicate, timeoutMs }) {
   );
 }
 
-async function waitForSequenceAdvance({ child, client, initial, timeoutMs }) {
+/**
+ * Waits for the client state to change at all. For an action with a specific
+ * effect, wait on that effect instead; this is for one that has none.
+ */
+async function waitForRevisionAdvance({ child, client, initial, timeoutMs }) {
   const deadline = Date.now() + timeoutMs;
   let latest = initial;
   while (Date.now() < deadline) {
     if (child.exitCode !== null || child.signalCode !== null) {
-      throw new Error("Lynxtron exited before its renderer sequence advanced.");
+      throw new Error("Lynxtron exited before its client state changed.");
     }
     latest = await readRendererReadiness(client).catch(() => latest);
-    if (latest.kind === "main" && latest.lastSeq > initial.lastSeq) {
-      return latest;
-    }
+    if (Number.isInteger(latest.revision) && latest.revision > initial.revision) return latest;
     await waitForChildExit(child, 100);
   }
-  throw new Error(
-    `Renderer sequence did not advance after a main-bridge command: ${JSON.stringify({ initial, latest })}`,
-  );
+  throw new Error(`The client state did not change: ${JSON.stringify({ initial, latest })}`);
 }
 
 async function readCanonicalState(client) {
@@ -3077,12 +3053,7 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
           selector: ".composer-toolbar-control--model-option",
           timeoutMs,
         });
-        const afterSequence = await waitForSequenceAdvance({
-          child,
-          client,
-          initial: beforeSequence,
-          timeoutMs,
-        });
+        const afterSequence = await readRendererReadiness(client);
         const after = await waitForMeasurement({
           child,
           client,
@@ -3095,7 +3066,7 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
           status: "pass",
           before,
           after: after.text.trim(),
-          sequence: { before: beforeSequence.lastSeq, after: afterSequence.lastSeq },
+          sequence: { before: beforeSequence.revision, after: afterSequence.revision },
         };
       })()
     : {
@@ -3133,12 +3104,7 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
-  const afterModelSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeModelSequence,
-    timeoutMs,
-  });
+  const afterModelSequence = await readRendererReadiness(client);
   const afterModel = await waitForMeasurement({
     child,
     client,
@@ -3156,12 +3122,7 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
     selector: ".composer-toolbar-control--runtime",
     timeoutMs,
   });
-  const afterRuntimeSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeRuntimeSequence,
-    timeoutMs,
-  });
+  const afterRuntimeSequence = await readRendererReadiness(client);
   const afterRuntime = await waitForMeasurement({
     child,
     client,
@@ -3179,12 +3140,7 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
     selector: ".composer-toolbar-control--interaction",
     timeoutMs,
   });
-  const afterInteractionSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeInteractionSequence,
-    timeoutMs,
-  });
+  const afterInteractionSequence = await readRendererReadiness(client);
   const afterInteraction = await waitForMeasurement({
     child,
     client,
@@ -3249,37 +3205,37 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
       existingThread,
       newThread,
       transitionSequence: {
-        before: beforeNewThreadSequence.lastSeq,
-        after: afterNewThreadSequence.lastSeq,
+        before: beforeNewThreadSequence.revision,
+        after: afterNewThreadSequence.revision,
       },
       draftLifecycle: {
         canonicalThreadIdsBefore: beforeNewThreadIds,
         canonicalThreadIdsAfter: reusedDraftState.threadIds ?? [],
         firstDraftThreadId: firstDraftState.draftThreadId,
         reusedDraftThreadId: reusedDraftState.draftThreadId,
-        serverSequenceBefore: beforeNewThreadSequence.lastSeq,
-        serverSequenceAfter: afterNewThreadSequence.lastSeq,
+        serverSequenceBefore: beforeNewThreadSequence.revision,
+        serverSequenceAfter: afterNewThreadSequence.revision,
       },
     },
     modelPicker: { opened: modelPicker !== null, closed: true },
     model: {
       before: beforeModel,
       after: afterModel.text.trim(),
-      sequence: { before: beforeModelSequence.lastSeq, after: afterModelSequence.lastSeq },
+      sequence: { before: beforeModelSequence.revision, after: afterModelSequence.revision },
     },
     modelOption,
     runtimeMode: {
       before: beforeRuntime,
       after: afterRuntime.text.trim(),
-      sequence: { before: beforeRuntimeSequence.lastSeq, after: afterRuntimeSequence.lastSeq },
+      sequence: { before: beforeRuntimeSequence.revision, after: afterRuntimeSequence.revision },
     },
     interactionMode: {
       before: beforeInteraction,
       after: afterInteraction.text.trim(),
       activeChip,
       sequence: {
-        before: beforeInteractionSequence.lastSeq,
-        after: afterInteractionSequence.lastSeq,
+        before: beforeInteractionSequence.revision,
+        after: afterInteractionSequence.revision,
       },
     },
   };
@@ -3458,7 +3414,7 @@ async function verifyNewThreadDraftLifecycle({
   if (typeof projectId !== "string") {
     throw new Error("The Native draft lifecycle fixture has no project for manual cleanup.");
   }
-  const freshEmptyThread = await invokeConnector(client, "createThread", { projectId });
+  const freshEmptyThread = await sendCommand(client, "createThread", { projectId });
   const freshEmptyThreadId = freshEmptyThread?.threadId;
   if (typeof freshEmptyThreadId !== "string") {
     throw new Error("Creating a fresh canonical empty thread did not return an id.");
@@ -4060,8 +4016,8 @@ async function verifyNewThreadDraftLifecycle({
     firstDraftThreadId: firstDraftState.draftThreadId,
     reusedDraftThreadId: reusedDraftState.draftThreadId,
     routeRoundTrip,
-    serverSequenceBefore: beforeSequence.lastSeq,
-    serverSequenceAfter: afterSequence.lastSeq,
+    serverSequenceBefore: beforeSequence.revision,
+    serverSequenceAfter: afterSequence.revision,
   };
   const draftScopeKey = `project:${projectId}`;
   const prefsPath = path.join(baseDir, "lynxtron-prefs.json");
@@ -4135,7 +4091,7 @@ async function verifyNewThreadDraftLifecycle({
       timeoutMs,
     });
     await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
-    const restartTransport = await waitForMainTransport({
+    const restartTransport = await waitForClientReady({
       child: restartedChild,
       client: restartedClient,
       timeoutMs,
@@ -4610,9 +4566,7 @@ async function verifyModelSelectionMutation({
   child,
   client,
   devToolCli,
-  expectSocketRecovery,
   requireRunningSession,
-  log,
   outputDirectory,
   timeoutMs,
 }) {
@@ -4709,12 +4663,7 @@ async function verifyModelSelectionMutation({
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
-  const afterSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeSequence,
-    timeoutMs,
-  });
+  const afterSequence = await readRendererReadiness(client);
   const afterState = await waitForClientState({
     child,
     client,
@@ -4734,14 +4683,6 @@ async function verifyModelSelectionMutation({
     predicate: (measurement) =>
       Boolean(measurement?.text.trim()) && measurement.text.trim() !== beforeModel.text.trim(),
   });
-  if (expectSocketRecovery) {
-    await waitForLogText(
-      child,
-      log,
-      "[main-connector] setModelSelection hit a stale transport; reconnecting once",
-      timeoutMs,
-    );
-  }
   const persistedSelection = readPersistedThreadModelSelection(baseDir, threadId);
   if (
     persistedSelection?.instanceId !== targetSelection.instanceId ||
@@ -4782,11 +4723,10 @@ async function verifyModelSelectionMutation({
       after: afterModel.text.trim(),
     },
     sequence: {
-      before: beforeSequence.lastSeq,
-      after: afterSequence.lastSeq,
+      before: beforeSequence.revision,
+      after: afterSequence.revision,
     },
     overlayDismissed: true,
-    socketRecovery: expectSocketRecovery ? "reconnected-and-retried-once" : "not-injected",
     screenshot,
   };
 }
@@ -4973,12 +4913,7 @@ async function verifySidebarInlineSearch({ child, client, timeoutMs }) {
     timeoutMs,
     predicate: (state) => state?.activeThreadId === targetThreadId,
   });
-  const afterSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeSequence,
-    timeoutMs,
-  });
+  const afterSequence = await readRendererReadiness(client);
   const clearedSearch = await waitForMeasurement({
     child,
     client,
@@ -5018,7 +4953,7 @@ async function verifySidebarInlineSearch({ child, client, timeoutMs }) {
       queryCleared: (clearedSearch.attributes.value ?? "") === "",
       rowsDismissed: true,
     },
-    sequence: { before: beforeSequence.lastSeq, after: afterSequence.lastSeq },
+    sequence: { before: beforeSequence.revision, after: afterSequence.revision },
     keyboard: "pending-user-session",
   };
 }
@@ -5553,12 +5488,7 @@ async function verifyModelOptionMenuMutation({
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
-  const afterSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeSequence,
-    timeoutMs,
-  });
+  const afterSequence = await readRendererReadiness(client);
   const afterState = await waitForClientState({
     child,
     client,
@@ -5633,12 +5563,7 @@ async function verifyModelOptionMenuMutation({
     timeoutMs,
     predicate: (measurement) => measurement === null,
   });
-  const afterThinkingSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeThinkingSequence,
-    timeoutMs,
-  });
+  const afterThinkingSequence = await readRendererReadiness(client);
   const thinkingState = await waitForClientState({
     child,
     client,
@@ -5768,10 +5693,10 @@ async function verifyModelOptionMenuMutation({
       persistedThinking: thinkingPersistedSelection.options ?? [],
     },
     sequence: {
-      before: beforeSequence.lastSeq,
-      after: afterSequence.lastSeq,
-      beforeThinking: beforeThinkingSequence.lastSeq,
-      afterThinking: afterThinkingSequence.lastSeq,
+      before: beforeSequence.revision,
+      after: afterSequence.revision,
+      beforeThinking: beforeThinkingSequence.revision,
+      afterThinking: afterThinkingSequence.revision,
     },
     finalTrigger: thinkingTrigger.text.trim(),
     dismissLayer: dismissLayer.rect,
@@ -5795,7 +5720,7 @@ async function verifyComposerStopBehavior({
     instanceId: "opencode",
     model: "opencode/big-pickle",
   };
-  const refreshedConfig = await invokeConnector(client, "refreshProviders", {
+  const refreshedConfig = await sendCommand(client, "refreshProviders", {
     instanceId: modelSelection.instanceId,
   });
   const refreshedProvider = refreshedConfig?.providers?.find(
@@ -5806,8 +5731,8 @@ async function verifyComposerStopBehavior({
       `OpenCode provider did not become ready after refresh: ${JSON.stringify(refreshedProvider)}`,
     );
   }
-  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
-  const created = await invokeConnector(client, "createThread", {
+  await sendCommand(client, "setModelSelection", { selection: modelSelection });
+  const created = await sendCommand(client, "createThread", {
     projectId,
     title: "Native stop acceptance",
   });
@@ -5837,7 +5762,7 @@ async function verifyComposerStopBehavior({
   });
 
   const beforeSend = await readRendererReadiness(client);
-  await invokeConnector(client, "sendPrompt", {
+  await sendCommand(client, "sendPrompt", {
     threadId: created.threadId,
     text: "Run `sleep 120` in the shell, then reply done. Do not modify files.",
   });
@@ -5863,12 +5788,7 @@ async function verifyComposerStopBehavior({
       }; clientState=${JSON.stringify(clientState)}; readiness=${JSON.stringify(readiness)}`,
     );
   }
-  const runningSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeSend,
-    timeoutMs,
-  });
+  const runningSequence = await readRendererReadiness(client);
   const runningState = await waitForClientState({
     child,
     client,
@@ -5919,20 +5839,7 @@ async function verifyComposerStopBehavior({
       })}`,
     );
   }
-  const sequenceAfterTap = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: runningSequence,
-    timeoutMs: Math.min(timeoutMs, 10_000),
-  }).catch(async (error) => ({
-    error: error instanceof Error ? error.message : String(error),
-    latest: await readRendererReadiness(client),
-  }));
-  if ("error" in sequenceAfterTap) {
-    throw new Error(
-      `Native Stop tap did not emit a connector event: ${JSON.stringify(sequenceAfterTap)}`,
-    );
-  }
+  const sequenceAfterTap = await readRendererReadiness(client);
   let afterStop;
   try {
     afterStop = await waitForMeasurement({
@@ -5947,7 +5854,7 @@ async function verifyComposerStopBehavior({
       error: stateError instanceof Error ? stateError.message : String(stateError),
     }));
     throw new Error(
-      `Native Stop emitted connector seq ${sequenceAfterTap.lastSeq} but kept rendering stop: ${
+      `Native Stop kept rendering stop at client revision ${sequenceAfterTap.revision}: ${
         error instanceof Error ? error.message : String(error)
       }; clientState=${JSON.stringify(clientState)}; primaryAction=${JSON.stringify({
         before: primaryActionBeforeTap,
@@ -5955,12 +5862,7 @@ async function verifyComposerStopBehavior({
       })}`,
     );
   }
-  const stoppedSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: runningSequence,
-    timeoutMs,
-  });
+  const stoppedSequence = await readRendererReadiness(client);
   return {
     status: "pass",
     input: "DevTool Input.emulateTouchFromMouseEvent on the measured Native Stop control",
@@ -5984,17 +5886,17 @@ async function verifyComposerStopBehavior({
       ariaLabel: afterStop.attributes["aria-label"] ?? null,
     },
     sequence: {
-      beforeSend: beforeSend.lastSeq,
-      running: runningSequence.lastSeq,
+      beforeSend: beforeSend.revision,
+      running: runningSequence.revision,
       afterTap: sequenceAfterTap,
-      stopped: stoppedSequence.lastSeq,
+      stopped: stoppedSequence.revision,
     },
   };
 }
 
 async function verifyTerminalContextProviderSend({ child, client, projectId, timeoutMs }) {
   const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
-  const refreshedConfig = await invokeConnector(client, "refreshProviders", {
+  const refreshedConfig = await sendCommand(client, "refreshProviders", {
     instanceId: modelSelection.instanceId,
   });
   const provider = refreshedConfig?.providers?.find(
@@ -6005,7 +5907,7 @@ async function verifyTerminalContextProviderSend({ child, client, projectId, tim
       `OpenCode provider is not ready for terminal context acceptance: ${JSON.stringify(provider)}`,
     );
   }
-  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await sendCommand(client, "setModelSelection", { selection: modelSelection });
   await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
   const draft = await waitForClientState({
     child,
@@ -6148,10 +6050,10 @@ async function verifyTerminalContextProviderSend({ child, client, projectId, tim
         responseToken,
       },
       sessionStatus: completed.sessionStatus,
-      sequence: { before: beforeSend.lastSeq, after: afterSend.lastSeq },
+      sequence: { before: beforeSend.revision, after: afterSend.revision },
     };
   } finally {
-    await invokeConnector(client, "deleteThread", { threadId }).catch(() => undefined);
+    await sendCommand(client, "deleteThread", { threadId }).catch(() => undefined);
   }
 }
 
@@ -6162,7 +6064,7 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
   let providerRefreshError;
   while (Date.now() < providerDeadline) {
     try {
-      refreshedConfig = await invokeConnector(client, "refreshProviders", {
+      refreshedConfig = await sendCommand(client, "refreshProviders", {
         instanceId: modelSelection.instanceId,
       });
       break;
@@ -6185,7 +6087,7 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
       `OpenCode provider is not ready for Composer retry acceptance: ${JSON.stringify(provider)}`,
     );
   }
-  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await sendCommand(client, "setModelSelection", { selection: modelSelection });
   await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
   const draft = await waitForClientState({
     child,
@@ -6469,10 +6371,10 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
         },
       },
       draftStateBeforeFailure: beforeFailure.draftThreadId,
-      sequence: { beforeRetry: beforeRetry.lastSeq, afterRetry: afterRetry.lastSeq },
+      sequence: { beforeRetry: beforeRetry.revision, afterRetry: afterRetry.revision },
     };
   } finally {
-    await invokeConnector(client, "deleteThread", { threadId }).catch(() => undefined);
+    await sendCommand(client, "deleteThread", { threadId }).catch(() => undefined);
   }
 }
 
@@ -6589,7 +6491,7 @@ async function verifyM1LocalJourney({
   let provider;
   while (Date.now() < providerDeadline) {
     try {
-      const config = await invokeConnector(client, "refreshProviders", {
+      const config = await sendCommand(client, "refreshProviders", {
         instanceId: modelSelection.instanceId,
       });
       provider = config?.providers?.find(
@@ -6606,7 +6508,7 @@ async function verifyM1LocalJourney({
       `OpenCode provider is not ready for the M1 journey: ${JSON.stringify(provider)}`,
     );
   }
-  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await sendCommand(client, "setModelSelection", { selection: modelSelection });
 
   console.error("[m1: create draft]");
   // 1. Select the canonical project and create the intended draft.
@@ -6871,7 +6773,7 @@ async function verifyM1LocalJourney({
   const run = async () => {
     await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
     console.error("[m1: restarted server ready]");
-    await waitForMainTransport({ child: restartedChild, client: restartedClient, timeoutMs });
+    await waitForClientReady({ child: restartedChild, client: restartedClient, timeoutMs });
     console.error("[m1: restarted main transport]");
     await waitForRuntimeValue({
       child: restartedChild,
@@ -6974,12 +6876,7 @@ async function verifyM1LocalJourney({
       2,
       timeoutMs,
     );
-    const afterRecovery = await waitForSequenceAdvance({
-      child: restartedChild,
-      client: restartedClient,
-      initial: beforeInterrupt,
-      timeoutMs,
-    });
+    const afterRecovery = await readRendererReadiness(restartedClient);
     await waitForLifecycleBannerToClear({
       child: restartedChild,
       client: restartedClient,
@@ -7141,7 +7038,7 @@ async function verifyM1LocalJourney({
         interruptedServer: server,
         failurePhase: failure.phase ?? "error",
         route: routeAfterReconnect.route,
-        sequence: { before: beforeInterrupt.lastSeq, after: afterRecovery.lastSeq },
+        sequence: { before: beforeInterrupt.revision, after: afterRecovery.revision },
         inputsPreserved: m1ComposerInputsMatch(reconnected, expected),
       },
       sendFailure: {
@@ -7182,7 +7079,7 @@ async function verifyM1LocalJourney({
  */
 async function verifyRemoteJourney({ child, client, projectId, timeoutMs }) {
   const modelSelection = { instanceId: "opencode", model: "opencode/big-pickle" };
-  const config = await waitForConnectorCommand({
+  const config = await waitForCommand({
     child,
     client,
     method: "refreshProviders",
@@ -7264,8 +7161,8 @@ async function verifyRemoteJourney({ child, client, projectId, timeoutMs }) {
   });
   const routeBefore = await readRoutePanel(client);
   const beforeReconnect = await readRendererReadiness(client);
-  await invokeConnector(client, "reconnect", {});
-  const afterReconnect = await waitForSequenceAdvance({
+  await sendCommand(client, "reconnect", {});
+  const afterReconnect = await waitForRevisionAdvance({
     child,
     client,
     initial: beforeReconnect,
@@ -7297,7 +7194,7 @@ async function verifyRemoteJourney({ child, client, projectId, timeoutMs }) {
     responseToken: token,
     reconnect: {
       route: routeAfter.route,
-      sequence: { before: beforeReconnect.lastSeq, after: afterReconnect.lastSeq },
+      sequence: { before: beforeReconnect.revision, after: afterReconnect.revision },
       draftPreserved: reconnected.activeComposerDraftText === draftText,
     },
   };
@@ -8071,7 +7968,7 @@ async function verifyCheckpointRevertLive({
   let provider;
   while (Date.now() < providerDeadline) {
     try {
-      const config = await invokeConnector(client, "refreshProviders", {
+      const config = await sendCommand(client, "refreshProviders", {
         instanceId: modelSelection.instanceId,
       });
       provider = config?.providers?.find(
@@ -8086,7 +7983,7 @@ async function verifyCheckpointRevertLive({
   if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
     throw new Error(`OpenCode is not ready for the live revert: ${JSON.stringify(provider)}`);
   }
-  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await sendCommand(client, "setModelSelection", { selection: modelSelection });
   await waitForMeasurement({
     child,
     client,
@@ -8278,7 +8175,7 @@ async function verifyApprovalLive({
   let provider;
   while (Date.now() < providerDeadline) {
     try {
-      const config = await invokeConnector(client, "refreshProviders", {
+      const config = await sendCommand(client, "refreshProviders", {
         instanceId: modelSelection.instanceId,
       });
       provider = config?.providers?.find(
@@ -8293,7 +8190,7 @@ async function verifyApprovalLive({
   if (provider?.status !== "ready" || provider.auth?.status !== "authenticated") {
     throw new Error(`OpenCode is not ready for the live approval: ${JSON.stringify(provider)}`);
   }
-  await invokeConnector(client, "setModelSelection", { selection: modelSelection });
+  await sendCommand(client, "setModelSelection", { selection: modelSelection });
   await waitForMeasurement({
     child,
     client,
@@ -8477,12 +8374,7 @@ async function verifyApprovalLive({
   if (receipt.kind !== "approval.resolved") {
     throw new Error(`The live approval did not resolve: ${JSON.stringify(receipt)}`);
   }
-  const afterApprove = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeApprove,
-    timeoutMs,
-  });
+  const afterApprove = await readRendererReadiness(client);
   const completed = await waitForClientState({
     child,
     client,
@@ -8511,7 +8403,7 @@ async function verifyApprovalLive({
     preliminaryApprovals,
     request: { ...request, detail: parts.detail.text.trim() },
     receipt,
-    sequence: { beforeApprove: beforeApprove.lastSeq, afterApprove: afterApprove.lastSeq },
+    sequence: { beforeApprove: beforeApprove.revision, afterApprove: afterApprove.revision },
     layout: checks.layout,
     geometry: approvalDrawerEvidence(parts),
     assistantMentionsProbe: completed.messages.some(
@@ -9182,7 +9074,7 @@ async function verifySidebarDrafts({ child, client, timeoutMs }) {
 }
 
 async function verifySlashMenu({ child, client, timeoutMs }) {
-  const config = await invokeConnector(client, "refreshProviders", {});
+  const config = await sendCommand(client, "refreshProviders", {});
   const provider = config?.providers?.find(
     (candidate) =>
       candidate.status === "ready" &&
@@ -9201,7 +9093,7 @@ async function verifySlashMenu({ child, client, timeoutMs }) {
     );
   }
   const skill = provider.skills.find((candidate) => candidate.enabled);
-  await invokeConnector(client, "setModelSelection", {
+  await sendCommand(client, "setModelSelection", {
     selection: { instanceId: provider.instanceId, model: provider.models[0].slug },
   });
   const typeText = async (text) => {
@@ -10059,12 +9951,7 @@ async function verifyApprovalDeclineMutation({
           receipt.kind === "provider.approval.respond.failed" && receipt.requestId === requestId,
       ) === true,
   });
-  const afterSequence = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeSequence,
-    timeoutMs,
-  });
+  const afterSequence = await readRendererReadiness(client);
   await waitForMeasurement({
     child,
     client,
@@ -10122,7 +10009,7 @@ async function verifyApprovalDeclineMutation({
       timeoutMs,
     });
     await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
-    const restartTransport = await waitForMainTransport({
+    const restartTransport = await waitForClientReady({
       child: restartedChild,
       client: restartedClient,
       timeoutMs,
@@ -10158,7 +10045,7 @@ async function verifyApprovalDeclineMutation({
         threadId,
         requestId,
         before,
-        sequence: { before: beforeSequence.lastSeq, after: afterSequence.lastSeq },
+        sequence: { before: beforeSequence.revision, after: afterSequence.revision },
         receipt: resolvedState.approvalReceipts.find(
           (receipt) =>
             receipt.requestId === requestId && receipt.kind === "provider.approval.respond.failed",
@@ -10413,12 +10300,7 @@ async function verifyQuestionTranscriptState({
     });
     const beforeSubmit = await readRendererReadiness(client);
     await tapMeasurement({ client, measurement: submit });
-    const afterSubmit = await waitForSequenceAdvance({
-      child,
-      client,
-      initial: beforeSubmit,
-      timeoutMs,
-    });
+    const afterSubmit = await readRendererReadiness(client);
     await waitForMeasurement({
       child,
       client,
@@ -10496,8 +10378,8 @@ async function verifyQuestionTranscriptState({
         nextAgain: nextAgain.rect,
       },
       sequence: {
-        beforeSubmit: beforeSubmit.lastSeq,
-        afterSubmit: afterSubmit.lastSeq,
+        beforeSubmit: beforeSubmit.revision,
+        afterSubmit: afterSubmit.revision,
       },
       bridgeResponse: resolvedState.lastUserInputResponse,
       providerResolution:
@@ -10534,12 +10416,7 @@ async function verifyQuestionTranscriptState({
     selector: ".composer-question-submit",
     timeoutMs,
   });
-  const afterSubmit = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeSubmit,
-    timeoutMs,
-  });
+  const afterSubmit = await readRendererReadiness(client);
   await waitForMeasurement({
     child,
     client,
@@ -10582,8 +10459,8 @@ async function verifyQuestionTranscriptState({
       submit: submit.rect,
     },
     sequence: {
-      beforeSubmit: beforeSubmit.lastSeq,
-      afterSubmit: afterSubmit.lastSeq,
+      beforeSubmit: beforeSubmit.revision,
+      afterSubmit: afterSubmit.revision,
     },
     resolvedState,
     screenshot,
@@ -11030,7 +10907,7 @@ async function verifyRuntimeCapabilities(client) {
   }
   const runtimeResponse = await client.runCdp("Runtime.evaluate", {
     expression:
-      "JSON.stringify({Worker:typeof Worker,OffscreenCanvas:typeof OffscreenCanvas,Blob:typeof Blob,URL:typeof URL,kind:globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__?.kind ?? null})",
+      "JSON.stringify({Worker:typeof Worker,OffscreenCanvas:typeof OffscreenCanvas,Blob:typeof Blob,URL:typeof URL,ready:globalThis.__T3_LYNXTRON_READINESS__?.().ready ?? null})",
     returnByValue: true,
   });
   const runtimeResult = commandResult(runtimeResponse);
@@ -11040,7 +10917,7 @@ async function verifyRuntimeCapabilities(client) {
     runtime?.Worker !== "undefined" ||
     runtime?.OffscreenCanvas !== "undefined" ||
     runtime?.Blob !== "undefined" ||
-    runtime?.kind !== "main"
+    runtime?.ready !== true
   ) {
     throw new Error(
       `Runtime capability blocker contract changed: ${JSON.stringify({
@@ -12592,8 +12469,8 @@ async function verifyGitInitialize({
       state?.vcsStatus?.isRepo === false,
   });
   const beforeTransport = await readRendererReadiness(client);
-  if (beforeTransport.kind !== "main" || !Number.isInteger(beforeTransport.lastSeq)) {
-    throw new Error(`Git initialization lacks main transport: ${JSON.stringify(beforeTransport)}`);
+  if (beforeTransport.ready !== true) {
+    throw new Error(`Git initialization needs a ready client: ${JSON.stringify(beforeTransport)}`);
   }
   const screenshot = captureNativeScreenshot({
     client,
@@ -12691,12 +12568,7 @@ async function verifyGitPublishDialog({ child, client, timeoutMs }) {
       measurement?.text.includes("Publish repository") &&
       measurement.text.includes("Pick where to host it"),
   });
-  const afterOpen = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeOpen,
-    timeoutMs,
-  });
+  const afterOpen = await readRendererReadiness(client);
   const activeProvider = await waitForMeasurement({
     child,
     client,
@@ -12784,7 +12656,7 @@ async function verifyGitPublishDialog({ child, client, timeoutMs }) {
     anatomy,
     steps,
     providers,
-    sequence: { beforeOpen: beforeOpen.lastSeq, afterOpen: afterOpen.lastSeq },
+    sequence: { beforeOpen: beforeOpen.revision, afterOpen: afterOpen.revision },
     dismissed: true,
   };
 }
@@ -13291,7 +13163,7 @@ async function verifyProjectActionKeybindingMutation({
       timeoutMs,
     });
     await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
-    const restartTransport = await waitForMainTransport({
+    const restartTransport = await waitForClientReady({
       child: restartedChild,
       client: restartedClient,
       timeoutMs,
@@ -13539,7 +13411,7 @@ async function verifyBetaMutation({
       timeoutMs,
     });
     await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
-    const restartTransport = await waitForMainTransport({
+    const restartTransport = await waitForClientReady({
       child: restartedChild,
       client: restartedClient,
       timeoutMs,
@@ -13673,7 +13545,7 @@ async function verifyArchiveMutation({
     );
   }
 
-  await invokeConnector(client, "archiveThread", { threadId: targetThreadId });
+  await sendCommand(client, "archiveThread", { threadId: targetThreadId });
   const preparedState = await waitForClientState({
     child,
     client,
@@ -13709,7 +13581,7 @@ async function verifyArchiveMutation({
     predicate: (measurement) => measurement === null,
   });
 
-  await invokeConnector(client, "archiveThread", { threadId: targetThreadId });
+  await sendCommand(client, "archiveThread", { threadId: targetThreadId });
   const rearchivedState = await waitForClientState({
     child,
     client,
@@ -13767,7 +13639,7 @@ async function verifyArchiveMutation({
       timeoutMs,
     });
     await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
-    const restartTransport = await waitForMainTransport({
+    const restartTransport = await waitForClientReady({
       child: restartedChild,
       client: restartedClient,
       timeoutMs,
@@ -14205,7 +14077,7 @@ async function verifyConnectionsMutation({
       timeoutMs,
     });
     await waitForLogText(restartedChild, restartedLog, "T3 Code server is ready", timeoutMs);
-    const restartTransport = await waitForMainTransport({
+    const restartTransport = await waitForClientReady({
       child: restartedChild,
       client: restartedClient,
       timeoutMs,
@@ -15076,18 +14948,11 @@ async function verifySettingsRouteBehavior({
   });
 
   const beforeResync = await readRendererReadiness(client);
-  await invokeSemanticAdvance(client, modelSelection);
-  const afterResync = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeResync,
-    timeoutMs,
-  });
+  await sendCommand(client, "setModelSelection", { selection: modelSelection });
+  const afterResync = await readRendererReadiness(client);
   const afterResyncRoute = await readRoutePanel(client);
   if (afterResyncRoute.route !== "/settings/general" || afterResyncRoute.panel !== "general") {
-    throw new Error(
-      `Connector update changed the Settings route: ${JSON.stringify(afterResyncRoute)}`,
-    );
+    throw new Error(`A command changed the Settings route: ${JSON.stringify(afterResyncRoute)}`);
   }
 
   for (const [route, panel] of [
@@ -15329,7 +15194,7 @@ async function verifySettingsRouteBehavior({
     archive,
     keybindings,
     sourceControl,
-    resync: { beforeSeq: beforeResync.lastSeq, afterSeq: afterResync.lastSeq },
+    resync: { beforeSeq: beforeResync.revision, afterSeq: afterResync.revision },
     navigationSelections,
     observed,
     repeatedCycles: 2,
@@ -15406,12 +15271,7 @@ async function verifySourceControlErrorBehavior({
   }
   const beforeRetry = await readRendererReadiness(client);
   await tapSelector({ child, client, selector: "[data-source-control-retry]", timeoutMs });
-  const afterRetry = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeRetry,
-    timeoutMs,
-  });
+  const afterRetry = await readRendererReadiness(client);
   await waitForMeasurement({
     child,
     client,
@@ -15560,8 +15420,8 @@ async function verifyProvidersSettings({ child, client, devToolCli, outputDirect
       refresh: headerActions[1],
     },
     sequence: {
-      before: beforeSequence.lastSeq,
-      afterOpen: afterOpenSequence.lastSeq,
+      before: beforeSequence.revision,
+      afterOpen: afterOpenSequence.revision,
     },
     screenshot,
     dismissed: true,
@@ -15815,7 +15675,7 @@ async function verifySourceControlLoadingBehavior({
   projectCwd,
   timeoutMs,
 }) {
-  const connectorProbe = await waitForConnectorCommand({
+  const connectorProbe = await waitForCommand({
     child,
     client,
     method: "readProjectBranch",
@@ -16098,10 +15958,10 @@ async function changeRuntimeModeThroughMenu({
     });
   // The client logs a rejected change as an object the console does not
   // expand. On a failure only, the same command is sent once more through the
-  // diagnostic transport, which always reaches the connector, for its answer.
+  // command bridge for its answer.
   const probeConnector = async () => {
     await client.runCdp("Runtime.evaluate", {
-      expression: `(globalThis.__T3_RECONNECT_COMMAND_PROBE__ = "pending", globalThis.__T3_LYNXTRON_CONNECTOR_TRANSPORT__.invoke("setThreadRuntimeMode", ${JSON.stringify(
+      expression: `(globalThis.__T3_RECONNECT_COMMAND_PROBE__ = "pending", globalThis.__T3_LYNXTRON_COMMAND__("setThreadRuntimeMode", ${JSON.stringify(
         { threadId, runtimeMode: mode },
       )}).then(() => { globalThis.__T3_RECONNECT_COMMAND_PROBE__ = "accepted"; }, (error) => { globalThis.__T3_RECONNECT_COMMAND_PROBE__ = "rejected: " + (error?.message ?? String(error)); }), "sent")`,
       returnByValue: true,
@@ -16465,12 +16325,7 @@ async function verifyLifecycleRecovery({
         })
       : null;
   await waitForLogOccurrence(child, log, "T3 Code server is ready", 2, timeoutMs);
-  const afterRecovery = await waitForSequenceAdvance({
-    child,
-    client,
-    initial: beforeInterrupt,
-    timeoutMs,
-  });
+  const afterRecovery = await readRendererReadiness(client);
   await waitForLifecycleBannerToClear({ child, client, timeoutMs });
   // Nothing may run between the banner clearing, which is the client saying
   // it is ready, and the first change: the gate is about that moment.
@@ -16618,7 +16473,7 @@ async function verifyLifecycleRecovery({
         }
       : undefined,
     reconnectCommand,
-    sequence: { before: beforeInterrupt.lastSeq, after: afterRecovery.lastSeq },
+    sequence: { before: beforeInterrupt.revision, after: afterRecovery.revision },
     finalBanner: null,
   };
 }
@@ -16711,7 +16566,6 @@ async function runOnce({
   verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
-  verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
   verifyModelSelectionRunningSession: shouldVerifyModelSelectionRunningSession,
   verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
   verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,
@@ -16843,9 +16697,6 @@ async function runOnce({
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
-      ...(shouldVerifyModelSelectionSocketRecovery
-        ? { T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE: "1" }
-        : {}),
       ...(shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney
         ? { T3_TEST_SEND_PROMPT_ERROR_ONCE: "1" }
         : {}),
@@ -16916,7 +16767,7 @@ async function runOnce({
       await waitForLogText(child, log, "T3 Code server is ready", timeoutMs);
       mark("serverReadyMs");
     }
-    const beforeProbe = await waitForMainTransport({ child, client, timeoutMs });
+    const beforeProbe = await waitForClientReady({ child, client, timeoutMs });
     mark("mainTransportMs");
     const theme = await verifyExpectedTheme({
       child,
@@ -16938,22 +16789,15 @@ async function runOnce({
         predicate: (state) => state?.activeThreadId === settledBannerFixture.threadId,
       });
     }
-    // Same-value, no-thread selection is an isolated-state no-op. It still
-    // crosses renderer -> main and emits the connector log back through the
-    // sequenced main -> renderer channel, proving both transport legs.
-    await invokeSemanticAdvance(client, modelSelection);
-    const afterProbe = await waitForSequenceAdvance({
-      child,
-      client,
-      initial: beforeProbe,
-      timeoutMs,
-    });
+    // A read sent the way the UI sends a command reaches the server and is
+    // answered: ready is not only a status.
+    await sendCommand(client, "readProjectBranch", { cwd: projectCwd });
+    const afterProbe = await readRendererReadiness(client);
     mark("semanticReadyMs");
     const readyMemory = readProcessTreeMemory(child.pid);
     const readyLoadAverage = Number(os.loadavg()[0].toFixed(2));
     const transport = {
-      kind: "main",
-      probe: "same-value model selection without thread mutation",
+      probe: "readProjectBranch through the command bridge",
       beforeProbe,
       afterProbe,
     };
@@ -17065,7 +16909,6 @@ async function runOnce({
           child,
           client,
           devToolCli,
-          expectSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
           log,
           outputDirectory,
           timeoutMs,
@@ -17278,7 +17121,6 @@ async function runOnce({
           child,
           client,
           devToolCli,
-          expectSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
           requireRunningSession: shouldVerifyModelSelectionRunningSession,
           log,
           outputDirectory,
@@ -17971,9 +17813,6 @@ const modelPickerDefaultOnly = process.argv.includes("--model-picker-default-onl
 const shouldVerifyModelSelectionMutation = process.argv.includes(
   "--verify-model-selection-mutation",
 );
-const shouldVerifyModelSelectionSocketRecovery = process.argv.includes(
-  "--verify-model-selection-socket-recovery",
-);
 const shouldVerifyModelSelectionRunningSession = process.argv.includes(
   "--verify-model-selection-running-session",
 );
@@ -18120,11 +17959,6 @@ if (modelPickerDefaultOnly && !shouldVerifyModelPickerFidelity) {
 }
 if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
   throw new Error("--quick-switch-query requires --verify-quick-switch-default.");
-}
-if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutation) {
-  throw new Error(
-    "--verify-model-selection-socket-recovery requires --verify-model-selection-mutation.",
-  );
 }
 if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-file-sheet-back requires --verify-files-browser.");
@@ -18489,7 +18323,6 @@ for (let index = 1; index <= runs; index += 1) {
       verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
-      verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
       verifyModelSelectionRunningSession: shouldVerifyModelSelectionRunningSession,
       verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
       verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,

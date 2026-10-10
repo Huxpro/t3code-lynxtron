@@ -30,6 +30,8 @@ export interface UpstreamRuntimeFlags {
    * status to the Lynx client from upstream's atoms.
    */
   readonly upstreamState?: boolean;
+  /** Test only: the first prompt sent through upstream fails. */
+  readonly testSendPromptErrorOnce?: boolean;
 }
 
 declare const NativeModules:
