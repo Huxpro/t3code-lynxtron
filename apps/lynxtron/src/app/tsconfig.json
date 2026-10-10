@@ -24,6 +24,7 @@
       "@base-ui/react/merge-props": ["./platform/base-ui/merge-props.ts"],
       "@base-ui/react/separator": ["./platform/base-ui/separator.tsx"],
       "@base-ui/react/use-render": ["./platform/base-ui/use-render.ts"],
+      "@tanstack/react-router": ["./platform/tanstack/react-router.tsx"],
       "~/*": ["../../../web/src/*"]
     }
   },

@@ -25,7 +25,7 @@ import * as NodeURL from "node:url";
 
 const require = createRequire(import.meta.url);
 const ts = require("typescript");
-const { readHostTags } = require("./lynx-dom-jsx-loader.cjs");
+const { EVENT_PROPS, readHostTags } = require("./lynx-dom-jsx-loader.cjs");
 
 const appRoot = NodePath.resolve(NodePath.dirname(NodeURL.fileURLToPath(import.meta.url)), "..");
 const repoRoot = NodePath.resolve(appRoot, "../..");
@@ -34,15 +34,22 @@ const componentsRoot = NodePath.join(webSource, "components");
 const EXTENSIONS = [".lynx.tsx", ".lynx.ts", ".tsx", ".ts"];
 // Packages the Lynx build aliases to a Lynx module: the shims in lynx.config.ts
 // and every package specifier src/app/tsconfig.json maps to a Lynx file.
+// A package mapped by tsconfig is a Lynx stand-in that exports only what it
+// implements; an import of any other name is a blocker.
+const STAND_IN_PACKAGES = new Map(
+  Object.entries(
+    JSON.parse(NodeFS.readFileSync(NodePath.join(appRoot, "src/app/tsconfig.json"), "utf8"))
+      .compilerOptions.paths,
+  )
+    .filter(([specifier]) => !specifier.includes("*"))
+    .map(([specifier, [target]]) => [specifier, NodePath.join(appRoot, "src/app", target)]),
+);
 const ALIASED_PACKAGES = new Set([
   "react",
   "react-dom",
   "lucide-react",
   "@formkit/auto-animate",
-  ...Object.keys(
-    JSON.parse(NodeFS.readFileSync(NodePath.join(appRoot, "src/app/tsconfig.json"), "utf8"))
-      .compilerOptions.paths,
-  ).filter((specifier) => !specifier.includes("*")),
+  ...STAND_IN_PACKAGES.keys(),
 ]);
 const WORKSPACE_PACKAGES = {
   "@t3tools/client-runtime": "packages/client-runtime",
@@ -50,7 +57,6 @@ const WORKSPACE_PACKAGES = {
   "@t3tools/lynx-logic": "packages/lynx-logic",
   "@t3tools/shared": "packages/shared",
 };
-const EVENT_PROPS = new Set(["onClick"]);
 
 const isFile = (path) => NodeFS.existsSync(path) && NodeFS.statSync(path).isFile();
 const isLynxModule = (path) => /\.lynx\.tsx?$/u.test(path);
@@ -257,6 +263,14 @@ function classifyImport(file, { specifier, names }) {
       const missing = (names ?? []).filter((name) => !lucideIcons.has(name));
       if (missing.length > 0) {
         return { kind: "blocker", label: `lucide-react lacks ${missing.join(", ")}` };
+      }
+    }
+    const standIn = STAND_IN_PACKAGES.get(specifier);
+    const standInExports = standIn ? valueExports(standIn) : null;
+    if (standInExports) {
+      const missing = (names ?? []).filter((name) => !standInExports.has(name));
+      if (missing.length > 0) {
+        return { kind: "blocker", label: `${specifier} lacks ${missing.join(", ")}` };
       }
     }
     return ALIASED_PACKAGES.has(specifier) || bundlePackages.has(specifier)

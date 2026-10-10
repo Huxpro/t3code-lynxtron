@@ -80,8 +80,20 @@ describe("lynx-dom-jsx-loader transform", () => {
   });
 
   it("lists every problem in the file in one error", () => {
-    expect(() => transform("<div onKeyDown={a}><textarea /></div>")).toThrow(
-      /onKeyDown on <div>[^]*<textarea> has no Lynx host mapping/u,
+    expect(() => transform("<div onFocus={a}><textarea /></div>")).toThrow(
+      /onFocus on <div>[^]*<textarea> has no Lynx host mapping/u,
+    );
+  });
+
+  it("keeps key handlers under their own name for the host components", () => {
+    expect(transform("<div onKeyDown={down} onKeyUp={up} tabIndex={0} />")).toBe(
+      `${HOST_IMPORT}<__LynxHostDom.div onKeyDown={down} onKeyUp={up} tabIndex={0} />`,
+    );
+  });
+
+  it("refuses the capture phase of a key handler", () => {
+    expect(() => transform("<div onKeyDownCapture={down} />")).toThrow(
+      /onKeyDownCapture on <div> has no Lynx event mapping/u,
     );
   });
 });

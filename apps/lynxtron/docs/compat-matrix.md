@@ -42,20 +42,21 @@ include `hover:text-foreground` (50), focus-visible rings (30+), sticky
 positioning (7), and fixed positioning (9). Grid utilities are no longer
 classified as unsupported after the 0.0.8 macOS runtime probe.
 
-| Feature                                     | Status              | Workaround                                                                                                              |
-| ------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| flexbox, explicit dimensions, borders       | supported           | used directly                                                                                                           |
-| `oklch`, `color-mix`, `@variant`, `--alpha` | adapter             | build-time token generation (R9)                                                                                        |
-| `:hover`, `:focus-visible`                  | runtime-gap         | state-driven variants (R6); physical mouse dispatch remains `pending-user-session`                                      |
-| grid                                        | supported           | basic tracks, rows, gaps, spans, column auto-flow, `minmax()` and `fr` pass on Lynxtron 0.0.8                           |
-| fixed/sticky/overflow semantics             | runtime-gap         | per-component probe and explicit overlay sizing (R7)                                                                    |
-| production lazy bundle URL resolution       | runtime-gap         | keep the reachable product path in the main bundle (R11)                                                                |
-| backdrop filters                            | rewrite             | flattened opaque surface                                                                                                |
-| text selection                              | runtime-gap         | copy buttons where possible (R8)                                                                                        |
-| custom fonts                                | supported / adapter | bundled relative `@font-face` changes glyph metrics; external URLs remain R2                                            |
-| runtime CSS variables                       | adapter             | class/`setProperty` length values re-resolve; color values do not, so product themes use emitted light/dark class rules |
-| `transform-origin`                          | runtime-gap         | left and center produce identical desktop geometry with `enableNewTransformOrigin` true, false, or absent               |
-| SVG                                         | adapter             | bundle-relative `<svg src>` with explicit dimensions; PNG fallback for unconverted icons (R1)                           |
+| Feature                                     | Status              | Workaround                                                                                                                                                            |
+| ------------------------------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| flexbox, explicit dimensions, borders       | supported           | used directly                                                                                                                                                         |
+| `oklch`, `color-mix`, `@variant`, `--alpha` | adapter             | build-time token generation (R9)                                                                                                                                      |
+| `:hover`, `:focus-visible`                  | runtime-gap         | state-driven variants (R6); physical mouse dispatch remains `pending-user-session`                                                                                    |
+| grid                                        | supported           | basic tracks, rows, gaps, spans, column auto-flow, `minmax()` and `fr` pass on Lynxtron 0.0.8                                                                         |
+| fixed/sticky/overflow semantics             | runtime-gap         | per-component probe and explicit overlay sizing (R7)                                                                                                                  |
+| production lazy bundle URL resolution       | runtime-gap         | keep the reachable product path in the main bundle (R11)                                                                                                              |
+| backdrop filters                            | rewrite             | flattened opaque surface                                                                                                                                              |
+| text selection                              | runtime-gap         | copy buttons where possible (R8)                                                                                                                                      |
+| custom fonts                                | supported / adapter | bundled relative `@font-face` changes glyph metrics; external URLs remain R2                                                                                          |
+| runtime CSS variables                       | adapter             | class/`setProperty` length values re-resolve; color values do not, so product themes use emitted light/dark class rules                                               |
+| view-to-text inheritance                    | adapter             | colour, family, size, line height inherit; font weight and white-space are restated as custom properties for the text a DOM box wraps (`postcss-lynx-text-carry.mjs`) |
+| `transform-origin`                          | runtime-gap         | left and center produce identical desktop geometry with `enableNewTransformOrigin` true, false, or absent                                                             |
+| SVG                                         | adapter             | bundle-relative `<svg src>` with explicit dimensions; PNG fallback for unconverted icons (R1)                                                                         |
 
 ## Rendering and events
 
