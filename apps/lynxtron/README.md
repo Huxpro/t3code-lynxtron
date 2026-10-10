@@ -39,6 +39,12 @@ node apps/lynxtron/scripts/run-native-battery.mjs /tmp/t3-battery/plan.json /tmp
 `results/summary.json` lists each gate; a failing gate keeps its report and
 process log in its own directory. `AGENTS.md` in this directory says when to run them.
 
+The gates read the client, not a transport: `__T3_LYNXTRON_READINESS__()` reports
+`ready` once the status the UI shows is ready and commands have a path to the
+server, with a `revision` that grows whenever the client state changes, and
+`__T3_LYNXTRON_COMMAND__(name, input)` sends a command through the bridge the UI
+calls. `scripts/dev-instance.mjs ready` waits on the same signal.
+
 ## Architecture
 
 How the client sits on top of upstream code, and the invariants that keep it
