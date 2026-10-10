@@ -70,6 +70,13 @@ thread, the way mobile does:
 - The main process keeps what only it can do: spawn the server, mint the
   bearer, native dialogs, clipboard, menus, opening paths, resolving a path.
 
+A server the app owns and that has no project gets one for the launch
+directory. The main process names the directory with the server's address
+(`primaryConnection`), the renderer creates the project once upstream takes
+commands (`src/app/state/startupProject.ts`), and the client is not ready
+until that has finished or failed. On the connector path the connector's
+`ensureProject` does it.
+
 This is the default path. `T3_LYNXTRON_UPSTREAM_STATE=0` turns it off; the
 client is then fed by the main-process connector
 (`src/main/desktop/connector.ts`), the older path. The connector also serves

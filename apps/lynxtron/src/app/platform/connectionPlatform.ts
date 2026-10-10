@@ -192,6 +192,7 @@ const PrimaryConnection = Schema.Struct({
   httpBaseUrl: Schema.String,
   wsBaseUrl: Schema.String,
   bearer: Schema.String,
+  startupProjectCwd: Schema.optionalKey(Schema.String),
 });
 export type PrimaryConnection = typeof PrimaryConnection.Type;
 
@@ -231,12 +232,29 @@ export const waitForPrimaryConnection = <A, E, R>(
   schedule: Schedule.Schedule<unknown, E> = PRIMARY_CONNECTION_RETRY,
 ) => Effect.retry(read, schedule);
 
+// The directory the host named with each server address it handed over.
+const startupProjectCwds = new Map<string, string | null>();
+
+/**
+ * The directory the server at `httpBaseUrl` gets its first project from, or
+ * null when the host asked for none: it does only for a server it owns.
+ */
+export function requestedStartupProjectCwd(httpBaseUrl: string): string | null {
+  return startupProjectCwds.get(httpBaseUrl) ?? null;
+}
+
 const readHostPrimaryConnection = readPrimaryConnection(() => {
   const bridge = typeof NativeModules === "undefined" ? undefined : NativeModules.bridge;
   return bridge
     ? callBridge(bridge, T3_CONNECTOR_METHODS.primaryConnection, {})
     : Promise.reject(new Error("the bridge is unavailable"));
-});
+}).pipe(
+  Effect.tap((connection) =>
+    Effect.sync(() => {
+      startupProjectCwds.set(connection.httpBaseUrl, connection.startupProjectCwd ?? null);
+    }),
+  ),
+);
 
 const primaryConnectionListeners = new Set<() => void>();
 

@@ -1303,6 +1303,7 @@ async function bootstrapT3Client(): Promise<void> {
     },
     upstreamPendingModelSelections,
     (threadId) => upstreamCommandBridge().deleteThread({ threadId }),
+    (workspaceRoot) => upstreamCommandBridge().createProject({ workspaceRoot }),
   );
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({

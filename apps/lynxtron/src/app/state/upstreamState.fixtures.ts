@@ -2,8 +2,10 @@
 // form the server sends so defaults and brands are the real ones.
 import {
   AVAILABLE_CONNECTION_STATE,
+  PrimaryConnectionTarget,
   type SupervisorConnectionState,
 } from "@t3tools/client-runtime/connection";
+import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
 import {
   applyTerminalAttachStreamEvent,
@@ -150,6 +152,30 @@ export function serverConfig(overrides: Partial<ServerConfig> = {}): ServerConfi
 
 export function connection(phase: SupervisorConnectionState["phase"]) {
   return AsyncResult.success({ ...AVAILABLE_CONNECTION_STATE, phase });
+}
+
+/** A catalog with the primary environment registered at `httpBaseUrl`. */
+export function catalogAt(httpBaseUrl: string) {
+  const environmentId = EnvironmentId.make("environment-local");
+  const catalog: EnvironmentCatalogState = {
+    isReady: true,
+    entries: new Map([
+      [
+        environmentId,
+        {
+          target: new PrimaryConnectionTarget({
+            environmentId,
+            label: "Local",
+            httpBaseUrl,
+            wsBaseUrl: httpBaseUrl.replace("http", "ws"),
+          }),
+          profile: Option.none(),
+          enabled: true,
+        },
+      ],
+    ]),
+  };
+  return AsyncResult.success(catalog);
 }
 
 export function shellState(
