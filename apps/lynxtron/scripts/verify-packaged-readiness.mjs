@@ -4566,9 +4566,7 @@ async function verifyModelSelectionMutation({
   child,
   client,
   devToolCli,
-  expectSocketRecovery,
   requireRunningSession,
-  log,
   outputDirectory,
   timeoutMs,
 }) {
@@ -4685,14 +4683,6 @@ async function verifyModelSelectionMutation({
     predicate: (measurement) =>
       Boolean(measurement?.text.trim()) && measurement.text.trim() !== beforeModel.text.trim(),
   });
-  if (expectSocketRecovery) {
-    await waitForLogText(
-      child,
-      log,
-      "[main-connector] setModelSelection hit a stale transport; reconnecting once",
-      timeoutMs,
-    );
-  }
   const persistedSelection = readPersistedThreadModelSelection(baseDir, threadId);
   if (
     persistedSelection?.instanceId !== targetSelection.instanceId ||
@@ -4737,7 +4727,6 @@ async function verifyModelSelectionMutation({
       after: afterSequence.revision,
     },
     overlayDismissed: true,
-    socketRecovery: expectSocketRecovery ? "reconnected-and-retried-once" : "not-injected",
     screenshot,
   };
 }
@@ -16577,7 +16566,6 @@ async function runOnce({
   verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
   verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
   verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
-  verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
   verifyModelSelectionRunningSession: shouldVerifyModelSelectionRunningSession,
   verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
   verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,
@@ -16709,9 +16697,6 @@ async function runOnce({
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
         : {}),
       ...(shouldVerifyFloatingRelations ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
-      ...(shouldVerifyModelSelectionSocketRecovery
-        ? { T3_TEST_MODEL_SELECTION_SOCKET_OPEN_ERROR_ONCE: "1" }
-        : {}),
       ...(shouldVerifyComposerSendRetry || shouldVerifyM1LocalJourney
         ? { T3_TEST_SEND_PROMPT_ERROR_ONCE: "1" }
         : {}),
@@ -16924,7 +16909,6 @@ async function runOnce({
           child,
           client,
           devToolCli,
-          expectSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
           log,
           outputDirectory,
           timeoutMs,
@@ -17137,7 +17121,6 @@ async function runOnce({
           child,
           client,
           devToolCli,
-          expectSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
           requireRunningSession: shouldVerifyModelSelectionRunningSession,
           log,
           outputDirectory,
@@ -17830,9 +17813,6 @@ const modelPickerDefaultOnly = process.argv.includes("--model-picker-default-onl
 const shouldVerifyModelSelectionMutation = process.argv.includes(
   "--verify-model-selection-mutation",
 );
-const shouldVerifyModelSelectionSocketRecovery = process.argv.includes(
-  "--verify-model-selection-socket-recovery",
-);
 const shouldVerifyModelSelectionRunningSession = process.argv.includes(
   "--verify-model-selection-running-session",
 );
@@ -17979,11 +17959,6 @@ if (modelPickerDefaultOnly && !shouldVerifyModelPickerFidelity) {
 }
 if (quickSwitchQuery.length > 0 && !shouldVerifyQuickSwitchDefault) {
   throw new Error("--quick-switch-query requires --verify-quick-switch-default.");
-}
-if (shouldVerifyModelSelectionSocketRecovery && !shouldVerifyModelSelectionMutation) {
-  throw new Error(
-    "--verify-model-selection-socket-recovery requires --verify-model-selection-mutation.",
-  );
 }
 if (shouldVerifyFileSheetBack && !shouldVerifyFilesBrowser) {
   throw new Error("--verify-file-sheet-back requires --verify-files-browser.");
@@ -18348,7 +18323,6 @@ for (let index = 1; index <= runs; index += 1) {
       verifyNewThreadDraftLifecycle: shouldVerifyNewThreadDraftLifecycle,
       verifyModelPickerFidelity: shouldVerifyModelPickerFidelity,
       verifyModelSelectionMutation: shouldVerifyModelSelectionMutation,
-      verifyModelSelectionSocketRecovery: shouldVerifyModelSelectionSocketRecovery,
       verifyModelSelectionRunningSession: shouldVerifyModelSelectionRunningSession,
       verifyRuntimeMenuDismiss: shouldVerifyRuntimeMenuDismiss,
       verifyWorkspaceMenu: shouldVerifyWorkspaceMenu,

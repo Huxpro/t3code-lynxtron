@@ -1,7 +1,15 @@
 import { assert, describe, it } from "vite-plus/test";
 
-import { changesState, createHarnessCommand, resolveClientReadiness } from "./harnessHooks.ts";
-import { routeCommandBridge } from "./upstreamCommands.ts";
+import { ThreadId } from "@t3tools/contracts";
+
+import {
+  changesState,
+  createHarnessCommand,
+  failOperationOnce,
+  resolveClientReadiness,
+} from "./harnessHooks.ts";
+import { routeCommandBridge, type UpstreamCommandPort } from "./upstreamCommands.ts";
+import type { UpstreamOperationInputs } from "./upstreamOperations.ts";
 
 describe("resolveClientReadiness", () => {
   it("is ready only when the shown status is ready and commands have a bridge", () => {
@@ -43,6 +51,32 @@ describe("changesState", () => {
     assert.isFalse(changesState(state, {}));
     assert.isFalse(changesState(state, { status: "ready", threads }));
     assert.isFalse(changesState(state, { activeThreadId: undefined }));
+  });
+});
+
+describe("failOperationOnce", () => {
+  it("fails the first call of the named operation and sends every other one", async () => {
+    const sent: Array<string> = [];
+    const port = failOperationOnce(
+      {
+        operation: (name: string) => {
+          sent.push(name);
+          return Promise.resolve({ sequence: sent.length });
+        },
+      } as unknown as UpstreamCommandPort,
+      "startThreadTurn",
+      "Injected failure",
+    );
+    const archive = { threadId: ThreadId.make("thread-1") };
+    const turn = {} as UpstreamOperationInputs["startThreadTurn"];
+
+    assert.deepEqual(await port.operation("archiveThread", archive), { sequence: 1 });
+    assert.equal(
+      await port.operation("startThreadTurn", turn).catch((error: Error) => error.message),
+      "Injected failure",
+    );
+    assert.deepEqual(await port.operation("startThreadTurn", turn), { sequence: 2 });
+    assert.deepEqual(sent, ["archiveThread", "startThreadTurn"]);
   });
 });
 

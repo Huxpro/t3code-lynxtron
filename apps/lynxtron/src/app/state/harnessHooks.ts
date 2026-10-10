@@ -3,6 +3,8 @@
 // a command the way the UI sends it. None of it knows which path is behind the
 // client state or the command bridge.
 import type { ConnectionStatus } from "../bridge";
+import type { UpstreamCommandPort } from "./upstreamCommands.ts";
+import type { UpstreamOperationName } from "./upstreamOperations.ts";
 
 export interface ClientReadiness {
   /** The UI shows ready and a command sent now has a path to the server. */
@@ -54,5 +56,27 @@ export function createHarnessCommand(
     const command = (bridge() as Record<string, unknown> | undefined)?.[name];
     if (typeof command !== "function") throw new Error(`Command ${name} is unavailable.`);
     return (command as (input?: unknown) => unknown)(input);
+  };
+}
+
+/**
+ * `port` with its first `operation` call rejected with `message`, so a gate
+ * can see what the UI does when a command fails. Every later call goes through.
+ */
+export function failOperationOnce(
+  port: UpstreamCommandPort,
+  operation: UpstreamOperationName,
+  message: string,
+): UpstreamCommandPort {
+  let pending = true;
+  return {
+    ...port,
+    operation: (name, input) => {
+      if (pending && name === operation) {
+        pending = false;
+        return Promise.reject(new Error(message));
+      }
+      return port.operation(name, input);
+    },
   };
 }

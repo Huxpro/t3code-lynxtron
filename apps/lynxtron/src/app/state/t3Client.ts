@@ -196,6 +196,7 @@ import {
   changesState,
   type ClientReadiness,
   createHarnessCommand,
+  failOperationOnce,
   resolveClientReadiness,
 } from "./harnessHooks";
 import {
@@ -912,7 +913,11 @@ let upstreamBridge: UpstreamCommandBridge | null = null;
 function upstreamCommandBridge(): UpstreamCommandBridge {
   "background only";
   startUpstreamCommands();
-  upstreamBridge ??= createUpstreamCommandBridge(upstreamCommandPort, {
+  // A gate's injected failure, where a prompt now goes: upstream's port.
+  const port = readUpstreamRuntimeFlags().testSendPromptErrorOnce
+    ? failOperationOnce(upstreamCommandPort, "startThreadTurn", "Injected sendPrompt failure")
+    : upstreamCommandPort;
+  upstreamBridge ??= createUpstreamCommandBridge(port, {
     ...upstreamCommandState,
     pendingModelSelections: upstreamPendingModelSelections,
     modelSelection: () => appAtomRegistry.get(t3ClientStateAtom).modelSelection,
