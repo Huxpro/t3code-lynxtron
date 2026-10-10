@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 import { createHash } from "node:crypto";
-import { createRequire } from "node:module";
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { DatabaseSync } from "node:sqlite";
 
-const require = createRequire(import.meta.url);
 const appRoot = resolve(import.meta.dirname, "..");
 
 function argumentValue(name) {
@@ -62,13 +61,38 @@ function stabilizeSidebarTimestamps(databasePath, titles) {
   }
 }
 
-async function waitFor(read, label) {
-  for (let attempt = 0; attempt < 100; attempt += 1) {
-    const value = read();
-    if (value) return value;
-    await new Promise((resolveWait) => setTimeout(resolveWait, 100));
-  }
-  throw new Error(`Timed out waiting for ${label}`);
+// Runs in the hidden app. Until the client is ready and shows the project it
+// answers `pending`; then it creates one thread per title with the command
+// the UI sends. A command resolves once the server has accepted it. The
+// evaluation context has no timers, so the waiting is done by the caller.
+function createThreadsExpression(titles) {
+  return `(async () => {
+    const state = globalThis.__T3_LYNXTRON_CLIENT_STATE__?.();
+    const project = state?.projects[0];
+    if (globalThis.__T3_LYNXTRON_READINESS__?.().ready !== true || !project) {
+      return JSON.stringify({ pending: true });
+    }
+    if (state.threadIds.length !== 0) {
+      throw new Error("Sidebar visual state must start from the empty visual snapshot.");
+    }
+    const threadIds = [];
+    for (const title of ${JSON.stringify(titles)}) {
+      const { threadId } = await globalThis.__T3_LYNXTRON_COMMAND__("createThread", {
+        projectId: project.id,
+        title,
+      });
+      threadIds.push(threadId);
+    }
+    return JSON.stringify({ threadIds });
+  })().catch((error) => JSON.stringify({ error: error?.message ?? String(error) }))`;
+}
+
+function devInstance(args) {
+  return execFileSync(process.execPath, [join(appRoot, "scripts/dev-instance.mjs"), ...args], {
+    cwd: appRoot,
+    encoding: "utf8",
+    stdio: ["ignore", "pipe", "inherit"],
+  });
 }
 
 export async function prepareSidebarVisualState(baseDirectory) {
@@ -78,28 +102,7 @@ export async function prepareSidebarVisualState(baseDirectory) {
   if (!existsSync(manifestPath) || !existsSync(databasePath)) {
     throw new Error("Sidebar visual state requires a directory created by visual:prepare.");
   }
-
-  const previousBaseDir = process.env.T3_LYNXTRON_BASE_DIR;
-  const previousServerStdio = process.env.T3_LYNXTRON_SERVER_STDIO;
-  const previousCwd = process.cwd();
-  process.env.T3_LYNXTRON_BASE_DIR = baseDir;
-  process.env.T3_LYNXTRON_SERVER_STDIO = "ignore";
-  // The desktop connector resolves the bundled server entry absolutely, but
-  // the server CLI still derives runtime paths from its launch cwd. Match the
-  // normal Lynxtron host instead of inheriting an arbitrary caller directory.
-  process.chdir(appRoot);
-
-  const { T3Connector } = require(join(appRoot, "dist/desktop/connector.bundle.cjs"));
-  let latestShell = { projects: [], threads: [] };
-  const connector = new T3Connector({
-    onStatus: () => {},
-    onConfig: () => {},
-    onShell: (shell) => {
-      latestShell = shell;
-    },
-    onThread: () => {},
-    onLog: () => {},
-  });
+  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
 
   const titles = [
     "Global keyboard bridge and focus order",
@@ -107,38 +110,30 @@ export async function prepareSidebarVisualState(baseDirectory) {
     "Finish the in-monorepo Lynxtron UI migration",
   ];
 
+  // The threads are created by the product itself: the built app, hidden, on
+  // this state directory. What the app saves for itself is put back after.
+  const prefsPath = join(baseDir, "lynxtron-prefs.json");
+  const prefsBefore = existsSync(prefsPath) ? readFileSync(prefsPath) : null;
+  devInstance([
+    "start",
+    baseDir,
+    "--env",
+    `T3_LYNXTRON_PROJECT_CWD=${manifest.project.workspaceRoot}`,
+  ]);
   try {
-    const connected = await connector.connect();
-    if (connected.status !== "ready") {
-      throw new Error(`Connector did not become ready: ${connected.status}`);
+    let created = { pending: true };
+    for (let attempt = 0; attempt < 60 && created.pending; attempt += 1) {
+      if (attempt > 0) await new Promise((resolveWait) => setTimeout(resolveWait, 500));
+      created = JSON.parse(devInstance(["eval", baseDir, createThreadsExpression(titles)]));
     }
-    const project = await waitFor(() => latestShell.projects[0], "canonical project shell");
-    if (latestShell.threads.length !== 0) {
-      throw new Error("Sidebar visual state must start from the empty visual snapshot.");
-    }
-
-    for (const title of titles) {
-      const { threadId } = await connector.createThread({ projectId: project.id });
-      await connector.renameThread({ threadId, title });
-      await waitFor(
-        () => latestShell.threads.find((thread) => thread.id === threadId)?.title === title,
-        `renamed thread ${title}`,
-      );
+    if (created.threadIds?.length !== titles.length) {
+      throw new Error(`The app did not create the sidebar threads: ${JSON.stringify(created)}`);
     }
   } finally {
-    connector.dispose();
-    await new Promise((resolveWait) => setTimeout(resolveWait, 500));
-    if (previousBaseDir === undefined) {
-      delete process.env.T3_LYNXTRON_BASE_DIR;
-    } else {
-      process.env.T3_LYNXTRON_BASE_DIR = previousBaseDir;
-    }
-    if (previousServerStdio === undefined) {
-      delete process.env.T3_LYNXTRON_SERVER_STDIO;
-    } else {
-      process.env.T3_LYNXTRON_SERVER_STDIO = previousServerStdio;
-    }
-    process.chdir(previousCwd);
+    devInstance(["stop", baseDir]);
+    rmSync(join(baseDir, "dev-instance.log"), { force: true });
+    if (prefsBefore === null) rmSync(prefsPath, { force: true });
+    else writeFileSync(prefsPath, prefsBefore);
   }
 
   stabilizeSidebarTimestamps(databasePath, titles);
@@ -151,7 +146,6 @@ export async function prepareSidebarVisualState(baseDirectory) {
       `Prepared sidebar snapshot failed invariants: ${JSON.stringify(renderedTitles)}`,
     );
   }
-  const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
   const nextManifest = {
     ...manifest,
     snapshotId: sha256File(databasePath),
