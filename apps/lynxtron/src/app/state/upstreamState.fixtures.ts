@@ -1,9 +1,5 @@
-// Contract-shaped values for the upstream state tests, decoded from the wire
-// form the server sends so defaults and brands are the real ones.
-import type {
-  OrchestrationShellSnapshot,
-  OrchestrationThread,
-} from "@t3tools/lynx-logic/orchestration";
+// Contract-shaped values for the upstream state tests: the shell and thread
+// values upstream's atoms hold, and the server values decoded from wire form.
 import {
   AVAILABLE_CONNECTION_STATE,
   PrimaryConnectionTarget,
@@ -16,10 +12,24 @@ import {
   EMPTY_TERMINAL_BUFFER_STATE,
   type TerminalBufferState,
 } from "@t3tools/client-runtime/state/terminal";
-import type { EnvironmentThreadState } from "@t3tools/client-runtime/state/threads";
+import {
+  EMPTY_THREAD_HISTORY_META,
+  type EnvironmentThreadState,
+} from "@t3tools/client-runtime/state/threads";
 import {
   DEFAULT_SERVER_SETTINGS,
   EnvironmentId,
+  MessageId,
+  type OrchestrationV2ArchivedShellSnapshot,
+  type OrchestrationV2ShellSnapshot,
+  type OrchestrationV2ThreadProjection,
+  type OrchestrationV2ThreadShell,
+  type OrchestrationV2TurnItem,
+  ProjectId,
+  ProviderInstanceId,
+  RunId,
+  ThreadId,
+  TurnItemId,
   type ServerConfig,
   ServerProvider,
   type TerminalAttachStreamEvent,
@@ -29,14 +39,14 @@ import {
   VcsStatusStreamEvent,
 } from "@t3tools/contracts";
 import { applyGitStatusStreamEvent } from "@t3tools/shared/git";
+import * as DateTime from "effect/DateTime";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import { AsyncResult } from "effect/unstable/reactivity";
 
+import { projectThread, projectThreadShell } from "../../shared/orchestrationProjection.ts";
 import type { ChatMessage } from "../bridge.ts";
 
-const decodeShellSnapshot = Schema.decodeUnknownSync(OrchestrationShellSnapshot);
-const decodeThread = Schema.decodeUnknownSync(OrchestrationThread);
 const decodeTerminalSnapshot = Schema.decodeUnknownSync(TerminalSessionSnapshot);
 const decodeTerminalSummary = Schema.decodeUnknownSync(TerminalSummary);
 const decodeVcsStatusEvent = Schema.decodeUnknownSync(VcsStatusStreamEvent);
@@ -54,52 +64,98 @@ export interface WireThread {
   readonly settledAt?: string | null;
 }
 
-function wireThread(thread: WireThread) {
-  const updatedAt = thread.updatedAt ?? "2026-10-01T00:00:00.000Z";
+const utc = (value: string) => DateTime.makeUnsafe(value);
+const utcOrNull = (value: string | null | undefined) =>
+  value == null ? null : DateTime.makeUnsafe(value);
+
+const CREATED_AT = "2026-10-01T00:00:00.000Z";
+
+function wireModelSelection(thread: WireThread) {
+  const selection = thread.modelSelection ?? { instanceId: "codex", model: "gpt-5" };
+  return { instanceId: ProviderInstanceId.make(selection.instanceId), model: selection.model };
+}
+
+function wireThread(thread: WireThread): OrchestrationV2ThreadShell {
+  const id = ThreadId.make(thread.id);
+  const updatedAt = thread.updatedAt ?? CREATED_AT;
+  const modelSelection = wireModelSelection(thread);
   return {
-    id: thread.id,
-    projectId: "project-1",
+    id,
+    projectId: ProjectId.make("project-1"),
     title: thread.title ?? `Thread ${thread.id}`,
-    modelSelection: thread.modelSelection ?? { instanceId: "codex", model: "gpt-5" },
+    providerInstanceId: modelSelection.instanceId,
+    modelSelection,
     runtimeMode: "full-access",
     interactionMode: "default",
     branch: null,
     worktreePath: null,
-    latestTurn: null,
-    createdAt: "2026-10-01T00:00:00.000Z",
-    updatedAt,
-    archivedAt: thread.archivedAt ?? null,
-    settledOverride: thread.settledOverride ?? null,
-    settledAt: thread.settledAt ?? null,
-    session: null,
-    latestUserMessageAt:
+    activeProviderThreadId: null,
+    lineage: { rootThreadId: id, parentThreadId: null, relationshipToParent: null },
+    forkedFrom: null,
+    createdBy: "user",
+    creationSource: "web",
+    latestRunId: null,
+    activeRunId: null,
+    status: "idle",
+    pendingRuntimeRequest: null,
+    latestVisibleMessage: null,
+    latestUserMessageAt: utcOrNull(
       thread.latestUserMessageAt === undefined ? updatedAt : thread.latestUserMessageAt,
-    hasPendingApprovals: false,
-    hasPendingUserInput: false,
+    ),
     hasActionableProposedPlan: false,
+    pendingBackgroundTasks: [],
+    providerInstanceHistory: [],
+    itemCount: 0,
+    visibleItemCount: 0,
+    createdAt: utc(CREATED_AT),
+    updatedAt: utc(updatedAt),
+    archivedAt: utcOrNull(thread.archivedAt),
+    settledOverride: thread.settledOverride ?? null,
+    settledAt: utcOrNull(thread.settledAt),
+    deletedAt: null,
   };
 }
 
+/** The shell as upstream's shell stream holds it. */
 export function shellSnapshot(
   threads: ReadonlyArray<WireThread>,
   projects: ReadonlyArray<{ readonly id: string; readonly title: string }> = [
     { id: "project-1", title: "T3 Code" },
   ],
-): OrchestrationShellSnapshot {
-  return decodeShellSnapshot({
+): OrchestrationV2ShellSnapshot {
+  return {
+    schemaVersion: 1,
     snapshotSequence: 7,
     projects: projects.map((project) => ({
-      id: project.id,
+      id: ProjectId.make(project.id),
       title: project.title,
       workspaceRoot: `/work/${project.id}`,
       defaultModelSelection: null,
       scripts: [],
-      createdAt: "2026-10-01T00:00:00.000Z",
-      updatedAt: "2026-10-01T00:00:00.000Z",
+      createdAt: CREATED_AT,
+      updatedAt: CREATED_AT,
     })),
     threads: threads.map(wireThread),
-    updatedAt: "2026-10-09T00:00:00.000Z",
-  });
+    archivedThreads: [],
+  };
+}
+
+/** The archived threads as upstream's archived snapshot holds them. */
+export function archivedSnapshot(
+  threads: ReadonlyArray<WireThread>,
+): OrchestrationV2ArchivedShellSnapshot {
+  const { schemaVersion, snapshotSequence, projects } = shellSnapshot([]);
+  return { schemaVersion, snapshotSequence, projects, threads: threads.map(wireThread) };
+}
+
+/** A shell as the Lynx client's state holds it. */
+export function clientShell(threads: ReadonlyArray<WireThread>) {
+  return { threads: clientThreads(threads) };
+}
+
+/** The threads of a shell as the Lynx client's state holds them. */
+export function clientThreads(threads: ReadonlyArray<WireThread>) {
+  return threads.map((thread) => projectThreadShell(wireThread(thread)));
 }
 
 export function provider(
@@ -182,105 +238,179 @@ export function catalogAt(httpBaseUrl: string) {
 
 export function shellState(
   status: EnvironmentShellState["status"],
-  snapshot: OrchestrationShellSnapshot | null,
+  snapshot: OrchestrationV2ShellSnapshot | null,
 ): EnvironmentShellState {
   return { status, snapshot: Option.fromNullOr(snapshot), error: Option.none() };
 }
 
 export interface WireMessage {
   readonly id: string;
-  readonly role?: "user" | "assistant" | "system" | "reasoning";
+  readonly role?: "user" | "assistant" | "reasoning";
   readonly text?: string;
-  readonly turnId?: string | null;
   readonly streaming?: boolean;
 }
 
 export interface WireThreadDetail {
   readonly id?: string;
   readonly messages?: ReadonlyArray<WireMessage>;
-  readonly activities?: ReadonlyArray<{
-    readonly id: string;
-    readonly kind?: string;
-    readonly payload?: unknown;
-  }>;
-  readonly session?: {
-    readonly status:
-      | "idle"
-      | "starting"
-      | "running"
-      | "ready"
-      | "interrupted"
-      | "stopped"
-      | "error";
-    readonly activeTurnId?: string | null;
-    readonly lastError?: string | null;
-  } | null;
+  /** The run that is executing, if one is. */
+  readonly runningRunId?: string;
 }
 
-/** A thread with its detail, as the server's thread snapshot carries it. */
-export function threadDetail(detail: WireThreadDetail = {}): OrchestrationThread {
-  const id = detail.id ?? "thread-1";
-  return decodeThread({
-    ...wireThread({ id }),
-    deletedAt: null,
-    messages: (detail.messages ?? []).map((message) => ({
-      id: message.id,
-      role: message.role ?? "assistant",
-      text: message.text ?? `Text of ${message.id}`,
-      turnId: message.turnId ?? null,
+const DETAIL_AT = "2026-10-09T00:00:00.000Z";
+
+/** A thread with its detail, as upstream's thread state holds it. */
+export function threadDetail(detail: WireThreadDetail = {}): OrchestrationV2ThreadProjection {
+  const shell = wireThread({ id: detail.id ?? "thread-1" });
+  const runId = detail.runningRunId === undefined ? null : RunId.make(detail.runningRunId);
+  const turnItems = (detail.messages ?? []).map((message, ordinal): OrchestrationV2TurnItem => {
+    const base = {
+      id: TurnItemId.make(`item-${message.id}`),
+      threadId: shell.id,
+      runId,
+      nodeId: null,
+      providerThreadId: null,
+      providerTurnId: null,
+      nativeItemRef: null,
+      parentItemId: null,
+      ordinal,
+      status: "completed" as const,
+      title: null,
+      startedAt: utc(DETAIL_AT),
+      completedAt: utc(DETAIL_AT),
+      updatedAt: utc(DETAIL_AT),
+    };
+    const text = message.text ?? `Text of ${message.id}`;
+    const role = message.role ?? "assistant";
+    if (role === "user") {
+      return {
+        ...base,
+        type: "user_message",
+        createdBy: "user",
+        creationSource: "web",
+        messageId: MessageId.make(message.id),
+        inputIntent: "turn_start",
+        text,
+        attachments: [],
+      };
+    }
+    if (role === "reasoning") {
+      return { ...base, type: "reasoning", text, streaming: message.streaming ?? false };
+    }
+    return {
+      ...base,
+      type: "assistant_message",
+      messageId: MessageId.make(message.id),
+      text,
       streaming: message.streaming ?? false,
-      createdAt: "2026-10-09T00:00:00.000Z",
-      updatedAt: "2026-10-09T00:00:00.000Z",
-    })),
-    proposedPlans: [],
-    activities: (detail.activities ?? []).map((activity) => ({
-      id: activity.id,
-      tone: "tool",
-      kind: activity.kind ?? "tool.completed",
-      summary: `Summary of ${activity.id}`,
-      payload: activity.payload ?? {},
-      turnId: null,
-      createdAt: "2026-10-09T00:00:00.000Z",
-    })),
-    checkpoints: [],
-    session:
-      detail.session == null
-        ? null
-        : {
-            threadId: id,
-            status: detail.session.status,
-            providerName: "codex",
-            runtimeMode: "full-access",
-            activeTurnId: detail.session.activeTurnId ?? null,
-            lastError: detail.session.lastError ?? null,
-            updatedAt: "2026-10-09T00:00:00.000Z",
-          },
+    };
   });
+  const firstUserMessage = turnItems.find((item) => item.type === "user_message");
+  return {
+    thread: {
+      id: shell.id,
+      projectId: shell.projectId,
+      title: shell.title,
+      providerInstanceId: shell.providerInstanceId,
+      modelSelection: shell.modelSelection,
+      runtimeMode: shell.runtimeMode,
+      interactionMode: shell.interactionMode,
+      branch: null,
+      worktreePath: null,
+      activeProviderThreadId: null,
+      lineage: shell.lineage,
+      forkedFrom: null,
+      createdBy: "user",
+      creationSource: "web",
+      createdAt: shell.createdAt,
+      updatedAt: shell.updatedAt,
+      archivedAt: null,
+      settledOverride: null,
+      settledAt: null,
+      lastVisitedAt: null,
+      deletedAt: null,
+    },
+    runs:
+      runId === null
+        ? []
+        : [
+            {
+              id: runId,
+              threadId: shell.id,
+              ordinal: 1,
+              providerInstanceId: shell.providerInstanceId,
+              modelSelection: shell.modelSelection,
+              providerThreadId: null,
+              userMessageId:
+                firstUserMessage?.type === "user_message"
+                  ? firstUserMessage.messageId
+                  : MessageId.make("message-0"),
+              rootNodeId: null,
+              activeAttemptId: null,
+              status: "running",
+              requestedAt: utc(DETAIL_AT),
+              startedAt: utc(DETAIL_AT),
+              completedAt: null,
+              checkpointId: null,
+              contextHandoffId: null,
+            },
+          ],
+    attempts: [],
+    nodes: [],
+    subagents: [],
+    providerSessions: [],
+    providerThreads: [],
+    providerTurns: [],
+    runtimeRequests: [],
+    messages: [],
+    plans: [],
+    turnItems,
+    checkpointScopes: [],
+    checkpoints: [],
+    contextHandoffs: [],
+    contextTransfers: [],
+    visibleTurnItems: turnItems.map((item, position) => ({
+      position,
+      visibility: "local" as const,
+      sourceThreadId: shell.id,
+      sourceItemId: item.id,
+      item,
+    })),
+    updatedAt: utc(DETAIL_AT),
+  };
 }
 
 export function threadState(
   status: EnvironmentThreadState["status"],
-  thread: OrchestrationThread | null,
-  page: { readonly hasMore: boolean; readonly loadingOlder?: boolean } | null = null,
+  thread: OrchestrationV2ThreadProjection | null,
+  history: {
+    readonly hasMore: boolean;
+    readonly loading?: boolean;
+    readonly error?: string;
+  } | null = null,
 ): EnvironmentThreadState {
   return {
     status,
     data: Option.fromNullOr(thread),
     error: Option.none(),
-    page:
-      page === null
-        ? Option.none()
-        : Option.some({
-            beforeCursor: page.hasMore ? "cursor-1" : null,
-            hasMore: page.hasMore,
-            loadingOlder: page.loadingOlder ?? false,
-          }),
+    history:
+      history === null
+        ? EMPTY_THREAD_HISTORY_META
+        : {
+            ...EMPTY_THREAD_HISTORY_META,
+            historyCursor: history.hasMore ? "cursor-1" : null,
+            hasMoreHistory: history.hasMore,
+            loading: history.loading ?? false,
+            error: history.error ?? null,
+          },
   };
 }
 
 /** A thread's messages as the Lynx client's state holds them. */
-export function clientMessages(thread: OrchestrationThread): ReadonlyArray<ChatMessage> {
-  return thread.messages.filter(
+export function clientMessages(
+  thread: OrchestrationV2ThreadProjection,
+): ReadonlyArray<ChatMessage> {
+  return projectThread(thread).messages.filter(
     (message): message is typeof message & ChatMessage => message.role !== "reasoning",
   );
 }

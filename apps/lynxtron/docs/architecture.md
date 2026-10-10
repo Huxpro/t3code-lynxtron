@@ -1,7 +1,7 @@
 # Lynxtron client architecture
 
 How the Lynx client sits on top of upstream T3 Code. The layering was approved
-on 2026-10-09; the current merge base is upstream `024d49520e`.
+on 2026-10-09; the current merge base is upstream `de34391427`.
 
 ## Principles
 
@@ -69,6 +69,13 @@ server:
   upstream's operations. Their values are applied to the client state in the
   shapes of `src/shared/connectorProtocol.ts`. While upstream is not
   connected a command fails, as it does in upstream's own clients.
+- `src/shared/orchestrationProjection.ts` turns the server's thread values,
+  which are runs and turn items, into the thread model the Lynx UI state is
+  written against (`packages/lynx-logic/src/orchestration.ts`): messages,
+  activities, proposed plans, checkpoints, a session and a latest turn. A run
+  is shown as a turn. A sidebar thread is upstream's presented shell with the
+  session and latest turn added, so upstream's sidebar logic and the Lynx one
+  read the same value.
 - The main process keeps what only it can do
   (`src/main/desktop/connector.ts`, `mainConnectorHost.ts`): spawn the server
   or pair to an existing environment, exchange the bootstrap credential for
@@ -128,12 +135,12 @@ it replaces.
 
 ## Carried patches
 
-`apps/lynxtron/upstream-patches.json` lists 31 modified upstream files and 9
+`apps/lynxtron/upstream-patches.json` lists 27 modified upstream files and 8
 added files, each with its reason. They fall into four groups:
 
-- **Server product fixes** that are not Lynx-specific (review roots, interrupt
-  target, provider command reactor). They are marked "Upstream candidate";
-  sending them upstream removes them from the list.
+- **Product fixes** that are not Lynx-specific (optimistic file atoms, the
+  quick-action wording). They are marked "Upstream candidate"; sending them
+  upstream removes them from the list.
 - **Lynx enablers** in packages: single-module exports, Schema-free constants
   so the Lynx bundle does not pull Effect Schema, the connection banner
   projection.
@@ -208,10 +215,37 @@ What the Lynx side had to follow:
   build. `lynx.config.ts` points `decode-named-character-reference` at the
   table-based build; without that the window stays blank.
 
-Not merged: `de34391427` and later (507 commits). That commit replaces
-`packages/contracts/src/orchestration.ts` with `orchestrationV2.ts`, which the
-Lynx client and connector are written against. Moving to it is a port, not a
-merge.
+### The merge of 2026-10-10
+
+The fork merged `de34391427`, upstream's new orchestrator, which replaces
+`packages/contracts/src/orchestration.ts` with `orchestrationV2.ts`.
+Conflicts were limited to the listed patches. What the Lynx side had to follow:
+
+- Dropped patches, each on a file upstream removed or on a service it removed:
+  the turn-start refusal for an unavailable provider
+  (`ProviderCommandReactor`), the interrupt without a turn id (`decider`;
+  upstream's interrupt operation now finds the executing run itself), and
+  review diffs for any registered project root (`ReviewService`, which read
+  the removed projection query).
+- The thread model. See `src/shared/orchestrationProjection.ts` under Client
+  runtime. Interrupt records, handoffs, forks and created-thread items have no
+  row in the Lynx transcript.
+- Thread history arrives as a recent window. The Lynx client shows a thread
+  whole, so `upstreamSelected.ts` asks upstream's history controller for
+  earlier pages until there are none.
+- The server no longer streams token by token; the setting's switch is gone.
+- The main-thread engine has no `Intl`, and upstream's
+  `@t3tools/shared/usageFormat` builds formatters while it loads.
+  `src/app/polyfills.ts` installs a stand-in there that only constructs.
+- State is in `userdata/statev2.sqlite`. The gates read it; nothing writes it.
+  The message-card, long-transcript and review fixtures wrote the old
+  projection tables and are not built until they create their threads
+  through the server, so the battery leaves out the five entries that use
+  them.
+- The browser preview's live connector host (`src/browser-preview`) still
+  speaks the old contract and does not typecheck.
+
+Not merged: the 506 commits after `de34391427`.
 
 A trial merge of `b707eeb052` (2,354 commits) on 2026-10-09, before this
 restructuring, conflicted in 154 paths, 111 of them fork-edited Web files.

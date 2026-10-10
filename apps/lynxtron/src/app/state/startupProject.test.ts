@@ -5,6 +5,7 @@ import {
   catalogAt,
   connection,
   serverConfig,
+  archivedSnapshot,
   shellSnapshot,
   shellState,
 } from "./upstreamState.fixtures.ts";
@@ -15,7 +16,7 @@ const CWD = "/work/startup";
 
 const empty = shellSnapshot([], []);
 const withProject = shellSnapshot([], [{ id: "project-1", title: "startup" }]);
-const archived = shellSnapshot([], []);
+const archived = archivedSnapshot([]);
 
 function primaryState(
   snapshot: typeof empty | null,
