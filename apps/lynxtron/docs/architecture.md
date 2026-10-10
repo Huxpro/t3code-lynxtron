@@ -141,11 +141,13 @@ What the Lynx side had to follow:
   scoped overrides. `scripts/lynx-regexp-loader.cjs` lowers Unicode property
   escapes, and `src/app/polyfills.ts` adds the ES2023+ built-ins the Lynx
   engine lacks; upstream packages use both.
-- The Lynx transcript is derived by `packages/lynx-logic/src/transcript.ts`,
-  not by upstream's `session-logic.ts` or `MessagesTimeline.logic.ts`.
-  Upstream's versions model reasoning messages the Lynx transcript does not
-  render; this client does not opt in to them, so the server sends them as
-  system messages.
+- The Lynx transcript is derived by `packages/lynx-logic/src/transcript.ts`.
+  `session-logic.lynx.ts` and `MessagesTimeline.logic.lynx.ts` remain as Lynx
+  copies: upstream's `MessagesTimeline.logic.ts` imports a markdown parser stack
+  the Lynx engine does not start with (tried 2026-10-09, blank window). Upstream's
+  versions also model reasoning messages the Lynx transcript does not render;
+  this client does not opt in to them, so the server sends them as system
+  messages.
 
 Not merged: `de34391427` and later (507 commits). That commit replaces
 `packages/contracts/src/orchestration.ts` with `orchestrationV2.ts`, which the
@@ -217,7 +219,7 @@ Limits and open questions:
   and the project default model, per-thread auto-settle opt-out, reasoning
   messages, the Forgejo icon, and the upstream changes to the 65 Web modules
   that have a `.lynx` module of the same name (largest: `Sidebar.tsx`,
-  `composerDraftStore.ts`).
+  `composerDraftStore.ts`, `MessagesTimeline.logic.ts`, `session-logic.ts`).
 - `keybindings.lynx.ts` and `KeybindingsSettings.logic.lynx.ts` still shadow
   upstream. Upstream's `keybindings.ts` typechecks only with
   `exactOptionalPropertyTypes`, which `src/app/tsconfig.json` does not set;
