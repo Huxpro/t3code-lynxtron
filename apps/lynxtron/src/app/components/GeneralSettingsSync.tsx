@@ -14,9 +14,9 @@ import {
 } from "../../../../web/src/components/settings/generalSettingsProjection";
 import {
   formatDiagnosticsDescription,
-  backgroundActivityProfileDescription,
   resolveBackgroundActivityProfileOption,
 } from "../../../../web/src/components/settings/SettingsPanels.logic";
+import { backgroundActivityProfileDescription } from "../logic/settingsPanels";
 import {
   publishGeneralSettingsSurface,
   type GeneralSettingsSurfaceActions,

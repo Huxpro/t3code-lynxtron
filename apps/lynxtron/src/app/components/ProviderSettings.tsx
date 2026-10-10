@@ -37,10 +37,12 @@ import {
 import * as Duration from "effect/Duration";
 import {
   ADD_PROVIDER_WIZARD_STEPS,
-  deriveProviderInstanceId,
   resolveWizardNavigation,
-  validateProviderInstanceId,
 } from "../../../../web/src/components/settings/AddProviderInstanceDialog.logic";
+import {
+  deriveProviderInstanceId,
+  validateProviderInstanceId,
+} from "../logic/addProviderInstanceDialog";
 import {
   COMING_SOON_PROVIDER_DRIVERS,
   PROVIDER_ACCENT_SWATCHES,
