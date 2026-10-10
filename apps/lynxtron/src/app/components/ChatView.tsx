@@ -26,11 +26,11 @@ import {
 import {
   buildPendingUserInputAnswers,
   derivePendingUserInputProgress,
-  formatPendingPrimaryActionLabel,
   setPendingUserInputCustomAnswer,
   togglePendingUserInputOptionSelection,
   type PendingUserInputDraftAnswer,
-} from "@t3tools/lynx-logic/pendingUserInput";
+} from "../../../../web/src/pendingUserInput";
+import { formatPendingPrimaryActionLabel } from "../logic/pendingUserInput";
 import {
   deriveModelPickerModels,
   getTriggerDisplayModelName,
@@ -687,7 +687,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     [respondToApproval],
   );
   const handleQuestionOptionSelect = useCallback(
-    (optionLabel: string) => {
+    (optionValue: string) => {
       if (!activePendingUserInput || !activePendingQuestion) return;
       setPendingUserInputDraftsByRequestId((byRequestId) => ({
         ...byRequestId,
@@ -696,7 +696,7 @@ export function ChatView({ threadId }: ChatViewProps) {
           [activePendingQuestion.id]: togglePendingUserInputOptionSelection(
             activePendingQuestion,
             byRequestId[activePendingUserInput.requestId]?.[activePendingQuestion.id],
-            optionLabel,
+            optionValue,
           ),
         },
       }));
@@ -1022,7 +1022,7 @@ export function ChatView({ threadId }: ChatViewProps) {
                       questionCount={activePendingUserInput?.questions.length ?? 1}
                       multiSelect={activePendingQuestion.multiSelect === true}
                       options={activePendingQuestion.options}
-                      selectedOptionLabels={activePendingDraft?.selectedOptionLabels ?? []}
+                      selectedOptionValues={activePendingDraft?.selectedOptionValues ?? []}
                       responding={activePendingIsResponding}
                       selectedIcon={<Icon name="check" size={14} color="#366ffb" />}
                       collapsed={collapsedQuestionId === activePendingQuestion.id}

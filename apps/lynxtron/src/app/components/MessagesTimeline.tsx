@@ -46,7 +46,7 @@ import {
 import {
   buildCollapsedProposedPlanPreviewMarkdown,
   proposedPlanTitle,
-} from "@t3tools/lynx-logic/proposedPlan";
+} from "../../../../web/src/proposedPlan";
 import type {
   OrchestrationLatestTurn,
   OrchestrationCheckpointSummary,

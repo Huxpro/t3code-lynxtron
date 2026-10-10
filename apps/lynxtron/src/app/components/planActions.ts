@@ -1,7 +1,7 @@
 import {
   buildProposedPlanMarkdownFilename,
   normalizePlanMarkdownForExport,
-} from "@t3tools/lynx-logic/proposedPlan";
+} from "../../../../web/src/proposedPlan";
 
 export type PlanSaveResult =
   | { readonly status: "saved"; readonly relativePath: string }
