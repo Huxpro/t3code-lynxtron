@@ -598,6 +598,20 @@ export class T3Connector {
     };
   }
 
+  /**
+   * What a client in the renderer needs to reach this environment itself: the
+   * same address and bearer Electron's main process hands upstream's Web
+   * renderer through `desktopBridge`.
+   */
+  primaryConnection(): {
+    readonly httpBaseUrl: string;
+    readonly wsBaseUrl: string;
+    readonly bearer: string;
+  } | null {
+    if (!this.bearer || !this.httpBaseUrl) return null;
+    return { httpBaseUrl: this.httpBaseUrl, wsBaseUrl: this.wsBaseUrl, bearer: this.bearer };
+  }
+
   private async issueSocketUrl(): Promise<string> {
     if (!this.bearer) throw new Error("not connected");
     const ticketRes = await httpRequest(

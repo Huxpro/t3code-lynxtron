@@ -108,6 +108,49 @@ contextBridge.exposeInLynxBTS({
       }
     : {}),
   writeClipboardText: (value: string) => clipboard.writeText(value),
+  // Network ports. The Lynx engine has no WebSocket or fetch of its own; the
+  // renderer wraps these in objects shaped like the browser ones.
+  openSocket: (
+    url: string,
+    protocols: string | ReadonlyArray<string> | undefined,
+    onEvent: (type: "open" | "message" | "close" | "error", payload?: unknown) => void,
+  ) => {
+    const socket = new WebSocket(url, protocols as string | Array<string> | undefined);
+    socket.binaryType = "arraybuffer";
+    socket.addEventListener("open", () => onEvent("open"));
+    socket.addEventListener("message", (event) =>
+      onEvent(
+        "message",
+        typeof event.data === "string" ? event.data : new Uint8Array(event.data as ArrayBuffer),
+      ),
+    );
+    socket.addEventListener("close", (event) =>
+      onEvent("close", { code: event.code, reason: event.reason }),
+    );
+    socket.addEventListener("error", () => onEvent("error"));
+    return {
+      send: (data: string | Uint8Array) => socket.send(data),
+      close: (code?: number, reason?: string) => socket.close(code, reason),
+    };
+  },
+  httpFetch: async (input: {
+    readonly url: string;
+    readonly method?: string;
+    readonly headers?: Record<string, string>;
+    readonly body?: string;
+  }) => {
+    const response = await fetch(input.url, {
+      method: input.method ?? "GET",
+      ...(input.headers ? { headers: input.headers } : {}),
+      ...(input.body === undefined ? {} : { body: input.body }),
+    });
+    return {
+      status: response.status,
+      headers: Object.fromEntries(response.headers),
+      body: await response.text(),
+    };
+  },
+  randomUUID: () => crypto.randomUUID(),
   openExternal: async (url: string) => {
     await shell.openExternal(url);
   },

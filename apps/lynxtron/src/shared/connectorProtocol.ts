@@ -42,6 +42,8 @@ export const T3_CONNECTOR_METHODS = {
   resync: "t3:connector.resync",
   /** Typed command dispatch into the connector. */
   command: "t3:connector.command",
+  /** Address and bearer of the primary environment, or null before it is connected. */
+  primaryConnection: "t3:connector.primary-connection",
 } as const;
 
 export type ConnectorConnectionStatus =
