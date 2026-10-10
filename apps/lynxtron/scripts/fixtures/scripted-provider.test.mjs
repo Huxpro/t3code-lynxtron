@@ -1,5 +1,8 @@
 import { spawn, spawnSync } from "node:child_process";
 import { once } from "node:events";
+import { mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
 import process from "node:process";
 import { createInterface } from "node:readline";
 import { fileURLToPath } from "node:url";
@@ -9,6 +12,7 @@ import { afterEach, describe, expect, it } from "vite-plus/test";
 import {
   APPROVAL_COMMAND,
   APPROVAL_DONE_TEXT,
+  EDIT_DONE_TEXT,
   REPLY_DONE_TEXT,
   SCRIPTED_MODEL_ID,
   SLOW_TICK_TEXT,
@@ -16,10 +20,18 @@ import {
 
 const script = fileURLToPath(new URL("./scripted-provider.mjs", import.meta.url));
 const agents = [];
+const workspaces = [];
 
 afterEach(() => {
   for (const agent of agents.splice(0)) agent.child.kill();
+  for (const workspace of workspaces.splice(0)) rmSync(workspace, { recursive: true });
 });
+
+function makeWorkspace() {
+  const workspace = realpathSync(mkdtempSync(path.join(tmpdir(), "scripted-provider-")));
+  workspaces.push(workspace);
+  return workspace;
+}
 
 // Runs the agent and exposes its frames as an ordered inbox to await on.
 function startAgent() {
@@ -56,12 +68,12 @@ function startAgent() {
   return agent;
 }
 
-async function startSession(agent) {
+async function startSession(agent, cwd = "/") {
   agent.send({ id: 1, method: "initialize", params: { protocolVersion: 1 } });
   const initialized = await agent.reply(1);
   agent.send({ id: 2, method: "authenticate", params: { methodId: "cached_token" } });
   await agent.reply(2);
-  agent.send({ id: 3, method: "session/new", params: { cwd: "/", mcpServers: [] } });
+  agent.send({ id: 3, method: "session/new", params: { cwd, mcpServers: [] } });
   const created = await agent.reply(3);
   return { initialized: initialized.result, sessionId: created.result.sessionId };
 }
@@ -145,6 +157,60 @@ describe("scripted provider", () => {
     await agent.next((frame) => frame.method === "session/request_permission");
     agent.send({ method: "session/cancel", params: { sessionId } });
     expect((await agent.reply(10)).result).toEqual({ stopReason: "cancelled" });
+  });
+
+  it("writes each edit in the workspace and reports it as a tool call with its diff", async () => {
+    const workspace = makeWorkspace();
+    writeFileSync(path.join(workspace, "a.txt"), "before\n");
+    const agent = startAgent();
+    const { sessionId } = await startSession(agent, workspace);
+    agent.send(prompt(sessionId, "Change two files. [edit a.txt=after] [edit nested/b.txt=new]"));
+    const toolFrames = [];
+    for (let index = 0; index < 4; index += 1) {
+      toolFrames.push(
+        await agent.next((frame) => frame.params?.update?.sessionUpdate?.startsWith("tool_call")),
+      );
+    }
+    await agent.chunk(EDIT_DONE_TEXT);
+    expect((await agent.reply(10)).result).toEqual({ stopReason: "end_turn" });
+    expect(readFileSync(path.join(workspace, "a.txt"), "utf8")).toBe("after\n");
+    expect(readFileSync(path.join(workspace, "nested/b.txt"), "utf8")).toBe("new\n");
+    expect(
+      toolFrames.map(({ params: { update } }) => [
+        update.sessionUpdate,
+        update.status,
+        update.content[0],
+      ]),
+    ).toEqual(
+      [
+        ["a.txt", "before\n", "after\n"],
+        ["nested/b.txt", null, "new\n"],
+      ].flatMap(([file, oldText, newText]) => {
+        const diff = { type: "diff", path: path.join(workspace, file), oldText, newText };
+        return [
+          ["tool_call", "in_progress", diff],
+          ["tool_call_update", "completed", diff],
+        ];
+      }),
+    );
+    expect(toolFrames[0].params.update.kind).toBe("edit");
+    expect(toolFrames[0].params.update.locations).toEqual([
+      { path: path.join(workspace, "a.txt") },
+    ]);
+  });
+
+  it("refuses an edit outside the workspace", async () => {
+    const workspace = makeWorkspace();
+    const outside = makeWorkspace();
+    const agent = startAgent();
+    const { sessionId } = await startSession(agent, workspace);
+    agent.send(prompt(sessionId, `[edit ${path.join(outside, "x.txt")}=no] [edit ../y.txt=no]`));
+    const failed = await agent.next((frame) => frame.params?.update?.sessionUpdate === "tool_call");
+    expect(failed.params.update.status).toBe("failed");
+    await agent.chunk("refused");
+    expect((await agent.reply(10)).result).toEqual({ stopReason: "end_turn" });
+    expect(() => readFileSync(path.join(outside, "x.txt"))).toThrow();
+    expect(() => readFileSync(path.join(workspace, "../y.txt"))).toThrow();
   });
 
   it("exits when the server closes its input", async () => {
