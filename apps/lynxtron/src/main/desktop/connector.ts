@@ -591,8 +591,7 @@ export class T3Connector {
       await this.ensureProject();
     }
 
-    this.ready = true;
-    this.events.onStatus("ready", undefined);
+    this.declareReady();
     return {
       status: "ready",
       config,
@@ -704,6 +703,16 @@ export class T3Connector {
     for (const input of terminalInputs) {
       this.subscribeTerminal(input);
     }
+    this.declareReady();
+  }
+
+  /**
+   * Reports the connection ready, unless the server it was made to exited
+   * while it was being set up: the exit was reported as an error already, and
+   * a ready after it would tell the client it can send commands again.
+   */
+  private declareReady(): void {
+    if (this.serverExited) throw new Error("t3 server is not running");
     this.ready = true;
     this.events.onStatus("ready", undefined);
   }
