@@ -14,6 +14,7 @@
  * effect + contracts) and loaded from preload via __non_webpack_require__.
  */
 import { spawn, type ChildProcess } from "node:child_process";
+import { existsSync } from "node:fs";
 import * as crypto from "node:crypto";
 import * as http from "node:http";
 import * as https from "node:https";
@@ -636,7 +637,9 @@ export class T3Connector {
       httpBaseUrl: this.httpBaseUrl,
       wsBaseUrl: this.wsBaseUrl,
       bearer: this.bearer,
-      ...(this.ownsServer && rendererEnsuresStartupProject()
+      // Named only when it exists: the renderer creates the project through
+      // the add-project command, which would create a missing directory.
+      ...(this.ownsServer && rendererEnsuresStartupProject() && existsSync(startupProjectCwd())
         ? { startupProjectCwd: startupProjectCwd() }
         : {}),
     };
