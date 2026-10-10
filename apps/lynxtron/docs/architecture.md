@@ -248,7 +248,12 @@ upstream's file:
   hash, history state, relative routes, and routes the Lynx app has no screen
   for throw with the name of the API that asked.
 - The upstream file joins the Tailwind content list. Lynx rules that selected
-  the old copy by class select upstream's `data-slot` instead.
+  the old copy by its own class select a class upstream's markup carries (a
+  utility used as a marker, a class a Lynx primitive or the icon shim adds).
+  An attribute selector (`[data-slot="…"]`, `[aria-label="…"]`) did not match
+  in the running app when `sidebar/SidebarChrome` was switched; the earlier
+  `[data-slot]` rules have not been checked on frames. DevTool selectors in
+  gates do match attributes, unquoted.
 - `scripts/component-share-candidates.mjs` lists the remaining `.lynx.tsx`
   copies of upstream components with what blocks each one.
 
@@ -265,8 +270,9 @@ Limits and open questions:
   Tailwind 4's variant set (`not-[...]`, `text-base/4.5`, container queries)
   produces no rule under the Lynx Tailwind 3 pipeline and nothing reports it.
 - Lynx CSS and battery gates select the copies by their own class names
-  (`composer-approval-action--accept`, `sidebar-brand`). Switching such a
-  component is a look change and a gate change, not a build change.
+  (`composer-approval-action--accept`, `settings-nav__item`). Switching such a
+  component means re-keying both and comparing frames, as `sidebar/SidebarChrome`
+  did; where upstream's content or controls differ it is a look change.
 - `ui/badge` stays a Lynx copy. Upstream marks size and variant only by
   utility classes, the box would gain declarations the copy never had
   (`relative`, `gap-1`, `whitespace-nowrap`, `transition-shadow`), and the

@@ -14,7 +14,8 @@ function createIcon(name: IconName): ComponentType<LucideProps> {
     const resolvedSize = typeof size === "number" ? size : sidebarSettings ? 18 : 16;
     return (
       <Icon
-        className={className}
+        // lucide-react names each icon in a class; a rule can find the icon by it.
+        className={className ? `lucide-${name} ${className}` : `lucide-${name}`}
         color={sidebarSettings ? "#818181" : color}
         name={name}
         size={resolvedSize}

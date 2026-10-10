@@ -35,7 +35,8 @@ export interface NavigateOptions {
   readonly params?: Readonly<Record<string, unknown>> | undefined;
   /** A pathname to go to as it is; an alternative to `to`. */
   readonly href?: string | undefined;
-  readonly search?: Readonly<Record<string, unknown>> | undefined;
+  /** Upstream passes typed search objects; any with a key is refused. */
+  readonly search?: object | undefined;
   readonly hash?: string | undefined;
   readonly state?: Readonly<Record<string, unknown>> | undefined;
   /** Accepted and without effect: Lynx keeps no history stack and no scroll restoration. */
@@ -44,7 +45,7 @@ export interface NavigateOptions {
   readonly hashScrollIntoView?: boolean | undefined;
 }
 
-function hasKeys(value: Readonly<Record<string, unknown>> | undefined): boolean {
+function hasKeys(value: object | undefined): boolean {
   return value !== undefined && Object.keys(value).length > 0;
 }
 

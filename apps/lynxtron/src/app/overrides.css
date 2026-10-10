@@ -557,7 +557,8 @@
   height: 256px;
 }
 .sidebar-header,
-.sidebar-footer {
+.sidebar-footer,
+.drag-region {
   flex-shrink: 0;
 }
 .sidebar-footer {
@@ -1160,10 +1161,16 @@
 .lynx-sidebar-global-control--on-backdrop .sidebar-global-toggle-icon {
   opacity: 0.96;
 }
-.sidebar-header-toggle {
+/* Upstream's SidebarChrome carries no Lynx class names, and the engine matches
+   no attribute selectors: its header is found by its drag-region class and the
+   brand by its w-fit; the footer and its icon buttons by the classes the Lynx
+   sidebar primitives give them. */
+.sidebar-header-toggle,
+.drag-region > .md\:hidden {
   display: none;
 }
-.lynx-sidebar-chrome-header {
+.lynx-sidebar-chrome-header,
+.drag-region {
   position: relative;
   display: flex;
   flex-direction: row;
@@ -1200,6 +1207,35 @@
 }
 .lynx-sidebar-chrome-header .sidebar-brand--on-backdrop .sidebar-brand-code-label {
   color: rgba(255, 255, 255, 0.7);
+}
+.drag-region > .w-fit {
+  position: absolute;
+  left: 130px;
+  top: 12px;
+  z-index: 30;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 28px;
+  min-width: 0;
+  margin-left: 0;
+  color: var(--foreground);
+}
+.drag-region > .w-fit.text-white {
+  color: #ffffff;
+}
+/* Upstream's box around the wordmark and the label: the old brand row. */
+.drag-region > .w-fit > .inline-flex {
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+}
+.drag-region > .w-fit.text-white .truncate {
+  color: rgba(255, 255, 255, 0.7);
+}
+/* The pill followed an empty trigger box and the header's 8px gap. */
+.drag-region > .ui-badge {
+  margin-left: 12px;
 }
 .sidebar-v2-search {
   width: 100%;
@@ -1500,13 +1536,33 @@
 .sidebar-brand-code-label {
   color: var(--muted-foreground);
 }
+/* The label is a span inside upstream's box, which holds the type utilities
+   the Lynx copy wrote on the text itself. */
+.drag-region > .w-fit .truncate {
+  color: var(--muted-foreground);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  letter-spacing: -0.025em;
+  transform: translateY(-1px);
+}
 .sidebar-projects-label {
   font-size: 12px;
   line-height: 16px;
 }
-.sidebar-settings-row {
+.sidebar-settings-row,
+.sidebar-footer .sidebar-menu-button--icon {
   height: 32px;
   box-sizing: border-box;
+}
+/* Lynx has no Usage or Pull Requests screen, so upstream's links to them are
+ * removed whole: a hidden icon would leave a button that leads nowhere. */
+.sidebar-footer .sidebar-menu-button--usage,
+.sidebar-footer .sidebar-menu-button--pull-requests {
+  display: none;
+}
+.sidebar-footer > .flex-row {
+  display: flex;
 }
 .sidebar-settings-icon {
   opacity: 0.66;
@@ -1526,12 +1582,12 @@
 }
 .theme-light .lynx-sidebar-wordmark__dark,
 .theme-dark .lynx-sidebar-wordmark__light,
-.lynx-sidebar-wordmark--backdrop .lynx-sidebar-wordmark__light {
+.text-white .lynx-sidebar-wordmark__light {
   opacity: 0;
 }
 .theme-light .lynx-sidebar-wordmark__light,
 .theme-dark .lynx-sidebar-wordmark__dark,
-.lynx-sidebar-wordmark--backdrop .lynx-sidebar-wordmark__dark {
+.text-white .lynx-sidebar-wordmark__dark {
   opacity: 1;
 }
 
@@ -1915,9 +1971,18 @@
   -x-app-region: drag;
   z-index: 30;
 }
-.lynx-titlebar-drag-region {
+.lynx-titlebar-drag-region,
+.drag-region {
   -x-app-region: drag;
 }
+.drag-region > .w-fit,
+.drag-region > .w-fit view,
+.drag-region > .w-fit text,
+.drag-region > .w-fit image,
+.drag-region > .ui-badge,
+.drag-region > .ui-badge view,
+.drag-region > .ui-badge text,
+.drag-region > .ui-badge image,
 .lynx-titlebar-no-drag,
 .lynx-titlebar-no-drag view,
 .lynx-titlebar-no-drag text,
@@ -2438,6 +2503,7 @@
 .t3-dm-sans-ready .lynx-sidebar-project-title,
 .t3-dm-sans-ready .thread-status-label__copy,
 .t3-dm-sans-ready .sidebar-brand-code-label,
+.t3-dm-sans-ready .drag-region > .w-fit .truncate,
 .t3-dm-sans-ready .transcript-working-label {
   font-family: "T3 DM Sans", var(--font-sans);
 }
@@ -2478,7 +2544,8 @@
   text-stroke-width: 0.15px;
   transform: translate(-0.5px, -1.5px) scaleX(1.135);
 }
-.t3-dm-sans-ready .sidebar-brand-code-label {
+.t3-dm-sans-ready .sidebar-brand-code-label,
+.t3-dm-sans-ready .drag-region > .w-fit .truncate {
   text-stroke-color: var(--muted-foreground);
   text-stroke-width: 0.15px;
   transform: translateX(-0.5px) scaleX(1.03);
@@ -6195,11 +6262,8 @@
   border-right-style: solid;
   border-right-color: var(--sidebar-border);
 }
-.settings-nav > .lynx-sidebar-chrome-header {
+.settings-nav > .drag-region {
   width: 100%;
-}
-.settings-nav > .lynx-sidebar-chrome-header .sidebar-header-toggle {
-  display: none;
 }
 .settings-nav__app-control {
   position: absolute;
@@ -7720,7 +7784,8 @@
 .viewport-responsive .sidebar-global-toggle-icon {
   opacity: 0.54;
 }
-.viewport-responsive .sidebar-brand-host {
+.viewport-responsive .sidebar-brand-host,
+.viewport-responsive .drag-region > .w-fit {
   left: 130px;
 }
 .viewport-responsive .lynx-sidebar-global-control--on-backdrop .sidebar-global-toggle-icon {
@@ -7731,6 +7796,7 @@
    switches the same semantic subtree to real flex sizing so the extra width
    becomes usable instead of leaving a fixed 239px island. */
 .sidebar-width-responsive .sidebar-settings-row,
+.sidebar-width-responsive .sidebar-footer .sidebar-menu-button--icon,
 .sidebar-width-responsive .sidebar-v2-control-row {
   width: 100%;
 }
@@ -7742,6 +7808,9 @@
 }
 .sidebar-width-responsive .lynx-sidebar-chrome-header .sidebar-brand {
   right: 12px;
+  overflow: hidden;
+}
+.sidebar-width-responsive .drag-region > .w-fit {
   overflow: hidden;
 }
 .sidebar-width-responsive .sidebar-global-toggle-icon {

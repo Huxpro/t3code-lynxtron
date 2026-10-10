@@ -131,7 +131,7 @@ import {
   SidebarChromeFooterSurface,
   SidebarChromeHeaderSurface,
 } from "../sidebar/SidebarChromeSurface";
-import { T3Wordmark } from "../sidebar/T3Wordmark";
+import { T3Wordmark } from "../T3Wordmark";
 import { SidebarUpdatePillSurface } from "../sidebar/SidebarUpdatePillSurface";
 import { RightPanelEmptySurface } from "../RightPanelSurface";
 import { PaletteEmptySurface } from "../CommandPaletteSurface";
@@ -1083,13 +1083,13 @@ export function ComponentLabSurface() {
             </HostText>
           </StoryFrame>
 
-          <StoryFrame id="sidebar/T3Wordmark#T3Wordmark" title="T3 wordmark">
+          <StoryFrame id="T3Wordmark#T3Wordmark" title="T3 wordmark">
             <HostView className="component-lab-t3-wordmarks">
               <HostView className="component-lab-t3-wordmark">
                 <T3Wordmark />
               </HostView>
-              <HostView className="component-lab-t3-wordmark component-lab-t3-wordmark--backdrop">
-                <T3Wordmark onBackdrop />
+              <HostView className="component-lab-t3-wordmark component-lab-t3-wordmark--backdrop text-white">
+                <T3Wordmark />
               </HostView>
             </HostView>
           </StoryFrame>
