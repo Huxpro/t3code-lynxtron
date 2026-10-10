@@ -37,10 +37,8 @@ import { useViewportSnapshot } from "../../../../web/src/hooks/useViewportSnapsh
 import { readModelPickerNavigation } from "../state/uiState";
 import { onModelPickerJump } from "../state/modelPickerJump";
 import { useT3ClientState } from "../state/t3Client";
-import {
-  resolveModelPickerJumpTargets,
-  shortcutLabelForCommand,
-} from "../../../../web/src/keybindings";
+import { shortcutLabelForCommand } from "../../../../web/src/keybindings";
+import { resolveModelPickerJumpTargets } from "../logic/keybindings";
 import { Icon } from "./Icon";
 import { responsiveMenuWheelDelta } from "./menuWheel.logic";
 import { ProviderBrandIcon } from "./ProviderBrandIcon";

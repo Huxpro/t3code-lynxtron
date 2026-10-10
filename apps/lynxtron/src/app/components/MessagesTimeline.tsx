@@ -101,9 +101,13 @@ import {
 import { TIMELINE_CONTENT_MAX_WIDTH } from "../logic/messagesTimeline";
 
 type LynxChatMessage = Omit<ChatMessage, "attachments"> & {
-  readonly attachments?: ReadonlyArray<
-    NonNullable<ChatMessage["attachments"]>[number] & { readonly previewUrl?: string }
-  >;
+  readonly attachments?:
+    | ReadonlyArray<
+        NonNullable<ChatMessage["attachments"]>[number] & {
+          readonly previewUrl?: string | undefined;
+        }
+      >
+    | undefined;
 };
 
 interface MessagesTimelineProps {
@@ -561,7 +565,8 @@ function TranscriptAttachmentCard({
 }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [attachment.id, attachment.previewUrl]);
-  const canPreview = Boolean(attachment.previewUrl && !failed);
+  const previewUrl = failed ? undefined : attachment.previewUrl;
+  const canPreview = Boolean(previewUrl);
   return (
     <view
       className={`transcript-attachment-card${canPreview ? " transcript-attachment-card--image" : ""}`}
@@ -577,10 +582,10 @@ function TranscriptAttachmentCard({
           : undefined
       }
     >
-      {canPreview ? (
+      {previewUrl ? (
         <image
           className="transcript-attachment-preview"
-          src={attachment.previewUrl}
+          src={previewUrl}
           mode="aspectFill"
           binderror={() => setFailed(true)}
         />
@@ -604,13 +609,13 @@ function LynxUserMessagePreviewAnnotationCard({
 }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [annotation.id, image?.id, image?.previewUrl]);
-  const canPreview = Boolean(image?.previewUrl && !failed);
+  const previewUrl = failed ? undefined : image?.previewUrl;
   return (
     <view className="transcript-preview-annotation" data-preview-annotation={annotation.id}>
-      {canPreview && image ? (
+      {previewUrl && image ? (
         <image
           className="transcript-preview-annotation__image"
-          src={image.previewUrl}
+          src={previewUrl}
           mode="aspectFill"
           aria-label={`Preview ${image.name}`}
           bindtap={() => {

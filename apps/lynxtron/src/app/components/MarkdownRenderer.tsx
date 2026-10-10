@@ -491,7 +491,7 @@ function MarkdownTableBlock({
                 key={`${blockKey}-h${column}`}
                 className="md-table-cell md-table-cell--header"
                 style={{ textAlign: table.alignments[column] ?? "left" } as any}
-                text-maxline={expanded ? undefined : "1"}
+                {...(expanded ? {} : { "text-maxline": "1" })}
               >
                 {renderInline(
                   parseMarkdownInline(header),
@@ -509,7 +509,7 @@ function MarkdownTableBlock({
                   key={`${blockKey}-r${rowIndex}c${column}`}
                   className="md-table-cell"
                   style={{ textAlign: table.alignments[column] ?? "left" } as any}
-                  text-maxline={expanded ? undefined : "1"}
+                  {...(expanded ? {} : { "text-maxline": "1" })}
                 >
                   {renderInline(
                     parseMarkdownInline(cell),

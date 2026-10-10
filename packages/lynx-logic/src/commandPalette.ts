@@ -14,9 +14,9 @@ export interface CommandPaletteThreadPresentationInput {
 
 export function projectCommandPaletteThread(input: {
   readonly thread: CommandPaletteThreadPresentationInput;
-  readonly projectTitle?: string | null;
-  readonly activeThreadId?: string | null;
-  readonly now?: number;
+  readonly projectTitle?: string | null | undefined;
+  readonly activeThreadId?: string | null | undefined;
+  readonly now?: number | undefined;
   readonly formatTimestamp: (isoDate: string, nowMs: number) => string;
 }) {
   const { thread } = input;

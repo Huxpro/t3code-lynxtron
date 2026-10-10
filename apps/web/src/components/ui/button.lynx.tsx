@@ -25,14 +25,14 @@ type ButtonSize =
 
 export interface ButtonProps {
   readonly [key: string]: unknown;
-  readonly "aria-label"?: string;
-  readonly children?: ReactNode;
-  readonly className?: string;
-  readonly disabled?: boolean;
-  readonly onClick?: () => void;
-  readonly render?: ReactNode;
-  readonly size?: ButtonSize;
-  readonly variant?: ButtonVariant;
+  readonly "aria-label"?: string | undefined;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
+  readonly disabled?: boolean | undefined;
+  readonly onClick?: (() => void) | undefined;
+  readonly render?: ReactNode | undefined;
+  readonly size?: ButtonSize | undefined;
+  readonly variant?: ButtonVariant | undefined;
 }
 
 export function buttonVariants({

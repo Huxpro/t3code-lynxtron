@@ -44,14 +44,14 @@ export function SelectBox({
   onTap,
 }: {
   label: string;
-  width?: number;
-  onTap?: () => void;
+  width?: number | undefined;
+  onTap?: (() => void) | undefined;
 }) {
   return (
     <view
       className={onTap ? "select-box select-box--interactive" : "select-box"}
-      style={width ? { width: `${width}px` } : undefined}
-      bindtap={onTap}
+      {...(width ? { style: { width: `${width}px` } } : {})}
+      {...(onTap ? { bindtap: onTap } : {})}
     >
       <text className="select-box__label" text-maxline="1">
         {label}
@@ -93,11 +93,11 @@ export function SmallIconButton({
   disabled = false,
   onTap,
 }: {
-  className?: string;
+  className?: string | undefined;
   label: string;
   icon: ReactNode;
-  disabled?: boolean;
-  onTap?: () => void;
+  disabled?: boolean | undefined;
+  onTap?: (() => void) | undefined;
 }) {
   return (
     <Button

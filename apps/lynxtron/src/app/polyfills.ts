@@ -189,6 +189,8 @@ if (runtimeGlobals.TextDecoder === undefined) {
       let output = "";
       for (let index = 0; index < bytes.length;) {
         const first = bytes[index++];
+        // Unreachable: the loop condition keeps index inside the array.
+        if (first === undefined) break;
         let codePoint = first;
         let needed = 0;
         let minimum = 0;
@@ -212,7 +214,7 @@ if (runtimeGlobals.TextDecoder === undefined) {
         let valid = index + needed <= bytes.length;
         for (let offset = 0; valid && offset < needed; offset += 1) {
           const continuation = bytes[index + offset];
-          if ((continuation & 0xc0) !== 0x80) {
+          if (continuation === undefined || (continuation & 0xc0) !== 0x80) {
             valid = false;
           } else {
             codePoint = (codePoint << 6) | (continuation & 0x3f);

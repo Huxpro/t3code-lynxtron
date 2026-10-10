@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { HostText, HostView } from "../ui/hostElements";
 
 type LynxClassNameProps = {
-  readonly className?: string;
+  readonly className?: string | undefined;
 };
 
 function joinClassNames(...values: ReadonlyArray<string | undefined>): string {
@@ -20,12 +20,12 @@ export function SettingsSection({
   className,
   stacked = false,
 }: LynxClassNameProps & {
-  readonly id?: string;
+  readonly id?: string | undefined;
   readonly title: string;
-  readonly icon?: ReactNode;
-  readonly headerAction?: ReactNode;
+  readonly icon?: ReactNode | undefined;
+  readonly headerAction?: ReactNode | undefined;
   readonly children: ReactNode;
-  readonly stacked?: boolean;
+  readonly stacked?: boolean | undefined;
 }) {
   const header = (
     <view
@@ -45,7 +45,7 @@ export function SettingsSection({
 
   if (stacked) {
     return (
-      <view id={id} className={className}>
+      <view {...(id === undefined ? {} : { id })} className={className ?? ""}>
         {header}
         <view className="settings-section__rows flex w-full min-w-0 flex-col self-stretch">
           {children}
@@ -56,7 +56,7 @@ export function SettingsSection({
 
   return (
     <view
-      id={id}
+      {...(id === undefined ? {} : { id })}
       className={joinClassNames(
         "settings-section flex w-full min-w-0 flex-col self-stretch",
         className,

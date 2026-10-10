@@ -25,7 +25,7 @@ const pathnameAtom = Atom.make(normalizeLynxPathname("/")).pipe(
   Atom.withLabel("lynx-router-pathname"),
 );
 
-export function navigate(to: string, _opts?: { replace?: boolean }): void {
+export function navigate(to: string, _opts?: { replace?: boolean | undefined }): void {
   const next = normalizeLynxPathname(to);
   if (appAtomRegistry.get(pathnameAtom) !== next) {
     appAtomRegistry.set(pathnameAtom, next);

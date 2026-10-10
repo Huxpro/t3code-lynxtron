@@ -22,7 +22,7 @@ import { useResolvedTheme } from "../state/resolvedThemeContext";
  */
 
 // Must mirror the VARIANTS in scripts/build-icons.mjs.
-const SIZES = [14, 16, 18, 20];
+const SIZES: readonly [number, ...number[]] = [14, 16, 18, 20];
 const COLORS = [
   "#f5f5f5",
   "#a1a1aa",
@@ -37,7 +37,7 @@ const COLORS = [
   "#f59e0b",
 ];
 
-function nearest(list: number[], v: number): number {
+function nearest(list: readonly [number, ...number[]], v: number): number {
   return list.reduce((best, x) => (Math.abs(x - v) < Math.abs(best - v) ? x : best), list[0]);
 }
 
@@ -161,10 +161,10 @@ export type IconName =
 
 interface IconProps {
   name: IconName;
-  size?: number;
-  color?: string;
-  className?: string;
-  themeOverride?: "dark" | "light";
+  size?: number | undefined;
+  color?: string | undefined;
+  className?: string | undefined;
+  themeOverride?: "dark" | "light" | undefined;
 }
 
 export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverride }: IconProps) {
@@ -213,7 +213,7 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverr
     const w = Math.round((h * 94.3941) / 56.96);
     return (
       <image
-        className={className}
+        className={className ?? ""}
         style={{ width: `${w}px`, height: `${h}px` }}
         src={sources[theme]}
       />
@@ -222,7 +222,7 @@ export function Icon({ name, size = 18, color = "#f5f5f5", className, themeOverr
 
   return (
     <image
-      className={className}
+      className={className ?? ""}
       style={{ width: `${size}px`, height: `${size}px` }}
       src={sources[theme]}
     />

@@ -28,8 +28,8 @@ export type ComposerDraftAttachmentsByScopeKey = Readonly<
 >;
 
 export function composerDraftScopeKey(input: {
-  readonly threadId?: string;
-  readonly projectId?: string;
+  readonly threadId?: string | undefined;
+  readonly projectId?: string | undefined;
   readonly localDraft: boolean;
 }): string | null {
   if (input.localDraft && input.projectId) return `project:${input.projectId}`;
@@ -308,12 +308,12 @@ export function createLocalDraftThread(input: {
   readonly projectId: ProjectId;
   readonly modelSelection: ModelSelection;
   readonly createdAt: string;
-  readonly runtimeMode?: RuntimeMode;
-  readonly interactionMode?: ProviderInteractionMode;
-  readonly branch?: string | null;
-  readonly worktreePath?: string | null;
-  readonly envMode?: LocalDraftThreadEnvMode;
-  readonly startFromOrigin?: boolean;
+  readonly runtimeMode?: RuntimeMode | undefined;
+  readonly interactionMode?: ProviderInteractionMode | undefined;
+  readonly branch?: string | null | undefined;
+  readonly worktreePath?: string | null | undefined;
+  readonly envMode?: LocalDraftThreadEnvMode | undefined;
+  readonly startFromOrigin?: boolean | undefined;
 }): LocalDraftThread {
   return {
     id: input.threadId,

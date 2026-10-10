@@ -1,12 +1,12 @@
 import { useCallback } from "@lynx-js/react";
 
 export interface SwitchProps {
-  readonly "aria-label"?: string;
-  readonly checked?: boolean;
-  readonly className?: string;
-  readonly "data-setting-control"?: string;
-  readonly disabled?: boolean;
-  readonly onCheckedChange?: (checked: boolean) => void;
+  readonly "aria-label"?: string | undefined;
+  readonly checked?: boolean | undefined;
+  readonly className?: string | undefined;
+  readonly "data-setting-control"?: string | undefined;
+  readonly disabled?: boolean | undefined;
+  readonly onCheckedChange?: ((checked: boolean) => void) | undefined;
 }
 
 export function Switch({

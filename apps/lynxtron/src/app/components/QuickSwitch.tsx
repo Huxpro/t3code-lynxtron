@@ -61,12 +61,12 @@ import {
 // certified discrete menu command.
 
 interface QuickSwitchProps {
-  mode?: SearchOverlayMode;
-  openIntent?: SearchOverlayOpenIntent | null;
+  mode?: SearchOverlayMode | undefined;
+  openIntent?: SearchOverlayOpenIntent | null | undefined;
   projects: ReadonlyArray<ProjectSummary>;
   threads: ReadonlyArray<ThreadSummary>;
-  activeThreadId?: string;
-  projectScopeKey?: string | null;
+  activeThreadId?: string | undefined;
+  projectScopeKey?: string | null | undefined;
 }
 
 interface FilePickerState {

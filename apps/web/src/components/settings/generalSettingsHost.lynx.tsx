@@ -21,15 +21,15 @@ export function SettingsSection({
   id,
 }: {
   readonly title: string;
-  readonly icon?: ReactNode;
-  readonly headerAction?: ReactNode;
+  readonly icon?: ReactNode | undefined;
+  readonly headerAction?: ReactNode | undefined;
   readonly children: ReactNode;
-  readonly className?: string;
-  readonly id?: string;
+  readonly className?: string | undefined;
+  readonly id?: string | undefined;
 }) {
   return (
     <view
-      id={id}
+      {...(id === undefined ? {} : { id })}
       className={joinClassNames(
         "settings-section flex w-full min-w-0 flex-col self-stretch",
         className,
@@ -118,9 +118,8 @@ export function SettingsRow({
 }) {
   return (
     <view
-      id={id}
-      aria-disabled={unavailable ? "true" : undefined}
-      data-settings-unavailable={unavailable ? "true" : undefined}
+      {...(id === undefined ? {} : { id })}
+      {...(unavailable ? { "aria-disabled": "true", "data-settings-unavailable": "true" } : {})}
       className={joinClassNames(
         "settings-row flex w-full min-w-0 self-stretch",
         unavailable ? "settings-row--unavailable" : undefined,
@@ -256,7 +255,7 @@ export function GeneralSettingsTextInput({
       ref={native.ref}
       className="general-text-input"
       aria-label={ariaLabel}
-      placeholder={placeholder}
+      {...(placeholder === undefined ? {} : { placeholder })}
       bindinput={(event: { detail?: { value?: string } }) => {
         const next = event.detail?.value ?? "";
         native.noteInput(next);

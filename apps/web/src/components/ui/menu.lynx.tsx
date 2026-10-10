@@ -23,9 +23,9 @@ import { HostView } from "./hostElements";
 import { useViewportSnapshot } from "../../hooks/useViewportSnapshot";
 
 type ElementProps = Record<string, unknown> & {
-  readonly children?: ReactNode;
+  readonly children?: ReactNode | undefined;
   readonly className?: string;
-  readonly render?: ReactElement<Record<string, unknown>>;
+  readonly render?: ReactElement<Record<string, unknown>> | undefined;
 };
 
 function classes(...values: ReadonlyArray<string | undefined>): string {
@@ -88,8 +88,8 @@ function installMenuTestBridge(): void {
 }
 
 interface RadioContextValue {
-  readonly onValueChange?: (value: string) => void;
-  readonly value?: string;
+  readonly onValueChange?: ((value: string) => void) | undefined;
+  readonly value?: string | undefined;
 }
 
 const MenuContext = createContext<MenuContextValue | null>(null);
@@ -320,8 +320,8 @@ export function MenuRadioItem({
   value,
   ...props
 }: ElementProps & {
-  readonly disabled?: boolean;
-  readonly onContextMenu?: (event: unknown) => void;
+  readonly disabled?: boolean | undefined;
+  readonly onContextMenu?: ((event: unknown) => void) | undefined;
   readonly value: string;
 }) {
   const menu = useContext(MenuContext);

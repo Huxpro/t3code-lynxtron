@@ -4,7 +4,7 @@ import type {
   ExecutionEnvironmentPlatformOs,
   ResolvedKeybindingsConfig,
 } from "@t3tools/contracts";
-import { formatKeybindingShortcutLabel } from "../../../../web/src/components/settings/KeybindingsSettings.logic";
+import { formatKeybindingShortcutLabel } from "../logic/keybindings";
 
 import externalCursorUrl from "../assets/cursor.svg?external";
 import externalTraeUrl from "../assets/trae.svg?external";
@@ -40,9 +40,9 @@ export function OpenInPicker({
   readonly availableEditors: ReadonlyArray<EditorId>;
   readonly cwd: string | null | undefined;
   readonly platform: ExecutionEnvironmentPlatformOs | undefined;
-  readonly keybindings?: ResolvedKeybindingsConfig;
-  readonly compact?: boolean;
-  readonly anchor?: "header-open-in-menu" | "file-open-in-menu";
+  readonly keybindings?: ResolvedKeybindingsConfig | undefined;
+  readonly compact?: boolean | undefined;
+  readonly anchor?: "header-open-in-menu" | "file-open-in-menu" | undefined;
 }) {
   const [storedEditor, setStoredEditor] = usePreferredEditorState();
   const [open, setOpen] = useState(false);

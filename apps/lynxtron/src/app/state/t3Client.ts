@@ -212,8 +212,8 @@ declare const lynx:
 
 export interface T3ClientState {
   readonly status: ConnectionStatus;
-  readonly statusDetail?: string;
-  readonly connectionKind?: "owned-local" | "existing-environment";
+  readonly statusDetail?: string | undefined;
+  readonly connectionKind?: "owned-local" | "existing-environment" | undefined;
   readonly connectorCommandsReady: boolean;
   readonly vcsStatus: VcsStatusResult | null;
   readonly vcsStatusCwd: string | null;
@@ -221,9 +221,9 @@ export interface T3ClientState {
   readonly projects: ReadonlyArray<ProjectSummary>;
   readonly threads: ReadonlyArray<ThreadSummary>;
   readonly archivedThreads: ReadonlyArray<ThreadSummary>;
-  readonly activeThreadId?: string;
-  readonly draftHeroThreadId?: string;
-  readonly draftThread?: LocalDraftThread;
+  readonly activeThreadId?: string | undefined;
+  readonly draftHeroThreadId?: string | undefined;
+  readonly draftThread?: LocalDraftThread | undefined;
   readonly draftThreadsByProjectId: LocalDraftThreadsByProjectId;
   readonly composerDraftTextByScopeKey: ComposerDraftTextByScopeKey;
   readonly composerDraftAttachmentsByScopeKey: ComposerDraftAttachmentsByScopeKey;
@@ -235,13 +235,13 @@ export interface T3ClientState {
   readonly sessionStatus: SessionStatus;
   readonly sessionError: string | null;
   readonly models: ReadonlyArray<ModelInfo>;
-  readonly selectedModel?: ModelInfo;
-  readonly modelSelection?: ModelSelection;
+  readonly selectedModel?: ModelInfo | undefined;
+  readonly modelSelection?: ModelSelection | undefined;
   readonly modelSelectionError: string | null;
   readonly modelSelectionPending: boolean;
-  readonly serverConfig?: ServerConfig;
+  readonly serverConfig?: ServerConfig | undefined;
   readonly providers: ReadonlyArray<ServerProvider>;
-  readonly settings?: ServerSettings;
+  readonly settings?: ServerSettings | undefined;
   readonly authAccess: AuthAccessPresentation;
   readonly providerEntries: ReadonlyArray<ProviderInstanceEntry>;
   readonly providersRefreshPending: boolean;
@@ -249,8 +249,8 @@ export interface T3ClientState {
   readonly providerSettingsError: string | null;
   readonly settingsUpdatePending: boolean;
   readonly settingsError: string | null;
-  readonly activePlan?: ActivePlanState;
-  readonly activeProposedPlan?: LatestProposedPlanState;
+  readonly activePlan?: ActivePlanState | undefined;
+  readonly activeProposedPlan?: LatestProposedPlanState | undefined;
   readonly activities: ReadonlyArray<ActivityEntry>;
   readonly latestTurn: OrchestrationLatestTurn | null;
   readonly proposedPlans: ReadonlyArray<OrchestrationProposedPlan>;
@@ -447,7 +447,7 @@ export function installT3ClientFixtureForDevTool(partial: Partial<T3ClientState>
 
 function resetActiveThreadState(
   activeThreadId?: string,
-  options?: { readonly draftHero?: boolean },
+  options?: { readonly draftHero?: boolean | undefined },
 ): void {
   threadFingerprint = "";
   const current = appAtomRegistry.get(t3ClientStateAtom);
@@ -673,14 +673,15 @@ function applyShellPayload(shell: ShellEventPayload): void {
     setPref("modelSelection", modelProjection.selection);
   }
   const latest = appAtomRegistry.get(t3ClientStateAtom);
-  if (!latest.activeThreadId && threads.length > 0) {
+  const firstThread = threads[0];
+  if (!latest.activeThreadId && firstThread) {
     // Auto-select the first thread as the active thread, but do not yank the
     // renderer off a non-chat route (Settings or Components Lab) to do it.
     // Force-navigating here caused those surfaces to flash back to chat when
     // the shell snapshot arrived. On the chat route this still navigates to
     // the selected thread.
     const pathname = getPathname();
-    selectThread(threads[0].id, {
+    selectThread(firstThread.id, {
       navigate: pathname === "/",
     });
   } else {
@@ -836,7 +837,7 @@ function installTransportDevToolHook(): void {
       invoke: (method: string, params?: unknown) => Promise<unknown>;
     };
     __T3_LYNXTRON_CLIENT_STATE__?: () => {
-      activeThreadId?: string;
+      activeThreadId?: string | undefined;
       sessionStatus: SessionStatus;
       activeTurnId: TurnId | null;
       latestTurn: OrchestrationLatestTurn | null;

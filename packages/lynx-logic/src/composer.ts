@@ -13,12 +13,26 @@ import {
   getProviderOptionDescriptors,
 } from "@t3tools/shared/providerOptions";
 import type { SessionPresentationPhase } from "./session.ts";
-export {
-  deriveLatestContextWindowSnapshot,
-  formatContextWindowTokens,
-  formatProviderDisplayName,
-  type ContextWindowSnapshot,
-} from "./contextWindow.ts";
+
+export function formatProviderDisplayName(provider: string | null | undefined): string {
+  if (!provider) return "This agent";
+  switch (provider) {
+    case "claudeAgent":
+    case "claude":
+      return "Claude";
+    case "codex":
+      return "Codex";
+    case "cursor":
+      return "Cursor";
+    case "opencode":
+      return "OpenCode";
+    default: {
+      const trimmed = provider.replace(/Agent$/i, "").trim();
+      if (trimmed.length === 0) return provider;
+      return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+    }
+  }
+}
 
 const INLINE_TERMINAL_CONTEXT_PLACEHOLDER = "\uFFFC";
 

@@ -34,24 +34,24 @@ import { importableProjectScripts, importedProjectScript } from "./projectAction
 interface ChatHeaderProps {
   projectName: string;
   threadTitle: string;
-  cwd?: string;
-  vcsStatus?: VcsStatusResult | null;
-  vcsStatusPending?: boolean;
-  availableEditors?: ReadonlyArray<EditorId>;
-  platform?: ExecutionEnvironmentPlatformOs;
-  keybindings?: ResolvedKeybindingsConfig;
-  projectId?: string;
-  projectScripts?: ReadonlyArray<ProjectScript>;
-  fileScripts?: ReadonlyArray<T3ProjectFileScript>;
-  sessionStatus?: unknown;
-  connectionStatus?: unknown;
-  statusDetail?: string;
-  rightPanelOpen?: boolean;
-  centerPanelWidth?: number;
-  onCenterPanelWidthChange?: (width: number) => void;
-  gitMenuOpen?: boolean;
-  onGitMenuOpenChange?: (open: boolean) => void;
-  onRunProjectScript?: (script: ProjectScript) => Promise<void>;
+  cwd?: string | undefined;
+  vcsStatus?: VcsStatusResult | null | undefined;
+  vcsStatusPending?: boolean | undefined;
+  availableEditors?: ReadonlyArray<EditorId> | undefined;
+  platform?: ExecutionEnvironmentPlatformOs | undefined;
+  keybindings?: ResolvedKeybindingsConfig | undefined;
+  projectId?: string | undefined;
+  projectScripts?: ReadonlyArray<ProjectScript> | undefined;
+  fileScripts?: ReadonlyArray<T3ProjectFileScript> | undefined;
+  sessionStatus?: unknown | undefined;
+  connectionStatus?: unknown | undefined;
+  statusDetail?: string | undefined;
+  rightPanelOpen?: boolean | undefined;
+  centerPanelWidth?: number | undefined;
+  onCenterPanelWidthChange?: ((width: number) => void) | undefined;
+  gitMenuOpen?: boolean | undefined;
+  onGitMenuOpenChange?: ((open: boolean) => void) | undefined;
+  onRunProjectScript?: ((script: ProjectScript) => Promise<void>) | undefined;
 }
 
 export function ChatLayoutControls({ rightPanelOpen = false }: { rightPanelOpen?: boolean }) {
@@ -97,14 +97,14 @@ function ActionButton({
 }: {
   className: string;
   icon: IconName;
-  label?: string;
-  grouped?: boolean;
-  disabled?: boolean;
-  primaryAriaLabel?: string;
-  optionsAriaLabel?: string;
-  onPrimaryTap?: () => void;
-  onOptionsTap?: () => void;
-  trailingChevron?: boolean;
+  label?: string | undefined;
+  grouped?: boolean | undefined;
+  disabled?: boolean | undefined;
+  primaryAriaLabel?: string | undefined;
+  optionsAriaLabel?: string | undefined;
+  onPrimaryTap?: (() => void) | undefined;
+  onOptionsTap?: (() => void) | undefined;
+  trailingChevron?: boolean | undefined;
   gitAction?: GitQuickAction | undefined;
 }) {
   const actionId = className.match(/action-btn--([^\s]+)/)?.[1];
