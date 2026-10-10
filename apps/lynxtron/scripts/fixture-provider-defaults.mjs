@@ -7,16 +7,16 @@ import path from "node:path";
 export function enableOpenCodeInFixtureState(baseDir) {
   const settingsPath = path.join(baseDir, "userdata", "settings.json");
   const settings = existsSync(settingsPath) ? JSON.parse(readFileSync(settingsPath, "utf8")) : {};
-  if (typeof settings.providers?.opencode?.enabled === "boolean") return;
+  if (typeof settings.providerInstances?.opencode?.enabled === "boolean") return;
   mkdirSync(path.dirname(settingsPath), { recursive: true });
   writeFileSync(
     settingsPath,
     `${JSON.stringify(
       {
         ...settings,
-        providers: {
-          ...settings.providers,
-          opencode: { ...settings.providers?.opencode, enabled: true },
+        providerInstances: {
+          ...settings.providerInstances,
+          opencode: { driver: "opencode", ...settings.providerInstances?.opencode, enabled: true },
         },
       },
       null,

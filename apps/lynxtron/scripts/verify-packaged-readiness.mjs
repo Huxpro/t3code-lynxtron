@@ -8377,20 +8377,33 @@ async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
   const settings = JSON.parse(
     readFileSync(path.join(baseDir, "userdata", "settings.json"), "utf8"),
   );
-  const enabledProviders = Object.entries(settings.providers ?? {})
-    .filter(([, provider]) => provider?.enabled === true)
+  const providerInstances = settings.providerInstances ?? {};
+  // The server's rule (`resolveProviderInstanceEnabled`): an explicit false
+  // wins, then the envelope, the config, and the driver's default. The server
+  // may add entries of its own for drivers that are off by default.
+  const offByDefault = new Set(["cursor", "grok", "muse", "pi", "opencode", "antigravity"]);
+  const enabledProviders = Object.entries(providerInstances)
+    .filter(([, instance]) => {
+      const inConfig = instance?.config?.enabled;
+      if (instance?.enabled === false || inConfig === false) return false;
+      return instance?.enabled ?? inConfig ?? !offByDefault.has(instance?.driver);
+    })
     .map(([name]) => name);
-  const binaryPath = settings.providers?.grok?.binaryPath;
+  const binaryPath = providerInstances.grok?.config?.binaryPath;
+  // Codex and Claude run without an entry, so each must be switched off by name.
+  const defaultsOff = ["codex", "claudeAgent"].every(
+    (name) => providerInstances[name] !== undefined && !enabledProviders.includes(name),
+  );
   if (
     enabledProviders.join() !== "grok" ||
-    Object.keys(settings.providerInstances ?? {}).length > 0 ||
+    !defaultsOff ||
     typeof binaryPath !== "string" ||
     !readFileSync(binaryPath, "utf8").includes("scripted-provider.mjs")
   ) {
     throw new Error(
       `The live-turn fixture must enable only the scripted provider: ${JSON.stringify({
         enabledProviders,
-        providerInstances: Object.keys(settings.providerInstances ?? {}),
+        providerInstances: Object.keys(providerInstances),
         binaryPath: binaryPath ?? null,
       })}`,
     );
