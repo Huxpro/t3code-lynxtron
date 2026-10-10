@@ -176,11 +176,18 @@ import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
   ConnectorSnapshot,
+  ConnectorThreadPayload,
   ProjectRepoContext,
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
-import { applyFromConnector, startUpstreamStateSource } from "./upstreamStateSource";
+import { terminalSessionKey } from "../../shared/connectorTerminal.ts";
+import {
+  applyFromConnector,
+  startUpstreamStateSource,
+  terminalDomain,
+  type VcsStatusPayload,
+} from "./upstreamStateSource";
 
 interface PollBridge extends T3Bridge {}
 
@@ -385,6 +392,12 @@ function activeVcsCwd(state: T3ClientState): string | null {
   return activeThread?.worktreePath ?? activeProject?.workspaceRoot ?? null;
 }
 
+/** Applies a directory's VCS status from either source if it is the one shown. */
+function applyVcsStatusPayload(payload: VcsStatusPayload): void {
+  if (payload.cwd !== appAtomRegistry.get(t3ClientStateAtom).vcsStatusCwd) return;
+  patchState({ vcsStatus: payload.status, vcsStatusCwd: payload.cwd, vcsStatusPending: false });
+}
+
 function refreshVcsStatusProjection(): void {
   const state = appAtomRegistry.get(t3ClientStateAtom);
   const cwd = activeVcsCwd(state);
@@ -400,17 +413,19 @@ function refreshVcsStatusProjection(): void {
   }
   patchState({ vcsStatusCwd: cwd, vcsStatusPending: true });
   void bridge.readVcsStatus({ cwd }).then(
-    (vcsStatus) => {
-      if (requestSequence !== vcsStatusRequestSequence) return;
-      patchState({ vcsStatus, vcsStatusCwd: cwd, vcsStatusPending: false });
-    },
-    (cause) => {
-      if (requestSequence !== vcsStatusRequestSequence) return;
-      if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
-        console.error("[t3-client] failed to read VCS status", { cwd, cause });
-      }
-      patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
-    },
+    (vcsStatus) =>
+      applyFromConnector("vcs", () => {
+        if (requestSequence !== vcsStatusRequestSequence) return;
+        applyVcsStatusPayload({ cwd, status: vcsStatus });
+      }),
+    (cause) =>
+      applyFromConnector("vcs", () => {
+        if (requestSequence !== vcsStatusRequestSequence) return;
+        if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
+          console.error("[t3-client] failed to read VCS status", { cwd, cause });
+        }
+        patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
+      }),
   );
 }
 
@@ -698,6 +713,21 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
   });
 }
 
+/** Applies a thread payload from either source if it is for the thread shown. */
+function applyActiveThreadPayload(payload: ConnectorThreadPayload): void {
+  if (payload.threadId !== appAtomRegistry.get(t3ClientStateAtom).activeThreadId) return;
+  applyThreadPayload(payload as ThreadEventPayload);
+}
+
+function applyTerminalPayload(session: TerminalSessionPresentation): void {
+  patchState({
+    terminalSessions: {
+      ...appAtomRegistry.get(t3ClientStateAtom).terminalSessions,
+      [terminalSessionKey(session.threadId, session.terminalId)]: session,
+    },
+  });
+}
+
 function applyConnectorSnapshot(
   snapshot: ConnectorSnapshot,
   preferredSelection?: ModelSelection | null,
@@ -713,8 +743,10 @@ function applyConnectorSnapshot(
   applyFromConnector("shell", () => applyShellPayload(snapshot.shell as ShellEventPayload));
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
-  if (activeThread) applyThreadPayload(activeThread as ThreadEventPayload);
-  patchState({ terminalSessions: snapshot.terminals });
+  if (activeThread) applyFromConnector("thread", () => applyActiveThreadPayload(activeThread));
+  for (const session of Object.values(snapshot.terminals)) {
+    applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
+  }
 }
 
 function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
@@ -733,20 +765,13 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
     case "shell":
       applyFromConnector("shell", () => applyShellPayload(envelope.payload as ShellEventPayload));
       return;
-    case "thread": {
-      const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
-      if (envelope.threadId === activeThreadId) {
-        applyThreadPayload(envelope.payload as ThreadEventPayload);
-      }
+    case "thread":
+      applyFromConnector("thread", () => applyActiveThreadPayload(envelope.payload));
       return;
-    }
     case "terminal":
-      patchState({
-        terminalSessions: {
-          ...appAtomRegistry.get(t3ClientStateAtom).terminalSessions,
-          [`${envelope.threadId}\u0000${envelope.terminalId}`]: envelope.payload,
-        },
-      });
+      applyFromConnector(terminalDomain(envelope.payload), () =>
+        applyTerminalPayload(envelope.payload),
+      );
       return;
     case "log":
       // Mirror host logs to the renderer console, matching the preload path.
@@ -1103,7 +1128,13 @@ async function bootstrapT3Client(): Promise<void> {
       draftThreadsByProjectId: savedDraftThreadsByProjectId,
     });
   }
-  startUpstreamStateSource({ applyConfig: applyConfigPayload, applyShell: applyShellPayload });
+  startUpstreamStateSource(t3ClientStateAtom, {
+    applyConfig: applyConfigPayload,
+    applyShell: applyShellPayload,
+    applyThread: applyActiveThreadPayload,
+    applyTerminal: applyTerminalPayload,
+    applyVcsStatus: applyVcsStatusPayload,
+  });
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
     bridge: NativeModules?.bridge,

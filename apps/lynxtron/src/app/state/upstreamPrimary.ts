@@ -19,7 +19,10 @@ import {
 export interface UpstreamRuntimeFlags {
   /** Publish what upstream's atoms hold, and how it compares, for DevTool. */
   readonly upstreamShadow?: boolean;
-  /** Feed server config and shell to the Lynx client from upstream's atoms. */
+  /**
+   * Feed server config, shell, the selected thread, its terminals and its VCS
+   * status to the Lynx client from upstream's atoms.
+   */
   readonly upstreamState?: boolean;
 }
 

@@ -4,8 +4,13 @@
 // seeing a change.
 import type { ServerConfig } from "@t3tools/contracts";
 
-import type { ConnectorShellPayload } from "../../shared/connectorProtocol.ts";
+import type {
+  ConnectorShellPayload,
+  ConnectorThreadPayload,
+  TerminalSessionPresentation,
+} from "../../shared/connectorProtocol.ts";
 import type { T3ClientState } from "./t3Client.ts";
+import type { VcsStatusPayload } from "./upstreamStateSource.ts";
 
 export interface DomainComparison {
   /** Both sides have the domain's data. Nothing is compared until they do. */
@@ -65,6 +70,57 @@ function diffIds(
   for (const id of upstream) if (!clientIds.has(id)) out.push(`${label} ${id}: only upstream`);
   for (const id of client) if (!upstreamIds.has(id)) out.push(`${label} ${id}: only client`);
   return upstream.filter((id) => clientIds.has(id));
+}
+
+/** Length and a short hash: enough to tell two large texts apart without printing them. */
+export function textDigest(text: string): string {
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < text.length; index += 1) {
+    hash = Math.imul(hash ^ text.charCodeAt(index), 0x01000193);
+  }
+  return `${text.length} chars #${(hash >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+/** One line when two large values differ, giving each side's length and hash. */
+function diffLarge(path: string, upstream: unknown, client: unknown, out: string[]): void {
+  if (upstream === client) return;
+  const left = typeof upstream === "string" ? upstream : (JSON.stringify(upstream) ?? "");
+  const right = typeof client === "string" ? client : (JSON.stringify(client) ?? "");
+  if (left !== right) {
+    out.push(`${path}: upstream ${textDigest(left)}, client ${textDigest(right)}`);
+  }
+}
+
+/**
+ * Compares two lists of rows matched by key: rows only one side has, each
+ * shared row through `diffRow`, then the order of the shared rows. A row both
+ * sides hold as the same object is not looked into.
+ */
+function diffRows<T>(
+  label: string,
+  upstream: ReadonlyArray<T>,
+  client: ReadonlyArray<T>,
+  keyOf: (row: T) => string,
+  diffRow: (path: string, upstream: T, client: T, out: string[]) => void,
+  out: string[],
+): void {
+  const upstreamRows = new Map(upstream.map((row) => [keyOf(row), row]));
+  const clientRows = new Map(client.map((row) => [keyOf(row), row]));
+  const shared = diffIds(label, [...upstreamRows.keys()], [...clientRows.keys()], out);
+  for (const key of shared) {
+    const left = upstreamRows.get(key);
+    const right = clientRows.get(key);
+    if (left !== undefined && right !== undefined && left !== right) {
+      diffRow(`${label} ${key}`, left, right, out);
+    }
+  }
+  const clientOrder = [...clientRows.keys()].filter((key) => upstreamRows.has(key));
+  const moved = shared.findIndex((key, index) => key !== clientOrder[index]);
+  if (moved !== -1) {
+    out.push(
+      `${label} order: differs from position ${moved} (upstream ${shared[moved]}, client ${clientOrder[moved]})`,
+    );
+  }
 }
 
 function byId<T extends { readonly id: string }>(items: ReadonlyArray<T>): Map<string, T> {
@@ -158,6 +214,163 @@ export function compareShell(
     out.push(
       `thread order: differs from position ${moved} (upstream ${upstreamOrder[moved]?.id}, client ${clientOrder[moved]?.id})`,
     );
+  }
+  return comparison(out);
+}
+
+type ComparedThreadState = Pick<
+  T3ClientState,
+  | "activeThreadId"
+  | "messages"
+  | "checkpoints"
+  | "sessionStatus"
+  | "sessionError"
+  | "activities"
+  | "activePlan"
+  | "activeProposedPlan"
+  | "latestTurn"
+  | "proposedPlans"
+  | "activeTurnId"
+>;
+
+/**
+ * The selected thread, row by row. Message text, plan text and activity
+ * payloads are reported by length and hash, not printed.
+ */
+export function compareThread(
+  upstream: ConnectorThreadPayload | null,
+  client: ComparedThreadState,
+): DomainComparison {
+  if (upstream === null || upstream.threadId !== client.activeThreadId) return NOT_READY;
+  const out: string[] = [];
+
+  diffValues("sessionStatus", upstream.sessionStatus, client.sessionStatus, out);
+  diffValues("sessionError", upstream.sessionError ?? null, client.sessionError, out);
+  diffValues("activeTurnId", upstream.activeTurnId ?? null, client.activeTurnId, out);
+  diffValues("latestTurn", upstream.latestTurn ?? null, client.latestTurn, out);
+  diffLarge("activePlan", upstream.activePlan ?? null, client.activePlan ?? null, out);
+  diffLarge(
+    "activeProposedPlan",
+    upstream.activeProposedPlan ?? null,
+    client.activeProposedPlan ?? null,
+    out,
+  );
+
+  diffRows(
+    "message",
+    upstream.messages,
+    client.messages,
+    (message) => message.id,
+    (path, left, right, lines) => {
+      diffValues(`${path}.role`, left.role, right.role, lines);
+      diffValues(`${path}.turnId`, left.turnId, right.turnId, lines);
+      diffValues(`${path}.streaming`, left.streaming, right.streaming, lines);
+      diffValues(
+        `${path}.attachments`,
+        left.attachments?.length ?? 0,
+        right.attachments?.length ?? 0,
+        lines,
+      );
+      diffLarge(`${path}.text`, left.text, right.text, lines);
+    },
+    out,
+  );
+  diffRows(
+    "activity",
+    upstream.activities ?? [],
+    client.activities,
+    (activity) => activity.id,
+    (path, left, right, lines) => {
+      diffValues(`${path}.kind`, left.kind, right.kind, lines);
+      diffValues(`${path}.tone`, left.tone, right.tone, lines);
+      diffValues(`${path}.turnId`, left.turnId, right.turnId, lines);
+      diffLarge(`${path}.summary`, left.summary, right.summary, lines);
+      diffLarge(`${path}.payload`, left.payload, right.payload, lines);
+    },
+    out,
+  );
+  diffRows(
+    "checkpoint",
+    upstream.checkpoints,
+    client.checkpoints,
+    (checkpoint) => checkpoint.turnId,
+    (path, left, right, lines) => {
+      diffValues(`${path}.status`, left.status, right.status, lines);
+      diffValues(`${path}.turnCount`, left.checkpointTurnCount, right.checkpointTurnCount, lines);
+      diffValues(`${path}.completedAt`, left.completedAt, right.completedAt, lines);
+      diffLarge(`${path}.files`, left.files, right.files, lines);
+    },
+    out,
+  );
+  diffRows(
+    "plan",
+    upstream.proposedPlans ?? [],
+    client.proposedPlans,
+    (plan) => plan.id,
+    (path, left, right, lines) => {
+      diffValues(`${path}.turnId`, left.turnId, right.turnId, lines);
+      diffValues(`${path}.implementedAt`, left.implementedAt, right.implementedAt, lines);
+      diffLarge(`${path}.planMarkdown`, left.planMarkdown, right.planMarkdown, lines);
+    },
+    out,
+  );
+  return comparison(out);
+}
+
+/**
+ * The selected thread's terminals. `upstream` is what upstream supplies for
+ * `threadId`. A terminal the client has closed and the server no longer lists
+ * is not a difference. History is reported by length and hash.
+ */
+export function compareTerminals(
+  upstream: ReadonlyArray<TerminalSessionPresentation> | null,
+  threadId: string | null,
+  client: Pick<T3ClientState, "activeThreadId" | "terminalSessions">,
+): DomainComparison {
+  if (upstream === null || threadId === null || threadId !== client.activeThreadId) {
+    return NOT_READY;
+  }
+  const out: string[] = [];
+  const supplied = new Set(upstream.map((session) => session.terminalId));
+  diffRows(
+    "terminal",
+    upstream,
+    Object.values(client.terminalSessions).filter(
+      (session) =>
+        session.threadId === threadId &&
+        (session.status !== "closed" || supplied.has(session.terminalId)),
+    ),
+    (session) => session.terminalId,
+    (path, left, right, lines) => {
+      diffValues(`${path}.status`, left.status, right.status, lines);
+      diffValues(`${path}.cwd`, left.cwd, right.cwd, lines);
+      diffValues(`${path}.error`, left.error, right.error, lines);
+      diffLarge(`${path}.history`, left.history, right.history, lines);
+    },
+    out,
+  );
+  return comparison(out);
+}
+
+/**
+ * The VCS status of the directory the client shows, field by field. Nothing
+ * is compared while the client is still waiting for its own.
+ */
+export function compareVcsStatus(
+  upstream: VcsStatusPayload | null,
+  client: Pick<T3ClientState, "vcsStatus" | "vcsStatusCwd" | "vcsStatusPending">,
+): DomainComparison {
+  if (
+    upstream === null ||
+    client.vcsStatus === null ||
+    client.vcsStatusPending ||
+    client.vcsStatusCwd !== upstream.cwd
+  ) {
+    return NOT_READY;
+  }
+  const out: string[] = [];
+  if (upstream.status !== client.vcsStatus) {
+    diffValues("status", upstream.status, client.vcsStatus, out);
   }
   return comparison(out);
 }

@@ -1,12 +1,29 @@
 import { assert, describe, it } from "vite-plus/test";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
-import { compareServerConfig, compareShell, MAX_DIFFERENCES } from "./upstreamCompare.ts";
+import { terminalSessionKey } from "../../shared/connectorTerminal.ts";
+import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import {
+  compareServerConfig,
+  compareShell,
+  compareTerminals,
+  compareThread,
+  compareVcsStatus,
+  MAX_DIFFERENCES,
+  textDigest,
+} from "./upstreamCompare.ts";
+import { upstreamTerminalPayloads } from "./upstreamStateSource.ts";
+import {
+  clientMessages,
+  connection,
   provider,
   serverConfig,
   shellSnapshot,
+  terminal,
+  threadDetail,
+  vcsStatus,
   type WireThread,
+  type WireThreadDetail,
 } from "./upstreamState.fixtures.ts";
 
 function clientConfig(config: ReturnType<typeof serverConfig>) {
@@ -183,5 +200,230 @@ describe("compareShell", () => {
     const result = compareShell(shell(many), clientShell(shell([])));
     assert.equal(result.differences.length, MAX_DIFFERENCES);
     assert.equal(result.differences.at(-1), "and 11 more");
+  });
+});
+
+function terminalSessions(...wires: ReadonlyArray<Parameters<typeof terminal>[0]>) {
+  return (
+    upstreamTerminalPayloads({
+      connection: connection("connected"),
+      terminals: wires.map((wire) => terminal(wire)),
+    }) ?? []
+  );
+}
+
+function clientTerminals(
+  sessions: ReturnType<typeof terminalSessions>,
+  activeThreadId = "thread-1",
+) {
+  return {
+    activeThreadId,
+    terminalSessions: Object.fromEntries(
+      sessions.map((session) => [
+        terminalSessionKey(session.threadId, session.terminalId),
+        session,
+      ]),
+    ),
+  };
+}
+
+describe("compareTerminals", () => {
+  const first = { terminalId: "term-1", history: "$ ls\n", output: ["a.ts\n"] };
+
+  it("is not ready before upstream lists terminals or for another thread", () => {
+    const client = clientTerminals(terminalSessions(first));
+    assert.equal(compareTerminals(null, "thread-1", client).ready, false);
+    assert.equal(compareTerminals(terminalSessions(first), "thread-2", client).ready, false);
+    assert.equal(compareTerminals(terminalSessions(first), null, client).ready, false);
+  });
+
+  it("reads equal when both sides hold the same sessions, or none", () => {
+    const sessions = terminalSessions(first, { terminalId: "term-2" });
+    assert.deepEqual(compareTerminals(sessions, "thread-1", clientTerminals(sessions)), {
+      ready: true,
+      equal: true,
+      differences: [],
+    });
+    assert.equal(compareTerminals([], "thread-1", clientTerminals([])).equal, true);
+  });
+
+  it("reports history by terminal id, length and hash, never the output", () => {
+    const upstream = terminalSessions({ ...first, output: ["a.ts\n", "b.ts\n"] });
+    const client = clientTerminals(terminalSessions(first));
+    assert.deepEqual(compareTerminals(upstream, "thread-1", client).differences, [
+      `terminal term-1.history: upstream ${textDigest("$ ls\na.ts\nb.ts\n")}, client ${textDigest("$ ls\na.ts\n")}`,
+    ]);
+  });
+
+  it("reports status and terminals only one side has", () => {
+    const upstream = terminalSessions({ ...first, then: ["exited"] }, { terminalId: "term-2" });
+    const client = clientTerminals(terminalSessions(first, { terminalId: "term-3" }));
+    assert.deepEqual(compareTerminals(upstream, "thread-1", client).differences, [
+      "terminal term-2: only upstream",
+      "terminal term-3: only client",
+      'terminal term-1.status: upstream "exited", client "running"',
+    ]);
+  });
+
+  it("ignores other threads' terminals and ones the client closed that the server dropped", () => {
+    const sessions = terminalSessions(first);
+    const client = clientTerminals([
+      ...sessions,
+      ...terminalSessions({ terminalId: "term-9", threadId: "thread-2" }),
+      ...terminalSessions({ terminalId: "term-closed", then: ["closed"] }),
+    ]);
+    assert.equal(compareTerminals(sessions, "thread-1", client).equal, true);
+  });
+});
+
+function threadPayload(detail: WireThreadDetail) {
+  return projectConnectorThread(threadDetail(detail));
+}
+
+/** The client state the reducer leaves after applying a thread payload. */
+function clientThread(detail: WireThreadDetail) {
+  const thread = threadDetail(detail);
+  const payload = projectConnectorThread(thread);
+  return {
+    activeThreadId: payload.threadId,
+    messages: clientMessages(thread),
+    checkpoints: payload.checkpoints,
+    sessionStatus: payload.sessionStatus,
+    sessionError: payload.sessionError ?? null,
+    activities: payload.activities ?? [],
+    latestTurn: payload.latestTurn ?? null,
+    proposedPlans: payload.proposedPlans ?? [],
+    activeTurnId: payload.activeTurnId ?? null,
+  };
+}
+
+describe("compareThread", () => {
+  const detail: WireThreadDetail = {
+    messages: [{ id: "message-1", role: "user" }, { id: "message-2" }],
+    activities: [{ id: "activity-1", payload: { command: "ls" } }],
+    session: { status: "running", activeTurnId: "turn-1" },
+  };
+
+  it("is not ready without upstream's thread or while the client shows another", () => {
+    assert.equal(compareThread(null, clientThread(detail)).ready, false);
+    assert.equal(
+      compareThread(threadPayload(detail), clientThread({ ...detail, id: "thread-2" })).ready,
+      false,
+    );
+  });
+
+  it("reads equal when both sides reduced the same thread", () => {
+    assert.deepEqual(compareThread(threadPayload(detail), clientThread(detail)), {
+      ready: true,
+      equal: true,
+      differences: [],
+    });
+  });
+
+  it("reports message text by id, length and hash, never the text", () => {
+    const upstream = threadPayload({
+      ...detail,
+      messages: [
+        { id: "message-1", role: "user" },
+        { id: "message-2", text: "streamed so far" },
+      ],
+    });
+    const client = clientThread({
+      ...detail,
+      messages: [
+        { id: "message-1", role: "user" },
+        { id: "message-2", text: "streamed so" },
+      ],
+    });
+    const { differences } = compareThread(upstream, client);
+    assert.deepEqual(differences, [
+      `message message-2.text: upstream ${textDigest("streamed so far")}, client ${textDigest("streamed so")}`,
+    ]);
+    assert.match(differences[0] ?? "", /upstream 15 chars #[0-9a-f]{8}, client 11 chars #/);
+  });
+
+  it("tells same-length texts apart", () => {
+    const { differences } = compareThread(
+      threadPayload({ messages: [{ id: "message-1", text: "abcd" }] }),
+      clientThread({ messages: [{ id: "message-1", text: "abce" }] }),
+    );
+    assert.equal(differences.length, 1);
+    assert.notEqual(textDigest("abcd"), textDigest("abce"));
+  });
+
+  it("reports rows one side lacks, session fields and activity payloads", () => {
+    const upstream = threadPayload({
+      messages: [{ id: "message-1" }, { id: "message-2" }],
+      activities: [{ id: "activity-1", payload: { command: "ls -la" } }],
+      session: { status: "running", activeTurnId: "turn-1" },
+    });
+    const client = clientThread({
+      messages: [{ id: "message-1" }],
+      activities: [{ id: "activity-1", payload: { command: "ls" } }, { id: "activity-2" }],
+      session: { status: "ready" },
+    });
+    const { equal, differences } = compareThread(upstream, client);
+    assert.equal(equal, false);
+    assert.deepEqual(differences, [
+      'sessionStatus: upstream "running", client "ready"',
+      'activeTurnId: upstream "turn-1", client null',
+      "message message-2: only upstream",
+      "activity activity-2: only client",
+      `activity activity-1.payload: upstream ${textDigest('{"command":"ls -la"}')}, client ${textDigest('{"command":"ls"}')}`,
+    ]);
+  });
+
+  it("reports rows both sides have in a different order", () => {
+    const { differences } = compareThread(
+      threadPayload({ messages: [{ id: "message-1" }, { id: "message-2" }] }),
+      clientThread({ messages: [{ id: "message-2" }, { id: "message-1" }] }),
+    );
+    assert.deepEqual(differences, [
+      "message order: differs from position 0 (upstream message-1, client message-2)",
+    ]);
+  });
+});
+
+describe("compareVcsStatus", () => {
+  const cwd = "/work/project-1";
+  const client = (status: ReturnType<typeof vcsStatus> | null, pending = false) => ({
+    vcsStatus: status,
+    vcsStatusCwd: cwd,
+    vcsStatusPending: pending,
+  });
+
+  it("is not ready until both sides have a settled status for the same directory", () => {
+    const status = vcsStatus();
+    assert.equal(compareVcsStatus(null, client(status)).ready, false);
+    assert.equal(compareVcsStatus({ cwd, status }, client(null)).ready, false);
+    assert.equal(compareVcsStatus({ cwd, status }, client(status, true)).ready, false);
+    assert.equal(compareVcsStatus({ cwd: "/work/other", status }, client(status)).ready, false);
+  });
+
+  it("reads equal for the same status read twice", () => {
+    const wire = { refName: "feature", files: ["a.ts"], pr: { number: 7, title: "Add a" } };
+    assert.deepEqual(compareVcsStatus({ cwd, status: vcsStatus(wire) }, client(vcsStatus(wire))), {
+      ready: true,
+      equal: true,
+      differences: [],
+    });
+  });
+
+  it("names the fields that differ", () => {
+    const upstream = vcsStatus({ refName: "feature", files: ["a.ts", "b.ts"], aheadCount: 2 });
+    const { differences } = compareVcsStatus(
+      { cwd, status: upstream },
+      client(vcsStatus({ refName: "feature", files: ["a.ts"] })),
+    );
+    assert.deepEqual(
+      differences.map((line) => line.split(":")[0]),
+      [
+        "status.workingTree.files",
+        "status.workingTree.insertions",
+        "status.workingTree.deletions",
+        "status.aheadCount",
+      ],
+    );
+    assert.equal(differences[3], "status.aheadCount: upstream 2, client 0");
   });
 });

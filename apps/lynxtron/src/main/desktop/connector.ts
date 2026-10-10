@@ -39,9 +39,7 @@ import {
   applyTerminalAttachStreamEvent,
   EMPTY_TERMINAL_BUFFER_STATE,
   type TerminalBufferState,
-  terminalOutputText,
 } from "@t3tools/client-runtime/state/terminal";
-import { deriveActivePlanState, findLatestProposedPlan } from "@t3tools/lynx-logic/thread";
 import { buildProviderInstanceEnabledPatch } from "@t3tools/lynx-logic/providerSettings";
 import {
   WsRpcGroup,
@@ -131,6 +129,8 @@ import {
   type LatestPendingMutation,
 } from "../../shared/latestPendingMutation.ts";
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
+import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
+import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -1111,27 +1111,7 @@ export class T3Connector {
   private emitThread(threadId: string) {
     const thread = this.threadSnapshots.get(threadId);
     if (!thread) return;
-    const activePlan = deriveActivePlanState(
-      thread.activities,
-      thread.latestTurn?.turnId ?? undefined,
-    );
-    const activeProposedPlan = findLatestProposedPlan(
-      thread.proposedPlans,
-      thread.latestTurn?.turnId,
-    );
-    this.events.onThread(threadId, {
-      threadId,
-      messages: thread.messages,
-      checkpoints: thread.checkpoints,
-      sessionStatus: thread.session?.status ?? "idle",
-      sessionError: thread.session?.lastError ?? null,
-      activities: thread.activities,
-      activePlan,
-      activeProposedPlan,
-      latestTurn: thread.latestTurn ?? null,
-      proposedPlans: thread.proposedPlans,
-      activeTurnId: thread.session?.activeTurnId ?? null,
-    });
+    this.events.onThread(threadId, projectConnectorThread(thread));
   }
 
   async ensureProject(): Promise<void> {
@@ -1525,7 +1505,7 @@ export class T3Connector {
   }
 
   private terminalKey(threadId: string, terminalId: string): string {
-    return `${threadId}\u0000${terminalId}`;
+    return terminalSessionKey(threadId, terminalId);
   }
 
   private emitTerminal(state: TerminalSessionPresentation): void {
@@ -1549,15 +1529,14 @@ export class T3Connector {
       (event) =>
         Effect.sync(() => {
           buffer = applyTerminalAttachStreamEvent(buffer, event);
-          this.emitTerminal({
-            threadId: input.threadId,
-            terminalId: input.terminalId,
-            cwd: input.cwd,
-            status: buffer.status,
-            history: terminalOutputText(buffer.output),
-            error: buffer.error,
-            updatedAt: buffer.updatedAt,
-          });
+          this.emitTerminal(
+            projectTerminalSession({
+              threadId: input.threadId,
+              terminalId: input.terminalId,
+              cwd: input.cwd,
+              buffer,
+            }),
+          );
         }),
     );
     this.terminalFibers.set(key, this.forkClient(consume));

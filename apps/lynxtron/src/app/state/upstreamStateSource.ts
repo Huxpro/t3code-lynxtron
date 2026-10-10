@@ -1,5 +1,6 @@
-// Feeds the Lynx client's server config and shell from upstream's atoms
-// instead of the main connector's events. It runs only when the host launches
+// Feeds the Lynx client's server config, shell, selected thread, that
+// thread's terminals and its VCS status from upstream's atoms instead of the
+// main connector's events and replies. It runs only when the host launches
 // with `T3_LYNXTRON_UPSTREAM_STATE=1`; without it every connector payload is
 // applied as it arrives and nothing here subscribes to anything.
 //
@@ -7,19 +8,40 @@
 // connector's payload carries. Connector payloads for an owned domain are held
 // instead of applied, and the latest one is applied if upstream lets go, so a
 // dropped upstream connection hands the domain back to the connector.
-import type { ServerConfig } from "@t3tools/contracts";
+import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
+import type { ServerConfig, VcsStatusResult } from "@t3tools/contracts";
 import * as Option from "effect/Option";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
-import type { ConnectorShellPayload } from "../../shared/connectorProtocol.ts";
+import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
+import { projectConnectorThread } from "../../shared/connectorThread.ts";
+import type {
+  ConnectorShellPayload,
+  ConnectorThreadPayload,
+  TerminalSessionPresentation,
+} from "../../shared/connectorProtocol.ts";
+import { appAtomRegistry } from "./atomRegistry.ts";
+import type { T3ClientState } from "./t3Client.ts";
 import {
   readUpstreamRuntimeFlags,
   type UpstreamPrimaryState,
   watchUpstreamPrimary,
 } from "./upstreamPrimary.ts";
+import {
+  type UpstreamSelectedState,
+  type UpstreamTerminal,
+  watchUpstreamSelected,
+} from "./upstreamSelected.ts";
 
-export type UpstreamStateDomain = "config" | "shell";
+/** Each terminal session is a domain of its own, named by its key. */
+export type UpstreamStateDomain = "config" | "shell" | "thread" | "vcs" | `terminal:${string}`;
+
+export function terminalDomain(
+  session: Pick<TerminalSessionPresentation, "threadId" | "terminalId">,
+): UpstreamStateDomain {
+  return `terminal:${terminalSessionKey(session.threadId, session.terminalId)}`;
+}
 
 export interface UpstreamStatePayloads {
   readonly config: ServerConfig | null;
@@ -31,12 +53,15 @@ export interface UpstreamStatePayloads {
  * or null where it cannot. The shell needs the archived snapshot as well as
  * the live shell: a payload without it would empty the archive list.
  */
+function isConnected(connection: UpstreamPrimaryState["connection"]): boolean {
+  const state = connection === null ? null : Option.getOrNull(AsyncResult.value(connection));
+  return state?.phase === "connected";
+}
+
 export function upstreamStatePayloads(
   state: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived">,
 ): UpstreamStatePayloads {
-  const connection =
-    state.connection === null ? null : Option.getOrNull(AsyncResult.value(state.connection));
-  if (connection?.phase !== "connected") return { config: null, shell: null };
+  if (!isConnected(state.connection)) return { config: null, shell: null };
   const snapshot = state.shell?.status === "live" ? Option.getOrNull(state.shell.snapshot) : null;
   return {
     config: state.config,
@@ -49,6 +74,99 @@ export function upstreamStatePayloads(
             archivedThreads: state.archived.threads,
           }),
   };
+}
+
+/**
+ * The connector-shaped payload for the selected thread, or null while
+ * upstream cannot supply all of it: the connector's payload carries the whole
+ * thread, so upstream's is held back until its stream is live and every older
+ * page has been loaded.
+ */
+export function upstreamThreadPayload(
+  state: Pick<UpstreamSelectedState, "connection" | "threadId" | "thread">,
+): ConnectorThreadPayload | null {
+  const thread = state.thread;
+  if (!isConnected(state.connection) || thread === null) return null;
+  if (thread.status !== "live" || threadHasOlderTurns(thread)) return null;
+  const data = Option.getOrNull(thread.data);
+  return data === null || data.id !== state.threadId ? null : projectConnectorThread(data);
+}
+
+/**
+ * Whether the client emptied the thread upstream supplies, which it does when
+ * the thread is selected again. The connector answers that with its payload,
+ * which is held, so upstream's has to be applied again.
+ */
+export function threadWasReset(
+  payload: ConnectorThreadPayload,
+  client: Pick<T3ClientState, "activeThreadId" | "messages">,
+): boolean {
+  return (
+    client.activeThreadId === payload.threadId &&
+    client.messages.length === 0 &&
+    payload.messages.length > 0
+  );
+}
+
+/**
+ * The connector-shaped session for one terminal, or null until its attach
+ * stream has delivered the terminal's first snapshot.
+ */
+export function upstreamTerminalPayload(
+  terminal: UpstreamTerminal,
+): TerminalSessionPresentation | null {
+  const { summary, buffer } = terminal;
+  if (buffer === null || buffer.version === 0) return null;
+  return projectTerminalSession({
+    threadId: summary.threadId,
+    terminalId: summary.terminalId,
+    cwd: summary.cwd,
+    buffer,
+  });
+}
+
+/**
+ * The sessions upstream can supply for the selected thread's terminals, or
+ * null while it is not connected or the server has not listed its terminals.
+ */
+export function upstreamTerminalPayloads(
+  state: Pick<UpstreamSelectedState, "connection" | "terminals">,
+): ReadonlyArray<TerminalSessionPresentation> | null {
+  if (!isConnected(state.connection) || state.terminals === null) return null;
+  return state.terminals.flatMap((terminal) => upstreamTerminalPayload(terminal) ?? []);
+}
+
+/** A directory's VCS status, the same value from either source. */
+export interface VcsStatusPayload {
+  readonly cwd: string;
+  readonly status: VcsStatusResult;
+}
+
+/**
+ * The status of the directory the client shows, or null until upstream's
+ * status stream has delivered for it.
+ */
+export function upstreamVcsPayload(
+  state: Pick<UpstreamSelectedState, "connection" | "vcsCwd" | "vcs">,
+): VcsStatusPayload | null {
+  if (!isConnected(state.connection) || state.vcsCwd === null || state.vcs === null) return null;
+  return { cwd: state.vcsCwd, status: state.vcs };
+}
+
+/**
+ * Whether the client is waiting for, or shows something other than, the
+ * status upstream supplies. The client marks the status pending when it asks
+ * the connector to refresh it; the reply is held, so upstream's is applied
+ * again.
+ */
+export function vcsStatusDiverged(
+  payload: VcsStatusPayload,
+  client: Pick<T3ClientState, "vcsStatus" | "vcsStatusCwd" | "vcsStatusPending">,
+): boolean {
+  return (
+    client.vcsStatusCwd === payload.cwd &&
+    (client.vcsStatusPending || client.vcsStatus !== payload.status)
+  );
 }
 
 /**
@@ -86,12 +204,22 @@ export const applyFromConnector = router.fromConnector;
 export interface UpstreamStateSink {
   readonly applyConfig: (config: ServerConfig) => void;
   readonly applyShell: (shell: ConnectorShellPayload) => void;
+  readonly applyThread: (thread: ConnectorThreadPayload) => void;
+  readonly applyTerminal: (session: TerminalSessionPresentation) => void;
+  readonly applyVcsStatus: (status: VcsStatusPayload) => void;
 }
 
 let started = false;
 
-/** Starts the upstream source once. Does nothing unless the host turned it on. */
-export function startUpstreamStateSource(sink: UpstreamStateSink): void {
+/**
+ * Starts the upstream source once. Does nothing unless the host turned it on.
+ * `clientStateAtom` is the Lynx client's own state, which says what is
+ * selected.
+ */
+export function startUpstreamStateSource(
+  clientStateAtom: Atom.Atom<T3ClientState>,
+  sink: UpstreamStateSink,
+): void {
   if (started) return;
   if (readUpstreamRuntimeFlags().upstreamState !== true) return;
   started = true;
@@ -110,5 +238,73 @@ export function startUpstreamStateSource(sink: UpstreamStateSink): void {
     const payloads = upstreamStatePayloads(state);
     if (configChanged) router.fromUpstream("config", payloads.config, sink.applyConfig);
     if (shellChanged) router.fromUpstream("shell", payloads.shell, sink.applyShell);
+  });
+
+  let selected: UpstreamSelectedState | null = null;
+  let thread: ConnectorThreadPayload | null = null;
+  let vcs: VcsStatusPayload | null = null;
+  // The terminals upstream owns, by domain, each with the value it was last
+  // projected from: output arrives in many small chunks, and only the
+  // terminal that got one is projected again.
+  const terminals = new Map<UpstreamStateDomain, UpstreamTerminal>();
+  watchUpstreamSelected(clientStateAtom, (state) => {
+    const connectionChanged = selected?.connection !== state.connection;
+    const threadChanged =
+      connectionChanged ||
+      selected?.threadId !== state.threadId ||
+      selected?.thread !== state.thread;
+    const terminalsChanged = connectionChanged || selected?.terminals !== state.terminals;
+    const vcsChanged =
+      connectionChanged || selected?.vcsCwd !== state.vcsCwd || selected?.vcs !== state.vcs;
+    selected = state;
+    if (threadChanged) {
+      thread = upstreamThreadPayload(state);
+      router.fromUpstream("thread", thread, sink.applyThread);
+    }
+    if (vcsChanged) {
+      vcs = upstreamVcsPayload(state);
+      router.fromUpstream("vcs", vcs, sink.applyVcsStatus);
+    }
+    if (!terminalsChanged) return;
+    const listed = new Map(
+      (isConnected(state.connection) ? (state.terminals ?? []) : []).map((terminal) => [
+        terminalDomain(terminal.summary),
+        terminal,
+      ]),
+    );
+    for (const domain of terminals.keys()) {
+      if (listed.has(domain)) continue;
+      terminals.delete(domain);
+      router.fromUpstream(domain, null, sink.applyTerminal);
+    }
+    for (const [domain, terminal] of listed) {
+      const previous = terminals.get(domain);
+      if (previous?.buffer === terminal.buffer && previous.summary.cwd === terminal.summary.cwd) {
+        continue;
+      }
+      const session = upstreamTerminalPayload(terminal);
+      if (session === null) terminals.delete(domain);
+      else terminals.set(domain, terminal);
+      router.fromUpstream(domain, session, sink.applyTerminal);
+    }
+  });
+
+  // The client state changes with every streamed token, so the checks read a
+  // few fields, and a payload is applied after the client's own update.
+  const threadReset = (client: T3ClientState) => thread !== null && threadWasReset(thread, client);
+  const vcsDiverged = (client: T3ClientState) => vcs !== null && vcsStatusDiverged(vcs, client);
+  let reapplying = false;
+  appAtomRegistry.subscribe(clientStateAtom, (client) => {
+    if (reapplying || !(threadReset(client) || vcsDiverged(client))) return;
+    reapplying = true;
+    void Promise.resolve().then(() => {
+      reapplying = false;
+      if (thread !== null && threadReset(appAtomRegistry.get(clientStateAtom))) {
+        router.fromUpstream("thread", thread, sink.applyThread);
+      }
+      if (vcs !== null && vcsDiverged(appAtomRegistry.get(clientStateAtom))) {
+        router.fromUpstream("vcs", vcs, sink.applyVcsStatus);
+      }
+    });
   });
 }
