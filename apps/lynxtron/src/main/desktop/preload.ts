@@ -151,6 +151,10 @@ contextBridge.exposeInLynxBTS({
     };
   },
   randomUUID: () => crypto.randomUUID(),
+  // Launch switches the renderer cannot read from its own environment.
+  getRuntimeFlags: () => ({
+    upstreamShadow: process.env.T3_LYNXTRON_UPSTREAM_SHADOW === "1",
+  }),
   openExternal: async (url: string) => {
     await shell.openExternal(url);
   },
