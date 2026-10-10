@@ -108,9 +108,27 @@ const sum = (prefix) =>
     .reduce((total, [, entry]) => total + entry.lines, 0);
 const upstreamLines = sum("upstream:");
 const lynxLines = sum("lynx:");
+// Hand-written Lynx CSS goes away only as components switch to upstream files,
+// which carry their own Tailwind classes.
+const lynxCssRules = (
+  NodeFS.readFileSync(NodePath.join(appRoot, "src/app/overrides.css"), "utf8").match(
+    /^[^\n{}@/][^{}]*\{/gmu,
+  ) ?? []
+).length;
+const componentCopies = NodeFS.readdirSync(NodePath.join(repoRoot, "apps/web/src/components"), {
+  recursive: true,
+}).filter(
+  (file) =>
+    String(file).endsWith(".lynx.tsx") &&
+    isFile(
+      NodePath.join(repoRoot, "apps/web/src/components", String(file).replace(".lynx.tsx", ".tsx")),
+    ),
+).length;
 const report = {
   upstreamLines,
   lynxLines,
+  lynxCssRules,
+  componentCopies,
   upstreamShare: Number((upstreamLines / (upstreamLines + lynxLines)).toFixed(3)),
   owners: Object.fromEntries([...totals].sort(([left], [right]) => left.localeCompare(right))),
 };
@@ -123,6 +141,9 @@ if (NodeProcess.argv.includes("--json")) {
       `${key.padEnd(34)} ${String(entry.modules).padStart(4)} modules ${String(entry.lines).padStart(7)} lines`,
     );
   }
+  console.log(
+    `Lynx copies of upstream components: ${componentCopies}; hand-written Lynx CSS rules: ${lynxCssRules}`,
+  );
   console.log(
     `upstream source run as-is: ${upstreamLines} lines; Lynx-owned: ${lynxLines} lines; share ${(report.upstreamShare * 100).toFixed(1)}%`,
   );
