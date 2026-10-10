@@ -7,7 +7,7 @@ import * as Option from "effect/Option";
 import * as PlatformError from "effect/PlatformError";
 import { ProjectId, type OrchestrationShellSnapshot } from "@t3tools/contracts";
 
-import { ServerConfig } from "../config.ts";
+import * as ServerConfig from "../config.ts";
 import * as GitVcsDriver from "../vcs/GitVcsDriver.ts";
 import * as VcsDriverRegistry from "../vcs/VcsDriverRegistry.ts";
 import * as ProjectionSnapshotQuery from "../orchestration/Services/ProjectionSnapshotQuery.ts";
