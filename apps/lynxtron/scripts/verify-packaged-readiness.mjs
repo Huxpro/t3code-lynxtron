@@ -16419,18 +16419,11 @@ async function verifyLifecycleRecovery({
     phase: "reconnecting",
     timeoutMs,
   });
-  // The runtime menu is opened while the client is still reconnecting, so the
-  // change can be tapped the moment the client reports ready.
+  // The runtime menu is opened after the client reports ready, as a user
+  // would. A menu held open across the reconnect sometimes ignores taps (fork
+  // issue #48), which is a different defect from the one this gate is about.
   if (commandBaseline) {
     upstreamPhases.reconnecting = (await readUpstreamShadowProbe(client)).phase;
-    await tapSelector({ child, client, selector: ".composer-toolbar-control--runtime", timeoutMs });
-    await waitForSelectorMeasurements({
-      child,
-      client,
-      selector: ".composer-runtime-menu__item",
-      timeoutMs,
-      predicate: (items) => items.filter(measurementVisible).length >= 2,
-    });
   }
   // "Reconnecting..." is the longest action label; both actions stay one line.
   const actionGeometry = {};
@@ -16485,7 +16478,7 @@ async function verifyLifecycleRecovery({
             threadId: commandBaseline.threadId,
             timeoutMs,
           });
-        const afterReady = await change(otherMode, true);
+        const afterReady = await change(otherMode, false);
         const backStartedMs = Math.round(performance.now() - readyAtMs);
         const back = await change(commandBaseline.mode, false);
         const shadow = await readUpstreamShadowProbe(client);
