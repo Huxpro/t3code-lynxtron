@@ -7,14 +7,24 @@ import { Children, isValidElement, type ReactNode } from "@lynx-js/react";
 
 import { HostButton, HostText, HostView } from "~/components/ui/hostElements";
 
+// A handler upstream wrote for a DOM event. It is called with a Lynx event, so
+// the parameter is `never`: a handler that reads its event does not typecheck
+// when written inline, and one typed elsewhere is accepted as upstream typed it.
+type DomHandler = (event: never) => void;
+type LynxHandler = (event: unknown) => void;
+
 export type HostDomProps = Record<string, unknown> & {
   readonly children?: ReactNode;
   readonly className?: string;
   /** What the loader turns a written `onClick` into. */
-  readonly bindtap?: (event: unknown) => void;
+  readonly bindtap?: DomHandler;
   /** An `onClick` that arrives through a props spread. */
-  readonly onClick?: (event: unknown) => void;
+  readonly onClick?: DomHandler;
 };
+
+function tapHandler(props: Pick<HostDomProps, "bindtap" | "onClick">): LynxHandler | undefined {
+  return (props.bindtap ?? props.onClick) as LynxHandler | undefined;
+}
 
 // Handlers HostView implements. Any other `on*` prop that arrives through a
 // spread is dropped: a function is not a Lynx attribute.
@@ -49,7 +59,7 @@ function wrapText(children: ReactNode): ReactNode {
 }
 
 function Box({ children, bindtap, onClick, ...rest }: HostDomProps) {
-  const tap = bindtap ?? onClick;
+  const tap = tapHandler({ bindtap, onClick });
   const { attributes, needsHostView } = splitHandlers(rest);
   if (needsHostView) {
     return (
@@ -72,7 +82,7 @@ function Button({ children, bindtap, onClick, disabled, type: _type, ...rest }: 
     <HostButton
       {...attributes}
       {...(isDisabled ? { disabled: true } : {})}
-      onClick={isDisabled ? undefined : (bindtap ?? onClick)}
+      onClick={isDisabled ? undefined : tapHandler({ bindtap, onClick })}
     >
       {wrapText(children)}
     </HostButton>
@@ -108,7 +118,7 @@ function Inline({ children, bindtap, onClick, ...rest }: HostDomProps) {
       </Box>
     );
   }
-  const tap = bindtap ?? onClick;
+  const tap = tapHandler({ bindtap, onClick });
   const { attributes } = splitHandlers(rest);
   return (
     <HostText {...attributes} className={className} onClick={tap ? () => tap({}) : undefined}>
@@ -124,7 +134,7 @@ function Img({ alt, src, bindtap, onClick, ...rest }: HostDomProps) {
       {...attributes}
       accessibility-label={typeof alt === "string" ? alt : undefined}
       src={typeof src === "string" ? src : ""}
-      bindtap={bindtap ?? onClick}
+      bindtap={tapHandler({ bindtap, onClick })}
     />
   );
 }
