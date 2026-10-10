@@ -444,11 +444,7 @@ export function applyThreadDetailEvent(
                   : thread.latestTurn?.state === "error"
                     ? "error"
                     : "completed"
-                : thread.latestTurn?.turnId === event.payload.turnId &&
-                    (thread.latestTurn.state === "interrupted" ||
-                      thread.latestTurn.state === "error")
-                  ? thread.latestTurn.state
-                  : "running",
+                : "running",
               requestedAt:
                 thread.latestTurn?.turnId === event.payload.turnId
                   ? thread.latestTurn.requestedAt
