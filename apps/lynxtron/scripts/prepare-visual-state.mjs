@@ -45,10 +45,10 @@ export function assertEmptyOutputDirectory(output) {
 }
 
 export function readVisualSnapshotSummary(baseDir) {
-  const databasePath = join(baseDir, "userdata", "state.sqlite");
-  const database = new DatabaseSync(databasePath);
+  // Read only: the server owns this file and every write to it.
+  const databasePath = join(baseDir, "userdata", "statev2.sqlite");
+  const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
-    database.exec("PRAGMA wal_checkpoint(TRUNCATE)");
     const projects = database
       .prepare(
         `SELECT
@@ -71,7 +71,9 @@ export function readVisualSnapshotSummary(baseDir) {
             : null,
       }));
     const threadCount = database
-      .prepare("SELECT COUNT(*) AS count FROM projection_threads WHERE deleted_at IS NULL")
+      .prepare(
+        "SELECT COUNT(*) AS count FROM orchestration_v2_projection_threads WHERE deleted_at IS NULL",
+      )
       .get().count;
     return {
       databasePath,

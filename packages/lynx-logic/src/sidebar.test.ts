@@ -1,12 +1,7 @@
+import type { OrchestrationSession, OrchestrationSessionStatus } from "./orchestration.ts";
 import { describe, expect, it } from "vite-plus/test";
 
-import {
-  ProviderInstanceId,
-  ThreadId,
-  TurnId,
-  type OrchestrationSession,
-  type OrchestrationSessionStatus,
-} from "@t3tools/contracts";
+import { ProviderInstanceId, ThreadId, TurnId } from "@t3tools/contracts";
 
 import {
   deriveSidebarImmediateStatus,

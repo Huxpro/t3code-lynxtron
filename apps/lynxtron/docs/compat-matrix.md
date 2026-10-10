@@ -8,17 +8,19 @@ Status values: `supported`, `runtime-gap`, `adapter`, `rewrite`, `out-of-scope`.
 
 Runtime findings and surface decisions as of Lynxtron 0.0.28.
 
-| Item                                | Status       | Decision / workaround                                                                                              |
-| ----------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------ |
-| Fixed box height from `top` (R15)   | runtime-gap  | Lynx sizes a `position: fixed` box by the space below its `top`; top-side Menu/Popover anchor by `bottom` instead  |
-| Partial core `URL` (R16)            | adapter      | Lynx core ships only `href`/`searchParams`; `src/app/polyfills.ts` installs core-js WHATWG `URL`                   |
-| Native list recycled cells          | supported    | Removed rows stay in the list's pool outside its bounds, invisible; gates count only nodes inside `.timeline-list` |
-| Owned local server                  | supported    | M1 journey                                                                                                         |
-| Direct pairing URL (remote)         | supported    | M3 journey; one environment per window, fixed at launch                                                            |
-| In-app discovery, relay, T3 Connect | out-of-scope | Connections "Add environment" stays disabled                                                                       |
-| Terminal                            | supported    | Real sessions with split, close, hide/reopen (M6 `--verify-terminal-lifecycle`)                                    |
-| Browser surface                     | runtime-gap  | CEF opt-in (`T3_LYNXTRON_CEF_WEBVIEW=1`); the add menu explains why Browser is unavailable                         |
-| Background verification launch      | supported    | `T3_LYNXTRON_BACKGROUND=1`: accessory activation policy + `showInactive`                                           |
+| Item                                | Status       | Decision / workaround                                                                                                    |
+| ----------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| Fixed box height from `top` (R15)   | runtime-gap  | Lynx sizes a `position: fixed` box by the space below its `top`; top-side Menu/Popover anchor by `bottom` instead        |
+| Partial core `URL` (R16)            | adapter      | Lynx core ships only `href`/`searchParams`; `src/app/polyfills.ts` installs core-js WHATWG `URL`                         |
+| BigInt literals on the main thread  | adapter      | The engine cannot compile `0n` and the bundle fails to load; `scripts/lynx-bigint-loader.cjs` writes `BigInt("0")`       |
+| No `Intl` on the main thread        | adapter      | Upstream modules build formatters while they load; `src/app/polyfills.ts` installs a stand-in there that only constructs |
+| Native list recycled cells          | supported    | Removed rows stay in the list's pool outside its bounds, invisible; gates count only nodes inside `.timeline-list`       |
+| Owned local server                  | supported    | M1 journey                                                                                                               |
+| Direct pairing URL (remote)         | supported    | M3 journey; one environment per window, fixed at launch                                                                  |
+| In-app discovery, relay, T3 Connect | out-of-scope | Connections "Add environment" stays disabled                                                                             |
+| Terminal                            | supported    | Real sessions with split, close, hide/reopen (M6 `--verify-terminal-lifecycle`)                                          |
+| Browser surface                     | runtime-gap  | CEF opt-in (`T3_LYNXTRON_CEF_WEBVIEW=1`); the add menu explains why Browser is unavailable                               |
+| Background verification launch      | supported    | `T3_LYNXTRON_BACKGROUND=1`: accessory activation policy + `showInactive`                                                 |
 
 ## DOM and host APIs
 

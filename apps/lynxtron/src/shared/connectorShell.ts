@@ -1,8 +1,9 @@
 // The shell payload the Lynx UI reduces: the sidebar's threads in display
 // order and the archived threads in theirs. The renderer builds it from
 // upstream's atoms.
+import type { OrchestrationThreadShell } from "@t3tools/lynx-logic/orchestration";
 import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
-import type { OrchestrationProjectShell, OrchestrationThreadShell } from "@t3tools/contracts";
+import type { OrchestrationProjectShell } from "@t3tools/contracts";
 
 import type { ConnectorShellPayload } from "./connectorProtocol.ts";
 

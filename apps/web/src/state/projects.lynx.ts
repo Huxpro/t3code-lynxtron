@@ -1,4 +1,4 @@
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 
 const unsupportedMutation = {
   label: "lynx:projects:unsupported",

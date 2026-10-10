@@ -49,6 +49,21 @@ describe("lynx-dom-jsx-loader transform", () => {
     );
   });
 
+  it("replaces the body of a listed unrendered component and still refuses the rest", () => {
+    const source =
+      "export function Probe() {\n  return <div ref={measure} />;\n}\nexport function Shown() {\n  return <span />;\n}";
+    const unrendered = new Set(["Probe"]);
+    const output = transformDomJsx(source, upstreamFile, tags, "/host/hostDom.tsx", unrendered);
+    expect(output).toContain(
+      'export function Probe() { throw new Error("[lynx-dom-jsx] Probe is not compiled for Lynx."); }',
+    );
+    // Lines after the component stay where upstream wrote them.
+    expect(output.split("\n")[4]).toBe("  return <__LynxHostDom.span />;");
+    expect(() =>
+      transformDomJsx(source, upstreamFile, tags, "/host/hostDom.tsx", new Set()),
+    ).toThrow(/ref on <div>/u);
+  });
+
   it("fails on a DOM tag with no host mapping, naming the file, tag and line", () => {
     expect(() => transform("const a = (\n  <div>\n    <input value={v} />\n  </div>\n);")).toThrow(
       /apps\/web\/src\/components\/Example\.tsx cannot be compiled for Lynx:\n {2}- <input> has no Lynx host mapping \(line 3\)/u,

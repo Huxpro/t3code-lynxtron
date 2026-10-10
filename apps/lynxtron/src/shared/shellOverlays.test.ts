@@ -1,7 +1,7 @@
 import { ProviderInstanceId } from "@t3tools/contracts";
 import { assert, describe, it } from "vite-plus/test";
 
-import { shellSnapshot } from "../app/state/upstreamState.fixtures.ts";
+import { clientShell } from "../app/state/upstreamState.fixtures.ts";
 import {
   confirmedModelSelectionThreadIds,
   createDisposableThreadCleanup,
@@ -11,7 +11,7 @@ import {
 } from "./shellOverlays.ts";
 
 const codex = ProviderInstanceId.make("codex");
-const { threads } = shellSnapshot([
+const { threads } = clientShell([
   { id: "thread-1", modelSelection: { instanceId: "codex", model: "gpt-5" } },
   { id: "thread-2", modelSelection: { instanceId: "codex", model: "gpt-5" } },
 ]);
@@ -85,7 +85,7 @@ describe("createDisposableThreadCleanup", () => {
 
   it("hides an empty disposable thread at once and deletes it once", async () => {
     const { cleanup, deleted, revealed } = harness(() => Promise.resolve());
-    const { threads } = shellSnapshot([kept, empty]);
+    const { threads } = clientShell([kept, empty]);
     cleanup.observe(threads);
     assert.deepEqual([cleanup.isHidden("empty"), cleanup.isHidden("kept")], [true, false]);
     assert.deepEqual(deleted, []);
@@ -94,7 +94,7 @@ describe("createDisposableThreadCleanup", () => {
     await tick();
     assert.deepEqual(deleted, ["empty"]);
     assert.isTrue(cleanup.isHidden("empty"));
-    cleanup.observe(shellSnapshot([kept]).threads);
+    cleanup.observe(clientShell([kept]).threads);
     assert.isFalse(cleanup.isHidden("empty"));
     assert.equal(revealed(), 0);
   });
@@ -104,7 +104,7 @@ describe("createDisposableThreadCleanup", () => {
     const { cleanup, deleted, revealed } = harness(() =>
       fail ? Promise.reject(new Error("not connected")) : Promise.resolve(),
     );
-    const { threads } = shellSnapshot([empty]);
+    const { threads } = clientShell([empty]);
     cleanup.observe(threads);
     await tick();
     assert.isFalse(cleanup.isHidden("empty"));
@@ -119,9 +119,9 @@ describe("createDisposableThreadCleanup", () => {
 
   it("does not delete a thread that was written in before the delete was sent", async () => {
     const { cleanup, deleted, revealed } = harness(() => Promise.resolve());
-    cleanup.observe(shellSnapshot([empty]).threads);
+    cleanup.observe(clientShell([empty]).threads);
     cleanup.observe(
-      shellSnapshot([{ ...empty, latestUserMessageAt: "2026-10-10T00:00:00.000Z" }]).threads,
+      clientShell([{ ...empty, latestUserMessageAt: "2026-10-10T00:00:00.000Z" }]).threads,
     );
     await tick();
     assert.deepEqual(deleted, []);
@@ -131,9 +131,9 @@ describe("createDisposableThreadCleanup", () => {
 
   it("says nothing about a failed delete of a thread that is already gone", async () => {
     const { cleanup, revealed } = harness(() => Promise.reject(new Error("thread not found")));
-    cleanup.observe(shellSnapshot([empty]).threads);
+    cleanup.observe(clientShell([empty]).threads);
     await Promise.resolve();
-    cleanup.observe(shellSnapshot([]).threads);
+    cleanup.observe(clientShell([]).threads);
     await tick();
     assert.equal(revealed(), 0);
   });
@@ -141,7 +141,7 @@ describe("createDisposableThreadCleanup", () => {
 
 describe("disposableThreadIds", () => {
   it("names untouched threads still called New thread, and not archived ones", () => {
-    const snapshot = shellSnapshot([
+    const snapshot = clientShell([
       { id: "written-in", title: "New thread" },
       { id: "empty", title: "New thread", latestUserMessageAt: null },
       { id: "renamed", title: "Plans", latestUserMessageAt: null },

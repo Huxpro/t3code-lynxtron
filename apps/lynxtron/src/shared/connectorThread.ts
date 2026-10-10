@@ -1,6 +1,6 @@
 // The thread payload the Lynx UI reduces for the thread it shows. The
 // renderer builds it from upstream's thread atom.
-import type { OrchestrationThread } from "@t3tools/contracts";
+import type { OrchestrationThread } from "@t3tools/lynx-logic/orchestration";
 import { deriveActivePlanState, findLatestProposedPlan } from "@t3tools/lynx-logic/thread";
 
 import type { ConnectorThreadPayload } from "./connectorProtocol.ts";

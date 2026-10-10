@@ -202,13 +202,11 @@ function effectiveProviderInstance(
 ): ProviderInstanceConfig {
   const explicit = settings?.providerInstances[entry.instanceId];
   if (explicit) return explicit;
-  const legacy = settings?.providers[entry.driverKind as keyof ServerSettings["providers"]];
   return {
     driver: entry.driverKind,
     enabled: entry.enabled,
     ...(entry.snapshot.displayName ? { displayName: entry.snapshot.displayName } : {}),
     ...(entry.snapshot.accentColor ? { accentColor: entry.snapshot.accentColor } : {}),
-    ...(legacy ? { config: legacy } : {}),
   };
 }
 

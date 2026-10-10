@@ -135,7 +135,6 @@ describe("applyProviderInstanceSettings", () => {
           enabled: false,
         },
       },
-      providers: {} as never,
     });
 
     expect(entry?.enabled).toBe(false);
@@ -150,7 +149,6 @@ describe("applyProviderInstanceSettings", () => {
     ]);
     const [entry] = applyProviderInstanceSettings(entries, {
       providerInstances: {},
-      providers: {} as never,
     });
 
     expect(entry?.enabled).toBe(false);

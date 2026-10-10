@@ -1,4 +1,4 @@
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 
 /**
  * Structural command placeholder for the shared Sidebar. Port discovery is

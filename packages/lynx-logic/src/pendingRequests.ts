@@ -1,8 +1,5 @@
-import {
-  ApprovalRequestId,
-  type OrchestrationThreadActivity,
-  type UserInputQuestion,
-} from "@t3tools/contracts";
+import type { OrchestrationThreadActivity } from "./orchestration.ts";
+import { ApprovalRequestId, type UserInputQuestion } from "@t3tools/contracts";
 
 import { compareActivitiesByOrder, workRequestKindFromRequestType } from "./transcript.ts";
 

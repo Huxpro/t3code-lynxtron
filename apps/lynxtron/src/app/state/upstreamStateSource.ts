@@ -8,13 +8,18 @@
 //
 // The connection status is resolved from the main process's latest status and
 // upstream's, in `resolveClientStatus`.
-import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
-import type { ModelSelection, ServerConfig, VcsStatusResult } from "@t3tools/contracts";
+import type {
+  ModelSelection,
+  OrchestrationV2ThreadProjection,
+  ServerConfig,
+  VcsStatusResult,
+} from "@t3tools/contracts";
 import { type AuthAccessPresentation, projectAuthAccess } from "@t3tools/lynx-logic/connections";
 import * as Option from "effect/Option";
-import { AsyncResult, type Atom } from "effect/unstable/reactivity";
+import { AsyncResult, type Atom } from "effect/reactivity";
 
 import { projectConnectorShell } from "../../shared/connectorShell.ts";
+import { projectThread, projectThreadShell } from "../../shared/orchestrationProjection.ts";
 import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import {
@@ -31,6 +36,7 @@ import type {
   ConnectorThreadPayload,
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
+import { deriveLatestContextWindowSnapshot } from "../../../../web/src/lib/contextWindow";
 import { appAtomRegistry } from "./atomRegistry.ts";
 import { requestedStartupProjectCwd } from "../platform/connectionPlatform.ts";
 import { createStartupProjectStep } from "./startupProject.ts";
@@ -38,6 +44,7 @@ import type { T3ClientState } from "./t3Client.ts";
 import { primaryHttpBaseUrl, upstreamCommandsReady } from "./upstreamCommandPort.ts";
 import { type UpstreamPrimaryState, watchUpstreamPrimary } from "./upstreamPrimary.ts";
 import {
+  threadHasOlderHistory,
   type UpstreamSelectedState,
   type UpstreamTerminal,
   watchUpstreamSelected,
@@ -149,7 +156,7 @@ export function ownedShellThreads(
   state: Pick<UpstreamPrimaryState, "connection" | "shell" | "archived">,
 ) {
   if (!isConnected(state.connection) || state.archived === null) return null;
-  return liveShellSnapshot(state)?.threads ?? null;
+  return liveShellSnapshot(state)?.threads.map(projectThreadShell) ?? null;
 }
 
 const NO_PENDING_MODEL_SELECTIONS: PendingModelSelections = new Map();
@@ -173,18 +180,31 @@ export function upstreamStatePayloads(
   if (!isConnected(state.connection)) return { config: null, shell: null };
   const snapshot = liveShellSnapshot(state);
   if (snapshot === null || state.archived === null) return { config: state.config, shell: null };
-  const disposable = isHidden ? null : disposableThreadIds(snapshot.threads);
+  const threads = snapshot.threads.map(projectThreadShell);
+  const disposable = isHidden ? null : disposableThreadIds(threads);
   const hidden = isHidden ?? ((threadId: string) => disposable?.has(threadId) === true);
   return {
     config: state.config,
     shell: projectConnectorShell({
       projects: snapshot.projects,
-      threads: snapshot.threads,
-      archivedThreads: state.archived.threads,
+      threads,
+      archivedThreads: state.archived.threads.map(projectThreadShell),
       isHidden: (thread) => hidden(thread.id),
       overlay: (thread) => withPendingModelSelection(thread, pendingModelSelections),
     }),
   };
+}
+
+/** The thread's context window usage, read the way Web's chat view reads it. */
+function threadContextWindow(projection: OrchestrationV2ThreadProjection) {
+  const liveUsage = projection.providerTurns.findLast((turn) => turn.tokenUsage !== undefined);
+  return deriveLatestContextWindowSnapshot(
+    projection.visibleTurnItems,
+    liveUsage?.tokenUsage ?? null,
+    projection.providerThreads.find(
+      (thread) => thread.id === projection.thread.activeProviderThreadId,
+    ),
+  );
 }
 
 /**
@@ -198,9 +218,13 @@ export function upstreamThreadPayload(
 ): ConnectorThreadPayload | null {
   const thread = state.thread;
   if (!isConnected(state.connection) || thread === null) return null;
-  if (thread.status !== "live" || threadHasOlderTurns(thread)) return null;
+  if (thread.status !== "live" || threadHasOlderHistory(thread)) return null;
   const data = Option.getOrNull(thread.data);
-  return data === null || data.id !== state.threadId ? null : projectConnectorThread(data);
+  if (data === null || data.thread.id !== state.threadId) return null;
+  return {
+    ...projectConnectorThread(projectThread(data)),
+    contextWindow: threadContextWindow(data),
+  };
 }
 
 /**

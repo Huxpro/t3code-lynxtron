@@ -13,7 +13,6 @@ export const GENERAL_SETTINGS_DEFAULT_VALUES: GeneralSettingsValues = {
   confirmThreadDelete: PORTABLE_CLIENT_SETTINGS_DEFAULTS.confirmThreadDelete,
   defaultThreadEnvMode: PORTABLE_SERVER_SETTINGS_DEFAULTS.defaultThreadEnvMode ?? "local",
   diffIgnoreWhitespace: PORTABLE_CLIENT_SETTINGS_DEFAULTS.diffIgnoreWhitespace,
-  enableLegacyTokenStreaming: false,
   enableProviderUpdateChecks: PORTABLE_SERVER_SETTINGS_DEFAULTS.enableProviderUpdateChecks,
   legacySidebarEnabled: PORTABLE_CLIENT_SETTINGS_DEFAULTS.legacySidebarEnabled,
   newWorktreesStartFromOrigin: PORTABLE_SERVER_SETTINGS_DEFAULTS.newWorktreesStartFromOrigin,
@@ -58,8 +57,6 @@ export function projectGeneralSettingsValues(
     confirmThreadDelete: client.confirmThreadDelete,
     defaultThreadEnvMode: server.defaultThreadEnvMode ?? "local",
     diffIgnoreWhitespace: client.diffIgnoreWhitespace,
-    // Upstream replaced the boolean with a mode; the switch means token-by-token.
-    enableLegacyTokenStreaming: server.responseStreamingMode === "token",
     enableProviderUpdateChecks: server.enableProviderUpdateChecks,
     legacySidebarEnabled: client.legacySidebarEnabled,
     newWorktreesStartFromOrigin: server.newWorktreesStartFromOrigin,

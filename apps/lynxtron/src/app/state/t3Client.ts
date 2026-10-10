@@ -1,6 +1,12 @@
+import type {
+  OrchestrationCheckpointSummary,
+  OrchestrationLatestTurn,
+  OrchestrationProposedPlan,
+  ThreadTurnStartBootstrap,
+} from "@t3tools/lynx-logic/orchestration";
 import { useAtomValue } from "@effect/atom-react";
 import { useEffect } from "@lynx-js/react";
-import { Atom } from "effect/unstable/reactivity";
+import { Atom } from "effect/reactivity";
 import { presentThreadCommandErrorMessage } from "@t3tools/client-runtime/errors";
 import { truncate } from "@t3tools/shared/String";
 import {
@@ -72,13 +78,10 @@ import type {
   GitRunStackedActionInput,
   GitRunStackedActionResult,
   ModelSelection,
-  OrchestrationCheckpointSummary,
   OrchestrationGetTurnDiffInput,
   OrchestrationGetTurnDiffResult,
   ReviewDiffPreviewInput,
   ReviewDiffPreviewResult,
-  OrchestrationLatestTurn,
-  OrchestrationProposedPlan,
   ProviderInteractionMode,
   ProviderApprovalDecision,
   ProviderUserInputAnswers,
@@ -111,10 +114,10 @@ import type {
   TerminalWriteInput,
   VcsStatusResult,
   RuntimeMode,
-  ThreadTurnStartBootstrap,
   TurnId,
   UploadChatAttachment,
 } from "@t3tools/contracts";
+import type { ContextWindowSnapshot } from "../../../../web/src/lib/contextWindow";
 import { newThreadId, randomHex, randomUUID } from "../../../../web/src/lib/utils";
 
 import type {
@@ -273,6 +276,7 @@ export interface T3ClientState {
   readonly settingsError: string | null;
   readonly activePlan?: ActivePlanState | undefined;
   readonly activeProposedPlan?: LatestProposedPlanState | undefined;
+  readonly contextWindow: ContextWindowSnapshot | null;
   readonly activities: ReadonlyArray<ActivityEntry>;
   readonly latestTurn: OrchestrationLatestTurn | null;
   readonly proposedPlans: ReadonlyArray<OrchestrationProposedPlan>;
@@ -316,6 +320,7 @@ const INITIAL_T3_CLIENT_STATE: T3ClientState = {
   providerSettingsError: null,
   settingsUpdatePending: false,
   settingsError: null,
+  contextWindow: null,
   activities: [],
   latestTurn: null,
   proposedPlans: [],
@@ -507,6 +512,7 @@ function resetActiveThreadState(
     sessionError: null,
     activePlan: undefined,
     activeProposedPlan: undefined,
+    contextWindow: null,
     activities: [],
     latestTurn: null,
     proposedPlans: [],
@@ -777,6 +783,7 @@ function applyThreadPayload(payload: ThreadEventPayload): void {
     sessionError: payload.sessionError ?? null,
     activePlan: payload.activePlan ?? undefined,
     activeProposedPlan: payload.activeProposedPlan ?? undefined,
+    contextWindow: payload.contextWindow ?? null,
     activities: payload.activities ?? [],
     latestTurn: payload.latestTurn ?? null,
     proposedPlans: payload.proposedPlans ?? [],
@@ -920,6 +927,7 @@ function installTransportDevToolHook(): void {
       sessionStatus: SessionStatus;
       activeTurnId: TurnId | null;
       latestTurn: OrchestrationLatestTurn | null;
+      checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
       activeProject?: ProjectSummary;
       activeThread?: ThreadSummary;
       environmentLabel: string | null;
@@ -1031,6 +1039,7 @@ function installTransportDevToolHook(): void {
         : [],
       clientSettings: getClientSettingsState(),
       messages: state.messages,
+      checkpoints: state.checkpoints,
       sessionStatus: state.sessionStatus,
       sessionError: state.sessionError,
       activeTurnId: state.activeTurnId,
@@ -2431,8 +2440,6 @@ function updateProviderInstance(
     settings: state.settings,
     instanceId,
     instance,
-    driver: entry.driverKind,
-    isDefault: entry.isDefault,
   });
   return updateServerSettings(patch)
     .catch((error: unknown) => {

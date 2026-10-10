@@ -22,15 +22,17 @@
  * instances cross the bridge.
  */
 import type {
-  AssetCreateUrlResult,
   OrchestrationCheckpointSummary,
   OrchestrationLatestTurn,
   OrchestrationMessage,
-  OrchestrationProjectShell,
   OrchestrationProposedPlan,
   OrchestrationSessionStatus,
   OrchestrationThreadActivity,
   OrchestrationThreadShell,
+} from "@t3tools/lynx-logic/orchestration";
+import type {
+  AssetCreateUrlResult,
+  OrchestrationProjectShell,
   TerminalSessionStatus,
   TurnId,
 } from "@t3tools/contracts";
@@ -38,6 +40,8 @@ import { ServerConfig, ServerSettingsPatch } from "@t3tools/contracts";
 import type { AuthAccessPresentation } from "@t3tools/lynx-logic/connections";
 import type { ActivePlanState, LatestProposedPlanState } from "@t3tools/lynx-logic/thread";
 import * as Schema from "effect/Schema";
+
+import type { ContextWindowSnapshot } from "../../../web/src/lib/contextWindow.ts";
 
 /** Host -> renderer push channel name (LynxWindow.sendGlobalEvent). */
 export const T3_CONNECTOR_EVENT = "t3:connector-event";
@@ -134,6 +138,8 @@ export function resolveConnectorAssetUrl(
 
 export interface ConnectorThreadPayload {
   readonly threadId: string;
+  /** The thread's context window usage, where the source can supply it. */
+  readonly contextWindow?: ContextWindowSnapshot | null;
   readonly messages: ReadonlyArray<OrchestrationMessage>;
   readonly checkpoints: ReadonlyArray<OrchestrationCheckpointSummary>;
   readonly sessionStatus: OrchestrationSessionStatus;

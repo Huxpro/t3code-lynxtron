@@ -6,6 +6,7 @@
 // one Web and mobile use, so its shape, id and timestamp are upstream's. What
 // reaches the server is described by `UpstreamCommandPort`, so the mapping
 // can be exercised without a connection.
+import type { OrchestrationThreadShell } from "@t3tools/lynx-logic/orchestration";
 import type {
   EnvironmentRpcInput,
   EnvironmentRpcSuccess,
@@ -25,14 +26,13 @@ import {
   CommandId,
   DEFAULT_PROVIDER_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
-  type DispatchResult,
   type GitRunStackedActionInput,
   MessageId,
   type ModelSelection,
-  ORCHESTRATION_WS_METHODS,
+  ORCHESTRATION_V2_WS_METHODS,
   type OrchestrationProjectShell,
-  type OrchestrationThreadShell,
   ProjectId,
+  RuntimeRequestId,
   type ServerConfig,
   type TerminalCloseInput,
   type TerminalOpenInput,
@@ -135,7 +135,7 @@ export interface UpstreamCommandPort {
   readonly operation: <Name extends UpstreamOperationName>(
     name: Name,
     input: UpstreamOperationInputs[Name],
-  ) => Promise<DispatchResult>;
+  ) => Promise<unknown>;
   /** Runs a stacked git action to the end of its progress stream. */
   readonly gitAction: (input: GitRunStackedActionInput) => Promise<GitActionOutcome>;
   /**
@@ -244,9 +244,15 @@ export function createUpstreamCommandBridge(
         commandId: CommandId.make(context.newId()),
         projectId: ProjectId.make(context.newId()),
         workspaceRoot,
-        createdAt: context.now(),
       });
-      await port.operation("createProject", command);
+      await port.operation("createProject", {
+        commandId: command.commandId,
+        projectId: command.projectId,
+        title: command.title,
+        workspaceRoot: command.workspaceRoot,
+        createWorkspaceRootIfMissing: true,
+        defaultModelSelection: null,
+      });
       return { projectId: command.projectId };
     },
 
@@ -313,14 +319,14 @@ export function createUpstreamCommandBridge(
     respondToApproval: (input) =>
       send("respondToThreadApproval", {
         threadId: ThreadId.make(input.threadId),
-        requestId: input.requestId,
+        requestId: RuntimeRequestId.make(input.requestId),
         decision: input.decision,
       }),
 
     respondToUserInput: (input) =>
       send("respondToThreadUserInput", {
         threadId: ThreadId.make(input.threadId),
-        requestId: input.requestId,
+        requestId: RuntimeRequestId.make(input.requestId),
         answers: input.answers,
       }),
 
@@ -465,7 +471,7 @@ export function createUpstreamCommandBridge(
         relativePath: input.relativePath,
       }),
     writeProjectFile: (input) => port.request(WS_METHODS.projectsWriteFile, input),
-    getTurnDiff: (input) => port.request(ORCHESTRATION_WS_METHODS.getTurnDiff, input),
+    getTurnDiff: (input) => port.request(ORCHESTRATION_V2_WS_METHODS.getTurnDiff, input),
     getDiffPreview: (input) => port.request(WS_METHODS.reviewGetDiffPreview, input),
 
     async readProjectBranch(input) {

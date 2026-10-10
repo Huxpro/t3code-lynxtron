@@ -126,7 +126,7 @@ import {
   ThreadWorktreeIndicator,
   prStatusIndicator,
 } from "../ThreadStatusIndicators";
-import { resolveThreadStatusPill } from "../Sidebar.logic";
+import { resolveThreadStatusPill } from "@t3tools/lynx-logic/sidebar";
 import {
   SidebarChromeFooterSurface,
   SidebarChromeHeaderSurface,

@@ -252,7 +252,6 @@ try {
       threadId: fixture.threadId,
       title: fixture.title,
       expectedTimelineRowCount: fixture.expectedTimelineRowCount,
-      backendBehaviorClaimed: false,
     },
     viewport: { width, height },
     readiness,

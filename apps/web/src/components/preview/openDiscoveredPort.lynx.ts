@@ -1,6 +1,6 @@
 import type { DiscoveredLocalServer, ScopedThreadRef } from "@t3tools/contracts";
 import * as Cause from "effect/Cause";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 
 interface OpenPreviewMutation<E> {
   (input: unknown): Promise<AsyncResult.Success<unknown, E> | AsyncResult.Failure<unknown, E>>;

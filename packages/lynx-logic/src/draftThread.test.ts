@@ -1,3 +1,4 @@
+import type { ThreadTurnStartBootstrap } from "./orchestration.ts";
 import { describe, expect, it } from "vite-plus/test";
 
 import {
@@ -5,7 +6,6 @@ import {
   ProjectId,
   ProviderInstanceId,
   ThreadId,
-  type ThreadTurnStartBootstrap,
 } from "@t3tools/contracts";
 
 import {

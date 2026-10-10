@@ -21,6 +21,7 @@ export function importedProjectScript(
       icon: fileScript.icon ?? "play",
       runOnWorktreeCreate: fileScript.runOnWorktreeCreate ?? false,
       waitForSetup: false,
+      runOnSettle: fileScript.runOnSettle ?? false,
       previewUrl: fileScript.previewUrl ?? null,
       autoOpenPreview: fileScript.previewUrl ? (fileScript.autoOpenPreview ?? false) : false,
     },

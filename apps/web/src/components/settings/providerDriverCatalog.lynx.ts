@@ -1,11 +1,7 @@
-import {
-  ClaudeSettings,
-  CodexSettings,
-  CursorSettings,
-  GrokSettings,
-  OpenCodeSettings,
-  ProviderDriverKind,
-} from "@t3tools/contracts";
+import { ClaudeSettings, CodexSettings, ProviderDriverKind } from "@t3tools/contracts";
+import { CursorSettings } from "@t3tools/provider-cursor/settings";
+import { GrokSettings } from "@t3tools/provider-grok/settings";
+import { OpenCodeSettings } from "@t3tools/provider-opencode/settings";
 import type * as Schema from "effect/Schema";
 
 export type ProviderSettingsSchema = {

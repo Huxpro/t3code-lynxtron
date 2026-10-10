@@ -1,7 +1,7 @@
 # Lynxtron client architecture
 
 How the Lynx client sits on top of upstream T3 Code. The layering was approved
-on 2026-10-09; the current merge base is upstream `024d49520e`.
+on 2026-10-09; the current merge base is upstream `dacd2cb649`.
 
 ## Principles
 
@@ -69,6 +69,13 @@ server:
   upstream's operations. Their values are applied to the client state in the
   shapes of `src/shared/connectorProtocol.ts`. While upstream is not
   connected a command fails, as it does in upstream's own clients.
+- `src/shared/orchestrationProjection.ts` turns the server's thread values,
+  which are runs and turn items, into the thread model the Lynx UI state is
+  written against (`packages/lynx-logic/src/orchestration.ts`): messages,
+  activities, proposed plans, checkpoints, a session and a latest turn. A run
+  is shown as a turn. A sidebar thread is upstream's presented shell with the
+  session and latest turn added, so upstream's sidebar logic and the Lynx one
+  read the same value.
 - The main process keeps what only it can do
   (`src/main/desktop/connector.ts`, `mainConnectorHost.ts`): spawn the server
   or pair to an existing environment, exchange the bootstrap credential for
@@ -128,12 +135,12 @@ it replaces.
 
 ## Carried patches
 
-`apps/lynxtron/upstream-patches.json` lists 31 modified upstream files and 9
+`apps/lynxtron/upstream-patches.json` lists 27 modified upstream files and 7
 added files, each with its reason. They fall into four groups:
 
-- **Server product fixes** that are not Lynx-specific (review roots, interrupt
-  target, provider command reactor). They are marked "Upstream candidate";
-  sending them upstream removes them from the list.
+- **Product fixes** that are not Lynx-specific (optimistic file atoms, the
+  quick-action wording). They are marked "Upstream candidate"; sending them
+  upstream removes them from the list.
 - **Lynx enablers** in packages: single-module exports, Schema-free constants
   so the Lynx bundle does not pull Effect Schema, the connection banner
   projection.
@@ -208,10 +215,88 @@ What the Lynx side had to follow:
   build. `lynx.config.ts` points `decode-named-character-reference` at the
   table-based build; without that the window stays blank.
 
-Not merged: `de34391427` and later (507 commits). That commit replaces
-`packages/contracts/src/orchestration.ts` with `orchestrationV2.ts`, which the
-Lynx client and connector are written against. Moving to it is a port, not a
-merge.
+### The merge of 2026-10-10
+
+The fork merged `de34391427`, upstream's new orchestrator, which replaces
+`packages/contracts/src/orchestration.ts` with `orchestrationV2.ts`.
+Conflicts were limited to the listed patches. What the Lynx side had to follow:
+
+- Dropped patches, each on a file upstream removed or on a service it removed:
+  the turn-start refusal for an unavailable provider
+  (`ProviderCommandReactor`), the interrupt without a turn id (`decider`;
+  upstream's interrupt operation now finds the executing run itself), and
+  review diffs for any registered project root (`ReviewService`, which read
+  the removed projection query).
+- The thread model. See `src/shared/orchestrationProjection.ts` under Client
+  runtime. Interrupt records, handoffs, forks and created-thread items have no
+  row in the Lynx transcript.
+- Thread history arrives as a recent window. The Lynx client shows a thread
+  whole, so `upstreamSelected.ts` asks upstream's history controller for
+  earlier pages until there are none.
+- The server no longer streams token by token; the setting's switch is gone.
+- The main-thread engine has no `Intl`, and upstream's
+  `@t3tools/shared/usageFormat` builds formatters while it loads.
+  `src/app/polyfills.ts` installs a stand-in there that only constructs.
+- State is in `userdata/statev2.sqlite`. The gates read it; nothing writes it.
+  A fixture's threads and turns are made by the product: the built app,
+  hidden, sends the commands the UI sends (`scripts/product-seeding.mjs`) and
+  the scripted provider answers. A fixture's times are therefore the times it
+  was prepared at, and relative-time labels in a frame move with the clock.
+- The server refuses to restore files for a thread that works in its project's
+  checkout, and upstream's clients offer to rewind the conversation only. The
+  Lynx client always asks for the files, so its revert fails on such a thread
+  and shows "Revert failed" without the reason.
+- The browser preview's live connector host (`src/browser-preview`) still
+  speaks the old contract and does not typecheck.
+
+### The merge to `dacd2cb649` (2026-10-10)
+
+The fork merged the 652 commits after `de34391427`. Seven paths conflicted,
+all listed patches or derived files. What the Lynx side had to follow:
+
+- Dropped patch: the write-delay hook in `apps/server/src/ws.ts`
+  (`T3_TEST_PROJECT_WRITE_DELAY_MS`, which let a capture observe the
+  file-saving state). Upstream rewrote the handler table and no script set the
+  variable any more. Upstream added its own
+  `packages/client-runtime/src/state/projectCommands.test.ts`; the fork's test
+  for the idle TTL is now a patch to that file instead of an added file.
+- Effect 4.0.2 moved `effect/unstable/{http,reactivity,rpc,socket}` to
+  `effect/{http,reactivity,rpc,socket}`.
+- Provider settings are instances only. `settings.providers` is gone and the
+  Cursor, Grok and OpenCode settings schemas moved to `@t3tools/provider-*`.
+  A default instance without an entry is on only for Codex and Claude. The
+  Lynx provider logic, the settings catalog and the fixtures follow; a
+  settings file with the old map is still migrated by the server.
+- Writes that need a permission (source control, scheduled tasks) are refused
+  by the runtime unless the caller installs `RpcPermissionGuard`. Upstream's
+  check is not exported, so `upstreamCommandPort.ts` installs one that asks
+  the same question of the session upstream fetched.
+- The connection store saves routes per environment (`register` with routes,
+  `setRoutes`, `remove` by environment id); `ClientPresentation` no longer
+  names scopes.
+- The main-thread engine cannot compile a BigInt literal, and one in the
+  main-thread script fails the whole bundle before any console exists: the
+  window is blank, DevTool evaluate gets no answer, and the only trace is
+  `An error occurred when parse json` in the app's log.
+  `scripts/lynx-bigint-loader.cjs` writes each literal as a `BigInt` call.
+- `sidebar/SidebarChrome.tsx`, one of the four components compiled from
+  upstream's file, gained a component that takes a DOM ref. The DOM loader
+  leaves out components named in its `UNRENDERED_COMPONENTS` list, replacing
+  the body with a throw; see the loader's header for when that is allowed.
+- A secret request (`secret_request`) is shown as an information row; the
+  Lynx client has no prompt to answer one.
+- The temporary worktree branch prefix is `t3/`, not `t3code/`.
+
+Not ported, by decision of this merge (backlog): read-only and scoped clients
+beyond the menu flag, connection routes and learned addresses, on-demand tool
+output (`getTurnItem`), provider goals, pull request watches, secret prompts,
+subagent stop, workspace-preparation retry, run-on-settle project actions
+(kept when a script is edited, not editable), ACP registry, Muse and Pi
+providers, MCP apps, thread search streaming, storage cleanup, outdated-server
+update, and the exports upstream added to shadowed Web modules
+(`CommandListVirtualized`, `TooltipScrollDismissArea`,
+`resolveComposerDraftKey`, `useAcknowledgeThreadWoke`, `useChildThreadInputs`,
+`useEnvironmentSupportsServerBrowser`, `updateOutdatedServer`).
 
 A trial merge of `b707eeb052` (2,354 commits) on 2026-10-09, before this
 restructuring, conflicted in 154 paths, 111 of them fork-edited Web files.

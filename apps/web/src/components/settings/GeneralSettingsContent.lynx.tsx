@@ -28,7 +28,6 @@ export interface GeneralSettingsValues {
   readonly confirmThreadDelete: boolean;
   readonly defaultThreadEnvMode: GeneralThreadMode;
   readonly diffIgnoreWhitespace: boolean;
-  readonly enableLegacyTokenStreaming: boolean;
   readonly enableProviderUpdateChecks: boolean;
   readonly legacySidebarEnabled: boolean;
   readonly newWorktreesStartFromOrigin: boolean;
@@ -414,21 +413,6 @@ export function GeneralSettingsContent({
               settingControl="legacy-plan-mode"
               onCheckedChange={(planModeEnabled) => onUpdate({ planModeEnabled })}
               aria-label="Plan mode (legacy)"
-            />
-          }
-        />
-        <SettingsRow
-          {...searchableSetting("response-streaming")}
-          description="Paints assistant output token by token instead of in complete chunks. Not recommended: it is significantly slower, and long responses become harder to follow. Kept only for compatibility with the old behavior."
-          control={
-            <GeneralSettingsSwitch
-              checked={values.enableLegacyTokenStreaming}
-              disabled={serverControlsDisabled}
-              settingControl="legacy-token-streaming"
-              onCheckedChange={(enableLegacyTokenStreaming) =>
-                onUpdate({ enableLegacyTokenStreaming })
-              }
-              aria-label="Stream token by token (legacy)"
             />
           }
         />

@@ -3,12 +3,13 @@
 // upstream's connection is not started, until `startUpstreamCommands` runs.
 import { EnvironmentSupervisor } from "@t3tools/client-runtime/connection";
 import { environmentEndpointUrl } from "@t3tools/client-runtime/environment";
-import { PrimaryEnvironmentAuth } from "@t3tools/client-runtime/platform";
+import { ClientCapabilities } from "@t3tools/client-runtime/platform";
 import {
   executeEnvironmentHttpRequest,
   makeEnvironmentHttpApiGroupClient,
-  request,
-  runStream,
+  requestGuarded,
+  RpcPermissionGuard,
+  runStreamGuarded,
 } from "@t3tools/client-runtime/rpc";
 import {
   type AtomCommandResult,
@@ -16,19 +17,28 @@ import {
   createEnvironmentCommand,
   squashAtomCommandFailure,
 } from "@t3tools/client-runtime/state/runtime";
-import { WS_METHODS } from "@t3tools/contracts";
+import {
+  authScopeRequiredResponse,
+  clientRpcRequiredScopes,
+  EnvironmentAuthorizationError,
+  type EnvironmentId,
+  sessionGrantsScope,
+  WS_METHODS,
+} from "@t3tools/contracts";
 import type * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
 import * as Stream from "effect/Stream";
-import type { HttpClient } from "effect/unstable/http";
-import { AsyncResult } from "effect/unstable/reactivity";
+import type { HttpClient } from "effect/http";
+import { AsyncResult, AtomRegistry } from "effect/reactivity";
 
+import { projectThreadShell } from "../../shared/orchestrationProjection.ts";
 import { applyGitActionProgress, EMPTY_GIT_ACTION_OUTCOME } from "../../shared/gitActionOutcome.ts";
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { UpstreamCommandContext, UpstreamCommandPort } from "./upstreamCommands.ts";
 import {
   upstreamConnectionRuntime,
+  upstreamEnvironmentSession,
   upstreamTerminalEnvironment,
 } from "./upstreamConnectionRuntime.ts";
 import { operationThreadId, upstreamOperation } from "./upstreamOperations.ts";
@@ -84,10 +94,11 @@ export const upstreamCommandState: Pick<
   UpstreamCommandContext,
   "threads" | "projects" | "config" | "httpBaseUrl"
 > = {
-  threads: () => [
-    ...(Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.threads ?? []),
-    ...(primary?.archived?.threads ?? []),
-  ],
+  threads: () =>
+    [
+      ...(Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.threads ?? []),
+      ...(primary?.archived?.threads ?? []),
+    ].map(projectThreadShell),
   projects: () => Option.getOrNull(primary?.shell?.snapshot ?? Option.none())?.projects ?? [],
   config: () => primary?.config ?? null,
   httpBaseUrl: () => primaryHttpBaseUrl(primary),
@@ -111,19 +122,62 @@ async function settled<A, E>(running: Promise<AtomCommandResult<A, E>>): Promise
   throw failure instanceof Error ? failure : new Error(String(failure));
 }
 
+const SESSION_STATE_TIMEOUT_MS = 6_000;
+
+/**
+ * The check upstream's command boundary makes before a write that needs a
+ * permission (source control, scheduled tasks): the session upstream fetched
+ * for the environment must grant it. Upstream's own check
+ * (`state/commandPermissions.ts`) is not exported; without a guard the
+ * runtime denies those writes.
+ */
+function authorizeRpc(environmentId: EnvironmentId, method: string, input: unknown) {
+  return Effect.suspend(() => {
+    const scopes = clientRpcRequiredScopes(method, input);
+    if (scopes.length === 0) return Effect.void;
+    const atom = upstreamEnvironmentSession.sessionStateAtom(environmentId);
+    return Effect.scoped(
+      Effect.gen(function* () {
+        yield* AtomRegistry.mount(appAtomRegistry, atom);
+        const session = yield* AtomRegistry.getResult(appAtomRegistry, atom, {
+          suspendOnWaiting: false,
+        }).pipe(
+          Effect.timeoutOption(SESSION_STATE_TIMEOUT_MS),
+          Effect.catch(() => Effect.succeedNone),
+        );
+        const missing = scopes.find(
+          (scope) => Option.isNone(session) || !sessionGrantsScope(session.value, scope),
+        );
+        if (missing !== undefined) {
+          return yield* Effect.fail(
+            new EnvironmentAuthorizationError({
+              ...authScopeRequiredResponse(missing),
+              message: `This connection requires ${missing}.`,
+            }),
+          );
+        }
+      }),
+    );
+  });
+}
+
 function runInPrimary<A, E>(
   label: string,
   execute: () => Effect.Effect<
     A,
     E,
-    EnvironmentSupervisor | Crypto.Crypto | HttpClient.HttpClient | PrimaryEnvironmentAuth
+    | EnvironmentSupervisor.EnvironmentSupervisor
+    | Crypto.Crypto
+    | HttpClient.HttpClient
+    | ClientCapabilities.PrimaryEnvironmentAuth
   >,
   serialKey?: string,
 ): Promise<A> {
   const environmentId = requirePrimaryEnvironment();
   const command = createEnvironmentCommand(upstreamConnectionRuntime, {
     label,
-    execute,
+    execute: () =>
+      execute().pipe(Effect.provideService(RpcPermissionGuard, { authorize: authorizeRpc })),
     ...(serialKey === undefined
       ? {}
       : {
@@ -149,12 +203,12 @@ function authRequest<A, E>(
 ): Promise<A> {
   return runInPrimary(`lynx:auth:${pathname}`, () =>
     Effect.gen(function* () {
-      const supervisor = yield* EnvironmentSupervisor;
+      const supervisor = yield* EnvironmentSupervisor.EnvironmentSupervisor;
       const target = supervisor.target;
       if (target._tag !== "PrimaryConnectionTarget") {
         return yield* Effect.fail(new Error("not connected"));
       }
-      const auth = yield* PrimaryEnvironmentAuth;
+      const auth = yield* ClientCapabilities.PrimaryEnvironmentAuth;
       const bearer = Option.getOrUndefined(yield* auth.bearerToken);
       const client = yield* makeEnvironmentHttpApiGroupClient(target.httpBaseUrl, "auth");
       return yield* executeEnvironmentHttpRequest(
@@ -171,7 +225,7 @@ function authRequest<A, E>(
 // these operations in a retry: a dropped transport fails the command, the
 // supervisor reconnects, and the failure stays with whoever sent it.
 export const upstreamCommandPort: UpstreamCommandPort = {
-  request: (tag, input) => runInPrimary(`lynx:command:${tag}`, () => request(tag, input)),
+  request: (tag, input) => runInPrimary(`lynx:command:${tag}`, () => requestGuarded(tag, input)),
   operation: (name, input) =>
     runInPrimary(
       `lynx:command:${name}`,
@@ -180,7 +234,7 @@ export const upstreamCommandPort: UpstreamCommandPort = {
     ),
   gitAction: (input) =>
     runInPrimary("lynx:command:git-action", () =>
-      runStream(WS_METHODS.gitRunStackedAction, input).pipe(
+      runStreamGuarded(WS_METHODS.gitRunStackedAction, input).pipe(
         Stream.runFold(() => EMPTY_GIT_ACTION_OUTCOME, applyGitActionProgress),
       ),
     ),

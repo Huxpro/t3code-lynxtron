@@ -31,31 +31,19 @@ function provider(instanceId: string, driver = "codex"): ServerProvider {
 }
 
 describe("buildProviderInstanceEnabledPatch", () => {
-  it("promotes a default instance while preserving its effective legacy config", () => {
+  it("writes an entry for a default instance that had none", () => {
     const [entry] = deriveProviderInstanceEntries([provider("codex")]);
-    const settings = {
-      ...DEFAULT_SERVER_SETTINGS,
-      providers: {
-        ...DEFAULT_SERVER_SETTINGS.providers,
-        codex: {
-          ...DEFAULT_SERVER_SETTINGS.providers.codex,
-          binaryPath: "/opt/codex",
-        },
-      },
-    };
 
     const patch = buildProviderInstanceEnabledPatch({
-      settings,
+      settings: DEFAULT_SERVER_SETTINGS,
       entry: entry!,
       enabled: false,
     });
 
     expect(patch.providerInstances?.[ProviderInstanceId.make("codex")]).toEqual({
       driver: "codex",
-      config: settings.providers.codex,
       enabled: false,
     });
-    expect(patch.providers?.codex).toEqual(DEFAULT_SERVER_SETTINGS.providers.codex);
   });
 
   it("updates an explicit custom instance without dropping opaque config", () => {
@@ -78,7 +66,6 @@ describe("buildProviderInstanceEnabledPatch", () => {
       enabled: false,
     });
 
-    expect(patch.providers).toBeUndefined();
     expect(patch.providerInstances?.[instanceId]).toEqual({
       ...settings.providerInstances[instanceId],
       enabled: false,

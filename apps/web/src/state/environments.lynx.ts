@@ -60,6 +60,11 @@ export function usePrimaryEnvironment() {
   return primaryEnvironment(useT3ClientState().serverConfig?.environment.label ?? "Local");
 }
 
+/** The Lynx client has no pull requests screen, so the sidebar offers no way to one. */
+export function usePullRequestsSupported(): boolean {
+  return false;
+}
+
 export function useEnvironmentHttpBaseUrl(): null {
   return null;
 }

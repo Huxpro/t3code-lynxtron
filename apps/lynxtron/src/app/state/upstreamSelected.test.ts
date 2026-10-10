@@ -1,12 +1,12 @@
 import { assert, describe, it } from "vite-plus/test";
 
-import { clientSelection, olderTurnsCursor } from "./upstreamSelected.ts";
-import { shellSnapshot, threadDetail, threadState } from "./upstreamState.fixtures.ts";
+import { clientSelection, olderHistoryCursor } from "./upstreamSelected.ts";
+import { clientShell, threadDetail, threadState } from "./upstreamState.fixtures.ts";
 
 describe("clientSelection", () => {
   const client = {
-    threads: shellSnapshot([{ id: "thread-a" }]).threads,
-    archivedThreads: shellSnapshot([{ id: "thread-archived" }]).threads,
+    threads: clientShell([{ id: "thread-a" }]).threads,
+    archivedThreads: clientShell([{ id: "thread-archived" }]).threads,
     vcsStatusCwd: "/work/project-1",
   };
 
@@ -39,24 +39,24 @@ describe("clientSelection", () => {
   });
 });
 
-describe("olderTurnsCursor", () => {
+describe("olderHistoryCursor", () => {
   const thread = threadDetail();
 
   it("asks for the next older page of a live windowed thread", () => {
-    assert.equal(olderTurnsCursor(threadState("live", thread, { hasMore: true })), "cursor-1");
+    assert.equal(olderHistoryCursor(threadState("live", thread, { hasMore: true })), "cursor-1");
   });
 
   it("asks for nothing while a page is loading or the thread is not live", () => {
     assert.equal(
-      olderTurnsCursor(threadState("live", thread, { hasMore: true, loadingOlder: true })),
+      olderHistoryCursor(threadState("live", thread, { hasMore: true, loading: true })),
       null,
     );
-    assert.equal(olderTurnsCursor(threadState("cached", thread, { hasMore: true })), null);
-    assert.equal(olderTurnsCursor(threadState("synchronizing", thread, { hasMore: true })), null);
+    assert.equal(olderHistoryCursor(threadState("cached", thread, { hasMore: true })), null);
+    assert.equal(olderHistoryCursor(threadState("synchronizing", thread, { hasMore: true })), null);
   });
 
   it("asks for nothing once the thread is whole", () => {
-    assert.equal(olderTurnsCursor(threadState("live", thread, { hasMore: false })), null);
-    assert.equal(olderTurnsCursor(threadState("live", thread)), null);
+    assert.equal(olderHistoryCursor(threadState("live", thread, { hasMore: false })), null);
+    assert.equal(olderHistoryCursor(threadState("live", thread)), null);
   });
 });

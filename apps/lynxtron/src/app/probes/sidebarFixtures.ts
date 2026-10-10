@@ -60,6 +60,8 @@ function thread(
     settledOverride: null,
     settledAt: null,
     session: null,
+    runtime: null,
+    latestRun: null,
     latestUserMessageAt: updatedAt,
     hasPendingApprovals: false,
     hasPendingUserInput: false,

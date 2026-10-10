@@ -5,7 +5,7 @@ import {
 import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import { EnvironmentId } from "@t3tools/contracts";
 import * as Option from "effect/Option";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
 import { summarizeUpstreamShadow } from "./upstreamShadow.ts";

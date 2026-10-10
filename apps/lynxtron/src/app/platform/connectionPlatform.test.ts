@@ -1,9 +1,5 @@
-import {
-  CloudSession,
-  PrimaryEnvironmentAuth,
-  SshEnvironmentGateway,
-} from "@t3tools/client-runtime/platform";
-import { remoteHttpClientLayer } from "@t3tools/client-runtime/rpc";
+import { ClientCapabilities } from "@t3tools/client-runtime/platform";
+import { layerRemoteHttpClient } from "@t3tools/client-runtime/rpc";
 import { EnvironmentId } from "@t3tools/contracts";
 import type * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
@@ -11,7 +7,7 @@ import * as Option from "effect/Option";
 import * as Queue from "effect/Queue";
 import * as Schedule from "effect/Schedule";
 import * as Stream from "effect/Stream";
-import { HttpClient, HttpClientRequest } from "effect/unstable/http";
+import { HttpClient, HttpClientRequest } from "effect/http";
 import { assert, describe, it } from "vite-plus/test";
 
 import {
@@ -26,7 +22,7 @@ import {
 
 function hostWith(reply: HostHttpResponse) {
   const requests: Array<HostHttpRequest> = [];
-  const layer = remoteHttpClientLayer(
+  const layer = layerRemoteHttpClient(
     makeHostFetch((request) => {
       requests.push(request);
       return Promise.resolve(reply);
@@ -201,13 +197,19 @@ describe("primary registrations", () => {
 
 describe("capabilities this client does not have", () => {
   const run = <A, E>(
-    effect: Effect.Effect<A, E, CloudSession | SshEnvironmentGateway | PrimaryEnvironmentAuth>,
+    effect: Effect.Effect<
+      A,
+      E,
+      | ClientCapabilities.CloudSession
+      | ClientCapabilities.SshEnvironmentGateway
+      | ClientCapabilities.PrimaryEnvironmentAuth
+    >,
   ) => Effect.runPromise(effect.pipe(Effect.provide(connectionPlatformLayer)));
 
   it("has no cloud session and refuses to mint a cloud token", async () => {
     const result = await run(
       Effect.gen(function* () {
-        const cloud = yield* CloudSession;
+        const cloud = yield* ClientCapabilities.CloudSession;
         return { identity: yield* cloud.identity, token: yield* Effect.flip(cloud.clerkToken) };
       }),
     );
@@ -220,7 +222,7 @@ describe("capabilities this client does not have", () => {
     const target = { alias: "box", hostname: "box", username: null, port: null };
     const result = await run(
       Effect.gen(function* () {
-        const ssh = yield* SshEnvironmentGateway;
+        const ssh = yield* ClientCapabilities.SshEnvironmentGateway;
         return {
           provision: yield* Effect.flip(ssh.provision(target)),
           prepare: yield* Effect.flip(
@@ -239,7 +241,9 @@ describe("capabilities this client does not have", () => {
 
   it("fails the primary bearer without a host instead of falling back to cookie auth", async () => {
     const error = await run(
-      Effect.flatMap(PrimaryEnvironmentAuth, (auth) => Effect.flip(auth.bearerToken)),
+      Effect.flatMap(ClientCapabilities.PrimaryEnvironmentAuth, (auth) =>
+        Effect.flip(auth.bearerToken),
+      ),
     );
     assert.equal(error._tag, "ConnectionTransientError");
   });

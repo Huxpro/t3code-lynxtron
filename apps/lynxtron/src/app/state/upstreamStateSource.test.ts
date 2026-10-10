@@ -1,8 +1,10 @@
 import { AuthAccessSnapshot, EnvironmentId, ProviderInstanceId } from "@t3tools/contracts";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 import { assert, describe, it } from "vite-plus/test";
+
+import { projectThread, projectThreadShell } from "../../shared/orchestrationProjection.ts";
 
 import { authAccessSnapshot } from "./upstreamPrimary.ts";
 import type { ConnectorStatusPayload } from "../../shared/connectorProtocol.ts";
@@ -25,6 +27,7 @@ import {
   connection,
   serverConfig,
   shellSnapshot,
+  archivedSnapshot,
   shellState,
   terminal,
   threadDetail,
@@ -37,7 +40,7 @@ const live = shellSnapshot([
   { id: "thread-new", latestUserMessageAt: "2026-10-08T00:00:00.000Z" },
   { id: "thread-gone", archivedAt: "2026-10-05T00:00:00.000Z" },
 ]);
-const archived = shellSnapshot([
+const archived = archivedSnapshot([
   { id: "archived-early", archivedAt: "2026-10-03T00:00:00.000Z" },
   { id: "archived-late", archivedAt: "2026-10-07T00:00:00.000Z" },
 ]);
@@ -60,7 +63,7 @@ describe("upstreamStatePayloads", () => {
       shell?.archivedThreads?.map((thread) => thread.id),
       ["archived-late", "archived-early"],
     );
-    assert.strictEqual(shell?.threads[0], live.threads[1]);
+    assert.strictEqual(shell?.threads[0], projectThreadShell(live.threads[1]!));
   });
 
   it("passes the server config through unchanged", () => {
@@ -124,8 +127,11 @@ describe("upstreamStatePayloads", () => {
       ],
     );
     // Nothing else about the thread is replaced, and the others are untouched.
-    assert.deepEqual(shell?.threads[1], { ...live.threads[0]!, modelSelection: selection });
-    assert.strictEqual(shell?.threads[0], live.threads[1]);
+    assert.deepEqual(shell?.threads[1], {
+      ...projectThreadShell(live.threads[0]!),
+      modelSelection: selection,
+    });
+    assert.strictEqual(shell?.threads[0], projectThreadShell(live.threads[1]!));
   });
 
   it("leaves out an empty disposable thread, which the cleanup is deleting", () => {
@@ -173,7 +179,7 @@ describe("the shell the cleanup acts on", () => {
   });
 
   it("is there only while upstream supplies the shell", () => {
-    assert.strictEqual(ownedShellThreads(state), snapshot.threads);
+    assert.deepEqual(ownedShellThreads(state), snapshot.threads.map(projectThreadShell));
     assert.isNull(ownedShellThreads({ ...state, archived: null }));
     assert.isNull(ownedShellThreads({ ...state, connection: connection("backoff") }));
     assert.isNull(ownedShellThreads({ ...state, shell: shellState("cached", snapshot) }));
@@ -373,21 +379,21 @@ describe("upstreamAccessPayload", () => {
 describe("upstreamThreadPayload", () => {
   const thread = threadDetail({
     messages: [{ id: "message-1", role: "user" }, { id: "message-2" }],
-    session: { status: "running", activeTurnId: "turn-1" },
+    runningRunId: "turn-1",
   });
   const selected = { connection: connection("connected"), threadId: "thread-1" };
 
   it("builds the connector's thread payload from a live, whole thread", () => {
     const payload = upstreamThreadPayload({ ...selected, thread: threadState("live", thread) });
     assert.equal(payload?.threadId, "thread-1");
-    assert.strictEqual(payload?.messages, thread.messages);
+    assert.deepEqual(payload?.messages, projectThread(thread).messages);
     assert.equal(payload?.sessionStatus, "running");
     assert.equal(payload?.activeTurnId, "turn-1");
 
     const paged = threadState("live", thread, { hasMore: false });
-    assert.strictEqual(
+    assert.deepEqual(
       upstreamThreadPayload({ ...selected, thread: paged })?.messages,
-      thread.messages,
+      projectThread(thread).messages,
     );
   });
 

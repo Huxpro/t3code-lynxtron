@@ -1,13 +1,13 @@
+import type { StartThreadTurnInput } from "@t3tools/client-runtime/operations";
+
+import type { OrchestrationThreadShell, ThreadTurnStartBootstrap } from "./orchestration.ts";
 import type {
   CommandId,
-  ClientOrchestrationCommand,
   MessageId,
   ModelSelection,
-  OrchestrationThreadShell,
   ProviderInteractionMode,
   RuntimeMode,
   ThreadId,
-  ThreadTurnStartBootstrap,
   UploadChatAttachment,
 } from "@t3tools/contracts";
 
@@ -62,6 +62,13 @@ export function resolveThreadTurnDispatchState(input: {
   return { ...state, interactionMode: "default" };
 }
 
+/** The input of upstream's turn-start operation, named as the command it sends. */
+export type ThreadTurnStartCommand = StartThreadTurnInput & {
+  readonly type: "thread.turn.start";
+  readonly commandId: CommandId;
+  readonly createdAt: string;
+};
+
 export function buildThreadTurnStartCommand(input: {
   readonly threadId: ThreadId;
   readonly text: string;
@@ -75,7 +82,7 @@ export function buildThreadTurnStartCommand(input: {
   readonly commandId: CommandId;
   readonly messageId: MessageId;
   readonly createdAt: string;
-}): Extract<ClientOrchestrationCommand, { type: "thread.turn.start" }> | null {
+}): ThreadTurnStartCommand | null {
   const dispatchState = resolveThreadTurnDispatchState({
     thread: input.thread,
     ...(input.pendingModelSelection ? { pendingModelSelection: input.pendingModelSelection } : {}),

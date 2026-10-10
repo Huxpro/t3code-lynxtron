@@ -5,7 +5,7 @@
 // pathname Atom and renders it through the plain switch in index.tsx. Web
 // continues to use TanStack Router unchanged through lib/router.ts.
 import { useAtomValue } from "@effect/atom-react";
-import { Atom } from "effect/unstable/reactivity";
+import { Atom } from "effect/reactivity";
 
 import type { SettingsSectionPath } from "../../../web/src/components/settings/SettingsNavigationContent.logic";
 import { appAtomRegistry } from "./state/atomRegistry";

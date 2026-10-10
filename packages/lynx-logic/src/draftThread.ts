@@ -1,15 +1,14 @@
+import type { OrchestrationThreadShell, ThreadTurnStartBootstrap } from "./orchestration.ts";
 import {
   DEFAULT_PROVIDER_INTERACTION_MODE,
   DEFAULT_RUNTIME_MODE,
   PROVIDER_SEND_TURN_MAX_ATTACHMENTS,
   isProviderSendTurnSupportedImageMimeType,
   type ModelSelection,
-  type OrchestrationThreadShell,
   type ProjectId,
   type ProviderInteractionMode,
   type RuntimeMode,
   type ThreadId,
-  type ThreadTurnStartBootstrap,
   type UploadChatAttachment,
 } from "@t3tools/contracts";
 
@@ -332,6 +331,8 @@ export function createLocalDraftThread(input: {
     settledOverride: null,
     settledAt: null,
     session: null,
+    runtime: null,
+    latestRun: null,
     latestUserMessageAt: null,
     hasPendingApprovals: false,
     hasPendingUserInput: false,

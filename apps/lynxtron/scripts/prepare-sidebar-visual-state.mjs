@@ -17,45 +17,19 @@ function sha256File(file) {
   return createHash("sha256").update(readFileSync(file)).digest("hex");
 }
 
+// Read only: the server owns the file and every write to it.
 function readSidebarSnapshot(databasePath) {
-  const database = new DatabaseSync(databasePath);
+  const database = new DatabaseSync(databasePath, { readOnly: true });
   try {
-    database.exec("PRAGMA wal_checkpoint(TRUNCATE)");
     return database
       .prepare(
         `SELECT title
-         FROM projection_threads
+         FROM orchestration_v2_projection_threads
          WHERE deleted_at IS NULL
          ORDER BY updated_at DESC, thread_id DESC`,
       )
       .all()
       .map((row) => row.title);
-  } finally {
-    database.close();
-  }
-}
-
-function stabilizeSidebarTimestamps(databasePath, titles) {
-  const database = new DatabaseSync(databasePath);
-  const update = database.prepare(
-    `UPDATE projection_threads
-     SET created_at = ?, updated_at = ?
-     WHERE title = ?`,
-  );
-  try {
-    database.exec("BEGIN IMMEDIATE");
-    titles.forEach((title, index) => {
-      // Visual captures run one client after the other. A fixed, deliberately
-      // old timestamp keeps the relative-time label stable across both runs,
-      // while the one-second offsets preserve the canonical newest-first order.
-      const timestamp = new Date(Date.UTC(2020, 0, 1, 0, 0, index)).toISOString();
-      update.run(timestamp, timestamp, title);
-    });
-    database.exec("COMMIT");
-    database.exec("PRAGMA wal_checkpoint(TRUNCATE)");
-  } catch (error) {
-    database.exec("ROLLBACK");
-    throw error;
   } finally {
     database.close();
   }
@@ -98,7 +72,7 @@ function devInstance(args) {
 export async function prepareSidebarVisualState(baseDirectory) {
   const baseDir = resolve(baseDirectory);
   const manifestPath = join(baseDir, "visual-state.json");
-  const databasePath = join(baseDir, "userdata", "state.sqlite");
+  const databasePath = join(baseDir, "userdata", "statev2.sqlite");
   if (!existsSync(manifestPath) || !existsSync(databasePath)) {
     throw new Error("Sidebar visual state requires a directory created by visual:prepare.");
   }
@@ -136,7 +110,6 @@ export async function prepareSidebarVisualState(baseDirectory) {
     else writeFileSync(prefsPath, prefsBefore);
   }
 
-  stabilizeSidebarTimestamps(databasePath, titles);
   const renderedTitles = readSidebarSnapshot(databasePath);
   if (
     renderedTitles.length !== titles.length ||

@@ -8,6 +8,10 @@
 // The turn is chosen by a marker in the prompt:
 //   [approval]  stream, ask to run a command, wait for the decision, finish
 //   [slow]      stream until `session/cancel`
+//   [edit <path>=<text>]
+//               write `<text>` and a newline to `<path>` in the session's
+//               workspace, report it as an edit tool call with its diff, and
+//               finish; the marker may repeat, one file each
 //   otherwise   stream a short reply and finish
 // Replies are short paragraphs, because the server's default delivers assistant
 // text to clients a paragraph at a time: one long paragraph would not stream.
@@ -15,6 +19,7 @@
 // Point a Grok provider instance's `binaryPath` at a launcher for this file.
 
 import * as NodeFS from "node:fs";
+import * as NodePath from "node:path";
 import * as NodeProcess from "node:process";
 import * as NodeReadline from "node:readline";
 import * as NodeURL from "node:url";
@@ -24,6 +29,7 @@ export const SCRIPTED_MODEL_NAME = "Scripted 1";
 export const APPROVAL_COMMAND = "printf scripted-approval";
 export const APPROVAL_DONE_TEXT = "SCRIPTED_APPROVAL_DONE";
 export const REPLY_DONE_TEXT = "SCRIPTED_REPLY_DONE";
+export const EDIT_DONE_TEXT = "SCRIPTED_EDIT_DONE";
 export const SLOW_TICK_TEXT = "tick";
 export const APPROVAL_PARAGRAPHS = [
   "Scripted reply one.",
@@ -46,11 +52,21 @@ const PERMISSION_OPTIONS = [
 ];
 // A `[slow]` turn nobody cancels still ends, so an abandoned process cannot run forever.
 const SLOW_TICK_LIMIT = 2400;
+const EDIT_MARKER = /\[edit ([^\]=]+)=([^\]]*)\]/gu;
+
+/** The edits a prompt asks for: `[edit <path>=<text>]`, in order. */
+export function parseEditMarkers(prompt) {
+  return [...prompt.matchAll(EDIT_MARKER)].map((match) => ({
+    path: match[1].trim(),
+    text: `${match[2]}\n`,
+  }));
+}
 
 function runAgent({ input, output, chunkDelayMs }) {
   let nextRequestId = 1;
   let titleClient = false;
   let cancelActiveTurn = null;
+  let workspaceRoot = null;
   const pendingRequests = new Map();
 
   const write = (message) => output.write(`${JSON.stringify({ jsonrpc: "2.0", ...message })}\n`);
@@ -64,6 +80,37 @@ function runAgent({ input, output, chunkDelayMs }) {
       pendingRequests.set(id, resolve);
       write({ id, method, params });
     });
+
+  // Writes one file inside the session's workspace and reports it the way an
+  // agent reports an edit: a tool call carrying the diff, then its completion.
+  function edit({ path, text }) {
+    const toolCallId = `scripted-edit-${nextRequestId++}`;
+    const absolutePath = NodePath.resolve(workspaceRoot ?? "", path);
+    const relativePath = NodePath.relative(workspaceRoot ?? "", absolutePath);
+    const inside =
+      workspaceRoot !== null &&
+      !relativePath.startsWith("..") &&
+      !NodePath.isAbsolute(relativePath);
+    const call = {
+      toolCallId,
+      title: `Edit ${path}`,
+      kind: "edit",
+      locations: [{ path: absolutePath }],
+    };
+    if (!inside) {
+      update({ sessionUpdate: "tool_call", ...call, status: "failed" });
+      return false;
+    }
+    const oldText = NodeFS.existsSync(absolutePath)
+      ? NodeFS.readFileSync(absolutePath, "utf8")
+      : null;
+    const content = [{ type: "diff", path: absolutePath, oldText, newText: text }];
+    update({ sessionUpdate: "tool_call", ...call, status: "in_progress", content });
+    NodeFS.mkdirSync(NodePath.dirname(absolutePath), { recursive: true });
+    NodeFS.writeFileSync(absolutePath, text);
+    update({ sessionUpdate: "tool_call_update", toolCallId, status: "completed", content });
+    return true;
+  }
 
   async function runTurn(params) {
     const prompt = (params.prompt ?? [])
@@ -150,6 +197,18 @@ function runAgent({ input, output, chunkDelayMs }) {
           cancelled = true;
         }
       }
+    } else if (parseEditMarkers(prompt).length > 0) {
+      const written = parseEditMarkers(prompt).map(edit);
+      await stream(
+        written.every(Boolean)
+          ? [
+              "Edited",
+              `${written.length}`,
+              written.length === 1 ? "file." : "files.",
+              EDIT_DONE_TEXT,
+            ]
+          : ["An", "edit", "outside", "the", "workspace", "was", "refused."],
+      );
     } else {
       await stream(["Scripted", "reply.", REPLY_DONE_TEXT]);
     }
@@ -168,7 +227,10 @@ function runAgent({ input, output, chunkDelayMs }) {
       };
     },
     authenticate: () => ({}),
-    "session/new": () => ({ sessionId: SESSION_ID, models: MODEL_STATE }),
+    "session/new": (params) => {
+      workspaceRoot = typeof params?.cwd === "string" ? NodeFS.realpathSync(params.cwd) : null;
+      return { sessionId: SESSION_ID, models: MODEL_STATE };
+    },
     "session/set_model": (params) => {
       if (params?.modelId !== SCRIPTED_MODEL_ID) {
         throw Object.assign(new Error(`Unknown model ${params?.modelId}`), { code: -32602 });

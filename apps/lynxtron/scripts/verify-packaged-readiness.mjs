@@ -938,7 +938,7 @@ async function waitForSelectorAttributeMeasurement({
 // Upstream's SidebarChrome carries no Lynx class names: the brand is found by
 // place in the titlebar row (it takes `text-white` on stage artwork), the
 // Settings button by its label. DevTool selectors take no quoted values.
-const SIDEBAR_BRAND = ".drag-region > .w-fit";
+const SIDEBAR_BRAND = ".drag-region .w-fit";
 const SIDEBAR_FOOTER = ".sidebar-footer";
 const SIDEBAR_SETTINGS_BUTTON = `${SIDEBAR_FOOTER} [aria-label=Settings]`;
 
@@ -3241,15 +3241,19 @@ async function verifyComposerBehavior({ child, client, timeoutMs }) {
   };
 }
 
+// The server's state, opened read only: the server owns the file and every
+// write to it. The gates read it to check what the product persisted.
+function openPersistedState(baseDir) {
+  return new DatabaseSync(path.join(baseDir, "userdata", "statev2.sqlite"), { readOnly: true });
+}
+
 function readPersistedThreadIds(baseDir) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return database
       .prepare(
         `SELECT thread_id AS threadId
-         FROM projection_threads
+         FROM orchestration_v2_projection_threads
          WHERE deleted_at IS NULL
          ORDER BY created_at ASC, thread_id ASC`,
       )
@@ -3261,9 +3265,7 @@ function readPersistedThreadIds(baseDir) {
 }
 
 function readPersistedProjects(baseDir) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return database
       .prepare(
@@ -3279,44 +3281,30 @@ function readPersistedProjects(baseDir) {
 }
 
 function readPersistedEmptyThreadIds(baseDir) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return database
       .prepare(
         `SELECT thread.thread_id AS threadId
-         FROM projection_threads AS thread
+         FROM orchestration_v2_projection_threads AS thread
          WHERE thread.deleted_at IS NULL
            AND thread.archived_at IS NULL
            AND thread.title = 'New thread'
-           AND thread.pending_approval_count = 0
-           AND thread.pending_user_input_count = 0
-           AND thread.has_actionable_proposed_plan = 0
            AND NOT EXISTS (
              SELECT 1
-             FROM projection_thread_messages AS message
+             FROM orchestration_v2_projection_messages AS message
              WHERE message.thread_id = thread.thread_id
            )
            AND NOT EXISTS (
              SELECT 1
-             FROM projection_turns AS turn
-             WHERE turn.thread_id = thread.thread_id
+             FROM orchestration_v2_projection_runs AS run
+             WHERE run.thread_id = thread.thread_id
            )
-           AND (
-             NOT EXISTS (
-               SELECT 1
-               FROM projection_thread_sessions AS session
-               WHERE session.thread_id = thread.thread_id
-             )
-             OR EXISTS (
-               SELECT 1
-               FROM projection_thread_sessions AS session
-               WHERE session.thread_id = thread.thread_id
-                 AND session.status = 'idle'
-                 AND session.active_turn_id IS NULL
-                 AND session.last_error IS NULL
-             )
+           AND NOT EXISTS (
+             SELECT 1
+             FROM orchestration_v2_projection_runtime_requests AS request
+             WHERE request.thread_id = thread.thread_id
+               AND request.status = 'pending'
            )
          ORDER BY thread.created_at DESC, thread.thread_id ASC`,
       )
@@ -3328,29 +3316,17 @@ function readPersistedEmptyThreadIds(baseDir) {
 }
 
 function readResolvedUserInputAnswers(baseDir, requestId) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
-    const rows = database
+    const row = database
       .prepare(
         `SELECT payload_json AS payload
-         FROM projection_thread_activities
-         WHERE kind = 'user-input.resolved'
-         ORDER BY created_at DESC, activity_id DESC`,
+         FROM orchestration_v2_projection_runtime_requests
+         WHERE runtime_request_id = ? AND status = 'resolved'`,
       )
-      .all();
-    for (const row of rows) {
-      const payload = JSON.parse(row.payload);
-      if (
-        payload?.requestId === requestId &&
-        payload.answers &&
-        typeof payload.answers === "object"
-      ) {
-        return payload.answers;
-      }
-    }
-    return null;
+      .get(requestId);
+    const answers = row ? JSON.parse(row.payload)?.answers : null;
+    return answers && typeof answers === "object" ? answers : null;
   } finally {
     database.close();
   }
@@ -4466,50 +4442,32 @@ async function verifyNewThreadProjects({
 }
 
 function readPersistedThreadModelSelection(baseDir, threadId) {
-  const escapedThreadId = threadId.replaceAll("'", "''");
-  const query = spawnSync(
-    process.env.T3_NODE_BIN?.trim() || "node",
-    [
-      path.join(REPO_ROOT, "apps/server/scripts/t3-sqlite-state.ts"),
-      "query",
-      "--base-dir",
-      baseDir,
-      "--sql",
-      `SELECT model_selection_json FROM projection_threads WHERE thread_id = '${escapedThreadId}'`,
-    ],
-    { cwd: REPO_ROOT, encoding: "utf8" },
-  );
-  if (query.status !== 0) {
-    throw new Error(
-      `Could not read persisted model selection: ${query.stderr || query.stdout || "unknown"}`,
-    );
+  const database = openPersistedState(baseDir);
+  try {
+    const row = database
+      .prepare(
+        "SELECT payload_json AS payload FROM orchestration_v2_projection_threads WHERE thread_id = ?",
+      )
+      .get(threadId);
+    return row ? (JSON.parse(row.payload)?.modelSelection ?? null) : null;
+  } finally {
+    database.close();
   }
-  const report = JSON.parse(query.stdout);
-  const stored = report.rows?.[0]?.model_selection_json;
-  return typeof stored === "string" ? JSON.parse(stored) : null;
 }
 
 function readPersistedThreadInteractionMode(baseDir, threadId) {
-  const escapedThreadId = threadId.replaceAll("'", "''");
-  const query = spawnSync(
-    process.env.T3_NODE_BIN?.trim() || "node",
-    [
-      path.join(REPO_ROOT, "apps/server/scripts/t3-sqlite-state.ts"),
-      "query",
-      "--base-dir",
-      baseDir,
-      "--sql",
-      `SELECT interaction_mode FROM projection_threads WHERE thread_id = '${escapedThreadId}'`,
-    ],
-    { cwd: REPO_ROOT, encoding: "utf8" },
-  );
-  if (query.status !== 0) {
-    throw new Error(
-      `Could not read persisted interaction mode: ${query.stderr || query.stdout || "unknown"}`,
+  const database = openPersistedState(baseDir);
+  try {
+    return (
+      database
+        .prepare(
+          "SELECT interaction_mode AS interactionMode FROM orchestration_v2_projection_threads WHERE thread_id = ?",
+        )
+        .get(threadId)?.interactionMode ?? null
     );
+  } finally {
+    database.close();
   }
-  const report = JSON.parse(query.stdout);
-  return report.rows?.[0]?.interaction_mode ?? null;
 }
 
 async function selectSessionlessFixtureThread({ baseDir, child, client, timeoutMs }) {
@@ -6379,42 +6337,36 @@ async function verifyComposerSendRetry({ baseDir, child, client, timeoutMs }) {
 }
 
 function readPersistedJourneyCounts(baseDir, threadId) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     const count = (sql) => database.prepare(sql).get(threadId).count;
+    const userMessages = database
+      .prepare(
+        "SELECT payload_json AS payload FROM orchestration_v2_projection_messages WHERE thread_id = ? AND role = 'user' ORDER BY created_at",
+      )
+      .all(threadId)
+      .map((row) => JSON.parse(row.payload));
+    const first = userMessages[0];
     return {
-      userMessages: count(
-        "SELECT COUNT(*) AS count FROM projection_thread_messages WHERE thread_id = ? AND role = 'user'",
-      ),
+      userMessages: userMessages.length,
       assistantMessages: count(
-        "SELECT COUNT(*) AS count FROM projection_thread_messages WHERE thread_id = ? AND role = 'assistant'",
+        "SELECT COUNT(*) AS count FROM orchestration_v2_projection_messages WHERE thread_id = ? AND role = 'assistant'",
       ),
-      turns: count("SELECT COUNT(*) AS count FROM projection_turns WHERE thread_id = ?"),
-      userMessageAttachments: database
-        .prepare(
-          "SELECT attachments_json AS attachments FROM projection_thread_messages WHERE thread_id = ? AND role = 'user'",
-        )
-        .all(threadId)
-        .map((row) => JSON.parse(row.attachments ?? "[]").length),
-      userMessage: (() => {
-        const row = database
-          .prepare(
-            "SELECT text, attachments_json AS attachments FROM projection_thread_messages WHERE thread_id = ? AND role = 'user' ORDER BY created_at LIMIT 1",
-          )
-          .get(threadId);
-        return row
-          ? {
-              text: row.text,
-              attachments: JSON.parse(row.attachments ?? "[]").map((attachment) => ({
-                name: attachment.name,
-                mimeType: attachment.mimeType,
-                sizeBytes: attachment.sizeBytes,
-              })),
-            }
-          : null;
-      })(),
+      // A turn is a run.
+      turns: count(
+        "SELECT COUNT(*) AS count FROM orchestration_v2_projection_runs WHERE thread_id = ?",
+      ),
+      userMessageAttachments: userMessages.map((message) => (message.attachments ?? []).length),
+      userMessage: first
+        ? {
+            text: first.text,
+            attachments: (first.attachments ?? []).map((attachment) => ({
+              name: attachment.name,
+              mimeType: attachment.mimeType,
+              sizeBytes: attachment.sizeBytes,
+            })),
+          }
+        : null,
     };
   } finally {
     database.close();
@@ -6993,7 +6945,7 @@ async function verifyM1LocalJourney({
         draftScopeKey,
         provider: modelSelection,
         fixtureStateSha256: createHash("sha256")
-          .update(readFileSync(path.join(fixtureDir, "userdata", "state.sqlite")))
+          .update(readFileSync(path.join(fixtureDir, "userdata", "statev2.sqlite")))
           .digest("hex"),
       },
       entry: { draftThreadId, projectId: draft.activeThread?.projectId },
@@ -7840,7 +7792,12 @@ async function verifyCheckpointRevert({
 }) {
   const checkpoint = reviewFixture.checkpoint;
   const fixturePath = path.join(projectCwd, checkpoint.files[0].path);
-  const baselineRef = checkpoint.checkpointRef.replace(/\/turn\/\d+$/u, "/turn/0");
+  // A thread's checkpoint refs end in the number of the turn they follow; the
+  // one before this turn's is the tree the turn started from.
+  const baselineRef = checkpoint.checkpointRef.replace(
+    /\d+$/u,
+    String(checkpoint.checkpointTurnCount - 1),
+  );
   const readGitFile = (ref) =>
     spawnSync("git", ["-C", projectCwd, "show", `${ref}:${checkpoint.files[0].path}`], {
       encoding: "utf8",
@@ -7900,16 +7857,32 @@ async function verifyCheckpointRevert({
 
   await tapRevert();
   await waitForLogText(child, log, '"answer":"confirm"', timeoutMs);
-  // A projection fixture has no provider session, so the server refuses the
-  // revert. The refusal must be visible and nothing may move.
-  const failureDeadline = Date.now() + timeoutMs;
-  let failureRow = null;
-  while (Date.now() < failureDeadline && !failureRow) {
-    const rows = await readSelectorMeasurements(client, "[data-timeline-row-kind]");
-    failureRow = rows.find((row) => row.text.includes("Checkpoint revert failed")) ?? null;
-    if (!failureRow) await waitForChildExit(child, 200);
+  // The fixture's thread works in the project's own checkout, where the server
+  // refuses to restore files: another thread may have changed them. It refuses
+  // the command itself, so there is no transcript row; the message the revert
+  // was asked on must say so, and nothing may move.
+  const failure = await waitForValue({
+    child,
+    timeoutMs,
+    read: async () => ({
+      meta: (await readSelectorMeasurements(client, ".transcript-user-meta")).find(
+        (meta) => meta.attributes["data-message-revert-state"] === "failed",
+      ),
+      label: await readOptionalMeasurement(client, ".transcript-message-meta__failure"),
+    }),
+    predicate: (value) => value.meta !== undefined && value.label?.text.trim() === "Revert failed",
+  }).catch(() => {
+    throw new Error("The refused revert never surfaced on its message.");
+  });
+  // The UI shows that the revert failed, not why. The same command through
+  // the bridge gives the server's reason for the report.
+  const refused = await trySendCommand(client, "revertCheckpoint", {
+    threadId: reviewFixture.threadId,
+    turnCount: checkpoint.checkpointTurnCount - 1,
+  });
+  if (refused.status !== "error") {
+    throw new Error(`The server did not refuse the revert: ${JSON.stringify(refused)}`);
   }
-  if (!failureRow) throw new Error("The refused revert never surfaced in the transcript.");
   const afterFailure = await readClientState(client);
   const card = await readOptionalMeasurement(client, ".turn-diff-card");
   if (
@@ -7942,7 +7915,12 @@ async function verifyCheckpointRevert({
       afterCancel: cancelled.messages.length,
       afterRefusedRevert: afterFailure.messages.length,
     },
-    refusal: { row: failureRow.text.trim().slice(0, 200), checkpointCardKept: true },
+    refusal: {
+      messageRevertState: failure.meta.attributes["data-message-revert-state"],
+      label: failure.label.text.trim(),
+      serverReason: refused.message,
+      checkpointCardKept: true,
+    },
     workspace: { file: checkpoint.files[0].path, unchanged: true },
   };
 }
@@ -8425,20 +8403,33 @@ async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
   const settings = JSON.parse(
     readFileSync(path.join(baseDir, "userdata", "settings.json"), "utf8"),
   );
-  const enabledProviders = Object.entries(settings.providers ?? {})
-    .filter(([, provider]) => provider?.enabled === true)
+  const providerInstances = settings.providerInstances ?? {};
+  // The server's rule (`resolveProviderInstanceEnabled`): an explicit false
+  // wins, then the envelope, the config, and the driver's default. The server
+  // may add entries of its own for drivers that are off by default.
+  const offByDefault = new Set(["cursor", "grok", "muse", "pi", "opencode", "antigravity"]);
+  const enabledProviders = Object.entries(providerInstances)
+    .filter(([, instance]) => {
+      const inConfig = instance?.config?.enabled;
+      if (instance?.enabled === false || inConfig === false) return false;
+      return instance?.enabled ?? inConfig ?? !offByDefault.has(instance?.driver);
+    })
     .map(([name]) => name);
-  const binaryPath = settings.providers?.grok?.binaryPath;
+  const binaryPath = providerInstances.grok?.config?.binaryPath;
+  // Codex and Claude run without an entry, so each must be switched off by name.
+  const defaultsOff = ["codex", "claudeAgent"].every(
+    (name) => providerInstances[name] !== undefined && !enabledProviders.includes(name),
+  );
   if (
     enabledProviders.join() !== "grok" ||
-    Object.keys(settings.providerInstances ?? {}).length > 0 ||
+    !defaultsOff ||
     typeof binaryPath !== "string" ||
     !readFileSync(binaryPath, "utf8").includes("scripted-provider.mjs")
   ) {
     throw new Error(
       `The live-turn fixture must enable only the scripted provider: ${JSON.stringify({
         enabledProviders,
-        providerInstances: Object.keys(settings.providerInstances ?? {}),
+        providerInstances: Object.keys(providerInstances),
         binaryPath: binaryPath ?? null,
       })}`,
     );
@@ -15878,13 +15869,13 @@ async function verifySidebarScopeBehavior({ child, client, height, timeoutMs, wi
 }
 
 function readPersistedThreadRuntimeMode(baseDir, threadId) {
-  const database = new DatabaseSync(path.join(baseDir, "userdata", "state.sqlite"), {
-    readOnly: true,
-  });
+  const database = openPersistedState(baseDir);
   try {
     return (
       database
-        .prepare("SELECT runtime_mode AS runtimeMode FROM projection_threads WHERE thread_id = ?")
+        .prepare(
+          "SELECT runtime_mode AS runtimeMode FROM orchestration_v2_projection_threads WHERE thread_id = ?",
+        )
         .get(threadId)?.runtimeMode ?? null
     );
   } finally {

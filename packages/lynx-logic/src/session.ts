@@ -2,7 +2,7 @@ import type {
   OrchestrationLatestTurn,
   OrchestrationSession,
   OrchestrationSessionStatus,
-} from "@t3tools/contracts";
+} from "./orchestration.ts";
 
 export type SessionPresentationPhase = "disconnected" | "connecting" | "ready" | "running";
 

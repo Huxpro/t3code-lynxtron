@@ -9,11 +9,11 @@ import type { RpcSession, WsRpcProtocolClient } from "@t3tools/client-runtime/rp
 import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import {
   type AuthPairingCredentialResult,
-  ClientOrchestrationCommand,
   EnvironmentId,
   type ModelSelection,
   TerminalSessionSnapshot,
-  ORCHESTRATION_WS_METHODS,
+  ORCHESTRATION_V2_WS_METHODS,
+  OrchestrationV2Command,
   ProjectId,
   ProviderInstanceId,
   WS_METHODS,
@@ -26,7 +26,7 @@ import * as Exit from "effect/Exit";
 import * as Option from "effect/Option";
 import * as Schema from "effect/Schema";
 import * as SubscriptionRef from "effect/SubscriptionRef";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult } from "effect/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
 import { CONNECTOR_COMMAND_NAMES } from "../../shared/connectorProtocol.ts";
@@ -43,11 +43,13 @@ import {
   connection,
   provider,
   serverConfig,
+  clientThreads,
   shellSnapshot,
   shellState,
+  threadDetail,
 } from "./upstreamState.fixtures.ts";
 
-const isClientCommand = Schema.is(ClientOrchestrationCommand);
+const isClientCommand = Schema.is(OrchestrationV2Command);
 const decodeTerminalSnapshot = Schema.decodeUnknownSync(TerminalSessionSnapshot);
 const codex = ProviderInstanceId.make("codex");
 const snapshot = shellSnapshot([{ id: "thread-1" }]);
@@ -59,7 +61,11 @@ const PRIMARY_TARGET = new PrimaryConnectionTarget({
 });
 
 interface Sent {
-  readonly dispatched: Array<ClientOrchestrationCommand>;
+  readonly dispatched: Array<OrchestrationV2Command>;
+  /** Project changes, which upstream sends on their own RPC. */
+  readonly projects: Array<Record<string, unknown>>;
+  /** First turns, which upstream sends as a thread launch. */
+  readonly launches: Array<Record<string, unknown>>;
   readonly requests: Array<{ readonly tag: string; readonly input: unknown }>;
   readonly terminal: Array<Record<string, unknown>>;
   readonly closedTerminals: Array<{ readonly threadId: string; readonly terminalId: string }>;
@@ -70,12 +76,16 @@ function harness(
   options: {
     readonly replies?: Readonly<Record<string, unknown>>;
     readonly failDispatch?: Error;
+    /** The run the server reports as executing on any thread it is asked about. */
+    readonly runningRunId?: string;
     readonly failTerminalClose?: Error;
     readonly context?: Partial<UpstreamCommandContext>;
   } = {},
 ) {
   const sent: Sent = {
     dispatched: [],
+    projects: [],
+    launches: [],
     requests: [],
     terminal: [],
     closedTerminals: [],
@@ -86,13 +96,30 @@ function harness(
   // Upstream's own operations run against a session that records what they
   // send, with the command ids the host's `Crypto` hands out.
   const client = {
-    [ORCHESTRATION_WS_METHODS.dispatchCommand]: (command: ClientOrchestrationCommand) =>
+    [ORCHESTRATION_V2_WS_METHODS.dispatchCommand]: (command: OrchestrationV2Command) =>
       Effect.suspend(() => {
         sent.dispatched.push(command);
         return options.failDispatch
           ? Effect.fail(options.failDispatch)
           : Effect.succeed({ sequence: 8 });
       }),
+    [WS_METHODS.projectsMutate]: (mutation: Record<string, unknown>) =>
+      Effect.sync(() => {
+        sent.projects.push(mutation);
+        return { sequence: 8 };
+      }),
+    [ORCHESTRATION_V2_WS_METHODS.launchThread]: (input: Record<string, unknown>) =>
+      Effect.sync(() => {
+        sent.launches.push(input);
+        return { threadId: input.threadId, projection: threadDetail(), resumed: false };
+      }),
+    [ORCHESTRATION_V2_WS_METHODS.getThreadProjection]: (input: { readonly threadId: string }) =>
+      Effect.sync(() =>
+        threadDetail({
+          id: input.threadId,
+          ...(options.runningRunId === undefined ? {} : { runningRunId: options.runningRunId }),
+        }),
+      ),
   } as unknown as WsRpcProtocolClient;
   const session: RpcSession = {
     client,
@@ -104,7 +131,7 @@ function harness(
   };
   const supervisor = Effect.runSync(
     Effect.gen(function* () {
-      return EnvironmentSupervisor.of({
+      return EnvironmentSupervisor.EnvironmentSupervisor.of({
         target: PRIMARY_TARGET,
         state: yield* SubscriptionRef.make<SupervisorConnectionState>({
           ...AVAILABLE_CONNECTION_STATE,
@@ -128,7 +155,7 @@ function harness(
     operation: async (name, input) => {
       const exit = await Effect.runPromiseExit(
         upstreamOperation(name, input).pipe(
-          Effect.provideService(EnvironmentSupervisor, supervisor),
+          Effect.provideService(EnvironmentSupervisor.EnvironmentSupervisor, supervisor),
           Effect.provideService(Crypto.Crypto, crypto),
         ),
       );
@@ -187,7 +214,7 @@ function harness(
     },
   };
   const bridge = createUpstreamCommandBridge(port, {
-    threads: () => snapshot.threads,
+    threads: () => clientThreads([{ id: "thread-1" }]),
     projects: () => snapshot.projects,
     config: () => serverConfig(),
     httpBaseUrl: () => "ws://127.0.0.1:4100",
@@ -264,10 +291,9 @@ describe("upstreamCommandsReady", () => {
 
 describe("thread and project commands", () => {
   it("sends every one as a command the server's contract accepts", async () => {
-    const { bridge, sent } = harness();
+    const { bridge, sent } = harness({ runningRunId: "run-1" });
     const threadId = "thread-1";
     await bridge.interrupt({ threadId });
-    await bridge.revertCheckpoint({ threadId, turnCount: 2 });
     await bridge.setThreadRuntimeMode({ threadId, runtimeMode: "approval-required" });
     await bridge.setThreadInteractionMode({ threadId, interactionMode: "plan" });
     await bridge.deleteThread({ threadId });
@@ -291,8 +317,7 @@ describe("thread and project commands", () => {
     assert.deepEqual(
       sent.dispatched.map((command) => command.type),
       [
-        "thread.turn.interrupt",
-        "thread.checkpoint.revert",
+        "run.interrupt",
         "thread.runtime-mode.set",
         "thread.interaction-mode.set",
         "thread.delete",
@@ -303,35 +328,61 @@ describe("thread and project commands", () => {
         "thread.pin",
         "thread.pin",
         "thread.unpin",
-        "thread.meta.update",
-        "thread.meta.update",
+        "thread.metadata.update",
+        "thread.metadata.update",
         "thread.snooze",
         "thread.unsnooze",
-        "project.meta.update",
-        "project.delete",
-        "project.meta.update",
       ],
     );
-    // Each id is one upstream's builder asked the host's `Crypto` for.
     assert.deepEqual(
-      sent.dispatched.map((command) => command.commandId),
-      sent.dispatched.map((_, index) => `command-${index + 1}`),
+      sent.projects.map((mutation) => mutation.type),
+      ["project.update", "project.delete", "project.update"],
     );
-    assert.deepInclude(sent.dispatched[12], { title: "Plans" });
-    assert.deepInclude(sent.dispatched[16], { title: "Renamed" });
+    // Each id is one upstream's builder asked the host's `Crypto` for.
+    const commandIds = [...sent.dispatched, ...sent.projects].map((command) => command.commandId);
+    assert.deepEqual(
+      commandIds,
+      commandIds.map((_, index) => `command-${index + 1}`),
+    );
+    assert.deepInclude(sent.dispatched[11], { title: "Plans" });
+    assert.deepInclude(sent.projects[0], { title: "Renamed" });
   });
 
-  it("interrupts the running turn when it is named and the thread's turn when it is not", async () => {
+  it("interrupts the turn it names, or the run that is executing", async () => {
+    const named = harness();
+    await named.bridge.interrupt({ threadId: "thread-1", turnId: "run-7" as never });
+    assert.deepInclude<Record<string, unknown>>(named.sent.dispatched[0] ?? {}, {
+      type: "run.interrupt",
+      runId: "run-7",
+    });
+
+    const running = harness({ runningRunId: "run-1" });
+    await running.bridge.interrupt({ threadId: "thread-1" });
+    assert.deepInclude<Record<string, unknown>>(running.sent.dispatched[0] ?? {}, {
+      type: "run.interrupt",
+      runId: "run-1",
+    });
+
+    const idle = harness();
+    await idle.bridge.interrupt({ threadId: "thread-1" });
+    assert.deepEqual(idle.sent.dispatched, []);
+  });
+
+  it("refuses to revert to a checkpoint the server does not have", async () => {
     const { bridge, sent } = harness();
-    await bridge.interrupt({ threadId: "thread-1" });
-    assert.notProperty(sent.dispatched[0], "turnId");
+    let message = "";
+    await bridge.revertCheckpoint({ threadId: "thread-1", turnCount: 2 }).catch((error: Error) => {
+      message = error.message;
+    });
+    assert.match(message, /run ordinal 2 is unavailable/);
+    assert.deepEqual(sent.dispatched, []);
   });
 
   it("sends nothing for a rename to an empty title", async () => {
     const { bridge, sent } = harness();
     await bridge.renameThread({ threadId: "thread-1", title: "   " });
     await bridge.updateProject({ projectId: "project-1", title: "" });
-    assert.deepEqual(sent.dispatched, []);
+    assert.deepEqual([sent.dispatched, sent.projects], [[], []]);
   });
 });
 
@@ -351,9 +402,7 @@ describe("createProject", () => {
   it("creates a project at the path the host resolved, as upstream's clients do", async () => {
     const { bridge, sent } = harness();
     const { projectId } = await bridge.createProject({ workspaceRoot: "~/work/site" });
-    const [command] = sent.dispatched;
-    assert.isTrue(isClientCommand(command));
-    assert.deepInclude<Record<string, unknown>>(command ?? {}, {
+    assert.deepInclude(sent.projects[0], {
       type: "project.create",
       projectId,
       title: "site",
@@ -370,7 +419,7 @@ describe("createProject", () => {
     assert.deepEqual(await bridge.createProject({ workspaceRoot: "~/project-1/" }), {
       projectId: "project-1",
     });
-    assert.deepEqual(sent.dispatched, []);
+    assert.deepEqual(sent.projects, []);
   });
 });
 
@@ -472,30 +521,38 @@ describe("pairing and client sessions", () => {
 });
 
 describe("sendPrompt", () => {
-  it("starts a turn on a known thread with its modes and the pending selection", async () => {
+  it("starts a turn on a known thread with the pending selection", async () => {
     const { bridge, sent, pendingModelSelections } = harness();
     pendingModelSelections.set("thread-1", { instanceId: codex, model: "gpt-5-mini" });
     await bridge.sendPrompt({ threadId: "thread-1", text: "hello", planModeEnabled: false });
     const [command] = sent.dispatched;
     assert.isTrue(isClientCommand(command));
     assert.deepInclude<Record<string, unknown>>(command ?? {}, {
-      type: "thread.turn.start",
+      type: "message.dispatch",
       threadId: "thread-1",
+      text: "hello",
       modelSelection: { instanceId: codex, model: "gpt-5-mini" },
-      runtimeMode: "full-access",
-      createdAt: "2026-10-10T00:00:00.000Z",
+      dispatchMode: { type: "start_immediately" },
     });
   });
 
-  it("creates a draft's thread with the turn and names its temporary worktree branch", async () => {
+  it("queues a prompt behind the run that is executing", async () => {
+    const { bridge, sent } = harness({ runningRunId: "run-1" });
+    await bridge.sendPrompt({ threadId: "thread-1", text: "next", planModeEnabled: false });
+    assert.deepInclude<Record<string, unknown>>(sent.dispatched[0] ?? {}, {
+      type: "message.dispatch",
+      dispatchMode: { type: "queue_after_active" },
+    });
+  });
+
+  it("launches a draft's thread with the turn and names its temporary worktree branch", async () => {
     const { bridge, sent } = harness();
     await bridge.sendPrompt({
       threadId: "thread-draft",
       text: "hello",
       planModeEnabled: false,
       bootstrap: {
-        // A draft's unset branch and worktree do not survive the bridge; the
-        // contract wants them as null.
+        // A draft's unset branch and worktree do not survive the bridge.
         createThread: {
           projectId: ProjectId.make("project-1"),
           title: "hello",
@@ -507,12 +564,16 @@ describe("sendPrompt", () => {
         prepareWorktree: { projectCwd: "/work/project-1", baseBranch: "main" },
       },
     });
-    const [command] = sent.dispatched;
-    assert.isTrue(isClientCommand(command));
-    if (command?.type !== "thread.turn.start") throw new Error("expected a turn start");
-    assert.deepInclude(command.bootstrap?.createThread, { branch: null, worktreePath: null });
-    assert.equal(command.bootstrap?.prepareWorktree?.branch, "t3code/0a1b2c3d");
-    assert.equal(command.titleSeed, "hello");
+    assert.deepEqual(sent.dispatched, []);
+    assert.deepInclude(sent.launches[0], {
+      threadId: "thread-draft",
+      projectId: "project-1",
+      title: "hello",
+      generateTitle: true,
+      modelSelection: { instanceId: codex, model: "gpt-5" },
+      workspaceStrategy: { type: "worktree", baseRef: "main", branch: "t3/0a1b2c3d" },
+    });
+    assert.deepInclude(sent.launches[0]?.initialMessage, { text: "hello" });
   });
 
   it("refuses a thread the server does not have and sends nothing", async () => {
@@ -536,7 +597,7 @@ describe("setModelSelection", () => {
     await bridge.setModelSelection({ threadId: "thread-1", selection });
     assert.isTrue(isClientCommand(sent.dispatched[0]));
     assert.deepInclude(sent.dispatched[0], {
-      type: "thread.meta.update",
+      type: "thread.model-selection.set",
       modelSelection: selection,
     });
     assert.deepEqual([...pendingModelSelections], [["thread-1", selection]]);
@@ -664,7 +725,7 @@ describe("pass-through requests", () => {
       [
         WS_METHODS.terminalWrite,
         WS_METHODS.terminalResize,
-        ORCHESTRATION_WS_METHODS.getTurnDiff,
+        ORCHESTRATION_V2_WS_METHODS.getTurnDiff,
         WS_METHODS.serverDiscoverSourceControl,
         WS_METHODS.projectsListEntries,
       ],

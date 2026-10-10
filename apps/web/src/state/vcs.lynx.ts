@@ -1,4 +1,4 @@
-import { AsyncResult, Atom } from "effect/unstable/reactivity";
+import { AsyncResult, Atom } from "effect/reactivity";
 
 const EMPTY_VCS_STATUS_ATOM = Atom.make(AsyncResult.success(null)).pipe(
   Atom.withLabel("lynx:vcs-status:unsupported"),

@@ -1,4 +1,4 @@
-import type { ThreadTurnStartBootstrap } from "@t3tools/contracts";
+import type { ThreadTurnStartBootstrap } from "@t3tools/lynx-logic/orchestration";
 import { buildTemporaryWorktreeBranchName } from "@t3tools/shared/git";
 
 /**

@@ -1,4 +1,5 @@
-import { EventId, TurnId, type OrchestrationThreadActivity } from "@t3tools/contracts";
+import type { OrchestrationThreadActivity } from "./orchestration.ts";
+import { EventId, TurnId } from "@t3tools/contracts";
 import { describe, expect, it } from "vite-plus/test";
 
 import { derivePendingApprovals, derivePendingUserInputs } from "./pendingRequests.ts";

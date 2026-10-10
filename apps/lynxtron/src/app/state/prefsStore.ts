@@ -7,7 +7,7 @@ import {
   type PortableClientSettingsPatch,
 } from "@t3tools/lynx-logic/settings";
 import { sanitizeThreadVisitedTimestampRecord } from "@t3tools/lynx-logic/sidebar";
-import { Atom } from "effect/unstable/reactivity";
+import { Atom } from "effect/reactivity";
 
 import { clientCapabilities } from "../platform/clientCapabilities";
 import { appAtomRegistry } from "./atomRegistry";

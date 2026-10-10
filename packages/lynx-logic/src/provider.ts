@@ -29,8 +29,19 @@ import type {
 const DRIVERS_DISABLED_BY_DEFAULT: ReadonlySet<string> = new Set([
   "cursor",
   "grok",
+  "muse",
+  "pi",
   "antigravity",
   "opencode",
+]);
+
+/**
+ * Schema-free twin of contracts' `isUnconfiguredDefaultInstanceEnabled`: the
+ * default instances the server runs before settings have an entry for them.
+ */
+const DEFAULT_INSTANCES_ENABLED_UNCONFIGURED: ReadonlySet<string> = new Set([
+  "codex",
+  "claudeAgent",
 ]);
 
 /**
@@ -278,24 +289,23 @@ export function deriveProviderEntriesByEnvironment(
  * settings write, so picker visibility must follow settings rather than waiting
  * for probe reconciliation.
  *
- * Non-default instances only exist through `providerInstances`; if one is
- * absent there, its streamed snapshot is stale (for example immediately after
- * deletion) and is treated as disabled.
+ * A default instance without a `providerInstances` entry is on only when the
+ * server runs it unconfigured (Codex and Claude). Any other instance missing
+ * from `providerInstances` is stale (for example immediately after deletion)
+ * and is treated as disabled.
  */
 export function applyProviderInstanceSettings(
   entries: ReadonlyArray<ProviderInstanceEntry>,
-  settings: Pick<ServerSettings, "providerInstances" | "providers">,
+  settings: Pick<ServerSettings, "providerInstances">,
 ): ReadonlyArray<ProviderInstanceEntry> {
-  const legacyProviders = settings.providers as Readonly<
-    Record<string, { readonly enabled?: boolean } | undefined>
-  >;
-
   return entries.map((entry) => {
-    const explicitInstance = settings.providerInstances?.[entry.instanceId];
+    const explicitInstance = Object.hasOwn(settings.providerInstances, entry.instanceId)
+      ? settings.providerInstances[entry.instanceId]
+      : undefined;
     const enabled = explicitInstance
       ? resolveProviderInstanceEnabled(explicitInstance)
       : entry.isDefault
-        ? (legacyProviders[entry.driverKind]?.enabled ?? entry.enabled)
+        ? DEFAULT_INSTANCES_ENABLED_UNCONFIGURED.has(entry.instanceId)
         : false;
     return enabled === entry.enabled ? entry : { ...entry, enabled };
   });

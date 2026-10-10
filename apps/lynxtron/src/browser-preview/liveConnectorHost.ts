@@ -24,6 +24,12 @@
  * unavailable. The live host does forward terminal RPC because it is connected
  * to a real shared server; the static preview remains shell-free.
  */
+import type {
+  OrchestrationShellSnapshot,
+  OrchestrationThread,
+  OrchestrationThreadShell,
+  ThreadTurnStartBootstrap,
+} from "@t3tools/lynx-logic/orchestration";
 import {
   WsRpcGroup,
   WS_METHODS,
@@ -38,12 +44,9 @@ import {
   type AuthAccessStreamEvent,
   type FilesystemBrowseInput,
   type FilesystemBrowseResult,
-  type OrchestrationShellSnapshot,
   type OrchestrationShellStreamItem,
   type OrchestrationGetTurnDiffInput,
   type OrchestrationGetTurnDiffResult,
-  type OrchestrationThreadShell,
-  type OrchestrationThread,
   type OrchestrationThreadStreamItem,
   type ProjectListEntriesResult,
   type ProjectReadFileResult,
@@ -71,7 +74,6 @@ import {
   type TerminalResizeInput,
   type TerminalSessionSnapshot,
   type TerminalWriteInput,
-  type ThreadTurnStartBootstrap,
   type UploadChatAttachment,
   type VcsStatusResult,
 } from "@t3tools/contracts";
@@ -103,8 +105,8 @@ import * as Stream from "effect/Stream";
 import * as Fiber from "effect/Fiber";
 import * as Scope from "effect/Scope";
 import * as Schedule from "effect/Schedule";
-import { RpcClient, RpcSerialization } from "effect/unstable/rpc";
-import * as Socket from "effect/unstable/socket/Socket";
+import { RpcClient, RpcSerialization } from "effect/rpc";
+import * as Socket from "effect/socket/Socket";
 
 import {
   T3_CONNECTOR_EVENT,

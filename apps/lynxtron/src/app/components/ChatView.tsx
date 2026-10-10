@@ -36,7 +36,6 @@ import {
   getTriggerDisplayModelName,
 } from "@t3tools/lynx-logic/modelPicker";
 import { formatProviderDisplayName } from "@t3tools/lynx-logic/composer";
-import { deriveLatestContextWindowSnapshot } from "../../../../web/src/lib/contextWindow";
 import {
   projectProviderStatusNotice,
   resolveSelectableProviderInstanceEntry,
@@ -132,6 +131,7 @@ export function ChatView({ threadId }: ChatViewProps) {
     serverConfig,
     activePlan,
     activeProposedPlan,
+    contextWindow,
     activities,
     latestTurn,
     proposedPlans,
@@ -447,10 +447,7 @@ export function ChatView({ threadId }: ChatViewProps) {
       }),
     [presentedModelSelection?.options, presentedSelectedModel?.capabilities],
   );
-  const activeContextWindow = useMemo(
-    () => deriveLatestContextWindowSnapshot(activities),
-    [activities],
-  );
+  const activeContextWindow = contextWindow;
   const activeThreadProviderDisplayName = formatProviderDisplayName(
     presentedSelectedModel?.driverKind ?? activeProviderEntry?.driverKind,
   );
