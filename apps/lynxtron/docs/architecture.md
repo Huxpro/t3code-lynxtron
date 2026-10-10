@@ -98,12 +98,14 @@ still needed comes back as a new patch with its own reason.
 
 ## What the Lynx bundle takes from `apps/web`
 
-The Lynx bundle compiles 127 modules from `apps/web/src`: 116 `.lynx` modules
-and 11 upstream modules imported in place (`logicalProject.ts`,
-`worktreeCleanup.ts`, `lib/threadSort.ts`, and `*.logic.ts` or helper
-modules). Those 11 are the whole compile-time coupling
-to upstream Web source. When upstream changes one, the Lynx build or typecheck
-fails and the fix is on the Lynx side.
+The Lynx bundle compiles 127 modules from `apps/web/src`: 112 `.lynx` modules
+and 15 upstream modules imported in place. Eleven are logic
+(`logicalProject.ts`, `worktreeCleanup.ts`, `lib/threadSort.ts`, and
+`*.logic.ts` or helper modules); four are components compiled unmodified
+(`chat/DiffStatLabel`, `ui/kbd`, `ui/separator`, `ui/label`; see "Frontend
+shared layer"). Those 15 are the whole compile-time coupling to upstream Web
+source. When upstream changes one, the Lynx build or typecheck fails and the fix
+is on the Lynx side.
 
 ## Merging upstream
 
@@ -171,9 +173,9 @@ compiled the same component files. That required editing upstream files:
   upstream's files, and the shared Surface components became Lynx-only.
 - Upstream moves at about 1,600 commits a month.
 
-## Frontend shared layer (proposed, not built)
+## Frontend shared layer (pilot)
 
-The layering keeps upstream files untouched. This is how Lynx could still take
+The layering keeps upstream files untouched. This is how Lynx takes
 upstream UI changes without a hand port: compile upstream's component file for
 Lynx and substitute below it.
 
@@ -184,12 +186,23 @@ Lynx and substitute below it.
 | Seams                     | 46 `components/ui` primitives, platform hooks | 14%               | A `.lynx` module with the same exports (today's model). |
 | Platform-native surfaces  | 149 files, 116k lines                         | 49%               | A Lynx implementation of the whole module.              |
 
-Compiling a composition component unmodified needs a loader that maps the DOM
-tags it writes to Lynx host components, the seam substitution that already
-exists, and Tailwind output for its classes. A spike on 2026-10-09 compiled
-three unmodified upstream components this way and they rendered correctly in
-Lynxtron. The gaps were CSS selectors Lynx lacks (`space-y-*`, `first:`,
-`last:`) and one unmapped icon.
+A pilot on 2026-10-10 built the mechanism and switched four components to
+upstream's file:
+
+- `scripts/lynx-dom-jsx-loader.cjs` rewrites the DOM tags in an upstream
+  `.tsx` to the components `src/app/platform/hostDom.tsx` exports. The exports
+  are the tag map. An unmapped tag, an event prop other than `onClick`, or a
+  DOM `ref` fails the build, and so does a DOM tag in a Lynx-owned file.
+- `src/app/host-dom-elements.d.ts` types those tags with the host components'
+  props, so the upstream file is typechecked as it will run.
+- A package the upstream file imports is replaced the same way as a module:
+  `src/app/platform/base-ui/*` stands in for `@base-ui/react/*` through a
+  bundler alias and a tsconfig path. `use-render` is where a tag named as a
+  string (`defaultTagName: "label"`) reaches its host component.
+- The upstream file joins the Tailwind content list. Lynx rules that selected
+  the old copy by class select upstream's `data-slot` instead.
+- `scripts/component-share-candidates.mjs` lists the remaining `.lynx.tsx`
+  copies of upstream components with what blocks each one.
 
 Limits and open questions:
 
@@ -199,10 +212,15 @@ Limits and open questions:
   cannot reach inside them.
 - A `.lynx` seam must export what the Web module exports. Nothing checks that
   yet; the Lynx `button` already lacks upstream's newer `InlineButton`.
+- The loader sees tags, not behavior. A handler upstream typed for a DOM event
+  and passed by reference typechecks and receives a Lynx event; a class from
+  Tailwind 4's variant set (`not-[...]`, `text-base/4.5`, container queries)
+  produces no rule under the Lynx Tailwind 3 pipeline and nothing reports it.
+- Lynx CSS and battery gates select the copies by their own class names
+  (`composer-approval-action--accept`, `sidebar-brand`). Switching such a
+  component is a look change and a gate change, not a build change.
 - Not measured: render cost of host components versus static Lynx templates,
-  how much of Tailwind's variant set can be lowered mechanically, and whether
-  an existing hand-written Lynx surface can switch to the upstream file
-  without a visible change.
+  and the four switched components in a running app.
 
 ## Known debts
 
