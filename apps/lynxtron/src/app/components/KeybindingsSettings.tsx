@@ -2,9 +2,9 @@ import {
   buildKeybindingCommandOptions,
   buildKeybindingRows,
   commandLabel,
-  formatKeybindingShortcutLabel,
   shortcutToKeybindingInput,
 } from "../../../../web/src/components/settings/KeybindingsSettings.logic";
+import { formatKeybindingShortcutLabel } from "../logic/keybindings";
 import { useCallback, useMemo, useState } from "@lynx-js/react";
 import type {
   KeybindingCommand,

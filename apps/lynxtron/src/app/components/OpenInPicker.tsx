@@ -4,7 +4,7 @@ import type {
   ExecutionEnvironmentPlatformOs,
   ResolvedKeybindingsConfig,
 } from "@t3tools/contracts";
-import { formatKeybindingShortcutLabel } from "../../../../web/src/components/settings/KeybindingsSettings.logic";
+import { formatKeybindingShortcutLabel } from "../logic/keybindings";
 
 import externalCursorUrl from "../assets/cursor.svg?external";
 import externalTraeUrl from "../assets/trae.svg?external";

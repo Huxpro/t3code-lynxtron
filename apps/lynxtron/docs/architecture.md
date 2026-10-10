@@ -221,13 +221,9 @@ Limits and open questions:
   messages, the Forgejo icon, and the upstream changes to the 65 Web modules
   that have a `.lynx` module of the same name (largest: `Sidebar.tsx`,
   `composerDraftStore.ts`, `MessagesTimeline.logic.ts`, `session-logic.ts`).
-- `keybindings.lynx.ts` and `KeybindingsSettings.logic.lynx.ts` still shadow
-  upstream. Upstream's `keybindings.ts` typechecks only with
-  `exactOptionalPropertyTypes`, which `src/app/tsconfig.json` does not set;
-  turning it on reports about 150 errors in Lynx-owned code.
-- The Lynx keybinding conflict logic is a copy from before the merge and
-  reports no conflicts for upstream's current defaults; it has not been
-  compared with upstream's current logic.
+- Native-menu key packets are matched by `packages/lynx-logic/src/keyboard.ts`,
+  a second copy of the matching loop in upstream's `keybindings.ts`. It lacks
+  upstream's physical-key fallback for punctuation and its AltGraph guard.
 - `packages/lynx-logic` has 20 type errors under `tsgo` (test fixture typing
   and Effect diagnostics for `Date`). They moved with the code from
   `packages/client-runtime`, which is clean now.

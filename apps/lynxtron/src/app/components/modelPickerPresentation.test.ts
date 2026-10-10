@@ -13,7 +13,7 @@ import {
   type ModelPickerContext,
 } from "@t3tools/lynx-logic/modelPicker";
 import { deriveProviderInstanceEntries } from "@t3tools/lynx-logic/provider";
-import { resolveModelPickerJumpTargets } from "../../../../web/src/keybindings";
+import { resolveModelPickerJumpTargets } from "../logic/keybindings";
 
 function provider(input: {
   readonly instanceId: string;
