@@ -9,21 +9,21 @@ type InputEvent = {
 };
 
 export interface InputProps {
-  readonly "aria-label"?: string;
-  readonly children?: ReactNode;
-  readonly className?: string;
-  readonly disabled?: boolean;
-  readonly id?: string;
-  readonly nativeInput?: boolean;
-  readonly onBlur?: () => void;
-  readonly onChange?: (event: { currentTarget: { value: string } }) => void;
-  readonly onValueChange?: (value: string) => void;
-  readonly placeholder?: string;
-  readonly size?: "sm" | "default" | "lg" | number;
-  readonly spellCheck?: boolean;
-  readonly type?: string;
-  readonly unstyled?: boolean;
-  readonly value?: string;
+  readonly "aria-label"?: string | undefined;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
+  readonly disabled?: boolean | undefined;
+  readonly id?: string | undefined;
+  readonly nativeInput?: boolean | undefined;
+  readonly onBlur?: (() => void) | undefined;
+  readonly onChange?: ((event: { currentTarget: { value: string } }) => void) | undefined;
+  readonly onValueChange?: ((value: string) => void) | undefined;
+  readonly placeholder?: string | undefined;
+  readonly size?: "sm" | "default" | "lg" | number | undefined;
+  readonly spellCheck?: boolean | undefined;
+  readonly type?: string | undefined;
+  readonly unstyled?: boolean | undefined;
+  readonly value?: string | undefined;
 }
 
 export function Input({
@@ -61,12 +61,12 @@ export function Input({
   return (
     <input
       ref={ref}
-      aria-label={ariaLabel}
-      aria-disabled={disabled ? "true" : undefined}
+      {...(ariaLabel === undefined ? {} : { "aria-label": ariaLabel })}
+      {...(disabled ? { "aria-disabled": "true" } : {})}
       className={resolvedClassName}
-      id={id}
-      placeholder={placeholder}
-      bindblur={onBlur}
+      {...(id === undefined ? {} : { id })}
+      {...(placeholder === undefined ? {} : { placeholder })}
+      {...(onBlur === undefined ? {} : { bindblur: onBlur })}
       bindinput={handleInput}
     />
   );

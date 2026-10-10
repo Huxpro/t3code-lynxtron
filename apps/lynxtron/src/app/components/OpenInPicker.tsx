@@ -40,9 +40,9 @@ export function OpenInPicker({
   readonly availableEditors: ReadonlyArray<EditorId>;
   readonly cwd: string | null | undefined;
   readonly platform: ExecutionEnvironmentPlatformOs | undefined;
-  readonly keybindings?: ResolvedKeybindingsConfig;
-  readonly compact?: boolean;
-  readonly anchor?: "header-open-in-menu" | "file-open-in-menu";
+  readonly keybindings?: ResolvedKeybindingsConfig | undefined;
+  readonly compact?: boolean | undefined;
+  readonly anchor?: "header-open-in-menu" | "file-open-in-menu" | undefined;
 }) {
   const [storedEditor, setStoredEditor] = usePreferredEditorState();
   const [open, setOpen] = useState(false);

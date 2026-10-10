@@ -28,6 +28,14 @@ interface MainThreadElement {
 
 const ignoreTap = () => undefined;
 
+/**
+ * A host attribute that is written even when its value is undefined, so it still
+ * overrides the same key arriving through spread props.
+ */
+export function hostAttribute(name: string, value: unknown): Record<string, unknown> {
+  return { [name]: value };
+}
+
 export function HostView({
   children,
   className,
@@ -43,17 +51,17 @@ export function HostView({
   onMouseLeave,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly eventThrough?: boolean;
-  readonly hoverRevealSelector?: string;
-  readonly stopTapPropagation?: boolean;
-  readonly onClick?: (event: unknown) => void;
-  readonly onDoubleClick?: (event: unknown) => void;
-  readonly onAuxClick?: (event: unknown) => void;
-  readonly onContextMenu?: (event: unknown) => void;
-  readonly onKeyDown?: (event: unknown) => void;
-  readonly onMouseEnter?: (event: unknown) => void;
-  readonly onMouseLeave?: (event: unknown) => void;
+  readonly children?: ReactNode | undefined;
+  readonly eventThrough?: boolean | undefined;
+  readonly hoverRevealSelector?: string | undefined;
+  readonly stopTapPropagation?: boolean | undefined;
+  readonly onClick?: ((event: unknown) => void) | undefined;
+  readonly onDoubleClick?: ((event: unknown) => void) | undefined;
+  readonly onAuxClick?: ((event: unknown) => void) | undefined;
+  readonly onContextMenu?: ((event: unknown) => void) | undefined;
+  readonly onKeyDown?: ((event: unknown) => void) | undefined;
+  readonly onMouseEnter?: ((event: unknown) => void) | undefined;
+  readonly onMouseLeave?: ((event: unknown) => void) | undefined;
 }) {
   const contextMenuRef = useMainThreadRef<MainThreadElement>(null);
   const injectedMouseEnter = props["main-thread:bindmouseenter"] as
@@ -118,10 +126,10 @@ export function HostView({
   return (
     <view
       {...props}
-      className={typeof className === "string" ? className : undefined}
+      {...hostAttribute("className", typeof className === "string" ? className : undefined)}
       {...(onContextMenu ? { "main-thread:ref": contextMenuRef } : {})}
-      flatten={hoverRevealSelector ? false : undefined}
-      event-through={eventThrough}
+      {...hostAttribute("flatten", hoverRevealSelector ? false : undefined)}
+      {...hostAttribute("event-through", eventThrough)}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
       {...(onMouseEnter || hoverRevealSelector || injectedMouseEnter
@@ -136,9 +144,11 @@ export function HostView({
       {...(onMouseLeave || hoverRevealSelector || injectedMouseLeave
         ? { "main-thread:bindmouseleave": handleMouseLeave }
         : {})}
-      bindmousemove={onMouseEnter}
-      {...(stopTapPropagation ? { catchtap: onClick ?? ignoreTap } : { bindtap: onClick })}
-      bindlongpress={onContextMenu}
+      {...hostAttribute("bindmousemove", onMouseEnter)}
+      {...(stopTapPropagation
+        ? { catchtap: onClick ?? ignoreTap }
+        : hostAttribute("bindtap", onClick))}
+      {...hostAttribute("bindlongpress", onContextMenu)}
     >
       {children}
     </view>
@@ -150,11 +160,11 @@ export function HostLayoutView({
   onClick,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly onClick?: () => void;
+  readonly children?: ReactNode | undefined;
+  readonly onClick?: (() => void) | undefined;
 }) {
   return (
-    <view {...props} flatten={false} bindtap={onClick}>
+    <view {...props} flatten={false} {...hostAttribute("bindtap", onClick)}>
       {children}
     </view>
   );
@@ -164,7 +174,7 @@ export function HostListItem({
   children,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
+  readonly children?: ReactNode | undefined;
 }) {
   return <view {...props}>{children}</view>;
 }
@@ -174,7 +184,7 @@ export function HostList({
   ref: _ref,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
+  readonly children?: ReactNode | undefined;
   readonly ref?: unknown;
 }) {
   return <view {...props}>{children}</view>;
@@ -184,7 +194,7 @@ export function HostScrollView({
   children,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
+  readonly children?: ReactNode | undefined;
 }) {
   return (
     <scroll-view {...props} scroll-y>
@@ -198,8 +208,8 @@ export function HostHeading({
   className,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly className?: string;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
 }) {
   return (
     <text
@@ -217,8 +227,8 @@ export function HostHeadline({
   className,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly className?: string;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
 }) {
   return (
     <text {...props} className={className ? `lynx-host-text ${className}` : "lynx-host-text"}>
@@ -235,11 +245,11 @@ export function HostInlineText({
   onContextMenu,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly className?: string;
-  readonly onClick?: () => void;
-  readonly onAuxClick?: (event: unknown) => void;
-  readonly onContextMenu?: (event: unknown) => void;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
+  readonly onClick?: (() => void) | undefined;
+  readonly onAuxClick?: ((event: unknown) => void) | undefined;
+  readonly onContextMenu?: ((event: unknown) => void) | undefined;
 }) {
   const handleMouseDown = (event: MainThreadMouseEvent) => {
     "main thread";
@@ -256,7 +266,7 @@ export function HostInlineText({
       {...props}
       className={className ? `lynx-host-inline-text ${className}` : "lynx-host-inline-text"}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
-      bindtap={onClick}
+      {...hostAttribute("bindtap", onClick)}
     >
       {children}
     </inline-text>
@@ -276,14 +286,14 @@ export function HostButton({
   stopTapPropagation,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly onClick?: (event: unknown) => void;
-  readonly onAuxClick?: (event: unknown) => void;
-  readonly onContextMenu?: (event: unknown) => void;
-  readonly onKeyDown?: (event: unknown) => void;
-  readonly onMouseEnter?: (event: unknown) => void;
-  readonly onMouseLeave?: (event: unknown) => void;
-  readonly stopTapPropagation?: boolean;
+  readonly children?: ReactNode | undefined;
+  readonly onClick?: ((event: unknown) => void) | undefined;
+  readonly onAuxClick?: ((event: unknown) => void) | undefined;
+  readonly onContextMenu?: ((event: unknown) => void) | undefined;
+  readonly onKeyDown?: ((event: unknown) => void) | undefined;
+  readonly onMouseEnter?: ((event: unknown) => void) | undefined;
+  readonly onMouseLeave?: ((event: unknown) => void) | undefined;
+  readonly stopTapPropagation?: boolean | undefined;
 }) {
   const handleKeyDown = (event: MainThreadKeyEvent) => {
     "main thread";
@@ -313,15 +323,17 @@ export function HostButton({
   return (
     <view
       {...props}
-      className={typeof className === "string" ? className : undefined}
+      {...hostAttribute("className", typeof className === "string" ? className : undefined)}
       aria-expanded={ariaExpanded}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
       {...(onKeyDown ? { "main-thread:bindkeydown": handleKeyDown } : {})}
       {...(onMouseEnter ? { "main-thread:bindmouseenter": handleMouseEnter } : {})}
       {...(onMouseEnter ? { "main-thread:bindmousemove": handleMouseEnter } : {})}
       {...(onMouseLeave ? { "main-thread:bindmouseleave": handleMouseLeave } : {})}
-      bindmousemove={onMouseEnter}
-      {...(stopTapPropagation ? { catchtap: onClick ?? ignoreTap } : { bindtap: onClick })}
+      {...hostAttribute("bindmousemove", onMouseEnter)}
+      {...(stopTapPropagation
+        ? { catchtap: onClick ?? ignoreTap }
+        : hostAttribute("bindtap", onClick))}
     >
       {children}
     </view>
@@ -337,12 +349,12 @@ export function HostText({
   onContextMenu,
   ...props
 }: Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly className?: string;
-  readonly eventThrough?: boolean;
-  readonly onClick?: () => void;
-  readonly onAuxClick?: (event: unknown) => void;
-  readonly onContextMenu?: (event: unknown) => void;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
+  readonly eventThrough?: boolean | undefined;
+  readonly onClick?: (() => void) | undefined;
+  readonly onAuxClick?: ((event: unknown) => void) | undefined;
+  readonly onContextMenu?: ((event: unknown) => void) | undefined;
 }) {
   const handleMouseDown = (event: MainThreadMouseEvent) => {
     "main thread";
@@ -357,10 +369,10 @@ export function HostText({
   return (
     <text
       {...props}
-      event-through={eventThrough}
+      {...hostAttribute("event-through", eventThrough)}
       className={className ? `lynx-host-text ${className}` : "lynx-host-text"}
       {...(onContextMenu || onAuxClick ? { "main-thread:bindmousedown": handleMouseDown } : {})}
-      bindtap={onClick}
+      {...hostAttribute("bindtap", onClick)}
     >
       {children}
     </text>

@@ -11,9 +11,9 @@ import {
 } from "@lynx-js/react";
 
 type ElementProps = Record<string, unknown> & {
-  readonly children?: ReactNode;
+  readonly children?: ReactNode | undefined;
   readonly className?: string;
-  readonly render?: ReactElement<Record<string, unknown>>;
+  readonly render?: ReactElement<Record<string, unknown>> | undefined;
 };
 
 interface DialogContextValue {

@@ -333,13 +333,11 @@ export function RightPanel({
       className={`right-panel${sheet ? " right-panel--sheet" : ""}${
         maximized ? " right-panel--maximized" : ""
       }`}
-      style={
-        sheet
-          ? { width: `${resolveRightPanelSheetWidth(viewport.width)}px` }
-          : maximized
-            ? undefined
-            : { width: `${resize.width}px` }
-      }
+      {...(sheet
+        ? { style: { width: `${resolveRightPanelSheetWidth(viewport.width)}px` } }
+        : maximized
+          ? {}
+          : { style: { width: `${resize.width}px` } })}
       data-right-panel-open="true"
       data-right-panel-mode={sheet ? "sheet" : "inline"}
       data-right-panel-active-kind={activeSurface?.kind ?? "empty"}

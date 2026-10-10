@@ -30,8 +30,8 @@ import { cn } from "../../lib/utils";
 import { onSidebarToggleRequest } from "./sidebarCommandBus.lynx";
 
 type ElementProps = Record<string, unknown> & {
-  readonly children?: ReactNode;
-  readonly className?: string;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
 };
 
 interface SidebarContextValue {
@@ -247,7 +247,7 @@ export function SidebarTrigger({
   return (
     <view
       {...props}
-      className={className}
+      {...(className === undefined ? {} : { className })}
       bindtap={(event: unknown) => {
         onClick?.(event);
         toggleSidebar();
@@ -283,7 +283,7 @@ export function SidebarContent({
 
 function Container({ children, className, ...props }: ElementProps) {
   return (
-    <view {...props} className={className}>
+    <view {...props} {...(className === undefined ? {} : { className })}>
       {children}
     </view>
   );

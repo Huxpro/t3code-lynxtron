@@ -181,7 +181,10 @@ export interface T3ConnectorCommandBridge {
     requestId: ApprovalRequestId;
     answers: ProviderUserInputAnswers;
   }): Promise<void>;
-  setModelSelection(input: { threadId?: string; selection: ModelSelection }): Promise<void>;
+  setModelSelection(input: {
+    threadId?: string | undefined;
+    selection: ModelSelection;
+  }): Promise<void>;
   setThreadRuntimeMode(input: { threadId: string; runtimeMode: RuntimeMode }): Promise<void>;
   setThreadInteractionMode(input: {
     threadId: string;

@@ -1,5 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, type ReactNode } from "@lynx-js/react";
 
+import { hostAttribute } from "./hostElements";
+
 interface NumberFieldContextValue {
   readonly setValue: (value: number) => void;
   readonly stepBy: (direction: -1 | 1) => void;
@@ -19,9 +21,9 @@ interface NumberFieldProps extends Record<string, unknown> {
 }
 
 interface NumberFieldChildProps extends Record<string, unknown> {
-  readonly children?: ReactNode;
-  readonly className?: string;
-  readonly "aria-label"?: string;
+  readonly children?: ReactNode | undefined;
+  readonly className?: string | undefined;
+  readonly "aria-label"?: string | undefined;
 }
 
 const NumberFieldContext = createContext<NumberFieldContextValue | null>(null);
@@ -61,7 +63,7 @@ export function NumberField({
 
   return (
     <NumberFieldContext.Provider value={context}>
-      <view {...props} className={className}>
+      <view {...props} {...(className === undefined ? {} : { className })}>
         {children}
       </view>
     </NumberFieldContext.Provider>
@@ -70,7 +72,7 @@ export function NumberField({
 
 export function NumberFieldGroup({ children, className, ...props }: NumberFieldChildProps) {
   return (
-    <view {...props} className={className}>
+    <view {...props} {...(className === undefined ? {} : { className })}>
       {children}
     </view>
   );
@@ -85,8 +87,8 @@ export function NumberFieldDecrement({
   return (
     <view
       {...props}
-      className={className}
-      accessibility-label={accessibilityLabel}
+      {...(className === undefined ? {} : { className })}
+      {...hostAttribute("accessibility-label", accessibilityLabel)}
       bindtap={() => stepBy(-1)}
     >
       <text>−</text>
@@ -103,8 +105,8 @@ export function NumberFieldIncrement({
   return (
     <view
       {...props}
-      className={className}
-      accessibility-label={accessibilityLabel}
+      {...(className === undefined ? {} : { className })}
+      {...hostAttribute("accessibility-label", accessibilityLabel)}
       bindtap={() => stepBy(1)}
     >
       <text>+</text>
@@ -120,8 +122,8 @@ export function NumberFieldInput({
   const { setValue, value } = useNumberFieldContext();
   return (
     <input
-      className={className}
-      accessibility-label={accessibilityLabel}
+      {...(className === undefined ? {} : { className })}
+      {...(accessibilityLabel === undefined ? {} : { "accessibility-label": accessibilityLabel })}
       {...props}
       {...({ value: String(value) } as object)}
       bindinput={(event: { detail?: { value?: string } }) => {
@@ -136,11 +138,11 @@ export function NumberFieldScrubArea({
   children,
   className,
 }: NumberFieldChildProps & { readonly label?: string }) {
-  return <view className={className}>{children}</view>;
+  return <view className={className ?? ""}>{children}</view>;
 }
 
 export function CursorGrowIcon({ className }: { readonly className?: string }) {
-  return <text className={className}>↔</text>;
+  return <text className={className ?? ""}>↔</text>;
 }
 
 export const NumberFieldPrimitive = {

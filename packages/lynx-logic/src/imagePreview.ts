@@ -12,7 +12,7 @@ export function buildExpandedImagePreview(
   images: ReadonlyArray<{
     readonly id: string;
     readonly name: string;
-    readonly previewUrl?: string;
+    readonly previewUrl?: string | undefined;
   }>,
   selectedImageId: string,
 ): ExpandedImagePreview | null {

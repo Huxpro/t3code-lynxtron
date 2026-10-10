@@ -36,10 +36,10 @@ export function LynxChangedFilesTree({
   selectedPath = null,
 }: {
   readonly files: ReadonlyArray<OrchestrationCheckpointFile>;
-  readonly onOpenFile?: (path: string) => void;
+  readonly onOpenFile?: ((path: string) => void) | undefined;
   readonly onDirectoryToggle?: (() => void) | undefined;
   readonly allDirectoriesExpanded: boolean;
-  readonly selectedPath?: string | null;
+  readonly selectedPath?: string | null | undefined;
 }) {
   const tree = useMemo(() => buildChangedFilesTree(files), [files]);
   const directoryPathsKey = useMemo(() => collectDirectoryPaths(tree).join("\u0000"), [tree]);
@@ -111,7 +111,7 @@ export function LynxChangedFilesTree({
         key={`file:${node.path}`}
         data-review-file-path={node.path}
         data-review-file-selected={node.path === selectedPath ? "true" : "false"}
-        className={node.path === selectedPath ? "lynx-file-tree-row--selected" : undefined}
+        className={node.path === selectedPath ? "lynx-file-tree-row--selected" : ""}
       >
         <FileTreeFileRowSurface
           name={node.name}

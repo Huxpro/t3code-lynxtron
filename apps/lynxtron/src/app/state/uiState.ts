@@ -391,7 +391,7 @@ export const uiActions = {
   },
   openRightPanelSurface(
     kind: Exclude<RightPanelKind, "file">,
-    selection?: { readonly turnId: TurnId; readonly filePath?: string },
+    selection?: { readonly turnId: TurnId; readonly filePath?: string | undefined },
   ): void {
     updateRightPanel({
       type: "open",

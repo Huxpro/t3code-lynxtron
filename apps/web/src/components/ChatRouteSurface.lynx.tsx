@@ -31,30 +31,30 @@ export function ChatRouteSurface({
   connectionStatusDetail,
 }: {
   /** Layout controls rendered ahead of the column (Web: inline right-panel mode). */
-  readonly layoutControls?: ReactNode;
+  readonly layoutControls?: ReactNode | undefined;
   /** Route header (Web: workspace topbar; Lynx: chat topbar). */
   readonly header: ReactNode;
   /** Optional banner below the header (Web: thread error banner). */
-  readonly banner?: ReactNode;
+  readonly banner?: ReactNode | undefined;
   /** Body overlay below the header without affecting timeline or Composer layout. */
-  readonly bodyOverlay?: ReactNode;
+  readonly bodyOverlay?: ReactNode | undefined;
   /** Collapse the chat column when the right panel is maximized (Web). */
-  readonly chatColumnHidden?: boolean;
+  readonly chatColumnHidden?: boolean | undefined;
   /** Chat column content (timeline, composer overlay, dialogs). */
   readonly children: ReactNode;
   /** Column-level extras after the body row (Web: persistent terminal drawers). */
-  readonly afterChatColumn?: ReactNode;
+  readonly afterChatColumn?: ReactNode | undefined;
   /** Full-height right panel (Web: inline tabs or sheet; Lynx: right panel host). */
-  readonly rightPanel?: ReactNode;
+  readonly rightPanel?: ReactNode | undefined;
   /** Root-level overlays (Web: expanded image dialog; Lynx: root overlay host). */
-  readonly overlays?: ReactNode;
+  readonly overlays?: ReactNode | undefined;
   /** Optional renderer-owned route tap handler (Lynx: outside-overlay dismissal). */
-  readonly onClick?: () => void;
+  readonly onClick?: (() => void) | undefined;
   /** Semantic lifecycle marker used by cross-renderer verification. */
-  readonly activeThreadKind?: "draft" | "server" | "none";
-  readonly activeThreadId?: string;
-  readonly connectionStatus?: string;
-  readonly connectionStatusDetail?: string;
+  readonly activeThreadKind?: "draft" | "server" | "none" | undefined;
+  readonly activeThreadId?: string | undefined;
+  readonly connectionStatus?: string | undefined;
+  readonly connectionStatusDetail?: string | undefined;
 }) {
   return (
     <HostView

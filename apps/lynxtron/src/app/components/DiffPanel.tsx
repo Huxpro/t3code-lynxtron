@@ -480,7 +480,10 @@ function LynxCodeDiffFile({
                 <text className="diff-code-line__marker">
                   {line.kind === "addition" ? "+" : line.kind === "deletion" ? "−" : " "}
                 </text>
-                <text className="diff-code-line__content" text-maxline={wordWrap ? undefined : "1"}>
+                <text
+                  className="diff-code-line__content"
+                  {...(wordWrap ? {} : { "text-maxline": "1" })}
+                >
                   {line.content || " "}
                 </text>
               </view>
@@ -535,7 +538,7 @@ function LynxSplitDiffCell({
       <text className="diff-code-line__marker">
         {line?.kind === "addition" ? "+" : line?.kind === "deletion" ? "−" : " "}
       </text>
-      <text className="diff-code-line__content" text-maxline={wordWrap ? undefined : "1"}>
+      <text className="diff-code-line__content" {...(wordWrap ? {} : { "text-maxline": "1" })}>
         {line?.content || " "}
       </text>
     </view>

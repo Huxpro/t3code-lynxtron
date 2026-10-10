@@ -66,9 +66,9 @@ const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1
 export function projectConnectionLifecycle(input: {
   readonly phase: ConnectionLifecycleSourcePhase;
   readonly targetLabel: string;
-  readonly detail?: string | null;
+  readonly detail?: string | null | undefined;
   readonly recoverySubject: string;
-  readonly failureLayer?: ConnectionFailureLayer | null;
+  readonly failureLayer?: ConnectionFailureLayer | null | undefined;
 }): ConnectionLifecyclePresentation {
   const detail = input.detail?.trim() || null;
   const recoveryDescription = `Reconnect ${input.recoverySubject} before sending messages or running actions.`;

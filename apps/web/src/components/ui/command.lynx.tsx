@@ -13,9 +13,9 @@ import { Input } from "./input";
 import { Dialog, DialogPopup, DialogTrigger } from "./dialog";
 
 type ElementProps = Record<string, unknown> & {
-  readonly children?: ReactNode;
+  readonly children?: ReactNode | undefined;
   readonly className?: string;
-  readonly render?: ReactElement<Record<string, unknown>>;
+  readonly render?: ReactElement<Record<string, unknown>> | undefined;
 };
 
 export const CommandCreateHandle = () => ({});

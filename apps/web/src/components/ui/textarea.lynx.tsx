@@ -7,15 +7,15 @@ type TextareaEvent = {
 };
 
 export interface TextareaProps {
-  readonly "aria-label"?: string;
-  readonly className?: string;
-  readonly disabled?: boolean;
-  readonly onBlur?: () => void;
-  readonly onChange?: (event: { currentTarget: { value: string } }) => void;
-  readonly placeholder?: string;
-  readonly size?: "sm" | "default" | "lg" | number;
-  readonly unstyled?: boolean;
-  readonly value?: string;
+  readonly "aria-label"?: string | undefined;
+  readonly className?: string | undefined;
+  readonly disabled?: boolean | undefined;
+  readonly onBlur?: (() => void) | undefined;
+  readonly onChange?: ((event: { currentTarget: { value: string } }) => void) | undefined;
+  readonly placeholder?: string | undefined;
+  readonly size?: "sm" | "default" | "lg" | number | undefined;
+  readonly unstyled?: boolean | undefined;
+  readonly value?: string | undefined;
 }
 
 export function Textarea({
@@ -49,8 +49,8 @@ export function Textarea({
         .filter(Boolean)
         .join(" ")}
       {...({ value } as object)}
-      placeholder={placeholder}
-      bindblur={onBlur}
+      {...(placeholder === undefined ? {} : { placeholder })}
+      {...(onBlur === undefined ? {} : { bindblur: onBlur })}
       bindinput={handleInput}
     />
   );

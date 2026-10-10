@@ -12,7 +12,7 @@ export function Empty({
   readonly className?: string;
 }) {
   return (
-    <view className={className} data-slot="empty">
+    <view className={className ?? ""} data-slot="empty">
       {children}
     </view>
   );
@@ -26,7 +26,7 @@ export function EmptyHeader({
   readonly className?: string;
 }) {
   return (
-    <view className={className} data-slot="empty-header">
+    <view className={className ?? ""} data-slot="empty-header">
       {children}
     </view>
   );
@@ -77,7 +77,7 @@ export function EmptyTitle({
   readonly className?: string;
 }) {
   return (
-    <text className={className} data-slot="empty-title">
+    <text className={className ?? ""} data-slot="empty-title">
       {children}
     </text>
   );
@@ -91,7 +91,7 @@ export function EmptyDescription({
   readonly className?: string;
 }) {
   return (
-    <text className={className} data-slot="empty-description">
+    <text className={className ?? ""} data-slot="empty-description">
       {children}
     </text>
   );

@@ -89,23 +89,23 @@ interface ComposerProps {
   busy: boolean;
   hero: boolean;
   placeholder: string;
-  projectName?: string;
-  modelLabel?: string;
-  providerAvailable?: boolean;
-  modelInstanceId?: string;
-  modelDriverKind?: string;
-  modelOptionLabel?: string;
-  modelOptionSections?: ReadonlyArray<ComposerTraitsMenuSectionPresentation>;
-  activeContextWindow?: ContextWindowSnapshot | null;
-  contextWindowProviderDisplayName?: string | null;
-  branch?: string;
+  projectName?: string | undefined;
+  modelLabel?: string | undefined;
+  providerAvailable?: boolean | undefined;
+  modelInstanceId?: string | undefined;
+  modelDriverKind?: string | undefined;
+  modelOptionLabel?: string | undefined;
+  modelOptionSections?: ReadonlyArray<ComposerTraitsMenuSectionPresentation> | undefined;
+  activeContextWindow?: ContextWindowSnapshot | null | undefined;
+  contextWindowProviderDisplayName?: string | null | undefined;
+  branch?: string | undefined;
   showContextStrip: boolean;
-  worktreePath?: string;
-  cwd?: string;
+  worktreePath?: string | undefined;
+  cwd?: string | undefined;
   /** Driver of the provider that owns `providerSkills` and `providerSlashCommands`. */
-  providerDriverKind?: ProviderDriverKind;
-  providerSkills?: ReadonlyArray<ServerProviderSkill>;
-  providerSlashCommands?: ReadonlyArray<ServerProviderSlashCommand>;
+  providerDriverKind?: ProviderDriverKind | undefined;
+  providerSkills?: ReadonlyArray<ServerProviderSkill> | undefined;
+  providerSlashCommands?: ReadonlyArray<ServerProviderSlashCommand> | undefined;
   workspaceMode: "local" | "worktree";
   workspaceModeLocked: boolean;
   startFromOrigin: boolean;
@@ -115,16 +115,16 @@ interface ComposerProps {
   /** Legacy plan mode; while off, /plan and /default are not offered. */
   planModeEnabled: boolean;
   availableWidth: number;
-  statusBanner?: ReactNode;
+  statusBanner?: ReactNode | undefined;
   /** Pending-state drawer attached above the card (upstream `.chat-composer-top-drawer`). */
-  topDrawer?: ComposerTopDrawer;
+  topDrawer?: ComposerTopDrawer | undefined;
   /** A pending approval blocks the editor; its actions live in the top drawer. */
-  approvalPending?: boolean;
-  approvalDetail?: string;
-  questionActions?: ReactNode;
-  questionEditorKey?: string;
-  questionCustomAnswer?: string;
-  onQuestionCustomAnswerChange?: (value: string) => void;
+  approvalPending?: boolean | undefined;
+  approvalDetail?: string | undefined;
+  questionActions?: ReactNode | undefined;
+  questionEditorKey?: string | undefined;
+  questionCustomAnswer?: string | undefined;
+  onQuestionCustomAnswerChange?: ((value: string) => void) | undefined;
   value: string;
   onValueChange: (value: string) => void;
   attachments: ReadonlyArray<UploadChatAttachment>;
@@ -139,10 +139,10 @@ interface ComposerProps {
   onAddFileContext: (path: string) => void;
   onSend: (text: string, attachments: ReadonlyArray<UploadChatAttachment>) => Promise<boolean>;
   onStop: () => void;
-  onModelTap?: () => void;
-  onModelPickerClose?: () => void;
-  modelPicker?: ReactNode;
-  onSelectModelOption?: (descriptorId: string, value: string | boolean) => void;
+  onModelTap?: (() => void) | undefined;
+  onModelPickerClose?: (() => void) | undefined;
+  modelPicker?: ReactNode | undefined;
+  onSelectModelOption?: ((descriptorId: string, value: string | boolean) => void) | undefined;
   onRuntimeModeChange: (mode: RuntimeMode) => void;
   onInteractionModeTap: () => void;
   onWorkspaceModeChange: (mode: "local" | "worktree") => void;

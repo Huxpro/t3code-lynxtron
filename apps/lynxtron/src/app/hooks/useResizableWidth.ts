@@ -19,10 +19,10 @@ interface UseResizableWidthOptions {
   readonly minWidth: number;
   readonly maxWidth: number;
   readonly edge: ResizableWidthEdge;
-  readonly value?: number;
-  readonly onResize?: (width: number) => void;
+  readonly value?: number | undefined;
+  readonly onResize?: ((width: number) => void) | undefined;
   readonly target: "sidebar" | "right-panel";
-  readonly testProbe?: boolean;
+  readonly testProbe?: boolean | undefined;
 }
 
 interface MainThreadResizeState {

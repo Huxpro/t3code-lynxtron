@@ -389,22 +389,22 @@ export function EmptyRemoteEnvironments({
 
 export interface ProviderInstanceCardSurfaceProps {
   /** Leading provider mark (icon + status overlay; platform leaf). */
-  readonly icon?: ReactNode;
+  readonly icon?: ReactNode | undefined;
   /** Instance display name. */
   readonly title: ReactNode;
   /** Instance-id code chip (only for custom instances). */
-  readonly instanceIdChip?: ReactNode;
+  readonly instanceIdChip?: ReactNode | undefined;
   /** Driver badge (for example "Coming Soon"). */
-  readonly badge?: ReactNode;
+  readonly badge?: ReactNode | undefined;
   /** Version label code plus update affordance, composed by the host. */
-  readonly version?: ReactNode;
+  readonly version?: ReactNode | undefined;
   /** Trailing title-row actions (header action, delete). */
-  readonly titleTrailing?: ReactNode;
+  readonly titleTrailing?: ReactNode | undefined;
   /** "headline · detail" status summary. */
   readonly summaryHeadline: ReactNode;
-  readonly summaryDetail?: ReactNode;
-  readonly summaryAriaLabel?: string;
-  readonly onSummaryClick?: () => void;
+  readonly summaryDetail?: ReactNode | undefined;
+  readonly summaryAriaLabel?: string | undefined;
+  readonly onSummaryClick?: (() => void) | undefined;
   readonly expanded: boolean;
   readonly onToggleExpanded: () => void;
   /** Accessible label for the expand chevron button. */
@@ -416,7 +416,7 @@ export interface ProviderInstanceCardSurfaceProps {
    * Expandable body (Web: details form in its Collapsible; Lynx: model list).
    * The host owns expansion rendering so collapse animation stays platform-local.
    */
-  readonly body?: ReactNode;
+  readonly body?: ReactNode | undefined;
 }
 
 /** Provider instance card: title row + summary + expand chevron + enable switch. */

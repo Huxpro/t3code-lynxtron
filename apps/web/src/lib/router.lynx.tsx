@@ -16,8 +16,8 @@ function paramsFromPathname(pathname: string): Record<string, string> {
 }
 
 function resolveTo(input: {
-  readonly to?: string;
-  readonly params?: Record<string, string>;
+  readonly to?: string | undefined;
+  readonly params?: Record<string, string> | undefined;
 }): string {
   let to = input.to ?? "/";
   for (const [key, value] of Object.entries(input.params ?? {})) {
