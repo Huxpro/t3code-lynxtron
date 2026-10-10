@@ -4112,6 +4112,8 @@ async function verifyNewThreadDraftLifecycle({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -6844,6 +6846,8 @@ async function verifyM1LocalJourney({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -10096,6 +10100,8 @@ async function verifyApprovalDeclineMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -13262,6 +13268,8 @@ async function verifyProjectActionKeybindingMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -13509,6 +13517,8 @@ async function verifyBetaMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -13735,6 +13745,8 @@ async function verifyArchiveMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -14170,6 +14182,8 @@ async function verifyConnectionsMutation({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
@@ -16482,7 +16496,7 @@ async function verifyLifecycleRecovery({
         const backStartedMs = Math.round(performance.now() - readyAtMs);
         const back = await change(commandBaseline.mode, false);
         const shadow = await readUpstreamShadowProbe(client);
-        const statePath = process.env.T3_LYNXTRON_UPSTREAM_STATE === "1" ? "upstream" : "connector";
+        const statePath = process.env.T3_LYNXTRON_UPSTREAM_STATE === "0" ? "connector" : "upstream";
         // On the upstream path the restart must end with upstream connected
         // to the new server and both changes sent through it. The shadow
         // publishes the phase, so the path is checked only with it on.
@@ -16797,6 +16811,8 @@ async function runOnce({
       ...process.env,
       NODE_ENV: "production",
       T3_LYNXTRON_BACKGROUND: process.env.T3_LYNXTRON_BACKGROUND ?? "1",
+      // Publishes which path took each command, which gates assert on.
+      T3_LYNXTRON_UPSTREAM_SHADOW: process.env.T3_LYNXTRON_UPSTREAM_SHADOW ?? "1",
       T3_LYNXTRON_BASE_DIR: baseDir,
       T3_LYNXTRON_PROJECT_CWD: projectCwd,
       T3_LYNXTRON_VIEWPORT_WIDTH: String(width),
