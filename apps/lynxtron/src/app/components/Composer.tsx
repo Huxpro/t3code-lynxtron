@@ -18,10 +18,8 @@ import {
   formatElementContextSourceLabel,
   type ElementContextDraft,
 } from "@t3tools/lynx-logic/elementContext";
-import {
-  resolveCompactComposerControlsAlign,
-  shouldUseCompactComposerFooter,
-} from "../../../../web/src/components/composerFooterLayout";
+import { shouldUseCompactComposerFooter } from "../../../../web/src/components/composerFooterLayout";
+import { resolveCompactComposerControlsAlign } from "../logic/composerFooterLayout";
 import {
   COMPOSER_RUNTIME_MODE_PRESENTATIONS,
   type ComposerTraitsMenuSectionPresentation,
