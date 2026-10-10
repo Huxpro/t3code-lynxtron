@@ -5,15 +5,19 @@ import {
 } from "@t3tools/client-runtime/platform";
 import { remoteHttpClientLayer } from "@t3tools/client-runtime/rpc";
 import { EnvironmentId } from "@t3tools/contracts";
+import type * as Cause from "effect/Cause";
 import * as Effect from "effect/Effect";
 import * as Option from "effect/Option";
+import * as Queue from "effect/Queue";
 import * as Schedule from "effect/Schedule";
+import * as Stream from "effect/Stream";
 import { HttpClient, HttpClientRequest } from "effect/unstable/http";
 import { assert, describe, it } from "vite-plus/test";
 
 import {
   connectionPlatformLayer,
   makeHostFetch,
+  primaryRegistrations,
   readPrimaryConnection,
   waitForPrimaryConnection,
   type HostHttpRequest,
@@ -112,6 +116,86 @@ describe("primary connection", () => {
     );
     assert.equal(error._tag, "ConnectionTransientError");
     assert.equal(error.reason, "endpoint-unavailable");
+  });
+});
+
+describe("primary registrations", () => {
+  const environmentId = EnvironmentId.make("environment-local");
+  const first = { httpBaseUrl: "http://127.0.0.1:4100", wsBaseUrl: "ws://127.0.0.1:4100" };
+  const second = { httpBaseUrl: "http://127.0.0.1:4207", wsBaseUrl: "ws://127.0.0.1:4207" };
+
+  // `answers` is what the host says, in order. The first read starts with the
+  // stream; each later one is asked for when a registration comes out, and the
+  // last read ends the stream once it has finished.
+  const collect = (answers: ReadonlyArray<unknown>, readCount: number) =>
+    Effect.gen(function* () {
+      const reads = yield* Queue.unbounded<void, Cause.Done>();
+      const described: Array<string> = [];
+      let asked = 0;
+      let started = 0;
+      const startNextRead = Effect.suspend(() => {
+        if (started === readCount) return Effect.void;
+        started += 1;
+        return Queue.offer(reads, undefined).pipe(
+          Effect.andThen(started === readCount ? Queue.end(reads) : Effect.void),
+        );
+      });
+      yield* startNextRead;
+      const emissions = yield* primaryRegistrations({
+        reads: Stream.fromQueue(reads),
+        connection: readPrimaryConnection(() => Promise.resolve(answers[asked++])),
+        describe: (connection) =>
+          Effect.sync(() => {
+            described.push(connection.httpBaseUrl);
+            return { environmentId, label: "Local" };
+          }),
+        schedule: Schedule.recurs(3),
+      }).pipe(
+        Stream.tap(() => startNextRead),
+        Stream.runCollect,
+      );
+      return {
+        described,
+        targets: emissions.map((registrations) =>
+          registrations.map(({ target }) => ({
+            environmentId: target.environmentId,
+            httpBaseUrl: target.httpBaseUrl,
+            wsBaseUrl: target.wsBaseUrl,
+          })),
+        ),
+      };
+    }).pipe(Effect.runPromise);
+
+  it("registers the environment again at the address of a restarted server", async () => {
+    const result = await collect(
+      [
+        { ...first, bearer: "one" },
+        { ...second, bearer: "two" },
+      ],
+      2,
+    );
+    assert.deepEqual(result.targets, [
+      [{ environmentId, ...first }],
+      [{ environmentId, ...second }],
+    ]);
+    assert.deepEqual(result.described, [first.httpBaseUrl, second.httpBaseUrl]);
+  });
+
+  it("emits nothing new, and asks the server nothing, while the address is unchanged", async () => {
+    const result = await collect(
+      [
+        { ...first, bearer: "one" },
+        { ...first, bearer: "two" },
+      ],
+      2,
+    );
+    assert.deepEqual(result.targets, [[{ environmentId, ...first }]]);
+    assert.deepEqual(result.described, [first.httpBaseUrl]);
+  });
+
+  it("waits for a host that has no server yet", async () => {
+    const result = await collect([null, null, { ...first, bearer: "one" }], 1);
+    assert.deepEqual(result.targets, [[{ environmentId, ...first }]]);
   });
 });
 

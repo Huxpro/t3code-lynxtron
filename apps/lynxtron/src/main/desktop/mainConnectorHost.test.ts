@@ -609,6 +609,54 @@ describe("main connector host", () => {
     );
   });
 
+  it("names the server each ready status is about, which a reconnect replaces", async () => {
+    const pushed: ConnectorEventEnvelope[] = [];
+    const handlers = new Map<string, (params: unknown) => unknown>();
+    const connectors: Array<{ onStatus: (status: string, detail?: string) => void }> = [];
+    const host = new MainConnectorHost({
+      window: {
+        sendGlobalEvent: (_name, envelope) => {
+          pushed.push(envelope as ConnectorEventEnvelope);
+          return true;
+        },
+      },
+      registerHandler: (method, handler) => {
+        handlers.set(method, handler as (params: unknown) => unknown);
+      },
+      createConnector: (events) => {
+        const port = 4100 + connectors.length;
+        const connector = {
+          ...events,
+          connect: () => Promise.resolve({ status: "ready" }),
+          primaryConnection: () => ({
+            httpBaseUrl: `http://127.0.0.1:${port}/`,
+            wsBaseUrl: `ws://127.0.0.1:${port}/`,
+            bearer: `bearer-${port}`,
+          }),
+          dispose() {},
+        };
+        connectors.push(connector);
+        return connector;
+      },
+    });
+    host.attach();
+    await host.connect();
+    connectors[0]!.onStatus("connecting");
+    connectors[0]!.onStatus("ready");
+    await handlers.get(T3_CONNECTOR_METHODS.command)!({ method: "reconnect" });
+    connectors[1]!.onStatus("ready");
+
+    assert.deepEqual(
+      pushed.flatMap((event) => (event.kind === "status" ? [event.payload] : [])),
+      [
+        { status: "connecting" },
+        { status: "ready", httpBaseUrl: "http://127.0.0.1:4100/" },
+        { status: "reconnecting" },
+        { status: "ready", httpBaseUrl: "http://127.0.0.1:4101/" },
+      ],
+    );
+  });
+
   it("reconnects once and retries idempotent metadata commands after stale transport errors", async () => {
     const handlers = new Map<string, (params: unknown) => unknown>();
     const logs: string[] = [];

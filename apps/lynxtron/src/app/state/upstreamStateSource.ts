@@ -8,6 +8,9 @@
 // connector's payload carries. Connector payloads for an owned domain are held
 // instead of applied, and the latest one is applied if upstream lets go, so a
 // dropped upstream connection hands the domain back to the connector.
+//
+// The connection status is not a domain that changes hands: it is resolved
+// from the connector's latest status and upstream's, in `resolveClientStatus`.
 import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
 import type { ModelSelection, ServerConfig, VcsStatusResult } from "@t3tools/contracts";
 import { type AuthAccessPresentation, projectAuthAccess } from "@t3tools/lynx-logic/connections";
@@ -33,6 +36,7 @@ import type {
 } from "../../shared/connectorProtocol.ts";
 import { appAtomRegistry } from "./atomRegistry.ts";
 import type { T3ClientState } from "./t3Client.ts";
+import { primaryHttpBaseUrl, upstreamCommandsReady } from "./upstreamCommandPort.ts";
 import {
   readUpstreamRuntimeFlags,
   type UpstreamPrimaryState,
@@ -46,7 +50,6 @@ import {
 
 /** Each terminal session is a domain of its own, named by its key. */
 export type UpstreamStateDomain =
-  | "status"
   | "access"
   | "config"
   | "shell"
@@ -74,20 +77,74 @@ function liveShellSnapshot(state: Pick<UpstreamPrimaryState, "shell">) {
   return state.shell?.status === "live" ? Option.getOrNull(state.shell.snapshot) : null;
 }
 
+/** What the client's status needs to know of upstream's connection. */
+export interface UpstreamStatusView {
+  /** A command sent now goes through upstream and reaches the server. */
+  readonly ready: boolean;
+  /** Upstream tried the server at `httpBaseUrl` and is not connected to it. */
+  readonly failed: boolean;
+  /** The address upstream has the primary environment registered at. */
+  readonly httpBaseUrl: string | null;
+}
+
+type StatusState = Pick<
+  UpstreamPrimaryState,
+  "catalog" | "connection" | "shell" | "config" | "archived"
+>;
+
 /**
- * The connection status while upstream's session is connected and its shell
- * is live, or null while it is not. That means the server is being reached,
- * whatever the main connector's own socket is doing. Without it the client is
- * served by the connector, so the connector's status is the one that
- * describes it; it also carries what only the main process knows, such as a
- * server that exited.
+ * Reads the status view from each state upstream publishes. When the
+ * registered address changes, upstream's catalog says so before the new
+ * connection has reported anything, so the connection state held at that
+ * moment still describes the server at the old address and counts for nothing.
  */
-export function upstreamStatusPayload(
-  state: Pick<UpstreamPrimaryState, "connection" | "shell">,
+export function createUpstreamStatusReader(): (state: StatusState) => UpstreamStatusView {
+  let httpBaseUrl: string | null = null;
+  let outdated: StatusState["connection"] = null;
+  return (state) => {
+    const registered = primaryHttpBaseUrl(state);
+    if (registered !== httpBaseUrl) {
+      httpBaseUrl = registered;
+      outdated = state.connection;
+    }
+    const connection =
+      state.connection === null || state.connection === outdated
+        ? null
+        : Option.getOrNull(AsyncResult.value(state.connection));
+    return {
+      ready: connection !== null && upstreamCommandsReady(state),
+      failed:
+        connection?.phase === "backoff" ||
+        connection?.phase === "blocked" ||
+        connection?.phase === "offline",
+      httpBaseUrl,
+    };
+  };
+}
+
+/**
+ * The status the client shows, given the main connector's latest status and
+ * upstream's view, or null to keep showing what it shows. `upstream` is null
+ * when the upstream state source is off.
+ *
+ * Ready means the path that takes the next command can deliver it. Upstream
+ * takes the commands while it is ready, so the connector's ready is shown only
+ * once upstream is ready for the same server, or has failed to reach it and
+ * the connector takes the commands instead. While upstream is still on its
+ * way the client keeps its status. A failure the main process reports is
+ * shown at once: it is the first to know that the server it owns exited, and
+ * upstream's session can read as connected for seconds after that.
+ */
+export function resolveClientStatus(
+  connector: ConnectorStatusPayload,
+  upstream: UpstreamStatusView | null,
 ): ConnectorStatusPayload | null {
-  return isConnected(state.connection) && liveShellSnapshot(state) !== null
-    ? { status: "ready" }
-    : null;
+  if (upstream === null) return connector;
+  if (connector.status === "error" || connector.status === "reconnecting") return connector;
+  if (connector.status !== "ready") return upstream.ready ? { status: "ready" } : connector;
+  const sameServer =
+    connector.httpBaseUrl === undefined || connector.httpBaseUrl === upstream.httpBaseUrl;
+  return sameServer && (upstream.ready || upstream.failed) ? connector : null;
 }
 
 /**
@@ -277,6 +334,19 @@ const router = createUpstreamStateRouter();
 /** Applies a connector payload for `domain` unless upstream currently owns it. */
 export const applyFromConnector = router.fromConnector;
 
+let connectorStatus: ConnectorStatusPayload | null = null;
+// Null until the upstream source starts, which it only does when turned on.
+let upstreamStatus: UpstreamStatusView | null = null;
+
+/**
+ * Takes the main connector's latest status and returns the status to show,
+ * or null to keep the one shown.
+ */
+export function statusFromConnector(status: ConnectorStatusPayload): ConnectorStatusPayload | null {
+  connectorStatus = status;
+  return resolveClientStatus(status, upstreamStatus);
+}
+
 export interface UpstreamStateSink {
   readonly applyStatus: (status: ConnectorStatusPayload) => void;
   readonly applyAccess: (access: AuthAccessPresentation) => void;
@@ -313,7 +383,7 @@ export function startUpstreamStateSource(
     UpstreamPrimaryState,
     "connection" | "shell" | "config" | "archived" | "access"
   > | null = null;
-  let statusFromUpstream = false;
+  const readStatus = createUpstreamStatusReader();
   const cleanup: DisposableThreadCleanup | null = deleteDisposableThread
     ? createDisposableThreadCleanup({
         deleteThread: deleteDisposableThread,
@@ -335,10 +405,15 @@ export function startUpstreamStateSource(
       connectionChanged || previous?.shell !== state.shell || previous?.archived !== state.archived;
     const accessChanged = connectionChanged || previous?.access !== state.access;
     previous = state;
-    const status = upstreamStatusPayload(state);
-    if ((status !== null) !== statusFromUpstream) {
-      statusFromUpstream = status !== null;
-      router.fromUpstream("status", status, sink.applyStatus);
+    const status = readStatus(state);
+    if (
+      status.ready !== upstreamStatus?.ready ||
+      status.failed !== upstreamStatus.failed ||
+      status.httpBaseUrl !== upstreamStatus.httpBaseUrl
+    ) {
+      upstreamStatus = status;
+      const shown = connectorStatus === null ? null : resolveClientStatus(connectorStatus, status);
+      if (shown !== null) sink.applyStatus(shown);
     }
     if (accessChanged) {
       router.fromUpstream("access", upstreamAccessPayload(state), sink.applyAccess);

@@ -63,6 +63,12 @@ export interface ConnectorStatusPayload {
   readonly connectionKind?: ConnectorConnectionKind;
   /** False when environment file paths do not name files on this machine. */
   readonly pathsResolveLocally?: boolean;
+  /**
+   * With `ready`, the address of the server the connector reached. A reconnect
+   * starts a new server on another port, so this is how the renderer tells
+   * which server a ready is about.
+   */
+  readonly httpBaseUrl?: string;
 }
 
 export type ConnectorFailureLayer =

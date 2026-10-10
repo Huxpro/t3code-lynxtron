@@ -79,7 +79,15 @@ command that still reached the connector. The connector's RPC code goes away
 once the flag is the default.
 
 A failure the main process reports (the server exited, reconnecting) is applied
-at once, never held behind upstream's status: main knows first.
+at once, never held behind upstream's status: main knows first, and upstream's
+session can read as connected for seconds after the server is gone.
+
+A reconnect starts a new server on another port with a new bearer. The
+connector's ready status names that server's address; on it the platform port
+emits the primary registration again and upstream's registry replaces the
+connection. The client shows ready only once the path that takes the next
+command can deliver it: upstream connected to that server, or the connector
+alone when upstream failed to reach it (`resolveClientStatus`).
 
 ## Invariants
 

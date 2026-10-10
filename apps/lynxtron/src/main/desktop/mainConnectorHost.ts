@@ -137,6 +137,17 @@ export function dispatchConnectorCommand(
   }
 }
 
+/** The address a ready connector reached, as the status payload carries it. */
+function readyServerAddress(connector: ConnectorLike): { readonly httpBaseUrl?: string } {
+  const read = connector.primaryConnection;
+  const connection: unknown = typeof read === "function" ? read.call(connector) : null;
+  const httpBaseUrl =
+    typeof connection === "object" && connection !== null && "httpBaseUrl" in connection
+      ? connection.httpBaseUrl
+      : undefined;
+  return typeof httpBaseUrl === "string" ? { httpBaseUrl } : {};
+}
+
 export class MainConnectorHost {
   private readonly options: MainConnectorHostOptions;
   private connector: ConnectorLike | undefined;
@@ -301,6 +312,7 @@ export class MainConnectorHost {
             ...(typeof connector.pathsResolveLocally === "boolean"
               ? { pathsResolveLocally: connector.pathsResolveLocally }
               : {}),
+            ...(nextStatus === "ready" ? readyServerAddress(connector) : {}),
           },
         });
       },
