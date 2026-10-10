@@ -217,6 +217,7 @@ describe("main connector host", () => {
       [...handlers.keys()].sort(),
       [
         T3_CONNECTOR_METHODS.command,
+        T3_CONNECTOR_METHODS.primaryConnection,
         T3_CONNECTOR_METHODS.ready,
         T3_CONNECTOR_METHODS.resync,
       ].sort(),
@@ -809,7 +810,7 @@ describe("main connector host", () => {
     host.dispose();
     host.dispose();
 
-    assert.equal(removed.length, 3);
+    assert.equal(removed.length, Object.keys(T3_CONNECTOR_METHODS).length);
     assert.deepEqual(
       connector.calls.map((call) => call.method),
       ["dispose"],
