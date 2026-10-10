@@ -1,29 +1,24 @@
 // Shadow mode: runs upstream's connection runtime next to the Lynx client's own
-// state and publishes what it sees on `globalThis.__T3_UPSTREAM_SHADOW__`, so
-// the two can be compared from DevTool. Nothing in the UI reads it. It runs
-// only when the host launches with `T3_LYNXTRON_UPSTREAM_SHADOW=1`.
+// state and publishes what it sees on `globalThis.__T3_UPSTREAM_SHADOW__`,
+// with a comparison of the two under `compare`, for DevTool to read. Nothing
+// in the UI reads it. It runs only when the host launches with
+// `T3_LYNXTRON_UPSTREAM_SHADOW=1`.
 import type { SupervisorConnectionState } from "@t3tools/client-runtime/connection";
-import type { EnvironmentCatalogState } from "@t3tools/client-runtime/state/connections";
 import type { EnvironmentShellState } from "@t3tools/client-runtime/state/shell";
 import * as Cause from "effect/Cause";
 import * as Option from "effect/Option";
-import { AsyncResult } from "effect/unstable/reactivity";
+import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
 import { appAtomRegistry } from "./atomRegistry.ts";
+import type { T3ClientState } from "./t3Client.ts";
+import { compareServerConfig, compareShell, type DomainComparison } from "./upstreamCompare.ts";
 import {
-  upstreamEnvironmentCatalog,
-  upstreamEnvironmentShell,
-} from "./upstreamConnectionRuntime.ts";
-
-declare const NativeModules:
-  | {
-      readonly nodejs?: {
-        readonly exposed?: {
-          readonly getRuntimeFlags?: () => { readonly upstreamShadow?: boolean } | undefined;
-        };
-      };
-    }
-  | undefined;
+  primaryEnvironmentId,
+  readUpstreamRuntimeFlags,
+  type UpstreamPrimaryState,
+  watchUpstreamPrimary,
+} from "./upstreamPrimary.ts";
+import { upstreamStatePayloads } from "./upstreamStateSource.ts";
 
 export interface UpstreamShadowSummary {
   /** The connection phase, or what the runtime is waiting for before it has one. */
@@ -37,22 +32,28 @@ export interface UpstreamShadowSummary {
   readonly updatedAt: string;
 }
 
-export interface UpstreamShadowInput {
-  readonly catalog: AsyncResult.AsyncResult<EnvironmentCatalogState, unknown>;
-  readonly connection: AsyncResult.AsyncResult<SupervisorConnectionState, unknown> | null;
-  readonly shell: EnvironmentShellState | null;
+export type UpstreamShadowInput = Pick<UpstreamPrimaryState, "catalog" | "connection" | "shell">;
+
+export interface UpstreamShadowComparison {
+  readonly config: DomainComparison;
+  readonly shell: DomainComparison;
 }
 
-/** The primary local environment in a catalog, if the host has registered it. */
-export function primaryEnvironmentId(
-  catalog: AsyncResult.AsyncResult<EnvironmentCatalogState, unknown>,
-) {
-  const state = Option.getOrNull(AsyncResult.value(catalog));
-  if (state === null) return null;
-  for (const [environmentId, entry] of state.entries) {
-    if (entry.target._tag === "PrimaryConnectionTarget") return environmentId;
-  }
-  return null;
+type ComparedClientState = Pick<
+  T3ClientState,
+  "status" | "serverConfig" | "providers" | "settings" | "projects" | "threads" | "archivedThreads"
+>;
+
+/** How each domain upstream can supply compares with the Lynx client's state. */
+export function compareUpstreamState(
+  state: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived">,
+  client: ComparedClientState,
+): UpstreamShadowComparison {
+  const payloads = upstreamStatePayloads(state);
+  return {
+    config: compareServerConfig(payloads.config, client),
+    shell: compareShell(payloads.shell, client),
+  };
 }
 
 function failureText(result: AsyncResult.AsyncResult<unknown, unknown> | null): string | null {
@@ -96,59 +97,48 @@ export function summarizeUpstreamShadow(
 
 let started = false;
 
-/** Starts the shadow once. Does nothing unless the host turned it on. */
-export function startUpstreamShadow(): void {
+/**
+ * Starts the shadow once. Does nothing unless the host turned it on.
+ * `clientStateAtom` is the Lynx client's own state, which upstream's is
+ * compared with.
+ */
+export function startUpstreamShadow(clientStateAtom: Atom.Atom<T3ClientState>): void {
   if (started) return;
-  const flags =
-    typeof NativeModules === "undefined"
-      ? undefined
-      : NativeModules.nodejs?.exposed?.getRuntimeFlags?.();
-  if (flags?.upstreamShadow !== true) return;
+  if (readUpstreamRuntimeFlags().upstreamShadow !== true) return;
   started = true;
 
-  const target = globalThis as { __T3_UPSTREAM_SHADOW__?: UpstreamShadowSummary };
-  let input: UpstreamShadowInput = {
-    catalog: appAtomRegistry.get(upstreamEnvironmentCatalog.catalogAtom),
-    connection: null,
-    shell: null,
+  const target = globalThis as {
+    __T3_UPSTREAM_SHADOW__?: UpstreamShadowSummary & { readonly compare: UpstreamShadowComparison };
   };
-  let followed: string | null = null;
-  let stopFollowing = () => {};
-  const publish = (patch: Partial<UpstreamShadowInput>) => {
-    input = { ...input, ...patch };
-    target.__T3_UPSTREAM_SHADOW__ = summarizeUpstreamShadow(input, new Date());
+  let upstream: UpstreamPrimaryState | null = null;
+  let client = appAtomRegistry.get(clientStateAtom);
+  const publish = () => {
+    if (upstream === null) return;
+    target.__T3_UPSTREAM_SHADOW__ = {
+      ...summarizeUpstreamShadow(upstream, new Date()),
+      compare: compareUpstreamState(upstream, client),
+    };
   };
 
-  appAtomRegistry.subscribe(
-    upstreamEnvironmentCatalog.catalogAtom,
-    (catalog) => {
-      const environmentId = primaryEnvironmentId(catalog);
-      if (environmentId === followed) {
-        publish({ catalog });
-        return;
-      }
-      stopFollowing();
-      followed = environmentId;
-      publish({ catalog, connection: null, shell: null });
-      if (environmentId === null) {
-        stopFollowing = () => {};
-        return;
-      }
-      const stopConnection = appAtomRegistry.subscribe(
-        upstreamEnvironmentCatalog.stateAtom(environmentId),
-        (connection) => publish({ connection }),
-        { immediate: true },
-      );
-      const stopShell = appAtomRegistry.subscribe(
-        upstreamEnvironmentShell.stateValueAtom(environmentId),
-        (shell) => publish({ shell }),
-        { immediate: true },
-      );
-      stopFollowing = () => {
-        stopConnection();
-        stopShell();
-      };
-    },
-    { immediate: true },
-  );
+  watchUpstreamPrimary((state) => {
+    upstream = state;
+    publish();
+  });
+  // The client state changes with every streamed token; only the fields the
+  // comparison reads are worth a new one.
+  appAtomRegistry.subscribe(clientStateAtom, (next) => {
+    const previous = client;
+    client = next;
+    if (
+      previous.status !== next.status ||
+      previous.serverConfig !== next.serverConfig ||
+      previous.providers !== next.providers ||
+      previous.settings !== next.settings ||
+      previous.projects !== next.projects ||
+      previous.threads !== next.threads ||
+      previous.archivedThreads !== next.archivedThreads
+    ) {
+      publish();
+    }
+  });
 }

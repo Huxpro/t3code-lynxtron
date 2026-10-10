@@ -34,7 +34,6 @@ import {
 import type { ServerConfigProjection } from "@t3tools/client-runtime/state/server";
 // Upstream keeps this helper in a module with no package export.
 import { applyServerConfigProjection } from "../../../../../packages/client-runtime/src/state/serverConfigProjection.ts";
-import { sortThreads } from "@t3tools/client-runtime/state/thread-sort";
 import { applyThreadDetailEvent } from "@t3tools/client-runtime/state/threads";
 import {
   applyTerminalAttachStreamEvent,
@@ -131,6 +130,7 @@ import {
   setLatestPendingMutation,
   type LatestPendingMutation,
 } from "../../shared/latestPendingMutation.ts";
+import { projectConnectorShell } from "../../shared/connectorShell.ts";
 import * as Context from "effect/Context";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
@@ -991,30 +991,29 @@ export class T3Connector {
     if (!this.defaultProjectId && projects.length > 0) {
       this.defaultProjectId = projects[0].id;
     }
-    const allThreads = this.shellSnapshot?.threads ?? [];
-    const threads = sortThreads(
-      allThreads
-        // Archived threads leave the sidebar (they surface in Settings > Archive).
-        .filter((thread) => !thread.archivedAt)
-        .filter((thread) => !this.pendingDisposableThreadDeletes.has(thread.id)),
-      "updated_at",
-    ).map((thread) => {
-      const pendingSelection = this.pendingThreadModelSelections.get(thread.id);
-      const pendingRuntimeMode = this.pendingThreadRuntimeModes.get(thread.id);
-      const pendingInteractionMode = this.pendingThreadInteractionModes.get(thread.id);
-      return pendingSelection || pendingRuntimeMode || pendingInteractionMode
-        ? {
-            ...thread,
-            ...(pendingSelection ? { modelSelection: pendingSelection } : {}),
-            ...(pendingRuntimeMode ? { runtimeMode: pendingRuntimeMode.value } : {}),
-            ...(pendingInteractionMode ? { interactionMode: pendingInteractionMode.value } : {}),
-          }
-        : thread;
-    });
-    const archivedThreads = this.archivedThreads
-      .slice()
-      .sort((a, b) => ((b.archivedAt ?? "") > (a.archivedAt ?? "") ? 1 : -1));
-    this.events.onShell({ projects, threads, archivedThreads });
+    this.events.onShell(
+      projectConnectorShell({
+        projects,
+        threads: this.shellSnapshot?.threads ?? [],
+        archivedThreads: this.archivedThreads,
+        isHidden: (thread) => this.pendingDisposableThreadDeletes.has(thread.id),
+        overlay: (thread) => {
+          const pendingSelection = this.pendingThreadModelSelections.get(thread.id);
+          const pendingRuntimeMode = this.pendingThreadRuntimeModes.get(thread.id);
+          const pendingInteractionMode = this.pendingThreadInteractionModes.get(thread.id);
+          return pendingSelection || pendingRuntimeMode || pendingInteractionMode
+            ? {
+                ...thread,
+                ...(pendingSelection ? { modelSelection: pendingSelection } : {}),
+                ...(pendingRuntimeMode ? { runtimeMode: pendingRuntimeMode.value } : {}),
+                ...(pendingInteractionMode
+                  ? { interactionMode: pendingInteractionMode.value }
+                  : {}),
+              }
+            : thread;
+        },
+      }),
+    );
   }
 
   private scheduleDisposableThreadCleanup(): void {
