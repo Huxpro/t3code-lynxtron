@@ -1,8 +1,7 @@
 # Lynxtron client architecture
 
 How the Lynx client sits on top of upstream T3 Code. The layering was approved
-on 2026-10-09; the current merge base is upstream `024d49520e`. This document replaces
-the ownership model in `plans/10-source-first-architecture-reset.md`.
+on 2026-10-09; the current merge base is upstream `024d49520e`.
 
 ## Principles
 

@@ -8,3 +8,5 @@
 
 # Rspeedy's dev-ready marker.
 .tmp/
+# Written by the build and by `pnpm run audit`.
+reports/*.json
