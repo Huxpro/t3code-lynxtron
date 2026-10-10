@@ -91,6 +91,12 @@ function alphaSemanticColor(name, baseAlpha) {
   };
 }
 
+// Upstream names for colors that are aliases in its stylesheet (index.css).
+const aliasedSemanticColors = {
+  "diff-addition": "var(--success)",
+  "diff-deletion": "var(--destructive)",
+};
+
 const semanticColors = Object.fromEntries(
   semanticColorNames.map((name) => [
     name,
@@ -113,6 +119,7 @@ export default {
     "../web/src/**/*.lynx.{ts,tsx}",
     "../web/src/branding.logic.ts",
     "../web/src/components/BranchToolbar.logic.ts",
+    "../web/src/components/chat/DiffStatLabel.tsx",
     "../web/src/components/chat/externalLinkContextMenu.ts",
     "../web/src/components/chat/modelPickerModelHighlights.ts",
     "../web/src/components/settings/settingsSearch.ts",
@@ -216,7 +223,7 @@ export default {
   ],
   theme: {
     extend: {
-      colors: semanticColors,
+      colors: { ...semanticColors, ...aliasedSemanticColors },
       fontFamily: {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-mono)"],
