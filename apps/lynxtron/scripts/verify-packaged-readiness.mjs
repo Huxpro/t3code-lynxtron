@@ -38,6 +38,13 @@ import {
   projectFileDetailLayout,
 } from "../../../packages/lynx-logic/src/files.ts";
 import { enableOpenCodeInFixtureState } from "./fixture-provider-defaults.mjs";
+import {
+  APPROVAL_COMMAND,
+  APPROVAL_DONE_TEXT,
+  APPROVAL_PARAGRAPHS,
+  SCRIPTED_MODEL_ID,
+  SLOW_TICK_TEXT,
+} from "./fixtures/scripted-provider.mjs";
 
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const require = createRequire(import.meta.url);
@@ -8510,6 +8517,292 @@ async function verifyApprovalLive({
   };
 }
 
+// A whole live turn against the scripted provider (scripts/fixtures/
+// scripted-provider.mjs), so it costs no quota: send, streamed text, a command
+// approval, completion, then a second turn interrupted with Stop. Everything is
+// driven through the composer, never through a connector command, so the same
+// gate holds whichever path feeds the client.
+async function verifyLiveTurn({ baseDir, child, client, timeoutMs }) {
+  const expected = { instanceId: "grok", model: SCRIPTED_MODEL_ID };
+  // No real provider may run: the state this app was launched on must enable
+  // the scripted instance and nothing else.
+  const settings = JSON.parse(
+    readFileSync(path.join(baseDir, "userdata", "settings.json"), "utf8"),
+  );
+  const enabledProviders = Object.entries(settings.providers ?? {})
+    .filter(([, provider]) => provider?.enabled === true)
+    .map(([name]) => name);
+  const binaryPath = settings.providers?.grok?.binaryPath;
+  if (
+    enabledProviders.join() !== "grok" ||
+    Object.keys(settings.providerInstances ?? {}).length > 0 ||
+    typeof binaryPath !== "string" ||
+    !readFileSync(binaryPath, "utf8").includes("scripted-provider.mjs")
+  ) {
+    throw new Error(
+      `The live-turn fixture must enable only the scripted provider: ${JSON.stringify({
+        enabledProviders,
+        providerInstances: Object.keys(settings.providerInstances ?? {}),
+        binaryPath: binaryPath ?? null,
+      })}`,
+    );
+  }
+  const providerReady = (state) =>
+    state?.selectedProvider?.instanceId === expected.instanceId &&
+    state.selectedProvider.status === "ready" &&
+    state.selectedProvider.authStatus === "authenticated";
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => providerReady(state) && state.projects?.length === 1,
+  }).catch(async (error) => {
+    throw new Error(
+      `The scripted provider did not become the ready selected provider: ${
+        error instanceof Error ? error.message.slice(0, 200) : String(error)
+      }; selectedProvider=${JSON.stringify((await readClientState(client))?.selectedProvider)}`,
+    );
+  });
+  // The fixture has one project and no thread; the turn runs on a new one.
+  await tapSelector({ child, client, selector: ".sidebar-v2-new-thread", timeoutMs });
+  const draft = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      typeof state?.draftThreadId === "string" && state.activeThreadId === state.draftThreadId,
+  });
+  const selection = draft.activeThread?.modelSelection;
+  if (selection?.instanceId !== expected.instanceId || selection.model !== expected.model) {
+    throw new Error(
+      `The live turn would not run on the scripted model: ${JSON.stringify({ expected, selection })}`,
+    );
+  }
+  const threadId = draft.draftThreadId;
+  await waitForRuntimeValue({
+    child,
+    client,
+    expression: "typeof globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__",
+    predicate: (value) => value === "function",
+    timeoutMs,
+  });
+
+  const primaryState = (measurement) => measurement?.attributes["data-composer-primary-state"];
+  const waitForPrimary = (predicate) =>
+    waitForMeasurement({
+      child,
+      client,
+      selector: ".composer-primary-action",
+      timeoutMs,
+      predicate: (measurement) => predicate(primaryState(measurement)),
+    });
+  const send = async (prompt) => {
+    await client.runCdp("Runtime.evaluate", {
+      expression: `globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.(${JSON.stringify(prompt)})`,
+      returnByValue: true,
+    });
+    await waitForPrimary((state) => state === "send");
+    await tapSelector({ child, client, selector: ".composer-primary-action", timeoutMs });
+  };
+  const transcriptText = async () =>
+    (await readOptionalMeasurement(client, ".timeline-host"))?.text ?? "";
+  // Streaming means the transcript shows the reply growing while the turn is
+  // still running: `marker` on screen, then longer text on two later reads,
+  // each taken with Stop still showing.
+  const watchStreaming = async (marker) => {
+    const lengths = [];
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      if (child.exitCode !== null || child.signalCode !== null) {
+        throw new Error("Lynxtron exited while the live turn was streaming.");
+      }
+      const text = await transcriptText();
+      const running =
+        primaryState(await readOptionalMeasurement(client, ".composer-primary-action")) === "stop";
+      if (running && text.includes(marker) && text.length > (lengths.at(-1) ?? 0)) {
+        lengths.push(text.length);
+        if (lengths.length === 3) return lengths;
+      }
+      if (!running && lengths.length > 0) break;
+      await waitForChildExit(child, 50);
+    }
+    throw new Error(
+      `The transcript did not show "${marker}" growing while the turn ran: ${JSON.stringify({
+        lengths,
+        transcript: (await transcriptText()).slice(-300),
+        state: await readClientState(client).then((state) => ({
+          sessionStatus: state?.sessionStatus,
+          sessionError: state?.sessionError,
+          latestTurn: state?.latestTurn,
+          messages: state?.messages?.slice(-2),
+        })),
+      })}`,
+    );
+  };
+  const onThread = (state) =>
+    state?.activeThreadId === threadId && state.threadIds?.includes(threadId);
+  const startedAtMs = performance.now();
+  const elapsed = () => Math.round(performance.now() - startedAtMs);
+  const timing = {};
+
+  // The draft takes Supervised from the runtime menu, so the command asks.
+  await tapSelector({ child, client, selector: ".composer-toolbar-control--runtime", timeoutMs });
+  const supervised = await waitForSelectorMeasurements({
+    child,
+    client,
+    selector: ".composer-runtime-menu__item",
+    timeoutMs,
+    predicate: (items) =>
+      items.some((item) => measurementVisible(item) && item.text.includes("Supervised")),
+  });
+  await tapMeasurement({
+    client,
+    measurement: supervised.find((item) => item.text.includes("Supervised")),
+  });
+  await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => state?.activeThread?.runtimeMode === "approval-required",
+  });
+
+  await send("Run the scripted command [approval]");
+  const approvalStreaming = await watchStreaming(APPROVAL_PARAGRAPHS[0]);
+  timing.approvalStreamingMs = elapsed();
+  const detail = await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-pending-approval__detail",
+    timeoutMs,
+    predicate: (measurement) =>
+      measurementVisible(measurement) && measurement.text.includes(APPROVAL_COMMAND),
+  });
+  const pending = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) => onThread(state) && state.pendingApprovalRequests?.length === 1,
+  });
+  const request = pending.pendingApprovalRequests[0];
+  if (request.requestKind !== "command" || pending.activeTurnId == null) {
+    throw new Error(
+      `The approval was not a command request on a running turn: ${JSON.stringify({
+        request,
+        activeTurnId: pending.activeTurnId,
+      })}`,
+    );
+  }
+  timing.approvalShownMs = elapsed();
+  await tapSelector({ child, client, selector: ".composer-approval-action--accept", timeoutMs });
+  const completed = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      onThread(state) &&
+      state.activeTurnId == null &&
+      state.latestTurn?.state === "completed" &&
+      state.approvalReceipts?.some(
+        (receipt) =>
+          receipt.requestId === request.requestId && receipt.kind === "approval.resolved",
+      ),
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".timeline-host",
+    timeoutMs,
+    predicate: (measurement) => measurement?.text.includes(APPROVAL_DONE_TEXT) === true,
+  });
+  await waitForMeasurement({
+    child,
+    client,
+    selector: ".composer-pending-approval__detail",
+    timeoutMs,
+    predicate: (measurement) => measurement === null,
+  });
+  await waitForPrimary((state) => state !== "stop");
+  timing.approvalCompletedMs = elapsed();
+
+  await send("Keep going until stopped [slow]");
+  const slowStreaming = await watchStreaming(`${SLOW_TICK_TEXT} 1`);
+  const running = await readClientState(client);
+  timing.slowStreamingMs = elapsed();
+  await tapSelector({ child, client, selector: ".composer-primary-action", timeoutMs });
+  const interrupted = await waitForClientState({
+    child,
+    client,
+    timeoutMs,
+    predicate: (state) =>
+      onThread(state) &&
+      state.activeTurnId == null &&
+      state.latestTurn?.turnId !== completed.latestTurn.turnId &&
+      state.latestTurn?.state !== "running",
+  });
+  await waitForPrimary((state) => state !== "stop");
+  timing.interruptedMs = elapsed();
+  // The reply stops growing and the composer takes the next prompt.
+  const settledLength = (await transcriptText()).length;
+  await client.runCdp("Runtime.evaluate", {
+    expression: 'globalThis.__T3_LYNXTRON_COMPOSER_INPUT_FIXTURE__?.("next prompt")',
+    returnByValue: true,
+  });
+  await waitForPrimary((state) => state === "send");
+  const afterLength = (await transcriptText()).length;
+  if (afterLength !== settledLength) {
+    throw new Error(
+      `The interrupted reply kept growing: ${JSON.stringify({ settledLength, afterLength })}`,
+    );
+  }
+  const connectorCalls = commandResult(
+    await client.runCdp("Runtime.evaluate", {
+      expression: "JSON.stringify(globalThis.__T3_UPSTREAM_SHADOW__?.connectorCalls ?? null)",
+      returnByValue: true,
+    }),
+  )?.value;
+
+  // Checked last, so a turn that ends in the wrong state still reports the
+  // rest of the journey.
+  const sameTurn = interrupted.latestTurn.turnId === running.activeTurnId;
+  // The client currently ends an interrupted turn as "completed" (fork issue
+  // #45). That is reported, not failed; any other end state fails.
+  const endedAsCompleted = sameTurn && interrupted.latestTurn.state === "completed";
+  const endedInterrupted =
+    sameTurn && (interrupted.latestTurn.state === "interrupted" || endedAsCompleted);
+  return {
+    status: endedInterrupted ? "pass" : "fail",
+    knownDefects: endedAsCompleted ? ["interrupted turn shown as completed"] : [],
+    ...(endedInterrupted
+      ? {}
+      : {
+          error: `Stop did not end the running turn as interrupted: ${JSON.stringify({
+            runningTurnId: running.activeTurnId,
+            latestTurn: interrupted.latestTurn,
+            sessionStatus: interrupted.sessionStatus,
+            sessionError: interrupted.sessionError,
+          })}`,
+        }),
+    input:
+      "Runtime menu tap on Supervised; renderer input fixture + DevTool taps on Send, Approve and Stop",
+    provider: expected,
+    statePath: process.env.T3_LYNXTRON_UPSTREAM_STATE === "1" ? "upstream" : "connector",
+    threadId,
+    approval: {
+      streamedLengths: approvalStreaming,
+      request: { ...request, detail: detail.text.trim() },
+      latestTurn: completed.latestTurn,
+    },
+    interrupt: {
+      streamedLengths: slowStreaming,
+      latestTurn: interrupted.latestTurn,
+      sessionStatus: interrupted.sessionStatus,
+    },
+    timing,
+    // Null unless the app runs on the upstream path, which is what counts them.
+    connectorCalls: typeof connectorCalls === "string" ? JSON.parse(connectorCalls) : null,
+  };
+}
+
 // Plan 14 M6: the supported Lynx terminal runs real shell sessions. Open the
 // panel, run a command, split into two sessions and see the PTY shrink, close
 // the split, and close then reopen the panel onto a fresh session.
@@ -16215,7 +16508,9 @@ async function runOnce({
       ...(shouldVerifyCheckpointRevertLive
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "confirm" }
         : {}),
-      ...(shouldVerifyApprovalLive ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
+      ...(shouldVerifyApprovalLive || shouldVerifyLiveTurn
+        ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" }
+        : {}),
       ...(shouldVerifyRightPanelAddMenu ? { T3_LYNXTRON_VIEWPORT_PROBE: "1" } : {}),
       ...(shouldVerifyTerminalLifecycle
         ? { T3_LYNXTRON_VIEWPORT_PROBE: "1", T3_TEST_CONFIRM_ANSWERS: "cancel,confirm,confirm" }
@@ -16797,6 +17092,9 @@ async function runOnce({
           timeoutMs,
         })
       : undefined;
+    const liveTurn = shouldVerifyLiveTurn
+      ? await verifyLiveTurn({ baseDir, child, client, timeoutMs })
+      : undefined;
     const checkpointRevert = shouldVerifyCheckpointRevert
       ? await verifyCheckpointRevert({ child, client, log, projectCwd, reviewFixture, timeoutMs })
       : undefined;
@@ -17126,6 +17424,7 @@ async function runOnce({
       checkpointRevert,
       checkpointRevertLive,
       approvalLive,
+      liveTurn,
       terminalLifecycle,
       failedTranscriptState,
       approvalTranscriptState,
@@ -17155,6 +17454,7 @@ async function runOnce({
     return {
       index,
       status: outcomeChecks.every((outcome) => outcome.status === "pass") ? "pass" : "fail",
+      ...(liveTurn?.error ? { error: liveTurn.error } : {}),
       startedAt,
       timing,
       memory: {
@@ -17218,6 +17518,7 @@ async function runOnce({
       checkpointRevert,
       checkpointRevertLive,
       approvalLive,
+      liveTurn,
       terminalLifecycle,
       failedTranscriptState,
       approvalTranscriptState,
@@ -17353,6 +17654,7 @@ const shouldVerifyHeaderThreadMenu = process.argv.includes("--verify-header-thre
 const shouldVerifyCheckpointRevert = process.argv.includes("--verify-checkpoint-revert");
 const shouldVerifyCheckpointRevertLive = process.argv.includes("--verify-checkpoint-revert-live");
 const shouldVerifyApprovalLive = process.argv.includes("--verify-approval-live");
+const shouldVerifyLiveTurn = process.argv.includes("--verify-live-turn");
 const shouldVerifyTerminalLifecycle = process.argv.includes("--verify-terminal-lifecycle");
 const shouldVerifyTranscriptIncomingGrowth = process.argv.includes(
   "--verify-transcript-incoming-growth",
@@ -17720,7 +18022,8 @@ const composerSendRetryOnlyEmptyFixture =
     shouldVerifyM1LocalJourney ||
     shouldVerifyRemoteJourney ||
     shouldVerifyCheckpointRevertLive ||
-    shouldVerifyApprovalLive) &&
+    shouldVerifyApprovalLive ||
+    shouldVerifyLiveTurn) &&
   !verifySettingsNavigation &&
   !verifySidebarScope &&
   !verifyComposerBranding &&
