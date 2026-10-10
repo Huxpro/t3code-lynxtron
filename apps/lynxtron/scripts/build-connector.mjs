@@ -1,10 +1,7 @@
 #!/usr/bin/env node
 /**
- * Bundle the Node-side connector as CommonJS for the Lynxtron preload.
- *
- * Unlike the former standalone port, this app lives in the t3code workspace:
- * Effect and @t3tools/contracts therefore resolve normally through pnpm and no
- * sibling checkout or generated node_modules symlink is needed.
+ * Bundle the Node-side connector, which starts or finds the server and gets
+ * its bearer, as CommonJS for the Lynxtron main process to load.
  */
 import { mkdir } from "node:fs/promises";
 import * as path from "node:path";

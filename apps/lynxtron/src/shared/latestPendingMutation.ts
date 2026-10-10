@@ -75,24 +75,6 @@ export function reconcilePendingMutation<Key, Value>(
   }
 }
 
-export function acknowledgePendingMutationAtSequence<Key, Value>(options: {
-  readonly pendingMutations: Map<Key, LatestPendingMutation<Value>>;
-  readonly key: Key;
-  readonly mutation: LatestPendingMutation<Value>;
-  readonly canonicalValue: Value | undefined;
-  readonly canonicalSequence: number | undefined;
-  readonly mutationSequence: number;
-}): void {
-  markPendingMutationAccepted(options.mutation);
-  if (
-    options.canonicalValue !== undefined &&
-    options.canonicalSequence !== undefined &&
-    options.canonicalSequence >= options.mutationSequence
-  ) {
-    reconcilePendingMutation(options.pendingMutations, options.key, options.canonicalValue);
-  }
-}
-
 export function enqueueSerialMutation<Key, Result>(
   pendingQueues: Map<Key, Promise<unknown>>,
   key: Key,
