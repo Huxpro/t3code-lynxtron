@@ -7625,7 +7625,11 @@
   font-size: 14px;
   line-height: 20px;
 }
-.ui-badge {
+/* Upstream's ui/badge, compiled unmodified: a box with data-slot="badge" around
+ * a <text>. Upstream marks a size and a variant only by utility classes, so the
+ * Lynx badge look is keyed on the one that names each: h-5 is size "sm", h-6.5
+ * is "lg", and the background (or, for outline, the border) names the variant. */
+[data-slot="badge"] {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -7640,62 +7644,85 @@
   border-radius: 4px;
   box-sizing: border-box;
 }
-.ui-badge--sm {
+[data-slot="badge"].h-5 {
   height: 16px;
   min-width: 16px;
 }
-.ui-badge--lg {
+[data-slot="badge"].h-6\.5 {
   height: 22px;
   min-width: 22px;
   padding: 0 5px;
 }
-.ui-badge__label {
-  color: inherit;
+[data-slot="badge"] > .lynx-host-text {
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
 }
-.ui-badge--sm .ui-badge__label {
+[data-slot="badge"].h-5 > .lynx-host-text {
   font-size: 10px;
   line-height: 14px;
 }
-.ui-badge--lg .ui-badge__label {
+[data-slot="badge"].h-6\.5 > .lynx-host-text {
   font-size: 14px;
   line-height: 20px;
 }
-.ui-badge--default {
+[data-slot="badge"].bg-primary {
   color: var(--primary-foreground);
   background-color: var(--primary);
 }
-.ui-badge--secondary {
+[data-slot="badge"].bg-primary > .lynx-host-text {
+  color: var(--primary-foreground);
+}
+[data-slot="badge"].bg-secondary {
   color: var(--secondary-foreground);
   background-color: var(--secondary);
 }
-.ui-badge--outline {
+[data-slot="badge"].bg-secondary > .lynx-host-text {
+  color: var(--secondary-foreground);
+}
+[data-slot="badge"].border-input {
   color: var(--foreground);
   border-color: var(--input);
   background-color: var(--background);
 }
-.ui-badge--destructive {
+[data-slot="badge"].border-input > .lynx-host-text {
+  color: var(--foreground);
+}
+[data-slot="badge"].bg-destructive {
   color: #fff;
   background-color: var(--destructive);
 }
-.ui-badge--error {
+[data-slot="badge"].bg-destructive > .lynx-host-text {
+  color: #fff;
+}
+[data-slot="badge"].bg-destructive\/8 {
   color: var(--destructive-foreground);
   background-color: rgba(var(--destructive-rgb), 0.16);
 }
-.ui-badge--info {
+[data-slot="badge"].bg-destructive\/8 > .lynx-host-text {
+  color: var(--destructive-foreground);
+}
+[data-slot="badge"].bg-info\/8 {
   color: var(--info-foreground);
   background-color: rgba(var(--info-rgb), 0.16);
 }
-.ui-badge--success {
+[data-slot="badge"].bg-info\/8 > .lynx-host-text {
+  color: var(--info-foreground);
+}
+[data-slot="badge"].bg-success\/8 {
   color: var(--success-foreground);
   background-color: rgba(var(--success-rgb), 0.16);
 }
-.ui-badge--warning {
+[data-slot="badge"].bg-success\/8 > .lynx-host-text {
+  color: var(--success-foreground);
+}
+[data-slot="badge"].bg-warning\/8 {
   color: var(--warning-foreground);
   background-color: rgba(var(--warning-rgb), 0.16);
+}
+[data-slot="badge"].bg-warning\/8 > .lynx-host-text {
+  color: var(--warning-foreground);
 }
 .provider-status-banner-flow .provider-status-banner__dismiss,
 .provider-status-banner-overlay .provider-status-banner__dismiss {

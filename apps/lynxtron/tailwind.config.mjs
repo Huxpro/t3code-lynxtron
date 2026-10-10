@@ -124,6 +124,7 @@ export default {
     "../web/src/components/chat/modelPickerModelHighlights.ts",
     "../web/src/components/settings/settingsSearch.ts",
     "../web/src/components/threadActionMenu.logic.ts",
+    "../web/src/components/ui/badge.tsx",
     "../web/src/components/ui/kbd.tsx",
     "../web/src/components/ui/label.tsx",
     "../web/src/components/ui/separator.tsx",
@@ -141,8 +142,15 @@ export default {
   // on, which changes how that surface looks; check the surface first.
   blocklist: [
     // From upstream components compiled unmodified: rules for DOM-only
-    // structure (`svg` descendants) that no Lynx element can match.
+    // structure (`svg` descendants) or state (`:disabled`) that no Lynx
+    // element can match.
     "[&_svg:not([class*='size-'])]:size-3",
+    "[&_svg:not([class*='size-'])]:size-3.5",
+    "sm:[&_svg:not([class*='size-'])]:size-3",
+    "[&_svg:not([class*='opacity-'])]:opacity-80",
+    "[&_svg]:pointer-events-none",
+    "[&_svg]:shrink-0",
+    "disabled:pointer-events-none",
     "-my-1",
     "bg-background/45",
     "bg-muted/55",
