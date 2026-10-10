@@ -3,6 +3,7 @@
 // over this client's platform ports. Atoms made from it start the layer the
 // first time `appAtomRegistry` reads one; importing this module starts nothing.
 import { Connection } from "@t3tools/client-runtime/connection";
+import { createAuthEnvironmentAtoms } from "@t3tools/client-runtime/state/auth";
 import { createEnvironmentCatalogAtoms } from "@t3tools/client-runtime/state/connections";
 import { createOrchestrationEnvironmentAtoms } from "@t3tools/client-runtime/state/orchestration";
 import { createServerEnvironmentAtoms } from "@t3tools/client-runtime/state/server";
@@ -46,3 +47,4 @@ export const upstreamEnvironmentThreads =
 export const upstreamTerminalEnvironment =
   createTerminalEnvironmentAtoms(upstreamConnectionRuntime);
 export const upstreamVcsEnvironment = createVcsEnvironmentAtoms(upstreamConnectionRuntime);
+export const upstreamAuthEnvironment = createAuthEnvironmentAtoms(upstreamConnectionRuntime);

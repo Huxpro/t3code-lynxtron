@@ -44,12 +44,67 @@ export function withPendingModelSelection(
   return selection ? { ...thread, modelSelection: selection } : thread;
 }
 
+type DisposableCandidates = Parameters<typeof selectRecoverableDisposableThreadIds>[0];
+
 /**
  * The empty disposable threads in a shell. The connector's cleanup deletes
  * each one it sees, so a source that does not run the cleanup hides them all.
  */
-export function disposableThreadIds(
-  threads: Parameters<typeof selectRecoverableDisposableThreadIds>[0],
-): ReadonlySet<string> {
+export function disposableThreadIds(threads: DisposableCandidates): ReadonlySet<string> {
   return new Set(selectRecoverableDisposableThreadIds(threads));
+}
+
+export interface DisposableThreadCleanup {
+  /**
+   * Takes the server's current threads. Each empty disposable thread seen for
+   * the first time is hidden and deleted.
+   */
+  readonly observe: (threads: DisposableCandidates) => void;
+  /** Whether a thread is being deleted and is left out of the shell meanwhile. */
+  readonly isHidden: (threadId: string) => boolean;
+}
+
+/**
+ * Deletes empty disposable threads as a shell source sees them, the way the
+ * main connector does for its own shell: a thread is hidden from the moment
+ * it is seen, deleted on the next tick if it is still empty, shown again if
+ * the delete fails, and tried again the next time the shell changes.
+ */
+export function createDisposableThreadCleanup(options: {
+  readonly deleteThread: (threadId: string) => Promise<unknown>;
+  /** A hidden thread is shown again: the delete failed, or it was written in. */
+  readonly onRevealed: () => void;
+}): DisposableThreadCleanup {
+  const hidden = new Set<string>();
+  let latest: DisposableCandidates = [];
+  const reveal = (threadId: string) => {
+    if (!hidden.delete(threadId)) return;
+    if (latest.some((thread) => thread.id === threadId)) options.onRevealed();
+  };
+  return {
+    observe(threads) {
+      latest = threads;
+      const present = new Set<string>(threads.map((thread) => thread.id));
+      for (const threadId of hidden) {
+        if (!present.has(threadId)) hidden.delete(threadId);
+      }
+      const candidates = selectRecoverableDisposableThreadIds(threads).filter(
+        (threadId) => !hidden.has(threadId),
+      );
+      for (const threadId of candidates) hidden.add(threadId);
+      if (candidates.length === 0) return;
+      void Promise.resolve().then(() => {
+        for (const threadId of candidates) {
+          const current = latest.find((thread) => thread.id === threadId);
+          if (!current) continue;
+          if (!selectRecoverableDisposableThreadIds([current]).includes(threadId)) {
+            reveal(threadId);
+            continue;
+          }
+          options.deleteThread(threadId).catch(() => reveal(threadId));
+        }
+      });
+    },
+    isHidden: (threadId) => hidden.has(threadId),
+  };
 }

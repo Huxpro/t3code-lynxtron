@@ -42,6 +42,7 @@ import { remoteHttpClientLayer } from "@t3tools/client-runtime/rpc";
 import { AuthStandardClientScopes } from "@t3tools/contracts";
 import { RelayWebClientId } from "@t3tools/contracts/relay";
 import * as Context from "effect/Context";
+import * as Crypto from "effect/Crypto";
 import * as Effect from "effect/Effect";
 import * as Layer from "effect/Layer";
 import * as Option from "effect/Option";
@@ -54,6 +55,7 @@ import * as Socket from "effect/unstable/socket/Socket";
 
 import { T3_CONNECTOR_METHODS } from "../../shared/connectorProtocol.ts";
 import { type BridgeCallModule, callBridge } from "../state/mainConnectorTransport.ts";
+import { makeHostCrypto } from "./hostCrypto.ts";
 import { HostWebSocket } from "./hostWebSocket.ts";
 
 export interface HostHttpRequest {
@@ -74,7 +76,12 @@ export type HostHttpFetch = (request: HostHttpRequest) => Promise<HostHttpRespon
 declare const NativeModules:
   | {
       readonly bridge?: BridgeCallModule;
-      readonly nodejs?: { readonly exposed?: { readonly httpFetch?: HostHttpFetch } };
+      readonly nodejs?: {
+        readonly exposed?: {
+          readonly httpFetch?: HostHttpFetch;
+          readonly randomUUID?: () => string;
+        };
+      };
     }
   | undefined;
 
@@ -156,6 +163,18 @@ const hostHttpFetch: HostHttpFetch = (request) => {
 };
 
 const httpClientLayer = remoteHttpClientLayer(makeHostFetch(hostHttpFetch));
+
+// Command ids come from the host: upstream's command builders ask `Crypto`
+// for a UUID, and the preload's `randomUUID` is Node's.
+const cryptoLayer = Layer.succeed(
+  Crypto.Crypto,
+  makeHostCrypto(() => {
+    const randomUUID =
+      typeof NativeModules === "undefined" ? undefined : NativeModules.nodejs?.exposed?.randomUUID;
+    if (typeof randomUUID !== "function") throw new Error("The host provides no randomUUID.");
+    return randomUUID();
+  }),
+);
 
 // Upstream passes protocols or nothing; Node-style client options have no
 // meaning for the host socket.
@@ -478,9 +497,13 @@ const environmentCacheLayer = Layer.succeed(
   }),
 );
 
-/** Everything upstream's `Connection` layer and snapshot loaders require. */
+/**
+ * Everything upstream's `Connection` layer, snapshot loaders and command
+ * builders require.
+ */
 export const connectionPlatformLayer = Layer.mergeAll(
   webSocketLayer,
+  cryptoLayer,
   relayLayer,
   storageLayer,
   environmentCacheLayer,

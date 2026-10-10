@@ -1,11 +1,17 @@
-import { ProviderInstanceId } from "@t3tools/contracts";
+import { AuthAccessSnapshot, ProviderInstanceId } from "@t3tools/contracts";
+import * as Schema from "effect/Schema";
+import { AsyncResult } from "effect/unstable/reactivity";
 import { assert, describe, it } from "vite-plus/test";
 
+import { authAccessSnapshot } from "./upstreamPrimary.ts";
 import {
   createUpstreamStateRouter,
+  ownedShellThreads,
   terminalDomain,
   threadWasReset,
+  upstreamAccessPayload,
   upstreamStatePayloads,
+  upstreamStatusPayload,
   upstreamTerminalPayloads,
   upstreamThreadPayload,
   upstreamVcsPayload,
@@ -135,6 +141,101 @@ describe("upstreamStatePayloads", () => {
       "thread-kept",
       "thread-named",
     ]);
+  });
+});
+
+describe("the shell the cleanup acts on", () => {
+  const snapshot = shellSnapshot([
+    { id: "thread-kept", latestUserMessageAt: "2026-10-08T00:00:00.000Z" },
+    { id: "thread-empty", title: "New thread", latestUserMessageAt: null },
+    { id: "thread-failed", title: "New thread", latestUserMessageAt: null },
+  ]);
+  const state = {
+    connection: connection("connected"),
+    shell: shellState("live", snapshot),
+    config: null,
+    archived,
+  };
+
+  it("leaves out only the threads the cleanup hides", () => {
+    const { shell } = upstreamStatePayloads(
+      state,
+      new Map(),
+      (threadId) => threadId === "thread-empty",
+    );
+    assert.deepEqual(shell?.threads.map((thread) => thread.id).toSorted(), [
+      "thread-failed",
+      "thread-kept",
+    ]);
+  });
+
+  it("is upstream's only while upstream supplies the shell", () => {
+    assert.strictEqual(ownedShellThreads(state), snapshot.threads);
+    assert.isNull(ownedShellThreads({ ...state, archived: null }));
+    assert.isNull(ownedShellThreads({ ...state, connection: connection("backoff") }));
+    assert.isNull(ownedShellThreads({ ...state, shell: shellState("cached", snapshot) }));
+  });
+});
+
+describe("upstreamStatusPayload", () => {
+  it("reports ready while upstream is connected with a live shell", () => {
+    assert.deepEqual(
+      upstreamStatusPayload({
+        connection: connection("connected"),
+        shell: shellState("live", live),
+      }),
+      { status: "ready" },
+    );
+  });
+
+  it("leaves the status to the connector while upstream is not serving the client", () => {
+    assert.isNull(upstreamStatusPayload({ connection: null, shell: null }));
+    assert.isNull(
+      upstreamStatusPayload({ connection: connection("backoff"), shell: shellState("live", live) }),
+    );
+    assert.isNull(
+      upstreamStatusPayload({
+        connection: connection("connected"),
+        shell: shellState("cached", live),
+      }),
+    );
+  });
+});
+
+describe("upstreamAccessPayload", () => {
+  const access = Schema.decodeUnknownSync(Schema.toCodecJson(AuthAccessSnapshot))({
+    pairingLinks: [
+      {
+        id: "link-1",
+        scopes: ["orchestration:read"],
+        subject: "one-time-token",
+        label: "Phone",
+        createdAt: "2026-10-09T10:00:00.000Z",
+        expiresAt: "2026-10-09T10:05:00.000Z",
+      },
+    ],
+    clientSessions: [],
+  });
+
+  it("presents the access snapshot the way the Lynx settings read it", () => {
+    const payload = upstreamAccessPayload({ connection: connection("connected"), access });
+    assert.deepInclude(payload?.pairingLinks[0], { id: "link-1", label: "Phone", scopeCount: 1 });
+    assert.deepInclude(payload, { pairingLinkCount: 1, clientSessionCount: 0, hasEntries: true });
+  });
+
+  it("supplies nothing before the stream has delivered or while disconnected", () => {
+    assert.isNull(upstreamAccessPayload({ connection: connection("connected"), access: null }));
+    assert.isNull(upstreamAccessPayload({ connection: connection("backoff"), access }));
+  });
+
+  it("reads the snapshot upstream's access stream holds", () => {
+    assert.strictEqual(
+      authAccessSnapshot(
+        AsyncResult.success({ version: 1, revision: 3, type: "snapshot", payload: access }),
+      ),
+      access,
+    );
+    assert.isNull(authAccessSnapshot(AsyncResult.initial()));
   });
 });
 

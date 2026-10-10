@@ -176,12 +176,13 @@ import type {
   ConnectorCommandName,
   ConnectorEventEnvelope,
   ConnectorSnapshot,
+  ConnectorStatusPayload,
   ConnectorThreadPayload,
   ProjectRepoContext,
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
 import { setEnvironmentPathsResolveLocally } from "../platform/clientCapabilities.lynx";
-import { terminalSessionKey } from "../../shared/connectorTerminal.ts";
+import { closedTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import {
   applyFromConnector,
   startUpstreamStateSource,
@@ -189,15 +190,29 @@ import {
   type VcsStatusPayload,
 } from "./upstreamStateSource";
 import { readUpstreamRuntimeFlags } from "./upstreamPrimary";
-import { createUpstreamCommandBridge, routeCommandBridge } from "./upstreamCommands";
 import {
+  type ConnectorCallProbe,
+  createConnectorCallProbe,
+  publishConnectorCalls,
+  recordConnectorCalls,
+} from "./connectorCallProbe";
+import {
+  createUpstreamCommandBridge,
+  routeCommandBridge,
+  type UpstreamCommandBridge,
+} from "./upstreamCommands";
+import {
+  onUpstreamCommandsAvailability,
   startUpstreamCommands,
   upstreamCommandPort,
   upstreamCommandsAvailable,
   upstreamCommandState,
 } from "./upstreamCommandPort";
 
-interface PollBridge extends T3Bridge {}
+interface PollBridge extends T3Bridge {
+  /** The absolute path a typed workspace root names on the host. */
+  resolveWorkspacePath(workspaceRoot: string): string;
+}
 
 declare const NativeModules: {
   nodejs?: { exposed?: Partial<PollBridge> };
@@ -432,9 +447,13 @@ function refreshVcsStatusProjection(): void {
     (cause) =>
       applyFromConnector("vcs", () => {
         if (requestSequence !== vcsStatusRequestSequence) return;
-        if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
-          console.error("[t3-client] failed to read VCS status", { cwd, cause });
-        }
+        // A read that fails because the server just went away can arrive
+        // before the status that says so; decide once the status has settled.
+        setTimeout(() => {
+          if (shouldReportVcsStatusReadFailure(appAtomRegistry.get(t3ClientStateAtom).status)) {
+            console.error("[t3-client] failed to read VCS status", { cwd, cause });
+          }
+        }, 1_000);
         patchState({ vcsStatus: null, vcsStatusCwd: cwd, vcsStatusPending: false });
       }),
   );
@@ -557,6 +576,29 @@ function applyStatusPayload(status: StatusEventPayload): void {
       statusDetail: status.detail,
       ...(status.connectionKind === undefined ? {} : { connectionKind: status.connectionKind }),
     });
+  }
+}
+
+/**
+ * Applies the main connector's status. What only the main process knows, the
+ * kind of connection and whether its paths are local, is taken at once; the
+ * status itself is held while upstream's connection supplies it.
+ */
+function applyConnectorStatus(status: ConnectorStatusPayload): void {
+  // The main process is the first to know that the server it owns exited.
+  // Upstream's session can still read as connected for a moment, so a failure
+  // the connector reports is never held behind it.
+  if (status.status === "error" || status.status === "reconnecting") {
+    applyStatusPayload(status);
+    return;
+  }
+  if (applyFromConnector("status", () => applyStatusPayload(status))) return;
+  if (typeof status.pathsResolveLocally === "boolean") {
+    setEnvironmentPathsResolveLocally(status.pathsResolveLocally);
+  }
+  const current = appAtomRegistry.get(t3ClientStateAtom);
+  if (status.connectionKind !== undefined && status.connectionKind !== current.connectionKind) {
+    patchState({ connectionKind: status.connectionKind });
   }
 }
 
@@ -744,14 +786,14 @@ function applyConnectorSnapshot(
   snapshot: ConnectorSnapshot,
   preferredSelection?: ModelSelection | null,
 ): void {
-  applyStatusPayload(snapshot.status as StatusEventPayload);
+  applyConnectorStatus(snapshot.status);
   const config = snapshot.config;
   if (config) {
     applyFromConnector("config", () =>
       applyConfigPayload(decodeConnectorServerConfig(config), preferredSelection),
     );
   }
-  applyAccessPayload(snapshot.access);
+  applyFromConnector("access", () => applyAccessPayload(snapshot.access));
   applyFromConnector("shell", () => applyShellPayload(snapshot.shell as ShellEventPayload));
   const activeThreadId = appAtomRegistry.get(t3ClientStateAtom).activeThreadId;
   const activeThread = activeThreadId ? snapshot.threads[activeThreadId] : undefined;
@@ -764,7 +806,7 @@ function applyConnectorSnapshot(
 function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
   switch (envelope.kind) {
     case "status":
-      applyStatusPayload(envelope.payload as StatusEventPayload);
+      applyConnectorStatus(envelope.payload);
       return;
     case "config":
       applyFromConnector("config", () =>
@@ -772,7 +814,9 @@ function applyConnectorEvent(envelope: ConnectorEventEnvelope): void {
       );
       return;
     case "access":
-      applyAccessPayload(envelope.payload as AuthAccessPresentation);
+      applyFromConnector("access", () =>
+        applyAccessPayload(envelope.payload as AuthAccessPresentation),
+      );
       return;
     case "shell":
       applyFromConnector("shell", () => applyShellPayload(envelope.payload as ShellEventPayload));
@@ -812,21 +856,67 @@ function buildMainCommandBridge(transport: MainConnectorTransport): Partial<Poll
  * of upstream's is started.
  */
 function buildCommandBridge(transport: MainConnectorTransport): Partial<PollBridge> {
-  const connector = buildMainCommandBridge(transport);
-  if (readUpstreamRuntimeFlags().upstreamState !== true) return connector;
-  startUpstreamCommands();
-  return routeCommandBridge({
-    connector,
-    upstream: createUpstreamCommandBridge(upstreamCommandPort, {
-      ...upstreamCommandState,
-      pendingModelSelections: upstreamPendingModelSelections,
-      connector,
-      newId: randomUUID,
-      randomHex,
-      now: () => new Date().toISOString(),
-    }),
-    useUpstream: upstreamCommandsAvailable,
+  const mainBridge = buildMainCommandBridge(transport);
+  if (readUpstreamRuntimeFlags().upstreamState !== true) return mainBridge;
+  const probe = createConnectorCallProbe();
+  connectorCallProbe = probe;
+  publishConnectorCalls(probe.calls);
+  const connector = recordConnectorCalls(mainBridge, probe.record);
+  // The connector is told nothing while upstream takes the commands, so it
+  // follows no thread. When upstream stops, it is asked for the one shown.
+  onUpstreamCommandsAvailability((available) => {
+    if (available) {
+      probe.arm();
+      return;
+    }
+    const state = appAtomRegistry.get(t3ClientStateAtom);
+    const threadId = state.activeThreadId;
+    if (!threadId || threadId === state.draftThread?.id) return;
+    void connector.selectThread?.(threadId)?.catch(() => undefined);
   });
+  const upstream = upstreamCommandBridge();
+  if (upstreamCommandsAvailable()) probe.arm();
+  return routeCommandBridge({ connector, upstream, useUpstream: upstreamCommandsAvailable });
+}
+
+// Counts what still reaches the connector once upstream is ready. Null unless
+// the host turned the upstream state source on.
+let connectorCallProbe: ConnectorCallProbe | null = null;
+let upstreamBridge: UpstreamCommandBridge | null = null;
+
+/**
+ * The commands as upstream's connection carries them. Made on first use, and
+ * only when the host turned the upstream state source on.
+ */
+function upstreamCommandBridge(): UpstreamCommandBridge {
+  "background only";
+  startUpstreamCommands();
+  upstreamBridge ??= createUpstreamCommandBridge(upstreamCommandPort, {
+    ...upstreamCommandState,
+    pendingModelSelections: upstreamPendingModelSelections,
+    modelSelection: () => appAtomRegistry.get(t3ClientStateAtom).modelSelection,
+    resolveWorkspacePath: (workspaceRoot) => {
+      const resolve = getPreloadBridge()?.resolveWorkspacePath;
+      if (!resolve) throw new Error("The host cannot resolve a workspace path.");
+      return resolve(workspaceRoot);
+    },
+    terminalClosed: ({ threadId, terminalId }) => {
+      const key = terminalSessionKey(threadId, terminalId);
+      const session = closedTerminalSession({
+        threadId,
+        terminalId,
+        cwd: appAtomRegistry.get(t3ClientStateAtom).terminalSessions[key]?.cwd ?? ".",
+        closedAt: new Date().toISOString(),
+      });
+      // Held while upstream still supplies the terminal, and applied when
+      // its list drops it.
+      applyFromConnector(terminalDomain(session), () => applyTerminalPayload(session));
+    },
+    newId: randomUUID,
+    randomHex,
+    now: () => new Date().toISOString(),
+  });
+  return upstreamBridge;
 }
 
 function installTransportDevToolHook(): void {
@@ -1168,6 +1258,8 @@ async function bootstrapT3Client(): Promise<void> {
   startUpstreamStateSource(
     t3ClientStateAtom,
     {
+      applyStatus: applyStatusPayload,
+      applyAccess: applyAccessPayload,
       applyConfig: applyConfigPayload,
       applyShell: applyShellPayload,
       applyThread: applyActiveThreadPayload,
@@ -1175,6 +1267,7 @@ async function bootstrapT3Client(): Promise<void> {
       applyVcsStatus: applyVcsStatusPayload,
     },
     upstreamPendingModelSelections,
+    (threadId) => upstreamCommandBridge().deleteThread({ threadId }),
   );
   let firstSnapshotApplied = false;
   const transport = await startMainConnectorTransport({
@@ -1203,7 +1296,10 @@ async function bootstrapT3Client(): Promise<void> {
   mainTransport = transport;
   mainCommandBridge = buildCommandBridge(transport);
   patchState({ connectorCommandsReady: true });
-  if (saved) {
+  // The connector remembers the saved selection for what it creates itself.
+  // It creates nothing while upstream takes the commands.
+  if (saved && !upstreamCommandsAvailable()) {
+    connectorCallProbe?.record("setModelSelection");
     const result = await transport.invokeSettled("setModelSelection", { selection: saved });
     if (!result.ok) {
       patchState({ modelSelectionError: result.error });
@@ -2066,6 +2162,7 @@ function settleModelSelectionMutation(input: {
   readonly selection: ModelSelection;
 }): Promise<BridgeCallResult> {
   if (mainTransport && !upstreamCommandsAvailable()) {
+    connectorCallProbe?.record("setModelSelection");
     return mainTransport.invokeSettled("setModelSelection", input);
   }
   const bridge = getBridge();

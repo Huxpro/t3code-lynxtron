@@ -1,6 +1,6 @@
-// Feeds the Lynx client's server config, shell, selected thread, that
-// thread's terminals and its VCS status from upstream's atoms instead of the
-// main connector's events and replies. It runs only when the host launches
+// Feeds the Lynx client's connection status, auth access, server config,
+// shell, selected thread, that thread's terminals and its VCS status from
+// upstream's atoms instead of the main connector's events and replies. It runs only when the host launches
 // with `T3_LYNXTRON_UPSTREAM_STATE=1`; without it every connector payload is
 // applied as it arrives and nothing here subscribes to anything.
 //
@@ -10,6 +10,7 @@
 // dropped upstream connection hands the domain back to the connector.
 import { threadHasOlderTurns } from "@t3tools/client-runtime/state/threads";
 import type { ModelSelection, ServerConfig, VcsStatusResult } from "@t3tools/contracts";
+import { type AuthAccessPresentation, projectAuthAccess } from "@t3tools/lynx-logic/connections";
 import * as Option from "effect/Option";
 import { AsyncResult, type Atom } from "effect/unstable/reactivity";
 
@@ -17,6 +18,8 @@ import { projectConnectorShell } from "../../shared/connectorShell.ts";
 import { projectTerminalSession, terminalSessionKey } from "../../shared/connectorTerminal.ts";
 import { projectConnectorThread } from "../../shared/connectorThread.ts";
 import {
+  createDisposableThreadCleanup,
+  type DisposableThreadCleanup,
   disposableThreadIds,
   dropConfirmedModelSelections,
   type PendingModelSelections,
@@ -24,6 +27,7 @@ import {
 } from "../../shared/shellOverlays.ts";
 import type {
   ConnectorShellPayload,
+  ConnectorStatusPayload,
   ConnectorThreadPayload,
   TerminalSessionPresentation,
 } from "../../shared/connectorProtocol.ts";
@@ -41,7 +45,14 @@ import {
 } from "./upstreamSelected.ts";
 
 /** Each terminal session is a domain of its own, named by its key. */
-export type UpstreamStateDomain = "config" | "shell" | "thread" | "vcs" | `terminal:${string}`;
+export type UpstreamStateDomain =
+  | "status"
+  | "access"
+  | "config"
+  | "shell"
+  | "thread"
+  | "vcs"
+  | `terminal:${string}`;
 
 export function terminalDomain(
   session: Pick<TerminalSessionPresentation, "threadId" | "terminalId">,
@@ -63,6 +74,44 @@ function liveShellSnapshot(state: Pick<UpstreamPrimaryState, "shell">) {
   return state.shell?.status === "live" ? Option.getOrNull(state.shell.snapshot) : null;
 }
 
+/**
+ * The connection status while upstream's session is connected and its shell
+ * is live, or null while it is not. That means the server is being reached,
+ * whatever the main connector's own socket is doing. Without it the client is
+ * served by the connector, so the connector's status is the one that
+ * describes it; it also carries what only the main process knows, such as a
+ * server that exited.
+ */
+export function upstreamStatusPayload(
+  state: Pick<UpstreamPrimaryState, "connection" | "shell">,
+): ConnectorStatusPayload | null {
+  return isConnected(state.connection) && liveShellSnapshot(state) !== null
+    ? { status: "ready" }
+    : null;
+}
+
+/**
+ * The pairing links and client sessions as the Lynx settings show them, or
+ * null while upstream is not connected or its access stream has not delivered.
+ */
+export function upstreamAccessPayload(
+  state: Pick<UpstreamPrimaryState, "connection" | "access">,
+): AuthAccessPresentation | null {
+  if (!isConnected(state.connection) || state.access === null) return null;
+  return projectAuthAccess(state.access);
+}
+
+/**
+ * The threads of the shell upstream supplies, or null while it supplies none
+ * and the connector's shell is the one shown.
+ */
+export function ownedShellThreads(
+  state: Pick<UpstreamPrimaryState, "connection" | "shell" | "archived">,
+) {
+  if (!isConnected(state.connection) || state.archived === null) return null;
+  return liveShellSnapshot(state)?.threads ?? null;
+}
+
 const NO_PENDING_MODEL_SELECTIONS: PendingModelSelections = new Map();
 
 /**
@@ -72,24 +121,27 @@ const NO_PENDING_MODEL_SELECTIONS: PendingModelSelections = new Map();
  *
  * The shell is shown the way the connector shows its own: a thread keeps the
  * model selection in `pendingModelSelections` until the server reports it, and
- * an empty disposable thread, which the connector deletes on sight, is left
- * out.
+ * a thread `isHidden` names, one the cleanup is deleting, is left out. Without
+ * `isHidden` every empty disposable thread is left out, as if each were being
+ * deleted.
  */
 export function upstreamStatePayloads(
   state: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived">,
   pendingModelSelections: PendingModelSelections = NO_PENDING_MODEL_SELECTIONS,
+  isHidden?: (threadId: string) => boolean,
 ): UpstreamStatePayloads {
   if (!isConnected(state.connection)) return { config: null, shell: null };
   const snapshot = liveShellSnapshot(state);
   if (snapshot === null || state.archived === null) return { config: state.config, shell: null };
-  const disposable = disposableThreadIds(snapshot.threads);
+  const disposable = isHidden ? null : disposableThreadIds(snapshot.threads);
+  const hidden = isHidden ?? ((threadId: string) => disposable?.has(threadId) === true);
   return {
     config: state.config,
     shell: projectConnectorShell({
       projects: snapshot.projects,
       threads: snapshot.threads,
       archivedThreads: state.archived.threads,
-      isHidden: (thread) => disposable.has(thread.id),
+      isHidden: (thread) => hidden(thread.id),
       overlay: (thread) => withPendingModelSelection(thread, pendingModelSelections),
     }),
   };
@@ -197,9 +249,14 @@ export function createUpstreamStateRouter() {
   const owned = new Set<UpstreamStateDomain>();
   const held = new Map<UpstreamStateDomain, () => void>();
   return {
-    fromConnector(domain: UpstreamStateDomain, apply: () => void): void {
-      if (owned.has(domain)) held.set(domain, apply);
-      else apply();
+    /** Returns whether the payload was applied; false means it is held. */
+    fromConnector(domain: UpstreamStateDomain, apply: () => void): boolean {
+      if (owned.has(domain)) {
+        held.set(domain, apply);
+        return false;
+      }
+      apply();
+      return true;
     },
     fromUpstream<T>(domain: UpstreamStateDomain, payload: T | null, apply: (payload: T) => void) {
       if (payload !== null) {
@@ -221,6 +278,8 @@ const router = createUpstreamStateRouter();
 export const applyFromConnector = router.fromConnector;
 
 export interface UpstreamStateSink {
+  readonly applyStatus: (status: ConnectorStatusPayload) => void;
+  readonly applyAccess: (access: AuthAccessPresentation) => void;
   readonly applyConfig: (config: ServerConfig) => void;
   readonly applyShell: (shell: ConnectorShellPayload) => void;
   readonly applyThread: (thread: ConnectorThreadPayload) => void;
@@ -235,11 +294,14 @@ let started = false;
  * `clientStateAtom` is the Lynx client's own state, which says what is
  * selected. `pendingModelSelections` holds the selections the client's
  * commands are waiting on; one is removed here when the server reports it.
+ * `deleteDisposableThread` deletes an empty disposable thread seen in the
+ * shell upstream supplies; without it such threads are only left out.
  */
 export function startUpstreamStateSource(
   clientStateAtom: Atom.Atom<T3ClientState>,
   sink: UpstreamStateSink,
   pendingModelSelections: Map<string, ModelSelection> = new Map(),
+  deleteDisposableThread?: (threadId: string) => Promise<unknown>,
 ): void {
   if (started) return;
   if (readUpstreamRuntimeFlags().upstreamState !== true) return;
@@ -247,19 +309,49 @@ export function startUpstreamStateSource(
 
   // The watcher fires for every connection and catalog change; a domain is
   // projected and applied again only when what it is built from changed.
-  let previous: Pick<UpstreamPrimaryState, "connection" | "shell" | "config" | "archived"> | null =
-    null;
+  let previous: Pick<
+    UpstreamPrimaryState,
+    "connection" | "shell" | "config" | "archived" | "access"
+  > | null = null;
+  let statusFromUpstream = false;
+  const cleanup: DisposableThreadCleanup | null = deleteDisposableThread
+    ? createDisposableThreadCleanup({
+        deleteThread: deleteDisposableThread,
+        onRevealed: () => {
+          if (previous === null) return;
+          const { shell } = upstreamStatePayloads(
+            previous,
+            pendingModelSelections,
+            cleanup?.isHidden,
+          );
+          if (shell !== null) router.fromUpstream("shell", shell, sink.applyShell);
+        },
+      })
+    : null;
   watchUpstreamPrimary((state) => {
     const connectionChanged = previous?.connection !== state.connection;
     const configChanged = connectionChanged || previous?.config !== state.config;
     const shellChanged =
       connectionChanged || previous?.shell !== state.shell || previous?.archived !== state.archived;
+    const accessChanged = connectionChanged || previous?.access !== state.access;
     previous = state;
+    const status = upstreamStatusPayload(state);
+    if ((status !== null) !== statusFromUpstream) {
+      statusFromUpstream = status !== null;
+      router.fromUpstream("status", status, sink.applyStatus);
+    }
+    if (accessChanged) {
+      router.fromUpstream("access", upstreamAccessPayload(state), sink.applyAccess);
+    }
     if (!configChanged && !shellChanged) return;
     if (shellChanged) {
       dropConfirmedModelSelections(pendingModelSelections, liveShellSnapshot(state)?.threads ?? []);
+      // The cleanup runs on the shell upstream supplies; while it supplies
+      // none, the connector's own cleanup is the one that acts.
+      const threads = ownedShellThreads(state);
+      if (threads !== null) cleanup?.observe(threads);
     }
-    const payloads = upstreamStatePayloads(state, pendingModelSelections);
+    const payloads = upstreamStatePayloads(state, pendingModelSelections, cleanup?.isHidden);
     if (configChanged) router.fromUpstream("config", payloads.config, sink.applyConfig);
     if (shellChanged) router.fromUpstream("shell", payloads.shell, sink.applyShell);
   });
